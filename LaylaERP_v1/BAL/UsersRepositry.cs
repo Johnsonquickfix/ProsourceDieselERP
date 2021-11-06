@@ -532,7 +532,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "erp_user_iud";
                 SqlParameter[] para =
-                {
+                { 
                      new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
@@ -572,7 +572,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value);";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
@@ -727,7 +727,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Value);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Value);SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@User_Type", model.User_Type),
@@ -782,7 +782,7 @@ namespace LaylaERP.BAL
                 DeletePermission(roleto);
                 int result = 0;
                   
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) Select " + roleto + ",erpmenu_id,add_,edit_,delete_ from wp_erprole_rest where role_id=" + role_id + ";";
+                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_,flag) Select " + roleto + ",erpmenu_id,add_,edit_,delete_,'C' from wp_erprole_rest where role_id=" + role_id + ";";
                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 
                 return result;

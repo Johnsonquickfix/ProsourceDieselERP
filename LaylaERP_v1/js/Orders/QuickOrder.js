@@ -129,6 +129,7 @@
     /*End Return Items*/
     /*Start Gift Card*/
     $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); GiftCardModal(); });
+    $("#billModal").on("click", "#btnGiftCardAdd", function (t) { t.preventDefault(); ApplyGiftCard(); });
     /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
@@ -830,10 +831,10 @@ function getOrderItemList(oid) {
                 $("#shippingTotal").data("orderitemid", orderitemid);
             }
             else if (row.product_type == 'gift_card') {
-                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-orderitemid="' + orderitemid + '">';
+                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '"" data-orderitemid="' + orderitemid + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
-                giftcardHtml += '<div class="pull-right">$<span id="cou_discamt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
                 giftcardHtml += '</a>';
                 giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
@@ -936,7 +937,6 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + pr.discount_type + '" data-couponamt="0">' + pr.discount.toFixed(2) + '</td>';
                     layoutHtml += '<td class="text-right RowTax">' + pr.tax_amount + '</td>';
                     layoutHtml += '</tr>';
-                    //AddOrderProduct(pr);
                 }
                 else {
                     var zQty = parseFloat($('#txt_ItemQty_' + pr.rd_id).val()) || 0.00;
@@ -969,14 +969,6 @@ function bindItemListDataTable(data) {
     ApplyAutoCoupon();
     //calcFinalTotals();
 }
-function AddOrderProduct(product_info) {
-    product_info.order_id = parseInt($('#hfOrderNo').val()) || 0;
-    $.ajax({ method: 'post', url: '/Orders/AddOrderProduct', data: product_info }).done(function (result, textStatus, jqXHR) {
-        if (result.status) $('#tritemId_' + pr.PKey).data('orderitemid', result.id)
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        swal('Alert!', 'Something went wrong, please try again.', "error");
-    });
-}
 function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
@@ -1000,13 +992,12 @@ function removeItemsInTable(id) {
 function calcFinalTotals() {
     //calculateStateRecyclingFee();
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
-    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
+    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zGiftAmt = 0.00, zTotal = 0.00;
     $("#order_line_items > tr").each(function (index, tr) {
         let rQty = (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zQty += rQty;
         zGAmt = zGAmt + parseFloat($(tr).find(".TotalAmount").data("amount"));
-        if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0)
-            zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
+        if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0) zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zTDiscount = zTDiscount + parseFloat($(tr).find(".RowDiscount").text());
         //zTotalTax = zTotalTax + parseFloat($(tr).find(".TotalAmount").data("taxamount"));
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
@@ -1016,13 +1007,13 @@ function calcFinalTotals() {
     zTotalTax = zTotalTax + ((zGAmt - zTDiscount) * tax_rate);
     zStateRecyclingAmt = parseFloat($("#stateRecyclingFeeTotal").text()) || 0.00;
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zDiscQty.toFixed(0));
-    $("#SubTotal").text(zGAmt.toFixed(2));
-    $("#discountTotal").text(zTDiscount.toFixed(2));
-    $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    $("#SubTotal").text(zGAmt.toFixed(2)); $("#discountTotal").text(zTDiscount.toFixed(2)); $("#salesTaxTotal").text(zTotalTax.toFixed(2));
     $("#shippingTotal").text(zShippingAmt.toFixed(2)); $('#order_shipping_line_items').find(".TotalAmount").text(zShippingAmt.toFixed(2));
     CalculateFee();
-    zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00;
-    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+    zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00; zTotal = (zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt);
+    $("#billGiftCard > li").each(function (_i, _li) { zGiftAmt += (parseFloat($(_li).find("[id=gift_amt]").text()) || 0.00); });
+    $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2));
+    let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Item Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddItemMetaModal(id, itemid, meta_list) {
@@ -1151,46 +1142,33 @@ function ApplyGiftCard() {
     let giftcard_code = $("#txt_GiftCard").val().toLowerCase().trim();
     if ($('#li_' + giftcard_code).length > 0) { swal('Alert!', 'Gift Card Code already applied!', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; };
     if (giftcard_code == '') { swal('Alert!', 'Please Enter a Gift Card Code.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-
+    let _total = parseFloat($("#orderTotal").text()) || 0.00;
     let billing_email = $("#txtbillemail").val().toLowerCase();
-    let add_giftcard_count = 0;
-    $('#billCoupon li').each(function (index, li) {
-        if ($(li).data('type') == 'add_giftcard') { add_giftcard_count += 1; }
-    });
     let obj = { strValue1: giftcard_code };
     $.ajax({
         type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-
-            var data = JSON.parse(result);
+            let data = JSON.parse(result); console.log(data);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-            if (data[0].GiftCard_Amount >= 0) {
-
-                data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
-
-                if ($("#orderTotal").text() <= 0) {
-                    swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+            if (data[0].giftcard_amount > 0) {
+                if (_total <= 0) { swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+                else if (_total > 0 && _total >= data[0].giftcard_amount) {
+                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
+                    giftcardHtml += '<a href="javascript:void(0);">';
+                    giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[0].code.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '</a>';
+                    giftcardHtml += '</li>';
+                    $('#billGiftCard').append(giftcardHtml);
                 }
-                else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
-                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                    bindGiftCardList(data);
-                }
-                else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
-                    data[0].GiftCard_Amount = $("#orderTotal").text();
-
-                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                    bindGiftCardList(data);
-                }
+                $("#billModal").modal('hide');
             }
-            else {
-                swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
-
-            }
+            else { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
-    //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+    calcFinalTotals();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {
@@ -1878,8 +1856,8 @@ function calculateStateRecyclingFee() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta (Save/Update) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function createPostMeta() {
-    var oid = $('#hfOrderNo').val();
-    var postMetaxml = [];
+    let oid = $('#hfOrderNo').val(), _total = parseFloat($('#orderTotal').text()) || 0.00, _gift = parseFloat($('#giftCardTotal').text()) || 0.00;
+    let postMetaxml = [];
     postMetaxml.push(
         { post_id: oid, meta_key: '_customer_user', meta_value: parseInt($('#ddlUser').val()) || 0 },
         { post_id: oid, meta_key: '_billing_company', meta_value: $('#txtbillcompany').val() }, { post_id: oid, meta_key: '_shipping_company', meta_value: $('#txtshipcompany').val() },
@@ -1893,10 +1871,11 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() }, { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() },
         { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() }, { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() },
         { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
-        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('#orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
     );
+    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_gift_amount', meta_value: _gift }, { post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
     else { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: '' }); }
     return postMetaxml;
@@ -1909,9 +1888,10 @@ function createPostStatus() {
         total_sales: parseFloat($('#orderTotal').text()) || 0.00,
         tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
         shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
-        net_total: (parseFloat($('#orderTotal').text()) || 0.00) - (parseFloat($('#salesTaxTotal').text()) || 0.00),
+        net_total: (parseFloat($('#orderTotal').text()) || 0.00),
         status: $('#ddlStatus').val(), Search: $('#txtCustomerNotes').val()
     };
+    if (postStatus.net_total == 0) postStatus.status = 'wc-processing';
     return postStatus;
 }
 function createItemsList() {
@@ -1932,7 +1912,12 @@ function createItemsList() {
     //Add Coupon
     $('#billCoupon li').each(function (index, li) {
         let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
-        if (cou_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('coupon'), product_type: 'coupon', total: parseFloat($(li).find("#cou_discamt").text()) || 0.00 });
+        if (cou_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('coupon'), product_type: 'coupon', total: cou_amt });
+    });
+    //Add Gift Card
+    $('#billGiftCard li').each(function (index, li) {
+        let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
+        if (gift_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
     });
     //Add Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
@@ -1986,8 +1971,8 @@ function saveCO() {
         success: function (result) {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                $.when(getOrderItemList(oid)).done(function () { PaymentModal(); });
+                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
+                $.when(getOrderItemList(oid)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true); });
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
@@ -2390,6 +2375,8 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';
+    if (parseFloat($('#giftCardTotal').text()) > 0)
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#giftCardTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#orderTotal').text() + '</span></td></tr>';
     myHtml += '</tfoot>';
     myHtml += '</table>';
@@ -2428,32 +2415,23 @@ function sendInvoice(paymode, id) {
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
     let order_date = $('#txtLogDate').val();
     let payment_method = paymode;
-    let b_first_name = $('#txtbillfirstname').val();
-    let b_last_name = $('#txtbilllastname').val();
+    let b_first_name = $('#txtbillfirstname').val(), b_last_name = $('#txtbilllastname').val();
     let b_company = $('#txtbillcompany').val();
-    let b_address_1 = $('#txtbilladdress1').val();
-    let b_address_2 = $('#txtbilladdress2').val();
-    let b_postcode = $('#txtbillzipcode').val();
-    let b_city = $('#txtbillcity').val();
-    let b_country = $('#ddlbillcountry').val();
-    let b_state = $('#ddlbillstate').val();
-    let b_email = $('#txtbillemail').val();
-    let b_phone = $('#txtbillphone').val();
-    let s_first_name = $('#txtshipfirstname').val();
-    let s_last_name = $('#txtshiplastname').val();
+    let b_address_1 = $('#txtbilladdress1').val(), b_address_2 = $('#txtbilladdress2').val();
+    let b_postcode = $('#txtbillzipcode').val(), b_city = $('#txtbillcity').val();
+    let b_country = $('#ddlbillcountry').val(), b_state = $('#ddlbillstate').val();
+    let b_email = $('#txtbillemail').val(), b_phone = $('#txtbillphone').val();
+    let s_first_name = $('#txtshipfirstname').val(), s_last_name = $('#txtshiplastname').val();
     let s_company = $('#txtshipcompany').val();
-    let s_address_1 = $('#txtshipaddress1').val();
-    let s_address_2 = $('#txtshipaddress2').val();
+    let s_address_1 = $('#txtshipaddress1').val(), s_address_2 = $('#txtshipaddress2').val();
     let s_postcode = $('#txtLogDate').val();
-    let s_city = $('#txtshipcity').val();
-    let s_country = $('#ddlshipcountry').val();
-    let s_state = $('#ddlshipstate').val();
+    let s_city = $('#txtshipcity').val(), s_country = $('#ddlshipcountry').val(), s_state = $('#ddlshipstate').val();
     let GrassAmount = parseFloat($('#SubTotal').text()) || 0;
     let TotalDiscount = parseFloat($('#discountTotal').text()) || 0;
     let TotalTax = parseFloat($('#salesTaxTotal').text()) || 0;
     let TotalShipping = parseFloat($('#shippingTotal').text()) || 0;
     let TotalStateRecycling = parseFloat($('#stateRecyclingFeeTotal').text()) || 0;
-    let TotalFee = parseFloat($('#feeTotal').text()) || 0;
+    let TotalFee = parseFloat($('#feeTotal').text()) || 0, TotalGift = parseFloat($('#giftCardTotal').text()) || 0;
     let NetTotal = parseFloat($('#orderTotal').text()) || 0;
     let _item = [];
     $('#order_line_items > tr').each(function (index, tr) {
@@ -2470,7 +2448,7 @@ function sendInvoice(paymode, id) {
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,
         s_first_name: s_first_name, s_last_name: s_last_name, s_company: s_company, s_address_1: s_address_1, s_address_2: s_address_2, s_postcode: s_postcode, s_city: s_city, s_country: s_country, s_state: s_state,
         paypal_id: id, GrassAmount: GrassAmount, TotalDiscount: TotalDiscount, TotalTax: TotalTax, TotalShipping: TotalShipping, TotalStateRecycling: TotalStateRecycling,
-        TotalFee: TotalFee, NetTotal: NetTotal, OrderProducts: _item
+        TotalFee: TotalFee, TotalGift: TotalGift, NetTotal: NetTotal, OrderProducts: _item
     }
     $.ajax({
         type: "POST", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),

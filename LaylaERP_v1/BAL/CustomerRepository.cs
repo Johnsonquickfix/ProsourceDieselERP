@@ -170,7 +170,7 @@ namespace LaylaERP.Models
                             + " INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (User_Email like '%" + searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')";
+                    strWhr += " and (User_Email like '%" + searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {

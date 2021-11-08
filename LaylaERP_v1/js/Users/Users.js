@@ -135,89 +135,172 @@ function Datagrid(role_type, type) {
     }
     console.log(role_type, type);
     var id;
-    $('#dtdata').DataTable({
-        oSearch: { "sSearch": role_type.trim() },
-        destroy: true,
-        bAutoWidth: false,
-        "ajax": {
-            "url": '/Users/GetData',
-            "type": 'GET',
-            "dataType": 'json',
-           // data: { rolepass: role_type.trim() },
-            contentType: "application/json; charset=utf-8",
-        },
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
-        "columns": [
-            {
-                'data': 'ID', sWidth: "5%",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                }
+    if (searchText == '') {
+        $('#dtdata').DataTable({
+            oSearch: { "sSearch": role_type.trim() },
+            destroy: true,
+            bAutoWidth: false,
+            "ajax": {
+                "url": '/Users/GetData',
+                "type": 'GET',
+                "dataType": 'json',
+                // data: { rolepass: role_type.trim() },
+                contentType: "application/json; charset=utf-8",
             },
-            { 'data': 'ID', 'sWidth': "8%" },
-            { 'data': 'user_login', 'sWidth': "12%" },
-            { 'data': 'user_email', 'sWidth': "25%" },
-            { 'data': 'user_status', 'sWidth': "10%" },
-            { 'data': 'phone', 'sWidth': "15%" },
-            { 'data': 'address', 'sWidth': "30%" },
-            {
-                data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
-                    let str = getAllUserType(data);
-                    return str;
-                }
-            },
-            {
-                'data': 'ID', sWidth: "8%",
-                'render': function (ID, type, full, meta) {
-                    if ($("#hfEdit").val() == "1") {
-                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+            lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+            "columns": [
+                {
+                    'data': 'ID', sWidth: "5%",
+                    'render': function (data, type, full, meta) {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
-                    else { return "No Permission"; }
-                }
-                //'render': function (ID, type, full, meta) {
-                //    if (sessionStorage.hfEdit == "1") {
-                //        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
-                //        sessionStorage.removeItem(hfEdit);
-                //    }
-                //    else { return "No Permission"; }
-                //}
-            }
-        ],
-        columnDefs: columnDefs,
-        "order": [[1, 'desc']],
-        initComplete: function () {
-            var column = this.api().column(4);
-            if (myvalue != 1) {
-                var select = $('<select class="filter"><option value="All">Select</option></select>')
-                    .appendTo('#selectStatus')
-                    .on('change', function () {
-                        var val = $(this).val();
-                        column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                        //column.search(val).draw()
-                    });
-
-                var offices = [];
-                column.data().toArray().forEach(function (s) {
-                    s = s.split(',');
-                    s.forEach(function (d) {
-                        if (!~offices.indexOf(d)) {
-                            offices.push(d)
-                            select.append('<option value="' + d + '">' + d + '</option>');
+                },
+                { 'data': 'ID', 'sWidth': "8%" },
+                { 'data': 'user_login', 'sWidth': "12%" },
+                { 'data': 'user_email', 'sWidth': "25%" },
+                { 'data': 'user_status', 'sWidth': "10%" },
+                { 'data': 'phone', 'sWidth': "15%" },
+                { 'data': 'address', 'sWidth': "30%" },
+                {
+                    data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
+                        let str = getAllUserType(data);
+                        return str;
+                    }
+                },
+                {
+                    'data': 'ID', sWidth: "8%",
+                    'render': function (ID, type, full, meta) {
+                        if ($("#hfEdit").val() == "1") {
+                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
-                    })
-                });
+                        else { return "No Permission"; }
+                    }
+                    //'render': function (ID, type, full, meta) {
+                    //    if (sessionStorage.hfEdit == "1") {
+                    //        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    //        sessionStorage.removeItem(hfEdit);
+                    //    }
+                    //    else { return "No Permission"; }
+                    //}
+                }
+            ],
+            columnDefs: columnDefs,
+            "order": [[1, 'desc']],
+            initComplete: function () {
+                var column = this.api().column(4);
+                if (myvalue != 1) {
+                    var select = $('<select class="filter"><option value="All">Select</option></select>')
+                        .appendTo('#selectStatus')
+                        .on('change', function () {
+                            var val = $(this).val();
+                            column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                            //column.search(val).draw()
+                        });
+
+                    var offices = [];
+                    column.data().toArray().forEach(function (s) {
+                        s = s.split(',');
+                        s.forEach(function (d) {
+                            if (!~offices.indexOf(d)) {
+                                offices.push(d)
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            }
+                        })
+                    });
+                }
             }
-        }
-        /*
-  column.data().unique().sort().each(function(d, j) {
-    select.append('<option value="' + d + '">' + d + '</option>');
-  });
- */
+            /*
+      column.data().unique().sort().each(function(d, j) {
+        select.append('<option value="' + d + '">' + d + '</option>');
+      });
+     */
 
 
-    });
+        });
+    }
+    else {
+        $('#dtdata').DataTable({
+            oSearch: { "sSearch": searchText },
+            destroy: true,
+            bAutoWidth: false,
+            "ajax": {
+                "url": '/Users/GetData',
+                "type": 'GET',
+                "dataType": 'json',
+                // data: { rolepass: role_type.trim() },
+                contentType: "application/json; charset=utf-8",
+            },
+            lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+            "columns": [
+                {
+                    'data': 'ID', sWidth: "5%",
+                    'render': function (data, type, full, meta) {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                    }
+                },
+                { 'data': 'ID', 'sWidth': "8%" },
+                { 'data': 'user_login', 'sWidth': "12%" },
+                { 'data': 'user_email', 'sWidth': "25%" },
+                { 'data': 'user_status', 'sWidth': "10%" },
+                { 'data': 'phone', 'sWidth': "15%" },
+                { 'data': 'address', 'sWidth': "30%" },
+                {
+                    data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
+                        let str = getAllUserType(data);
+                        return str;
+                    }
+                },
+                {
+                    'data': 'ID', sWidth: "8%",
+                    'render': function (ID, type, full, meta) {
+                        if ($("#hfEdit").val() == "1") {
+                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        }
+                        else { return "No Permission"; }
+                    }
+                    //'render': function (ID, type, full, meta) {
+                    //    if (sessionStorage.hfEdit == "1") {
+                    //        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    //        sessionStorage.removeItem(hfEdit);
+                    //    }
+                    //    else { return "No Permission"; }
+                    //}
+                }
+            ],
+            columnDefs: columnDefs,
+            "order": [[1, 'desc']],
+            initComplete: function () {
+                var column = this.api().column(4);
+                if (myvalue != 1) {
+                    var select = $('<select class="filter"><option value="All">Select</option></select>')
+                        .appendTo('#selectStatus')
+                        .on('change', function () {
+                            var val = $(this).val();
+                            column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                            //column.search(val).draw()
+                        });
+
+                    var offices = [];
+                    column.data().toArray().forEach(function (s) {
+                        s = s.split(',');
+                        s.forEach(function (d) {
+                            if (!~offices.indexOf(d)) {
+                                offices.push(d)
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            }
+                        })
+                    });
+                }
+            }
+            /*
+      column.data().unique().sort().each(function(d, j) {
+        select.append('<option value="' + d + '">' + d + '</option>');
+      });
+     */
 
 
+        });
+    }
 }
 
 function getAllUserType(sValue) {

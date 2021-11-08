@@ -1446,59 +1446,27 @@
             }
             return dt;
         }
-        public static DataTable OrderList_JSON(string sMonths, string CustomerID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable OrderList(DateTime? fromdate, DateTime? todate, string customerid, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty, subSort = string.Empty;
-                if (SortCol.StartsWith("_")) { subSort = SortCol; SortCol = "meta_sort"; } else subSort = "_billing_first_name";
-                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                SqlParameter[] parameters =
                 {
-                    //strWhr += " and (pmf.employee_id='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
-                }
-                if (!string.IsNullOrEmpty(userstatus))
-                {
-                    if (userstatus == "mine") { strWhr += " and p.post_author = 8 and p.post_status != 'auto-draft'"; }
-                    else { strWhr += " and p.post_status = '" + userstatus + "'"; }
-                }
-                else
-                    strWhr += " and p.post_status != 'auto-draft' ";
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@customer_id", customerid),
+                    new SqlParameter("@post_status", userstatus),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "ORDLS")
+                };
 
-                string subWhr = string.Empty;
-                if (!string.IsNullOrEmpty(CustomerID)) subWhr = "w_pm.meta_key = '_customer_user' and w_pm.meta_value = '" + CustomerID + "' ";
-
-                if (!string.IsNullOrEmpty(searchid))
-                {
-                    if (Regex.IsMatch(searchid, @"\d"))
-                    {
-                        subWhr = (!string.IsNullOrEmpty(subWhr) ? subWhr + " and " : "") + "((w_pm.meta_key = '_billing_phone' and REGEXP_REPLACE(w_pm.meta_value,'[^0-9]+', '') like '%" + searchid + "%')";
-                        subWhr += " or w_pm.post_id like '%" + searchid + "%')";
-                    }
-                    else
-                        subWhr = (!string.IsNullOrEmpty(subWhr) ? subWhr + " and " : "") + "w_pm.meta_key in ('_billing_first_name','_billing_last_name') and w_pm.meta_value like '%" + searchid + "%'";
-                }
-                if (!string.IsNullOrEmpty(subWhr)) strWhr += string.Format(" and p.id in (select distinct w_pm.post_id from wp_postmeta w_pm where {0})", subWhr);
-
-                if (!string.IsNullOrEmpty(sMonths))
-                {
-                    //strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
-                    strWhr += " and cast(p.post_date as date) BETWEEN " + sMonths;
-                }
-
-
-                string strSql = "SELECT p.id,p.post_status as status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,"
-                            //+ " JSON_ARRAYAGG(JSON_OBJECT('meta_key', meta_key, 'meta_value', meta_value)) meta_val,"
-                            + " json_objectagg(meta_key, meta_value) meta_val,JSON_EXTRACT(json_objectagg(meta_key, meta_value),'$." + subSort + "') meta_sort,"
-                            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
-                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
-                            + " inner join wp_postmeta pmf on pmf.post_id = p.id and(pmf.meta_key not like '_edit_lock' or pmf.meta_key not like '%index%')"
-                            + " WHERE p.post_type = 'shop_order' " + strWhr
-                            + " group by p.id order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "; ";
-                strSql += " select coalesce(sum(1),0) TotalRecord from wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id where p.post_type = 'shop_order' " + strWhr.ToString();
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                DataSet ds = SQLHelper.ExecuteDataSet("wp_posts_order_search", parameters);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());

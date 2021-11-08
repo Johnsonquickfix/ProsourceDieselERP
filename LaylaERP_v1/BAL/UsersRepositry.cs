@@ -353,6 +353,11 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public static int GrantroleStatus(CustomerModel model)
         {
             try

@@ -33,7 +33,7 @@ function getOrderInfo() {
     if (oid > 0) {
         $('#ddlStatus').prop("disabled", true);
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
-        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#gift_card_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#gift_card_line_items,#billGiftCard,#order_refunds,#billCoupon,.refund-action').empty();
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
@@ -42,6 +42,7 @@ function getOrderInfo() {
                 $('#lblOrderNo').data('pay_by', data[0].payment_method);
                 $('#lblOrderNo').data('pay_gift', data[0].IsGift);
                 $('#lblOrderNo').data('pay_giftCardAmount', data[0].giftCardAmount);
+                $('#lblOrderNo').data('pay_giftCardRefundedAmount', data[0].GiftCardRefundedAmount);
                 if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                 else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
                 else $('#lblOrderNo').data('pay_id', '');
@@ -86,7 +87,7 @@ function getOrderItemList(oid) {
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
-        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardRefundedAmount = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
@@ -187,9 +188,8 @@ function getOrderItemList(oid) {
                 giftcardHtml += '</a>';
                 giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(data[i].total) || 0.00);
-            }
 
-           
+            }
             else if (data[i].product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
@@ -223,6 +223,7 @@ function getOrderItemList(oid) {
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         //$('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
         $('#billCoupon').append(couponHtml);
+        $('#billGiftCard').empty();
         $('#billGiftCard').append(giftcardHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -233,6 +234,10 @@ function getOrderItemList(oid) {
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
+        zGiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00);
+
+        $("#refundedByGiftCard").text(zGiftCardRefundedAmount.toFixed(2));
+
         $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
@@ -344,14 +349,15 @@ function calculateRefunAmount() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function createPostMeta() {
-    let pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = parseFloat($('.btnRefundOk').data('nettotal')) || 0.00;
+    let pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = parseFloat($('.btnRefundOk').data('nettotal')) || 0.00, GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
+        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount;
     let oid = 0, postMetaxml = [];
     let total = 0.00;
-    if (pay_giftCardAmount >= net_total) {
+    if (AvailableGiftCardAmount >= net_total) {
         total = 0.00;
     }
-    else if (pay_giftCardAmount < net_total) {
-        total = net_total - pay_giftCardAmount;
+    else if (AvailableGiftCardAmount < net_total) {
+        total = net_total - AvailableGiftCardAmount;
     }
     else {
         total = parseFloat($('.btnRefundOk').data('total')) || 0.00;
@@ -461,7 +467,10 @@ function createItemsList() {
     return itemsDetails;
 }
 function saveCO() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''), pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(),
+        pay_gift = ($('#lblOrderNo').data('pay_gift') || ''), pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00),
+        net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
+        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount;
     //if (!ValidateData()) { $("#loader").hide(); return false };    
     let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
 
@@ -474,15 +483,15 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                console.log(pay_gift)
+                console.log(AvailableGiftCardAmount)
                 if (pay_gift == '' ) {
                     if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                     else if (pay_by == 'podium') PodiumPaymentRefunds();
                     else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                     else '';
                 }
-                else if (pay_giftCardAmount > 0 && pay_gift == 'gift_card') {
-                    if (pay_giftCardAmount == 0) {
+                else if (AvailableGiftCardAmount > 0 && pay_gift == 'gift_card') {
+                    if (AvailableGiftCardAmount == 0) {
 
                         $('.btnRefundOk').data('nettotal', total);
                         if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
@@ -490,13 +499,13 @@ function saveCO() {
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else '';
                     }
-                    else if (pay_giftCardAmount >= net_total) {
+                    else if (AvailableGiftCardAmount >= net_total) {
                         $('#lblOrderNo').data('giftCardAmount', net_total);
                         GiftCardPaymentRefunds();
                     }
-                    else if (pay_giftCardAmount > 0 && pay_giftCardAmount < net_total) {
-                        let total = net_total - pay_giftCardAmount;
-                        $('#lblOrderNo').data('giftCardAmount', pay_giftCardAmount);
+                    else if (AvailableGiftCardAmount > 0 && AvailableGiftCardAmount < net_total) {
+                        let total = net_total - AvailableGiftCardAmount;
+                        $('#lblOrderNo').data('giftCardAmount', AvailableGiftCardAmount);
                         GiftCardPaymentRefunds();
                         //partial refund by gift card and gateway
                         $('.btnRefundOk').data('nettotal', total);
@@ -505,7 +514,6 @@ function saveCO() {
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else '';
                     }
-                   
                     else '';
                 }
                 else '';
@@ -632,7 +640,7 @@ function GiftCardPaymentRefunds() {
                 console.log('Gift Card ', response);
                 if (response.status) {
                     swal('Alert!', 'Refund Amount Added in gift card successfully.', "success");
-                    getOrderNotesList(oid); getOrderItemList(oid);
+                    getOrderNotesList(oid); getOrderInfo();
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

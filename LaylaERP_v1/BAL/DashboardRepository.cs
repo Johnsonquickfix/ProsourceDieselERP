@@ -153,11 +153,11 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 if (searchOn == "users" || searchOn == "all")
-                    strWhr += "select id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value NOT LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc LIMIT 0,5;";
+                    strWhr += "select top 5 id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value NOT LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc;";
                 if (searchOn == "customers" || searchOn == "all")
-                    strWhr += "select id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc LIMIT 0,5;";
+                    strWhr += "select  top 5 id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc;";
                 if (searchOn == "orders" || searchOn == "all")
-                    strWhr += "select p.id,meta_value first_name,p.post_status,post_date FROM wp_posts p left join wp_postmeta pm on p.id = pm.post_id and pm.meta_key in ('_billing_first_name') where p.post_type = 'shop_order' and post_status != 'auto-draft' and id LIKE '%" + searchStr + "%' order by post_date Desc LIMIT 0,5;";
+                    strWhr += "select  top 5 p.id,meta_value first_name,p.post_status,post_date FROM wp_posts p left join wp_postmeta pm on p.id = pm.post_id and pm.meta_key in ('_billing_first_name') where p.post_type = 'shop_order' and post_status != 'auto-draft' and id LIKE '%" + searchStr + "%' order by post_date Desc;";
                 ds = SQLHelper.ExecuteDataSet(strWhr);
             }
             catch (Exception ex)

@@ -149,9 +149,9 @@
             DataTable DT = new DataTable();
             try
             {
-                if (country == "CA - Canada")
+                if (country == "CA")
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by ZIPCodes1.StateFullName ;");
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from erp_statelist  where StateFullName like '" + strSearch + "%' ;");
                 }
                 else
                 {

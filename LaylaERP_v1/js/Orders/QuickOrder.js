@@ -834,7 +834,7 @@ function getOrderItemList(oid) {
                 giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '"" data-orderitemid="' + orderitemid + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
-                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
                 giftcardHtml += '</a>';
                 giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
@@ -1156,7 +1156,7 @@ function ApplyGiftCard() {
                     let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
                     giftcardHtml += '<a href="javascript:void(0);">';
                     giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
-                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[0].code.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[0].code.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
                     giftcardHtml += '</a>';
                     giftcardHtml += '</li>';
                     $('#billGiftCard').append(giftcardHtml);
@@ -2184,9 +2184,17 @@ function updatePayment(oid, taskUid) {
 function createPaypalXML(oid, pp_no, pp_email) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
-    custom_label = custom_label.length > 0 ? custom_label : 'Other Fee';
-    let _items = [];
+    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00; 
+    let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
+    if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
+    else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
+    else if (srf_total != 0 && fee_total == 0 && gc_total == 0) custom_label = 'State Recycling Fee';
+    else if (srf_total == 0 && fee_total != 0 && gc_total == 0) custom_label = 'Other Fee & Gift Card';
+    else if (srf_total == 0 && fee_total == 0 && gc_total == 0) custom_label = 'Gift Card';
+    else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
+    else custom_label = 'Other Fee';
+    console.log(srf_total, fee_total, gc_total);
+    let _items = []; fee_total = fee_total + srf_total - gc_total;
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
@@ -2242,9 +2250,10 @@ function PaypalPayment(ppemail) {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
                 let access_token = response.message;
-                let inv_id = $('#lblOrderNo').data('pay_id').trim();
-                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
+                console.log(pay_by, inv_id, create_url);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }

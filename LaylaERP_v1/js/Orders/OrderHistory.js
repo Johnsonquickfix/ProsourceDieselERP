@@ -29,6 +29,8 @@
     }, function (start, end, label) {
         let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
     });
+    $('#txtOrderDate').val('');
+    $('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
     //GetMonths();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -59,6 +61,10 @@
     $('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
     $('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
     $('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-cancelnopay').click(function () { var order_type = "wc-cancelnopay"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-pendingpodiuminv').click(function () { var order_type = "wc-pendingpodiuminv"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true); });
 });
 function GetMonths() {
@@ -88,16 +94,20 @@ function GetOrderDetails() {
         success: function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
-                $('#all').find(".count").text(number_format(data[0].AllOrder));
-                $('#mine').find(".count").text(number_format(data[0].Mine));
-                $('#draft').find(".count").text(number_format(data[0].Drafts));
-                $('#wc-pending').find(".count").text(number_format(data[0].Pending));
-                $('#wc-processing').find(".count").text(number_format(data[0].Processing));
-                $('#wc-on-hold').find(".count").text(number_format(data[0].OnHold));
-                $('#wc-completed').find(".count").text(number_format(data[0].Completed));
-                $('#wc-cancelled').find(".count").text(number_format(data[0].Cancelled));
-                $('#wc-refunded').find(".count").text(number_format(data[0].Refunded));
-                $('#wc-failed').find(".count").text(number_format(data[0].Failed));
+                $('#all').find(".count").text(number_format(data[0].allorder));
+                $('#mine').find(".count").text(number_format(data[0].mine));
+                $('#draft').find(".count").text(number_format(data[0].drafts));
+                $('#wc-pending').find(".count").text(number_format(data[0].pending));
+                $('#wc-processing').find(".count").text(number_format(data[0].processing));
+                $('#wc-on-hold').find(".count").text(number_format(data[0].onhold));
+                $('#wc-completed').find(".count").text(number_format(data[0].completed));
+                $('#wc-cancelled').find(".count").text(number_format(data[0].cancelled));
+                $('#wc-refunded').find(".count").text(number_format(data[0].refunded));
+                $('#wc-failed').find(".count").text(number_format(data[0].failed));
+                $('#wc-cancelnopay').find(".count").text(number_format(data[0].cancelnopay));
+                $('#wc-pendingpodiuminv').find(".count").text(number_format(data[0].pendingpodiuminv));
+                $('#wc-podium').find(".count").text(number_format(data[0].podium));
+                $('#wc-podiumrefund').find(".count").text(number_format(data[0].podiumrefund));
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -195,6 +205,7 @@ function dataGridLoad(order_type, is_date) {
                     else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
                     else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
                     else if (data == 'wc-podium') return 'Order via Podium';
+                    else if (data == 'wc-podiumrefund') return 'Podium Refunded';
                     else if (data == 'draft') return 'draft';
                     else return '-';
                 }

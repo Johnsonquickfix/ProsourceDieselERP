@@ -173,7 +173,7 @@ function getGrandTotal(is_date) {
             var d = JSON.parse(data);
             if (d.length > 0) {
                 if (parseInt(d[0].debit).toFixed(2) > 0) {
-                    $("#txtdebit").text('$' + d[0].debit); $("#txtcredit").text('$' + d[0].credit); $("#txtbalance").text('$' + d[0].balance)
+                    $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2)); $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2)); $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
                 }
             }
         },

@@ -296,10 +296,12 @@
             City = $("#txtCity").val();
             State = $("#txtState").val();
             PostalCode = $("#txtPostCode").val();
+            countryval = $("#txtCountry").val();
             var obj = {
                 billing_state: State,
                 billing_city: City,
-                billing_postcode: PostalCode
+                billing_postcode: PostalCode,
+                country: countryval
             }
             $.ajax({
                 url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',

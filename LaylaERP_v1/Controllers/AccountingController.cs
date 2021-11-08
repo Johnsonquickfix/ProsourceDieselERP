@@ -45,6 +45,10 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult AccountLedger()
+        {
+            return View("AccountLedgerList");
+        }
 
         public JsonResult GetNatureofJournal(SearchModel model)
         {

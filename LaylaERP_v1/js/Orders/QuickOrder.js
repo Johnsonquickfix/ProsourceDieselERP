@@ -2122,25 +2122,29 @@ function PodiumPayment() {
     let bill_email = $("#txtbillemail").val();
     let bill_to = $('input[name="podiumchannel"]:checked').val();
     let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
-
+    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let gc_total = (parseFloat($('#giftCardTotal').text()) || 0.00) - (fee_total < 0 ? fee_total : 0);
+    if (fee_total > 0) { let rgc_amt = fee_total <= gc_total ? fee_total : gc_total; fee_total = fee_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (srf_total > 0) { let rgc_amt = srf_total <= gc_total ? srf_total : gc_total; srf_total = srf_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (Shipping_total > 0) { let rgc_amt = Shipping_total <= gc_total ? Shipping_total : gc_total; Shipping_total = Shipping_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (st_total > 0) { let rgc_amt = st_total <= gc_total ? st_total : gc_total; st_total = st_total - rgc_amt; gc_total = gc_total - rgc_amt; }
     let _lineItems = [];
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
         let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
-        if ((grossAmount - discount) > 0)
-            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+        let rgc_amt = (grossAmount - discount) <= gc_total ? (grossAmount - discount) : gc_total; gc_total = gc_total - rgc_amt;
+        if ((grossAmount - discount - rgc_amt) > 0)
+            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount - rgc_amt) * 100 });
         //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
-
     });
-    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
     if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
     if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
     if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-    //console.log(opt_inv);
+    //console.log(opt_inv); return;
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
     swal.queue([{
@@ -2149,8 +2153,8 @@ function PodiumPayment() {
             swal.showLoading();
             $.get('/Setting/GetPodiumToken', option).then(response => {
                 let access_token = response.message;
-                let inv_id = $('#lblOrderNo').data('pay_id').trim();
-                if (inv_id.length > 0) {
+                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                if (inv_id.length > 0 && pay_by.includes('podium')) {
                     let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
                     let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
                     $.ajax({
@@ -2184,7 +2188,7 @@ function updatePayment(oid, taskUid) {
 function createPaypalXML(oid, pp_no, pp_email) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00; 
+    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00;
     let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
@@ -2253,13 +2257,12 @@ function PaypalPayment(ppemail) {
                 let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
-                console.log(pay_by, inv_id, create_url);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(data => {
                     console.log('Invoice has been Created.');
-                    let sendURL = data.href + '/send';
+                    let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
                     $("txtbillemail").data('surl', sendURL);
                     if (action_method == 'POST') {
                         SendPaypalInvoice(oid, pp_no, access_token, sendURL);

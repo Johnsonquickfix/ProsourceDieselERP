@@ -115,8 +115,8 @@ function dataGridLoad(order_type, is_date) {
     //var dfa = $('#txtOrderDate').val().split('-');
     //let sd = dfa[0].split('/'); sd = "'" + sd[2].toString().trim() + '-' + sd[0].toString().trim() + '-' + sd[1].toString().trim() + "'";
     //let ed = dfa[1].split('/'); ed = "'" + ed[2].toString().trim() + '-' + ed[0].toString().trim() + '-' + ed[1].toString().trim() + "'";
-    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
 
@@ -143,10 +143,10 @@ function dataGridLoad(order_type, is_date) {
         },
         sAjaxSource: "/Orders/GetOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            //aoData.push({ name: "strValue1", value: monthYear });
-            aoData.push({ name: "strValue1", value: dfa });
-            aoData.push({ name: "strValue2", value: (cus_id > 0 ? cus_id : '') });
-            aoData.push({ name: "strValue3", value: order_type });
+            aoData.push({ name: "strValue1", value: sd });
+            aoData.push({ name: "strValue2", value: ed });
+            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') });
+            aoData.push({ name: "strValue4", value: order_type });
             var col = 'id';
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({

@@ -39,6 +39,7 @@
         public decimal TotalShipping { get; set; }
         public decimal TotalStateRecycling { get; set; }
         public decimal TotalFee{ get; set; }
+        public decimal TotalGift { get; set; }
         public decimal NetTotal { get; set; }
 
         public List<OrderPostMetaModel> OrderPostMeta { get; set; }

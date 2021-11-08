@@ -67,7 +67,7 @@ function WarehouseGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [0] }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [0] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -103,7 +103,7 @@ function WarehouseGrid() {
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
-            { data: 'ref', title: 'Ref', sWidth: "10%" },
+            { data: 'ref', title: 'Ref', sWidth: "10%", class:'text-left' },
             //{ data: 'description', title: 'Description', sWidth: "15%" },
             { data: 'lieu', title: 'Short Name Location', sWidth: "20%" },
             { data: 'address', title: 'Address', sWidth: "15%" },

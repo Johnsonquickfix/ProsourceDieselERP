@@ -37,7 +37,7 @@
                 <li><a href="#tab_7" data-toggle="tab"><span title="Vendor Payment method" data-toggle="tooltip">Payments</span></a></li>
                 <li><a href="#tab_8" data-toggle="tab"><span title="Vendor Products & Services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
                 <li><a href="#tab_9" data-toggle="tab"><span title="Vendor Purchase/Invoices" data-toggle="tooltip">Invoices</span></a></li>
-                <li><a href="#tab_12" data-toggle="tab"><span title="Vendor Purchase Information" data-toggle="tooltip">Purchase Information</span></a></li>
+                @*<li><a href="#tab_12" data-toggle="tab"><span title="Vendor Purchase Information" data-toggle="tooltip">Purchase Information</span></a></li>*@
                 <li><a href="#tab_10" data-toggle="tab"><span title="Vendor Linked Warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
                 <li><a href="#tab_11" data-toggle="tab"><span title="Vendor Linked Files" data-toggle="tooltip">Linked Files</span></a></li>
 
@@ -998,23 +998,39 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab_9">
+                    <div class="row bxa-row">
+                        <input type="hidden" id="hfvendorcode" value="@ViewBag.vendor" />
+                        <div class="">
+                            <div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Purchase Order</span><h3 id="txtpurchaseorder" class=""></h3></div>
+                        </div>
+                        <div class="">
+                            <div class="bxa">
+                                <span class=""><i class="fas fa-file-invoice-dollar"></i>Paid Amount</span><h3 id="txtpaidamount" class=""></h3>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="bxa">
+                                <span class=""><i class="fas fa-file-invoice-dollar"></i>Outstanding Amount</span><h3 id="txtoutstandingamount" class=""></h3>
+                            </div>
+                        </div>
+                    </div>
                     <div id="linkInvoice">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="box-body">
                                     <div class="alignleft actions bulkactions">
                                         @*<select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
-                                            <option value="0">Select Status</option>
-                                            <option value="1">Draft</option>
-                                            <option value="3">Approved</option>
-                                            <option value="7">Canceled</option>
-                                            <option value="8">Refused</option>
-                                        </select>
-                                        <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
+                                <option value="0">Select Status</option>
+                                <option value="1">Draft</option>
+                                <option value="3">Approved</option>
+                                <option value="7">Canceled</option>
+                                <option value="8">Refused</option>
+                            </select>
+                            <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
                                     </div>
-                                    <label class="control-label col-sm-2">
+                                    @*<label class="control-label col-sm-2">
                                         List of purchase order/invoices
-                                    </label>
+                                    </label>*@
                                     <div class="form-group col-sm-4">
                                         <select class="form-control select2" id="ddlInvoiceServices" style="width:100%">
                                             @*<option value="1">Purchase orders</option>*@
@@ -1053,17 +1069,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="tab_12">
+                @*<div class="tab-pane" id="tab_12">
                     <div id="linkInvoice">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <span class="form-control">Received Bill</span><h3 id="receivebill" class="col-sm-2">$@ViewBag.purchaseorder_received</h3>
+                        <div class="row bxa-row">
+                            <div class="">
+                                <div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Purchase Order</span><h3 id="txtpurchaseorder" class=""></h3></div>
                             </div>
-                            <div class="col-md-2">
-                                <span class="form-control">Purchase Order</span><h3 id="purchaseorder" class="col-sm-2">$@ViewBag.purchaseorder</h3>
+                            <div class="">
+                                <div class="bxa">
+                                    <span class=""><i class="fas fa-file-invoice-dollar"></i>Paid Amount</span><h3 id="txtpaidamount" class=""></h3>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <span class="form-control">Purchase Invoice</span><h3 id="invoiceorder" class="col-sm-2">$@ViewBag.invoiceorder</h3>
+                            <div class="">
+                                <div class="bxa">
+                                    <span class=""><i class="fas fa-file-invoice-dollar"></i>Outstanding Amount</span><h3 id="txtoutstandingamount" class=""></h3>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -1092,7 +1112,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*@
 
 
                 <div class="tab-pane" id="tab_10">

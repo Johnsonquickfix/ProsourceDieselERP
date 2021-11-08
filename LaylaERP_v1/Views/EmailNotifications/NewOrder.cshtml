@@ -79,7 +79,14 @@
                     <strong style="width:200px; display:inline-block; text-align:left;">Sub-Total:</strong><span>@String.Format("${0:0.00}", @Model.GrassAmount)</span>
                 </span>
                 <span style="display:block;">
-                    <strong style="width:200px; display:inline-block; text-align:left;">Discount:</strong><span>@String.Format("${0:0.00}", @Model.TotalDiscount)</span>
+                    @if (Model.TotalDiscount > 0)
+                    {
+                        <strong style="width:200px; display:inline-block; text-align:left;">Discount:</strong><span>@String.Format("${0:-0.00}", @Model.TotalDiscount)</span>
+                    }
+                    else
+                    {
+                        <strong style="width:200px; display:inline-block; text-align:left;">Discount:</strong><span>@String.Format("${0:0.00}", @Model.TotalDiscount)</span>
+                    }
                 </span>
                 <span style="display:block;">
                     <strong style="width:200px; display:inline-block; text-align:left;">Shipping:</strong><span>@String.Format("${0:0.00}", @Model.TotalShipping)</span>
@@ -96,7 +103,7 @@
                 @if (Model.TotalGift > 0)
                 {
                     <span style="display:block;">
-                        <strong style="width:200px; display:inline-block; text-align:left;">Gift Card:</strong><span>@String.Format("${0:0.00}", @Model.TotalGift)</span>
+                        <strong style="width:200px; display:inline-block; text-align:left;">Gift Card:</strong><span>@String.Format("${0:-0.00}", @Model.TotalGift)</span>
                     </span>
                 }
                 <span style="display:block;">

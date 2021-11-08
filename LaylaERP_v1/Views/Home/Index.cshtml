@@ -582,7 +582,7 @@
                         for (var i = 0; i < result['Table'].length; i++) {
                             myHtml += '<tr>';
                             myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'Manage User\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                             myHtml += '</tr>';
                         }
                         $("#tblUsers tbody").empty().append(myHtml);
@@ -610,7 +610,7 @@
                         for (var i = 0; i < result['Table'].length; i++) {
                             myHtml += '<tr>';
                             myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'Manage User\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                             myHtml += '</tr>';
                         }
                         $("#tblUsers tbody").empty().append(myHtml);

@@ -860,23 +860,21 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        //public ActionResult FileUploade(ProductModel model)
-        //{
-        public ActionResult FileUploade(string Name, HttpPostedFileBase ImageFile)
+        public ActionResult FileUploade(string Name, HttpPostedFileBase ImageFileproductlink)
         {
             try
             {
 
-                if (ImageFile != null)
+                if (ImageFileproductlink != null)
                 {
 
                     ProductModel model = new ProductModel();
                     //Use Namespace called :  System.IO  
-                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFileproductlink.FileName);
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     //To Get File Extension  
-                    long filesize = ImageFile.ContentLength / 1024;
-                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+                    long filesize = ImageFileproductlink.ContentLength / 1024;
+                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);
 
                     if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
                     {
@@ -900,7 +898,7 @@ namespace LaylaERP.Controllers
                             //Its Create complete path to store in server.  
                             model.ImagePath = UploadPath + FileName;
                             //To copy and save file into server.  
-                            ImageFile.SaveAs(model.ImagePath);
+                            ImageFileproductlink.SaveAs(model.ImagePath);
                             var ImagePath = "~/Files/" + FileName;
                             int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, filesize.ToString(), FileExtension, ImagePath);
 

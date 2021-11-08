@@ -179,59 +179,69 @@ namespace LaylaERP.BAL
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(strValue1))
-                        strWhr += " and pp.post_title like '%" + strValue1 + "%' ";
+
 
                     if (!string.IsNullOrEmpty(strValue2))
+                    {
                         strWhr += " and t.term_id = " + strValue2;
 
+                        if (string.IsNullOrEmpty(strValue1))
+                            strValue1 = "";
+                        //string strSQl = "SELECT distinct p.ID,t.term_id, post_title,REPLACE(post_title, ' ', '_') title, t.name AS product_category"
+                        //            + " FROM wp_posts p"
+                        //            + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+                        //            + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+                        //            + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
+                        //            + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
-                    //string strSQl = "SELECT distinct p.ID,t.term_id, post_title,REPLACE(post_title, ' ', '_') title, t.name AS product_category"
-                    //            + " FROM wp_posts p"
-                    //            + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
-                    //            + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
-                    //            + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                    //            + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') " + strWhr;
+                        //string strSQl = "select distinct pp.ID,t.term_id, pp.post_title,REPLACE(pp.post_title, ' ', '_') title, t.name AS product_category"
+                        //         + " FROM wp_posts p"
+                        //         + "  LEFT JOIN wp_posts AS pp ON pp.post_parent = p.ID"
+                        //         + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+                        //         + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+                        //         + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
+                        //         + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
-                    //string strSQl = "select distinct pp.ID,t.term_id, pp.post_title,REPLACE(pp.post_title, ' ', '_') title, t.name AS product_category"
-                    //         + " FROM wp_posts p"
-                    //         + "  LEFT JOIN wp_posts AS pp ON pp.post_parent = p.ID"
-                    //         + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
-                    //         + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
-                    //         + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                    //         + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') " + strWhr;
+                        //string strSQl = "select distinct case when  pp.post_parent is null then p.ID else pp.ID end ID,t.term_id,case when  pp.post_parent is null then p.post_title else pp.post_title end post_title,case when  pp.post_parent is null then p.post_title else pp.post_title end title,t.name AS product_category"
+                        // + " FROM wp_posts p"
+                        // + "  LEFT JOIN wp_posts AS pp ON pp.post_parent = p.ID and pp.post_status = 'publish'"
+                        // + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+                        // + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+                        // + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
+                        // + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') and p.post_status = 'publish' " + strWhr;
 
-                    string strSQl = "select distinct case when  pp.post_parent is null then p.ID else pp.ID end ID,t.term_id,case when  pp.post_parent is null then p.post_title else pp.post_title end post_title,case when  pp.post_parent is null then p.post_title else pp.post_title end title,t.name AS product_category"
-                     + " FROM wp_posts p"
-                     + "  LEFT JOIN wp_posts AS pp ON pp.post_parent = p.ID and pp.post_status = 'publish'"
-                     + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
-                     + "  LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
-                     + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                     + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') and p.post_status = 'publish' " + strWhr;
 
-                    strSQl += ";";
-                    SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
-                    while (sdr.Read())
-                    {
-                        productsModel = new ProductsModelDetails();
-                        if (sdr["id"] != DBNull.Value)
-                            productsModel.ID = Convert.ToInt64(sdr["id"]);
-                        else
-                            productsModel.ID = 0;
 
-                        productsModel.Qty = 0;
+                        SqlParameter[] para = {
+                        new SqlParameter("@term_id", strValue2),
+                        new SqlParameter("@post_title", strValue1),
+                    };
+                        string strSQl = "erp_getproductkitbyid";
 
-                        if (sdr["post_title"] != DBNull.Value)
-                            productsModel.product_name = sdr["post_title"].ToString();
-                        else
-                            productsModel.product_name = string.Empty;
+                        //strSQl += ";";
+                        SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, para);
+                        while (sdr.Read())
+                        {
+                            productsModel = new ProductsModelDetails();
+                            if (sdr["id"] != DBNull.Value)
+                                productsModel.ID = Convert.ToInt64(sdr["id"]);
+                            else
+                                productsModel.ID = 0;
 
-                        if (sdr["title"] != DBNull.Value)
-                            productsModel.product_label = sdr["title"].ToString();
-                        else
-                            productsModel.product_label = string.Empty;
+                            productsModel.Qty = 0;
 
-                        _list.Add(productsModel);
+                            if (sdr["post_title"] != DBNull.Value)
+                                productsModel.product_name = sdr["post_title"].ToString();
+                            else
+                                productsModel.product_name = string.Empty;
+
+                            if (sdr["title"] != DBNull.Value)
+                                productsModel.product_label = sdr["title"].ToString();
+                            else
+                                productsModel.product_label = string.Empty;
+
+                            _list.Add(productsModel);
+                        }
                     }
                 }
             }
@@ -1136,7 +1146,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');SELECT LAST_INSERT_ID();"));
+                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');"));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
                 return result;
             }
@@ -1344,7 +1354,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select fk_warehouse from product_warehouse"
                                 + " WHERE fk_product = " + model.fk_product + " and fk_warehouse in (" + model.fk_vendor + ") "
-                                + " limit 10;";
+                                + " ;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -1392,7 +1402,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select FileName from product_linkedfiles"
                                 + " WHERE fk_product in (" + fk_product + ") and FileName = '" + FileName + "' "
-                                + " limit 10;";
+                                + " ;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -1701,7 +1711,7 @@ namespace LaylaERP.BAL
                 {
 
                     // strSql.Append("Insert into product_association(fk_product,fk_product_fils,qty) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
-                    strSql.Append("Insert into wp_product_free(product_id,free_product_id,free_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
+                    strSql.Append("Insert into wp_product_free(product_id,free_product_id,free_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');");
 
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));

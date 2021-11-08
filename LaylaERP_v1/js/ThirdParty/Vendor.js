@@ -924,6 +924,7 @@ function GetVendorByID(id) {
                     $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
                     $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
                     $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
+                    console.log(d[0].IncotermsType);
                     $("#txtIncoTerm").val(d[0].Incoterms);
                     $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
                     $("#txtCreditLimit").val(d[0].CreditLimit);
@@ -1537,12 +1538,12 @@ function InvoiceGrid() {
             });
         },
         aoColumns: [
-            {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-                }
-            },
+            //{
+            //    'data': 'id', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+            //    }
+            //},
             {
                 'data': 'StatusID', sWidth: "10%", title: 'PO/Invoice No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
@@ -1587,7 +1588,7 @@ function orderStatus() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Purchase Information~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setTimeout(function () { VendorBookkipping(); }, 10000);
+//setTimeout(function () { VendorBookkipping(); }, 10000);
 function VendorBookkipping() {
     var vendor_code = $("#txtVendorCode").val();
     console.log(vendor_code);
@@ -1610,6 +1611,33 @@ function VendorBookkipping() {
                 ],
                 "order": [[0, 'desc']],
             });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}
+
+setTimeout(function () { CalculateAmount(); }, 2000);
+function CalculateAmount() {
+    var vendor_code = $("#hfvendorcode").val();
+    console.log(vendor_code);
+    var obj = { vendorcode1: vendor_code }
+    $.ajax({
+        url: '/ThirdParty/AmountsView',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        processing: true,
+        success: function (data) {
+            console.log(data);
+            var d = JSON.parse(data);
+
+            $("#txtpurchaseorder").text('$' + d[0].PurchaseOrder);
+            $("#txtpaidamount").text('$' + d[0].PaidAmount);
+            $("#txtoutstandingamount").text('$' + d[0].OutstandingAmount);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.responseText);

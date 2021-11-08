@@ -305,6 +305,18 @@
             return Json(JSONresult, 0);
         }
         [HttpPost]
+        public JsonResult GetGiftCardAmount(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = OrderRepository.GetGiftCardDiscount(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
         public JsonResult AddFee(OrderOtherItemsModel model)
         {
             long id = 0;

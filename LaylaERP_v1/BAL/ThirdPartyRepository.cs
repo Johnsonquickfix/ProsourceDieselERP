@@ -15,27 +15,27 @@ namespace LaylaERP.BAL
             {
                 string strsql = "";
                 strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
-                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal);  SELECT LAST_INSERT_ID();";
+                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@vendor_type", model.vendor_type),
-                    new SqlParameter("@code_vendor", model.VendorCode),
-                    new SqlParameter("@name", model.Name),
-                    new SqlParameter("@name_alias", model.AliasName),
+                    new SqlParameter("@code_vendor", model.VendorCode ?? (object)DBNull.Value),
+                    new SqlParameter("@name", model.Name ?? (object)DBNull.Value),
+                    new SqlParameter("@name_alias", model.AliasName ?? (object)DBNull.Value),
                     new SqlParameter("@fournisseur","1"),
                     new SqlParameter("@status", model.Status),
-                    new SqlParameter("@address", model.Address),
-                    new SqlParameter("@address1", model.Address1),
-                    new SqlParameter("@zip", model.ZipCode),
-                    new SqlParameter("@town", model.City),
-                    new SqlParameter("@fk_country", model.Country),
-                    new SqlParameter("@fk_state", model.State),
-                    new SqlParameter("@StateName", model.StateName),
-                    new SqlParameter("@phone", model.Phone),
-                    new SqlParameter("@fax", model.Fax),
-                    new SqlParameter("@email", model.EMail),
-                    new SqlParameter("@url", model.Web),
-                    new SqlParameter("@Workinghours", model.Workinghours),
+                    new SqlParameter("@address", model.Address ?? (object)DBNull.Value),
+                    new SqlParameter("@address1", model.Address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@zip", model.ZipCode ?? (object)DBNull.Value),
+                    new SqlParameter("@town", model.City ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_country", model.Country ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_state", model.State ?? (object)DBNull.Value),
+                    new SqlParameter("@StateName", model.StateName ?? (object)DBNull.Value),
+                    new SqlParameter("@phone", model.Phone ?? (object)DBNull.Value),
+                    new SqlParameter("@fax", model.Fax ?? (object)DBNull.Value),
+                    new SqlParameter("@email", model.EMail ?? (object)DBNull.Value),
+                    new SqlParameter("@url", model.Web ?? (object)DBNull.Value),
+                    new SqlParameter("@Workinghours", model.Workinghours ?? (object)DBNull.Value),
                     new SqlParameter("@VendorStatus", model.VendorStatus),
                     new SqlParameter("@NatureofJournal", model.NatureofJournal),
                 };
@@ -52,11 +52,11 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@code", model.VendorCode),
-                    new SqlParameter("@label", model.Name),
+                    new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
                     new SqlParameter("@nature", model.NatureofJournal),
                     new SqlParameter("@active", model.VendorStatus),
                     new SqlParameter("@VendorID", id),
@@ -78,8 +78,8 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                     new SqlParameter("@ID", model.rowid),
-                    new SqlParameter("@code", model.VendorCode),
-                    new SqlParameter("@label", model.Name),
+                    new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
                     new SqlParameter("@nature", model.NatureofJournal),
                     new SqlParameter("@active", model.VendorStatus),
                 };
@@ -95,9 +95,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_vendor set vendor_type=@vendor_type,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
+                //string strsql = "update wp_vendor set vendor_type=@vendor_type,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
+                string strsql = "vendorbasicinfo";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@vendor_type", model.vendor_type),
                     new SqlParameter("@name", model.Name),
@@ -138,17 +140,17 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                      new SqlParameter("@rowid", model.rowid),
-                    new SqlParameter("@CorAddress1", model.CorAddress1),
-                    new SqlParameter("@CorAddress2", model.CorAddress2),
-                    new SqlParameter("@CorCity", model.CorCity),
-                    new SqlParameter("@CorState", model.CorState),
-                    new SqlParameter("@CorZipCode",model.CorZipCode),
-                    new SqlParameter("@CorCountry", model.CorCountry),
-                    new SqlParameter("@CorPhone", model.CorPhone),
-                    new SqlParameter("@fk_workforce", model.Workforce),
-                    new SqlParameter("@fk_business_entity", model.BusinessEntityType),
-                    new SqlParameter("@note_public", model.NotePublic),
-                    new SqlParameter("@note_private", model.NotePrivate),
+                    new SqlParameter("@CorAddress1", model.CorAddress1 ?? (object)DBNull.Value),
+                    new SqlParameter("@CorAddress2", model.CorAddress2 ?? (object)DBNull.Value),
+                    new SqlParameter("@CorCity", model.CorCity ?? (object)DBNull.Value),
+                    new SqlParameter("@CorState", model.CorState ?? (object)DBNull.Value),
+                    new SqlParameter("@CorZipCode",model.CorZipCode ?? (object)DBNull.Value),
+                    new SqlParameter("@CorCountry", model.CorCountry ?? (object)DBNull.Value),
+                    new SqlParameter("@CorPhone", model.CorPhone ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_workforce", model.Workforce ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_business_entity", model.BusinessEntityType ?? (object)DBNull.Value),
+                    new SqlParameter("@note_public", model.NotePublic ?? (object)DBNull.Value),
+                    new SqlParameter("@note_private", model.NotePrivate ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -204,40 +206,40 @@ namespace LaylaERP.BAL
                     "@USPSPriorityMailExpress, @USPSPriorityMailExpressHoldforPickup, @USPSPriorityMailExpressSundayHoliday, @USPSPriorityMailTitle, @USPSPriorityMail, @USPSPriorityMailHoldForPickup," +
                     "@USPSPriorityMailKeysandIDs, @USPSPriorityMailRegionalRateBoxA, @USPSPriorityMailRegionalRateBoxAHoldForPickup, @USPSPriorityMailRegionalRateBoxB," +
                     "@USPSPriorityMailRegionalRateBoxBHoldForPickup, @FirstClassMailTitle, @FirstClassMailPostcards, @FirstClassMailLetter, @FirstClassMailLargeEnvelope," +
-                    "@FirstClassMailParcel, @FirstClassMailLargePostcards, @FirstClassMailKeysandIDs, @FirstClassMailPackageService, @FirstClassMailPackageServiceHoldForPickup,@FirstClassMailMeteredLetter); SELECT LAST_INSERT_ID();";
+                    "@FirstClassMailParcel, @FirstClassMailLargePostcards, @FirstClassMailKeysandIDs, @FirstClassMailPackageService, @FirstClassMailPackageServiceHoldForPickup,@FirstClassMailMeteredLetter); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@ShippingMethodID", model.ShippingMethodID),
-                    new SqlParameter("@FedexAccountNumber", model.FedexAccountNumber),
-                    new SqlParameter("@FedexMeterNumber",model.FedexMeterNumber),
-                    new SqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey),
-                    new SqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword),
-                    new SqlParameter("@FedexMethodType", model.FedexMethodType),
+                    new SqlParameter("@FedexAccountNumber", model.FedexAccountNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexMeterNumber",model.FedexMeterNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexMethodType", model.FedexMethodType ?? (object)DBNull.Value),
                     new SqlParameter("@FedexMethodEnable", model.FedexMethodEnable),
                     new SqlParameter("@FedexCustomServices", model.FedexCustomServices),
                     new SqlParameter("@FedexDebugMode", model.FedexDebugMode),
-                    new SqlParameter("@UPSUserID", model.UPSUserID),
-                    new SqlParameter("@UPSPassword", model.UPSPassword),
-                    new SqlParameter("@UPSAccessKey", model.UPSAccessKey),
-                    new SqlParameter("@UPSAccountNumber", model.UPSAccountNumber),
-                    new SqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode),
-                    new SqlParameter("@UPSOriginCountry", model.UPSOriginCountry),
-                    new SqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey),
-                    new SqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail),
+                    new SqlParameter("@UPSUserID", model.UPSUserID ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSPassword", model.UPSPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAccessKey", model.UPSAccessKey ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAccountNumber", model.UPSAccountNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSOriginCountry", model.UPSOriginCountry ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail ?? (object)DBNull.Value),
                     new SqlParameter("@UPSEnable", model.UPSEnable),
-                    new SqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits),
+                    new SqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits ?? (object)DBNull.Value),
                     new SqlParameter("@UPSEnableDebugMode", model.UPSEnableDebugMode),
                     new SqlParameter("@USPSEnable", model.USPSEnable),
-                    new SqlParameter("@USPSPostcode", model.USPSPostcode),
-                    new SqlParameter("@USPSUserID", model.USPSUserID),
+                    new SqlParameter("@USPSPostcode", model.USPSPostcode ?? (object)DBNull.Value),
+                    new SqlParameter("@USPSUserID", model.USPSUserID ?? (object)DBNull.Value),
                     new SqlParameter("@USPSCommercialrates", model.USPSCommercialrates),
                     new SqlParameter("@USPSPacking", model.USPSPacking),
-                    new SqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle),
+                    new SqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle ?? (object)DBNull.Value),
                     new SqlParameter("@USPSPriorityMailExpress", model.USPSPriorityMailExpress),
                     new SqlParameter("@USPSPriorityMailExpressHoldforPickup", model.USPSPriorityMailExpressHoldforPickup),
                     new SqlParameter("@USPSPriorityMailExpressSundayHoliday", model.USPSPriorityMailExpressSundayHoliday),
-                    new SqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle),
+                    new SqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle ?? (object)DBNull.Value),
                     new SqlParameter("@USPSPriorityMail", model.USPSPriorityMail),
                     new SqlParameter("@USPSPriorityMailHoldForPickup", model.USPSPriorityMailHoldForPickup),
                     new SqlParameter("@USPSPriorityMailKeysandIDs", model.USPSPriorityMailKeysandIDs),
@@ -245,7 +247,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxAHoldForPickup", model.USPSPriorityMailRegionalRateBoxAHoldForPickup),
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxB", model.USPSPriorityMailRegionalRateBoxB),
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxBHoldForPickup", model.USPSPriorityMailRegionalRateBoxBHoldForPickup),
-                    new SqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle),
+                    new SqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle ?? (object)DBNull.Value),
                     new SqlParameter("@FirstClassMailPostcards", model.FirstClassMailPostcards),
                     new SqlParameter("@FirstClassMailLetter", model.FirstClassMailLetter),
                     new SqlParameter("@FirstClassMailLargeEnvelope", model.FirstClassMailLargeEnvelope),
@@ -281,35 +283,35 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@ShippingMethodID", model.ShippingMethodID),
-                    new SqlParameter("@FedexAccountNumber", model.FedexAccountNumber),
-                    new SqlParameter("@FedexMeterNumber",model.FedexMeterNumber),
-                    new SqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey),
-                    new SqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword),
-                    new SqlParameter("@FedexMethodType", model.FedexMethodType),
+                    new SqlParameter("@FedexAccountNumber", model.FedexAccountNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexMeterNumber",model.FedexMeterNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@FedexMethodType", model.FedexMethodType ?? (object)DBNull.Value),
                     new SqlParameter("@FedexMethodEnable", model.FedexMethodEnable),
                     new SqlParameter("@FedexCustomServices", model.FedexCustomServices),
                     new SqlParameter("@FedexDebugMode", model.FedexDebugMode),
-                    new SqlParameter("@UPSUserID", model.UPSUserID),
-                    new SqlParameter("@UPSPassword", model.UPSPassword),
-                    new SqlParameter("@UPSAccessKey", model.UPSAccessKey),
-                    new SqlParameter("@UPSAccountNumber", model.UPSAccountNumber),
-                    new SqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode),
-                    new SqlParameter("@UPSOriginCountry", model.UPSOriginCountry),
-                    new SqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey),
-                    new SqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail),
+                    new SqlParameter("@UPSUserID", model.UPSUserID ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSPassword", model.UPSPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAccessKey", model.UPSAccessKey ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAccountNumber", model.UPSAccountNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSOriginCountry", model.UPSOriginCountry ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey ?? (object)DBNull.Value),
+                    new SqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail ?? (object)DBNull.Value),
                     new SqlParameter("@UPSEnable", model.UPSEnable),
-                    new SqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits),
+                    new SqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits ?? (object)DBNull.Value),
                     new SqlParameter("@UPSEnableDebugMode", model.UPSEnableDebugMode),
                     new SqlParameter("@USPSEnable", model.USPSEnable),
-                    new SqlParameter("@USPSPostcode", model.USPSPostcode),
-                    new SqlParameter("@USPSUserID", model.USPSUserID),
+                    new SqlParameter("@USPSPostcode", model.USPSPostcode ?? (object)DBNull.Value),
+                    new SqlParameter("@USPSUserID", model.USPSUserID ?? (object)DBNull.Value),
                     new SqlParameter("@USPSCommercialrates", model.USPSCommercialrates),
                     new SqlParameter("@USPSPacking", model.USPSPacking),
-                    new SqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle),
+                    new SqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle ?? (object)DBNull.Value),
                     new SqlParameter("@USPSPriorityMailExpress", model.USPSPriorityMailExpress),
                     new SqlParameter("@USPSPriorityMailExpressHoldforPickup", model.USPSPriorityMailExpressHoldforPickup),
                     new SqlParameter("@USPSPriorityMailExpressSundayHoliday", model.USPSPriorityMailExpressSundayHoliday),
-                    new SqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle),
+                    new SqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle ?? (object)DBNull.Value),
                     new SqlParameter("@USPSPriorityMail", model.USPSPriorityMail),
                     new SqlParameter("@USPSPriorityMailHoldForPickup", model.USPSPriorityMailHoldForPickup),
                     new SqlParameter("@USPSPriorityMailKeysandIDs", model.USPSPriorityMailKeysandIDs),
@@ -317,7 +319,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxAHoldForPickup", model.USPSPriorityMailRegionalRateBoxAHoldForPickup),
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxB", model.USPSPriorityMailRegionalRateBoxB),
                     new SqlParameter("@USPSPriorityMailRegionalRateBoxBHoldForPickup", model.USPSPriorityMailRegionalRateBoxBHoldForPickup),
-                    new SqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle),
+                    new SqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle ?? (object)DBNull.Value),
                     new SqlParameter("@FirstClassMailPostcards", model.FirstClassMailPostcards),
                     new SqlParameter("@FirstClassMailLetter", model.FirstClassMailLetter),
                     new SqlParameter("@FirstClassMailLargeEnvelope", model.FirstClassMailLargeEnvelope),
@@ -388,13 +390,13 @@ namespace LaylaERP.BAL
                 strsql = "Update wp_vendor set DiscountType1=@DiscountType1,DefaultDiscount=@DefaultDiscount,DiscountMinimumOrderAmount=@DiscountMinimumOrderAmount,AccountName = @AccountName,AccountEmail = @AccountEmail,DiscountType2 = @DiscountType2,Discount = @Discount where rowid=" + model.rowid + "";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@DiscountType1", model.DiscountType1),
+                    new SqlParameter("@DiscountType1", model.DiscountType1 ?? (object)DBNull.Value),
                     new SqlParameter("@DefaultDiscount", model.DefaultDiscount),
                     new SqlParameter("@DiscountMinimumOrderAmount", model.DiscountMinimumOrderAmount),
-                    new SqlParameter("@AccountName", model.AccountName),
-                    new SqlParameter("@AccountEmail", model.AccountEmail),
-                    new SqlParameter("@DiscountType2",model.DiscountType2),
-                    new SqlParameter("@Discount",model.Discount),
+                    new SqlParameter("@AccountName", model.AccountName ?? (object)DBNull.Value),
+                    new SqlParameter("@AccountEmail", model.AccountEmail ?? (object)DBNull.Value),
+                    new SqlParameter("@DiscountType2",model.DiscountType2 ?? (object)DBNull.Value),
+                    new SqlParameter("@Discount",model.Discount ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -414,33 +416,33 @@ namespace LaylaERP.BAL
                     "PaypalIPNEmailNotification,PaypalReceiverEmail,PaypalIdentitytoken,PaypalPaymentAction,PaypalAPIUserName,PaypalAPIPassword,PaypalAPISignature) " +
                     "Values(" + model.rowid + ", @Paymentmethod, @BankAccountName, @BankAccountNumber, @BankName, @BankRoutingNumber, @BankIBAN, @BankSwift, @ChequeTitle, @ChequeDescription, @ChequeInstructions," +
                     "@PaypalInvoiceAPIUsername, @PaypalInvoiceAPIPassword, @PaypalInvoiceAPISignature, @PaypalTitle, @PaypalDescription, @PaypalEmail, @PaypalProduction," +
-                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature);  SELECT LAST_INSERT_ID();";
+                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@Paymentmethod", model.Paymentmethod),
-                    new SqlParameter("@BankAccountName", model.BankAccountName),
-                    new SqlParameter("@BankAccountNumber", model.BankAccountNumber),
-                    new SqlParameter("@BankName", model.BankName),
-                    new SqlParameter("@BankRoutingNumber", model.BankRoutingNumber),
-                    new SqlParameter("@BankIBAN",model.BankIBAN),
-                    new SqlParameter("@BankSwift",model.BankSwift),
-                    new SqlParameter("@ChequeTitle",model.ChequeTitle),
-                    new SqlParameter("@ChequeDescription",model.ChequeDescription),
-                    new SqlParameter("@ChequeInstructions",model.ChequeInstructions),
-                    new SqlParameter("@PaypalInvoiceAPIUsername",model.PaypalInvoiceAPIUsername),
-                    new SqlParameter("@PaypalInvoiceAPIPassword",model.PaypalInvoiceAPIPassword),
-                    new SqlParameter("@PaypalInvoiceAPISignature",model.PaypalInvoiceAPISignature),
-                    new SqlParameter("@PaypalTitle",model.PaypalTitle),
-                    new SqlParameter("@PaypalDescription",model.PaypalDescription),
-                    new SqlParameter("@PaypalEmail",model.PaypalEmail),
+                    new SqlParameter("@Paymentmethod", model.Paymentmethod ?? (object)DBNull.Value),
+                    new SqlParameter("@BankAccountName", model.BankAccountName ?? (object)DBNull.Value),
+                    new SqlParameter("@BankAccountNumber", model.BankAccountNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@BankName", model.BankName ?? (object)DBNull.Value),
+                    new SqlParameter("@BankRoutingNumber", model.BankRoutingNumber ?? (object)DBNull.Value),
+                    new SqlParameter("@BankIBAN",model.BankIBAN ?? (object)DBNull.Value),
+                    new SqlParameter("@BankSwift",model.BankSwift ?? (object)DBNull.Value),
+                    new SqlParameter("@ChequeTitle",model.ChequeTitle ?? (object)DBNull.Value),
+                    new SqlParameter("@ChequeDescription",model.ChequeDescription ?? (object)DBNull.Value),
+                    new SqlParameter("@ChequeInstructions",model.ChequeInstructions ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalInvoiceAPIUsername",model.PaypalInvoiceAPIUsername ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalInvoiceAPIPassword",model.PaypalInvoiceAPIPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalInvoiceAPISignature",model.PaypalInvoiceAPISignature ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalTitle",model.PaypalTitle ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalDescription",model.PaypalDescription ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalEmail",model.PaypalEmail ?? (object)DBNull.Value),
                     new SqlParameter("@PaypalProduction",model.PaypalProduction),
-                    new SqlParameter("@PaypalIPNEmailNotification",model.PaypalIPNEmailNotification),
-                    new SqlParameter("@PaypalReceiverEmail",model.PaypalReceiverEmail),
-                    new SqlParameter("@PaypalIdentitytoken",model.PaypalIdentitytoken),
-                    new SqlParameter("@PaypalPaymentAction",model.PaypalPaymentAction),
-                    new SqlParameter("@PaypalAPIUserName",model.PaypalAPIUserName),
-                    new SqlParameter("@PaypalAPIPassword",model.PaypalAPIPassword),
-                    new SqlParameter("@PaypalAPISignature",model.PaypalAPISignature),
+                    new SqlParameter("@PaypalIPNEmailNotification",model.PaypalIPNEmailNotification ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalReceiverEmail",model.PaypalReceiverEmail ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalIdentitytoken",model.PaypalIdentitytoken ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalPaymentAction",model.PaypalPaymentAction ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalAPIUserName",model.PaypalAPIUserName ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalAPIPassword",model.PaypalAPIPassword ?? (object)DBNull.Value),
+                    new SqlParameter("@PaypalAPISignature",model.PaypalAPISignature ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -454,11 +456,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "Insert into erp_VendorContacts(VendorID,Name,Title,Email,Office,Ext,Mobile,Notes,Fax,Address,City,State,ZipCode,Country) " +
-                    "values(@VendorID, @Name, @Title, @Email, @Office, @Ext, @Mobile, @Notes, @Fax, @Address, @City, @State, @ZipCode,@Country); SELECT LAST_INSERT_ID();";
+                string strsql = "vendorcontactupdate";
+                /*strsql = "Insert into erp_VendorContacts(VendorID,Name,Title,Email,Office,Ext,Mobile,Notes,Fax,Address,City,State,ZipCode,Country) " +
+                    "values(@VendorID, @Name, @Title, @Email, @Office, @Ext, @Mobile, @Notes, @Fax, @Address, @City, @State, @ZipCode,@Country); SELECT SCOPE_IDENTITY();";*/
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "I"),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@Name", model.ContactName),
                     new SqlParameter("@Title", model.ContactTitle),
@@ -488,7 +491,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT LAST_INSERT_ID();";
+                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@VendorID", model.rowid),
@@ -544,9 +547,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Update erp_VendorContacts set Name=@Name,Title=@Title,Email=@Email,Office=@Office,Ext=@Ext,Mobile=@Mobile,Notes=@Notes,Fax = @Fax,Address = @Address,City = @City,State = @State,StateName=@StateName,ZipCode = @ZipCode,Country = @Country where ID = @ID; ";
+                //string strsql = "Update erp_VendorContacts set Name=@Name,Title=@Title,Email=@Email,Office=@Office,Ext=@Ext,Mobile=@Mobile,Notes=@Notes,Fax = @Fax,Address = @Address,City = @City,State = @State,StateName=@StateName,ZipCode = @ZipCode,Country = @Country where ID = @ID; ";
+                string strsql = "vendorcontactupdate";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@ID", model.ContactID),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@Name", model.ContactName),
@@ -579,15 +584,17 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "update wp_VendorPaymentDetails set Paymentmethod=@Paymentmethod,BankAccountName=@BankAccountName,BankAccountNumber=@BankAccountNumber,BankName=@BankName," +
+                /*strsql = "update wp_VendorPaymentDetails set Paymentmethod=@Paymentmethod,BankAccountName=@BankAccountName,BankAccountNumber=@BankAccountNumber,BankName=@BankName," +
                     "BankRoutingNumber = @BankRoutingNumber,BankIBAN = @BankIBAN,BankSwift = @BankSwift,ChequeTitle = @ChequeTitle,ChequeDescription = @ChequeDescription," +
                     "ChequeInstructions = @ChequeInstructions,PaypalInvoiceAPIUsername = @PaypalInvoiceAPIUsername,PaypalInvoiceAPIPassword = @PaypalInvoiceAPIPassword," +
                     "PaypalInvoiceAPISignature = @PaypalInvoiceAPISignature,PaypalTitle = @PaypalTitle,PaypalDescription = @PaypalDescription,PaypalEmail = @PaypalEmail," +
                     "PaypalProduction = @PaypalProduction,PaypalIPNEmailNotification = @PaypalIPNEmailNotification,PaypalReceiverEmail = @PaypalReceiverEmail," +
                     "PaypalIdentitytoken = @PaypalIdentitytoken,PaypalPaymentAction = @PaypalPaymentAction,PaypalAPIUserName = @PaypalAPIUserName," +
-                    "PaypalAPIPassword = @PaypalAPIPassword,PaypalAPISignature = @PaypalAPISignature where VendorID = @VendorID; ";
+                    "PaypalAPIPassword = @PaypalAPIPassword,PaypalAPISignature = @PaypalAPISignature where VendorID = @VendorID; "; */
+                strsql = "vendorpaymentdetails";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@Paymentmethod", model.Paymentmethod),
                     new SqlParameter("@BankAccountName", model.BankAccountName),
@@ -629,11 +636,11 @@ namespace LaylaERP.BAL
             {
                 if (country == "CA")
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName");
                 }
                 else
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName limit 50;");
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName");
                 }
             }
             catch (Exception ex)
@@ -705,7 +712,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select ID, PaymentTerm from PaymentTerms order by ID limit 50;";
+                string strSQl = "Select ID, PaymentTerm from PaymentTerms order by ID";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -717,7 +724,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select ID, Balance from BalanceDays order by ID limit 50;");
+                DS = SQLHelper.ExecuteDataSet("Select ID, Balance from BalanceDays order by ID");
             }
             catch (Exception ex)
             { throw ex; }
@@ -739,7 +746,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select ID,PaymentType from wp_PaymentType where Flag='V' order by ID;");
+                DS = SQLHelper.ExecuteDataSet("Select ID,PaymentType from wp_PaymentType order by ID;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -762,7 +769,9 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from wp_vendor;");
+                //SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-','0000',MAX(rowid + 1)) FROM wp_vendor;
+                //DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from wp_vendor;");
+                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-', MAX(RIGHT(REPLICATE(0, 5) + LEFT(rowid+1, 5),5))) as Code FROM wp_vendor");
             }
             catch (Exception ex)
             { throw ex; }
@@ -786,9 +795,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(v.rowid)/" + pagesize.ToString() + ") TotalPage,Count(v.rowid) TotalRecord from wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid  WHERE 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(v.rowid)/" + pagesize.ToString() + ") TotalPage,Count(v.rowid) TotalRecord from wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid  WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -902,9 +911,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(c.id)/" + pagesize.ToString() + ") TotalPage,Count(c.ID) TotalRecord from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid  WHERE c.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(c.id)/" + pagesize.ToString() + ") TotalPage,Count(c.ID) TotalRecord from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid  WHERE c.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -925,7 +934,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select vw.ID, v.name VendorName,CONCAT(IFNULL(w.address,''),' ',IFNULL(w.city,'') ,' ',IFNULL(w.town,''),' ',IFNULL(w.country,''),' ',IFNULL(w.zip,'')) address, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
+                string strSql = "Select vw.ID, v.name VendorName,CONCAT(ISNULL(w.address,''),' ',ISNULL(w.city,'') ,' ',ISNULL(w.town,''),' ',ISNULL(w.country,''),' ',ISNULL(w.zip,'')) address, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (ref like '%" + searchid + "%' OR w.address like '%" + searchid + "%' OR w.town like '%" + searchid + "%' OR w.country like '%" + searchid + "%' OR w.zip like '%" + searchid + "%' OR w.city like '%" + searchid + "%')";
@@ -934,9 +943,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(vw.ID)/" + pagesize.ToString() + ") TotalPage,Count(vw.ID) TotalRecord from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid  WHERE vw.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(vw.ID)/" + pagesize.ToString() + ") TotalPage,Count(vw.ID) TotalRecord from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid  WHERE vw.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -957,7 +966,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
+                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath, CONVERT(varchar(12),CreatedDate,101) Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (FileName like '%" + searchid + "%' OR FileSize like '%" + searchid + "%' OR CreatedDate like '%" + searchid + "%')";
@@ -966,9 +975,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_VendorLinkedFiles  WHERE VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_VendorLinkedFiles  WHERE VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1000,9 +1009,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from Product_Purchase_Items p left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id  WHERE p.fk_vendor='" + id + "' and 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from Product_Purchase_Items p left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id  WHERE p.fk_vendor='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1052,7 +1061,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into erp_VendorLinkedFiles(VendorID, FileName, FileSize, FileType, FilePath) values(@VendorID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
+                strsql = "insert into erp_VendorLinkedFiles(VendorID, FileName, FileSize, FileType, FilePath) values(@VendorID, @FileName, @FileSize, @FileType, @FilePath); SELECT SCOPE_IDENTITY();";
                 //strSql.Append(string.Format("insert into erp_VendorLinkedFiles(VendorID,FileName,FileSize,FileType,FilePath) values(@VendorID,@FileName,@FileSize,@FileType,@FilePath);SELECT LAST_INSERT_ID();"));
                  SqlParameter[] para =
                 {
@@ -1080,8 +1089,11 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
-                                + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison,s.id StatusID, s.Status,total_ttc from commerce_purchase_order p"
+                /*string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                                + " (p.date_creation) date_creation,(p.date_livraison) date_livraison,s.id StatusID, s.Status,total_ttc from commerce_purchase_order p"
+                                + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1";*/
+                string strSql = "Select p.rowid id, p.ref refordervendor, p.ref_ext, v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                                + " (p.date_creation) date_creation, CONVERT(VARCHAR(12),p.date_livraison,101) date_livraison,s.id StatusID, s.Status,total_ttc from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -1094,9 +1106,9 @@ namespace LaylaERP.BAL
                         strWhr += " and (s.id='" + userstatus + "') ";
 
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord  from commerce_purchase_order p"
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord  from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -1111,13 +1123,16 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable TotalPurcheseOrderReceived(long id)
+
+        public static DataTable AmountsView(string vendorcode)
         {
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as received FROM commerce_purchase_receive_order where fk_supplier=" + id + "";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
+                string strSql = "SELECT (coalesce(sum(ep.amount),0)) as PaidAmount, (coalesce(sum(epi.amount), 0)) as PurchaseOrder, (coalesce(sum(epi.amount) - sum(ep.amount), 0)) as OutstandingAmount from erp_payment ep"
+                               + " inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
             }
             catch (Exception ex)
             {
@@ -1126,42 +1141,12 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable TotalPurcheseOrder(long id)
+        public static DataTable SelectVendorCode(long vendorcode)
         {
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as PO from commerce_purchase_order where fk_supplier = " + id + "";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
-
-        public static DataTable TotalInvoiceOrder(long id)
-        {
-            DataTable dt = new DataTable();
-            try
-            {
-                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as invoice from commerce_purchase_order where fk_supplier = " + id + " and fk_status=3 ";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
-
-        public static DataTable BalanceList(string vendorcode)
-        {
-            DataTable dt = new DataTable();
-            try
-            {
-                string strSql = "SELECT format(COALESCE(sum(case when senstag = 'C' then credit end), 0),2) credit, format(COALESCE(sum(case when senstag = 'D' then debit end), 0),2) debit, format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + invtotal) - (invtotal - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0)),2) as balance FROM erp_accounting_bookkeeping where thirdparty_code='"+ vendorcode + "'";
+                string strSql = "SELECT code_vendor from wp_vendor where rowid='" + vendorcode + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

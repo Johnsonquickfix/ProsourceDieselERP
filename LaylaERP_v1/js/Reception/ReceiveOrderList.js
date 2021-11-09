@@ -5,7 +5,45 @@
     //PoClosureGrid();
     PoPartiallyColleps();
     PoClosureGridColleps();
-    
+
+    if ($("#ROPOrder").val() == "PO2") {
+        $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
+        $("#tab_21").removeClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-2").addClass("active");
+        $(".Receive-order-PO ul li.ROPO-2 a").addClass("active");
+        $("#tab_22").addClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
+        $("#tab_23").removeClass("active");
+    } else if ($("#ROPOrder").val() == "PO3") {
+        $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
+        $("#tab_21").removeClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
+        $("#tab_22").removeClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-3").addClass("active");
+        $(".Receive-order-PO ul li.ROPO-3 a.active").addClass("active");
+        $("#tab_23").addClass("active");
+    } else {
+        $(".Receive-order-PO ul li.ROPO-1").addClass("active");
+        $(".Receive-order-PO ul li.ROPO-1 a.active").addClass("active");
+        $("#tab_21").addClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
+        $("#tab_22").removeClass("active");
+
+        $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
+        $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
+        $("#tab_23").removeClass("active");
+    }
+
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
     });

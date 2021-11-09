@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Net.Mail;
+using System.Configuration;
+
 
 namespace LaylaERP.Controllers
 {
@@ -97,9 +100,19 @@ namespace LaylaERP.Controllers
                 {
                     b_status = true;
                     if (model.fk_status == 6)
+                    {
+                        Session["ROPO"] = "PO3";
                         JSONstring = "Purchase Record has been Closed successfully!!";
-                    else
+                    }
+                    else if (model.fk_status == 5)
+                    {
+                        Session["ROPO"] = "PO2";
                         JSONstring = "Purchase Record has been Opened successfully!!";
+                    }
+                    else
+                    {
+                        Session["ROPO"] = "";
+                    }
                 }
                 else
                 {

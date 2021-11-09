@@ -20,7 +20,7 @@
     {
         public ActionResult Login()
         {
-
+            Session.RemoveAll();
             CommanUtilities.Provider.RemoveCurrent();
             return View();
         }

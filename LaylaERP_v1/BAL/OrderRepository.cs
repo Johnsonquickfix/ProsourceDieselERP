@@ -817,32 +817,29 @@
                     DataTable dtMeta = OrderRepository.GiftCardMetaItem(order_item_id);
                     if (dtMeta.Rows.Count > 0)
                     {
-                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["meta_value"]);
-                        int metaID = Convert.ToInt32(dtMeta.Rows[0]["meta_id"]);
+                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["amount"]);
+                        int gcid = Convert.ToInt32(dtMeta.Rows[0]["gc_id"]);
                         decimal RefundAmount = 0;
-                        if (model.NetTotal > metaAmount && metaAmount > 0 && model.NetTotal > 0)
+                        if (model.NetTotal > metaAmount && model.NetTotal > 0)
                         {
                             RefundAmount = metaAmount;
-
-                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", RefundAmount, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where order_item_id={1};", RefundAmount, order_item_id));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
-                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
-
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
                             SendGiftCardMailInvoice(order_item_id, RefundAmount);
                             model.NetTotal = model.NetTotal - metaAmount;
                         }
-                        else if (model.NetTotal > 0 && metaAmount > 0)
+                        else if (model.NetTotal < metaAmount && model.NetTotal > 0)
                         {
-                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", model.NetTotal, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where order_item_id={1};", model.NetTotal, order_item_id));
+                            RefundAmount = model.NetTotal;
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
-                               "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, model.NetTotal));
-
-                            SendGiftCardMailInvoice(order_item_id, model.NetTotal);
-                            model.NetTotal = model.NetTotal - model.NetTotal;
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
+                            SendGiftCardMailInvoice(order_item_id, RefundAmount);
+                            model.NetTotal = model.NetTotal - RefundAmount;
                         }
-                        else { strSql.Append(""); };
                     }
                 }
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
@@ -859,7 +856,7 @@
                 {
                     new SqlParameter("@OrderItemID", OrderItemID)
                 };
-                string strSQl = "Select * from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID and meta_key='amount';";
+                string strSQl = "Select * from wp_woocommerce_gc_activity where object_id=@OrderItemID and type='used';";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -971,6 +968,10 @@
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
                             + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
+                            + "(select distinct order_item_type FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type='gift_card') as IsGift,"
+                            + "(Select COALESCE(sum(amount),0)  from wp_woocommerce_gc_activity where type='refunded' and object_id in ( " 
+                            + "Select order_item_id from wp_woocommerce_order_items where order_id = @order_id and order_item_type = 'gift_card')) as GiftCardRefundedAmount,"
+                            + "(select Sum(isnull(cast(meta_value as float),0)) FROM wp_woocommerce_order_itemmeta where  meta_key='amount' and order_item_id in (select order_item_id FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type = 'gift_card')) as giftCardAmount,"
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " where os.id = @order_id "

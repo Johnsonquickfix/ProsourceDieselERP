@@ -834,7 +834,7 @@ function getOrderItemList(oid) {
                 giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '"" data-orderitemid="' + orderitemid + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
-                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + row.product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
                 giftcardHtml += '</a>';
                 giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
@@ -1156,7 +1156,17 @@ function ApplyGiftCard() {
                     let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
                     giftcardHtml += '<a href="javascript:void(0);">';
                     giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
-                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[0].code.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '</a>';
+                    giftcardHtml += '</li>';
+                    $('#billGiftCard').append(giftcardHtml);
+                }
+                else if (_total > 0 && data[0].giftcard_amount >= _total) {
+                    data[0].giftcard_amount = _total;
+                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
+                    giftcardHtml += '<a href="javascript:void(0);">';
+                    giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
                     giftcardHtml += '</a>';
                     giftcardHtml += '</li>';
                     $('#billGiftCard').append(giftcardHtml);
@@ -1169,6 +1179,40 @@ function ApplyGiftCard() {
         async: false
     });
     calcFinalTotals();
+}
+function deleteAllGiftCard(GiftCode) {
+    debugger
+    let gc_orderitemID = $('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid");
+    console.log(gc_orderitemID);
+   
+    if (gc_orderitemID != '0') {
+        let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
+        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST", url: '/Orders/DeleteGiftCard', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                        success: function (result) {
+                             //Remove Gift Card
+                            $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+                        async: false
+                    });
+                }
+            });
+        calcFinalTotals();
+    }
+    else if (GiftCode != '') {
+        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    //Remove Gift Card
+                    $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
+                    calcFinalTotals();
+                }
+            });
+    }
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {
@@ -1694,6 +1738,7 @@ function deleteAllCoupons(coupon_type) {
             });
     }
 }
+
 function freeQtyUpdate() {
     $("#order_line_items > tr.free_item").each(function (index, row) {
         let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;

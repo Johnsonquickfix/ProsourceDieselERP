@@ -6,7 +6,7 @@
     PoPartiallyColleps();
     PoClosureGridColleps();
 
-    if ($("#ROPOrder").val() == "PO2" || $("#hfstatus").val() == "5") {
+    if ($("#ROPOrder").val() == "PO2") {
         $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
         $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
         $("#tab_21").removeClass("active");
@@ -18,7 +18,7 @@
         $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
         $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
         $("#tab_23").removeClass("active");
-    } else if ($("#ROPOrder").val() == "PO3" || $("#hfstatus").val() == "6") {
+    } else if ($("#ROPOrder").val() == "PO3") {
         $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
         $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
         $("#tab_21").removeClass("active");

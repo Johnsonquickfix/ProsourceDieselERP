@@ -345,16 +345,19 @@ function podiumPaymentStatus(oid, podium_id, email) {
                     let status = response.data.status.toUpperCase();
                     if (status == 'PAID') {
                         let payment_uid = response.data.payments[0].uid, location_uid = response.data.location.uid, invoiceNumber = response.data.invoiceNumber;
-                        let order_note = 'Payment completed through Podium by ' + response.data.customerName + ' on ';
+                        let order_note = response.data.customerName;
+                        let _paystatus = [{ post_id: oid, meta_key: '_podium_payment_uid', meta_value: payment_uid }, { post_id: oid, meta_key: '_podium_location_uid', meta_value: location_uid }, 
+                            { post_id: oid, meta_key: '_podium_invoice_number', meta_value: invoiceNumber }, { post_id: oid, meta_key: '_podium_status', meta_value: 'PAID' }];
                         swal.queue([{
                             title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                             preConfirm: function () {
                                 return new Promise(function (resolve) {
-                                    let opt = { post_id: oid, payment_uid: payment_uid, location_uid: location_uid, invoice_number: invoiceNumber, order_note: order_note };
+                                    let opt = { order_id: oid, b_first_name: order_note, order_itemmetaXML: JSON.stringify(_paystatus) };
                                     $.post('/Orders/UpdatePodiumPaymentAccept', opt)
                                         .done(function (data) {
-                                            if (data.status) {
-                                                swal.insertQueueStep('Status updated successfully.'); order_Split(oid, email); $('#dtdata').DataTable().ajax.reload();
+                                            data = JSON.parse(data);
+                                            if (data[0].Response == "Success") {
+                                                swal.insertQueueStep('Status updated successfully.'); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
                                             }
                                             else { swal.insertQueueStep(data.message); }
                                             resolve();

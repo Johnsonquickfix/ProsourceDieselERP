@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide(); 
+    $("#loader").hide();
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -21,25 +21,25 @@
     AccountDataList(true);
     getGrandTotal(true);
     // Add event listener for opening and closing details 
-        $('#dtdataList tbody').on('click', '.pdetails-control', function () {
-            // console.log('svvvd');
-            var tr = $(this).closest('tr');
-            var row = $('#dtdataList').DataTable().row(tr);
-            if (row.child.isShown()) {
-                // This row is already open - close it
-                tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
-                row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Open this row
-                tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
-                row.child(formatPartially(row.data())).show();
-                tr.addClass('shown');
-                
-            }
-        });
+    $('#dtdataList tbody').on('click', '.pdetails-control', function () {
+        // console.log('svvvd');
+        var tr = $(this).closest('tr');
+        var row = $('#dtdataList').DataTable().row(tr);
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            row.child(formatPartially(row.data())).show();
+            tr.addClass('shown');
+
+        }
+    });
     $('#ddlVendor').change(function () {
-        $("#totaldebit").text('');$("#totalcredival").text('');$("#totalbalval").text('')
+        $("#totaldebit").text(''); $("#totalcredival").text(''); $("#totalbalval").text('')
         $("#loader").show();
         AccountDataList(true);
         getGrandTotal(true);
@@ -65,8 +65,8 @@ function AccountDataList(is_date) {
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
-    let obj = { strValue1: dfa, strValue2: urid};
-   // console.log(obj);
+    let obj = { strValue1: dfa, strValue2: urid };
+    // console.log(obj);
     $('#dtdataList').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
         language: {
@@ -94,15 +94,15 @@ function AccountDataList(is_date) {
             {
                 data: 'debit', title: 'Debit', sWidth: "8%", class: 'text-bold', render: function (data, type, row) {
                     var tprice = 'toFormat';
-                   if (data.toString() == "0.00")
-                       tprice = "";
-                   else
-                       tprice = '$' + data;
-                   return tprice
-               }
+                    if (data.toString() == "0.00")
+                        tprice = "";
+                    else
+                        tprice = '$' + data;
+                    return tprice
+                }
             },
             {
-                data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: function(data, type, row) {
+                data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "0.00")
                         tprice = "";
@@ -117,7 +117,7 @@ function AccountDataList(is_date) {
 }
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
-   // console.log(d);
+    // console.log(d);
     let is_date = true;
     let urid = $("#ddlVendor").val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -135,7 +135,7 @@ function formatPartially(d) {
             let account = 0;
             if (result.length == 0) { wrHTML += '<tbody class="line_items_' + d.rowid + '"><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
-                Totaldebit = row.totalDebit; Totalcredit = row.totalcredit; Totalbaolance = row.totalbal;account = row.inv_complete;
+                Totaldebit = row.totalDebit; Totalcredit = row.totalcredit; Totalbaolance = row.totalbal; account = row.inv_complete;
                 wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.inv_num + '</td>';
                 wrHTML += '<td style="width:5%; text-align:left;">' + row.code_journal + '</td>';
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.doc_date + '</td>';
@@ -149,9 +149,9 @@ function formatPartially(d) {
                     wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right credit-amount">' + '$' + row.credit + '</td></tr > ';
                 else
                     wrHTML += '<td style="width:10%; text-align:right;">' + '' + '</td></tr > ';
-            });             
+            });
             wrHTML += '<tfoot><tr><td colspan="5" style="width:10%; text-align:right;"><b> Total accounting account ' + account + ' : </<b></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">$' + Totaldebit +'</span></strong></td>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">$' + Totaldebit + '</span></strong></td>';
             wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalcredit">$' + Totalcredit + '</span></strong></td></tr>';
             wrHTML += '<tr><td colspan="5" style="width:10%; text-align:right;"><b> Balance : </<b></td>';
             wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalbailance">$' + Totalbaolance + '</span></strong></td>';
@@ -160,7 +160,7 @@ function formatPartially(d) {
         error: function (xhr, status, err) { alert(err); },
         complete: function () { }, async: false
     });
-    wrHTML += '</table>'; 
+    wrHTML += '</table>';
     return wrHTML;
 }
 function getGrandTotal(is_date) {

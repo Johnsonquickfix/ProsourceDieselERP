@@ -581,7 +581,7 @@ function saveCustomer() {
         }
         ajaxFunction('/Customer/NewUser/', obj, beforeSendFun, function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success', data.message, 'success');
                 $("#ddlUser").empty().append('<option value="' + data.id + '" selected>' + Email + '</option>');
                 if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
@@ -599,7 +599,7 @@ function saveCustomer() {
                 $('#txtbillphone').val(BillingPhone);
             }
             else {
-                swal('Alert!', data.message, 'error')
+                swal('Error', data.message, 'error')
             }
         }, completeFun, errorFun, false);
     }

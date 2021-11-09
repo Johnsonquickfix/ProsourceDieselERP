@@ -643,6 +643,11 @@
             addTabs({ id: '8', title: 'Orders History', close: true, url: '/Orders/OrdersHistory' + (order_type.length > 0 ? '?type=' + order_type : '?v=1.0.0'), urlType: 'none' });
             App.fixIframeCotent();
         }
+
+        function openCustomerPage(customer_type) {
+            addTabs({ id: '16', title: 'Manage Customers', close: true, url: '/Customer/Customer', urlType: 'none' });
+            App.fixIframeCotent();
+        }
     </script>
     <script>
     $(document).ready(function () {

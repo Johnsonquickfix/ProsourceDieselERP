@@ -22,6 +22,7 @@ namespace LaylaERP.Controllers
         public ActionResult NewReceiveOrder(long id = 0)
         {
             ViewBag.id = id;
+            Session["ROPO"] = "";
             return View();
         }
         public ActionResult Index()

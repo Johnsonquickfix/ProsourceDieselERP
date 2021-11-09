@@ -14,7 +14,7 @@ function ChartOfAccountGrid() {
                 scrollX: true,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'ID', title: 'Parent Account Code', sWidth: "10%" },
+                    { data: 'ID', title: 'Account Code', sWidth: "10%" },
                     { data: 'account_number', title: 'Account Number', sWidth: "10%", sType: 'numeric' },
                     //{ data: 'labelshort', title: 'Short label', sWidth: "10%" },
                     { data: 'label', title: 'Label', sWidth: "10%" },

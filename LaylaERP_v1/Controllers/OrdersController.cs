@@ -660,5 +660,25 @@
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
+
+        [HttpPost]
+        public JsonResult DeleteGiftCard(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "RGC", om.UserID, model.payment_method_title, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
     }
 }

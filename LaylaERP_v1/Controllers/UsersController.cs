@@ -487,7 +487,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult CityStateZip(clsUserDetails model)
         {
-
+           // model.country
                     int ID = UsersRepositry.ZipcodeByCity(model);
                     if (ID > 0)
                     {

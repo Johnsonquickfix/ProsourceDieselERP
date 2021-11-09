@@ -447,7 +447,8 @@
             string result = string.Empty;
             try
             {
-                DataTable dt = OrderRepository.OrderCounts();
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                DataTable dt = OrderRepository.OrderCounts(om.UserID);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

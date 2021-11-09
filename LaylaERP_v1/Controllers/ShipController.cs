@@ -37,6 +37,7 @@ namespace LaylaERP.Controllers
                     end_date = Request.QueryString["end_date"].ToString();
                     //end_date = end_date.Split('/')[1] + "/" + end_date.Split('/')[0] + "/" + end_date.Split('/')[2];
                 }
+                DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + action + "'");
                 if (action == "export")
                 {
                     DateTime s_date = DateTime.Today, e_date = DateTime.Today;
@@ -170,7 +171,8 @@ namespace LaylaERP.Controllers
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
                     //$order = wc_get_order( $order_number); 
                     str = jsonData;
-                    LogData(oname, tracking_number, carrier, str);
+                    DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + str + "'");
+                    //LogData(oname, tracking_number, carrier, str);
                     //$timestamp = current_time('timestamp'); 
                     //$shipstation_xml = file_get_contents('php://input'); 
 

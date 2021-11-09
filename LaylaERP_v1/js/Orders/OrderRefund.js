@@ -503,42 +503,51 @@ function saveCO() {
         success: function (data) {
             data = JSON.parse(data);
             if (data[0].Response == "Success") {
-                if (pay_gift == '') {
-                    if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
-                    else if (pay_by == 'podium') PodiumPaymentRefunds();
-                    else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
-                    else '';
-                }
-                else if (AvailableGiftCardAmount > 0 && pay_gift == 'gift_card') {
-                    if (AvailableGiftCardAmount == 0) {
+                let total = net_total - AvailableGiftCardAmount;
+                if ($('#netPaymentTotal').text() >= total) {
+                    if (pay_gift == '') {
+                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                        else if (pay_by == 'podium') PodiumPaymentRefunds();
+                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                        else '';
+                    }
+                    else if (AvailableGiftCardAmount > 0 && pay_gift == 'gift_card') {
+                        if (AvailableGiftCardAmount == 0) {
 
-                        $('.btnRefundOk').data('nettotal', total);
-                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
-                        else if (pay_by == 'podium') PodiumPaymentRefunds();
-                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                            $('.btnRefundOk').data('nettotal', total);
+                            if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                            else if (pay_by == 'podium') PodiumPaymentRefunds();
+                            else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                            else '';
+                        }
+                        else if (AvailableGiftCardAmount >= net_total) {
+                            $('#lblOrderNo').data('giftCardAmount', net_total);
+                            GiftCardPaymentRefunds();
+                        }
+                        else if (AvailableGiftCardAmount > 0 && AvailableGiftCardAmount < net_total) {
+
+                            $('#lblOrderNo').data('giftCardAmount', AvailableGiftCardAmount);
+                            GiftCardPaymentRefunds();
+                            //partial refund by gift card and gateway
+
+                            $('.btnRefundOk').data('nettotal', total);
+                            if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                            else if (pay_by == 'podium') PodiumPaymentRefunds();
+                            else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                            else '';
+
+                        }
                         else '';
                     }
-                    else if (AvailableGiftCardAmount >= net_total) {
-                        $('#lblOrderNo').data('giftCardAmount', net_total);
-                        GiftCardPaymentRefunds();
-                    }
-                    else if (AvailableGiftCardAmount > 0 && AvailableGiftCardAmount < net_total) {
-                        let total = net_total - AvailableGiftCardAmount;
-                        $('#lblOrderNo').data('giftCardAmount', AvailableGiftCardAmount);
-                        GiftCardPaymentRefunds();
-                        //partial refund by gift card and gateway
-                        $('.btnRefundOk').data('nettotal', total);
-                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
-                        else if (pay_by == 'podium') PodiumPaymentRefunds();
-                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
-                        else '';
-                    }
-                    else '';
+
+                    $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                    $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
+                    $('.billinfo').prop("disabled", true);
+                    swal('Success!', 'Order placed successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
                 }
-                $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
-                $('.billinfo').prop("disabled", true);
-                swal('Success!', 'Order placed successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                else {
+                    swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false;
+                }
             }
             else { swal('Error', data[0].Response, "error").then((result) => { return false; }); }
         },
@@ -657,7 +666,7 @@ function GiftCardPaymentRefunds() {
             $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
                 console.log('Gift Card ', response);
                 if (response.status) {
-                    swal('Alert!', 'Refund Amount Added in gift card successfully.', "success");
+                    swal('Success!', 'Refund Amount Added in gift card successfully.', "success");
                     getOrderNotesList(oid); getOrderInfo();
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });

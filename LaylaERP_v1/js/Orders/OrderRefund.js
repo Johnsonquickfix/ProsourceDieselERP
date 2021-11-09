@@ -503,8 +503,8 @@ function saveCO() {
         success: function (data) {
             data = JSON.parse(data);
             if (data[0].Response == "Success") {
-                let total = net_total - AvailableGiftCardAmount;
-                if ($('#netPaymentTotal').text() >= total) {
+                let totalPay = net_total - AvailableGiftCardAmount;
+                if ($('#netPaymentTotal').text() >= totalPay) {
                     if (pay_gift == '') {
                         if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
@@ -521,11 +521,12 @@ function saveCO() {
                             else '';
                         }
                         else if (AvailableGiftCardAmount >= net_total) {
+
                             $('#lblOrderNo').data('giftCardAmount', net_total);
                             GiftCardPaymentRefunds();
                         }
                         else if (AvailableGiftCardAmount > 0 && AvailableGiftCardAmount < net_total) {
-
+                            let total = net_total - AvailableGiftCardAmount;
                             $('#lblOrderNo').data('giftCardAmount', AvailableGiftCardAmount);
                             GiftCardPaymentRefunds();
                             //partial refund by gift card and gateway

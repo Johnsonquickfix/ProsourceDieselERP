@@ -820,7 +820,7 @@
                         int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["amount"]);
                         int gcid = Convert.ToInt32(dtMeta.Rows[0]["gc_id"]);
                         decimal RefundAmount = 0;
-                        if (model.NetTotal > metaAmount && model.NetTotal > 0)
+                        if (model.NetTotal >= metaAmount && model.NetTotal > 0)
                         {
                             RefundAmount = metaAmount;
                             strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));

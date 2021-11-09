@@ -984,6 +984,7 @@
     <Content Include="Views\Accounting\AccountJournal.cshtml" />
     <Content Include="Views\Accounting\AccountLedger.cshtml" />
     <Content Include="Views\Accounting\AccountLedgerList.cshtml" />
+    <Content Include="Views\Ship\CreateShipOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -601,51 +601,12 @@
             DataTable dt = new DataTable();
             try
             {
-                SqlParameter[] parameters = { };
-                string strSQl = "SELECT id,post_date,pm.meta_value podium_uid FROM wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_podium_uid'"
-                                + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY);"
-                                + " update wp_posts set post_status = 'wc-cancelnopay',post_modified_gmt = UTC_TIMESTAMP() WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified < DATE_SUB(now(), INTERVAL 3 DAY);"
-                                + " update wp_posts set post_status = 'wc-processing' WHERE post_status = 'wc-on-hold' AND post_type = 'shop_order'"
-                                + " and id in (select post_id from wp_postmeta pmu where pmu.meta_key = '_release_date' and REGEXP_REPLACE(pmu.meta_value,'[^0-9]+','') >= DATE_FORMAT(DATE_SUB(now(), INTERVAL 2 DAY), '%m%d%Y'))";
-                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+                SqlParameter[] parameters = { new SqlParameter("@flag", "POPLS") };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }
             return dt;
-        }
-        public static int UpdatePodiumStatus(OrderPodiumDetailsModel model)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                StringBuilder strSql = new StringBuilder();
-                ///step 1 : Update Podium payment receipt
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from ", model.post_id));
-                strSql.Append(string.Format("(select '_podium_payment_uid' meta_key,'{0}' meta_value union all select '_podium_location_uid' meta_key,'{1}' meta_value union all select '_podium_invoice_number' meta_key,'{2}' meta_value union all select '_podium_status' meta_key,'PAID' meta_value) tt ", model.payment_uid, model.location_uid, model.invoice_number));
-                strSql.Append(string.Format("where tt.meta_key not in (select meta_key from wp_postmeta where post_id = {0});", model.post_id));
-
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.payment_uid, model.post_id, "_podium_payment_uid"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.location_uid, model.post_id, "_podium_location_uid"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "PAID", model.post_id, "_podium_status"));
-                ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
-                ///step 3 : Add Order Note
-                strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
-                strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
-                ///step 4 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
-                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
-            }
-            catch { }
-            return result;
         }
         public static int UpdatePaypalStatus(OrderPostMetaModel model)
         {

@@ -9,8 +9,6 @@
     bindfileuploade();
 
 
-
-
     if ($("#hfstatus").val() == "5") {
         $(".btnpoclosed").show();
 
@@ -714,13 +712,13 @@ function updatepocloser() {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });
+                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });            
             }
             else {
                 swal('Error!', data.message, 'error')
             }
         },
-        complete: function () { $("#loader").hide(); },
+        complete: function () { $("#loader").hide();},
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     });
 }

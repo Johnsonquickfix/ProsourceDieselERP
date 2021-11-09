@@ -9,17 +9,18 @@ namespace LaylaERP.Models
     {
         public int AddNewCustomer(CustomerModel model)
         {
+            byte[] myimage = { 0X20 };
             try 
             {
-                string strsql = "insert into wp_users(user_login,user_nicename, user_email, user_registered, display_name, user_image)values(@user_login,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_users(user_login,user_nicename, user_email, user_registered, display_name, user_image)values(@user_login,@user_nicename, @user_email, @user_registered, @display_name, @user_image); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@user_login", model.user_nicename),
-                    new SqlParameter("@user_nicename", model.user_nicename),
-                    new SqlParameter("@user_email", model.user_email),
+                    new SqlParameter("@user_login", model.user_nicename ?? (object)DBNull.Value),
+                    new SqlParameter("@user_nicename", model.user_nicename ?? (object)DBNull.Value),
+                    new SqlParameter("@user_email", model.user_email ?? (object)DBNull.Value),
                     new SqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
-                    new SqlParameter("@display_name", model.user_nicename),
-                    new SqlParameter("@user_image", "None"),
+                    new SqlParameter("@display_name", model.user_nicename ?? (object)DBNull.Value),
+                    new SqlParameter("@user_image", myimage),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -34,11 +35,13 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "update wp_users set user_nicename=@user_nicename, user_email=@user_email where Id=" + userid + "";
+                string strsql = "update wp_users set user_nicename=@user_nicename, user_email=@user_email where Id=@id";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@user_nicename", model.user_nicename),
-                    new SqlParameter("@user_email", model.user_email),
+                    new SqlParameter("@flag", "U"),
+                    new SqlParameter("@id", userid),
+                    new SqlParameter("@user_nicename", model.user_nicename ?? (object)DBNull.Value),
+                    new SqlParameter("@user_email", model.user_email ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -52,12 +55,12 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value);";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -74,8 +77,8 @@ namespace LaylaERP.Models
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -88,12 +91,12 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value);";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -111,8 +114,8 @@ namespace LaylaERP.Models
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -125,12 +128,12 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value);";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -147,8 +150,8 @@ namespace LaylaERP.Models
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
-                    new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -199,16 +202,20 @@ namespace LaylaERP.Models
             try
             {
                 string strWhr = string.Empty;
-
+                /*
                 string strSql = "SELECT ur.ID,ur.user_nicename, ur.user_email,MAX( case when um.meta_key = 'first_name' THEN um.meta_value ELSE '' END) first_name," +
                     "MAX( case when um.meta_key = 'last_name' THEN um.meta_value ELSE '' END) last_name, MAX( case when um.meta_key = 'billing_address_1' THEN um.meta_value ELSE '' END) " +
                     "billing_address_1,MAX( case when um.meta_key = 'billing_address_2' THEN um.meta_value ELSE '' END) billing_address_2," +
                     "MAX( case when um.meta_key = 'billing_city' THEN um.meta_value ELSE '' END) billing_city,MAX( case when um.meta_key = 'billing_postcode' THEN um.meta_value ELSE '' END)" +
                     " billing_postcode,MAX( case when um.meta_key = 'billing_country' THEN um.meta_value ELSE '' END) billing_country,MAX( case when um.meta_key = 'billing_state' THEN um.meta_value ELSE '' END) " +
-                    "billing_state,MAX( case when um.meta_key = 'billing_phone' THEN um.meta_value ELSE '' END) billing_phone,StateFullName from wp_users ur INNER JOIN wp_usermeta um on ur.ID = um.user_id left JOIN wp_usermeta umstate on ur.ID = umstate.user_id and umstate.meta_key='billing_state' left JOIN ZIPCodes1 zip on zip.State = umstate.meta_value and umstate.meta_key = 'billing_state' " +
-                    "WHERE 1 = 1 and ur.id = '" +model.ID+"' GROUP BY ur.ID,ur.user_nicename, ur.user_email";
-                            
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                    "billing_state,MAX( case when um.meta_key = 'billing_phone' THEN um.meta_value ELSE '' END) billing_phone,zip.StateFullName from wp_users ur INNER JOIN wp_usermeta um on ur.ID = um.user_id left JOIN wp_usermeta umstate on ur.ID = umstate.user_id and umstate.meta_key='billing_state' left JOIN ZIPCodes1 zip on zip.State = umstate.meta_value and umstate.meta_key = 'billing_state' " +
+                    "WHERE 1 = 1 and ur.id = '" +model.ID+ "' GROUP BY ur.ID,ur.user_nicename, ur.user_email, zip.StateFullName"; */
+                SqlParameter[] param =
+                {
+                    new SqlParameter("@id", model.ID),
+                };
+                string strSql = "erp_getcustomerdetailsbyid";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, param);
                 dt = ds.Tables[0];
                
             }

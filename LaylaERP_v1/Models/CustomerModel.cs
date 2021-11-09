@@ -62,5 +62,6 @@ namespace LaylaERP.Models
         public long user_id { get; set; }
         public string Search { get; set; }
         public string strVal { get; set; }
+        public byte[] myimage { get; set; }
     }
 }

@@ -347,9 +347,9 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                      new SqlParameter("@rowid", model.rowid),
-                    new SqlParameter("@fk_shipping_method", model.ShippingMethodID),
-                    new SqlParameter("@ShippingRate", model.ShippingRate),
-                    new SqlParameter("@ShippingLocation", model.ShippingLocation),
+                    new SqlParameter("@fk_shipping_method", model.ShippingMethodID ),
+                    new SqlParameter("@ShippingRate", model.ShippingRate ),
+                    new SqlParameter("@ShippingLocation", model.ShippingLocation ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -369,9 +369,9 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@TaxMethod", model.TaxMethod),
                     new SqlParameter("@DefaultTax", model.DefaultTax),
-                    new SqlParameter("@ShippingTax", model.ShippingTax),
+                    new SqlParameter("@ShippingTax", model.ShippingTax  ?? (object)DBNull.Value),
                     new SqlParameter("@ShippingTaxIncludedinprice", model.ShippingTaxIncludedinprice),
-                    new SqlParameter("@CalculatedTax", model.CalculatedTax),
+                    new SqlParameter("@CalculatedTax", model.CalculatedTax  ?? (object)DBNull.Value),
                     new SqlParameter("@TaxIncludedinPrice", model.TaxIncludedinPrice),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

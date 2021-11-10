@@ -1562,9 +1562,9 @@ function InvoiceGrid() {
                 'data': 'StatusID', sWidth: "10%", title: 'PO/Invoice No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
                     if (id == 1)
-                        return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.ref + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                        return '' + full.ref + ' <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     else  
-                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.refordervendor + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '' + full.refordervendor + ' <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },

@@ -485,7 +485,7 @@ function BankEntriesList() {
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -503,13 +503,38 @@ function BankEntriesList() {
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            console.log(data);
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            var DebitTotal = api.column(7).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            var CreditTotal = api.column(8).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            $(api.column(0).footer()).html('Page Total');
+            $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
+            $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
+            console.log(DebitTotal);
+            console.log(CreditTotal);
+        },
+
         sAjaxSource: "/Bank/BankEntriesList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             aoData.push({ name: "strValue2", value: ID });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "paymenttype" : oSettings.aaSorting[0][0] == 2 ? "thirdparty" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "operation_date" : oSettings.aaSorting[0][0] == 2 ? "value_date" : oSettings.aaSorting[0][0] == 3 ? "paymenttype" : oSettings.aaSorting[0][0] == 4 ? "num_payment" : oSettings.aaSorting[0][0] == 5 ? "vendor" : oSettings.aaSorting[0][0] == 6 ? "bankaccount" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : "id";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({
@@ -521,14 +546,15 @@ function BankEntriesList() {
             });
         },
         aoColumns: [
-            { data: 'id', title: 'Ref', sWidth: "5%" },
-            { data: 'datep', title: 'Date', sWidth: "5%" },
+            { data: 'id', title: 'Ref', sWidth: "10%" },
+            { data: 'operation_date', title: 'Operation Date', sWidth: "10%" },
+            { data: 'value_date', title: 'Value Date', sWidth: "10%" },
             { data: 'paymenttype', title: 'Payment Type', sWidth: "10%" },
             { data: 'num_payment', title: 'Number', sWidth: "10%" },
-            { data: 'thirdparty', title: 'Third Party', sWidth: "10%" },
+            { data: 'vendor', title: 'Vendor Name', sWidth: "10%" },
             { data: 'bankaccount', title: 'Bank Account', sWidth: "10%" },
-            { data: 'credit', title: 'Credit', sWidth: "15%" },
-            { data: 'debit', title: 'Debit', sWidth: "10%" },
+            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
         ]
     });
 }

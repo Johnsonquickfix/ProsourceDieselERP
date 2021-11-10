@@ -169,9 +169,11 @@ namespace LaylaERP.Controllers
                         carrier = Request.QueryString["carrier"].ToString();
                     }
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                    System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+                    xmlDoc.LoadXml(jsonData);
                     //$order = wc_get_order( $order_number); 
-                    str = jsonData;
-                    DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + str + "'");
+                    str = string.Format("insert into shipped_track (order_id,order_name,shipped_items,tracking_num,tracking_via,ship_date) VALUES ('{0}','{1}','{2}','{3}','{4}',convert(varchar(11),GETUTCDATE(),0)", order_number, oname, "items", tracking_number, carrier);
+                    DAL.SQLHelper.ExecuteNonQueryWithTrans(str + ";insert into db_log select getdate(),'" + jsonData + "'");
                     //LogData(oname, tracking_number, carrier, str);
                     //$timestamp = current_time('timestamp'); 
                     //$shipstation_xml = file_get_contents('php://input'); 

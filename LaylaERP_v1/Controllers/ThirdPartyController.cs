@@ -89,6 +89,15 @@ namespace LaylaERP.Controllers
                     int ID = new ThirdPartyRepository().AddVendorPaymentTerms(model);
                     if (ID > 0)
                     {
+                        int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
+                        if (id != model.rowid)
+                        {
+                          new ThirdPartyRepository().AddPaymentMethods(model);
+                        }
+                        else
+                        {
+                            new ThirdPartyRepository().EditPaymentMethods(model);
+                        }
                         return Json(new { status = true, message = "Vendor Payment terms has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
@@ -171,37 +180,37 @@ namespace LaylaERP.Controllers
                     return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
         }
-        public JsonResult AddPaymentMethods(ThirdPartyModel model)
-        {
+        //public JsonResult AddPaymentMethods(ThirdPartyModel model)
+        //{
             
-                if (model.rowid > 0)
-                {
-                    int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
-                    if (id != model.rowid)
-                    {
-                        int ID = new ThirdPartyRepository().AddPaymentMethods(model);
-                        if (ID > 0)
-                        {
-                            return Json(new { status = true, message = "Vendor Details has been saved successfully!!", url = "", id = ID }, 0);
-                        }
-                        else
-                        {
-                            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                        }
-                    }
-                    else
-                    {
-                        int ID = new ThirdPartyRepository().EditPaymentMethods(model);
-                        return Json(new { status = true, message = "Vendor Details has been updated successfully!!", url = "", id = ID }, 0);
-                    }
-                }
-                else
-                {
-                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
-                }
+        //        if (model.rowid > 0)
+        //        {
+        //            int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
+        //            if (id != model.rowid)
+        //            {
+        //                int ID = new ThirdPartyRepository().AddPaymentMethods(model);
+        //                if (ID > 0)
+        //                {
+        //                    return Json(new { status = true, message = "Vendor Details has been saved successfully!!", url = "", id = ID }, 0);
+        //                }
+        //                else
+        //                {
+        //                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                int ID = new ThirdPartyRepository().EditPaymentMethods(model);
+        //                return Json(new { status = true, message = "Vendor Details has been updated successfully!!", url = "", id = ID }, 0);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+        //        }
             
-            //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-        }
+        //    //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        //}
         public JsonResult AddContacts(ThirdPartyModel model)
         {
                 if (model.rowid > 0)

@@ -66,6 +66,12 @@ function PaymentMethodBlock(PaymentMethod) {
         $("#pay_strd").css("display", "none");
         $("#pay_invoice").css("display", "none");
     }
+    if (PaymentMethod == "2") {
+        $("#cheq_payment").css("display", "none");
+        $("#bnk_details").css("display", "none");
+        $("#pay_invoice").css("display", "none");
+        $("#pay_strd").css("display", "none");
+    }
     if (PaymentMethod == "3") {
         $("#cheq_payment").css("display", "block");
         $("#bnk_details").css("display", "none");
@@ -189,34 +195,42 @@ $('#btnNextTab2').click(function (e) {
 });
 $('#btnNextTab3').click(function (e) {
     ID = $("#hfid").val();
-    Capital = $("#txtCapital").val();
-    PaymentTerms = $("#ddlPaymentTerms").val();
-    Balancedays = $("#ddlBalancedays").val();
-    IncoTermType = $("#ddlIncoTerm").val();
-    IncoTerm = $("#txtIncoTerm").val();
-    //PaymentType = $("#ddlPaymentType").val();
-    Currency = $("#ddlCurrency").val();
-    CreditLimit = $("#txtCreditLimit").val();
-    OutStandingLimit = $("#txtOutStandingLimit").val();
-    MinOrderQty = $("#txtMinOrderQty").val();
-    OrderMinAmt = $("#txtOrderMinAmt").val();
+    Capital = $("#txtCapital").val(); PaymentTerms = $("#ddlPaymentTerms").val(); Balancedays = $("#ddlBalancedays").val();
+    IncoTermType = $("#ddlIncoTerm").val(); IncoTerm = $("#txtIncoTerm").val(); //PaymentType = $("#ddlPaymentType").val();
+    Currency = $("#ddlCurrency").val(); CreditLimit = $("#txtCreditLimit").val(); OutStandingLimit = $("#txtOutStandingLimit").val();
+    MinOrderQty = $("#txtMinOrderQty").val(); OrderMinAmt = $("#txtOrderMinAmt").val(); 
+     // payment method - bank details, paypal and cash
+    PaymentMethod = $("#ddlPaymentMethod").val(); BankAccountName = $("#txtBankAccountName").val(); BankAccountNumber = $("#txtBankAccountNumber").val();
+    BankName = $("#txtBankName").val(); BankRoutingNumber = $("#txtBankRoutingNumber").val(); BankIBAN = $("#txtBankIBAN").val();
+    BankSwift = $("#txtBankSwift").val();
+    // check details
+    ChequeTitle = $("#txtChequeTitle").val(); ChequeDescription = $("#txtChequeDescription").val(); ChequeInstructions = $("#txtChequeInstructions").val();
+    // Paypal Invoice
+    PPInvoiceAPIUsername = $("#txtPPInvoiceAPIUsername").val(); PPInvoiceAPIPassword = $("#txtPPInvoiceAPIPassword").val(); PPInvoiceAPISignature = $("#txtPPInvoiceAPISignature").val();
+    // Paypal Standard
+    PaypalTitle = $("#txtPaypalTitle").val(); PaypalDescription = $("#txtPaypalDescription").val(); PaypalEmail = $("#txtPaypalEmail").val();
+    PaypalProduction = $("#chkPaypalProduction").prop("checked") ? 1 : 0; PaypalIPNEmailNotification = $("#txtPaypalIPNEmailNotification").val();
+    PaypalReceiverEmail = $("#txtPaypalReceiverEmail").val(); PaypalIdentitytoken = $("#txtPaypalIdentitytoken").val(); PaypalPaymentAction = $("#ddlPaypalPaymentAction").val(); 
+    PaypalAPIUserName = $("#txtPaypalAPIUserName").val(); PaypalAPIPassword = $("#txtPaypalAPIPassword").val(); PaypalAPISignature = $("#txtPaypalAPISignature").val();
 
     if (PaymentTerms == "-1") { swal('alert', 'Please Select Payment Terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
     else if (Balancedays == "-1") { swal('alert', 'Please Select Balance Net', 'error').then(function () { swal.close(); $('#ddlBalancedays').focus(); }) }
-    //else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
-    //else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
-    //else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
-    //else if (Currency == "-1") { swal('alert', 'Please Select Currency', 'error').then(function () { swal.close(); $('#ddlCurrency').focus(); }) }
-    //else if (CreditLimit == "") { swal('alert', 'Please Enter Credit Limit', 'error').then(function () { swal.close(); $('#txtCreditLimit').focus(); }) }
-    //else if (OutStandingLimit == "") { swal('alert', 'Please Enter OutStanding Limit', 'error').then(function () { swal.close(); $('#txtOutStandingLimit').focus(); }) }
-    //else if (MinOrderQty == "") { swal('alert', 'Please Enter Minimum Order Quantity', 'error').then(function () { swal.close(); $('#txtMinOrderQty').focus(); }) }
-    //else if (OrderMinAmt == "") { swal('alert', 'Please Enter Order Min Amount', 'error').then(function () { swal.close(); $('#txtOrderMinAmt').focus(); }) }
-
+   
     else {
         var obj = {
-            rowid: ID, Capital: Capital, PaymentTermsID: PaymentTerms, BalanceID: Balancedays,
-            IncotermsType: IncoTermType, Incoterms: IncoTerm, Currency: Currency, CreditLimit: CreditLimit,
-            outstanding_limit: OutStandingLimit, MinimumOrderQuanity: MinOrderQty, order_min_amount: OrderMinAmt,
+            rowid: ID, Capital: Capital, PaymentTermsID: PaymentTerms, BalanceID: Balancedays, IncotermsType: IncoTermType, Incoterms: IncoTerm,
+            Currency: Currency, CreditLimit: CreditLimit, outstanding_limit: OutStandingLimit, MinimumOrderQuanity: MinOrderQty, order_min_amount: OrderMinAmt,
+            // payment method - bank details, paypal and cash
+            Paymentmethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
+            BankName: BankName, BankRoutingNumber: BankRoutingNumber, BankIBAN: BankIBAN, BankSwift: BankSwift,
+            // check details
+            ChequeTitle: ChequeTitle, ChequeDescription: ChequeDescription, ChequeInstructions: ChequeInstructions,
+            //Paypal Invoice
+            PaypalInvoiceAPIUsername: PPInvoiceAPIUsername, PaypalInvoiceAPIPassword: PPInvoiceAPIPassword, PaypalInvoiceAPISignature: PPInvoiceAPISignature,
+            //Paypal standard
+            PaypalTitle: PaypalTitle, PaypalDescription: PaypalDescription, PaypalEmail: PaypalEmail, PaypalProduction: PaypalProduction, PaypalIPNEmailNotification: PaypalIPNEmailNotification,
+            PaypalReceiverEmail: PaypalReceiverEmail, PaypalIdentitytoken: PaypalIdentitytoken, PaypalPaymentAction: PaypalPaymentAction, PaypalAPIUserName: PaypalAPIUserName,
+            PaypalAPIPassword: PaypalAPIPassword, PaypalAPISignature: PaypalAPISignature,
         }
         $.ajax({
             url: '/ThirdParty/AddVendorPaymentTerms/', dataType: 'json', type: 'Post',
@@ -462,114 +476,114 @@ $('#btnNextTab6').click(function (e) {
     })
 
 });
+//$('#btnNextTab7').click(function (e) {
+//    ID = $("#hfid").val();
+//    PaymentMethod = $("#ddlPaymentMethod").val();
+//    BankAccountName = $("#txtBankAccountName").val();
+//    BankAccountNumber = $("#txtBankAccountNumber").val();
+//    BankName = $("#txtBankName").val();
+//    BankRoutingNumber = $("#txtBankRoutingNumber").val();
+//    BankIBAN = $("#txtBankIBAN").val();
+//    BankSwift = $("#txtBankSwift").val();
+
+//    ChequeTitle = $("#txtChequeTitle").val();
+//    ChequeDescription = $("#txtChequeDescription").val();
+//    ChequeInstructions = $("#txtChequeInstructions").val();
+
+//    PPInvoiceAPIUsername = $("#txtPPInvoiceAPIUsername").val();
+//    PPInvoiceAPIPassword = $("#txtPPInvoiceAPIPassword").val();
+//    PPInvoiceAPISignature = $("#txtPPInvoiceAPISignature").val();
+
+//    PaypalTitle = $("#txtPaypalTitle").val();
+//    PaypalDescription = $("#txtPaypalDescription").val();
+//    PaypalEmail = $("#txtPaypalEmail").val();
+//    PaypalProduction = $("#chkPaypalProduction").prop("checked") ? 1 : 0;
+//    PaypalIPNEmailNotification = $("#txtPaypalIPNEmailNotification").val();
+//    PaypalReceiverEmail = $("#txtPaypalReceiverEmail").val();
+//    PaypalIdentitytoken = $("#txtPaypalIdentitytoken").val();
+//    PaypalPaymentAction = $("#ddlPaypalPaymentAction").val();
+//    PaypalAPIUserName = $("#txtPaypalAPIUserName").val();
+//    PaypalAPIPassword = $("#txtPaypalAPIPassword").val();
+//    PaypalAPISignature = $("#txtPaypalAPISignature").val();
+
+
+//    //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+//    //if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please Enter Bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please Enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please Enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
+
+//    //else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
+//    //else if (PaymentMethod == "3" && ChequeDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtChequeDescription').focus(); }) }
+//    //else if (PaymentMethod == "3" && ChequeInstructions == "") { swal('alert', 'Please Enter Instructions', 'error').then(function () { swal.close(); $('#txtChequeInstructions').focus(); }) }
+
+//    //else if (PaymentMethod == "6" && PPInvoiceAPIUsername == "") { swal('alert', 'Please Enter Paypal Invoice User Name', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIUsername').focus(); }) }
+//    //else if (PaymentMethod == "6" && PPInvoiceAPIPassword == "") { swal('alert', 'Please Enter Paypal Invoice Password', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIPassword').focus(); }) }
+//    //else if (PaymentMethod == "6" && PPInvoiceAPISignature == "") { swal('alert', 'Please Enter Paypal Invoice Signature', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPISignature').focus(); }) }
+
+//    //else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+//    //else if (PaymentMethod == "7" && !pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+//    //else if (PaymentMethod == "7" && !pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+//    //else if (PaymentMethod == "7" && !pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalAPIPassword == "") { swal('alert', 'Please Enter Paypal Password', 'error').then(function () { swal.close(); $('#txtPaypalAPIPassword').focus(); }) }
+//    //else if (PaymentMethod == "7" && PaypalAPISignature == "") { swal('alert', 'Please Enter Paypal Signature', 'error').then(function () { swal.close(); $('#txtPaypalAPISignature').focus(); }) }
+
+//    //else { }
+
+//    var obj = {
+//        rowid: ID, Paymentmethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
+//        BankName: BankName, BankRoutingNumber: BankRoutingNumber, BankIBAN: BankIBAN, BankSwift: BankSwift,
+//        ChequeTitle: ChequeTitle, ChequeDescription: ChequeDescription, ChequeInstructions: ChequeInstructions,
+//        PaypalInvoiceAPIUsername: PPInvoiceAPIUsername, PaypalInvoiceAPIPassword: PPInvoiceAPIPassword, PaypalInvoiceAPISignature: PPInvoiceAPISignature,
+//        PaypalTitle: PaypalTitle, PaypalDescription: PaypalDescription, PaypalEmail: PaypalEmail, PaypalProduction: PaypalProduction, PaypalIPNEmailNotification: PaypalIPNEmailNotification,
+//        PaypalReceiverEmail: PaypalReceiverEmail, PaypalIdentitytoken: PaypalIdentitytoken, PaypalPaymentAction: PaypalPaymentAction, PaypalAPIUserName: PaypalAPIUserName,
+//        PaypalAPIPassword: PaypalAPIPassword, PaypalAPISignature: PaypalAPISignature,
+//    }
+//    $.ajax({
+//        url: '/ThirdParty/AddPaymentMethods/', dataType: 'json', type: 'Post',
+//        contentType: "application/json; charset=utf-8",
+//        data: JSON.stringify(obj),
+//        dataType: "json",
+//        beforeSend: function () {
+//            $("#loader").show();
+//        },
+//        success: function (data) {
+//            if (data.status == true) {
+//                //swal('Alert!', data.message, 'success');
+//                var link = $('#mytabs .active').next().children('a').attr('href');
+//                $('#mytabs a[href="' + link + '"]').tab('show');
+//            }
+//            else {
+//                swal('Alert!', data.message, 'error')
+//            }
+//        },
+//        complete: function () {
+//            $("#loader").hide();
+//        },
+//        error: function (error) {
+//            swal('Error!', 'something went wrong', 'error');
+//        },
+//    })
+//});
 $('#btnNextTab7').click(function (e) {
-    ID = $("#hfid").val();
-    PaymentMethod = $("#ddlPaymentMethod").val();
-    BankAccountName = $("#txtBankAccountName").val();
-    BankAccountNumber = $("#txtBankAccountNumber").val();
-    BankName = $("#txtBankName").val();
-    BankRoutingNumber = $("#txtBankRoutingNumber").val();
-    BankIBAN = $("#txtBankIBAN").val();
-    BankSwift = $("#txtBankSwift").val();
-
-    ChequeTitle = $("#txtChequeTitle").val();
-    ChequeDescription = $("#txtChequeDescription").val();
-    ChequeInstructions = $("#txtChequeInstructions").val();
-
-    PPInvoiceAPIUsername = $("#txtPPInvoiceAPIUsername").val();
-    PPInvoiceAPIPassword = $("#txtPPInvoiceAPIPassword").val();
-    PPInvoiceAPISignature = $("#txtPPInvoiceAPISignature").val();
-
-    PaypalTitle = $("#txtPaypalTitle").val();
-    PaypalDescription = $("#txtPaypalDescription").val();
-    PaypalEmail = $("#txtPaypalEmail").val();
-    PaypalProduction = $("#chkPaypalProduction").prop("checked") ? 1 : 0;
-    PaypalIPNEmailNotification = $("#txtPaypalIPNEmailNotification").val();
-    PaypalReceiverEmail = $("#txtPaypalReceiverEmail").val();
-    PaypalIdentitytoken = $("#txtPaypalIdentitytoken").val();
-    PaypalPaymentAction = $("#ddlPaypalPaymentAction").val();
-    PaypalAPIUserName = $("#txtPaypalAPIUserName").val();
-    PaypalAPIPassword = $("#txtPaypalAPIPassword").val();
-    PaypalAPISignature = $("#txtPaypalAPISignature").val();
-
-
-    //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    //if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
-    //else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
-    //else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
-    //else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please Enter Bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
-    //else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
-    //else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please Enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
-    //else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please Enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
-
-    //else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
-    //else if (PaymentMethod == "3" && ChequeDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtChequeDescription').focus(); }) }
-    //else if (PaymentMethod == "3" && ChequeInstructions == "") { swal('alert', 'Please Enter Instructions', 'error').then(function () { swal.close(); $('#txtChequeInstructions').focus(); }) }
-
-    //else if (PaymentMethod == "6" && PPInvoiceAPIUsername == "") { swal('alert', 'Please Enter Paypal Invoice User Name', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIUsername').focus(); }) }
-    //else if (PaymentMethod == "6" && PPInvoiceAPIPassword == "") { swal('alert', 'Please Enter Paypal Invoice Password', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIPassword').focus(); }) }
-    //else if (PaymentMethod == "6" && PPInvoiceAPISignature == "") { swal('alert', 'Please Enter Paypal Invoice Signature', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPISignature').focus(); }) }
-
-    //else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
-    //else if (PaymentMethod == "7" && !pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
-    //else if (PaymentMethod == "7" && !pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
-    //else if (PaymentMethod == "7" && !pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalAPIPassword == "") { swal('alert', 'Please Enter Paypal Password', 'error').then(function () { swal.close(); $('#txtPaypalAPIPassword').focus(); }) }
-    //else if (PaymentMethod == "7" && PaypalAPISignature == "") { swal('alert', 'Please Enter Paypal Signature', 'error').then(function () { swal.close(); $('#txtPaypalAPISignature').focus(); }) }
-
-    //else { }
-
-    var obj = {
-        rowid: ID, Paymentmethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
-        BankName: BankName, BankRoutingNumber: BankRoutingNumber, BankIBAN: BankIBAN, BankSwift: BankSwift,
-        ChequeTitle: ChequeTitle, ChequeDescription: ChequeDescription, ChequeInstructions: ChequeInstructions,
-        PaypalInvoiceAPIUsername: PPInvoiceAPIUsername, PaypalInvoiceAPIPassword: PPInvoiceAPIPassword, PaypalInvoiceAPISignature: PPInvoiceAPISignature,
-        PaypalTitle: PaypalTitle, PaypalDescription: PaypalDescription, PaypalEmail: PaypalEmail, PaypalProduction: PaypalProduction, PaypalIPNEmailNotification: PaypalIPNEmailNotification,
-        PaypalReceiverEmail: PaypalReceiverEmail, PaypalIdentitytoken: PaypalIdentitytoken, PaypalPaymentAction: PaypalPaymentAction, PaypalAPIUserName: PaypalAPIUserName,
-        PaypalAPIPassword: PaypalAPIPassword, PaypalAPISignature: PaypalAPISignature,
-    }
-    $.ajax({
-        url: '/ThirdParty/AddPaymentMethods/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () {
-            $("#loader").show();
-        },
-        success: function (data) {
-            if (data.status == true) {
-                //swal('Alert!', data.message, 'success');
-                var link = $('#mytabs .active').next().children('a').attr('href');
-                $('#mytabs a[href="' + link + '"]').tab('show');
-            }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () {
-            $("#loader").hide();
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
 });
 $('#btnNextTab8').click(function (e) {
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');
 });
 $('#btnNextTab9').click(function (e) {
-    var link = $('#mytabs .active').next().children('a').attr('href');
-    $('#mytabs a[href="' + link + '"]').tab('show');
-});
-$('#btnNextTab10').click(function (e) {
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');
 });

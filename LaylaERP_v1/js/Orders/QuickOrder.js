@@ -113,7 +113,8 @@
     $("#billModal").on("click", "#btnBackSearchCusrtomer", function (t) {
         t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
-    $("#billModal").on("blur", "#ddlCusBillingCountry,#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
+    $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
+    $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -1184,7 +1185,7 @@ function deleteAllGiftCard(GiftCode) {
     debugger
     let gc_orderitemID = $('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid");
     console.log(gc_orderitemID);
-   
+
     if (gc_orderitemID != '0') {
         let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
         swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
@@ -1193,7 +1194,7 @@ function deleteAllGiftCard(GiftCode) {
                     $.ajax({
                         type: "POST", url: '/Orders/DeleteGiftCard', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
                         success: function (result) {
-                             //Remove Gift Card
+                            //Remove Gift Card
                             $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },

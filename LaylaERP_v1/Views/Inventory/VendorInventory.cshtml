@@ -25,22 +25,21 @@
         <div class="box box-primary user-top-section">
             <div class="box-header with-border">
                 <div class="row">
-                    <div class="col-md-9">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label class="control-label " for="VendorList">Vendors</label>
-                                <select class="form-control select2" id="ddlVendorList"></select>
-                            </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label " for="VendorList">Vendors</label>
+                            <select class="form-control select2" id="ddlVendorList"></select>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label class="control-label " for="WareHouseList">WareHouses</label>
-                                <select class="form-control select2" id="ddlWareHouseList"></select>
-                            </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label " for="WareHouseList">WareHouses</label>
+                            <select class="form-control select2" id="ddlWareHouseList"></select>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
  </div>
 
@@ -61,7 +60,7 @@
             </table>
         </div>
     </div>
-        </div>
+      
         <script src="@Url.Content("~/js/Inventory/VendorInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 

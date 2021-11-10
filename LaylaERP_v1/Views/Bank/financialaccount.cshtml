@@ -21,8 +21,8 @@
             <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Bank account</span></a></li>
             <li><a href="#tab_2" data-toggle="tab"><span title="Bank Entries" data-placement="bottom" data-toggle="tooltip">Bank Entries</span></a></li>
             <li><a href="#tab_3" data-toggle="tab"><span title="Entries" data-placement="bottom" data-toggle="tooltip">Entries</span></a></li>
-        @*<li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
-        <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
+            @*<li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+                <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
             <li><a href="#tab_7" data-toggle="tab"><span title="Linked Files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
         </ul>
         <div class="tab-content">
@@ -51,7 +51,7 @@
 
                 <div class="row" style="background-color:white">
                     <div class="col-md-4">
-                        <input type="hidden" id="hfid" value="@ViewBag.id"/>
+                        <input type="hidden" id="hfid" value="@ViewBag.id" />
                         <div class="form-group">
                             <label for="bankcash">Bank or Cash Label</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankcashlabel" placeholder="Enter Bank or Cash Label">
@@ -183,7 +183,7 @@
                             </select>
                         </div>
 
-                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Update" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>                        
+                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Update" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
                     </div>
 
 
@@ -214,37 +214,42 @@
                             </div>
                         </div>
                     </div>*@
-                    <div class="row rowbox proposal-row">
-                        <div class="col-md-12">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <div class="table-responsive bank-table-wrapper">
-                                        <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Ref</th>
-                                                    <th>Date</th>
-                                                    <th>Payment Type</th>
-                                                    <th>Number</th>
-                                                    <th>Third Party</th>
-                                                    <th>Bank Account</th>
-                                                    <th>Credit</th>
-                                                    <th>Debit</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="table-responsive bank-table-wrapper">
+                                    <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Ref</th>
+                                                <th>Oper. Date</th>
+                                                <th>Vaue Date</th>
+                                                <th>Payment Type</th>
+                                                <th>Number</th>
+                                                <th>Vendor</th>
+                                                <th>Bank Account</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot align="right">
+                                            <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
             <div class="tab-pane" id="tab_3">
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div class="table-responsive bank-table-wrapper"><br />
+                                <div class="table-responsive bank-table-wrapper">
+                                    <br />
                                     <table id="entries" class="table-blue table check-table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -304,7 +309,7 @@
                             <div class="box-body">
                                 <div class="mb-35">
                                     <label class="control-label">Attached files and documents</label>
-                                    
+
                                     <div class="table-responsive bank-table-wrapper">
                                         <table id="LinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
                                             <thead>
@@ -377,16 +382,16 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         GetAccountByID(id);
-        
+
         $(document).on('click', "#btnSave", function () {
             UpdateBankAccount();
         });
-        
+
         $(".select2").select2();
         //getAccountingAccount();
         setTimeout(function () { $(".select2").select2(); }, 2000);
         //$(".select2").select2();
-        
+
     });
 </script>
 
@@ -433,7 +438,7 @@
                         $("#txtcurrency").val(d[0].currency_code);
 
                         BankLinkedFiles();
-                        
+
                     }
                 },
                 error: function (msg) {

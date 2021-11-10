@@ -1516,7 +1516,8 @@ function InvoiceGrid() {
     let VendorID = $("#hfid").val();
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }],
+        order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -1540,7 +1541,7 @@ function InvoiceGrid() {
             aoData.push({ name: "strValue2", value: VendorID });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 1 ? "date_livraison" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
+                var col = oSettings.aaSorting[0][0] == 1 ? "refordervendor" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({

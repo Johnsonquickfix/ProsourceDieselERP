@@ -21,6 +21,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult VendorInventory()
+        {
+            return View();
+        }
         public JsonResult GetVarientList(InventoryModel model)
         {
             string result = string.Empty;
@@ -151,6 +155,39 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public JsonResult GetWarehouseInventory(int getwarehouseid)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetProductWarehouse(getwarehouseid);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetVendorList(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.GetVendorList();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetWareHouseList(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.GetWareHouseList(model.strValue1);
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Warehouse"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
         }
     }
 }

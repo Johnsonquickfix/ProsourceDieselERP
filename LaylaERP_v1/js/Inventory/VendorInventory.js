@@ -1,10 +1,48 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $(".select2").select2();
+    getVendorList();
+})
+$('#ddlVendorList').change(function () {
+    getWareHouseList();
+})
+$('#ddlWareHouseList').change(function () {
     ProductWarehouseGrid();
 })
+function getVendorList() {
+    $.ajax({
+        url: "/Inventory/GetVendorList",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Vendor</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlVendorList').html(opt);
+        }
 
+    });
+}
+function getWareHouseList() {
+    let vendorID = $('#ddlVendorList').val();
+    console.log(vendorID);
+    var obj = { strValue1: vendorID }
+    $.ajax({
+        url: "/Inventory/GetWareHouseList",
+        method: 'post', contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var opt = '<option value="0">Please Select WareHouse</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlWareHouseList').html(opt);
+        }
+
+    });
+}
 function ProductWarehouseGrid() {
-    var id = $("#hfid").val();
+    var id = $('#ddlWareHouseList').val();
     var obj = { getwarehouseid: id }
     $.ajax({
         url: '/Warehouse/GetProductWarehouse',

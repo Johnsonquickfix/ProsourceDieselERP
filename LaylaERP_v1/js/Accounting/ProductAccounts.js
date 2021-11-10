@@ -138,7 +138,7 @@ function Singlecheck() {
 
 
 $('#btnSaveProductAccount').click(function () {
-    debugger
+
     var Productid = "";
     var optType = $('input[name="accounting_product_mode"]:checked').val();
     var account = "";

@@ -169,16 +169,16 @@ namespace LaylaERP.BAL
                     "Currency = @Currency,CreditLimit = @CreditLimit,outstanding_limit = @outstanding_limit,MinimumOrderQuanity = @MinimumOrderQuanity,order_min_amount = @order_min_amount where rowid=" + model.rowid + "";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@capital", model.Capital),
+                    new SqlParameter("@capital", model.Capital ?? (object)DBNull.Value),
                     new SqlParameter("@PaymentTermsID", model.PaymentTermsID),
                     new SqlParameter("@BalanceID", model.BalanceID),
-                    new SqlParameter("@fk_incoterms", model.IncotermsType),
-                    new SqlParameter("@location_incoterms",model.Incoterms),
-                    new SqlParameter("@Currency", model.Currency),
-                    new SqlParameter("@CreditLimit", model.CreditLimit),
-                    new SqlParameter("@outstanding_limit", model.outstanding_limit),
-                    new SqlParameter("@MinimumOrderQuanity", model.MinimumOrderQuanity),
-                    new SqlParameter("@order_min_amount", model.order_min_amount),
+                    new SqlParameter("@fk_incoterms", model.IncotermsType ?? (object)DBNull.Value),
+                    new SqlParameter("@location_incoterms",model.Incoterms ?? (object)DBNull.Value),
+                    new SqlParameter("@Currency", model.Currency ?? (object)DBNull.Value),
+                    new SqlParameter("@CreditLimit", model.CreditLimit ?? (object)DBNull.Value),
+                    new SqlParameter("@outstanding_limit", model.outstanding_limit ?? (object)DBNull.Value),
+                    new SqlParameter("@MinimumOrderQuanity", model.MinimumOrderQuanity ?? (object)DBNull.Value),
+                    new SqlParameter("@order_min_amount", model.order_min_amount ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -347,9 +347,9 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                      new SqlParameter("@rowid", model.rowid),
-                    new SqlParameter("@fk_shipping_method", model.ShippingMethodID),
-                    new SqlParameter("@ShippingRate", model.ShippingRate),
-                    new SqlParameter("@ShippingLocation", model.ShippingLocation),
+                    new SqlParameter("@fk_shipping_method", model.ShippingMethodID ),
+                    new SqlParameter("@ShippingRate", model.ShippingRate ),
+                    new SqlParameter("@ShippingLocation", model.ShippingLocation ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -369,9 +369,9 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@TaxMethod", model.TaxMethod),
                     new SqlParameter("@DefaultTax", model.DefaultTax),
-                    new SqlParameter("@ShippingTax", model.ShippingTax),
+                    new SqlParameter("@ShippingTax", model.ShippingTax  ?? (object)DBNull.Value),
                     new SqlParameter("@ShippingTaxIncludedinprice", model.ShippingTaxIncludedinprice),
-                    new SqlParameter("@CalculatedTax", model.CalculatedTax),
+                    new SqlParameter("@CalculatedTax", model.CalculatedTax  ?? (object)DBNull.Value),
                     new SqlParameter("@TaxIncludedinPrice", model.TaxIncludedinPrice),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

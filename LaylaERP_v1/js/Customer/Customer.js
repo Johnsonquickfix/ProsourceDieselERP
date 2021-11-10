@@ -134,10 +134,10 @@ function UpdateCustomerStatus() {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else {
-                swal('Alert!', data.message, 'error')
+                swal('Error!', data.message, 'error')
             }
         },
         error: function (error) {
@@ -155,10 +155,10 @@ function DeleteCustomer(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else {
-                swal('Alert!', data.message, 'error')
+                swal('Error!', data.message, 'error')
             }
         },
         error: function (error) {
@@ -178,10 +178,10 @@ function ChangeStatus(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else {
-                swal('Alert!', data.message, 'error')
+                swal('Error!', data.message, 'error')
             }
         },
         error: function (error) {

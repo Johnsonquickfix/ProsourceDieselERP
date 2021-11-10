@@ -167,8 +167,16 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Country</label>
                                 <select class="form-control" id="txtCountry">
-                                    <option value="US">US - United States</option>
+                                    @if (Model.country == "US")
+                                    {
+                                    <option selected value="US">US - United States</option>
                                     <option value="CA">CA - Canada</option>
+                                    }
+                                    @if (Model.country == "CA")
+                                    {
+                                    <option selected value="CA">CA - Canada</option>
+                                    <option value="US">US - United States</option>
+                                    }
 
                                 </select>
                             </div>
@@ -390,7 +398,7 @@
 
 
     function AddCustomer() {
-        debugger
+        //debugger
 
 
         var ImageURL;
@@ -493,7 +501,7 @@
                 success: function (data) {
                     if (data.status == true) {
                         //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = 'Users'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error');

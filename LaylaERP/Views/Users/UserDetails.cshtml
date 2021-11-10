@@ -167,8 +167,16 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Country</label>
                                 <select class="form-control" id="txtCountry">
-                                    <option value="US">US - United States</option>
-                                    <option value="CA">CA - Canada</option>
+                                    @if (Model.country == "US")
+                                    {
+                                        <option value="US">US - United States</option>
+                                        <option value="CA">CA - Canada</option>
+                                    }
+                                    @if (Model.country == "CA")
+                                    {
+                                        <option value="CA">CA - Canada</option>
+                                        <option value="US">US - United States</option>
+                                    }
 
                                 </select>
                             </div>

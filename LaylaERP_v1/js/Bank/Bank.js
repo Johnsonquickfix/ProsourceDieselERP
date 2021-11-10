@@ -163,10 +163,10 @@ function AddBankAccount() {
             success: function (data) {
                 if (data.status == true) {
                     //$('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../BankAccountList'; });
+                    swal('Success!', data.message, 'success').then((result) => { location.href = '../BankAccountList'; });
                 }
                 else {
-                    swal('Alert!', data.message, 'error');
+                    swal('Error!', data.message, 'error');
                 }
             },
             complete: function () { $("#loader").hide(); },
@@ -308,7 +308,7 @@ function UpdateBankAccount() {
             success: function (data) {
                 if (data.status == true) {
                     //$('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../BankAccountList'; });
+                    swal('Success!', data.message, 'success').then((result) => { location.href = '../BankAccountList'; });
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -345,7 +345,7 @@ $("#btnupload").click(function () {
             success: function (data) {
                 if (data.status == true) {
                     BankLinkedFiles();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else { swal('Alert!', data.message, 'error'); }
             },
@@ -422,10 +422,10 @@ function DeleteBankLinkedFiles(id) {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                     BankLinkedFiles();
                 }
-                else { swal('Alert!', data.message, 'error') }
+                else { swal('Error!', data.message, 'error') }
             },
             complete: function () { $("#loader").hide(); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },

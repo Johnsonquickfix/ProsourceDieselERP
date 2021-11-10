@@ -314,7 +314,7 @@ namespace LaylaERP.BAL
                         string Product = GetAccountNumber(ProductID, option_mode).ToString();
                         if (Product == ProductID)
                         {
-                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
+                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id and option_mode=@option_mode";
                         }
                         else
                         {

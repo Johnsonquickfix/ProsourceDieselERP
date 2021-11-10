@@ -534,11 +534,11 @@
                     new SqlParameter("@order_item_type", obj.item_type),
                     new SqlParameter("@order_id", obj.order_id)
                 };
-                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT LAST_INSERT_ID();";
+                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT SCOPE_IDENTITY();";
                     result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
                     if (result > 0)
                     {
-                        strSQL = string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) values ('{0}','_fee_amount',{1}),('{2}','_tax_class',''),('{3}','tax_status','taxable'),('{4}','_line_total',{5}),('{6}','_line_tax','0') ", result, obj.amount, result, result, result, obj.amount, result);
+                        strSQL = string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) values ('{0}','_fee_amount','{1}'),('{2}','_tax_class',''),('{3}','tax_status','taxable'),('{4}','_line_total','{5}'),('{6}','_line_tax','0') ", result, obj.amount, result, result, result, obj.amount, result);
                         SQLHelper.ExecuteNonQuery(strSQL);
                     }
                 }

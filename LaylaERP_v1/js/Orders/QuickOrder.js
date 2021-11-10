@@ -1070,7 +1070,7 @@ function AddFeeModal(orderitemid, feevalue) {
 function ApplyFee(orderitemid, feevalue) {
     let feetype = feevalue.match(/%/g) != null ? '%' : '';
     let startingNumber = parseFloat(feevalue.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    let product_name = feetype == '%' ? feevalue + ' fee' : startingNumber + ' fee';
+    let product_name = feetype == '%' ? feevalue.replace(/fee$/, "fee") : startingNumber + ' fee';
     let oid = parseInt($('#hfOrderNo').val()) || 0, line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
     let option = { order_item_id: orderitemid, order_id: oid, item_name: product_name, item_type: 'fee', amount: line_total };
@@ -2238,8 +2238,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
     else if (srf_total != 0 && fee_total == 0 && gc_total == 0) custom_label = 'State Recycling Fee';
-    else if (srf_total == 0 && fee_total != 0 && gc_total == 0) custom_label = 'Other Fee & Gift Card';
-    else if (srf_total == 0 && fee_total == 0 && gc_total == 0) custom_label = 'Gift Card';
+    else if (srf_total == 0 && fee_total != 0 && gc_total != 0) custom_label = 'Other Fee & Gift Card';
+    else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
     else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
     else custom_label = 'Other Fee';
     console.log(srf_total, fee_total, gc_total);

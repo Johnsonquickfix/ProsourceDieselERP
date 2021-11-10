@@ -21,30 +21,29 @@
 
 </div>
 <div class="user-top-section">
-    <div class="col-md-12">
-        <div class="box box-primary user-top-section">
-            <div class="box-header with-border">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label " for="VendorList">Vendors</label>
-                            <select class="form-control select2" id="ddlVendorList"></select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label " for="WareHouseList">WareHouses</label>
-                            <select class="form-control select2" id="ddlWareHouseList"></select>
-                        </div>
-                    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label " for="VendorList">Vendors</label>
+                    <select class="form-control select2" id="ddlVendorList"></select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label " for="WareHouseList">WareHouses</label>
+                    <select class="form-control select2" id="ddlWareHouseList"></select>
                 </div>
             </div>
         </div>
-    </div>
- </div>
+     </div>
+    
+</div>
 
-    <div class="userrole_section section_wrapper appearance-menu-section">
-
+<div class="userrole_section section_wrapper appearance-menu-section">
+    <div class="box box-primary">
         <div class="box-header">
             <table id="product" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
                 <thead>
@@ -60,8 +59,8 @@
             </table>
         </div>
     </div>
-      
-        <script src="@Url.Content("~/js/Inventory/VendorInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+</div>
+<script src="@Url.Content("~/js/Inventory/VendorInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 
 

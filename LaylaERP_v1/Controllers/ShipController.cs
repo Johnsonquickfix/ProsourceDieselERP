@@ -169,11 +169,12 @@ namespace LaylaERP.Controllers
                         carrier = Request.QueryString["carrier"].ToString();
                     }
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                    System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-                    xmlDoc.LoadXml(jsonData);
+                    
                     str = string.Format("insert into shipped_track (order_id,order_name,shipped_items,tracking_num,tracking_via,ship_date) VALUES ('{0}','{1}','{2}','{3}','{4}',convert(varchar(11),GETUTCDATE(),0)", order_number, oname, "items", tracking_number, carrier);
                     DAL.SQLHelper.ExecuteNonQueryWithTrans(str + ";insert into db_log select getdate(),'" + jsonData + "'");
-
+                    
+                    System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+                    xmlDoc.LoadXml(new StreamReader(Request.InputStream).ReadToEnd());
                     System.Xml.XmlNodeList nodelist = xmlDoc.SelectNodes("/items"); // get all <testcase> nodes
 
                     foreach (System.Xml.XmlNode node in nodelist) // for each <testcase> node

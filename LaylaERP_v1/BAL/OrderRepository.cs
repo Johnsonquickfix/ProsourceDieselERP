@@ -608,35 +608,6 @@
             { throw ex; }
             return dt;
         }
-        public static int UpdatePaypalStatus(OrderPostMetaModel model)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                StringBuilder strSql = new StringBuilder();
-                ///step 1 : Update Podium payment receipt
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT {0},'{1}','{2}') AS tmp WHERE NOT EXISTS (SELECT meta_key FROM wp_postmeta WHERE post_id = {3} and meta_key = '{4}');", model.post_id, model.meta_key, model.meta_value, model.post_id, model.meta_key));
-                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
-
-                ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
-                ///step 3 : Add Order Note
-                //strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
-                //strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
-                ///step 4 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
-                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
-            }
-            catch (Exception ex) { throw ex; }
-            return result;
-        }
 
         //Refund Order
         public static long AddRefundOrderPost(long parent_id)

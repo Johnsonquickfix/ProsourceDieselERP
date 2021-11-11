@@ -37,7 +37,7 @@ namespace LaylaERP.Controllers
                     end_date = Request.QueryString["end_date"].ToString();
                     //end_date = end_date.Split('/')[1] + "/" + end_date.Split('/')[0] + "/" + end_date.Split('/')[2];
                 }
-                DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + action + "'");
+                //DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + action + "'");
                 if (action == "export")
                 {
                     DateTime s_date = DateTime.Today, e_date = DateTime.Today;
@@ -170,39 +170,26 @@ namespace LaylaERP.Controllers
                     }
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
                     
-                    str = string.Format("insert into shipped_track (order_id,order_name,shipped_items,tracking_num,tracking_via,ship_date) VALUES ('{0}','{1}','{2}','{3}','{4}',convert(varchar(11),GETUTCDATE(),0)", order_number, oname, "items", tracking_number, carrier);
-                    DAL.SQLHelper.ExecuteNonQueryWithTrans(str + ";insert into db_log select getdate(),'" + jsonData + "'");
+                    //str = string.Format("insert into shipped_track (order_id,order_name,shipped_items,tracking_num,tracking_via,ship_date) VALUES ('{0}','{1}','{2}','{3}','{4}',convert(varchar(11),GETUTCDATE(),0))", order_number, oname, "items", tracking_number, carrier);
+                    //DAL.SQLHelper.ExecuteNonQueryWithTrans(str + ";insert into db_log select getdate(),'" + jsonData + "'");
                     
                     System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-                    xmlDoc.LoadXml(new StreamReader(Request.InputStream).ReadToEnd());
-                    System.Xml.XmlNodeList nodelist = xmlDoc.SelectNodes("/items"); // get all <testcase> nodes
-
+                    xmlDoc.LoadXml(jsonData);
+                    System.Xml.XmlNodeList nodelist = xmlDoc.SelectNodes("/ShipNotice/Items/Item"); // get all <testcase> nodes
+                    string shipped_items = string.Empty;int shipped_qty = 0;
                     foreach (System.Xml.XmlNode node in nodelist) // for each <testcase> node
                     {
-                        try
-                        {
-                            DAL.SQLHelper.ExecuteNonQueryWithTrans("insert into db_log select getdate(),'" + node.InnerText + "'");
-                        }
-                        catch { }
+                        shipped_items = node["Name"].InnerText + " (" + node["SKU"].InnerText + ") x " + node["Quantity"].InnerText;
+                        shipped_qty += int.Parse(node["Quantity"].InnerText);
                     }
-
-                    //$order = wc_get_order( $order_number); 
-                   
-                    //LogData(oname, tracking_number, carrier, str);
-                    //$timestamp = current_time('timestamp'); 
-                    //$shipstation_xml = file_get_contents('php://input'); 
-
-                    List<string> shipped_items = new List<string>();
-                    //int shipped_item_count = 0;
-                    //bool order_shipped = false;
-                    //string order_note = "";
+                    ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
                 }
                 else
                 {
                     str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Orders></Orders>";
                 }
             }
-            catch { str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Orders></Orders>"; }
+            catch (Exception ex) { str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Orders></Orders>"; }
             return Content(str, ContentType.Xml, Encoding.UTF8);
         }
 

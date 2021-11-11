@@ -1131,8 +1131,10 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT (coalesce(sum(ep.amount),0)) as PaidAmount, (coalesce(sum(epi.amount), 0)) as PurchaseOrder, (coalesce(sum(epi.amount) - sum(ep.amount), 0)) as OutstandingAmount from erp_payment ep"
-                               + " inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
+                string strSql = "SELECT (Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6)) as PurchaseOrder, " +
+                    "(coalesce(sum(ep.amount), 0)) as PaidAmount, " +
+                    "((Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6)) -coalesce(sum(ep.amount), 0)) as OutstandingAmount " +
+                    "from erp_payment ep inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

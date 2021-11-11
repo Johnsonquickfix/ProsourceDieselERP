@@ -1650,9 +1650,9 @@ function CalculateAmount() {
             console.log(data);
             var d = JSON.parse(data);
 
-            $("#txtpurchaseorder").text('$' + d[0].PurchaseOrder);
-            $("#txtpaidamount").text('$' + d[0].PaidAmount);
-            $("#txtoutstandingamount").text('$' + d[0].OutstandingAmount);
+            $("#txtpurchaseorder").text('$' + parseFloat(d[0].PurchaseOrder).toFixed(2));
+            $("#txtpaidamount").text('$' + parseFloat(d[0].PaidAmount).toFixed(2));
+            $("#txtoutstandingamount").text('$' + parseFloat(d[0].OutstandingAmount).toFixed(2));
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.responseText);

@@ -1013,7 +1013,6 @@ function calcFinalTotals() {
     CalculateFee();
     zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00; zTotal = (zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt);
     $("#billGiftCard > li").each(function (_i, _li) { zGiftAmt += (parseFloat($(_li).find("[id=gift_amt]").text()) || 0.00); });
-    console.log(zGiftAmt);
     $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2));
     let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
 }
@@ -1184,7 +1183,6 @@ function ApplyGiftCard() {
 }
 function deleteAllGiftCard(GiftCode) {
     let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
-    console.log(gc_orderitemID);
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {

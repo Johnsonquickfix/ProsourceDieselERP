@@ -17,22 +17,28 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">Manage Vendor Inventory</h2>
-    <span title="Click Here To Back To Warehouse List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" }) </span>
+    <span title="Click Here To Back To Warehouse List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "VendorInventory", null, new { @class = "btn btn-danger" }) </span>
 
 </div>
 <div class="user-top-section">
+
+
     <div class="row">
         <div class="col-md-12">
-            <div class="form-group">
-                <label class="control-label " for="VendorList">Vendor List</label>
-                <select class="form-control select2" id="ddlVendorList"></select>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label " for="VendorList">Vendors</label>
+                    <select class="form-control select2" id="ddlVendorList"></select>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="control-label " for="WareHouseList">WareHouse List</label>
-                <select class="form-control select2" id="ddlWareHouseList"></select>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label " for="WareHouseList">WareHouses</label>
+                    <select class="form-control select2" id="ddlWareHouseList"></select>
+                </div>
             </div>
         </div>
-    </div>
+     </div>
     
 </div>
 

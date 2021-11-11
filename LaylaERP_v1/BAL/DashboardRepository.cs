@@ -66,7 +66,7 @@ namespace LaylaERP.BAL
                 CultureInfo us = new CultureInfo("en-US");
                 DateTime startDate = DateTime.Parse(from_date, us);
                 DateTime endDate = DateTime.Parse(to_date, us);
-                strQuery += "  WHERE DATE(ur.user_registered) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+                strQuery += "  WHERE convert(date,ur.user_registered) >= '" + startDate.ToString("yyyy-MM-dd") + "' and convert(date,ur.user_registered)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
             }
             totalcustomer = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalcustomer;

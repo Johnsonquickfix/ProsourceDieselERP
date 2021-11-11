@@ -1013,6 +1013,7 @@ function calcFinalTotals() {
     CalculateFee();
     zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00; zTotal = (zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt);
     $("#billGiftCard > li").each(function (_i, _li) { zGiftAmt += (parseFloat($(_li).find("[id=gift_amt]").text()) || 0.00); });
+    console.log(zGiftAmt);
     $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2));
     let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
 }
@@ -1149,7 +1150,7 @@ function ApplyGiftCard() {
     $.ajax({
         type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            let data = JSON.parse(result); console.log(data);
+            let data = JSON.parse(result); 
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
             if (data[0].giftcard_amount > 0) {
                 if (_total <= 0) { swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
@@ -1182,38 +1183,17 @@ function ApplyGiftCard() {
     calcFinalTotals();
 }
 function deleteAllGiftCard(GiftCode) {
-    debugger
-    let gc_orderitemID = $('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid");
+    let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
     console.log(gc_orderitemID);
-
-    if (gc_orderitemID != '0') {
-        let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        type: "POST", url: '/Orders/DeleteGiftCard', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                        success: function (result) {
-                            //Remove Gift Card
-                            $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-                        async: false
-                    });
-                }
-            });
-        calcFinalTotals();
-    }
-    else if (GiftCode != '') {
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) {
-                    //Remove Gift Card
-                    $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
-                    calcFinalTotals();
-                }
-            });
-    }
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
+                if (gc_orderitemID > 0)
+                    $.post('/Orders/DeleteGiftCard', obj).done(function (data) { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); });
+                else { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); }
+            }
+        });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {
@@ -1883,8 +1863,6 @@ function getItemShippingCharge(isFinalcal) {
                 });
             }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
-
-
     }
 }
 function calculateStateRecyclingFee() {

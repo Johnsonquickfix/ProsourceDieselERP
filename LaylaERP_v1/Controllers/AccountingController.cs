@@ -50,6 +50,11 @@ namespace LaylaERP.Controllers
             return View("AccountLedgerList");
         }
 
+        public ActionResult AccountJournal()
+        {
+            return View();
+        }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();

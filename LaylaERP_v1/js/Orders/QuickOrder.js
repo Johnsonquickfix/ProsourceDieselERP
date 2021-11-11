@@ -113,7 +113,8 @@
     $("#billModal").on("click", "#btnBackSearchCusrtomer", function (t) {
         t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
-    $("#billModal").on("blur", "#ddlCusBillingCountry,#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
+    $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
+    $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -581,7 +582,7 @@ function saveCustomer() {
         }
         ajaxFunction('/Customer/NewUser/', obj, beforeSendFun, function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success', data.message, 'success');
                 $("#ddlUser").empty().append('<option value="' + data.id + '" selected>' + Email + '</option>');
                 if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
@@ -599,7 +600,7 @@ function saveCustomer() {
                 $('#txtbillphone').val(BillingPhone);
             }
             else {
-                swal('Alert!', data.message, 'error')
+                swal('Error', data.message, 'error')
             }
         }, completeFun, errorFun, false);
     }
@@ -751,7 +752,7 @@ function getOrderItemList(oid) {
                 if (row.is_free)
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
-                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
 
                 itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
                 itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
@@ -816,8 +817,8 @@ function getOrderItemList(oid) {
                 let feetype = row.product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
                 feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-                feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+                feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
                 zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
@@ -834,7 +835,7 @@ function getOrderItemList(oid) {
                 giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '"" data-orderitemid="' + orderitemid + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
-                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + row.product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
                 giftcardHtml += '</a>';
                 giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
@@ -928,7 +929,7 @@ function bindItemListDataTable(data) {
                 if ($('#tritemId_' + pr.PKey).length <= 0) {
                     layoutHtml += '<tr id="tritemId_' + pr.PKey + '" data-id="' + pr.PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="' + pr.order_item_id + '" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
                     if (pr.is_free) layoutHtml += '<td class="text-center"></td>';
-                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     layoutHtml += '<td>' + pr.product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + pr.reg_price.toFixed(2) + '</td>';
                     if (pr.is_free) layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + pr.PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
@@ -1070,7 +1071,7 @@ function AddFeeModal(orderitemid, feevalue) {
 function ApplyFee(orderitemid, feevalue) {
     let feetype = feevalue.match(/%/g) != null ? '%' : '';
     let startingNumber = parseFloat(feevalue.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    let product_name = feetype == '%' ? feevalue + ' fee' : startingNumber + ' fee';
+    let product_name = feetype == '%' ? feevalue.replace(/fee$/, "fee") : startingNumber + ' fee';
     let oid = parseInt($('#hfOrderNo').val()) || 0, line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
     let option = { order_item_id: orderitemid, order_id: oid, item_name: product_name, item_type: 'fee', amount: line_total };
@@ -1078,8 +1079,8 @@ function ApplyFee(orderitemid, feevalue) {
         let feeHtml = '';
         if (orderitemid > 0) {
             $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
-            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             $('#trfeeid_' + orderitemid).empty().append(feeHtml);
         }
@@ -1148,7 +1149,7 @@ function ApplyGiftCard() {
     $.ajax({
         type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            let data = JSON.parse(result); console.log(data);
+            let data = JSON.parse(result); 
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
             if (data[0].giftcard_amount > 0) {
                 if (_total <= 0) { swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
@@ -1156,7 +1157,17 @@ function ApplyGiftCard() {
                     let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
                     giftcardHtml += '<a href="javascript:void(0);">';
                     giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
-                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[0].code.toString().toLowerCase() + '\').remove();calcFinalTotals();"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
+                    giftcardHtml += '</a>';
+                    giftcardHtml += '</li>';
+                    $('#billGiftCard').append(giftcardHtml);
+                }
+                else if (_total > 0 && data[0].giftcard_amount >= _total) {
+                    data[0].giftcard_amount = _total;
+                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
+                    giftcardHtml += '<a href="javascript:void(0);">';
+                    giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
+                    giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
                     giftcardHtml += '</a>';
                     giftcardHtml += '</li>';
                     $('#billGiftCard').append(giftcardHtml);
@@ -1169,6 +1180,18 @@ function ApplyGiftCard() {
         async: false
     });
     calcFinalTotals();
+}
+function deleteAllGiftCard(GiftCode) {
+    let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
+                if (gc_orderitemID > 0)
+                    $.post('/Orders/DeleteGiftCard', obj).done(function (data) { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); });
+                else { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); }
+            }
+        });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {
@@ -1694,6 +1717,7 @@ function deleteAllCoupons(coupon_type) {
             });
     }
 }
+
 function freeQtyUpdate() {
     $("#order_line_items > tr.free_item").each(function (index, row) {
         let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;
@@ -1837,8 +1861,6 @@ function getItemShippingCharge(isFinalcal) {
                 });
             }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
-
-
     }
 }
 function calculateStateRecyclingFee() {
@@ -2193,8 +2215,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
     else if (srf_total != 0 && fee_total == 0 && gc_total == 0) custom_label = 'State Recycling Fee';
-    else if (srf_total == 0 && fee_total != 0 && gc_total == 0) custom_label = 'Other Fee & Gift Card';
-    else if (srf_total == 0 && fee_total == 0 && gc_total == 0) custom_label = 'Gift Card';
+    else if (srf_total == 0 && fee_total != 0 && gc_total != 0) custom_label = 'Other Fee & Gift Card';
+    else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
     else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
     else custom_label = 'Other Fee';
     console.log(srf_total, fee_total, gc_total);

@@ -205,5 +205,46 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static DataTable GetProductWarehouse(int getwarehouseid)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                {
+                new SqlParameter("@warehouseid", getwarehouseid),
+                };
+                string strquery = "warehouseproductlist";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery, para);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+        public static DataSet GetVendorList()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select rowid ID, name from wp_vendor order by rowid ";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet GetWareHouseList(string vendorID)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select w.rowid ID, ref Warehouse from wp_VendorWarehouse vw left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + vendorID + "' ";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

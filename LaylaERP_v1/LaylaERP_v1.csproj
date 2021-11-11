@@ -667,6 +667,7 @@
     <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
     <Content Include="js\Marketing\AutoGenerateCoupons.js" />
     <Content Include="js\Marketing\Coupons.js" />
@@ -984,6 +985,8 @@
     <Content Include="Views\Accounting\AccountJournal.cshtml" />
     <Content Include="Views\Accounting\AccountLedger.cshtml" />
     <Content Include="Views\Accounting\AccountLedgerList.cshtml" />
+    <Content Include="Views\Ship\CreateShipOrder.cshtml" />
+    <Content Include="Views\Inventory\VendorInventory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

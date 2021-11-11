@@ -345,6 +345,7 @@
             return Json(new { status = state, message = result }, 0);
         }
         [HttpPost]
+
         public JsonResult SaveOrderProductMeta(OrderModel model)
         {
             string JSONresult = string.Empty;
@@ -396,21 +397,6 @@
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
-            //string JSONresult = string.Empty; bool status = false;
-            //try
-            //{
-            //    OperatorModel om = CommanUtilities.Provider.GetCurrent();
-            //    model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
-            //    model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
-            //    model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_refunded_by", meta_value = om.UserID.ToString() });
-
-            //    int result = OrderRepository.SaveRefundOrder(model);
-            //    if (result > 0)
-            //    { status = true; JSONresult = "Order placed successfully."; }
-            //    //JSONresult = JsonConvert.SerializeObject(DT);
-            //}
-            //catch { status = false; JSONresult = "Something went wrong! Please try again."; }
-            //return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
         public JsonResult UpdateGitCardPaymentRefund(OrderModel model)
@@ -425,7 +411,7 @@
                     status = true; JSONresult = "Order placed successfully.";
                     OrderNotesModel note_model = new OrderNotesModel();
                     note_model.post_ID = model.order_id;
-                    note_model.comment_content = string.Format("Gift card Issued for ${0:0.00}. The Gift Card will be send on your mail in 5 to 10 days.", NotesAmount);
+                    note_model.comment_content = string.Format("Gift card Issued for ${0:0.00}. The Gift Card will be send on your mail.", NotesAmount);
                     note_model.is_customer_note = string.Empty;
                     note_model.is_customer_note = string.Empty;
 
@@ -531,38 +517,22 @@
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
-        [HttpGet]
-        public JsonResult UpdatePaypalPaymentAccept(OrderPostMetaModel model)
-        {
-            string result = string.Empty;
-            bool status = false;
-            try
-            {
-                int res = OrderRepository.UpdatePaypalStatus(model);
-                if (res > 0)
-                {
-                    result = "Success.";
-                    status = true;
-                }
-            }
-            catch (Exception ex) { status = false; result = ex.Message; }
-            return Json(new { status = status, message = result }, 0);
-        }
         [HttpPost]
-        public JsonResult UpdatePodiumPaymentAccept(OrderPodiumDetailsModel model)
+        public JsonResult UpdatePodiumPaymentAccept(OrderModel model)
         {
-            string JSONresult = string.Empty; bool status = false;
+            string JSONresult = string.Empty;
             try
             {
-                int result = OrderRepository.UpdatePodiumStatus(model);
-                if (result > 0)
-                { status = true; JSONresult = "Order placed successfully."; }
-                else
-                { status = true; JSONresult = "Something went wrong."; }
-                //JSONresult = JsonConvert.SerializeObject(DT);
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
+
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "UPP", 0, model.b_first_name, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
-            catch (Exception ex) { JSONresult = ex.Message; }
-            return Json(new { status = status, message = JSONresult }, 0);
+            catch { }
+            return Json(JSONresult, 0);
         }
         [HttpPost]
         public JsonResult UpdateAuthorizeNetPaymentRefund(OrderModel model)
@@ -660,6 +630,26 @@
             }
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteGiftCard(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "RGC", om.UserID, model.payment_method_title, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
     }
 }

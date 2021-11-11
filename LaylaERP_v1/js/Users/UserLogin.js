@@ -19,7 +19,7 @@
                     window.open(top.window.location.origin + '/' + data.url, "_self");
                 }
                 else {
-                    swal('Alert!', data.message, "error");
+                    swal('Error!', data.message, "error");
                     $('#a-autoid-0-announce').text("Login");
                   
                 }

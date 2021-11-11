@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,73 +22,53 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        [HttpGet]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                DataTable dt = PaymentInvoiceRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.GetPurchaseOrder(model.strValue1, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-        public JsonResult GetPartiallyOrderList(JqDataTableModel model)
-        {
-            string result = string.Empty;
-            int TotalRecord = 0;
-            try
-            {
-                DataTable dt = PaymentInvoiceRepository.GetPartiallyOrderList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt);
-            }
-            catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
-        }
-
-        [HttpGet]
-        public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
-        {
-            string result = string.Empty;
-            try
-            {
-                DataTable dt = PaymentInvoiceRepository.GetPartiallyDetailsList(model.strValue1, model.strValue2, model.strValue3);
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-            }
-            catch { }
-            return Json(result, 0);
-        }
-
         [HttpPost]
-        public JsonResult GetPartiallyOrderDataList(JqDataTableModel model)
+        public JsonResult GetPOOrderDataList(JqDataTableModel model)
         {
             string result = string.Empty;
             try
             {
-                DataTable dt = PaymentInvoiceRepository.GetPartiallyOrderDataList(model.strValue1, model.strValue2, model.strValue3);
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable dt = PaymentInvoiceRepository.GetPOOrderDataList(id);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
         }
-
         [HttpGet]
         public JsonResult GetPurchaseOrderByID(SearchModel model)
         {
             string JSONresult = string.Empty;
             try
             {
-                //long id = 0;
                 DataSet ds = new DataSet();
-                if (model.strValue1 == "PO")
-                     ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
-                else
-                     ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
+                ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
+                //if (model.strValue1 == "PO")
+                //    ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
+                //else
+                //    ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
 
-                //if (!string.IsNullOrEmpty(model.strValue1))
-                //    id = Convert.ToInt64(model.strValue1);
-                //DataSet ds = PaymentInvoiceRepository.GetPurchaseOrderByID(id);
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
@@ -105,30 +86,45 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
-
         [HttpPost]
-        public JsonResult TakePayment(PaymentInvoiceModel model)
+        public JsonResult TakePayment(SearchModel model)
         {
-            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            string JSONresult = string.Empty;
             try
             {
-                ID = new PaymentInvoiceRepository().TakePayment(model);
-
-                if (ID > 0)
-                {
-                    b_status = true; JSONstring = "Payment has been taken successfully!!";
-                }
-                else
-                {
-                    b_status = false; JSONstring = "Invalid Details.";
-                }
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.AddNewPurchase(id, "POP", u_id, orderXML, orderdetailsXML));
             }
-            catch (Exception Ex)
-            {
-                b_status = false; JSONstring = Ex.Message;
-            }
-            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        //[HttpPost]
+        //public JsonResult TakePayment(PaymentInvoiceModel model)
+        //{
+        //    string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+        //    try
+        //    {
+        //        ID = new PaymentInvoiceRepository().TakePayment(model);
+
+        //        if (ID > 0)
+        //        {
+        //            b_status = true; JSONstring = "Payment has been taken successfully!!";
+        //        }
+        //        else
+        //        {
+        //            b_status = false; JSONstring = "Invalid Details.";
+        //        }
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        b_status = false; JSONstring = Ex.Message;
+        //    }
+        //    return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+        //}
 
     }
 }

@@ -318,7 +318,7 @@ function AddProductModal(proc_type, row_num) {
     prodHtml += '<input class="form-control addCalulate" type="number" id="txt_proc_qty" placeholder="Quantity" maxlength="20" autocomplete="off" value="' + rQty + '" ' + (proc_type > 0 ? 'disabled' : '') + '>';
     prodHtml += '</div>';
     prodHtml += '<div class="col-md-6">Discount(%)';
-    prodHtml += '<input class="form-control addCalulate" min="0" max="100" type="number" id="txt_proc_disc" placeholder="Discount" maxlength="20" autocomplete="off" value="' + rDescPer.toFixed(2) + '">';
+    prodHtml += '<input class="form-control addCalulate" min="0" max="100" type="number" id="txt_proc_disc" placeholder="Discount" maxlength="20" autocomplete="off" value="' + rDescPer.toFixed(2) + '" ' + (proc_type > 0 ? 'disabled' : '') + '>';
     prodHtml += '</div>';
     prodHtml += '<div class="col-md-6">Total';
     prodHtml += '<input class="form-control" type="number" id="txt_proc_total" placeholder="Total" maxlength="20" autocomplete="off" value="' + rTotal.toFixed(2) + '" disabled>';
@@ -364,8 +364,8 @@ function bindOtherItems(proc_type, row_num) {
         itemHtml += '</td > ';
         itemHtml += '<td class="item-desc">' + rDesc + '</td><td class="item-sku">' + rSku + '</td>';
         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row_num + '" value="' + rPrice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row_num + '" value="' + rQty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
-        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row_num + '" value="' + rDescPer.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number ' + (proc_type > 0 ? '' : 'rowCalulate') + '" type="number" id="txt_itemqty_' + row_num + '" value="' + rQty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number ' + (proc_type > 0 ? '' : 'rowCalulate') + '" type="number" id="txt_itemdisc_' + row_num + '" value="' + rDescPer.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
         itemHtml += '<td class="text-right tax-amount">0.00</td><td class="text-right ship-amount">0.00</td>';
         itemHtml += '<td class="text-right row-total">' + rTotal.toFixed(2) + '</td>';
         itemHtml += '</tr>';
@@ -459,8 +459,8 @@ function getPurchaseOrderInfo() {
                             itemHtml += '</td > ';
                             itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
                             itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo') + ' number rowCalulate" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
                             itemHtml += '<td class="text-right tax-amount">' + row.total_localtax1.toFixed(2) + '</td>';
                             itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
                             itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
@@ -545,13 +545,14 @@ function createItemsList() {
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        let proc_type = parseInt($(row).data('proc_type')) || 0;
+        rGrossAmt = rPrice * rQty; rDisAmt = proc_type > 0 ? (rGrossAmt * (rDisPer / 100)) : 0.00;
         rNetAmt = (rGrossAmt - rDisAmt) + rTax1;
         let rSDate = isNullAndUndef($(row).data('proc_fromdate')) ? moment($(row).data('proc_fromdate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '1900-01-01', rEDate = isNullAndUndef($(row).data('proc_todate')) ? moment($(row).data('proc_todate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '1900-01-01';
         //console.log(rSDate, rEDate);
         _rang += 1;
         _list.push({
-            rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(),
+            rowid: $(row).data('rowid'), rang: _rang, product_type: proc_type, fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(),
             qty: rQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
             total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: rSDate, date_end: rEDate
         });
@@ -587,7 +588,7 @@ function saveVendorPO() {
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text())
         }
-        let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list)}
+        let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option);
         swal.queue([{
             title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order?",
@@ -617,7 +618,7 @@ function orderStatusUpdate(oid) {
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        $('#lblPoNo').data('id', result[0].id); 
+                        $('#lblPoNo').data('id', result[0].id);
                         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                         swal('Success', 'Purchase Order has been updated successfully.', "success"); getPurchaseOrderPrint(oid, true);

@@ -28,7 +28,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into erp_accounting_journal(code,label,nature,active) values(@code,@label,@nature,@active); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into erp_accounting_journal(code,label,nature,active) values(@code,@label,@nature,@active); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@code", model.code),
@@ -105,9 +105,9 @@ namespace LaylaERP.BAL
                 //{
                 //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 //}
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(J.rowid)/" + pagesize.ToString() + ") TotalPage,Count(J.rowid) TotalRecord from erp_accounting_journal J left join erp_NatureofJournal N on J.nature = N.ID WHERE 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(J.rowid)/" + pagesize.ToString() + ") TotalPage,Count(J.rowid) TotalRecord from erp_accounting_journal J left join erp_NatureofJournal N on J.nature = N.ID WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -195,7 +195,7 @@ namespace LaylaERP.BAL
                     "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
                     "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id  and pa.option_mode = '" + optType + "'" +
                     "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
-                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id;";
+                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,eaa.label,pa.fk_account_number,p.post_type,p.post_title,p.post_parent,p.post_status order by p_id;";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
@@ -238,7 +238,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "";
                 strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable); SELECT LAST_INSERT_ID();";
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -314,11 +314,11 @@ namespace LaylaERP.BAL
                         string Product = GetAccountNumber(ProductID, option_mode).ToString();
                         if (Product == ProductID)
                         {
-                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
+                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id and option_mode=@option_mode";
                         }
                         else
                         {
-                            strsql = "insert into product_accounting(fk_product_id,option_mode,fk_account_number) values(@fk_product_id,@option_mode,@fk_account_number); SELECT LAST_INSERT_ID();";
+                            strsql = "insert into product_accounting(fk_product_id,option_mode,fk_account_number) values(@fk_product_id,@option_mode,@fk_account_number); SELECT SCOPE_IDENTITY();";
                         }
                         SqlParameter[] para =
                         {
@@ -380,7 +380,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_pcg_type(pcg_type,account_parent) values(@pcg_type,@account_parent); SELECT LAST_INSERT_ID();";
+                strsql = "INSERT into erp_pcg_type(pcg_type,account_parent) values(@pcg_type,@account_parent); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@pcg_type", model.pcg_type),
@@ -493,7 +493,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, date_format(doc_date,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
                                 + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -507,9 +507,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -587,8 +587,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "SELECT replace(format(sum(debit),2),',','')  as debit, replace(format(sum(credit),2),',','') as credit,replace(format(sum(debit)-sum(credit),2),',','') as balance from erp_accounting_bookkeeping"
-                                + " where 1 = 1 ";
+                string strSql = "SELECT cast(sum(debit) as decimal(10,2)) as debit, cast(sum(credit) as decimal(10,2)) as credit, cast(sum(credit)-sum(debit) as decimal(10,2)) as balance from erp_accounting_bookkeeping where 1 = 1";
                 strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);
 

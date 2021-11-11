@@ -534,11 +534,11 @@
                     new SqlParameter("@order_item_type", obj.item_type),
                     new SqlParameter("@order_id", obj.order_id)
                 };
-                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT LAST_INSERT_ID();";
+                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT SCOPE_IDENTITY();";
                     result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
                     if (result > 0)
                     {
-                        strSQL = string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) values ('{0}','_fee_amount',{1}),('{2}','_tax_class',''),('{3}','tax_status','taxable'),('{4}','_line_total',{5}),('{6}','_line_tax','0') ", result, obj.amount, result, result, result, obj.amount, result);
+                        strSQL = string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) values ('{0}','_fee_amount','{1}'),('{2}','_tax_class',''),('{3}','tax_status','taxable'),('{4}','_line_total','{5}'),('{6}','_line_tax','0') ", result, obj.amount, result, result, result, obj.amount, result);
                         SQLHelper.ExecuteNonQuery(strSQL);
                     }
                 }
@@ -601,80 +601,12 @@
             DataTable dt = new DataTable();
             try
             {
-                SqlParameter[] parameters = { };
-                string strSQl = "SELECT id,post_date,pm.meta_value podium_uid FROM wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_podium_uid'"
-                                + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY);"
-                                + " update wp_posts set post_status = 'wc-cancelnopay',post_modified_gmt = UTC_TIMESTAMP() WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified < DATE_SUB(now(), INTERVAL 3 DAY);"
-                                + " update wp_posts set post_status = 'wc-processing' WHERE post_status = 'wc-on-hold' AND post_type = 'shop_order'"
-                                + " and id in (select post_id from wp_postmeta pmu where pmu.meta_key = '_release_date' and REGEXP_REPLACE(pmu.meta_value,'[^0-9]+','') >= DATE_FORMAT(DATE_SUB(now(), INTERVAL 2 DAY), '%m%d%Y'))";
-                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+                SqlParameter[] parameters = { new SqlParameter("@flag", "POPLS") };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }
             return dt;
-        }
-        public static int UpdatePodiumStatus(OrderPodiumDetailsModel model)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                StringBuilder strSql = new StringBuilder();
-                ///step 1 : Update Podium payment receipt
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from ", model.post_id));
-                strSql.Append(string.Format("(select '_podium_payment_uid' meta_key,'{0}' meta_value union all select '_podium_location_uid' meta_key,'{1}' meta_value union all select '_podium_invoice_number' meta_key,'{2}' meta_value union all select '_podium_status' meta_key,'PAID' meta_value) tt ", model.payment_uid, model.location_uid, model.invoice_number));
-                strSql.Append(string.Format("where tt.meta_key not in (select meta_key from wp_postmeta where post_id = {0});", model.post_id));
-
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.payment_uid, model.post_id, "_podium_payment_uid"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.location_uid, model.post_id, "_podium_location_uid"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "PAID", model.post_id, "_podium_status"));
-                ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
-                ///step 3 : Add Order Note
-                strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
-                strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
-                ///step 4 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
-                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
-            }
-            catch { }
-            return result;
-        }
-        public static int UpdatePaypalStatus(OrderPostMetaModel model)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                StringBuilder strSql = new StringBuilder();
-                ///step 1 : Update Podium payment receipt
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT {0},'{1}','{2}') AS tmp WHERE NOT EXISTS (SELECT meta_key FROM wp_postmeta WHERE post_id = {3} and meta_key = '{4}');", model.post_id, model.meta_key, model.meta_value, model.post_id, model.meta_key));
-                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
-
-                ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
-                ///step 3 : Add Order Note
-                //strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
-                //strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
-                ///step 4 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
-                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
-            }
-            catch (Exception ex) { throw ex; }
-            return result;
         }
 
         //Refund Order
@@ -856,32 +788,29 @@
                     DataTable dtMeta = OrderRepository.GiftCardMetaItem(order_item_id);
                     if (dtMeta.Rows.Count > 0)
                     {
-                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["meta_value"]);
-                        int metaID = Convert.ToInt32(dtMeta.Rows[0]["meta_id"]);
+                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["amount"]);
+                        int gcid = Convert.ToInt32(dtMeta.Rows[0]["gc_id"]);
                         decimal RefundAmount = 0;
-                        if (model.NetTotal > metaAmount && metaAmount > 0 && model.NetTotal > 0)
+                        if (model.NetTotal >= metaAmount && model.NetTotal > 0)
                         {
                             RefundAmount = metaAmount;
-
-                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", RefundAmount, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where order_item_id={1};", RefundAmount, order_item_id));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
+                            //strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
-                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
-
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
                             SendGiftCardMailInvoice(order_item_id, RefundAmount);
                             model.NetTotal = model.NetTotal - metaAmount;
                         }
-                        else if (model.NetTotal > 0 && metaAmount > 0)
+                        else if (model.NetTotal < metaAmount && model.NetTotal > 0)
                         {
-                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", model.NetTotal, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where order_item_id={1};", model.NetTotal, order_item_id));
+                            RefundAmount = model.NetTotal;
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
+                           // strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
-                               "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, model.NetTotal));
-
-                            SendGiftCardMailInvoice(order_item_id, model.NetTotal);
-                            model.NetTotal = model.NetTotal - model.NetTotal;
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
+                            SendGiftCardMailInvoice(order_item_id, RefundAmount);
+                            model.NetTotal = model.NetTotal - RefundAmount;
                         }
-                        else { strSql.Append(""); };
                     }
                 }
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
@@ -898,7 +827,7 @@
                 {
                     new SqlParameter("@OrderItemID", OrderItemID)
                 };
-                string strSQl = "Select * from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID and meta_key='amount';";
+                string strSQl = "Select * from wp_woocommerce_gc_activity where object_id=@OrderItemID and type='used';";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1010,6 +939,10 @@
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
                             + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
+                            + "(select distinct order_item_type FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type='gift_card') as IsGift,"
+                            + "(Select COALESCE(sum(amount),0)  from wp_woocommerce_gc_activity where type='refunded' and object_id in ( " 
+                            + "Select order_item_id from wp_woocommerce_order_items where order_id = @order_id and order_item_type = 'gift_card')) as GiftCardRefundedAmount,"
+                            + "(select Sum(isnull(cast(meta_value as float),0)) FROM wp_woocommerce_order_itemmeta where  meta_key='amount' and order_item_id in (select order_item_id FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type = 'gift_card')) as giftCardAmount,"
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " where os.id = @order_id "

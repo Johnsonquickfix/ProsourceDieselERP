@@ -149,14 +149,19 @@
             DataTable DT = new DataTable();
             try
             {
-                if (country == "CA")
+                string strwhere = "";
+                if (country != null)
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from erp_statelist  where StateFullName like '" + strSearch + "%' ;");
+                    strwhere = "and Country='" + country + "'";
                 }
-                else
-                {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by ZIPCodes1.StateFullName ");
-                }
+                //if (country == "CA")
+                //{
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_statelist  where (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') "+ strwhere +" ;");
+                //}
+                //else
+                //{
+                //    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by ZIPCodes1.StateFullName ");
+                //}
             }
             catch (Exception ex)
             { throw ex; }

@@ -743,7 +743,7 @@ function getOrderItemList(oid) {
     //let coupon_list = [];
     ajaxFunction('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '', giftcardHtml = '';
-        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00;
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardRefundAmt = 0.00;
         $.each(data, function (i, row) {
             let orderitemid = parseInt(row.order_item_id) || 0;
             if (row.product_type == 'line_item') {
@@ -752,7 +752,7 @@ function getOrderItemList(oid) {
                 if (row.is_free)
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
-                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
 
                 itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
                 itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
@@ -817,8 +817,8 @@ function getOrderItemList(oid) {
                 let feetype = row.product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
                 feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-                feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+                feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
                 zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
@@ -848,9 +848,8 @@ function getOrderItemList(oid) {
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(row.total) || 0.00);
             }
-            else if (row.product_type == 'tax') {
-                $("#salesTaxTotal").data("orderitemid", orderitemid);
-            }
+            else if (row.product_type == 'tax') { $("#salesTaxTotal").data("orderitemid", orderitemid); }
+            else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardRefundAmt += row.total; }
         });
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
@@ -866,7 +865,7 @@ function getOrderItemList(oid) {
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt) + zRefundAmt).toFixed(2));
-        if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
+        if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }, completeFun, errorFun, false);
 }
@@ -929,7 +928,7 @@ function bindItemListDataTable(data) {
                 if ($('#tritemId_' + pr.PKey).length <= 0) {
                     layoutHtml += '<tr id="tritemId_' + pr.PKey + '" data-id="' + pr.PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="' + pr.order_item_id + '" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
                     if (pr.is_free) layoutHtml += '<td class="text-center"></td>';
-                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     layoutHtml += '<td>' + pr.product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + pr.reg_price.toFixed(2) + '</td>';
                     if (pr.is_free) layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + pr.PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
@@ -1079,8 +1078,8 @@ function ApplyFee(orderitemid, feevalue) {
         let feeHtml = '';
         if (orderitemid > 0) {
             $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
-            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             $('#trfeeid_' + orderitemid).empty().append(feeHtml);
         }
@@ -1149,7 +1148,7 @@ function ApplyGiftCard() {
     $.ajax({
         type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            let data = JSON.parse(result); console.log(data);
+            let data = JSON.parse(result);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
             if (data[0].giftcard_amount > 0) {
                 if (_total <= 0) { swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
@@ -1182,38 +1181,16 @@ function ApplyGiftCard() {
     calcFinalTotals();
 }
 function deleteAllGiftCard(GiftCode) {
-    debugger
-    let gc_orderitemID = $('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid");
-    console.log(gc_orderitemID);
-
-    if (gc_orderitemID != '0') {
-        let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        type: "POST", url: '/Orders/DeleteGiftCard', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                        success: function (result) {
-                            //Remove Gift Card
-                            $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-                        async: false
-                    });
-                }
-            });
-        calcFinalTotals();
-    }
-    else if (GiftCode != '') {
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) {
-                    //Remove Gift Card
-                    $('#li_' + GiftCode.replaceAll(' ', '_')).remove();
-                    calcFinalTotals();
-                }
-            });
-    }
+    let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
+                if (gc_orderitemID > 0)
+                    $.post('/Orders/DeleteGiftCard', obj).done(function (data) { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); });
+                else { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); }
+            }
+        });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {
@@ -1883,8 +1860,6 @@ function getItemShippingCharge(isFinalcal) {
                 });
             }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
-
-
     }
 }
 function calculateStateRecyclingFee() {

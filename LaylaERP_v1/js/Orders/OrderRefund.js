@@ -165,7 +165,7 @@ function getOrderItemList(oid) {
                 }
                 else {
                     feeHtml += '<td><input min="0" max="' + row.total + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + row.total + ')"></td>';
-                }                
+                }
                 feeHtml += '<td></td><td></td></tr>';
                 zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
                 $('#order_fee_line_items').append(feeHtml);
@@ -180,7 +180,7 @@ function getOrderItemList(oid) {
                 $('#order_shipping_line_items').append(shippingHtml);
             }
             else if (row.product_type == 'gift_card') {
-                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-orderitemid="' + orderitemid + '" data-pn="'+row.product_name.toString()+'">';
+                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-orderitemid="' + orderitemid + '" data-pn="' + row.product_name.toString() + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
                 giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span></div>';
@@ -458,7 +458,7 @@ function createItemsList() {
             let total = net_total - AvailableGiftCardAmount;
             giftcardtotal = AvailableGiftCardAmount;
             $('.btnRefundOk').data('nettotal', total);
-          
+
         }
         if (giftcardtotal > 0)
             _itmes.push({ order_item_id: 0, order_id: oid, product_name: 'Gift Card', product_type: 'gift_card', total: giftcardtotal });
@@ -490,21 +490,22 @@ function createItemsList() {
 function saveCO() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''),
         pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
-        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount;
+        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text();
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
 
-    $.ajax({
-        type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/Orders/SaveCustomerOrderRefund",
-        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            data = JSON.parse(data);
-            if (data[0].Response == "Success") {
-                let totalPay = net_total - AvailableGiftCardAmount;
-                if ($('#netPaymentTotal').text() >= totalPay) {
+    let totalPay = parseFloat(parseFloat(parseFloat(AvailableGiftCardAmount).toFixed(2) +orderTotal).toFixed(2) ).toFixed(2);
+    console.log(net_total, orderTotal, totalPay, AvailableGiftCardAmount);
+    if (totalPay > net_total) {
+        $.ajax({
+            type: "POST", contentType: "application/json; charset=utf-8",
+            url: "/Orders/SaveCustomerOrderRefund",
+            data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data[0].Response == "Success") {
                     if (pay_gift == '') {
                         if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
@@ -546,15 +547,13 @@ function saveCO() {
                     $('.billinfo').prop("disabled", true);
                     swal('Success!', 'Order placed successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
                 }
-                else {
-                    swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false;
-                }
-            }
-            else { swal('Error', data[0].Response, "error").then((result) => { return false; }); }
-        },
-        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); isEdit(false); },
-    });
+                else { swal('Error', data[0].Response, "error").then((result) => { return false; }); }
+            },
+            error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
+        });
+    }
+    else { swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false; }
     return false;
 }
 

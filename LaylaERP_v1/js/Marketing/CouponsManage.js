@@ -185,7 +185,7 @@ $('#btnmontholyautoGenerate').click(function () {
                         beforeSend: function () { $("#loader").show(); },
                         success: function (data) {
                             if (data.status == true) {
-                                swal("alert", data.message, "success");
+                                swal("Success", data.message, "success");
                                 $("#roleModal").modal('hide');
                                 GetDetails();
                                 dataGridLoad('');

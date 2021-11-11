@@ -284,7 +284,7 @@ function GetCustomerByID(id) {
                     allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
                         url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                        data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
                         processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
                         error: function (xhr, status, err) { }, cache: true
                     }

@@ -18,9 +18,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','shop_coupon',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
+                DataTable dt = new DataTable();
+                //string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','shop_coupon',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "I"),
                     new SqlParameter("@post_date", DateTime.Now),
                     new SqlParameter("@post_date_gmt", DateTime.UtcNow),
                     new SqlParameter("@post_content", string.Empty),
@@ -32,7 +34,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_content_filtered", string.Empty),
                     new SqlParameter("@post_mime_type", string.Empty),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                dt = SQLHelper.ExecuteDataTable("erp_Coupon_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             } 
             catch (Exception Ex)
@@ -70,10 +74,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts set post_excerpt=@post_excerpt  where ID =" + ID + "";
+                string strsql = "erp_Coupon_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@post_excerpt", model.post_excerpt),
+                    new SqlParameter("@id", model.ID),
                     //new SqlParameter("@post_title", model.post_title),
                     //new SqlParameter("@post_name", model.post_name),
                 };
@@ -108,9 +114,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                // string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+
+                string strsql = "erp_Coupon_iud"; 
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -145,9 +154,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,UNIX_TIMESTAMP(STR_TO_DATE(@meta_value, '%m/%d/%Y'))); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_Coupon_iud";
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "IME"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -181,9 +191,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_postmeta set meta_value=@meta_value where post_id=@post_id and meta_key=@meta_key";
+                string strsql = "erp_Coupon_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "UM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -217,9 +228,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_postmeta set meta_value=UNIX_TIMESTAMP(STR_TO_DATE(@meta_value, '%m/%d/%Y'))  where post_id=@post_id and meta_key=@meta_key";
+                string strsql = "erp_Coupon_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "UME"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -675,7 +687,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select post_title from wp_posts"
                                 + " WHERE post_type = 'shop_coupon' and post_title = '" + model.post_title + "' "
-                                + " limit 10;";
+                                + ";";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -708,7 +720,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select month_type from wp_Coupons_month"
                                      + " WHERE month_type = '" + monthyear + "' "
-                                     + " limit 10;";
+                                     + " ";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -724,11 +736,22 @@ namespace LaylaERP.BAL
             {
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 StringBuilder strSql = new StringBuilder();
-               
-                strSql.Append(string.Format("insert into wp_posts(post_author,post_date,post_date_gmt,post_content,post_title,post_excerpt,post_status,comment_status,ping_status,post_password,post_name,to_ping,pinged,post_modified,post_modified_gmt,post_content_filtered,post_parent,guid,menu_order,post_type,post_mime_type,comment_count,qb_sync,qb_refund_sync) (select post_author,'"+ cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','"+ cDate.ToString("yyyy-MM-dd HH:mm:ss") + "',post_content, concat(post_title , '"+ code + "') post_title ,post_excerpt,post_status,comment_status,ping_status,post_password,post_name,to_ping,pinged,post_modified,post_modified_gmt,post_content_filtered,ID,guid,menu_order,post_type,post_mime_type,comment_count,qb_sync,qb_refund_sync from wp_posts_Coupons);"));
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value)(select wp.id pid,meta_key,case when meta_key = 'date_expires' then UNIX_TIMESTAMP(STR_TO_DATE('"+ExpireDate+"', '%m/%d/%Y')) else meta_value end meta_value from wp_postmeta_coupons inner join wp_posts_Coupons on wp_posts_Coupons.id = wp_postmeta_coupons.post_id inner join wp_posts wp on wp.post_parent = wp_posts_Coupons.ID and wp.post_type = 'shop_coupon' and wp.post_title like '%"+code+"%'); "));
+
+                strSql.Append(string.Format("insert into wp_posts(post_author,post_date,post_date_gmt,post_content,post_title,post_excerpt,post_status,comment_status,ping_status,post_password,post_name,to_ping,pinged,post_modified,post_modified_gmt,post_content_filtered,post_parent,guid,menu_order,post_type,post_mime_type,comment_count,qb_sync,qb_refund_sync) (select post_author,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "',post_content, concat(post_title , '" + code + "') post_title ,post_excerpt,post_status,comment_status,ping_status,post_password,post_name,to_ping,pinged,post_modified,post_modified_gmt,post_content_filtered,ID,guid,menu_order,post_type,post_mime_type,comment_count,qb_sync,qb_refund_sync from wp_posts_Coupons);"));
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value)(select wp.id pid,meta_key, case when meta_key = 'date_expires' then convert(varchar(200), DATEDIFF(SECOND, '1970-01-01','" + ExpireDate+ "'))  else meta_value end meta_value from wp_postmeta_coupons inner join wp_posts_Coupons on wp_posts_Coupons.id = wp_postmeta_coupons.post_id inner join wp_posts wp on wp.post_parent = wp_posts_Coupons.ID and wp.post_type = 'shop_coupon' and wp.post_title like '%" + code + "%'); "));
                 strSql.Append(string.Format("insert into wp_Coupons_month (month_type) values ('{0}'); ", code));
-                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+              result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                //string strsql = "erp_Coupon_iud";
+                //SqlParameter[] para =
+                //{
+                //    new SqlParameter("@qflag", "IAU"),                    
+                //    new SqlParameter("@code", code),
+                //    new SqlParameter("@ExpireDate", ExpireDate),
+                //    new SqlParameter("@cDate", cDate),              
+                //};
+               // int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+
+               // result = SQLHelper.ExecuteNonQuery(strSql.ToString());
 
                // string query = strSql.ToString();
 

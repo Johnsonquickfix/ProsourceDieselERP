@@ -752,7 +752,7 @@ function getOrderItemList(oid) {
                 if (row.is_free)
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
-                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
 
                 itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
                 itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
@@ -817,8 +817,8 @@ function getOrderItemList(oid) {
                 let feetype = row.product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
                 feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-                feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+                feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
                 zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
@@ -929,7 +929,7 @@ function bindItemListDataTable(data) {
                 if ($('#tritemId_' + pr.PKey).length <= 0) {
                     layoutHtml += '<tr id="tritemId_' + pr.PKey + '" data-id="' + pr.PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="' + pr.order_item_id + '" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
                     if (pr.is_free) layoutHtml += '<td class="text-center"></td>';
-                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     layoutHtml += '<td>' + pr.product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + pr.reg_price.toFixed(2) + '</td>';
                     if (pr.is_free) layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + pr.PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
@@ -1079,8 +1079,8 @@ function ApplyFee(orderitemid, feevalue) {
         let feeHtml = '';
         if (orderitemid > 0) {
             $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
-            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             $('#trfeeid_' + orderitemid).empty().append(feeHtml);
         }

@@ -142,8 +142,8 @@
         //$('#txtBillingPostCode').change(function () {
         //    getdatabyzip();
         //})
+  
         $("#txtBillingState").select2({
-
             allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
                 url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,

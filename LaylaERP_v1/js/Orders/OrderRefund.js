@@ -511,7 +511,7 @@ function saveCO() {
                     }
                     else if (AvailableGiftCardAmount >= 0 && pay_gift == 'gift_card') {
                         if (AvailableGiftCardAmount == 0) {
-
+                            let total = net_total - AvailableGiftCardAmount;
                             $('.btnRefundOk').data('nettotal', total);
                             if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();

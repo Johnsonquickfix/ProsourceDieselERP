@@ -67,7 +67,7 @@ $('#btnSave').click(function () {
             dataType: "json",
             success: function (data) {
                 if (data.status == true) {
-                    swal("alert", data.message, "success");
+                    swal("Success", data.message, "success");
                     $("#roleModal").modal('hide');
                     fillshiping();
                 }
@@ -104,7 +104,7 @@ $('#btndelete').click(function () {
             dataType: "json",
             success: function (data) {
                 if (data.status == true) {
-                    swal("alert", data.message, "success");
+                    swal("Success", data.message, "success");
                     $("#deletepriceModal").modal('hide');
                     dataGridLoad();
                 }
@@ -176,14 +176,14 @@ function Adddetails() {
                         dataGridLoad('');
                         $('#ddlState').val(null).trigger('change');
                         ClearControl();
-                       swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     else {
                         dataGridLoad('');
                         $('#ddlState').val(null).trigger('change');
                         ClearControl();
                         // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();

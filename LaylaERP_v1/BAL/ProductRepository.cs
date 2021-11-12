@@ -639,7 +639,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into Shipping_class(Shippingclass_Name)values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into Shipping_class(Shippingclass_Name)values(@Shippingclass_Name);Select SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@Shippingclass_Name", model.Shippingclass_Name),
@@ -685,7 +685,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "' and  (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') order by StateFullName limit 50;");
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "' and  (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') order by StateFullName;");
 
             }
             catch (Exception ex)
@@ -698,7 +698,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "'  order by StateFullName limit 70;");
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "'  order by StateFullName;");
 
             }
             catch (Exception ex)
@@ -1001,7 +1001,7 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,eslcun.CountryFullName Country,esl.StateFullName"
-                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,taxable"
+                + " State,Method, Cast(CONVERT(DECIMAL(10,2),Shipping_price) as nvarchar) Shipping_price ,Type,taxable"
                 + " from ShippingClass_Details ScD"
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
@@ -1016,7 +1016,10 @@ namespace LaylaERP.BAL
               //+ " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
               //+ " WHERE rowid > 0" + strWhr
 
-              + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+              //+ " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+
+                + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; " ;
 
                 strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
@@ -1435,7 +1438,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select rowid from ShippingClass_Details"
                                 + " WHERE fk_ShippingID =" + model.fk_ShippingID + " and countrycode = '" + model.countrycode + "' and statecode = '" + model.statecode + "' "
-                                + " limit 10;";
+                                + " ;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

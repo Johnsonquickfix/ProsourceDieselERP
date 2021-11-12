@@ -25,7 +25,7 @@ namespace LaylaERP.BAL
 
                     ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
                     + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                    + " format(umatotal.meta_value, 2) Total,"
+                    + " cast(umatotal.meta_value as decimal(10,2)) Total,"
                     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
                     + " FROM wp_posts u"                
                     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
@@ -37,7 +37,7 @@ namespace LaylaERP.BAL
                     + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                    + " WHERE post_type IN('shop_order') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT order_id FROM wp_woocommerce_order_items WHERE order_item_id  IN (SELECT order_item_id FROM wp_woocommerce_order_itemmeta  WHERE meta_key = '_product_id' AND meta_value IN(612995, 611286))) order by post_status";
+                    + " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT order_id FROM wp_woocommerce_order_items WHERE order_item_id  IN (SELECT order_item_id FROM wp_woocommerce_order_itemmeta  WHERE meta_key = '_product_id' AND meta_value IN(612995, 611286))) order by post_status";
 
                 }
                 else
@@ -91,10 +91,10 @@ namespace LaylaERP.BAL
                     + " umastatebilling.meta_value billingstate,"
                     + " umapostalcodebilling.meta_value billingzip,"
                     + " umacountrybilling.meta_value billingcountry,"
-                    + " format(umashipingamount.meta_value, 2) shipping_amount, 0 handling_amount,"
-                    + " format(umatotal.meta_value, 2) - format(umatax.meta_value, 2) Total,"
-                    + " format(umadiscount.meta_value, 2) Discount,"
-                    + " format(umatax.meta_value, 2) Tax,"
+                    + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                    + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                    + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
                     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
                     + " FROM wp_posts u"
                     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
@@ -116,7 +116,7 @@ namespace LaylaERP.BAL
                     + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                    + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed') AND post_type='shop_order' AND  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) AND umastate.meta_value LIKE 'AZ' order by post_status";
+                    + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) AND umastate.meta_value LIKE 'AZ' order by post_status";
 
                 }
                 else
@@ -225,9 +225,9 @@ namespace LaylaERP.BAL
                     todate = DateTime.Parse(to_date);
 
                     ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"                   
-                    + " format(umatotal.meta_value, 2) Total,"
-                    + " format(umadiscount.meta_value, 2) Discount,"
-                    + " format(umatax.meta_value, 2) Tax,"
+                    + " cast(umatotal.meta_value as decimal(10,2)) Total,"
+                    + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
                     + " post_date Podiumdate,"
                     + " umtransaction.meta_value TransactionID,"
                     + " umorerItemmeta.meta_value SubTotal,"
@@ -243,7 +243,7 @@ namespace LaylaERP.BAL
                     + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmeta on umorerItemmeta.meta_key='_line_subtotal' And umorerItemmeta.order_item_id = umorerItem.order_id"
                     + " LEFT OUTER JOIN wp_woocommerce_order_items umorerfee on umorerfee.order_item_type='fee' And umorerfee.order_id = u.ID"
                     + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmetafee on umorerItemmetafee.meta_key='_line_total' And umorerItemmetafee.order_item_id = umorerfee.order_id"
-                    + " WHERE post_type IN('shop_order') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT post_id FROM wp_postmeta WHERE meta_key='_payment_method' AND meta_value='podium') order by post_status";
+                    + " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT post_id FROM wp_postmeta WHERE meta_key='_payment_method' AND meta_value='podium') order by post_status";
 
                 }
                 else

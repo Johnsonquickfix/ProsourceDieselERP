@@ -149,5 +149,26 @@
             }
             return dt;
         }
+
+        public static DataTable UpdateOrderShipped(long order_id,string order_name, string shipped_items,int shipped_qty, string tracking_num, string tracking_via)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { 
+                    new SqlParameter("@order_id", order_id),
+                    new SqlParameter("@order_name", order_name),
+                    new SqlParameter("@shipped_items", shipped_items),
+                    new SqlParameter("@shipped_qty", shipped_qty),
+                    new SqlParameter("@tracking_num", tracking_num),
+                    new SqlParameter("@tracking_via", tracking_via),
+                    new SqlParameter("@qflag", "UOS"),
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_shipped_track", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

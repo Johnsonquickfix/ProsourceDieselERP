@@ -36,7 +36,7 @@ namespace LaylaERP.BAL
                              + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
                          " from wp_users, wp_usermeta um WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";*/
 
-                    sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
+                    sqlquery = "select ID, user_login, user_status, iif(user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
                                      + "um.meta_value as meta_value, umph.meta_value Phone,CONCAT(umfn.meta_value,' ',umln.meta_value) as name, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
                                      + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
                                      + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
@@ -46,7 +46,7 @@ namespace LaylaERP.BAL
                                      + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = u.ID"
                                      + " LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key = 'first_name' And umfn.user_id = u.ID"
                                      + " LEFT OUTER JOIN wp_usermeta umln on umln.meta_key = 'last_name' And umln.user_id = u.ID"
-                                     + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID  WHERE DATE(user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ID ASC";
+                                     + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID  WHERE cast(user_registered as date)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and cast(user_registered as date)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ID ASC";
                 }
                 else if (!string.IsNullOrEmpty(rolee))
                 {
@@ -60,7 +60,7 @@ namespace LaylaERP.BAL
                              + " (case when um.meta_value like '%test%' then 'Test,' else '' end)) meta_value"
                          +" from wp_users, wp_usermeta um WHERE um.meta_value like '%" + rolee + "%' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";*/
 
-                    sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
+                    sqlquery = "select ID, user_login, user_status, iif(user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
                                   + "um.meta_value as meta_value, umph.meta_value Phone,CONCAT(umfn.meta_value,' ',umln.meta_value) as name, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
                                   + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
                                   + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
@@ -85,7 +85,7 @@ namespace LaylaERP.BAL
                             +" (case when um.meta_value like '%test%' then 'Test,' else '' end)) meta_value"
                         +" from wp_users, wp_usermeta um WHERE um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";*/
 
-                    sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
+                    sqlquery = "select ID, user_login, user_status, iif (user_status = 0,'Active','InActive') as status,user_email, user_registered as created_date,"
                               + "um.meta_value as meta_value, umph.meta_value Phone,CONCAT(umfn.meta_value,' ',umln.meta_value) as name, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
                               + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
                               + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
@@ -292,25 +292,25 @@ namespace LaylaERP.BAL
                     todate = DateTime.ParseExact(to_date, "MM-dd-yyyy", null);
 
                     //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
-                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,format(os.net_total, 2) as total,format(os.tax_total,2) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,(os.total_sales) as subtotal,(os.net_total) as total,(os.tax_total) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
                          + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                          + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                          + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
                          + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
-                         + " WHERE pmm.meta_value='"+user+"' and p.post_type = 'shop_order'and p.post_status != 'auto-draft' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
+                         + " WHERE pmm.meta_value='"+user+"' and p.post_type = 'shop_order'and p.post_status != 'auto-draft' and cast(os.date_created as date)>='" + fromdate.ToString("yyyy-MM-dd") + "' and cast(os.date_created as date)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id";
 
                 }
                 else
                 {
                     //ssql = "select ws.order_id as id,ws.order_id as order_id,DATE_FORMAT(ws.date_created, '%M %d %Y') order_created,substring(ws.status,4) as status,ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total,ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
-                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,"
-                            + "format(os.net_total, 2) as total, format(os.tax_total,2) as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty, cast(os.total_sales as decimal(10,2)) as subtotal,"
+                            + " cast(os.net_total as decimal(10,2)) as total, cast(os.tax_total as decimal(10,2)) as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
                             + " REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
                             + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
-                            + " WHERE pmm.meta_value='" + user + "' and p.post_type = 'shop_order' and p.post_status != 'auto-draft' order by p.id DESC limit 500";
+                            + " WHERE pmm.meta_value='" + user + "' and p.post_type = 'shop_order' and p.post_status != 'auto-draft' order by p.id";
                 }
                 DataSet ds1 = new DataSet();
                 ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
@@ -345,9 +345,9 @@ namespace LaylaERP.BAL
                 {
                     DateTime fromdateuser = DateTime.ParseExact(from_dateusers, "MM-dd-yyyy", null);
                     DateTime todateusers = DateTime.ParseExact(to_dateusers, "MM-dd-yyyy", null);
-                    
 
-                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, ur.user_registered as created_date, if(user_status=0,'Active','InActive') as status,user_email,"
+
+                    /*sqlquery = "select ur.ID,null User_Image, user_login , user_status, ur.user_registered as created_date, iif(user_status=0,'Active','InActive') as status,user_email,"
                           + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'first_name') as first_name,"
                                 + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'last_name') as last_name,"
                                 + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_address_1') as billing_address_1,"
@@ -356,20 +356,37 @@ namespace LaylaERP.BAL
                                 + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_phone') as billing_phone,"
                                 + " (SELECT concat(first_name,' ', last_name)) as name,"
                                 + " (SELECT concat(billing_address_1,' ', billing_city,' ', billing_postcode))as address"
-                        + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE DATE(ur.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ur.ID DESC";
+                        + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE DATE(ur.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ur.ID DESC";*/
+                    sqlquery = "SELECT ur.id,user_nicename, CONVERT(VARCHAR(12), user_registered, 101) created_date, user_status,"
+                          + " umadd.meta_value as address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
+                          + " umph.meta_value billing_phone from wp_users ur INNER JOIN wp_usermeta um on um.meta_key = 'wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
+                          + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = ur.ID"
+                          + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = ur.ID"
+                          + " LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key = 'first_name' And umfn.user_id = ur.ID"
+                          + " LEFT OUTER JOIN wp_usermeta umln on umln.meta_key = 'last_name' And umln.user_id = ur.ID WHERE cast(user_registered as date)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and cast(user_registered as date)<='" + todateusers.ToString("yyyy-MM-dd") + "' order by ur.id  desc";
                 }
                 else
                 {
-                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, ur.user_registered as created_date, if(user_status=0,'Active','InActive') as status,user_email,"
-                                + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'first_name') as first_name,"
-                                + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'last_name') as last_name,"
-                                + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_address_1') as billing_address_1,"
-                                + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_city') as billing_city,"
-                                + " (SELECT meta_value from wp_usermeta WHERE user_id = ur.ID AND meta_key='billing_postcode')as billing_postcode,"
-                                + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_phone') as billing_phone,"
-                                + " (SELECT concat(first_name,' ', last_name)) as name,"
-                                + " (SELECT concat(billing_address_1,' ', billing_city,' ', billing_postcode))as address"
-                          + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' ORDER BY ur.ID DESC limit 500";
+                    //sqlquery = "select ur.ID,null User_Image, user_login , user_status, ur.user_registered as created_date, iif(user_status=0,'Active','InActive') as status,user_email,"
+                    //            + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'first_name') as first_name,"
+                    //            + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'last_name') as last_name,"
+                    //            + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_address_1') as billing_address_1,"
+                    //            + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_city') as billing_city,"
+                    //            + " (SELECT meta_value from wp_usermeta WHERE user_id = ur.ID AND meta_key='billing_postcode')as billing_postcode,"
+                    //            + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'billing_phone') as billing_phone,"
+                    //            + " (SELECT concat(first_name,' ', last_name)) as name,"
+                    //            + " (SELECT concat(billing_address_1,' ', billing_city,' ', billing_postcode))as address"
+                    //      + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'";
+
+                    sqlquery = "SELECT top 100 ur.id,user_nicename, CONVERT(VARCHAR(12), user_registered, 101) created_date, user_status,"
+                               + " CONCAT(umadd.meta_value,'') address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
+                               + " umph.meta_value billing_phone from wp_users ur INNER JOIN wp_usermeta um on um.meta_key = 'wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
+                               + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = ur.ID"
+                               + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = ur.ID"
+                               //+ " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = ur.ID"
+                               //+ " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = ur.ID"
+                               + " LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key = 'first_name' And umfn.user_id = ur.ID"
+                               + " LEFT OUTER JOIN wp_usermeta umln on umln.meta_key = 'last_name' And umln.user_id = ur.ID WHERE 1 = 1 order by ur.id  desc";
                 }
                 customersexportlist.Clear();
                 DataSet ds1 = new DataSet();

@@ -21,7 +21,7 @@ function getVendorList() {
             $('#ddlVendorList').html(opt);
         }
 
-    });
+    }); 
 }
 function getWareHouseList() {
     let vendorID = $('#ddlVendorList').val();

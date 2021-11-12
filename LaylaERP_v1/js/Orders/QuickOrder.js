@@ -1956,32 +1956,32 @@ function createItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function ValidateData() {
-    if ($('#txtbillfirstname').val() == '') { swal('Alert!', 'Please Enter Billing First Name.', "info").then((result) => { $('#txtbillfirstname').focus(); return false; }); return false; }
-    else if ($('#txtbilllastname').val() == '') { swal('Alert!', 'Please Enter Billing Last Name.', "info").then((result) => { $('#txtbilllastname').focus(); return false; }); return false; }
-    else if ($('#txtbilladdress1').val() == '') { swal('Alert!', 'Please Enter Billing Address.', "info").then((result) => { $('#txtbilladdress1').focus(); return false; }); return false; }
-    else if ($('#txtbillzipcode').val() == '') { swal('Alert!', 'Please Enter Billing Post Code.', "info").then((result) => { $('#txtbillzipcode').focus(); return false; }); return false; }
-    else if ($('#txtbillcity').val() == '') { swal('Alert!', 'Please Enter Billing City.', "info").then((result) => { $('#txtbillcity').focus(); return false; }); return false; }
-    else if ($('#ddlbillcountry').val() == '') { swal('Alert!', 'Please Select Billing Country.', "info").then((result) => { $('#ddlbillcountry').select2('open'); return false; }); return false; }
-    else if ($('#ddlbillstate').val() == '' || $('#ddlbillstate').val() == '0') { swal('Alert!', 'Please Select Billing State.', "info").then((result) => { $('#ddlbillstate').select2('open'); return false; }); return false; }
-    else if ($('#txtbillemail').val() == '') { swal('Alert!', 'Please Select Billing EMail Address.', "info").then((result) => { $('#txtbillemail').focus(); return false; }); return false; }
-    else if ($('#txtshipfirstname').val() == '') { swal('Alert!', 'Please Enter Shipping First Name.', "info").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
-    else if ($('#txtshiplastname').val() == '') { swal('Alert!', 'Please Enter Shipping Last Name.', "info").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
-    else if ($('#txtshipaddress1').val() == '') { swal('Alert!', 'Please Enter Shipping Address.', "info").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
-    else if ($('#txtshipzipcode').val() == '') { swal('Alert!', 'Please Enter Shipping Post Code.', "info").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
-    else if ($('#txtshipcity').val() == '') { swal('Alert!', 'Please Enter Shipping City.', "info").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }
-    else if ($('#ddlshipcountry').val() == '') { swal('Alert!', 'Please Select Shipping Country.', "info").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
-    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Alert!', 'Please Select Shipping State.', "info").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
+    if ($('#txtbillfirstname').val() == '') { swal('Error!', 'Please Enter Billing First Name.', "error").then((result) => { $('#txtbillfirstname').focus(); return false; }); return false; }
+    else if ($('#txtbilllastname').val() == '') { swal('Error!', 'Please Enter Billing Last Name.', "error").then((result) => { $('#txtbilllastname').focus(); return false; }); return false; }
+    else if ($('#txtbilladdress1').val() == '') { swal('Error!', 'Please Enter Billing Address.', "error").then((result) => { $('#txtbilladdress1').focus(); return false; }); return false; }
+    else if ($('#txtbillzipcode').val() == '') { swal('Error!', 'Please Enter Billing Post Code.', "error").then((result) => { $('#txtbillzipcode').focus(); return false; }); return false; }
+    else if ($('#txtbillcity').val() == '') { swal('Error!', 'Please Enter Billing City.', "error").then((result) => { $('#txtbillcity').focus(); return false; }); return false; }
+    else if ($('#ddlbillcountry').val() == '') { swal('Error!', 'Please Select Billing Country.', "error").then((result) => { $('#ddlbillcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlbillstate').val() == '' || $('#ddlbillstate').val() == '0') { swal('Error!', 'Please Select Billing State.', "error").then((result) => { $('#ddlbillstate').select2('open'); return false; }); return false; }
+    else if ($('#txtbillemail').val() == '') { swal('Error!', 'Please Select Billing EMail Address.', "error").then((result) => { $('#txtbillemail').focus(); return false; }); return false; }
+    else if ($('#txtshipfirstname').val() == '') { swal('Error!', 'Please Enter Shipping First Name.', "error").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
+    else if ($('#txtshiplastname').val() == '') { swal('Error!', 'Please Enter Shipping Last Name.', "error").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
+    else if ($('#txtshipaddress1').val() == '') { swal('Error!', 'Please Enter Shipping Address.', "error").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
+    else if ($('#txtshipzipcode').val() == '') { swal('Error!', 'Please Enter Shipping Post Code.', "error").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Error!', 'Please Enter Shipping City.', "error").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }
+    else if ($('#ddlshipcountry').val() == '') { swal('Error!', 'Please Select Shipping Country.', "error").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Error!', 'Please Select Shipping State.', "error").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
     return true;
 }
 function saveCO() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
+    if (cid <= 0) { swal('Error!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
     if (!ValidateData()) { $("#loader").hide(); return false };
 
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+    if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     //console.log(obj);
@@ -2007,12 +2007,12 @@ function updateCO() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+        
+    if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     //console.log(obj);
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        title: 'Are you sure?', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

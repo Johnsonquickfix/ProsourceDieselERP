@@ -224,7 +224,7 @@ namespace LaylaERP.BAL
             try
             {
                 string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select SCOPE_IDENTITY() as ID;";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),

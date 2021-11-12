@@ -21,7 +21,7 @@ function getVendorList() {
             $('#ddlVendorList').html(opt);
         }
 
-    });
+    }); 
 }
 function getWareHouseList() {
     let vendorID = $('#ddlVendorList').val();
@@ -60,20 +60,20 @@ function ProductWarehouseGrid() {
                     //{ data: 'warehouse', title: 'Warehouse Name', sWidth: "25%" },
                     { data: 'post_title', title: 'Product Name', sWidth: "25%", class: 'text-left' },
                     {
-                        data: 'reg_price', title: 'Regular Price', sWidth: "25%",
+                        data: 'reg_price', title: 'Regular Price', sWidth: "18%",
                         render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
                     {
-                        data: 'sale_price', title: 'Sale Price', sWidth: "25%",
+                        data: 'sale_price', title: 'Sale Price', sWidth: "18%",
                         render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
                     {
-                        data: 'buy_price', title: 'Buying price', sWidth: "25%",
+                        data: 'buy_price', title: 'Buying price', sWidth: "19%",
                         render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
 
                     {
-                        data: 'stock', title: 'Stock', sWidth: "25%",
+                        data: 'stock', title: 'Units in Stock', sWidth: "20%",
 
                     },
 

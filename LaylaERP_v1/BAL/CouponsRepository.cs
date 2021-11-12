@@ -48,9 +48,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts_Coupons(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','shop_coupon',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
+                DataTable dt = new DataTable();
+                //string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','shop_coupon',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "I"),
                     new SqlParameter("@post_date", DateTime.Now),
                     new SqlParameter("@post_date_gmt", DateTime.UtcNow),
                     new SqlParameter("@post_content", string.Empty),
@@ -62,7 +64,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_content_filtered", string.Empty),
                     new SqlParameter("@post_mime_type", string.Empty),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                dt = SQLHelper.ExecuteDataTable("erp_AssignCoupon_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -95,10 +99,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts_Coupons set post_excerpt=@post_excerpt  where ID =" + ID + "";
+                string strsql = "erp_AssignCoupon_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@post_excerpt", model.post_excerpt),
+                    new SqlParameter("@id", model.ID),
                     //new SqlParameter("@post_title", model.post_title),
                     //new SqlParameter("@post_name", model.post_name),
                 };
@@ -136,14 +142,16 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta_coupons(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_AssignCoupon_iud";
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
+                
             }
             catch (Exception Ex)
             {
@@ -173,9 +181,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta_coupons(post_id,meta_key,meta_value) values(@post_id,@meta_key,UNIX_TIMESTAMP(STR_TO_DATE(@meta_value, '%m/%d/%Y'))); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_AssignCoupon_iud";
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "IME"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -210,9 +219,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_postmeta_coupons set meta_value=@meta_value where post_id=@post_id and meta_key=@meta_key";
+                string strsql = "erp_AssignCoupon_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "UM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -704,7 +714,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select post_title from wp_posts_Coupons"
                                 + " WHERE post_type = 'shop_coupon' and post_title = '" + model.post_title + "' "
-                                + " limit 10;";
+                                + ";";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

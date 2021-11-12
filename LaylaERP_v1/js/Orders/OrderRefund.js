@@ -490,14 +490,14 @@ function createItemsList() {
 function saveCO() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''),
         pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
-        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text();
+        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text().replace('$','');
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-
+    debugger
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-
-    let totalPay = parseFloat(parseFloat(parseFloat(AvailableGiftCardAmount).toFixed(2) +orderTotal).toFixed(2) ).toFixed(2);
-    console.log(net_total, orderTotal, totalPay, AvailableGiftCardAmount);
+    console.log(orderTotal);
+    let totalPay = parseFloat(AvailableGiftCardAmount).toFixed(2) + parseFloat(orderTotal).toFixed(2);
+    console.log( totalPay, AvailableGiftCardAmount);
     if (totalPay > net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",

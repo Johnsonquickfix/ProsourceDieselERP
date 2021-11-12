@@ -1,4 +1,5 @@
 ﻿using LaylaERP.UTILITIES;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,7 @@ namespace LaylaERP.Controllers
 
             try
             {
-                var verificationRequest = (HttpWebRequest)WebRequest.Create("https://www.sandbox.paypal.com/cgi-bin/webscr");
+                var verificationRequest = (HttpWebRequest)WebRequest.Create(clsPayPal.Paypal_IPNurl);
 
                 //Set values for the verification request
                 verificationRequest.Method = "POST";
@@ -71,15 +72,13 @@ namespace LaylaERP.Controllers
             ProcessVerificationResponse(verificationResponse);
         }
 
-
         private void LogRequest(HttpRequestBase request)
         {
-            try 
+            try
             {
                 if (!string.IsNullOrEmpty(request.QueryString.ToString()))
                 {
-                    // Persist the request values into a database or temporary data store
-                    clsPayPal.UpdatePaymentLog(request.QueryString.ToString());
+                    BAL.OrderRepository.UpdatePaymentLog(request.QueryString.ToString());
                 }
             }
             catch //(Exception exception)
@@ -89,19 +88,42 @@ namespace LaylaERP.Controllers
         }
 
         private void ProcessVerificationResponse(string verificationResponse)
-        {
-            clsPayPal.UpdatePaymentLog(verificationResponse);
+        {            
             if (verificationResponse.Equals("VERIFIED"))
             {
+                //BAL.OrderRepository.UpdatePaymentLog(verificationResponse);
+                string id = Request.QueryString["invoice"];
                 // check that Payment_status=Completed   -- Request.QueryString["Payment_status"]
                 // check that Txn_id has not been previously processed   -- Request.QueryString["txn_id"]
                 // check that Receiver_email is your Primary PayPal email  -- Request.QueryString["Receiver_email"]
                 // check that Payment_amount/Payment_currency are correct  -- Request.QueryString["Payment_amount"]
                 // process payment
+                string str = "[{ post_id: 0, meta_key: '_paypal_status', meta_value: '" + Request.QueryString["Payment_status"].ToUpper() + "' }, { post_id: 0, meta_key: '_transaction_id', meta_value: '" + Request.QueryString["txn_id"] + "' },"
+                            + "{ post_id: 0, meta_key: 'Payer PayPal address', meta_value: '" + Request.QueryString["payer_email"] + "' }]";
+
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
+
+                BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+
             }
             else if (verificationResponse.Equals("INVALID"))
             {
-                //Log for manual investigation
+                string id = Request.QueryString["invoice"];
+                string str = "[{ post_id: 0, meta_key: '_paypal_status', meta_value: '" + Request.QueryString["Payment_status"].ToUpper() + "' }, { post_id: 0, meta_key: '_transaction_id', meta_value: '" + Request.QueryString["txn_id"] + "' },"
+                            + "{ post_id: 0, meta_key: 'Payer PayPal address', meta_value: '" + Request.QueryString["payer_email"] + "' }]";
+
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
+
+               BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+
             }
             else
             {

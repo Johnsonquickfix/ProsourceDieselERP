@@ -490,14 +490,11 @@ function createItemsList() {
 function saveCO() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''),
         pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
-        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text();
+        AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text().replace('$','');
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-
-    let totalPay = parseFloat(parseFloat(parseFloat(AvailableGiftCardAmount).toFixed(2) +orderTotal).toFixed(2) ).toFixed(2);
-    console.log(net_total, orderTotal, totalPay, AvailableGiftCardAmount);
+    let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     if (totalPay > net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
@@ -512,9 +509,9 @@ function saveCO() {
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else '';
                     }
-                    else if (AvailableGiftCardAmount > 0 && pay_gift == 'gift_card') {
+                    else if (AvailableGiftCardAmount >= 0 && pay_gift == 'gift_card') {
                         if (AvailableGiftCardAmount == 0) {
-
+                            let total = net_total - AvailableGiftCardAmount;
                             $('.btnRefundOk').data('nettotal', total);
                             if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
@@ -597,7 +594,7 @@ function PaypalPaymentRefunds() {
 
     let option = { strValue1: 'getToken' };
     swal.queue([{
-        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', option).then(response => {

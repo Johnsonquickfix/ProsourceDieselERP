@@ -145,7 +145,10 @@ namespace LaylaERP.Controllers
             {
                 CouponsRepository.AddCouponMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
+               if(!string.IsNullOrEmpty(model.date_expires))
                CouponsRepository.AddexpiresMeta(model, id, "date_expires", model.date_expires.ToString());
+               else
+                CouponsRepository.AddexpiresMeta(model, id, "date_expires", null);
 
         }
 
@@ -181,7 +184,10 @@ namespace LaylaERP.Controllers
             {
                 CouponsRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
-            CouponsRepository.UpdateExpiresData(model, id, "date_expires", model.date_expires.ToString());
+            if (!string.IsNullOrEmpty(model.date_expires))
+                CouponsRepository.UpdateExpiresData(model, id, "date_expires", model.date_expires.ToString());
+            else
+                CouponsRepository.UpdateExpiresData(model, id, "date_expires", null);
         }
 
         private void UpdateAuto_MetaData(CouponsModel model, long id)

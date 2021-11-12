@@ -182,6 +182,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddEmployeeBasicInfo(HrmsModel model)
         {
+            byte[] image =  System.IO.File.ReadAllBytes(Server.MapPath("~/Content/EmployeeProfileImage/default.png"));
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditEmployeeBasicInfo(model, model.rowid);
@@ -192,7 +193,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                int UserID = HrmsRepository.AddNewEmployeeasUser(model);
+                int UserID = HrmsRepository.AddNewEmployeeasUser(model, image);
                 if (UserID > 0)
                 {
                     AddEmployeeMetaData(model,UserID);

@@ -168,15 +168,15 @@ namespace LaylaERP.BAL
                 {
                     //strWhr += " and (ehe.is_active='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} {1} OFFSET {2} ROWS FETCH NEXT {3} ROWS ONLY", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
                 {
-                    strSql += "; SELECT ceil(Count(ehsc.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ehsc.rowid) TotalRecord from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 " + strWhr.ToString();
+                    strSql += "; SELECT (Count(ehsc.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ehsc.rowid) TotalRecord from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 " + strWhr.ToString();
                 }
                 else
                 {
-                    strSql += "; SELECT ceil(Count(ehsc.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ehsc.rowid) TotalRecord from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where ehe.fk_user ='" + id + "' " + strWhr.ToString();
+                    strSql += "; SELECT (Count(ehsc.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ehsc.rowid) TotalRecord from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where ehe.fk_user ='" + id + "' " + strWhr.ToString();
                 }
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -196,12 +196,13 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT ehsc.rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
-                    "Replace(format(loan_amount,2),',','') as loan_amount, Replace(format(loan_emi,2),',','') as loan_emi,loan_months, Replace(format(adv_amount,2),',','') as adv_amount, Replace(format(adv_emi,2),',','') as adv_emi,adv_emi_months,Replace(format(tds,2),',','') as tds," +
-                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type," +
-                    " comp_name,section,DATE_FORMAT(salary_date,'%m-%d-%Y') as salary_date,emp_class,Replace(format(special_pay,2),',','') as special_pay,Replace(format(wash_allowance,2),',','') as wash_allowance,Replace(format(incentive,2),',','') as incentive,Replace(format(cca,2),',','') as cca,Replace(format(vpf,2),',','') as vpf,Replace(format(adv_epf,2),',','') as adv_epf," +
-                    " Replace(format(insurance,2),',','') as insurance,Replace(format(emp_welfare,2),',','') as emp_welfare,Replace(format(imprest,2),',','') as imprest, Replace(format(misc_refund,2),',','') as misc_refund,Replace(format(fastival_allowance,2),',','') as fastival_allowance,bank_name,bank_account,epf_account,Replace(format(pay_sacle,2),',','') as pay_sacle, eheg.group_description as type" +
-                    " from erp_hrms_salary_configuration ehsc left join erp_hrms_employee_group eheg on eheg.rowid=ehsc.emp_type WHERE ehsc.rowid='" + id + "'";
+                string strquery = "SELECT ehsc.rowid,emp_type,fk_emp,Replace(Convert(decimal(18,2),basic),',','') basic,emp_code, Replace(Convert(decimal(18, 2), da), ',', '') as da, Replace(Convert(decimal(18, 2), hra), ',', '') as hra, " +
+                    "Replace(Convert(decimal(18, 2), other_allowance), ',', '') as other_allowance,Replace(Convert(decimal(18, 2), pf), ',', '') as pf , Replace(Convert(decimal(18, 2), loan_amount), ',', '') as loan_amount, Replace(Convert(decimal(18, 2), loan_emi), ',', '') as loan_emi,loan_months, " +
+                    "Replace(Convert(decimal(18, 2), adv_amount), ',', '') as adv_amount, Replace(Convert(decimal(18, 2), adv_emi), ',', '') as adv_emi, adv_emi_months,Replace(Convert(decimal(18, 2), tds), ',', '') as tds, Replace(Convert(decimal(18, 2), other_deductions), ',', '') as other_deductions, " +
+                    "Replace(Convert(decimal(18, 2), reimbursement), ',', '') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type, comp_name,section, FORMAT(salary_date, 'MM-dd-yy') as salary_date,emp_class,Replace(Convert(decimal(18, 2), special_pay), ',', '') as special_pay, " +
+                    "Replace(Convert(decimal(18, 2), wash_allowance), ',', '') as wash_allowance,Replace(Convert(decimal(18, 2), incentive), ',', '') as incentive, Replace(Convert(decimal(18, 2), cca), ',', '') as cca, Replace(Convert(decimal(18, 2), vpf), ',', '') as vpf,Replace(Convert(decimal(18, 2), adv_epf), ',', '') as adv_epf, " +
+                    "Replace(Convert(decimal(18, 2), insurance), ',', '') as insurance,Replace(Convert(decimal(18, 2), emp_welfare), ',', '') as emp_welfare,Replace(Convert(decimal(18, 2), imprest), ',', '') as imprest, Replace(Convert(decimal(18, 2), misc_refund), ',', '') as misc_refund,Replace(Convert(decimal(18, 2), fastival_allowance), ',', '') as fastival_allowance,bank_name,bank_account, " +
+                    "epf_account,Replace(Convert(decimal(18, 2), pay_sacle), ',', '') as pay_sacle, eheg.group_description as type from erp_hrms_salary_configuration ehsc left join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type WHERE ehsc.rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -221,49 +222,49 @@ namespace LaylaERP.BAL
             "cca=@cca, vpf=@vpf, adv_epf=@adv_epf, insurance=@insurance, emp_welfare=@emp_welfare, imprest=@imprest, misc_refund=@misc_refund, fastival_allowance=@fastival_allowance, bank_name=@bank_name, bank_account=@bank_account, epf_account=@epf_account, pay_sacle=@pay_sacle, section=@section where rowid = '" + model.rowid + "';";
                 SqlParameter[] para =
                  {
-                    new SqlParameter("@emp_type", model.emp_type),
-                    new SqlParameter("@fk_emp", model.fk_emp),
-                    new SqlParameter("@basic",model.basic),
-                    new SqlParameter("@emp_code", model.emp_code),
-                    new SqlParameter("@da", model.da),
-                    new SqlParameter("@hra", model.hra),
-                    new SqlParameter("@pf", model.pf),
-                    new SqlParameter("@loan_amount", model.loan_amount),
-                    new SqlParameter("@loan_emi", model.loan_emi),
+                    new SqlParameter("@emp_type", Convert.ToInt32(model.emp_type)),
+                    new SqlParameter("@fk_emp",  Convert.ToInt32(model.fk_emp)),
+                    new SqlParameter("@basic", Convert.ToDecimal(model.basic)),
+                    new SqlParameter("@emp_code", Convert.ToInt32(model.emp_code)),
+                    new SqlParameter("@da",Convert.ToDecimal(model.da)),
+                    new SqlParameter("@hra", Convert.ToDecimal(model.hra)),
+                    new SqlParameter("@pf", Convert.ToDecimal(model.pf)),
+                    new SqlParameter("@loan_amount", Convert.ToDecimal(model.loan_amount)),
+                    new SqlParameter("@loan_emi",Convert.ToDecimal(model.loan_emi)),
 
-                    new SqlParameter("@loan_months", model.loan_months),
-                    new SqlParameter("@adv_amount", model.adv_amount),
-                    new SqlParameter("@adv_emi",model.adv_emi),
-                    new SqlParameter("@adv_emi_months", model.adv_emi_months),
-                    new SqlParameter("@tds", model.tds),
-                    new SqlParameter("@other_deductions", model.other_deductions),
-                    new SqlParameter("@reimbursement", model.reimbursement),
-                    new SqlParameter("@work_type", model.work_type),
+                    new SqlParameter("@loan_months",  Convert.ToInt32(model.loan_months)),
+                    new SqlParameter("@adv_amount",Convert.ToDecimal(model.adv_amount)),
+                    new SqlParameter("@adv_emi",Convert.ToDecimal(model.adv_emi)),
+                    new SqlParameter("@adv_emi_months", Convert.ToInt32(model.adv_emi_months)),
+                    new SqlParameter("@tds", Convert.ToDecimal(model.tds)),
+                    new SqlParameter("@other_deductions", Convert.ToDecimal(model.other_deductions)),
+                    new SqlParameter("@reimbursement", Convert.ToDecimal(model.reimbursement)),
+                    new SqlParameter("@work_type", Convert.ToInt32(model.work_type)),
                     new SqlParameter("@default_work_hours", model.default_work_hours),
-                    new SqlParameter("@other_allowance", model.other_allowance),
-                    new SqlParameter("@prepare_salary", model.prepare_salary),
-                    new SqlParameter("@accounting_type", model.accounting_type),
-                    new SqlParameter("@hra_type", model.hra_type),
+                    new SqlParameter("@other_allowance", Convert.ToDecimal(model.other_allowance)),
+                    new SqlParameter("@prepare_salary", Convert.ToInt32(model.prepare_salary)),
+                    new SqlParameter("@accounting_type", Convert.ToInt32(model.accounting_type)),
+                    new SqlParameter("@hra_type", Convert.ToInt32(model.hra_type)),
                     //Extra
                     new SqlParameter("@comp_name", model.comp_name),
-                    new SqlParameter("@salary_date", model.salary_date),
-                    new SqlParameter("@emp_class", model.classemp),
-                    new SqlParameter("@special_pay", model.special_pay),
-                    new SqlParameter("@wash_allowance", model.wash_allowance),
-                    new SqlParameter("@incentive", model.incentive),
-                    new SqlParameter("@cca", model.cca),
-                    new SqlParameter("@vpf", model.vpf),
-                    new SqlParameter("@adv_epf",model.adv_epf),
-                    new SqlParameter("@insurance", model.insurance),
-                    new SqlParameter("@emp_welfare", model.emp_welfare),
-                    new SqlParameter("@imprest", model.imprest),
-                    new SqlParameter("@misc_refund", model.misc_refund),
-                    new SqlParameter("@fastival_allowance", model.fastival_allowance),
+                    new SqlParameter("@salary_date", Convert.ToDateTime(model.salary_date)),
+                    new SqlParameter("@emp_class", model.classemp ?? (object)DBNull.Value),
+                    new SqlParameter("@special_pay",Convert.ToDecimal(model.special_pay)),
+                    new SqlParameter("@wash_allowance",Convert.ToDecimal(model.wash_allowance)),
+                    new SqlParameter("@incentive", Convert.ToDecimal(model.incentive)),
+                    new SqlParameter("@cca", Convert.ToDecimal(model.cca)),
+                    new SqlParameter("@vpf", Convert.ToDecimal(model.vpf)),
+                    new SqlParameter("@adv_epf",Convert.ToDecimal(model.adv_epf)),
+                    new SqlParameter("@insurance", Convert.ToDecimal(model.insurance)),
+                    new SqlParameter("@emp_welfare",Convert.ToDecimal(model.emp_welfare)),
+                    new SqlParameter("@imprest", Convert.ToDecimal(model.imprest)),
+                    new SqlParameter("@misc_refund", Convert.ToDecimal(model.misc_refund)),
+                    new SqlParameter("@fastival_allowance", Convert.ToDecimal(model.fastival_allowance)),
                     new SqlParameter("@bank_name", model.bank_name),
                     new SqlParameter("@bank_account", model.bank_account),
                     new SqlParameter("@epf_account", model.epf_account),
-                    new SqlParameter("@pay_sacle", model.pay_sacle),
-                    new SqlParameter("@section", model.section),
+                    new SqlParameter("@pay_sacle", Convert.ToDecimal(model.pay_sacle)),
+                    new SqlParameter("@section", model.section ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

@@ -206,7 +206,7 @@ function getEmployeeCode() {
 $(document).on('click', "#btnNext1", function () {
     var url = window.location.pathname;
     var URL = url.substring(url.lastIndexOf('/') + 1);
-    debugger
+
     ID = $("#hfid").val();
     firstname = $("#txtFirstName").val().trim();
     lastname = $("#txtLastName").val().trim();

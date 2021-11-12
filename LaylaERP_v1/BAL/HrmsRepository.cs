@@ -211,7 +211,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@user_image", image),
                 };
 
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)

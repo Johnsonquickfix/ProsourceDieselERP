@@ -1630,5 +1630,22 @@
             }
             return dt;
         }
+        public static int UpdatePaymentLog(string strQueryString)
+        {
+            int result = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@logtext", strQueryString)
+                };
+                result = SQLHelper.ExecuteNonQuery("insert into erp_paypal_payment_log(logtext,logdate) select @logtext,GETUTCDATE()", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
     }
 }

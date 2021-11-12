@@ -171,11 +171,16 @@ namespace LaylaERP.BAL
 
                     ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
                     + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                    + " format(umatotal.meta_value, 2) Total,"
+                    + " cast(umatotal.meta_value as decimal(10,2)) Total,"
                     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name,"
                    // + " umitem.order_item_name orderItem,"
-                    + " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                   //+ " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                   //+" stuff((select(ui.order_item_name + ' x ' + uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' for xml path('')),1,1,'')  itemname"
+                    + " CONCAT(ui.order_item_name,' x ',+uim.meta_value) as itemname"
                     + " FROM wp_posts u"
+                    + " LEFT join wp_woocommerce_order_items ui on ui.order_id = u.ID"
+                    + " LEFT join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'"
+                    
                     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
@@ -184,8 +189,9 @@ namespace LaylaERP.BAL
                     + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"                   
-                    + " WHERE post_type IN('shop_order') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
+                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //+ " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
+                    + " WHERE ui.order_item_type = 'line_item' AND post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
 
                 }
                 else
@@ -309,7 +315,7 @@ namespace LaylaERP.BAL
 
                     + " LEFT OUTER JOIN wp_woocommerce_order_items umorerfee on umorerfee.order_item_type='fee' And umorerfee.order_id = u.ID"
                     + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmetafee on umorerItemmetafee.meta_key='_fee_amount' And umorerItemmetafee.order_item_id = umorerfee.order_item_id"
-                    + " WHERE post_status IN ('wc-completed','wc-processing','wc-refunded') and  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' order by post_status";
+                    + " WHERE post_status IN ('wc-completed','wc-processing','wc-refunded') and  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' order by post_status";
 
                 }
                 else
@@ -740,10 +746,10 @@ namespace LaylaERP.BAL
                         + " umastatebilling.meta_value billingstate,"
                         + " umapostalcodebilling.meta_value billingzip,"
                         + " umacountrybilling.meta_value billingcountry,"
-                        + " format(umashipingamount.meta_value, 2) shipping_amount, 0 handling_amount,"
-                        + " format(umatotal.meta_value, 2) - format(umatax.meta_value, 2) Total,"
-                        + " format(umadiscount.meta_value, 2) Discount,"
-                        + " format(umatax.meta_value, 2) Tax,"
+                        + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                        + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                        + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
                         + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
                         + " FROM wp_posts u"
                         + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
@@ -765,7 +771,7 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                        + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
+                        + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
                     }
                     else
                     {
@@ -782,10 +788,10 @@ namespace LaylaERP.BAL
                          + " umastatebilling.meta_value billingstate,"
                          + " umapostalcodebilling.meta_value billingzip,"
                          + " umacountrybilling.meta_value billingcountry,"
-                         + " format(umashipingamount.meta_value, 2) shipping_amount, 0 handling_amount,"
-                         + " format(umatotal.meta_value, 2) - format(umatax.meta_value, 2) Total,"
-                         + " format(umadiscount.meta_value, 2) Discount,"
-                         + " format(umatax.meta_value, 2) Tax,"
+                         + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                         + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                         + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                         + " cast(umatax.meta_value as decimal(10,2)) Tax,"
                          + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
                          + " FROM wp_posts u"
                          + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
@@ -807,7 +813,7 @@ namespace LaylaERP.BAL
                          + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                          + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                          + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                         + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
+                         + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
                     }
 
 
@@ -861,11 +867,11 @@ namespace LaylaERP.BAL
                     todate = DateTime.Parse(to_date);
                     if (txtState == "ALL")
                     {
-                        ssql = "SELECT distinct ID,post_date,"
+                        ssql = "SELECT distinct ID,post_date, post_status,"
                         + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
                         + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"                    
-                        + " format(umatax.meta_value, 2) Tax,"
-                        + " format(umrefunfee.meta_value, 2) RefundFee"  
+                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"  
                         + " FROM wp_posts u"
                         + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
@@ -885,15 +891,15 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"                   
                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"            
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"        
-                        + " WHERE post_type IN ('shop_order_refund') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
+                        + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
                     }
                     else
                     {
-                        ssql = "SELECT distinct ID,post_date,"
+                        ssql = "SELECT distinct ID,post_date, post_status,"
                         + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
                         + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
-                        + " format(umatax.meta_value, 2) Tax,"
-                        + " format(umrefunfee.meta_value, 2) RefundFee"
+                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
                         + " FROM wp_posts u"
                         + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
@@ -913,7 +919,7 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID" 
                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"         
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"         
-                        + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
+                        + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
                     }
                 }
                 else

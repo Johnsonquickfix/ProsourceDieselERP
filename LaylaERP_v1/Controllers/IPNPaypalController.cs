@@ -99,7 +99,7 @@ namespace LaylaERP.Controllers
                 // check that Payment_amount/Payment_currency are correct  -- Request.QueryString["Payment_amount"]
                 // process payment
                 string str = "[{ post_id: 0, meta_key: '_paypal_status', meta_value: '" + Request.QueryString["Payment_status"] + "' }, { post_id: 0, meta_key: '_transaction_id', meta_value: '" + Request.QueryString["txn_id"] + "' },"
-                            + "{ post_id: 0, meta_key: 'Payer PayPal address', meta_value: '" + Request.QueryString["payer_email"] + "' }, { post_id: 0, meta_key: '_podium_status', meta_value: 'PAID' }]";
+                            + "{ post_id: 0, meta_key: 'Payer PayPal address', meta_value: '" + Request.QueryString["payer_email"] + "' }]";
 
                 System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");

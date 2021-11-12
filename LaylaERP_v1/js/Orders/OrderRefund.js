@@ -509,7 +509,7 @@ function saveCO() {
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else '';
                     }
-                    else if (AvailableGiftCardAmount > 0 && pay_gift == 'gift_card') {
+                    else if (AvailableGiftCardAmount >= 0 && pay_gift == 'gift_card') {
                         if (AvailableGiftCardAmount == 0) {
 
                             $('.btnRefundOk').data('nettotal', total);
@@ -594,7 +594,7 @@ function PaypalPaymentRefunds() {
 
     let option = { strValue1: 'getToken' };
     swal.queue([{
-        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', option).then(response => {

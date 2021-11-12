@@ -73,7 +73,7 @@ function ProductWarehouseGrid() {
                     },
 
                     {
-                        data: 'stock', title: 'Stock', sWidth: "25%",
+                        data: 'stock', title: 'Units in Stock', sWidth: "25%",
 
                     },
 

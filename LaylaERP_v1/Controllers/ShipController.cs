@@ -169,17 +169,17 @@ namespace LaylaERP.Controllers
                         carrier = Request.QueryString["carrier"].ToString();
                     }
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                    
+
                     //str = string.Format("insert into shipped_track (order_id,order_name,shipped_items,tracking_num,tracking_via,ship_date) VALUES ('{0}','{1}','{2}','{3}','{4}',convert(varchar(11),GETUTCDATE(),0))", order_number, oname, "items", tracking_number, carrier);
                     //DAL.SQLHelper.ExecuteNonQueryWithTrans(str + ";insert into db_log select getdate(),'" + jsonData + "'");
-                    
+
                     System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
                     xmlDoc.LoadXml(jsonData);
                     System.Xml.XmlNodeList nodelist = xmlDoc.SelectNodes("/ShipNotice/Items/Item"); // get all <testcase> nodes
-                    string shipped_items = string.Empty;int shipped_qty = 0;
+                    string shipped_items = string.Empty; int shipped_qty = 0;
                     foreach (System.Xml.XmlNode node in nodelist) // for each <testcase> node
                     {
-                        shipped_items = node["Name"].InnerText + " (" + node["SKU"].InnerText + ") x " + node["Quantity"].InnerText;
+                        shipped_items = (shipped_items.Length > 0 ? shipped_items + ", " : "") + node["Name"].InnerText + " (" + node["SKU"].InnerText + ") x " + node["Quantity"].InnerText;
                         shipped_qty += int.Parse(node["Quantity"].InnerText);
                     }
                     ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);

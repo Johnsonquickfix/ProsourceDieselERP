@@ -16,6 +16,8 @@ namespace LaylaERP.UTILITIES
     public class clsPayPal
     {
         private static string base_url = "https://api.sandbox.paypal.com";
+        public static string Paypal_IPNurl = "https://www.sandbox.paypal.com/cgi-bin/webscr";
+        //public static string Paypal_IPNurl = "https://paypal.com/cgi-bin/webscr";
         public static string GetToken()
         {
             // string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
@@ -63,19 +65,6 @@ namespace LaylaERP.UTILITIES
                 else { result.invoice_number = string.Empty; }
             }
             return result.invoice_number;
-        }
-        public static int UpdatePaymentLog(string strQueryString)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
-                /// step 1 : wp_wc_order_stats
-                StringBuilder strSql = new StringBuilder(string.Format("insert into erp_paypal_payment_log(logtext,logdate) value('{0}','{1}');", strQueryString, cUTFDate.ToString("yyyy-MM-dd HH:mm:ss")));
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-            }
-            catch (Exception Ex) { throw Ex; }
-            return result;
         }
     }
     public class clsAccessToken

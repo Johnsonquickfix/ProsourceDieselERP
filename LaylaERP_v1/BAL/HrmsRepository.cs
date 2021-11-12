@@ -89,7 +89,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select rowid, designation from erp_hrms_designation order by rowid limit 50;");
+                DS = SQLHelper.ExecuteDataSet("Select rowid, designation from erp_hrms_designation order by rowid;");
 
             }
             catch (Exception ex)
@@ -125,7 +125,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('EMP', if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from erp_hrms_emp;");
+                DT = SQLHelper.ExecuteDataTable("SELECT ('EMP' + RIGHT('00000'+CAST(coalesce(max(rowid + 1),'1') AS VARCHAR(5)),5)) as Code from erp_hrms_emp;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -136,8 +136,8 @@ namespace LaylaERP.BAL
             try
             {
                 model.pwd = EncryptedPwd(model.pwd);
-                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active,fk_user,insperity_id )" +
-                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active,@fk_user,@insperity_id );SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active,fk_user,insperity_id)" +
+                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active,@fk_user,@insperity_id);SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@firstname", model.firstname),
@@ -191,14 +191,15 @@ namespace LaylaERP.BAL
             }
         }
         //Add customers
-        public static int AddNewEmployeeasUser(HrmsModel model)
+        public static int AddNewEmployeeasUser(HrmsModel model, byte[] image)
         {
             try
             {
+            
                 model.pwd = EncryptedPwd(model.pwd);
                 string username = model.firstname + " " + model.lastname;
 
-                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_login", model.email),
@@ -207,9 +208,10 @@ namespace LaylaERP.BAL
                     new SqlParameter("@user_email", model.email),
                     new SqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
                     new SqlParameter("@display_name", username),
-                    new SqlParameter("@user_image", ""),
+                    new SqlParameter("@user_image", image),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -222,7 +224,7 @@ namespace LaylaERP.BAL
             try
             {
                 string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select SCOPE_IDENTITY() as ID;";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
@@ -241,7 +243,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select SCOPE_IDENTITY() as ID;";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
@@ -280,8 +282,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country   )" +
-                                 " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country); SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country,emp_number   )" +
+                                 " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country,('EMP' + RIGHT('00000'+CAST(coalesce(" + id + ",'1') AS VARCHAR(5)),5))); SELECT SCOPE_IDENTITY();";
 
                 SqlParameter[] para =
                 {
@@ -345,7 +347,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strsql = "update erp_hrms_empdetails set emp_number = CONCAT('EMP', LPAD(" + id + ", 5, 0)), " +
+                string strsql = "update erp_hrms_empdetails set " +
                     "designation = @designation, department = @department, undertaking_emp = @undertaking_emp, joining_date = @joining_date, " +
                     "leaving_date = @leaving_date,bloodgroup=@bloodgroup,education=@education,professionalqualification=@professionalqualification,otherdetails=@otherdetails," +
                     "alternateaddress1 = @alternateaddress1,alternateaddress2 = @alternateaddress2,alternatecity = @alternatecity,alternatestate = @alternatestate," +
@@ -355,22 +357,22 @@ namespace LaylaERP.BAL
                     //2nd table
                     new SqlParameter("@fk_emp", id),
                     //new SqlParameter("@emp_number", model.emp_number),
-                    new SqlParameter("@designation", model.designation),
+                    new SqlParameter("@designation", model.designation ?? (object)DBNull.Value),
                     new SqlParameter("@department", model.department),
                     new SqlParameter("@undertaking_emp", model.undertaking_emp),
-                    new SqlParameter("@joining_date", model.joining_date),
-                    new SqlParameter("@leaving_date", model.leaving_date),
+                    new SqlParameter("@joining_date", model.joining_date ?? (object)DBNull.Value),
+                    new SqlParameter("@leaving_date", model.leaving_date ?? (object)DBNull.Value),
                     new SqlParameter("@bloodgroup", model.bloodgroup),
-                    new SqlParameter("@education", model.education),
-                    new SqlParameter("@professionalqualification", model.professionalqualification),
-                    new SqlParameter("@otherdetails", model.otherdetails),
-                    new SqlParameter("@alternateaddress1", model.alternateaddress1),
-                    new SqlParameter("@alternateaddress2", model.alternateaddress2),
-                    new SqlParameter("@alternatecity", model.alternatecity),
-                    new SqlParameter("@alternatestate", model.alternatestate),
-                    new SqlParameter("@alternatezipcode", model.alternatezipcode),
-                    new SqlParameter("@alternatecountry", model.alternatecountry),
-                    new SqlParameter("@alternatecontactNumber", model.alternatecontactNumber),
+                    new SqlParameter("@education", model.education ?? (object)DBNull.Value),
+                    new SqlParameter("@professionalqualification", model.professionalqualification ?? (object)DBNull.Value),
+                    new SqlParameter("@otherdetails", model.otherdetails ?? (object)DBNull.Value),
+                    new SqlParameter("@alternateaddress1", model.alternateaddress1 ?? (object)DBNull.Value),
+                    new SqlParameter("@alternateaddress2", model.alternateaddress2 ?? (object)DBNull.Value),
+                    new SqlParameter("@alternatecity", model.alternatecity ?? (object)DBNull.Value),
+                    new SqlParameter("@alternatestate", model.alternatestate ?? (object)DBNull.Value),
+                    new SqlParameter("@alternatezipcode", model.alternatezipcode ?? (object)DBNull.Value),
+                    new SqlParameter("@alternatecountry", model.alternatecountry ?? (object)DBNull.Value),
+                    new SqlParameter("@alternatecontactNumber", model.alternatecontactNumber ?? (object)DBNull.Value),
                };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -413,10 +415,10 @@ namespace LaylaERP.BAL
                 {
                     //2nd table
                     new SqlParameter("@fk_emp", id),
-                    new SqlParameter("@bank_account_title", model.bank_account_title),
-                    new SqlParameter("@bank_name", model.bank_name),
-                    new SqlParameter("@account_number", model.account_number),
-                    new SqlParameter("@bank_swift_code", model.bank_swift_code),
+                    new SqlParameter("@bank_account_title", model.bank_account_title ?? (object)DBNull.Value),
+                    new SqlParameter("@bank_name", model.bank_name ?? (object)DBNull.Value),
+                    new SqlParameter("@account_number", model.account_number ?? (object)DBNull.Value),
+                    new SqlParameter("@bank_swift_code", model.bank_swift_code ?? (object)DBNull.Value),
                };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -455,15 +457,14 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (is_active='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
+                strSql += strWhr + string.Format(" order by {0} {1} OFFSET {2} ROWS FETCH NEXT {3} ROWS ONLY", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
                 if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
                 {
-                    strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where 1 = 1 " + strWhr.ToString();
+                    strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where 1 = 1 " + strWhr.ToString();
                 }
                 else
                 {
-                    strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where fk_user='" + id + "' " + strWhr.ToString();
+                    strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where fk_user='" + id + "' " + strWhr.ToString();
                 }
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -591,7 +592,7 @@ namespace LaylaERP.BAL
                     "d.birthplace,d.maritalstatus,d.address1,d.address2,d.city,d.state,d.zipcode,d.country,d.emp_number,d.designation,d.department,d.undertaking_emp," +
                     "d.joining_date,d.leaving_date,d.basic_sal,d.unpaid_leave_perday,d.bank_account_title,d.bank_name,d.account_number, " +
                     "d.bank_swift_code,d.note_public,d.note_private,d.bloodgroup,d.education,d.professionalqualification,d.otherdetails,d.alternateaddress1,d.alternateaddress2,d.alternatecity,d.alternatestate," +
-                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber,ifnull(d.ProfileImageName,'default.png') ProfileImageName,d.ProfileImagePath " +
+                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber,coalesce(d.ProfileImageName,'default.png') ProfileImageName,d.ProfileImagePath " +
                     "from erp_hrms_emp e left join erp_hrms_empdetails d on d.fk_emp = e.rowid where  e.rowid = '" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -608,7 +609,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into erp_EmployeeLinkedFiles(fk_emp, filename, filesize, filetype, filepath) values(@fk_emp, @filename, @filesize, @filetype, @filepath); SELECT LAST_INSERT_ID();";
+                strsql = "insert into erp_EmployeeLinkedFiles(fk_emp, filename, filesize, filetype, filepath) values(@fk_emp, @filename, @filesize, @filetype, @filepath); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                {
                     new SqlParameter("@fk_emp", fk_emp),
@@ -685,7 +686,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select rowid ID,fk_emp,filename,concat(filesize,' KB') filesize,filetype,filepath,DATE_FORMAT(createddate, '%m-%d-%Y') Date from erp_EmployeeLinkedFiles where fk_emp='" + id + "' and 1=1 ";
+                string strSql = "select rowid ID,fk_emp,filename,concat(filesize,' KB') filesize,filetype,filepath,FORMAT(createddate, 'MM-dd-yy') Date from erp_EmployeeLinkedFiles where fk_emp='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (filename like '%" + searchid + "%' OR filesize like '%" + searchid + "%' OR createddate like '%" + searchid + "%')";
@@ -694,9 +695,9 @@ namespace LaylaERP.BAL
                 //{
                 //    strWhr += " and (is_active='" + userstatus + "') ";
                 //}
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} {1} OFFSET {2} ROWS FETCH NEXT {3} ROWS ONLY", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_EmployeeLinkedFiles where fk_emp='" + id + "' and 1=1 " + strWhr.ToString();
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_EmployeeLinkedFiles where fk_emp='" + id + "' and 1=1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1035,7 +1036,7 @@ namespace LaylaERP.BAL
                 string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type, hra_type," +
                     "comp_name,section,salary_date,emp_class,special_pay,wash_allowance,incentive,cca,vpf,adv_epf,insurance,emp_welfare,imprest,misc_refund,fastival_allowance,bank_name,bank_account,epf_account,pay_sacle)" +
                                  " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type, @hra_type," +
-                                 " @comp_name, @section, @salary_date, @emp_class, @special_pay, @wash_allowance, @incentive, @cca, @vpf, @adv_epf, @insurance, @emp_welfare, @imprest, @misc_refund, @fastival_allowance, @bank_name, @bank_account, @epf_account, @pay_sacle); SELECT LAST_INSERT_ID();";
+                                 " @comp_name, @section, @salary_date, @emp_class, @special_pay, @wash_allowance, @incentive, @cca, @vpf, @adv_epf, @insurance, @emp_welfare, @imprest, @misc_refund, @fastival_allowance, @bank_name, @bank_account, @epf_account, @pay_sacle); SELECT SCOPE_IDENTITY();";
 
                 SqlParameter[] para =
                 {

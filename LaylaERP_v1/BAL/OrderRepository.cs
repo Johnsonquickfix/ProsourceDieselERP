@@ -608,7 +608,18 @@
             { throw ex; }
             return dt;
         }
-
+        public static DataSet GetCompleteOrdersList()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "COMPL") };
+                ds = SQLHelper.ExecuteDataSet("wp_posts_order_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return ds;
+        }
         //Refund Order
         public static long AddRefundOrderPost(long parent_id)
         {

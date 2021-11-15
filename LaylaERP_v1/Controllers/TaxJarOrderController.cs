@@ -20,6 +20,7 @@ namespace LaylaERP.Controllers
             {
                 var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
                 DataSet ds = OrderRepository.GetCompleteOrdersList();
+                string str_meta = string.Empty;
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     var dyn = JsonConvert.DeserializeObject<dynamic>(dr[0].ToString());
@@ -45,11 +46,21 @@ namespace LaylaERP.Controllers
                             try
                             {
                                 var order = client.CreateOrder(inputAttribute);
-                                DAL.SQLHelper.ExecuteNonQuery(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0},'_taxjar_last_sync',convert(varchar, GETUTCDATE(), 23) + ' ' +  convert(varchar, GETUTCDATE(), 8)", transaction_id));
+                                str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
                             }
                             catch { }
                         }
                     }
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                    System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                    System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                    System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+
+                    OrderRepository.AddOrdersPost(0, "TXSYN", 0, string.Empty, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 }
             }
             catch { }

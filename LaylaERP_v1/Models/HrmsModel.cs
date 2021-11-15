@@ -5,8 +5,16 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
+   
     public class HrmsModel
     {
+        byte[] _User_Image = null;
+        public byte[] User_Image
+        {
+            get { return _User_Image; }
+            set { _User_Image = value; }
+        }
+
         //erp_hrms_emp
         public int rowid { get; set; }
         public int entity { get; set; }
@@ -62,6 +70,7 @@ namespace LaylaERP.Models
         public string ImagePath { get; set; }
         public string ProfileImagePath { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
+      
         public string EmployeeLinkedFilesID { get; set; }
         public string strValue1 { get; set; }
         public string strValue2 { get; set; }

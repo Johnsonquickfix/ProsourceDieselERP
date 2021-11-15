@@ -211,7 +211,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@user_image", image),
                 };
 
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -592,7 +592,8 @@ namespace LaylaERP.BAL
                     "d.birthplace,d.maritalstatus,d.address1,d.address2,d.city,d.state,d.zipcode,d.country,d.emp_number,d.designation,d.department,d.undertaking_emp," +
                     "d.joining_date,d.leaving_date,d.basic_sal,d.unpaid_leave_perday,d.bank_account_title,d.bank_name,d.account_number, " +
                     "d.bank_swift_code,d.note_public,d.note_private,d.bloodgroup,d.education,d.professionalqualification,d.otherdetails,d.alternateaddress1,d.alternateaddress2,d.alternatecity,d.alternatestate," +
-                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber,coalesce(d.ProfileImageName,'default.png') ProfileImageName,d.ProfileImagePath " +
+                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber," +
+                    "(select cast(User_Image as varbinary(max)) from wp_users ui where ui.id = e.fk_user) ProfileImageName,d.ProfileImagePath " +
                     "from erp_hrms_emp e left join erp_hrms_empdetails d on d.fk_emp = e.rowid where  e.rowid = '" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -628,17 +629,18 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static int EmployeeProfileUpload(int fk_emp, string FileName, string FilePath)
+        public static int EmployeeProfileUpload(HrmsModel model)
         {
             try
             {
                 string strsql = "";
-                strsql = "Update erp_hrms_empdetails set ProfileImageName=@ProfileImageName, ProfileImagePath=@ProfileImagePath where fk_emp=@fk_emp;";
+                strsql = "Update wp_users set user_image=@user_image where ID=(Select fk_user from erp_hrms_emp where rowid=@fk_emp)";
                 SqlParameter[] para =
                {
-                    new SqlParameter("@fk_emp", fk_emp),
-                    new SqlParameter("@ProfileImageName", FileName.ToLower()),
-                    new SqlParameter("@ProfileImagePath", FilePath),
+                    new SqlParameter("@fk_emp", model. fk_emp),
+                     new SqlParameter("@user_image", model.User_Image),
+                    //new SqlParameter("@ProfileImageName", FileName.ToLower()),
+                    //new SqlParameter("@ProfileImagePath", FilePath),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

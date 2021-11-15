@@ -791,7 +791,7 @@
                         int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["amount"]);
                         int gcid = Convert.ToInt32(dtMeta.Rows[0]["gc_id"]);
                         decimal RefundAmount = 0;
-                        if (model.NetTotal >= metaAmount && model.NetTotal > 0)
+                        if (model.NetTotal >= metaAmount && model.NetTotal > 0 && metaAmount > 0)
                         {
                             RefundAmount = metaAmount;
                             strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
@@ -827,7 +827,8 @@
                 {
                     new SqlParameter("@OrderItemID", OrderItemID)
                 };
-                string strSQl = "Select * from wp_woocommerce_gc_activity where object_id=@OrderItemID and type='used';";
+                string strSQl = "Select gc_id,(select sum(case [type] when 'refunded' then -amount when 'used' then amount else 0 end) from wp_woocommerce_gc_activity gc_act where object_id=@OrderItemID) amount " +
+                    "from wp_woocommerce_gc_activity where object_id = @OrderItemID and type = 'used'; ";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

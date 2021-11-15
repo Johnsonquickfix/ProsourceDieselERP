@@ -478,22 +478,45 @@ $("#btnuploadFiles").click(function () {
     }
 })
 $("#btnUploadProfile").click(function () {
+    
+    var ImageURL;
+    var canvas = document.createElement('canvas');
+    var objimg = document.getElementById('show_picture');
+    canvas.width = objimg.width;
+    canvas.height = objimg.height;
+    var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+    var can = document.getElementById('canvas');
+    ImageType = "jpeg";
+    var img = canvas.toDataURL("image/jpeg", 30 / 100);
+    var result_image_obj = new Image();
+    result_image_obj.src = img;
+    $("#show_picture").attr("src", result_image_obj.src);
+    ImageURL = result_image_obj.src;
+    var block = ImageURL.split(";");
+    var realData = block[1].split(",")[1];
+    $("#hidimage").val(realData);
+    Picture = $("#hidimage").val();
+
     fk_emp = $("#hfid").val();
     var file = document.getElementById("EmpImageFile").files[0];
-    var formData = new FormData();
-    formData.append("EmpImageFile", file);
-    formData.append("fk_emp", fk_emp);
+    //var formData = new FormData();
+    //formData.append("EmpImageFile", file);
+    //formData.append("Picture", Picture);
 
     if (fk_emp == 0) {
         swal('Alert', 'Employee not found', 'error').then(function () { swal.close(); });
     }
     else {
+        var obj = { fk_emp: fk_emp, User_Image:Picture}
         $.ajax({
-            type: "POST",
+            dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
             url: '/Hrms/EmployeeProfileUpload/',
-            data: formData,
-            processData: false,
-            contentType: false,
+            //data: JSON.stringify(obj),
+            //processData: false,
+            //contentType: false,
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
@@ -620,12 +643,13 @@ function GetEmployeeByID(id) {
                     $("#txtZipCode").val(d[0].zipcode);
                     $("#txtCountry").val(d[0].country);
                     d[0].is_active == true ? $("#chkemployeestatus").prop("checked", true) : $("#chkemployeestatus").prop("checked", false);
-                    var profileimg = d[0].ProfileImageName;
-                    checkImage('../../Content/EmployeeProfileImage/' + profileimg, function () {
-                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + profileimg);
-                    }, function () {
-                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/default.png');
-                    });
+                    var profileimg = "data:image/png;base64," + d[0].ProfileImageName + "";
+                    $('#show_picture').attr('src', profileimg);
+                    //checkImage('../../Content/EmployeeProfileImage/' + profileimg, function () {
+                    //    $('#show_picture').attr('src', profileimg);
+                    //}, function () {
+                    //    $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/default.png');
+                    //});
                     $("#txtEmployeeIDNumber").val(d[0].emp_number);
                     $("#ddldesignation").val(d[0].designation == null ? "0" : d[0].designation).trigger("change");
                     $("#ddldepartment").val(d[0].department == null ? "0" : d[0].department).trigger("change");

@@ -37,6 +37,10 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult BankEntriesAll()
+        {
+            return View();
+        }
 
         [HttpPost]
         public JsonResult AddBankAccount(BankModel model)
@@ -240,5 +244,28 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
+        public JsonResult AllBankEntriesList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = BankRepository.AllBankEntriesList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetBankEntriesBalance()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.BankEntriesBalance();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

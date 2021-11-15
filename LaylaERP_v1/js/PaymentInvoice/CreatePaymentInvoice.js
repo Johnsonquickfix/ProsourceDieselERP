@@ -137,15 +137,15 @@ function saveVendorPO() {
         let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option);
         swal.queue([{
-            title: 'Are you sure?', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order?",
+            title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to pay for the $' + parseFloat($("#Total").text()) + ' amount?',
             showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve) {
                     $.post('/PaymentInvoice/TakePayment', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            swal('Success', 'Purchase Order has been saved successfully.', 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
-                            swal('Success', 'Purchase Order has been saved successfully.', "success"); getOrderInfo();
+                            swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
+                          
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });

@@ -2499,7 +2499,8 @@ table-layout:fixed;}
 .neworders a.billinfo, .order a.billinfo {
     background-color: #ff4100;
     transition: all .5s ease;
-    padding: 8px 12px;
+    /*padding: 8px 12px;*/
+    padding: 2px 6px;
     color: #fff;
     font-size: 12px;
     display: inline-block;

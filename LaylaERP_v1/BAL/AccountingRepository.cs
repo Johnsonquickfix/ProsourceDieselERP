@@ -459,18 +459,18 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid as id, concat(inv_complete,'-', label_complete) as account,format(COALESCE(sum(case when senstag = 'C' then credit end), 0),2) credit, format(COALESCE(sum(case when senstag = 'D' then debit end), 0),2) debit, format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + invtotal) - (invtotal - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0)),2) as balance FROM erp_accounting_bookkeeping where 1=1 ";
+                string strSql = "SELECT thirdparty_code as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + sum(invtotal)) - (sum(invtotal) - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (inv_complete like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%') group by inv_complete ";
+                    strWhr += " and (inv_complete like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%') ";
                 }
                 if (userstatus != null)
                 {
                     //strWhr += " and (is_active='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM erp_accounting_bookkeeping where 1=1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" group by inv_complete, label_complete, thirdparty_code order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(thirdparty_code)/" + pagesize.ToString() + ") TotalPage,Count(distinct concat(thirdparty_code,inv_complete,'-', label_complete)) TotalRecord FROM erp_accounting_bookkeeping where 1=1" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

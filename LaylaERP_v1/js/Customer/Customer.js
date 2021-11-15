@@ -1,6 +1,7 @@
 ﻿var searchText = getUrlVars();
 
 function getUrlVars() {
+    debugger
     var sPageURL = decodeURIComponent(window.location.search.substring(1));
     sPageURL = sPageURL.split('name=');
     var sURLVariables = sPageURL.toString().replace(',', '');

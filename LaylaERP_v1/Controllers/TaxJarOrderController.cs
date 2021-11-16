@@ -18,18 +18,19 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                DataSet ds = OrderRepository.GetCompleteOrdersList();
+                string JSONString = string.Empty;
+                DataSet ds = OrderRepository.GetCompleteOrdersList(out JSONString);
                 string TaxjarAPIId = string.Empty;
-                foreach (DataRow dr in ds.Tables[1].Rows) {
+                foreach (DataRow dr in ds.Tables[0].Rows) {
                     TaxjarAPIId = dr[0].ToString().Trim();
                 }
 
                 var client = new TaxjarApi(TaxjarAPIId);
 
                 string str_meta = string.Empty;
-                foreach (DataRow dr in ds.Tables[0].Rows)
+                if(!string.IsNullOrEmpty(JSONString))
                 {
-                    var dyn = JsonConvert.DeserializeObject<dynamic>(dr[0].ToString());
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(JSONString);
                     foreach (var inputAttribute in dyn.orders)
                     {
                         string StatusCode = "";

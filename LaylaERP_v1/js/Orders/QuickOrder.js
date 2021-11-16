@@ -1949,9 +1949,8 @@ function createItemsList() {
     //Add Shipping
     itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
     //Add Tax
-    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
-
+    let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
     return itemsDetails;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1984,7 +1983,7 @@ function saveCO() {
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
-    //console.log(obj);
+    console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",

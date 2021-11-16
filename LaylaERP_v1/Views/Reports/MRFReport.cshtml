@@ -75,12 +75,12 @@
             //setTimeout(function () { DatagridOrder(); }, 50);
 
 
-            $.get('GetState', function (data) {
-                var items = "";
-                $.each(data, function (index, value) {
-                    items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtState");
-                })
-            })
+            //$.get('GetState', function (data) {
+            //    var items = "";
+            //    $.each(data, function (index, value) {
+            //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtState");
+            //    })
+            //})
 
 
             $("#filtersrchexp").click(function () {

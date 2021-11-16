@@ -18,8 +18,14 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
                 DataSet ds = OrderRepository.GetCompleteOrdersList();
+                string TaxjarAPIId = string.Empty;
+                foreach (DataRow dr in ds.Tables[1].Rows) {
+                    TaxjarAPIId = dr[0].ToString().Trim();
+                }
+
+                var client = new TaxjarApi(TaxjarAPIId);
+
                 string str_meta = string.Empty;
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {

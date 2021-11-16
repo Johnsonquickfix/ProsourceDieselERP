@@ -267,5 +267,17 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult BankEntriesBalanceForSpecific(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.BankEntriesBalanceForSpecific(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

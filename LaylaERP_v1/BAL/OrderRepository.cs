@@ -340,7 +340,7 @@
             { throw ex; }
             return dt;
         }
-        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip,decimal rate,bool freight_taxable)
+        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable)
         {
             int result = 0;
             try
@@ -457,13 +457,16 @@
             { throw ex; }
             return dt;
         }
-        public static DataSet GetCompleteOrdersList()
+        public static DataSet GetCompleteOrdersList(out string JSONResult)
         {
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] parameters = { new SqlParameter("@flag", "COMPL") };
+                SqlParameter[] parameters = { new SqlParameter("@orders", SqlDbType.NVarChar, -1), new SqlParameter("@flag", "COMPL") };
+                parameters[0].Direction = ParameterDirection.Output;
                 ds = SQLHelper.ExecuteDataSet("wp_posts_order_search", parameters);
+                JSONResult = parameters[0].Value.ToString();
+
             }
             catch (Exception ex)
             { throw ex; }

@@ -144,65 +144,6 @@
             { throw ex; }
             return DT;
         }
-        public static OrderProductsModel GetProductDetails(long product_id, long variation_id)
-        {
-            OrderProductsModel productsModel = new OrderProductsModel();
-            try
-            {
-                DataTable DT = new DataTable();
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@product_id", product_id),
-                    new SqlParameter("@variation_id", variation_id)
-                };
-                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
-                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
-                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id;";
-                SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
-                while (sdr.Read())
-                {
-                    if (sdr["id"] != DBNull.Value)
-                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
-                    else
-                        productsModel.product_id = 0;
-                    if (sdr["pr_id"] != DBNull.Value)
-                        productsModel.variation_id = Convert.ToInt64(sdr["pr_id"]);
-                    else
-                        productsModel.variation_id = 0;
-                    if (sdr["post_title"] != DBNull.Value)
-                        productsModel.product_name = sdr["post_title"].ToString();
-                    else
-                        productsModel.product_name = string.Empty;
-                    if (sdr["reg_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
-                        productsModel.price = decimal.Parse(sdr["reg_price"].ToString());
-                    else
-                        productsModel.price = 0;
-                    if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
-                        productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
-                    else
-                        productsModel.sale_price = productsModel.price;
-
-                }
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return productsModel;
-        }
-        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id)
-        {
-            List<OrderProductsModel> _list = new List<OrderProductsModel>();
-            try
-            {
-                _list = GetProductListDetails(product_id, variation_id, "-", "-");
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return _list;
-        }
         public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id, string countrycode, string statecode)
         {
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
@@ -379,141 +320,49 @@
             { throw ex; }
             return dt;
         }
-        //Save/Update Order 
-        public static int SaveOrder(OrderModel model)
+        public static DataTable GetTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@tocountry", tocountry),
+                    new SqlParameter("@tostate", tostate),
+                    new SqlParameter("@tocity", tocity),
+                    new SqlParameter("@tostreet", tostreet),
+                    new SqlParameter("@tozip", tozip)
+                };
+                string strSQl = "SELECT top 1 tocountry,tostate,tocity,tostreet,tozip,coalesce(rate,0) rate,freight_taxable FROM taxrates where [time] > DATEADD(MINUTE, -120,GETUTCDATE()) and lower(tocountry) = lower(@tocountry) and lower(tostate) = lower(@tostate) and lower(tocity) = lower(@tocity) and lower(tostreet) = lower(@tostreet) and tozip = @tozip order by [time] desc;delete from taxrates where [time] < DATEADD(MINUTE, -120,GETUTCDATE());";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable)
         {
             int result = 0;
             try
             {
-                string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                /// step 1 : wp_wc_order_stats
-                StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
-                        model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.status, model.OrderPostStatus.customer_id, model.OrderPostStatus.order_id));
-                strSql.Append(string.Format(" delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id={0} and order_item_id not in ({1}));", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" delete from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" delete from wp_woocommerce_order_items where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
-
-                /// step 2 : wp_postmeta 
-                foreach (OrderPostMetaModel obj in model.OrderPostMeta)
+                SqlParameter[] parameters =
                 {
-                    strSql.Append(string.Format(" update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", obj.meta_value, obj.post_id, obj.meta_key));
-                }
-
-                /// step 3 : wp_woocommerce_order_items
-                foreach (OrderProductsModel obj in model.OrderProducts)
-                {
-                    if (obj.order_item_id > 0)
-                    {
-                        strSql.Append(string.Format(" update wp_wc_order_product_lookup set product_qty='{0}',product_net_revenue='{1}',product_gross_revenue='{2}',coupon_amount='{3}',tax_amount='{4}',shipping_amount='{5}',shipping_tax_amount='{6}' where order_item_id='{7}';",
-                            obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount, obj.order_item_id));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key in ('_qty','_reduced_stock');", obj.quantity, obj.order_item_id));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_subtotal';", obj.total, obj.order_item_id));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key in ('_line_subtotal_tax','_line_tax');", obj.tax_amount, obj.order_item_id));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_total';", (obj.total - obj.discount), obj.order_item_id));
-                    }
-                    else
-                    {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.product_name, "line_item", model.OrderPostStatus.order_id));
-
-                        strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
-                        strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
-                    }
-
-                    // str_Stock+= string.Format("select 'SO',{0},{1},13 warehouse_id,{2},{3},'I'", model.OrderPostStatus.order_id, obj.variation_id > 0 ? obj.variation_id : obj.product_id, model.OrderPostStatus.date_created.ToString("MMMM dd, yyyy @ HH:mm tt"), obj.quantity);
-                }
-                /// step 4 : wp_woocommerce_order_itemmeta
-                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal',product_net_revenue + coupon_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
-
-                /// step 5 : wp_woocommerce_order_items
-                foreach (OrderOtherItemsModel obj in model.OrderOtherItems)
-                {
-                    if (obj.order_item_id > 0)
-                    {
-                        if (obj.item_type == "coupon")
-                        {
-                            strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "discount_amount"));
-                        }
-                        else if (obj.item_type == "fee")
-                        {
-                            strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "_line_total"));
-                        }
-                        else if (obj.item_type == "shipping")
-                        {
-                            strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "cost"));
-                        }
-                    }
-                    else
-                    {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.item_name, obj.item_type, model.OrderPostStatus.order_id));
-                        if (obj.item_type == "coupon")
-                        {
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
-                        }
-                        else if (obj.item_type == "fee" && obj.amount != 0)
-                        {
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", "taxable", model.OrderPostStatus.order_id, obj.item_type));
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
-                        }
-                        else if (obj.item_type == "shipping")
-                        {
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
-                        }
-                    }
-                }
-                /// step 6 : wp_posts (Coupon used by)
-                strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select id,'_used_by',{0} from wp_posts wp inner join wp_woocommerce_order_items oi on lower(oi.order_item_name) = lower(wp.post_title) and oi.order_item_type = 'coupon' and oi.order_id = {1} where post_type = 'shop_coupon'; ", model.OrderPostStatus.customer_id, model.OrderPostStatus.order_id));
-
-                /// step 7 : wp_woocommerce_order_items (Tax)
-                //str_oiid = string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
-                //strSql.Append(string.Format(" delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id={0} and order_item_type in ('tax') and order_item_id not in ({1}));", model.OrderPostStatus.order_id, str_oiid));
-                //strSql.Append(string.Format(" delete from wp_woocommerce_order_items where order_id={0} and order_item_type in ('tax') and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
-                foreach (OrderTaxItemsModel obj in model.OrderTaxItems)
-                {
-                    if (obj.order_item_id > 0)
-                    {
-                        strSql.Append(string.Format(" update wp_woocommerce_order_items set order_item_name='{0}-{1}-{2} TAX-1' where order_item_id={3}; ", obj.tax_rate_country, obj.tax_rate_state, obj.tax_rate_state, obj.order_item_id));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.tax_rate_state, obj.order_item_id, "label"));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "tax_amount"));
-                        strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.tax_rate, obj.order_item_id, "rate_percent"));
-                    }
-                    else
-                    {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}-{1}-{2} TAX-1','tax','{3}'); ", obj.tax_rate_country, obj.tax_rate_state, obj.tax_rate_state, model.OrderPostStatus.order_id));
-
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.tax_rate_state, model.OrderPostStatus.order_id, "tax"));
-                        strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, model.OrderPostStatus.order_id, "tax"));
-                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.tax_rate, model.OrderPostStatus.order_id, "tax"));
-                    }
-                }
-
-                /// step 8 : wp_posts
-                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
-
-                /////step 9 : Reduce Stock
-                //strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");
-                //strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                //strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                //strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                //strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.OrderPostStatus.order_id + ";");
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                    new SqlParameter("@tocountry", tocountry),
+                    new SqlParameter("@tostate", tostate),
+                    new SqlParameter("@tocity", tocity),
+                    new SqlParameter("@tostreet", tostreet),
+                    new SqlParameter("@tozip", tozip),
+                    new SqlParameter("@rate", rate),
+                    new SqlParameter("@freight_taxable", freight_taxable)
+                };
+                string strSQl = "INSERT INTO taxrates (tocountry,tostate,tocity,tostreet,tozip,rate,freight_taxable) VALUES (@tocountry,@tostate,@tocity,@tostreet,@tozip,@rate,@freight_taxable)";
+                result = SQLHelper.ExecuteNonQuery(strSQl, parameters);
             }
-            catch (Exception Ex) { throw Ex; }
+            catch (Exception ex)
+            { throw ex; }
             return result;
         }
+
         public static long AddOrderFee(OrderOtherItemsModel obj)
         {
             long result = 0;
@@ -608,169 +457,22 @@
             { throw ex; }
             return dt;
         }
-
-        //Refund Order
-        public static long AddRefundOrderPost(long parent_id)
+        public static DataSet GetCompleteOrdersList(out string JSONResult)
         {
-            long result = 0;
+            DataSet ds = new DataSet();
             try
             {
-                OrderPostModel model = new OrderPostModel();
-                model.ID = 0;
-                model.post_author = "1";
-                model.post_date = CommonDate.CurrentDate();
-                model.post_date_gmt = CommonDate.UtcDate();
-                model.post_content = string.Empty;
-                model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
-                model.post_excerpt = string.Empty;
-                model.post_status = "wc-completed";// "draft";
-                model.comment_status = "closed";
-                model.ping_status = "closed";
-                model.post_password = string.Empty;
-                model.post_name = "refund-" + model.post_date_gmt.ToString("MMM-dd-yyyy-HHmm-tt").ToLower();
-                model.to_ping = string.Empty;
-                model.pinged = string.Empty;
-                model.post_modified = model.post_date;
-                model.post_modified_gmt = model.post_date_gmt;
-                model.post_content_filtered = string.Empty;
-                model.post_parent = parent_id.ToString();
-                model.post_type = "shop_order_refund";
-                //model.guid = string.Format("{0}?{1}={2}", Net.Host, model.post_type, model.post_name);
-                model.guid = string.Format("{0}?{1}={2}", "http://173.247.242.204/~rpsisr/woo/", "post_type=shop_order_refund&p", "");
-                model.menu_order = "0";
-                model.post_mime_type = string.Empty;
-                model.comment_count = "0";
+                SqlParameter[] parameters = { new SqlParameter("@orders", SqlDbType.NVarChar, -1), new SqlParameter("@flag", "COMPL") };
+                parameters[0].Direction = ParameterDirection.Output;
+                ds = SQLHelper.ExecuteDataSet("wp_posts_order_search", parameters);
+                JSONResult = parameters[0].Value.ToString();
 
-                string strSQL = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,"
-                                    + " to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)"
-                                    + " VALUES(@post_author,@post_date,@post_date_gmt,@post_content,@post_title,@post_excerpt,@post_status,@comment_status,@ping_status,@post_password,@post_name,"
-                                    + " @to_ping,@pinged,@post_modified,@post_modified_gmt,@post_content_filtered,@post_parent,@guid,@menu_order,@post_type,@post_mime_type,@comment_count)";
-
-                strSQL += "; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)";
-                strSQL += " SELECT LAST_INSERT_ID(),@post_parent,@post_date,@post_date_gmt,'0','0','0','0','0','0',@post_status,'0' ; SELECT LAST_INSERT_ID();";
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@post_author", model.post_author),
-                    new SqlParameter("@post_date", model.post_date),
-                    new SqlParameter("@post_date_gmt", model.post_date_gmt),
-                    new SqlParameter("@post_content", model.post_content),
-                    new SqlParameter("@post_title", model.post_title),
-                    new SqlParameter("@post_excerpt", model.post_excerpt),
-                    new SqlParameter("@post_status", model.post_status),
-                    new SqlParameter("@comment_status", model.comment_status),
-                    new SqlParameter("@ping_status", model.ping_status),
-                    new SqlParameter("@post_password", model.post_password),
-                    new SqlParameter("@post_name", model.post_name),
-                    new SqlParameter("@to_ping", model.to_ping),
-                    new SqlParameter("@pinged", model.pinged),
-                    new SqlParameter("@post_modified", model.post_modified),
-                    new SqlParameter("@post_modified_gmt", model.post_modified_gmt),
-                    new SqlParameter("@post_content_filtered", model.post_content_filtered),
-                    new SqlParameter("@post_parent", model.post_parent),
-                    new SqlParameter("@guid", model.guid),
-                    new SqlParameter("@menu_order", model.menu_order),
-                    new SqlParameter("@post_type", model.post_type),
-                    new SqlParameter("@post_mime_type", model.post_mime_type),
-                    new SqlParameter("@comment_count", model.comment_count)
-                };
-                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
             }
             catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-
-            }
-            return result;
+            { throw ex; }
+            return ds;
         }
-        public static int SaveRefundOrder(OrderModel model)
-        {
-            int result = 0;
-            try
-            {
-                long n_orderid = 0;
-                n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id);
-                if (n_orderid > 0)
-                {
-                    DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                    /// step 1 : wp_wc_order_stats
-                    StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',customer_id='{5}' where order_id='{6}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
-                            model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.customer_id, n_orderid));
-                    var i = 0;
-                    /// step 2 : wp_postmeta 
-                    strSql.Append("insert into wp_postmeta (post_id,meta_key,meta_value) values");
-                    foreach (OrderPostMetaModel obj in model.OrderPostMeta)
-                    {
-                        if (++i == model.OrderPostMeta.Count)
-                            strSql.Append(string.Format("('{0}','{1}','{2}'); ", n_orderid, obj.meta_key, obj.meta_value));
-                        else
-                            strSql.Append(string.Format("('{0}','{1}','{2}'), ", n_orderid, obj.meta_key, obj.meta_value));
-                    }
-                    /// step 3 : wp_woocommerce_order_items
-                    foreach (OrderProductsModel obj in model.OrderProducts)
-                    {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.product_name, "line_item", n_orderid));
-                        strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount,refunded_item_id) ");
-                        strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','-{5}','-{6}','-{7}','{8}','-{9}','{10}','{11}','{12}'; ", n_orderid, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), 0, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount, obj.order_item_id));
-                    }
-                    /// step 4 : wp_woocommerce_order_itemmeta
-                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',refunded_item_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
-                    /// step 5 : wp_woocommerce_order_items
-
-                    string ID = Guid.NewGuid().ToString("N");
-                    string gid = ID.Substring(0, 4) + "-" + ID.Substring(4, 4) + "-" + ID.Substring(8, 4) + "-" + ID.Substring(12, 4);
-                    string code = gid.ToUpper();
-                    foreach (OrderOtherItemsModel obj in model.OrderOtherItems)
-                    {
-                        if (obj.amount != 0)
-                        {
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.item_name, obj.item_type, n_orderid));
-
-                            if (obj.item_type == "gift_card")
-                            {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", code, obj.item_type, n_orderid));
-
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.item_type));
-                            }
-                            else if (obj.item_type == "fee")
-                            {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.amount, n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.item_type));
-                            }
-                            else if (obj.item_type == "shipping")
-                            {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.item_type));
-                            }
-                        }
-                    }
-                    /// step 6 : wp_woocommerce_order_items (Tax)
-                    foreach (OrderTaxItemsModel obj in model.OrderTaxItems)
-                    {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('','tax','{0}');", n_orderid));
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.tax_rate_state, n_orderid));
-                        strSql.Append(string.Format(" union all select order_item_id,'tax_amount','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.amount, n_orderid));
-                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.tax_rate, n_orderid));
-                        strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax';", obj.order_item_id, n_orderid));
-                    }
-
-                    result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                }
-            }
-            catch { }
-            return result;
-        }
+        //Refund Order
         public static int UpdateRefundedGiftCard(OrderModel model)
         {
             int result = 0;
@@ -805,7 +507,7 @@
                         {
                             RefundAmount = model.NetTotal;
                             strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
-                           // strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
+                            // strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
                                 "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
                             SendGiftCardMailInvoice(order_item_id, RefundAmount);
@@ -941,7 +643,7 @@
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
                             + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
                             + "(select distinct order_item_type FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type='gift_card') as IsGift,"
-                            + "(Select COALESCE(sum(amount),0)  from wp_woocommerce_gc_activity where type='refunded' and object_id in ( " 
+                            + "(Select COALESCE(sum(amount),0)  from wp_woocommerce_gc_activity where type='refunded' and object_id in ( "
                             + "Select order_item_id from wp_woocommerce_order_items where order_id = @order_id and order_item_type = 'gift_card')) as GiftCardRefundedAmount,"
                             + "(select Sum(isnull(cast(meta_value as float),0)) FROM wp_woocommerce_order_itemmeta where  meta_key='amount' and order_item_id in (select order_item_id FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type = 'gift_card')) as giftCardAmount,"
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr

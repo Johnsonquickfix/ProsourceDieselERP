@@ -205,6 +205,7 @@
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
+    <Compile Include="Controllers\TaxJarOrderController.cs" />
     <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
@@ -988,6 +989,7 @@
     <Content Include="Views\Ship\CreateShipOrder.cshtml" />
     <Content Include="Views\Inventory\VendorInventory.cshtml" />
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
+    <Content Include="Views\TaxJarOrder\CreateOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -155,20 +155,20 @@ function Datagrid(role_type, type) {
                         return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
                 },
-                { 'data': 'ID', 'sWidth': "8%" },
-                { 'data': 'user_login', 'sWidth': "12%" },
-                { 'data': 'user_email', 'sWidth': "25%" },
-                { 'data': 'user_status', 'sWidth': "10%" },
-                { 'data': 'phone', 'sWidth': "15%" },
-                { 'data': 'address', 'sWidth': "30%" },
+                { 'data': 'ID', 'sWidth': "8%", "bSearchable": false},
+                { 'data': 'user_login', 'sWidth': "12%", "bSearchable": false },
+                { 'data': 'user_email', 'sWidth': "25%", "bSearchable": false },
+                { 'data': 'user_status', 'sWidth': "10%", "bSearchable": false },
+                { 'data': 'phone', 'sWidth': "15%", "bSearchable": false },
+                { 'data': 'address', 'sWidth': "30%", "bSearchable": false },
                 {
-                    data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
+                    data: 'my', title: 'Role', sWidth: "22%", "bSearchable": true, render: function (data, type, row) {
                         let str = getAllUserType(data);
                         return str;
                     }
                 },
                 {
-                    'data': 'ID', sWidth: "8%",
+                    'data': 'ID', sWidth: "8%", "bSearchable": false,
                     'render': function (ID, type, full, meta) {
                         if ($("#hfEdit").val() == "1") {
                             return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';

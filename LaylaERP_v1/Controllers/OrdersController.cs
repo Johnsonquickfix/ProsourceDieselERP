@@ -264,6 +264,17 @@
             decimal JSONresult = 0;
             try
             {
+                DataTable dt = OrderRepository.GetTaxRate(model.strValue5, model.strValue4, model.strValue3, model.strValue2, "0");
+                if (dt.Rows.Count > 0)
+                {
+                    JSONresult = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                }
+                else
+                {
+                    JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
+                    OrderRepository.SaveTaxRate(model.strValue5, model.strValue4, model.strValue3, model.strValue2, "0", JSONresult, false);
+                }
+
                 JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
             }
             catch { JSONresult = 0; }
@@ -274,7 +285,17 @@
         {
             try
             {
-                model = clsTaxJar.GetTaxes(model);
+                DataTable dt = OrderRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
+                if (dt.Rows.Count > 0)
+                {
+                    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
+                }
+                else
+                {
+                    model = clsTaxJar.GetTaxes(model);
+                    OrderRepository.SaveTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip, model.rate, model.freight_taxable);
+                }
             }
             catch { }
             return Json(model, 0);

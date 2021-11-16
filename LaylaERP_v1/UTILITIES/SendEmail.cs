@@ -25,7 +25,7 @@
                         mm.IsBodyHtml = true;
                         SmtpClient smtp = new SmtpClient();
                         smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
-                        smtp.EnableSsl = true;
+                        smtp.EnableSsl = false;
                         NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = NetworkCred;
@@ -62,7 +62,7 @@
                         mm.IsBodyHtml = true;
                         SmtpClient smtp = new SmtpClient();
                         smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
-                        smtp.EnableSsl = true;
+                        smtp.EnableSsl = false;
                         NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = NetworkCred;

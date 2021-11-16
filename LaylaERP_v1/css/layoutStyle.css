@@ -2965,3 +2965,16 @@ width: 85px;
 .group_test2.group-test > .col-sm-3{width: 82.6%;}
 
 .group_test2.group-test > .col-sm-9{width: 17.4%;}
+
+
+.glyphicon {
+    color: darkorange;
+}
+
+.fas.fa-search-plus {
+    color: forestgreen;
+}
+
+i.fa.fa-calendar {
+    color: orangered;
+}

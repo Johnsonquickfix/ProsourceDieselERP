@@ -673,7 +673,7 @@ function getOrderInfo() {
     if (oid > 0) {
         $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
         $('#ddlStatus,#btnSearch').prop("disabled", true);
-        $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
+        $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();

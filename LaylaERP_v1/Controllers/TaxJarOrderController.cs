@@ -39,6 +39,10 @@ namespace LaylaERP.Controllers
                         try
                         {
                             client.ShowOrder(transaction_id);
+
+                            //client.DeleteOrder(transaction_id);
+                            //client.CreateOrder(inputAttribute);
+                            //str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
                         }
                         catch (TaxjarException e)
                         {
@@ -55,7 +59,7 @@ namespace LaylaERP.Controllers
                                 var order = client.CreateOrder(inputAttribute);
                                 str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
                             }
-                            catch { }
+                            catch(Exception ex) { }
                         }
                     }
                 }
@@ -70,7 +74,7 @@ namespace LaylaERP.Controllers
                     OrderRepository.AddOrdersPost(0, "TXSYN", 0, string.Empty, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 }
             }
-            catch { }
+            catch(Exception ex) { }
             return View();
         }
     }

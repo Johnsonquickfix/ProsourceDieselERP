@@ -507,64 +507,73 @@ namespace LaylaERP.BAL
             {
                 exportorderlist.Clear();
                 string ssql;
-
+                DataSet ds1 = new DataSet();
                 if (from_date != "" && to_date != "")
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
-                    if (txtState == "ALL")
-                    {
-                        ssql = "SELECT ID,"
-                        + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                        + " format(umatotal.meta_value, 2) Total,"
-                        + " format(ummrffeevalue.meta_value, 2) MRF,"
-                        + " format(umrefunfee.meta_value, 2) RefundFee,"                 
-                        + " umrefunded.meta_value refunded,"
-                        + " u.post_date  PaidDAte,"
-                        + " (select group_concat(uim.meta_value,' x ',ui.order_item_name) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
-                        + " FROM wp_posts u"
-                        + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' and umastate.meta_value IN ('CA','CO','RI') And umastate.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umrefunded on umrefunded.meta_key = '_refunded_payment' And umrefunded.post_id = u.ID"                   
-                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_woocommerce_order_items ummrfee on order_item_name='State Recycling Fee' AND order_item_type='fee' And ummrfee.order_id = u.ID"
-                        + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta  ummrffeevalue on ummrffeevalue.meta_key = '_line_total' And ummrffeevalue.order_item_id  = ummrfee.order_item_id"
-                        + " WHERE post_status IN ('wc-completed','wc-processing','wc-refunded') AND post_type IN ('shop_order','shop_order_refund') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
-                    }
-                    else
-                    {
-                        ssql = "SELECT ID,"
-                       + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                        + " format(umatotal.meta_value, 2) Total,"
-                        + " format(ummrffeevalue.meta_value, 2) MRF,"
-                        + " format(umrefunfee.meta_value, 2) RefundFee,"         
-                        + " umrefunded.meta_value refunded,"
-                        + " u.post_date  PaidDAte,"
-                        + " (select group_concat(uim.meta_value,' x ',ui.order_item_name) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
-                        + " FROM wp_posts u"
-                        + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' and umastate.meta_value IN ('CA','CO','RI') And umastate.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umrefunded on umrefunded.meta_key = '_refunded_payment' And umrefunded.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_woocommerce_order_items ummrfee on order_item_name='State Recycling Fee' AND order_item_type='fee' And ummrfee.order_id = u.ID"
-                        + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta  ummrffeevalue on ummrffeevalue.meta_key = '_line_total' And ummrffeevalue.order_item_id  = ummrfee.order_item_id"
-                        + " WHERE umastate.meta_value =  '" + txtState + "' and  post_status IN ('wc-completed','wc-processing','wc-refunded') AND post_type IN ('shop_order','shop_order_refund') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' order by post_status";
-                    }
+
+                    SqlParameter[] parameters =
+                  {
+                            new SqlParameter("@qflag", txtState),
+                            new SqlParameter("@fromdate", fromdate),
+                             new SqlParameter("@todate", todate)
+                        };
+
+                    ds1 = SQLHelper.ExecuteDataSet("erp_mrfdetailsreports", parameters);
+
+
+                    //ssql = "SELECT ID,"
+                    //    + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //    + " format(umatotal.meta_value, 2) Total,"
+                    //    + " format(ummrffeevalue.meta_value, 2) MRF,"
+                    //    + " format(umrefunfee.meta_value, 2) RefundFee,"                 
+                    //    + " umrefunded.meta_value refunded,"
+                    //    + " u.post_date  PaidDAte,"
+                    //    + " (select group_concat(uim.meta_value,' x ',ui.order_item_name) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                    //    + " FROM wp_posts u"
+                    //    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' and umastate.meta_value IN ('CA','CO','RI') And umastate.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umrefunded on umrefunded.meta_key = '_refunded_payment' And umrefunded.post_id = u.ID"                   
+                    //     + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_woocommerce_order_items ummrfee on order_item_name='State Recycling Fee' AND order_item_type='fee' And ummrfee.order_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta  ummrffeevalue on ummrffeevalue.meta_key = '_line_total' And ummrffeevalue.order_item_id  = ummrfee.order_item_id"
+                    //    + " WHERE post_status IN ('wc-completed','wc-processing','wc-refunded') AND post_type IN ('shop_order','shop_order_refund') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
+                    //}
+                    //else
+                    //{
+                    //    ssql = "SELECT ID,"
+                    //   + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //    + " format(umatotal.meta_value, 2) Total,"
+                    //    + " format(ummrffeevalue.meta_value, 2) MRF,"
+                    //    + " format(umrefunfee.meta_value, 2) RefundFee,"         
+                    //    + " umrefunded.meta_value refunded,"
+                    //    + " u.post_date  PaidDAte,"
+                    //    + " (select group_concat(uim.meta_value,' x ',ui.order_item_name) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                    //    + " FROM wp_posts u"
+                    //    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' and umastate.meta_value IN ('CA','CO','RI') And umastate.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umrefunded on umrefunded.meta_key = '_refunded_payment' And umrefunded.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_woocommerce_order_items ummrfee on order_item_name='State Recycling Fee' AND order_item_type='fee' And ummrfee.order_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta  ummrffeevalue on ummrffeevalue.meta_key = '_line_total' And ummrffeevalue.order_item_id  = ummrfee.order_item_id"
+                    //    + " WHERE umastate.meta_value =  '" + txtState + "' and  post_status IN ('wc-completed','wc-processing','wc-refunded') AND post_type IN ('shop_order','shop_order_refund') AND DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' order by post_status";
+                    //}
                 }
                 else
                 {
@@ -572,8 +581,8 @@ namespace LaylaERP.BAL
                 }
 
 
-                DataSet ds1 = new DataSet();
-                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+               // DataSet ds1 = new DataSet();
+               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();

@@ -166,25 +166,42 @@ namespace LaylaERP.Models
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty;
+                //string strWhr = string.Empty;
 
-                string strSql = "SELECT ur.id,null User_Image,user_nicename, CONVERT(VARCHAR(12), user_registered, 107) user_registered, user_status,"
-                            + " case when user_status=0 then 'Active' else 'InActive' end as status,user_email,CONCAT(umfn.meta_value,' ',umln.meta_value) name ,umph.meta_value  billing_phone from wp_users ur"
-                            + " INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
-                if (!string.IsNullOrEmpty(searchid))
-                {
-                    strWhr += " and (User_Email like '%" + searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')";
-                }
-                if (userstatus != null)
-                {
-                    strWhr += " and (ur.user_status='" + userstatus + "') ";
-                }
-                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ");
+                //string strSql = "SELECT ur.id,null User_Image,user_nicename, CONVERT(VARCHAR(12), user_registered, 107) user_registered, user_status,"
+                //            + " case when user_status=0 then 'Active' else 'InActive' end as status,user_email,CONCAT(umfn.meta_value,' ',umln.meta_value) name ,umph.meta_value  billing_phone from wp_users ur"
+                //            + " INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
+                //if (!string.IsNullOrEmpty(searchid))
+                //{
+                //    strWhr += " and (User_Email like '%" + searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')";
+                //}
+                //if (userstatus != null)
+                //{
+                //    strWhr += " and (ur.user_status='" + userstatus + "') ";
+                //}
+                //strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ");
 
 
-                strSql += "; SELECT Count(ur.id)/" + pagesize.ToString() + " TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
+                //strSql += "; SELECT Count(ur.id)/" + pagesize.ToString() + " TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                //DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                //dt = ds.Tables[0];
+                //if (ds.Tables[1].Rows.Count > 0)
+                //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+
+                SqlParameter[] parameters =
+               {                    
+                     
+                    new SqlParameter("@post_status", userstatus),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "CLS")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_customer_search", parameters);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());

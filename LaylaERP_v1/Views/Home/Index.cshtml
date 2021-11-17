@@ -276,12 +276,31 @@
 
             $('#userprofile').on('shown.bs.modal', function () {
                 $('#txtState').select2({
-                    dropdownParent: $('#userprofile'),
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //dropdownParent: $('#userprofile'),
+                    //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //ajax: {
+                    //    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    //    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                    //    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                    //    error: function (xhr, status, err) { }, cache: true
+                    //}
+
+                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
-                        url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) {
+                            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                            return JSON.stringify(obj);
+                        },
+                        processResults: function (data) {
+                            var jobj = JSON.parse(data);
+                            console.log(jobj);
+                            return {
+                                results: $.map(jobj, function (item) {
+                                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                                })
+                            };
+                        },
                         error: function (xhr, status, err) { }, cache: true
                     }
                 });
@@ -473,8 +492,8 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Country</label>
                                             <select class="form-control" id="txtCountry">
-                                                <option value="US-United States">US-United States</option>
-                                                <option value="CA-Canada">CA-Canada</option>
+                                                 <option value="US">US - United States</option>
+                                                 <option value="CA">CA - Canada</option>
                                             </select>
                                         </div>
                                     </div>

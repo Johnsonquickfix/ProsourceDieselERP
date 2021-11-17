@@ -1,6 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -71,24 +72,28 @@ namespace LaylaERP.Controllers
             };
             return View("ordermeta", model);
         }
-        public ActionResult ordermeta(GiftCardModel model)
+        public ActionResult ordermeta(GiftCardModel model,long id = 0)
         {
+            ViewBag.id = id;
             return View(model);
         }
         [HttpPost]
-        public JsonResult GetNewOrderNo(OrderModel model)
+        public JsonResult SaveGiftCardOrder(OrderModel model)
         {
             string JSONresult = string.Empty;
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_id", meta_value = om.UserID.ToString() });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
-                JSONresult = GiftCardRepository.AddOrdersPost(model.OrderPostMeta).ToString();
+                JSONresult = JsonConvert.SerializeObject(GiftCardRepository.AddGiftCardOrdersPost(model.order_id, "I", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
-            return Json(new { status = true, message = JSONresult, url = "" }, 0);
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
     }
 }

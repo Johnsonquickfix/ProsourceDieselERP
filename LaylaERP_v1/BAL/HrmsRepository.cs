@@ -290,7 +290,7 @@ namespace LaylaERP.BAL
                     //2nd table
                     new SqlParameter("@fk_emp", id),
 
-                    new SqlParameter("@birthplace", model.birthplace),
+                    new SqlParameter("@birthplace", model.birthplace ?? (object)DBNull.Value),
                     new SqlParameter("@maritalstatus",model.maritalstatus),
                     new SqlParameter("@address1", model.address1),
                     new SqlParameter("@address2", model.address2),

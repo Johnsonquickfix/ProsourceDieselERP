@@ -125,13 +125,13 @@ namespace LaylaERP.BAL
 
             try
             {
-                string strSql = "SELECT rowid, convert(varchar(12),date_created, 110) date_created, date_modified, label, account_type, working_status, country_iban, state, " +
+                SqlParameter[] pram = { new SqlParameter("@flag","ABYID"), new SqlParameter("@id", id) };
+                /*string strSql = "SELECT rowid, convert(varchar(12),date_created, 110) date_created, date_modified, label, account_type, working_status, country_iban, state, " +
                     "comment, initial_balance, min_allowed, min_desired, bank, code_bank, account_number, iban_prefix, bic, bank_address, owner_name, " +
-                    "accounting_number, fk_accountancy_journal, url, currency_code, owner_address from erp_bank_account where rowid='" + id + "'";
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                    "accounting_number, fk_accountancy_journal, url, currency_code, owner_address from erp_bank_account where rowid='" + id + "'";*/
+                string strSql = "erp_bank";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
                 dt = ds.Tables[0];
-
-
             }
             catch (Exception ex)
             {
@@ -351,12 +351,14 @@ namespace LaylaERP.BAL
 
         public static DataTable BankEntriesBalanceForSpecific(long id)
         {
+            SqlParameter[] parm = { new SqlParameter("@flag", "GEBFS"), new SqlParameter("@id",id) };
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT convert(numeric(18, 2), sum(CASE WHEN epi.type = 'SO' THEN epi.amount else '0' end)) AS debit, convert(numeric(18, 2), sum(CASE WHEN epi.type = 'PO' THEN epi.amount else '0' end)) AS credit"
-                                 + " from erp_payment ep left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid =" + id + "";
-                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                /*string strquery = "SELECT convert(numeric(18, 2), sum(CASE WHEN epi.type = 'SO' THEN epi.amount else '0' end)) AS debit, convert(numeric(18, 2), sum(CASE WHEN epi.type = 'PO' THEN epi.amount else '0' end)) AS credit"
+                                 + " from erp_payment ep left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid =" + id + "";*/
+                string strquery = "erp_bank";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery,parm);
                 dtr = ds.Tables[0];
             }
             catch (Exception ex)

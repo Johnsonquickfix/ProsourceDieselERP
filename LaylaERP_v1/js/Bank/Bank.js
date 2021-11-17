@@ -674,6 +674,7 @@ function EntriesBalanceForSpecificBank() {
             if (d.length > 0) {
                 $("#txtentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
                 $("#txtentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
+                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
             }
         },
         error: function (msg) {

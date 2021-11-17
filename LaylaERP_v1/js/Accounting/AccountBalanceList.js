@@ -45,3 +45,24 @@
         ],
     });
 }
+
+GrandToatl();
+function GrandToatl(){
+    $.ajax({
+        url: "/Accounting/AccountBalanceGrandTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
+                $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2));
+                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+            }
+        },
+        error: function (msg) {
+
+        }
+    });
+}

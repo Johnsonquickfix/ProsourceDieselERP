@@ -11,7 +11,6 @@
     using System.Net.Mail;
     using System.Configuration;
     using System.Text.RegularExpressions;
-    using recaptcha;
     using Newtonsoft.Json;
 
     public class AccountAPIController : Controller

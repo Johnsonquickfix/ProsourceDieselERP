@@ -22,7 +22,7 @@ function GetUsersCount() {
                 alltotal = alltotal + parseInt(value.cnt);
             })
             items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
-            $('#all').find(".count").text(number_format(alltotal));
+            $('#all').find(".count").text(number_format(alltotal-1));
             let id = $("#hfStatusType").val();
             if (id != '')
                 $('#' + id).addClass('current');
@@ -137,14 +137,14 @@ function Datagrid(role_type, type) {
     var id;
     if (searchText == '') {
         $('#dtdata').DataTable({
-            oSearch: { "sSearch": role_type.trim() },
+          //  oSearch: { "sSearch": role_type.trim() },
             destroy: true,
             bAutoWidth: false,
             "ajax": {
                 "url": '/Users/GetData',
                 "type": 'GET',
                 "dataType": 'json',
-                // data: { rolepass: role_type.trim() },
+                 data: { rolepass: role_type.trim() },
                 contentType: "application/json; charset=utf-8",
             },
             lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],

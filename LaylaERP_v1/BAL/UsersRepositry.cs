@@ -25,10 +25,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                if (rolee == null || rolee == "")
-                {
-                    rolee = "%";
-                }
+                //if (rolee == null || rolee == "")
+                //{
+                //    rolee = "";
+                //}
                 SqlParameter[] parameters =
                  {
                     new SqlParameter("@rolee", rolee)

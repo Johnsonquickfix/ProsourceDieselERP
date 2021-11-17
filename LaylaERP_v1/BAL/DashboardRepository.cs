@@ -131,10 +131,10 @@ namespace LaylaERP.BAL
                     long user = CommanUtilities.Provider.GetCurrent().UserID;
                     strWhr = " and pm.meta_value = '" + user + "'";
                 }
-                string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0) from wp_posts p  left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order '" + strWhr.ToString() + " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , " +
-                    "(SELECT IFNULL(round(sum(rpm.meta_value),2),0) " +
+                string strSql = "Select (SELECT ISNULL(Count(distinct p.id),0) from wp_posts p  left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order '" + strWhr.ToString() + " and cast(p.post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , " +
+                    "(SELECT ISNULL(round(sum(convert(numeric(18,2),rpm.meta_value)),2),0) " +
                     "from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' " +
-                    "WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') " + strWhr.ToString() + ") TotalSale ";
+                    "WHERE p.post_type = 'shop_order' and cast(p.post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') " + strWhr.ToString() + ") TotalSale ";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

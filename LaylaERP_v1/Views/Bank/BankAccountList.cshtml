@@ -31,15 +31,14 @@
                             <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                 <thead>
                                     <tr>
-
                                         <th>Account Number</th>
                                         <th>Label</th>
                                         <th>Type</th>
                                         <th>Accounting Account</th>
                                         <th>Accounting code journal</th>
+                                        <th>Initial Amount</th>
                                         <th>Status</th>
                                         <th>Action</th>
-                                       
                                     </tr>
                                 </thead>
                             </table>
@@ -56,7 +55,6 @@
 <script>
     $(document).ready(function () {
         BankAccountList();
-       
         });
 
 </script>
@@ -81,6 +79,7 @@
                         { data: 'type', title: 'Account Type', sWidth: "20%" },
                         { data: 'accounting', title: 'Accounting Account', sWidth: "15%" },
                         { data: 'journal', title: 'Accounting code journal', sWidth: "15%" },
+                        { data: 'initial_balance', title: 'Initial Balance', sWidth: "15%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         { data: 'status', title: 'Status', sWidth: "10%" },
                         {
                             'data': 'ID', sWidth: "8%",

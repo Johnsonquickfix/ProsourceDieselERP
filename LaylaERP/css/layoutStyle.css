@@ -240,6 +240,16 @@ body .data-table-container {
     font-weight: 400;
 }
 
+.payment.invoice.list #dtdata.inventory-table .shown + tr > td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 10px !important;
+}
+
+.payment.invoice.list .table-design #dtdata.inventory-table thead th {
+    padding: 10px !important;
+}
+
 table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
     width: 16px !important;
     height: 16px !important;
@@ -2496,7 +2506,8 @@ table-layout:fixed;}
     padding-left: 0px !important;
     padding-right: 0px !important;
 }
-.neworders a.billinfo, .order a.billinfo {
+
+    .neworders a.billinfo, .order a.billinfo {
     background-color: #ff4100;
     transition: all .5s ease;
     padding: 8px 12px;
@@ -2527,7 +2538,15 @@ html .listproduct .inventory-table td:nth-child(2) {
 .neworders a.billinfo, .order a.billinfo {
     color: #fff !important;
 }
+.payment.invoice.list #dtdata.inventory-table .shown + tr > td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 10px !important;
+}
 
+.payment.invoice.list .table-design #dtdata.inventory-table thead th {
+    padding: 10px !important;
+}
 .table-blue.check-table [type="checkbox"]{margin:0px;width:15px; height:15px;}
 .table-blue.check-table [type="checkbox"] + label{width:15px; height:15px;}
 .order .table-blue.check-table [type="checkbox"]{top:12px; transform:translateY(0);} 

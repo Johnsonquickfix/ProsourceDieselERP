@@ -311,7 +311,7 @@
                                                                             </span>
                                                                         </div>
                                                                         @*@Html.GoogleCaptcha()*@
-                                                                        <div class="col-md-12">
+                                                                        @*<div class="col-md-12">
                                                                             <span class="wpcf7-form-control-wrap your-recaptcha g-recaptcha">
                                                                                 <re-captcha formcontrolname="recaptchaReactive"
                                                                                             sitekey="6Le-yIYUAAAAALHEdxqPayGJNNeWtTCESVJdnW_I" id="ngrecaptcha-0" class="">
@@ -335,7 +335,7 @@
                                                                                     </div>
                                                                                 </re-captcha>
                                                                             </span>
-                                                                        </div>
+                                                                        </div>*@
                                                                         <div class="col-md-12">
                                                                             <input type="button" value="submit" class="btn btn-danger btn-md wpcf7-form-control wpcf7-submit" id="sendquery" />
                                                                         </div>
@@ -388,7 +388,7 @@
                         <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
                         
 
-                        <script src="https://www.google.com/recaptcha/api.js"></script>
+                        @*<script src="https://www.google.com/recaptcha/api.js"></script>*@
                         <script src="@Url.Content("~/js/Users/UserLogin.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
                         <script>
                             $(document).ready(function () {

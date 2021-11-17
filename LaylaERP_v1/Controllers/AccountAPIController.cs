@@ -11,7 +11,6 @@
     using System.Net.Mail;
     using System.Configuration;
     using System.Text.RegularExpressions;
-    using recaptcha;
     using Newtonsoft.Json;
 
     public class AccountAPIController : Controller
@@ -93,6 +92,11 @@
                                 op.SMTPServerPortNo = ds.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
                             else
                                 op.SMTPServerPortNo = string.Empty;
+
+                            if (ds.Tables[1].Rows[0]["SSL"].ToString() == "1")
+                                op.SSL = true;
+                            else
+                                op.SSL = false;
 
                             if (ds.Tables[1].Rows[0]["PaypalClientId"] != DBNull.Value)
                                 op.PaypalClientId = ds.Tables[1].Rows[0]["PaypalClientId"].ToString();

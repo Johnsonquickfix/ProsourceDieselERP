@@ -2,7 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -25,7 +25,7 @@
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "account" : oSettings.aaSorting[0][0] == 2 ? "debit" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "account" : oSettings.aaSorting[0][0] == 2 ? "debit" : oSettings.aaSorting[0][0] == 3 ? "credit" : oSettings.aaSorting[0][0] == 4 ? "balance" : "id";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({
@@ -38,10 +38,31 @@
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
-            { data: 'account', title: 'Accounting Account', sWidth: "5%" },
-            { data: 'debit', title: 'Debit', sWidth: "10%" },
-            { data: 'credit', title: 'Credit', sWidth: "10%" },
-            { data: 'balance', title: 'Balance', sWidth: "10%" },
+            { data: 'account', title: 'Accounting Account', sWidth: "5%", class:"text-left" },
+            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
         ],
+    });
+}
+
+GrandToatl();
+function GrandToatl(){
+    $.ajax({
+        url: "/Accounting/AccountBalanceGrandTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
+                $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2));
+                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+            }
+        },
+        error: function (msg) {
+
+        }
     });
 }

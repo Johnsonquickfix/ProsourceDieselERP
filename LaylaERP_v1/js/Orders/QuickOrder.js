@@ -673,7 +673,7 @@ function getOrderInfo() {
     if (oid > 0) {
         $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
         $('#ddlStatus,#btnSearch').prop("disabled", true);
-        $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
+        $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
@@ -1949,9 +1949,10 @@ function createItemsList() {
     //Add Shipping
     itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
     //Add Tax
-    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
-
+    let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+    let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = is_freighttax ? _taxRate : 0.0;
+    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate, total: parseFloat($('#salesTaxTotal').text()) || 0.00, shipping_tax_amount: shipping_tax_amount });
+    console.log(itemsDetails, is_freighttax);
     return itemsDetails;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1984,7 +1985,7 @@ function saveCO() {
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
-    //console.log(obj);
+    console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",

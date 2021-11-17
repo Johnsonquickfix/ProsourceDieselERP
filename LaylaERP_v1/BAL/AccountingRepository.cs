@@ -250,7 +250,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@label", model.label),
                     new SqlParameter("@fk_accounting_category","0"),
                     new SqlParameter("@active","1"),
-                     new SqlParameter("@reconcilable","0"),
+                    new SqlParameter("@reconcilable","0"),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -459,7 +459,8 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT thirdparty_code as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + sum(invtotal)) - (sum(invtotal) - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 ";
+                //string strSql = "SELECT thirdparty_code as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + sum(invtotal)) - (sum(invtotal) - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 ";
+                string strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (inv_complete like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%') ";
@@ -469,8 +470,8 @@ namespace LaylaERP.BAL
                     //strWhr += " and (is_active='" + userstatus + "') ";
                 }
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-                strSql += strWhr + string.Format(" group by inv_complete, label_complete, thirdparty_code order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
-                strSql += "; SELECT (Count(thirdparty_code)/" + pagesize.ToString() + ") TotalPage,Count(distinct concat(thirdparty_code,inv_complete,'-', label_complete)) TotalRecord FROM erp_accounting_bookkeeping where 1=1" + strWhr.ToString();
+                strSql += strWhr + string.Format(" group by inv_complete, label_complete  order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(inv_complete)/" + pagesize.ToString() + ") TotalPage,Count(distinct concat(inv_complete,'-', label_complete)) TotalRecord FROM erp_accounting_bookkeeping where 1=1" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -482,6 +483,23 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable AccountBalanceGrandTotal()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit," 
+                               +" (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
+                               +" ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
 
         //Start journals

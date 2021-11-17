@@ -141,10 +141,11 @@
 
         $(".subsubsub li").click(function (e) {
             var role_type = $(this).data('usertext');
+            console.log(role_type);
            $('#hfStatusType').val(role_type);
-           // Datagrid(role_type, $("#hfroletype").val());
+            //Datagrid(role_type, $("#hfroletype").val());
 
-            $("#dtdata").DataTable().search(role_type).draw();
+           // $("#dtdata").DataTable().search(role_type).draw();
            // console.log();
         });
 
@@ -221,9 +222,9 @@
             }
 
             //alert(role_type);
-            //console.log(role_type);
-          //  $('#hfStatusType').val(role_type);
-           // Datagrid(role_type, $("#hfroletype").val());
+            console.log(role_type);
+           $('#hfStatusType').val(role_type);
+            Datagrid(role_type, $("#hfroletype").val());
         });
 
         //Count Role Grid End

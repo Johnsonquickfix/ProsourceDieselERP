@@ -485,6 +485,23 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable AccountBalanceGrandTotal()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit," 
+                               +" (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
+                               +" ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
         //Start journals
         public static DataTable AccountJournalList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {

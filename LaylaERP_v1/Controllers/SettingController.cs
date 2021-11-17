@@ -32,6 +32,7 @@ namespace LaylaERP.Controllers
                 ViewBag.SenderEmailPwd = DT.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
                 ViewBag.SMTPServerName = DT.Tables[0].Rows[0]["SMTPServerName"].ToString();
                 ViewBag.SMTPServerPortNo = DT.Tables[0].Rows[0]["SMTPServerPortNo"].ToString();
+                ViewBag.SSL = DT.Tables[0].Rows[0]["SSL"].ToString();
                 ViewBag.PaypalClientId = DT.Tables[0].Rows[0]["PaypalClientId"].ToString();
                 ViewBag.PaypalSecret = DT.Tables[0].Rows[0]["PaypalSecret"].ToString();
                 ViewBag.PaypalSellerAccount = DT.Tables[0].Rows[0]["PaypalSellerAccount"].ToString();
@@ -127,6 +128,7 @@ namespace LaylaERP.Controllers
             string SenderEmailPwd = model.SenderEmailPwd;
             string SMTPServerName = model.SMTPServerName;
             string SMTPServerPortNo = Convert.ToInt32(model.SMTPServerPortNo).ToString();
+            string SSL = Convert.ToInt32(model.SSL).ToString();
             string PaypalClientId = model.PaypalClientId;
             string PaypalSecret = model.PaypalSecret;
             string PaypalSellerAccount = model.PaypalSellerAccount;

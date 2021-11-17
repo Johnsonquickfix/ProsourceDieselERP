@@ -3,7 +3,7 @@ function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
         $('#userrole').empty();
-        items += "<option value=''>Please select</option>";
+        items += $("<option value=''>Please select</option>").appendTo("#userrole");
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#userrole");
         })
@@ -17,7 +17,7 @@ function CopyRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
         $('#ddlCopyRole').empty();
-        items += "<option value=''>Please select</option>";
+        items += $("<option value=''>Please select</option>").appendTo("#ddlCopyRole");
 
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCopyRole");

@@ -34,7 +34,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
-                    "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
+                    "SMTPServerPortNo=@SMTPServerPortNo, SSL=@SSL, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
                     " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code where ID=@user_id";
                 SqlParameter[] para =
@@ -49,6 +49,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@SenderEmailPwd", model.SenderEmailPwd),
                     new SqlParameter("@SMTPServerName", model.SMTPServerName),
                     new SqlParameter("@SMTPServerPortNo",model.SMTPServerPortNo),
+                    new SqlParameter("@SSL",model.SSL),
                     new SqlParameter("@PaypalClientId",model.PaypalClientId),
                     new SqlParameter("@PaypalSecret", model.PaypalSecret),
                     new SqlParameter("@PaypalSellerAccount",model.PaypalSellerAccount),

@@ -16,6 +16,7 @@ namespace LaylaERP.Models
         string _SenderEmailPwd = string.Empty;
         string _SMTPServerName = string.Empty;
         int _SMTPServerPortNo;
+        int _SSL;
         int _ID;
         string _PaypalClientID = string.Empty;
         string _PaypalSecret = string.Empty;
@@ -85,6 +86,11 @@ namespace LaylaERP.Models
         {
             get { return _SMTPServerPortNo; }
             set { _SMTPServerPortNo = value; }
+        }
+        public int SSL
+        {
+            get { return _SSL; }
+            set { _SSL = value; }
         }
         public string PaypalClientId
         {

@@ -130,6 +130,22 @@
                                 <input type="text" class="form-control" id="SMTPServerPortNo" value="@ViewBag.SMTPServerPortNo">
                             </div>
                         </div>
+                        <div class="form-check form-group d-flex">
+                            <div class="col-sm-2 control-label"></div>
+                            <div class="col-sm-10">
+                                @if (Convert.ToInt32(ViewBag.SSL) == 1)
+                                {
+                                    <input class="form-check-input" type="checkbox" value="" id="SSL" checked="@value">}
+                                else
+                                {
+                                    <input class="form-check-input" type="checkbox" value="" id="SSL">
+                                }
+                                <label class="form-check-label" for="SSL">
+                                    SSL
+                                </label>
+                            </div>
+
+                        </div>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_3">
@@ -400,6 +416,12 @@
         SenderEmailPwd = $("#SenderEmailPwd").val();
         SMTPServerName = $("#SMTPServerName").val();
         SMTPServerPortNo = $("#SMTPServerPortNo").val();
+        if ($(SSL).prop("checked")) {
+            SSL = 1;
+        }
+        else {
+            SSL = 0;
+        }
         PaypalClientId = $("#PaypalClientId").val();
         PaypalSecret = $("#PaypalSecret").val();
         PaypalSellerAccount = $("#PaypalSellerAccount").val();
@@ -478,6 +500,7 @@
             SenderEmailPwd: SenderEmailPwd,
             SMTPServerName: SMTPServerName,
             SMTPServerPortNo: SMTPServerPortNo,
+            SSL: SSL,
             PaypalClientId: PaypalClientId,
             PaypalSecret: PaypalSecret,
             PaypalSellerAccount: PaypalSellerAccount,

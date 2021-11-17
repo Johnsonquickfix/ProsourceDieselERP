@@ -155,12 +155,12 @@ function Datagrid(role_type, type) {
                         return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
                 },
-                { 'data': 'ID', 'sWidth': "8%", "bSearchable": false},
-                { 'data': 'user_login', 'sWidth': "12%", "bSearchable": false },
-                { 'data': 'user_email', 'sWidth': "25%", "bSearchable": false },
-                { 'data': 'user_status', 'sWidth': "10%", "bSearchable": false },
-                { 'data': 'phone', 'sWidth': "15%", "bSearchable": false },
-                { 'data': 'address', 'sWidth': "30%", "bSearchable": false },
+                { 'data': 'ID', 'sWidth': "8%", "bSearchable": true},
+                { 'data': 'user_login', 'sWidth': "12%", "bSearchable": true },
+                { 'data': 'user_email', 'sWidth': "25%", "bSearchable": true },
+                { 'data': 'user_status', 'sWidth': "10%", "bSearchable": true },
+                { 'data': 'phone', 'sWidth': "15%", "bSearchable": true },
+                { 'data': 'address', 'sWidth': "30%", "bSearchable": true },
                 {
                     data: 'my', title: 'Role', sWidth: "22%", "bSearchable": true, render: function (data, type, row) {
                         let str = getAllUserType(data);

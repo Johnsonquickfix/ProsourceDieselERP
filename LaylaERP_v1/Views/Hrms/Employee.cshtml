@@ -157,7 +157,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="Password">Password</label>
-                                        <span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>
+                                        @*<span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>*@
                                         <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
                                         <span class="" id='result'></span>
                                     </div>
@@ -174,7 +174,7 @@
 
                             <div class="form-group">
                                 <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                <label for="Address1">Address1</label>
+                                <label for="Address1">Address1 <span style="color:red;">*</span></label>
                                 <div class="input-group">
                                     <input class="form-control" type="text" id="txtAddress1" data-addresstype="Permanent" name="Address1">
                                 </div>
@@ -189,7 +189,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="City">City</label>
+                                        <label for="City">City <span style="color:red;">*</span></label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="txtCity" name="City">
                                         </div>
@@ -197,7 +197,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="StateProvince">State</label>
+                                        <label for="StateProvince">State <span style="color:red;">*</span></label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="txtState" name="StateProvince">
                                         </div>
@@ -205,7 +205,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="ZipCode">ZipCode</label>
+                                        <label for="ZipCode">ZipCode <span style="color:red;">*</span></label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="txtZipCode" name="ZipCode">
                                         </div>
@@ -213,7 +213,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="Country">Country</label>
+                                <label for="Country">Country <span style="color:red;">*</span></label>
                                 <select class="form-control" id="txtCountry">
                                     <option value="US">US - United States</option>
                                     <option value="CA">CA - Canada</option>

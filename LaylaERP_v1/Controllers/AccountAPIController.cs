@@ -93,6 +93,11 @@
                             else
                                 op.SMTPServerPortNo = string.Empty;
 
+                            if (ds.Tables[1].Rows[0]["SSL"].ToString() == "1")
+                                op.SSL = true;
+                            else
+                                op.SSL = false;
+
                             if (ds.Tables[1].Rows[0]["PaypalClientId"] != DBNull.Value)
                                 op.PaypalClientId = ds.Tables[1].Rows[0]["PaypalClientId"].ToString();
                             else

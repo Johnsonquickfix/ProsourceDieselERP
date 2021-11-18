@@ -112,7 +112,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                DataTable DT = FeeNTaxRepository.GetState(model.strValue1);
+                DataTable DT = FeeNTaxRepository.GetState(model.strValue1, model.strValue2);
                 JSONresult = JsonConvert.SerializeObject(DT);
             }
             catch { }

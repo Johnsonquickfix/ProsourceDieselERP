@@ -318,7 +318,7 @@ namespace LaylaERP.BAL
                                 + " INNER JOIN wp_vendor wv on wv.code_vendor=ep.thirdparty_code"
                                 + " where eba.rowid = '"+id+"'"; */
                 string strSql = "SELECT eba.rowid as bank, ep.rowid as id, wpt.PaymentType as paymenttype, eba.account_number as bankaccount, iif (epi.type = 'SO',epi.amount,'0')as debit, iif (epi.type = 'PO',epi.amount,'0') as credit,"
-                               + "eba.initial_balance + sum(iif (epi.type = 'SO',epi.amount,'0') - iif (epi.type = 'PO',epi.amount,'0')) over (order by ep.rowid rows between unbounded preceding and current row) as balance,"
+                               + "eba.initial_balance + sum(iif (epi.type = 'SO',epi.amount,'0') - iif (epi.type = 'PO',epi.amount,'0')) over (order by ep.datep rows between unbounded preceding and current row) as balance,"
                                + " convert(varchar(12),ep.datep,101) as operation_date, ep.num_payment as num_payment, wv.name as vendor, convert(varchar(12),ep.datec,101) as value_date from erp_payment ep"
                                + " left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment"
                                + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "'";

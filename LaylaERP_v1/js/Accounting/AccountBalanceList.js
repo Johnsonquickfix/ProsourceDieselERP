@@ -43,6 +43,20 @@
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
         ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account_Balance_List' + e;
+                },
+            },
+        ],
     });
 }
 

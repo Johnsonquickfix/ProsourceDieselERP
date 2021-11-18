@@ -267,7 +267,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
-                    new SqlParameter("@meta_value", varFieldsValue),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
 
@@ -322,11 +322,11 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                     //2nd table
-                    new SqlParameter("@fk_emp", id),
-                    new SqlParameter("@birthplace", model.birthplace),
-                    new SqlParameter("@maritalstatus",model.maritalstatus),
+                    new SqlParameter("@fk_emp",id),
+                    new SqlParameter("@birthplace", model.birthplace ?? (object)DBNull.Value),
+                    new SqlParameter("@maritalstatus",model.maritalstatus ?? (object)DBNull.Value),
                     new SqlParameter("@address1", model.address1),
-                    new SqlParameter("@address2", model.address2),
+                    new SqlParameter("@address2", model.address2 ?? (object)DBNull.Value),
                     new SqlParameter("@city", model.city),
                     new SqlParameter("@state", model.state),
                     new SqlParameter("@zipcode", model.zipcode),
@@ -354,8 +354,8 @@ namespace LaylaERP.BAL
                     "alternatezipcode = @alternatezipcode,alternatecountry = @alternatecountry,alternatecontactNumber = @alternatecontactNumber where fk_emp = @fk_emp";
                 SqlParameter[] para =
                 {
-                    //2nd table
-                    new SqlParameter("@fk_emp", id),
+                    //2nd table("@fk_emp", System.Data.SqlDbType.Int) { Value = id }
+                    new SqlParameter("@fk_emp", System.Data.SqlDbType.Int) { Value = id },
                     //new SqlParameter("@emp_number", model.emp_number),
                     new SqlParameter("@designation", model.designation ?? (object)DBNull.Value),
                     new SqlParameter("@department", model.department),

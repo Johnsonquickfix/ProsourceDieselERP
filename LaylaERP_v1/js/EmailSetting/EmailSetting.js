@@ -42,10 +42,10 @@ function addchanges() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     else {
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                 }
                 else {

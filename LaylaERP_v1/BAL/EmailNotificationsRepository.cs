@@ -61,7 +61,8 @@ namespace LaylaERP.BAL
                 + " left outer join  erp_email_templates et on et.option_name = eno.email_notify_key"
                 + " WHERE rowid > 0" + strWhr
 
-              + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+              //+ " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+                +" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
 
                 strSql += "; SELECT count(distinct rowid) TotalRecord from erp_email_notify_options eno"
                 + " left outer join  erp_email_templates et on et.option_name = eno.email_notify_key"
@@ -85,7 +86,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select option_name from erp_email_templates"
                                 + " WHERE option_name = '" + model.option_name + "' "
-                                + " limit 10;";
+                                + " ;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

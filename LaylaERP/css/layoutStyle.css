@@ -1,4 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
 body {
     background: #f9f9f9;
     font-family: 'Open Sans', sans-serif !important;
@@ -238,16 +239,6 @@ body .data-table-container {
     border-bottom: 1px solid #0090d6;
     color: #fff !important;
     font-weight: 400;
-}
-
-.payment.invoice.list #dtdata.inventory-table .shown + tr > td {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    padding-top: 10px !important;
-}
-
-.payment.invoice.list .table-design #dtdata.inventory-table thead th {
-    padding: 10px !important;
 }
 
 table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
@@ -2507,7 +2498,7 @@ table-layout:fixed;}
     padding-right: 0px !important;
 }
 
-    .neworders a.billinfo, .order a.billinfo {
+.neworders a.billinfo, .order a.billinfo {
     background-color: #ff4100;
     transition: all .5s ease;
     padding: 8px 12px;
@@ -2538,15 +2529,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 .neworders a.billinfo, .order a.billinfo {
     color: #fff !important;
 }
-.payment.invoice.list #dtdata.inventory-table .shown + tr > td {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    padding-top: 10px !important;
-}
 
-.payment.invoice.list .table-design #dtdata.inventory-table thead th {
-    padding: 10px !important;
-}
 .table-blue.check-table [type="checkbox"]{margin:0px;width:15px; height:15px;}
 .table-blue.check-table [type="checkbox"] + label{width:15px; height:15px;}
 .order .table-blue.check-table [type="checkbox"]{top:12px; transform:translateY(0);} 
@@ -2983,3 +2966,10 @@ width: 85px;
 .group_test2.group-test > .col-sm-3{width: 82.6%;}
 
 .group_test2.group-test > .col-sm-9{width: 17.4%;}
+
+
+#btnfileproduct {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+}

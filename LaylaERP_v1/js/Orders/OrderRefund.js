@@ -85,6 +85,7 @@ function getOrderInfo() {
 function getOrderItemList(oid) {
     var option = { strValue1: oid };
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
+        console.log(data);
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         $.each(data, function (i, row) {
@@ -211,6 +212,7 @@ function getOrderItemList(oid) {
                     $("#tritemId_" + orderitemid).data("returnqty", row.quantity);
                     $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.quantity + '</span>');
                     $("#tritemId_" + orderitemid).find('.TotalAmount').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
+                    $("#tritemId_" + orderitemid).find('.RowTax').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.tax_amount + '</span>');
                 }
                 else if (row.product_name == "fee") {
                     let max_amt = parseInt($("#trfeeid_" + orderitemid).data("totalamt")) + parseInt(row.total);

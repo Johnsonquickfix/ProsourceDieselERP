@@ -85,7 +85,6 @@ function getOrderInfo() {
 function getOrderItemList(oid) {
     var option = { strValue1: oid };
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        console.log(data);
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         $.each(data, function (i, row) {
@@ -293,14 +292,14 @@ function getShippingCharge() {
         let options = { strValue1: p_ids.join(','), strValue2: v_ids.join(','), strValue3: $('.shipping-address').data('shipcountry'), strValue4: $('.shipping-address').data('shipstate') };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.post('/Orders/GetProductShipping', options).then(response => {
-            response = JSON.parse(response);
+            response = JSON.parse(response); console.log(response);
             $("#order_line_items > tr.paid_item").each(function (index, tr) {
                 let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
                 if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
                 else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
-                //let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
-                //if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
-                //else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
+                let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
             });
         }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
     }
@@ -350,9 +349,7 @@ function calculateRefunOnAmount() {
 }
 function calculateRefunOnQty() {
     let qty = 0.00, subtotal = 0.00, taxtotal = 0.00, shippingtotal = 0.00, staterecyclingtotal = 0.00, feetotal = 0.00, total = 0.00;
-    $('#order_line_items > tr').each(function (index, tr) {
-        $(tr).find("[name=txt_RefundAmt]").val(0);
-    });
+    $('#order_line_items > tr').each(function (index, tr) { $(tr).find("[name=txt_RefundAmt]").val(0); });
     freeQtyUpdate();
     let _items = createItemsList();
     //getStateRecyclingCharge();
@@ -424,7 +421,7 @@ function createPostStatus() {
 }
 function createItemsList() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($('#ddlUser').val()) || 0;
-    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, mattotalCount = 0, matreturnCount = 0;
     let _itmes = [];
     $('#order_line_items > tr').each(function (index, tr) {
         let oi_id = parseInt($(this).data('orderitemid')) || 0, qty = parseFloat($(tr).data('qty')) || 0.00;
@@ -435,7 +432,9 @@ function createItemsList() {
         let discountAmount = parseFloat($(tr).find(".TotalAmount").data('discount')) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
+        let srfee = parseFloat($(tr).data("srfee")) || 0.00; mattotalCount += srfee > 0 ? qty : 0;       
         if (refundqty > 0 && refundamt == 0) {
+            matreturnCount += srfee > 0 ? refundqty : 0;
             grossAmount = grossAmount > 0 ? (grossAmount / qty) * refundqty : 0;
             discountAmount = discountAmount > 0 ? (discountAmount / qty) * refundqty : 0;
             taxAmount = taxAmount > 0 ? (taxAmount / qty) * refundqty : 0;
@@ -486,11 +485,12 @@ function createItemsList() {
     //});
     //State Recycling Fee
     $('#order_state_recycling_fee_line_items > tr').each(function (index, tr) {
-        _amt = parseFloat($(tr).find(".RefundAmount").text()) || 0.00;
+        _amt = (parseFloat($(tr).find(".TotalAmount").text()) || 0.00) / mattotalCount; 
+        _amt = _amt * matreturnCount; $('#order_state_recycling_fee_line_items').find(".RefundAmount").text(_amt.toFixed(2));
         if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: -_amt });
     });
     //other fee
-    $('#order_fee_line_items > tr').each(function (index, tr) {
+    $('#order_fee_line_items > tr').each(function (index, tr) {        
         _amt = parseFloat($(tr).find("[name=txt_FeeAmt]").val()) || 0.00;
         if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: -_amt });
     });

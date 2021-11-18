@@ -248,7 +248,7 @@ $(document).on('click', "#btnNext1", function () {
     else if (address1 == "") { swal('Alert', 'Please Enter address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }); }
     else if (city == "") { swal('Alert', 'Please Enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); }); }
     else if (state == "") { swal('Alert', 'Please Enter state', 'error').then(function () { swal.close(); $('#txtState').focus(); }); }
-    else if (zipcode == "") { swal('Alert', 'Please Enter state', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }); }
+    else if (zipcode == "") { swal('Alert', 'Please Enter zip code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }); }
 
     else {
         var obj = {

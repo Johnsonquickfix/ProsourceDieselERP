@@ -84,7 +84,7 @@ function Search() {
                 { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
                 { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
                 { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
-                { data: 'Bank', title: 'Bank', sWidth: "10%" },
+                { data: 'Bank', title: 'Check Details', sWidth: "10%" },
                 { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
              /*   { data: 'Status', title: 'Transaction', sWidth: "10%" }*/
             ],

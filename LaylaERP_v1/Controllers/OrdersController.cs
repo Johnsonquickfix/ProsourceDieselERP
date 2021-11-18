@@ -274,8 +274,6 @@
                     JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
                     OrderRepository.SaveTaxRate(model.strValue5, model.strValue4, model.strValue3, model.strValue2, "0", JSONresult, false);
                 }
-
-                JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
             }
             catch { JSONresult = 0; }
             return Json(new { status = true, rate = JSONresult }, 0);

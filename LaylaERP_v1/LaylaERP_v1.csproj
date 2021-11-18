@@ -181,6 +181,7 @@
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -680,6 +681,7 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
+    <Content Include="js\PaymentInvoice\CheckDepositList.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\Product\AddnewProduct.js" />
@@ -990,6 +992,7 @@
     <Content Include="Views\Inventory\VendorInventory.cshtml" />
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
     <Content Include="Views\TaxJarOrder\CreateOrder.cshtml" />
+    <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

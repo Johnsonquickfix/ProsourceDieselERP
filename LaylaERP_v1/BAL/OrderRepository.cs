@@ -333,7 +333,7 @@
                     new SqlParameter("@tostreet", tostreet),
                     new SqlParameter("@tozip", tozip)
                 };
-                string strSQl = "SELECT top 1 tocountry,tostate,tocity,tostreet,tozip,coalesce(rate,0) rate,freight_taxable FROM taxrates where [time] > DATEADD(MINUTE, -120,GETUTCDATE()) and lower(tocountry) = lower(@tocountry) and lower(tostate) = lower(@tostate) and lower(tocity) = lower(@tocity) and lower(tostreet) = lower(@tostreet) and tozip = @tozip order by [time] desc;delete from taxrates where [time] < DATEADD(MINUTE, -120,GETUTCDATE());";
+                string strSQl = "SELECT top 1 tocountry,tostate,tocity,tostreet,tozip,coalesce(rate,0) rate,freight_taxable FROM taxrates where [time] > DATEADD(MINUTE, -60,GETUTCDATE()) and lower(tocountry) = lower(@tocountry) and lower(tostate) = lower(@tostate) and lower(tocity) = lower(@tocity) and lower(tostreet) = lower(@tostreet) and tozip = @tozip order by [time] desc;";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -355,7 +355,7 @@
                     new SqlParameter("@rate", rate),
                     new SqlParameter("@freight_taxable", freight_taxable)
                 };
-                string strSQl = "INSERT INTO taxrates (tocountry,tostate,tocity,tostreet,tozip,rate,freight_taxable) VALUES (@tocountry,@tostate,@tocity,@tostreet,@tozip,@rate,@freight_taxable)";
+                string strSQl = "INSERT INTO taxrates (tocountry,tostate,tocity,tostreet,tozip,rate,freight_taxable) VALUES (@tocountry,@tostate,@tocity,@tostreet,@tozip,@rate,@freight_taxable);delete from taxrates where [time] < DATEADD(MINUTE, -60,GETUTCDATE());";
                 result = SQLHelper.ExecuteNonQuery(strSQl, parameters);
             }
             catch (Exception ex)
@@ -781,6 +781,12 @@
                             productsModel.total = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
                         else
                             productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "tax")
+                    {
+                        productsModel.tax_amount = (sdr["tax"] != Convert.DBNull) ? decimal.Parse(sdr["tax"].ToString()) : 0;
+                        productsModel.shipping_tax_amount = (sdr["shipping_amount"] != Convert.DBNull) ? decimal.Parse(sdr["shipping_amount"].ToString()) : 0;
+                        productsModel.staterecycle_istaxable = productsModel.shipping_tax_amount > 0 ? true : false;
                     }
                     else if (productsModel.product_type == "refund")
                     {

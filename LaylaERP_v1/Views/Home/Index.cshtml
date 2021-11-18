@@ -276,12 +276,31 @@
 
             $('#userprofile').on('shown.bs.modal', function () {
                 $('#txtState').select2({
-                    dropdownParent: $('#userprofile'),
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //dropdownParent: $('#userprofile'),
+                    //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //ajax: {
+                    //    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    //    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                    //    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                    //    error: function (xhr, status, err) { }, cache: true
+                    //}
+
+                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
-                        url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) {
+                            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                            return JSON.stringify(obj);
+                        },
+                        processResults: function (data) {
+                            var jobj = JSON.parse(data);
+                            console.log(jobj);
+                            return {
+                                results: $.map(jobj, function (item) {
+                                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                                })
+                            };
+                        },
                         error: function (xhr, status, err) { }, cache: true
                     }
                 });
@@ -397,25 +416,25 @@
                                 <div class="box-header with-border">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">User Name</label>
+                                            <label for="exampleInputEmail1">User Name<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtUserNickName" class="form-control" placeholder="Enter User Name" value=@ViewBag.user_login readonly>
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">E-mail</label>
+                                            <label for="exampleInputEmail1">E-mail<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtUserEmail" class="form-control" placeholder="Enter Your Mail Address" value=@ViewBag.user_email readonly>
 
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">First Name</label>
+                                            <label for="exampleInputEmail1">First Name<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" value=@ViewBag.first_name>
 
 
                                         </div>
                                         <div class="form-group">
 
-                                            <label for="exampleInputEmail1">Last Name</label>
+                                            <label for="exampleInputEmail1">Last Name<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" value=@ViewBag.last_name>
 
                                         </div>
@@ -428,18 +447,18 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">User Type</label>
+                                            <label for="exampleInputEmail1">User Type<span style="color:red;"> *</span></label>
                                             <input type="text" class="form-control" id="txtUserRole" placeholder="User Role" value="" readonly>
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Contact Number</label>
+                                            <label for="exampleInputEmail1">Contact Number<span style="color:red;"> *</span></label>
                                             <input type="text" class="form-control" id="txtPhone"  value="@ViewBag.user_phone" placeholder="Enter Your Phone Number">
                                         </div>
 
 
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Address</label>
+                                            <label for="exampleInputEmail1">Address<span style="color:red;"> *</span></label>
                                             <input id="txtAddress" class="form-control" placeholder="Enter Your Address" value="@ViewBag.user_address"></input>
                                         </div>
                                         <div class="form-group">
@@ -448,7 +467,7 @@
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">City</label>
+                                            <label for="exampleInputEmail1">City<span style="color:red;"> *</span></label>
                                             <select id="txtCity" class="form-control select2">
                                                 <option selected value="@ViewBag.City">@ViewBag.City </option>
                                             </select>
@@ -457,24 +476,34 @@
                                     <div class="col-sm-4">
 
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">State</label>
+                                            <label for="exampleInputEmail1">State<span style="color:red;"> *</span></label>
                                             <select class="form-control select2" id="txtState">
                                                 <option selected value="@ViewBag.State">@ViewBag.State </option>
 
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label" for="Post/Zip Code">Post/Zip Code</label>
+                                            <label class="control-label" for="Post/Zip Code">Post/Zip Code<span style="color:red;"> *</span></label>
                                             <div class="">
                                                 <input type="text" id="txtPostCode" value="@ViewBag.postcode" class="form-control" placeholder="Post/Zip Code">
                                             </div>
                                         </div>
 
+
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Country</label>
+                                            <label for="exampleInputEmail1">Country<span style="color:red;"> *</span></label>
                                             <select class="form-control" id="txtCountry">
-                                                <option value="US-United States">US-United States</option>
-                                                <option value="CA-Canada">CA-Canada</option>
+                                                @if (ViewBag.country == "US")
+                                                {
+                                                <option selected value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                                }
+                                                @if (ViewBag.country == "CA")
+                                                {
+                                                <option selected value="CA">CA - Canada</option>
+                                                <option value="US">US - United States</option>
+                                                }
+
                                             </select>
                                         </div>
                                     </div>
@@ -792,6 +821,8 @@
             City = $("#txtCity").val();
             State = $("#txtState").val();
             address2 = $("#txtAddress2").val();
+            if (address2 == '')
+                address2 = '';
 
             if (NickName == "") {
                 swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
@@ -854,7 +885,7 @@
                     beforeSend: function () { $("#loader").show(); },
                     success: function (data) {
                         if (data.status == true) {
-                            swal('Alert!', data.message, 'success');
+                            swal('Success!', data.message, 'success');
                             $("#userprofile").modal("hide");
                         }
                         else {

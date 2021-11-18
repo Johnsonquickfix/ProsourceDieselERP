@@ -448,6 +448,8 @@
         }
         private void UpdateProfile_MetaData(clsUserDetails model, long id)
         {
+            if (string.IsNullOrEmpty(model.billing_address_2))
+                model.billing_address_2 = "";
             string[] varQueryArr1 = new string[10];
             string[] varFieldsName = new string[10] { "nickname", "first_name", "last_name", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
             string[] varFieldsValue = new string[10] { model.user_nicename, model.first_name, model.last_name, model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
@@ -507,6 +509,7 @@
                 ViewBag.City = DT.Rows[0]["City"];
                 ViewBag.address2 = DT.Rows[0]["address2"];
                 ViewBag.postcode = DT.Rows[0]["postcode"];
+                ViewBag.country = DT.Rows[0]["country"];
             }
             catch
             {

@@ -113,7 +113,7 @@
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select distinct City,City from ZIPCodes1 where City like '" + strSearch + "%' order by City limit 50;");
+                DT = SQLHelper.ExecuteDataTable("select distinct City,City from ZIPCodes1 where City like '" + strSearch + "%' ");
             }
             catch (Exception ex)
             { throw ex; }
@@ -138,7 +138,7 @@
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName;");
             }
             catch (Exception ex)
             { throw ex; }

@@ -53,11 +53,11 @@ function addemailnotification() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../EmailNotifications'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../EmailNotifications'; });
                     }
                     else {
 
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                 }
                 else {

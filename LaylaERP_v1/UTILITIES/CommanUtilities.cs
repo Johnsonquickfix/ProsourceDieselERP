@@ -32,6 +32,7 @@
         public string SenderEmailPwd { get; set; }
         public string SMTPServerName { get; set; }
         public string SMTPServerPortNo { get; set; }
+        public bool SSL { get; set; }
         public string LoginIPAddress { get; set; }
         public string LoginMacAddress { get; set; }
         public string LoginToken { get; set; }

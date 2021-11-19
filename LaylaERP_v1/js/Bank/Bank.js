@@ -1,7 +1,7 @@
 ﻿getNatureofJournal();
 getAccountingAccount();
 BankEntries();
-BankEntriesList();
+//BankEntriesList();
 
 function getAccountingAccount() {
     $.ajax({
@@ -480,7 +480,7 @@ function BankEntries() {
 
 }
 
-
+/*
 function BankEntriesList() {
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
@@ -572,7 +572,7 @@ function BankEntriesList() {
             },
         ],
     });
-}
+}*/
 
 //Bank All Entries
 function AllBankEntriesList() {
@@ -672,7 +672,7 @@ function EntriesBalance() {
         }
     });
 }
-EntriesBalanceForSpecificBank();
+//EntriesBalanceForSpecificBank();
 function EntriesBalanceForSpecificBank() {
     var ID = $("#hfid").val();
     var obj = { id: ID }

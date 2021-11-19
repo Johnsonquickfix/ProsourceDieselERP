@@ -18,19 +18,20 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                string JSONString = string.Empty;
-                DataSet ds = OrderRepository.GetCompleteOrdersList(out JSONString);
+                string orders_json = string.Empty, order_refund_json = string.Empty;
+                DataSet ds = OrderRepository.GetCompleteOrdersList(out orders_json, out order_refund_json);
                 string TaxjarAPIId = string.Empty;
-                foreach (DataRow dr in ds.Tables[0].Rows) {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
                     TaxjarAPIId = dr[0].ToString().Trim();
                 }
 
                 var client = new TaxjarApi(TaxjarAPIId);
 
                 string str_meta = string.Empty;
-                if(!string.IsNullOrEmpty(JSONString))
+                if (!string.IsNullOrEmpty(orders_json))
                 {
-                    var dyn = JsonConvert.DeserializeObject<dynamic>(JSONString);
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(orders_json);
                     foreach (var inputAttribute in dyn.orders)
                     {
                         string StatusCode = "";
@@ -59,7 +60,38 @@ namespace LaylaERP.Controllers
                                 var order = client.CreateOrder(inputAttribute);
                                 str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
                             }
-                            catch(Exception ex) { }
+                            catch (Exception ex) { }
+                        }
+                    }
+                }
+                if (!string.IsNullOrEmpty(order_refund_json))
+                {
+                    var dyn_or = JsonConvert.DeserializeObject<dynamic>(order_refund_json);
+                    foreach (var inputAttribute in dyn_or.orders)
+                    {
+                        string StatusCode = "";
+                        string transaction_id = inputAttribute.transaction_id.Value.ToString();
+                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                        try
+                        {
+                            client.ShowRefund(transaction_id);
+                        }
+                        catch (TaxjarException e)
+                        {
+                            StatusCode = e.TaxjarError.StatusCode;
+                            // 406 Not Acceptable – transaction_id is missing
+                            //e.TaxjarError.Error;
+                            //e.TaxjarError.Detail;
+                            //e.TaxjarError.StatusCode;
+                        }
+                        if (StatusCode.Contains("404"))
+                        {
+                            try
+                            {
+                                var order = client.CreateRefund(inputAttribute);
+                                str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
+                            }
+                            catch (Exception ex) { }
                         }
                     }
                 }
@@ -74,7 +106,7 @@ namespace LaylaERP.Controllers
                     OrderRepository.AddOrdersPost(0, "TXSYN", 0, string.Empty, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 }
             }
-            catch(Exception ex) { }
+            catch (Exception ex) { }
             return View();
         }
     }

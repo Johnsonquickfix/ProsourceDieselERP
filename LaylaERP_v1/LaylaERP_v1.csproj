@@ -642,6 +642,7 @@
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
     <Content Include="js\Bank\Bank.js" />
+    <Content Include="js\Bank\BankEntries.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />

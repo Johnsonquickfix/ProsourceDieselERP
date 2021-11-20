@@ -1,11 +1,13 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    GiftCardPaymentModal("000000");
-    $(document).on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); saveGiftCard(); });
+   
+    $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
+    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
+    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; });
 })
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Gift Card ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+var todaydate = new Date().toLocaleDateString();
 function createPostMeta() {
     let oid = $('#hfOrderNo').val(), _total = parseFloat($('#orderTotal').text()) || 0.00;
     let postMetaxml = [];
@@ -24,7 +26,8 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_email', meta_value: $('#txtSenderEmail').val().trim() }, { post_id: oid, meta_key: '_shipping_phone', meta_value: $('#txtPhone').val() },
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 }
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
+        { post_id: oid, meta_key: '_release_date', meta_value: todaydate }
     );
     return postMetaxml;
 }
@@ -37,7 +40,7 @@ function createPostStatus() {
         tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
         shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
         net_total: (parseFloat($('#orderTotal').text()) || 0.00),
-        status: 'wc-processing', Search: $('#txtOrderNotes').val()
+        status: 'wc-pending', Search: $('#txtOrderNotes').val()
     };
     return postStatus;
 }
@@ -49,7 +52,7 @@ function createItemsList() {
     let qty = parseInt($('#totalQty').text()) || 0;
     let product_id = parseInt($("#EmployeeListdata").data('productid')) || 853309;
     let recipientlist = $("#EmployeeListdata").data('recipientlist');
-    
+    let productName = $("#lblOrderNo").data("pname");
     let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
     let grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
     let discountAmount = 0.00;
@@ -60,7 +63,7 @@ function createItemsList() {
     let sender = $("#txtFirstName").val() +' '+ $("#txtLastName").val();
     itemsDetails.push({
         order_item_id: $("#EmployeeListdata").data('orderitemid'), PKey: 0, order_id: 0, customer_id: cid, product_type: 'line_item',
-        product_id: product_id, variation_id: 0, product_name: 'Layla E-Gift Card',
+        product_id: product_id, variation_id: 0, product_name: productName,
         quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount,
         shipping_amount: shippinAmount, shipping_tax_amount: 0, customerNotes: customerNotes, sender: sender, sender_email: sender_email,
         recipientlist: recipientlist
@@ -70,7 +73,6 @@ function createItemsList() {
         let gift_productName = parseFloat($(tr).find("#lst_productName").text()) || 0.00;
         let gift_recipient = $(tr).find("#lst_recipient").text() || '';
         let order_item_id = parseInt($(tr).data('orderitemid')) || 0;
-        console.log(gift_amt);
         if (gift_amt > 0)
             itemsDetails.push({
                 order_item_id: order_item_id, order_id: 0, product_name: gift_productName,
@@ -93,7 +95,7 @@ function createGiftCardList() {
         let shippinAmount = 0.00;
         itemsDetails.push({
             order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item',
-            product_id: 853309, variation_id: 0, product_name: 'Layla E-Gift Card',
+            product_id: 853309, variation_id: 0, product_name: $("#lblOrderNo").data("pname"),
             quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount,
             shipping_amount: shippinAmount, shipping_tax_amount: 0
         });
@@ -124,7 +126,7 @@ function saveGiftCard() {
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add recipient.', "error").then((result) => { return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-    $('#btnPlaceOrder').prop("disabled", true); $('#btnPlaceOrder').text("Waiting...");
+    $('#btnOrderCheckout').prop("disabled", true); $('#btnOrderCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Giftcard/SaveGiftCardOrder",
@@ -132,14 +134,17 @@ function saveGiftCard() {
         success: function (result) {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
-                if (postStatus.net_total > 0) GiftCardPaymentModal(result[0].id);
+                if (postStatus.net_total > 0) {
+                    $('#hfOrderNo').val(result[0].id);
+                    GiftCardPaymentModal();
+                }
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $("#loader").hide(); $('#btnPlaceOrder').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnPlaceOrder').text("Place Order"); isEdit(false); },
+        error: function (xhr, status, err) { $("#loader").hide(); $('#btnOrderCheckout').prop("disabled", false); alert(err); },
+        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
     });
-    $('#btnPlaceOrder').text("Place Order");
+    $('#btnOrderCheckout').text("Checkout");
     return false;
 }
 
@@ -155,9 +160,11 @@ function ValidateData() {
     else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select Country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
     return true;
 }
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function GiftCardPaymentModal(OrderNumber) {
+function GiftCardPaymentModal() {
     
     //let pay_by = $('#lblOrderNo').data('pay_by').trim();
     let billing_first_name = $('#txtFirstName').val(), billing_last_name = $('#txtLastName').val();
@@ -176,7 +183,7 @@ function GiftCardPaymentModal(OrderNumber) {
     myHtml += '<div class="modal-content">';
     myHtml += '<div class="modal-header">';
     myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-    myHtml += '<h4 class="modal-title" id="myModalLabel">Order #' + OrderNumber + '</h4>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Order #' + $('#hfOrderNo').val() + '</h4>';
     myHtml += '</div>';
     myHtml += '<div class="modal-body no-padding" >';
     myHtml += '<section class="invoice no-margin">';
@@ -204,7 +211,7 @@ function GiftCardPaymentModal(OrderNumber) {
     myHtml += '</thead>';
     myHtml += '<tbody>';
     myHtml += '<tr>';
-    myHtml += '<td>Layla E - Gift Card</td>';
+    myHtml += '<td>' + $("#lblOrderNo").data("pname") +'</td>';
     myHtml += '<td class="text-right">' + $('#totalQty').text() + '</td>';
     myHtml += '<td class="text-right">' + $('#orderTotal').text() + '</td>';
     //myHtml += '<td class="text-right">' + discountAmount.toFixed(2) + '</td>';
@@ -225,7 +232,7 @@ function GiftCardPaymentModal(OrderNumber) {
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
     myHtml += '<option value="podium">Podium</opion><option value="ppec_paypal">Paypal</opion>';
-    myHtml += '<option value="ppec_paypal">Paypal</opion>';
+    
     //for (let i = 0; i < pay_mathod.length; i++) {
     //    myHtml += '<option value="' + pay_mathod[i].id + '">' + pay_mathod[i].text + '</option>';
     //}
@@ -251,10 +258,11 @@ function GiftCardPaymentModal(OrderNumber) {
    
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
-    $("#GiftModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
+    $("#GiftModal").modal({ backdrop: 'static', keyboard: false }); 
     //pay_by = pay_by.length > 0 ? pay_by : 'podium';
-   // pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
-   // $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
+    // pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
+    // $('#ddlPaymentMethod').val(pay_by).trigger('change'); 
+    //console.log(pay_by);
 }
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); }
@@ -264,33 +272,21 @@ function AcceptPayment() {
 
 ///Accept Podium Payment
 function PodiumPayment() {
+    var podium_baseurl = 'https://api.podium.com';
     let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let bill_email = $("#txtbillemail").val();
+    let bill_email = $("#txtSenderEmail").val();
     let bill_to = $('input[name="podiumchannel"]:checked').val();
-    let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
-    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = (parseFloat($('#giftCardTotal').text()) || 0.00) - (fee_total < 0 ? fee_total : 0);
-    if (fee_total > 0) { let rgc_amt = fee_total <= gc_total ? fee_total : gc_total; fee_total = fee_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (srf_total > 0) { let rgc_amt = srf_total <= gc_total ? srf_total : gc_total; srf_total = srf_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (Shipping_total > 0) { let rgc_amt = Shipping_total <= gc_total ? Shipping_total : gc_total; Shipping_total = Shipping_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (st_total > 0) { let rgc_amt = st_total <= gc_total ? st_total : gc_total; st_total = st_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    let bill_name = $('#txtFirstName').val() + ' ' + $('#txtLastName').val();
+    
     let _lineItems = [];
-    $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
-        let rgc_amt = (grossAmount - discount) <= gc_total ? (grossAmount - discount) : gc_total; gc_total = gc_total - rgc_amt;
-        if ((grossAmount - discount - rgc_amt) > 0)
-            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount - rgc_amt) * 100 });
-        //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
-    });
-    if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
-    if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
-    if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
-    if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
+
+    let qty = parseFloat($('#totalQty').text()) || 0.00;
+    let grossAmount = parseFloat($('#orderTotal').text().replace('$', '')) || 0.00;
+    if (grossAmount > 0)
+        _lineItems.push({ description: $("#lblOrderNo").data("pname"), amount: grossAmount * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-    //console.log(opt_inv); return;
+   /* console.log(opt_inv); return;*/
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
     swal.queue([{
@@ -298,16 +294,18 @@ function PodiumPayment() {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumToken', option).then(response => {
+            
                 let access_token = response.message;
-                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-                if (inv_id.length > 0 && pay_by.includes('podium')) {
-                    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
-                    let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
-                    $.ajax({
-                        type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
-                }
+                console.log(access_token, opt_inv);
+                //let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                //if (inv_id.length > 0 && pay_by.includes('podium')) {
+                //    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
+                //    let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
+                //    $.ajax({
+                //        type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+                //        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                //    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
+                //}
                 $.ajax({
                     type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
@@ -332,27 +330,13 @@ function updatePayment(oid, taskUid) {
 
 ///Accept paypal Payment
 function createPaypalXML(oid, pp_no, pp_email) {
-    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
-    let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00;
-    let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
-    if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
-    else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
-    else if (srf_total != 0 && fee_total == 0 && gc_total == 0) custom_label = 'State Recycling Fee';
-    else if (srf_total == 0 && fee_total != 0 && gc_total != 0) custom_label = 'Other Fee & Gift Card';
-    else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
-    else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
-    else custom_label = 'Other Fee';
-    console.log(srf_total, fee_total, gc_total);
-    let _items = []; fee_total = fee_total + srf_total - gc_total;
-    //get items
-    $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
-        let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
-        _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
-    });
+    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = todaydate.split(/\//);  df = [dfa[2], dfa[0], dfa[1]].join('-');
+    let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
+    let _items = [];
+    let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
+    let discountAmount = 0.00;
+    let taxAmount = 0.00;
+    _items.push({ name: $("#lblOrderNo").data("pname"), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     let paupal_xml = {
         //id: inv_id, status: "DRAFT",
         detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
@@ -507,7 +491,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<table class="order_details order-detail-ul" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">';
     myHtml += '<tr>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px;"> Order number:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#hfOrderNo').val() + '</strong></td>';
-    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#txtLogDate').val() + '</strong></td>';
+    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + todaydate + '</strong></td>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + $('#orderTotal').text() + '</strong></td>';
     if (paymode == 'PayPal')
         myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="https://www.sandbox.paypal.com/invoice/p/#' + id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Pay $' + $('#orderTotal').text() + '</a></td>';
@@ -528,13 +512,13 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<tbody></tbody>';
     myHtml += '<tfoot>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#SubTotal').text() + '</span></td></tr>';
-    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + $('#discountTotal').text() + '</span></td></tr>';
+    /*myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + $('#discountTotal').text()  + '</span></td></tr>';*/
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#shippingTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
-    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
-    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';
-    if (parseFloat($('#giftCardTotal').text()) > 0)
-        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#giftCardTotal').text() + '</td></tr>';
+    /*myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';*/
+    /*myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';*/
+    //if (parseFloat($('#giftCardTotal').text()) > 0)
+    //    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#giftCardTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#orderTotal').text() + '</span></td></tr>';
     myHtml += '</tfoot>';
     myHtml += '</table>';
@@ -555,40 +539,40 @@ function successModal(paymode, id, is_mail) {
     $('#GiftModal .modal-body').append(myHtml);
 
     myHtml = '';
-    $('#order_line_items > tr').each(function (index, tr) {
-        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
-    });
+    //$('#order_line_items > tr').each(function (index, tr) {
+    //    var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+    //    var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+    //    myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
+    //});
     $('#tblorder_details tbody').append(myHtml);
 
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
     //var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#GiftModal .modal-body').html() }
-    if ($('#txtbillemail').val().length > 5 && is_mail == true) {
+    if ($('#txtSenderEmail').val().length > 5 && is_mail == true) {
         sendInvoice(paymode, id)
     }
 }
 function sendInvoice(paymode, id) {
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
-    let order_date = $('#txtLogDate').val();
+    let order_date = todaydate //$('#txtLogDate').val();
     let payment_method = paymode;
-    let b_first_name = $('#txtbillfirstname').val(), b_last_name = $('#txtbilllastname').val();
-    let b_company = $('#txtbillcompany').val();
-    let b_address_1 = $('#txtbilladdress1').val(), b_address_2 = $('#txtbilladdress2').val();
-    let b_postcode = $('#txtbillzipcode').val(), b_city = $('#txtbillcity').val();
-    let b_country = $('#ddlbillcountry').val(), b_state = $('#ddlbillstate').val();
-    let b_email = $('#txtbillemail').val(), b_phone = $('#txtbillphone').val();
-    let s_first_name = $('#txtshipfirstname').val(), s_last_name = $('#txtshiplastname').val();
-    let s_company = $('#txtshipcompany').val();
-    let s_address_1 = $('#txtshipaddress1').val(), s_address_2 = $('#txtshipaddress2').val();
-    let s_postcode = $('#txtLogDate').val();
-    let s_city = $('#txtshipcity').val(), s_country = $('#ddlshipcountry').val(), s_state = $('#ddlshipstate').val();
+    let b_first_name = $('#txtFirstName').val(), b_last_name = $('#txtLastName').val();
+    let b_company = $('#txtCompany').val();
+    let b_address_1 = $('#txtAddress1').val(), b_address_2 = $('#txtAddress2').val();
+    let b_postcode = $('#txtPostCode').val(), b_city = $('#txtCity').val();
+    let b_country = $('#ddlCountry').val(), b_state = $('#ddlState').val();
+    let b_email = $('#txtSenderEmail').val(), b_phone = $('#txtPhone').val();
+    let s_first_name = $('#txtFirstName').val(), s_last_name = $('#txtLastName').val();
+    let s_company = $('#txtCompany').val();
+    let s_address_1 = $('#txtAddress1').val(), s_address_2 = $('#txtAddress2').val();
+    let s_postcode = todaydate //$('#txtLogDate').val();
+    let s_city = $('#txtCity').val(), s_country = $('#ddlCountry').val(), s_state = $('#ddlState').val();
     let GrassAmount = parseFloat($('#SubTotal').text()) || 0;
-    let TotalDiscount = parseFloat($('#discountTotal').text()) || 0;
+    //let TotalDiscount = parseFloat($('#discountTotal').text()) || 0;
     let TotalTax = parseFloat($('#salesTaxTotal').text()) || 0;
     let TotalShipping = parseFloat($('#shippingTotal').text()) || 0;
-    let TotalStateRecycling = parseFloat($('#stateRecyclingFeeTotal').text()) || 0;
-    let TotalFee = parseFloat($('#feeTotal').text()) || 0, TotalGift = parseFloat($('#giftCardTotal').text()) || 0;
+    //let TotalStateRecycling = parseFloat($('#stateRecyclingFeeTotal').text()) || 0;
+    //let TotalFee = parseFloat($('#feeTotal').text()) || 0; //TotalGift = parseFloat($('#giftCardTotal').text()) || 0;
     let NetTotal = parseFloat($('#orderTotal').text()) || 0;
     let _item = [];
     $('#order_line_items > tr').each(function (index, tr) {
@@ -604,8 +588,9 @@ function sendInvoice(paymode, id) {
         order_id: order_id, order_date: order_date, payment_method: payment_method, b_first_name: b_first_name, b_last_name: b_last_name, b_company: b_company,
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,
         s_first_name: s_first_name, s_last_name: s_last_name, s_company: s_company, s_address_1: s_address_1, s_address_2: s_address_2, s_postcode: s_postcode, s_city: s_city, s_country: s_country, s_state: s_state,
-        paypal_id: id, GrassAmount: GrassAmount, TotalDiscount: TotalDiscount, TotalTax: TotalTax, TotalShipping: TotalShipping, TotalStateRecycling: TotalStateRecycling,
-        TotalFee: TotalFee, TotalGift: TotalGift, NetTotal: NetTotal, OrderProducts: _item
+        paypal_id: id, GrassAmount: GrassAmount,  TotalTax: TotalTax, TotalShipping: TotalShipping, //TotalStateRecycling: TotalStateRecycling,
+       // TotalFee: TotalFee, TotalGift: TotalGift,
+        NetTotal: NetTotal//,TotalDiscount: TotalDiscount, OrderProducts: _item
     }
     $.ajax({
         type: "POST", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),

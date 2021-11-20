@@ -95,7 +95,7 @@
                     new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
                     new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
                 };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_order_iud", parameters);
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
             }
             catch (Exception ex)
             {
@@ -1349,6 +1349,20 @@
                 throw new Exception(ex.Message);
             }
             return result;
+        }
+
+        //gift card
+        public static DataTable GetPodiumGiftOrdersList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "PGPLS") };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
         }
     }
 }

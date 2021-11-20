@@ -114,12 +114,12 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
-        public static DataSet GetAllMasterList()
+        public static DataSet GetAllMasterList(long VendorID = 0, string flag = "GETMD")
         {
             DataSet DS = new DataSet();
             try
             {
-                SqlParameter[] para = { new SqlParameter("@flag", "GETMD")};
+                SqlParameter[] para = { new SqlParameter("@flag", flag), new SqlParameter("@id", VendorID) };
                 DS = SQLHelper.ExecuteDataSet("erp_purchase_order_search", para);
             }
             catch (Exception ex)
@@ -268,7 +268,7 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] para = { new SqlParameter("@flag", "GETPO"),new SqlParameter("@id", id), };
+                SqlParameter[] para = { new SqlParameter("@flag", "GETPO"), new SqlParameter("@id", id), };
                 ds = SQLHelper.ExecuteDataSet("erp_purchase_order_search", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
             }

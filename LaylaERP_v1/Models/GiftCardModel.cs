@@ -15,7 +15,6 @@ namespace LaylaERP.Models
         public long object_id { get; set; }
         public long gc_id { get; set; }
         public string gc_code { get; set; }
-        [Required]
         public decimal amount { get; set; }
         public int date { get; set; }
         public string note { get; set; }

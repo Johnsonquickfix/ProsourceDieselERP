@@ -48,7 +48,7 @@ $('#btnApprove').click(function () {
     var nodes = n1.concat(n2);
 
     //var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
-    debugger
+    //debugger
     var addnodes = ''; var id = ''; var flag = ''; var addid = ''; var editid = ''; var deleteid = '';
 
     for (var i = 0; i < nodes.length; i++) {

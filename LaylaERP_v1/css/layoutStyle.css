@@ -2988,3 +2988,14 @@ i.fa.fa-calendar {
 .payment.invoice.list .table-design #dtdata.inventory-table thead th {
     padding: 10px !important;
 }
+.payment-boxes .dataTables_scrollHeadInner {
+    width: 100% !important;
+}
+
+.payment-boxes #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
+    text-align: left !important;
+}
+
+.payment-boxes #divpodata #dtdata.inventory-table td:first-child, #divpodata .check-table.inventory-table th:first-child {
+    width: 50px !important;
+}

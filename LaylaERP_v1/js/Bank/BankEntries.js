@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-
+    EntriesBalanceForSpecificBank();
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -116,6 +116,29 @@ function BankEntriesList(is_date) {
     });
 }
 
+
+function EntriesBalanceForSpecificBank() {
+    var ID = $("#hfid").val();
+    var obj = { id: ID }
+    $.ajax({
+        url: "/Bank/BankEntriesBalanceForSpecific",
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                $("#txtentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
+                $("#txtentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
+                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+            }
+        },
+        error: function (msg) {
+
+        }
+    });
+}
 /*
 function getGrandTotalFull() {
     $.ajax({

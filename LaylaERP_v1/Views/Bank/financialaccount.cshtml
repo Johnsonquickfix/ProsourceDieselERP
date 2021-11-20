@@ -212,12 +212,16 @@
 
                 <div class="box box-primary">
                     <div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="edit-proposal-box">
-                                <div class="edit-proposal-texts">
-                                    <p>Account Initial Balance</p>
-                                    <h3 id="txtinitialamount"></h3>
-                                </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label>Open Account Initial Balance</label>
+                                 <h3 id="txtinitialamount"></h3>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="form-group">
+                                <label>Current Balance</label>
+                                 <h3 id="txtbalance"></h3>
                             </div>
                         </div>
                     </div>
@@ -429,7 +433,7 @@
 
         $(".select2").select2();
         //getAccountingAccount();
-        setTimeout(function () { $(".select2").select2(); }, 2000);
+        //setTimeout(function () { $(".select2").select2(); }, 2000);
         //$(".select2").select2();
 
     });

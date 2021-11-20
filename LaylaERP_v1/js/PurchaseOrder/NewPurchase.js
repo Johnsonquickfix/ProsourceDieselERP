@@ -12,9 +12,9 @@
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        $.when(getVendorProducts(VendorID)).done(function () {
+        $.when(getVendorWarehouse(VendorID), getVendorProducts(VendorID)).done(function () {
             isEdit(true);
-            let _details = getVendorDetails(); console.log(_details);
+            let _details = getVendorDetails(); //console.log(_details);
             if (_details.length > 0) {
                 $('#txtRefvendor').val(_details[0].code_vendor);
                 $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
@@ -109,9 +109,9 @@ function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
 function getMasters() {
+    let option = { strValue1: 'GETMD', strValue2: 0 };
     $.ajax({
-        url: "/PurchaseOrder/GetAllMaster",
-        type: "Get", beforeSend: function () { $("#loader").show(); },
+        url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             let dt = JSON.parse(data);
             //Payment Terms
@@ -132,7 +132,20 @@ function getMasters() {
 
             //Warehouse
             $("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
-            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '" data-ad="' + dt['Table4'][i].address + '">' + dt['Table4'][i].text + '</option>'); }
+            //for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '" data-ad="' + dt['Table4'][i].address + '">' + dt['Table4'][i].text + '</option>'); }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+    });
+}
+function getVendorWarehouse(VendorID) {
+    let option = { strValue1: 'GEVWH', strValue2: VendorID };
+    $.ajax({
+        url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let dt = JSON.parse(data); console.log(dt);
+            $("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
+            for (i = 0; i < dt['Table'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table'][i].id + '" data-ad="' + dt['Table'][i].address + '">' + dt['Table'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -408,7 +421,7 @@ function getPurchaseOrderInfo() {
                         $('#ddlIncoTerms').val(row.fk_incoterms).trigger('change');
                         $('#ddlPaymentType').val(row.fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(row.note_public); $('#txtNotePrivate').val(row.note_private);
-                        $('#txtIncoTerms').val(row.location_incoterms);
+                        $('#txtIncoTerms').val(row.location_incoterms); getVendorWarehouse(VendorID);                        
                         $('#ddlWarehouse').val(row.fk_warehouse).trigger('change');
                         $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
                         if (!row.date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(row.date_livraison);
@@ -599,7 +612,7 @@ function saveVendorPO() {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             $('#lblPoNo').data('id', result[0].id); getPurchaseOrderInfo();
-                            swal('Success', 'Purchase Order has been saved successfully.', "success"); getOrderInfo();
+                            swal('Success', 'Purchase Order has been saved successfully.', "success"); //getOrderInfo();
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });

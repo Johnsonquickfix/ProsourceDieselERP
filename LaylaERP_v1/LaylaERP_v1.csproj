@@ -995,6 +995,8 @@
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
     <Content Include="Views\TaxJarOrder\CreateOrder.cshtml" />
     <Content Include="Views\Podium\paymentgcrec.cshtml" />
+    <Content Include="Views\EmailNotifications\GiftCardOrder.cshtml" />
+    <Content Include="Views\EmailNotifications\SendGiftcard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

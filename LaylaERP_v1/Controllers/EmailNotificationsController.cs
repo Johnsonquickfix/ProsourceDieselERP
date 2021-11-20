@@ -89,6 +89,14 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
+        public ActionResult GiftCardOrder(OrderModel model)
+        {
+            return View(model);
+        }
+        public ActionResult SendGiftcard(GiftCardModel model)
+        {
+            return View(model);
+        }
         public static string RenderViewToString(string controllerName, string viewName, object viewData)
         {
             using (var writer = new StringWriter())

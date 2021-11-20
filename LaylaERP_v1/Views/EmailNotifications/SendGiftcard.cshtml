@@ -1,0 +1,215 @@
+﻿@model  LaylaERP.Models.GiftCardModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gift Card</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @*<style>
+                @media(max-width:600px){
+                    *{box-sizing:border-box;}
+                    table{table-layout: fixed;}
+                    .main-table{width:100% !important;}
+                    .main-logo{padding:0px 15px 0px 15px;}
+                    .main-image{width:100%;}
+                }
+        </style>*@
+</head>
+<body>
+    <div style="background-color: #59595b; margin: 0; padding: 70px 0 70px 0; width: 100%;">
+        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+            <tbody>
+                <tr>
+                    <td align="center" valign="top">
+                        <div class="main-logo">
+                            <p style="margin-top: 0;">
+                                <img class="main-image"
+                                     src="https://laylasleep.com/wp-content/uploads/2018/12/logo-mail-1.png"
+                                     alt="Layla"
+                                     style="
+                                         border: none;
+                                         display: inline-block;
+                                         font-size: 14px;
+                                         font-weight: bold;
+                                         height: auto;
+                                         outline: none;
+                                         text-decoration: none;
+                                         text-transform: capitalize;
+                                         vertical-align: middle;
+                                         margin-right: 0px;
+                                         " />
+                            </p>
+                        </div>
+                        <table class="main-table"
+                               border="0"
+                               cellpadding="0"
+                               cellspacing="0"
+                               style="width:600px;background-color: #ffffff; border: 1px solid #505052; border-radius: 3px;">
+                            <tbody>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <table border="0"
+                                               cellpadding="0"
+                                               cellspacing="0"
+                                               style="width:100%;
+                                                background-color: #ff4100;
+                                                color: #ffffff;
+                                                border-bottom: 0;
+                                                font-weight: bold;
+                                                line-height: 100%;
+                                                vertical-align: middle;
+                                                font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+                                                border-radius: 3px 3px 0 0;
+                                                ">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding: 36px 48px; display: block;">
+                                                        <h1 style="font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; color: #ffffff;">
+                                                            Your gift card is ready!
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top" style="background-color: #ffffff;">
+                                                        <table border="0" cellpadding="20" cellspacing="0" style="width:100%;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top" style="padding: 48px 48px 0;">
+                                                                        <div style="color: #636363; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; font-size: 14px; line-height: 150%; text-align: left;">
+                                                                            <div style="margin-bottom: 20px; color: #ffffff;">
+                                                                                <div style="margin-bottom: 20px; color: #000000;">
+                                                                                    <p style="margin: 0 0 16px;">Great news! You have received a gift card from @Model.sender</p>
+                                                                                </div>
+                                                                                <div style="padding: 10px 0 10px 15px; font-size: 15px; line-height: 19px; border-left: 5px solid #59595b; margin-bottom: 28px; color: #000000;">
+                                                                                     @Model.message
+                                                                                </div>
+
+                                                                                <div style="padding: 20px 20px; background: #59595b; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; text-align: center;">
+                                                                                    <div style="
+                                                                                             background-color: #ff4100;
+
+                                                                                             margin-bottom: 20px;">
+                                                                                        <img src="https://quickfix16.com/wp-content/uploads/2021/05/gift-card-layla_v1-600x325.png"
+                                                                                             alt="gift card" style=" width:100%; height:auto;
+                                                                                                 border: none;
+                                                                                                 display: inline-block;
+                                                                                                 font-size: 14px;
+                                                                                                 font-weight: bold;
+                                                                                                 height: auto;
+                                                                                                 outline: none;
+                                                                                                 text-decoration: none;
+                                                                                                 text-transform: capitalize;
+                                                                                                 vertical-align: middle;
+                                                                                                 margin-right: 0px;
+                                                                                                 " />
+                                                                                    </div>
+
+                                                                                    <div>
+                                                                                        <div>Amount:</div>
+                                                                                        <div style="font-size: 42px;
+                                                                                                 display: block;
+                                                                                                 font-weight: bold;
+                                                                                                 color: #ff4100;
+                                                                                                 padding: 3px 0;
+                                                                                                 margin-bottom: 20px;
+                                                                                                 line-height: 42px;">
+                                                                                            <span><u></u><span>$@Model.balance</span><u></u></span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <a href="#"
+                                                                                       style="
+                                                                                            font-weight: normal;
+                                                                                            text-decoration: none;
+                                                                                            display: inline-block;
+                                                                                            background: #ff4100;
+                                                                                            color: #ffffff;
+                                                                                            padding: 8px 15px;
+                                                                                            margin-bottom: 20px;
+                                                                                            "
+                                                                                       target="_blank">
+                                                                                        Add to your Account
+                                                                                    </a>
+
+                                                                                    <div style="color: #3c3c3c; opacity: 0.7; display: block; margin-bottom: 10px;">
+                                                                                        — or —
+                                                                                    </div>
+
+                                                                                    <div>
+                                                                                        <div>Use this code at checkout:</div>
+                                                                                        <div style="
+                                                                                                color: #aaaaaa;
+                                                                                                font-weight: bold;
+                                                                                                margin-top: 4px;
+                                                                                                font-size: 16px;
+                                                                                                border: 1px solid #aaaaaa;
+                                                                                                display: inline-block;
+                                                                                                padding: 5px 10px;
+                                                                                                ">
+                                                                                            @Model.code
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <p style="margin: 0 0 16px;">Thanks for shopping with us.</p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <table border="0" cellpadding="10" cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top" style="padding: 0;">
+                                                        <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2"
+                                                                        valign="middle"
+                                                                        style="border: 0; color: #ff8d66; font-family: Arial; font-size: 12px; line-height: 125%; text-align: center; padding: 0 48px 48px 48px;">
+                                                                        <p>
+                                                                            Layla Sleep Inc<br />
+                                                                            157 Church Street Suite 1956<br />
+                                                                            New Haven, CT 06510<br />
+                                                                            855-358-1676<br />
+                                                                            <a href="mailto:support@laylasleep.com" target="_blank">support@laylasleep.com</a>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

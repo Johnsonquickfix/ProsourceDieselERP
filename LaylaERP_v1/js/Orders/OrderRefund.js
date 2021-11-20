@@ -39,6 +39,12 @@ function getOrderInfo() {
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
+                if (data[0].is_edit == '1') {
+                    $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                }
+                else {
+                    $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
+                }
                 $('#lblOrderNo').data('pay_by', data[0].payment_method);
                 $('#lblOrderNo').data('pay_gift', data[0].IsGift);
                 $('#lblOrderNo').data('pay_giftCardAmount', data[0].giftCardAmount);

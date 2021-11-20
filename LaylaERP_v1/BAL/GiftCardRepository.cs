@@ -284,5 +284,18 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        //gift card
+        public static DataTable GetPodiumGiftOrdersList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "PGPLS") };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

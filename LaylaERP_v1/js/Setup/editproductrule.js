@@ -79,16 +79,24 @@ function updateProductWarehouseRule() {
     vendor = $("#ddlvendor").val();
     warehouse = $("#ddlwarehouse").val();
     productid = $("#hfproductid").val();
+    country = $("#txtcountry").val();
+    state = $("#txtstate").val();
 
-    if (prefixcode == "") {
-        swal('Alert', 'Please Enter Prefix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
-    }
-    else if (product == 0) {
+    
+    if (product == 0) {
         swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
-
+    else if (prefixcode == "") {
+        swal('Alert', 'Please Enter Prefix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+    }
     else if (vendor == 0) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlvendor').focus(); });
+    }
+    else if (country == 0) {
+        swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#txtcountry').focus(); });
+    }
+    else if (state == 0 || state == null) {
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
     }
     else if (warehouse == 0) {
         swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); });
@@ -103,6 +111,8 @@ function updateProductWarehouseRule() {
             fk_vendor: vendor,
             fk_warehouse: warehouse,
             searchproductid: productid,
+            country: country,
+            state: state,
         }
         $.ajax({
             url: '/Setup/UpdateProductWarehouseRule/', dataType: 'json', type: 'Post',
@@ -112,7 +122,7 @@ function updateProductWarehouseRule() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../productrule'; });
+                    swal('Success', data.message, 'success').then((result) => { location.href = '../productrule'; });
                     reset();
                     ProductWarehouseRuleGrid();
                     

@@ -16,19 +16,20 @@
                 <input type="hidden" id="hfid" />
                 <input type="hidden" id="hfwarehouserule" />
                 <input type="hidden" id="hfproductid" />
+
+                <div class="form-group">
+                    <label for="ddlproduct">Products<span style="color:red">*</span></label>
+                    <select class="form-control select1" id="ddlProduct" style="width:100%;" disabled></select>
+                </div>
+
                 <div class="form-group">
                     <label for="prefixcode">Prefix-Code<span style="color:red">*</span></label>
                     <input type="text" class="form-control" id="txtprefixcode" />
                 </div>
 
                 <div class="form-group">
-                    <label for="ddlproduct">Products<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlProduct" style="width:100%;" disabled></select>
-                </div>
-
-                <div class="form-group">
                     <label for="vendor">Vendor<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlvendor" style="width:100%;"></select>
+                    <select class="form-control select1" id="ddlvendor" style="width:100%;"></select>
                 </div>
 
             </div>
@@ -41,17 +42,24 @@
 
                 <div class="form-group">
                     <label for="country">Country<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtcountry" readonly />
+                    @*<input type="text" class="form-control" id="txtcountry" readonly />*@
+                    <Select class="form-control" id="txtcountry">
+                        <option value="US" selected>US</option>
+                        <option value="CA">CA</option>
+                    </Select>
                 </div>
 
                 <div class="form-group">
                     <label for="state">State<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtstate" readonly />
+                    @*<input type="text" class="form-control" id="txtstate" readonly />*@
+                    <Select class="form-control" id="txtstate">
+                        <option></option>
+                    </Select>
                 </div>
 
                 <div class="form-group">
                     <label for="warehouse">Warehouse<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlwarehouse" style="width:100%;"></select>
+                    <select class="form-control select1" id="ddlwarehouse" style="width:100%;"></select>
                 </div>
                 <div class="box-footer">
                     <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update Record" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
@@ -75,7 +83,17 @@
             updateProductWarehouseRule();
         });
 
-        $(".select2").select2();
+        $(".select1").select2();
+
+        $("#txtstate").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/Setup/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtcountry").val() }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
 
     });
 
@@ -100,10 +118,11 @@
                         setTimeout(function () { $("#ddlwarehouse").val(jobj[0].warehouseid).trigger('change'); }, 2000);
                         $("#ddlvendor").val(jobj[0].vendorid).trigger('change');
                         $("#txtcountry").val(jobj[0].country);
-                        $("#txtstate").val(jobj[0].state);
+                        //$("#txtstate").val(jobj[0].state);
                         $("#hfid").val(jobj[0].id);
                         $("#hfproductid").val(jobj[0].pid);
                         $("#txtprefixcode").val(jobj[0].code);
+                        $("#txtstate").empty().append('<option value="' + jobj[0].state + '" selected>' + jobj[0].state + '</option>');
                         //$("#ddlwarehouse").append('<option value="' + jobj[0].warehouseid + '" selected>' + jobj[0].warehouse + '</option>');
                     }
                 },

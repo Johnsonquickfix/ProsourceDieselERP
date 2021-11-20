@@ -998,7 +998,6 @@
     <Content Include="Views\Podium\paymentgcrec.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
-    <Content Include="Views\CheckDeposit\Cleared.cshtml" />
     <Content Include="Views\CheckDeposit\Rejected.cshtml" />
   </ItemGroup>
   <ItemGroup>

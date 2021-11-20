@@ -61,7 +61,7 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                DataTable dt = OrderRepository.GetPodiumGiftOrdersList();
+                DataTable dt = GiftCardRepository.GetPodiumGiftOrdersList();
                 string access_token = clsPodium.GetToken();
                 foreach (DataRow dr in dt.Rows)
                 {

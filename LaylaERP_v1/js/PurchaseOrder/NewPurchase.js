@@ -612,7 +612,7 @@ function saveVendorPO() {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             $('#lblPoNo').data('id', result[0].id); getPurchaseOrderInfo();
-                            swal('Success', 'Purchase Order has been saved successfully.', "success"); getOrderInfo();
+                            swal('Success', 'Purchase Order has been saved successfully.', "success"); //getOrderInfo();
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });

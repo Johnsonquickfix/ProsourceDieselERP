@@ -95,7 +95,7 @@
                     new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
                     new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
                 };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_iud", parameters);
             }
             catch (Exception ex)
             {

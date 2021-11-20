@@ -98,7 +98,7 @@
         $("#loader").hide();
 
         $(".select2").select2();
-        setTimeout(function () { $(".select2").select2(); }, 2000);
+        setTimeout(function () { $(".select2").select2(); }, 1000);
         $("#details").hide();
         
         $("#btnReset").click(function () {
@@ -122,6 +122,5 @@
 
     })
 </script>
-
 
 <script src="@Url.Content("~/js/Setup/productrule.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

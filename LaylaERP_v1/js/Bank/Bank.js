@@ -1,7 +1,7 @@
 ﻿getNatureofJournal();
 getAccountingAccount();
 BankEntries();
-BankEntriesList();
+//BankEntriesList();
 
 function getAccountingAccount() {
     $.ajax({
@@ -480,7 +480,7 @@ function BankEntries() {
 
 }
 
-
+/*
 function BankEntriesList() {
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
@@ -572,7 +572,7 @@ function BankEntriesList() {
             },
         ],
     });
-}
+}*/
 
 //Bank All Entries
 function AllBankEntriesList() {
@@ -665,29 +665,6 @@ function EntriesBalance() {
                 $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
                 $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2));
                 $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
-            }
-        },
-        error: function (msg) {
-
-        }
-    });
-}
-EntriesBalanceForSpecificBank();
-function EntriesBalanceForSpecificBank() {
-    var ID = $("#hfid").val();
-    var obj = { id: ID }
-    $.ajax({
-        url: "/Bank/BankEntriesBalanceForSpecific",
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var d = JSON.parse(data);
-            if (d.length > 0) {
-                $("#txtentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
-                $("#txtentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
-                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
             }
         },
         error: function (msg) {

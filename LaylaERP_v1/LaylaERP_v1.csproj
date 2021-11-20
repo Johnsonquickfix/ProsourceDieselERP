@@ -643,6 +643,7 @@
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
     <Content Include="js\Bank\Bank.js" />
+    <Content Include="js\Bank\BankEntries.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -650,6 +651,7 @@
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
@@ -682,7 +684,6 @@
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
     <Content Include="js\PaymentInvoice\CheckDepositList.js" />
-    <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\Product\AddnewProduct.js" />
@@ -993,10 +994,7 @@
     <Content Include="Views\Inventory\VendorInventory.cshtml" />
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
     <Content Include="Views\TaxJarOrder\CreateOrder.cshtml" />
-    <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
-    <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
-    <Content Include="Views\CheckDeposit\Rejected.cshtml" />
-    <Content Include="Views\CheckDeposit\Cleared.cshtml" />
+    <Content Include="Views\Podium\paymentgcrec.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

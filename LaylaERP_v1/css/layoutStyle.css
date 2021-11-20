@@ -2978,3 +2978,13 @@ width: 85px;
 i.fa.fa-calendar {
     color: orangered;
 }
+
+.payment.invoice.list #dtdata.inventory-table .shown + tr > td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 10px !important;
+}
+
+.payment.invoice.list .table-design #dtdata.inventory-table thead th {
+    padding: 10px !important;
+}

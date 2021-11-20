@@ -57,5 +57,44 @@ namespace LaylaERP.Controllers
             catch { }
             return View();
         }
+        public ActionResult paymentgcrec()
+        {
+            try
+            {
+                DataTable dt = GiftCardRepository.GetPodiumGiftOrdersList();
+                string access_token = clsPodium.GetToken();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (dr["podium_uid"] != DBNull.Value)
+                    {
+                        var result = clsPodium.GetPodiumInvoiceDetails(access_token, dr["podium_uid"].ToString());
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(result);
+                        try
+                        {
+                            string status = obj.data.status;
+                            if (status.ToUpper() == "PAID")
+                            {
+                                long id = Convert.ToInt64(dr["id"].ToString());
+                                string str_note = obj.data.customerName;
+                                
+                                string str = "[{ post_id: " + id.ToString() + ", meta_key: '_podium_payment_uid', meta_value: '" + obj.data.payments[0].uid + "' }, { post_id: " + id.ToString() + ", meta_key: '_podium_location_uid', meta_value: '" + obj.data.location.uid + "' },"
+                                            + "{ post_id: " + id.ToString() + ", meta_key: '_podium_invoice_number', meta_value: '" + obj.data.invoiceNumber + "' }, { post_id: " + id.ToString() + ", meta_key: '_podium_status', meta_value: 'PAID' }]";
+
+                                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
+
+                                GiftCardRepository.AddGiftCardOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return View();
+        }
     }
 }

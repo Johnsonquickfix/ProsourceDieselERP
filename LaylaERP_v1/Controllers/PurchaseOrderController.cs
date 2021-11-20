@@ -78,7 +78,10 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                DataSet DS = PurchaseOrderRepository.GetAllMasterList();
+                //model.strValue1 = string.IsNullOrEmpty(model.strValue1) ? "GETMD" : model.strValue1;
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue2)) id = long.Parse(model.strValue2);
+                DataSet DS = PurchaseOrderRepository.GetAllMasterList(id, model.strValue1);
                 JSONresult = JsonConvert.SerializeObject(DS);
             }
             catch { }

@@ -320,7 +320,10 @@ function Rejectthis(id) {
                 $.post('/CheckDeposit/RejectAmount', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        swal('Success', 'Amount has been reject successfully!!', 'success').then((result) => { Cleared(), Rejected() ; });
+                        swal('Success', 'Amount has been reject successfully!!', 'success').then((result) => {
+                            Cleared(), Rejected();
+                            $('.nav-tabs a[href="#tab_23"]').tab('show');
+                        });
 
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -343,7 +346,11 @@ function Validate(id) {
                 $.post('/CheckDeposit/ClearedAmount', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        swal('Success', 'Amount has been cleared successfully!!', 'success').then((result) => { Rejected(), Cleared(); });
+                        swal('Success', 'Amount has been cleared successfully!!', 'success').then((result) => {
+                            Rejected(), Cleared();
+                            $('.nav-tabs a[href="#tab_22"]').tab('show');
+                             
+                        });
 
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -353,4 +360,5 @@ function Validate(id) {
     }]);
 
 }
+
 

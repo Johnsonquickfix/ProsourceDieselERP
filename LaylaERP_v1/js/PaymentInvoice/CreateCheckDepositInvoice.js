@@ -16,7 +16,7 @@
             $("#hfqueryids").val(queryString["id"]);
             getInfo();
         }
-    });
+    }); 
 
     //filldropdown();
     $('.billinfo').prop("disabled", true);

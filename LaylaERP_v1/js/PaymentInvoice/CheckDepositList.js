@@ -255,7 +255,7 @@ function formatPO(d) {
             });
         },
         error: function (xhr, status, err) { alert(err); },
-        complete: function () { }, async: false
+        complete: function () { }, async: false 
     });
     wrHTML += '</table>';
     return wrHTML;

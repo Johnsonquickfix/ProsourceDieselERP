@@ -86,7 +86,8 @@ namespace LaylaERP.Controllers
                                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-                                GiftCardRepository.AddGiftCardOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                                DataTable giftdetails = GiftCardRepository.AddGiftCardOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                                SendGiftCardMailInvoice(giftdetails);
                             }
                         }
                         catch { }
@@ -95,6 +96,33 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return View();
+        }
+        public JsonResult SendGiftCardMailInvoice(DataTable dt)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    GiftCardModel model = new GiftCardModel
+                    {
+                        order_id = Convert.ToInt64(dr["order_id"]),
+                        code = dr["code"].ToString(),
+                        recipient = dr["recipient"].ToString(),
+                        sender = dr["sender"].ToString(),
+                        sender_email = dr["sender_email"].ToString(),
+                        message = dr["message"].ToString(),
+                        balance = Convert.ToDouble(dr["balance"]),
+                    };
+                    status = true;
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                    result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                }
+            }
+            catch { status = false; result = ""; }
+            
+            return Json(new { status = status, message = result }, 0);
         }
     }
 }

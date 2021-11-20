@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-   
+
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; });
@@ -45,7 +45,7 @@ function createPostStatus() {
     return postStatus;
 }
 function createItemsList() {
-    
+
     let cid = 0;
     let itemsDetails = [];
     //Add Item Details
@@ -60,7 +60,7 @@ function createItemsList() {
     let shippinAmount = 0.00;
     let customerNotes = $("#txtOrderNotes").text();
     let sender_email = $("#txtSenderEmail").val();
-    let sender = $("#txtFirstName").val() +' '+ $("#txtLastName").val();
+    let sender = $("#txtFirstName").val() + ' ' + $("#txtLastName").val();
     itemsDetails.push({
         order_item_id: $("#EmployeeListdata").data('orderitemid'), PKey: 0, order_id: 0, customer_id: cid, product_type: 'line_item',
         product_id: product_id, variation_id: 0, product_name: productName,
@@ -69,7 +69,7 @@ function createItemsList() {
         recipientlist: recipientlist
     });
     $('#GiftCard_List > tr').each(function (index, tr) {
-        let gift_amt = parseFloat($(tr).find("#lst_amount").text().replace('$','')) || 0.00;
+        let gift_amt = parseFloat($(tr).find("#lst_amount").text().replace('$', '')) || 0.00;
         let gift_productName = parseFloat($(tr).find("#lst_productName").text()) || 0.00;
         let gift_recipient = $(tr).find("#lst_recipient").text() || '';
         let order_item_id = parseInt($(tr).data('orderitemid')) || 0;
@@ -80,7 +80,7 @@ function createItemsList() {
                 customerNotes: customerNotes,
             });
     });
-     return itemsDetails;
+    return itemsDetails;
 }
 function createGiftCardList() {
     let cid = 0;
@@ -165,7 +165,7 @@ function isEdit(val) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function GiftCardPaymentModal() {
-    
+
     //let pay_by = $('#lblOrderNo').data('pay_by').trim();
     let billing_first_name = $('#txtFirstName').val(), billing_last_name = $('#txtLastName').val();
     let billing_address_1 = $('#txtAddress1').val(), billing_address_2 = $('#txtAddress2').val();
@@ -211,7 +211,7 @@ function GiftCardPaymentModal() {
     myHtml += '</thead>';
     myHtml += '<tbody>';
     myHtml += '<tr>';
-    myHtml += '<td>' + $("#lblOrderNo").data("pname") +'</td>';
+    myHtml += '<td>' + $("#lblOrderNo").data("pname") + '</td>';
     myHtml += '<td class="text-right">' + $('#totalQty').text() + '</td>';
     myHtml += '<td class="text-right">' + $('#orderTotal').text() + '</td>';
     //myHtml += '<td class="text-right">' + discountAmount.toFixed(2) + '</td>';
@@ -232,7 +232,7 @@ function GiftCardPaymentModal() {
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
     myHtml += '<option value="podium">Podium</opion><option value="ppec_paypal">Paypal</opion>';
-    
+
     //for (let i = 0; i < pay_mathod.length; i++) {
     //    myHtml += '<option value="' + pay_mathod[i].id + '">' + pay_mathod[i].text + '</option>';
     //}
@@ -255,10 +255,10 @@ function GiftCardPaymentModal() {
     myHtml += '</div>';
     $("#GiftModal").empty().html(myHtml);
     myHtml = '';
-   
+
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
-    $("#GiftModal").modal({ backdrop: 'static', keyboard: false }); 
+    $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
     //pay_by = pay_by.length > 0 ? pay_by : 'podium';
     // pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
     // $('#ddlPaymentMethod').val(pay_by).trigger('change'); 
@@ -277,7 +277,7 @@ function PodiumPayment() {
     let bill_email = $("#txtSenderEmail").val();
     let bill_to = $('input[name="podiumchannel"]:checked').val();
     let bill_name = $('#txtFirstName').val() + ' ' + $('#txtLastName').val();
-    
+
     let _lineItems = [];
 
     let qty = parseFloat($('#totalQty').text()) || 0.00;
@@ -286,7 +286,7 @@ function PodiumPayment() {
         _lineItems.push({ description: $("#lblOrderNo").data("pname"), amount: grossAmount * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-   /* console.log(opt_inv); return;*/
+    /* console.log(opt_inv); return;*/
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
     swal.queue([{
@@ -294,7 +294,7 @@ function PodiumPayment() {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumToken', option).then(response => {
-            
+
                 let access_token = response.message;
                 console.log(access_token, opt_inv);
                 //let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
@@ -330,7 +330,7 @@ function updatePayment(oid, taskUid) {
 
 ///Accept paypal Payment
 function createPaypalXML(oid, pp_no, pp_email) {
-    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = todaydate.split(/\//);  df = [dfa[2], dfa[0], dfa[1]].join('-');
+    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = todaydate.split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
     let _items = [];
     let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
@@ -353,14 +353,14 @@ function createPaypalXML(oid, pp_no, pp_email) {
         primary_recipients: [
             {
                 billing_info: {
-                    name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
-                    address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },
+                    name: { given_name: $('#txtFirstName').val(), surname: $('#txtLastName').val() },
+                    address: { address_line_1: $('#txtAddress1').val() + ' ' + $('#txtAddress2').val(), admin_area_2: $('#txtCity').val(), admin_area_1: $('#ddlState').val(), postal_code: $('#txtPostCode').val(), country_code: $('#ddlCountry').val() },
                     email_address: pp_email,
                     //phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
                 },
                 shipping_info: {
-                    name: { given_name: $('#txtshipfirstname').val(), surname: $('#txtshiplastname').val() },
-                    address: { address_line_1: $('#txtshipaddress1').val() + ' ' + $('#txtshipaddress2').val(), admin_area_2: $('#txtshipcity').val(), admin_area_1: $('#ddlshipstate').val(), postal_code: $('#txtshipzipcode').val(), country_code: $('#ddlshipcountry').val() }
+                    name: { given_name: $('#txtFirstName').val(), surname: $('#txtLastName').val() },
+                    address: { address_line_1: $('#txtAddress1').val() + ' ' + $('#txtAddress2').val(), admin_area_2: $('#txtCity').val(), admin_area_1: $('#ddlState').val(), postal_code: $('#txtPostCode').val(), country_code: $('#ddlCountry').val() }
                 }
             }
         ],
@@ -393,7 +393,7 @@ function PaypalPayment(ppemail) {
                 }).then(data => {
                     console.log('Invoice has been Created.');
                     let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
-                    $("txtbillemail").data('surl', sendURL);
+                    $("txtSenderEmail").data('surl', sendURL);
                     if (action_method == 'POST') {
                         SendPaypalInvoice(oid, pp_no, access_token, sendURL);
                     }
@@ -508,7 +508,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<td >';
 
     myHtml += '<table id="tblorder_details" class="shop_table order_details" style="border: 1px solid rgba(0, 0, 0, 0.1);margin: 0 -1px 24px 0;text-align: left;width: 100%; border-collapse: separate; border-radius: 5px;">';
-    myHtml += '<thead><tr><th class=" product-name" style="font-weight: 700;padding: 9px 12px;">Product</th><th class="product-total" style="font-weight: 700;padding: 9px 12px;">Total</th></tr></thead>';
+    myHtml += '<thead><tr><th class=" product-name" style="font-weight: 700;padding: 9px 12px;">Product</th><th class="product-total" style="font-weight: 700;padding: 9px 12px;">' + $("#lblOrderNo").data("pname") + '</th></tr></thead>';
     myHtml += '<tbody></tbody>';
     myHtml += '<tfoot>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#SubTotal').text() + '</span></td></tr>';
@@ -575,25 +575,28 @@ function sendInvoice(paymode, id) {
     //let TotalFee = parseFloat($('#feeTotal').text()) || 0; //TotalGift = parseFloat($('#giftCardTotal').text()) || 0;
     let NetTotal = parseFloat($('#orderTotal').text()) || 0;
     let _item = [];
-    $('#order_line_items > tr').each(function (index, tr) {
-        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
-        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        _item.push({
-            order_item_id: 0, PKey: 0, order_id: order_id, product_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, product_img: $(tr).data('img')
-        });
+
+    var qty = parseFloat($('#totalQty').text()) || 0.00;
+    var rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
+    var grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
+    var product_id = parseInt($("#EmployeeListdata").data('productid')) || 853309;
+    _item.push({
+        order_item_id: 0, PKey: 0, order_id: order_id, product_type: 'line_item', product_id: product_id,
+        variation_id: 0, product_name: $("#lblOrderNo").data("pname"), quantity: qty, sale_rate: rate,
+        total: grossAmount, product_img: ''
     });
+
 
     var opt_mail = {
         order_id: order_id, order_date: order_date, payment_method: payment_method, b_first_name: b_first_name, b_last_name: b_last_name, b_company: b_company,
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,
         s_first_name: s_first_name, s_last_name: s_last_name, s_company: s_company, s_address_1: s_address_1, s_address_2: s_address_2, s_postcode: s_postcode, s_city: s_city, s_country: s_country, s_state: s_state,
-        paypal_id: id, GrassAmount: GrassAmount,  TotalTax: TotalTax, TotalShipping: TotalShipping, //TotalStateRecycling: TotalStateRecycling,
-       // TotalFee: TotalFee, TotalGift: TotalGift,
-        NetTotal: NetTotal//,TotalDiscount: TotalDiscount, OrderProducts: _item
+        paypal_id: id, GrassAmount: GrassAmount, TotalTax: TotalTax, TotalShipping: TotalShipping, //TotalStateRecycling: TotalStateRecycling,
+        // TotalFee: TotalFee, TotalGift: TotalGift,TotalDiscount: TotalDiscount,
+        NetTotal: NetTotal,OrderProducts: _item
     }
     $.ajax({
-        type: "POST", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
+        type: "POST", url: '/Giftcard/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
         success: function (result) { console.log(result); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
         complete: function () { }, async: false

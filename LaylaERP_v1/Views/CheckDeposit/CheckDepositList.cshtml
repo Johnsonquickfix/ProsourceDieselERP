@@ -31,17 +31,22 @@
                             <select class="form-control " id="ddlbankaccount">
                             </select>
                             @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                            <button type="button" id="btnChange" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+                            <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
                         </div>
                         <div class="alignright actions bulkactions">
-                            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Go For Payment">Create Receipt</button>
+                            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Send to Bank">Send to Bank</button>
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="active" href="#tab_21" title="Click here to see Uncleared list" data-toggle="tab">Uncleared <span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see Cleared  List" data-toggle="tooltip"><a href="#tab_22" data-toggle="tab">Cleared <span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see Rejected List" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Rejected<span class="badge badge-danger"></span></a></li>
 
+        </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_21">
                 <div id="divpodata" class="row">
@@ -52,12 +57,12 @@
                                     <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                                         <thead>
                                             <tr>
-                                                <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
-                                                <th>#</th>
-
-                                                <th>Num</th>
-                                                <th>Bank</th>
+                                                <th align="right" width="2%"></th>
+                                                @*<th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
+                                                <th>Date</th>
+                                                <th>Check No</th>
                                                 <th>Transmitter</th>
+                                                <th>Bank Details</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -68,7 +73,66 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane" id="tab_22">
+                <div class="tab-content">
+                    <div id="divcanvel" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="dtdatacleared" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Date</th>
+                                                        <th>Check No</th>
+                                                        <th>Transmitter</th>                                            
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_23">
+                <div class="tab-content">
+                    <div id="divrejected" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="dtdatarejected" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                                <thead>
+                                                    <tr>
 
+                                                        <th width="5%"></th>
+                                                        @*<th width="5%"><input type="checkbox" name="checkallpr" id="checkallpr" onClick="CheckAllpr();"><label></label></th>*@
+                                                        <th>Date</th>
+                                                        <th>Check No</th>
+                                                        <th>Transmitter</th>
+                                                        <th>Bank Details</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*@Html.Partial("Rejected")
+        @Html.Partial("Cleared")*@
         </div>
     </div>
 </section>

@@ -21,12 +21,12 @@
     );
     $.when(PurchaseOrderGrid()).done(function () { PoPartiallyColleps(); });
 
-    $(document).on('click', "#btnChange", function () {
-        let type = $("#hfhref").val();
-        if (type == '') type = '#tab_21';
-        if (type == '#tab_21') takepayment();
-        else takepaymentpr();
-    });
+        $(document).on('click', "#btnChange", function () {
+            let type = $("#hfhref").val();
+            if (type == '') type = '#tab_21';
+            if (type == '#tab_21') takepayment();
+            else takepaymentpr();
+        });
 
     $(document).on('click', "#btnOtherFilter", function () { });
 

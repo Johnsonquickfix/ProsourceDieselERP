@@ -179,12 +179,18 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetState(string strSearch)
+        public static DataTable GetState(string strSearch, string country)
         {
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("SELECT distinct State,StateFullName from ZIPCodes1 where State like '" + strSearch + "%' or StateFullName like '" + strSearch + "%' order by StateFullName");
+                string strwhere = "";
+                if (country != null)
+                {
+                    strwhere = "and Country='" + country + "'";
+                }
+                //DT = SQLHelper.ExecuteDataTable("SELECT distinct State,StateFullName from ZIPCodes1 where State like '" + strSearch + "%' or StateFullName like '" + strSearch + "%' order by StateFullName");
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_statelist  where (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') " + strwhere + " ;");
             }
             catch (Exception ex)
             { throw ex; }

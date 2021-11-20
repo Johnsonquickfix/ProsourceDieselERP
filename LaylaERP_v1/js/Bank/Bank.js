@@ -1,7 +1,7 @@
 ﻿getNatureofJournal();
 getAccountingAccount();
 BankEntries();
-BankEntriesList();
+//BankEntriesList();
 
 function getAccountingAccount() {
     $.ajax({
@@ -480,12 +480,12 @@ function BankEntries() {
 
 }
 
-
+/*
 function BankEntriesList() {
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "asc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -557,9 +557,22 @@ function BankEntriesList() {
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
 
-        ]
+        ],
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Bank_Entries' + e;
+                },
+            },
+        ],
     });
-}
+}*/
 
 //Bank All Entries
 function AllBankEntriesList() {
@@ -652,29 +665,6 @@ function EntriesBalance() {
                 $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
                 $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2));
                 $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
-            }
-        },
-        error: function (msg) {
-
-        }
-    });
-}
-EntriesBalanceForSpecificBank();
-function EntriesBalanceForSpecificBank() {
-    var ID = $("#hfid").val();
-    var obj = { id: ID }
-    $.ajax({
-        url: "/Bank/BankEntriesBalanceForSpecific",
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var d = JSON.parse(data);
-            if (d.length > 0) {
-                $("#txtentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
-                $("#txtentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
-                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
             }
         },
         error: function (msg) {

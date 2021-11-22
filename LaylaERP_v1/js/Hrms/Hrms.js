@@ -238,17 +238,16 @@ $(document).on('click', "#btnNext1", function () {
     var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (firstname == "") { swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }); }
     else if (lastname == "") { swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }); }
-    else if (gender == 0) { swal('Alert', 'Please select gender', 'error').then(function () { swal.close(); $('#ddlGender').focus(); }); }
-    else if (email == "") { swal('Alert', 'Please email id', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
-    else if (!pattern.test(email)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
-    else if (phone == "") { swal('Alert', 'Please Enter Phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
-    
+    else if (gender == 0) { swal('Alert', 'Please Select Gender', 'error').then(function () { swal.close(); $('#ddlGender').focus(); }); }
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
-    else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
+    else if (emptype == 0) { swal('Alert', 'Please Select Group', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
+    else if (email == "") { swal('Alert', 'Please Enter Email Address', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
+    else if (!pattern.test(email)) { swal('Alert', 'Please Enter Valid Email Address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
+    else if (phone == "") { swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
     else if (address1 == "") { swal('Alert', 'Please Enter address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }); }
-    else if (city == "") { swal('Alert', 'Please Enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); }); }
-    else if (state == "") { swal('Alert', 'Please Enter state', 'error').then(function () { swal.close(); $('#txtState').focus(); }); }
-    else if (zipcode == "") { swal('Alert', 'Please Enter zip code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }); }
+    else if (city == "") { swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }); }
+    else if (state == "") { swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtState').focus(); }); }
+    else if (zipcode == "") { swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }); }
 
     else {
         var obj = {
@@ -636,7 +635,7 @@ function GetEmployeeByID(id) {
                     var dobDate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
                     $("#txtdob").val(dobDate);
                     $("#txtPlaceOfBirth").val(d[0].birthplace);
-                    $("#ddlEmployeeType").val(d[0].emp_type).trigger("change");
+                    setTimeout(function () { $("#ddlEmployeeType").val(d[0].emp_type).trigger("change"); }, 1000);
                     $("#ddlMaritalStatus").val(d[0].maritalstatus).trigger("change");
                     $("#txtEmail").val(d[0].email);
                     var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");

@@ -318,5 +318,21 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static DataSet PurchaseSalesPrint(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", "CDP"), new SqlParameter("@userid", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_checkdeposit_search", para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

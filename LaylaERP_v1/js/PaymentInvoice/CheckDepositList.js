@@ -1,5 +1,14 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+
+    var urlpath = window.location.pathname;
+    var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+    console.log(pathid);
+    if (pathid == "1000011") {
+        $('.nav-tabs a[href="#tab_22"]').tab('show');
+        console.log(pathid);
+    };
+
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -18,23 +27,23 @@
     $(".select2").select2();
 
 
-    $('#dtdatacleared tbody').on('click', '.pdetails-control', function () {
-         console.log('svvvd');
-        var tr = $(this).closest('tr');
-        var row = $('#dtdatacleared').DataTable().row(tr);
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open this row
-            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
-            //row.child(formatPartially(row.data())).show();
-            row.child(formatPO(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
+    //$('#dtdatacleared tbody').on('click', '.pdetails-control', function () {
+    //     console.log('svvvd');
+    //    var tr = $(this).closest('tr');
+    //    var row = $('#dtdatacleared').DataTable().row(tr);
+    //    if (row.child.isShown()) {
+    //        // This row is already open - close it
+    //        tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+    //        row.child.hide();
+    //        tr.removeClass('shown');
+    //    } else {
+    //        // Open this row
+    //        tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+    //        //row.child(formatPartially(row.data())).show();
+    //        row.child(formatPO(row.data())).show();
+    //        tr.addClass('shown');
+    //    }
+    //});
 
     $(document).on('click', "#btnChange", function () {
          takepayment();         
@@ -224,7 +233,7 @@ function Cleared() {
 
             //},
             {
-                data: 'ref', title: 'Vc. No', sWidth: "12%", render: function (data, type, row) {
+                data: 'ref', title: 'VOU. No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     //return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#"><i class="fas fa-search-plus"></i></a>';
@@ -320,7 +329,10 @@ function Rejectthis(id) {
                 $.post('/CheckDeposit/RejectAmount', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        swal('Success', 'Amount has been reject successfully!!', 'success').then((result) => { Cleared(), Rejected() ; });
+                        swal('Success', 'Amount has been reject successfully!!', 'success').then((result) => {
+                            Cleared(), Rejected();
+                            $('.nav-tabs a[href="#tab_23"]').tab('show');
+                        });
 
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -343,7 +355,11 @@ function Validate(id) {
                 $.post('/CheckDeposit/ClearedAmount', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        swal('Success', 'Amount has been cleared successfully!!', 'success').then((result) => { Rejected(), Cleared(); });
+                        swal('Success', 'Amount has been cleared successfully!!', 'success').then((result) => {
+                            Rejected(), Cleared();
+                            $('.nav-tabs a[href="#tab_22"]').tab('show');
+                             
+                        });
 
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -353,4 +369,5 @@ function Validate(id) {
     }]);
 
 }
+
 

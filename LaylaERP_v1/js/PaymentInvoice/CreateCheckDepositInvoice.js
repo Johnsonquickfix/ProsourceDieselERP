@@ -121,7 +121,7 @@ function saveVendorPO() {
                     $.post('/CheckDeposit/Paymenttobank', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'CheckDepositList'; });
+                            swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'CheckDepositList/1000011'; });
 
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }

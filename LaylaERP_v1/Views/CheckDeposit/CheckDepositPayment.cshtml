@@ -3,7 +3,19 @@
     ViewBag.Title = "Check Deposit Payment";
 }
 
- 
+<style>
+    .payment-boxes .dataTables_scrollHeadInner {
+        width: 100% !important; 
+    }
+
+    .payment-boxes #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
+        text-align: left !important;
+    }
+
+    .payment-boxes #divpodata #dtdata.inventory-table td:first-child, #divpodata .check-table.inventory-table th:first-child {
+        width: 50px !important;
+    }
+</style>
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 <!-- datatables js -->
@@ -19,7 +31,7 @@
     <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
     </div> 
 </div>
-<section class="content section-content neworder-section table-design">
+<section class="content section-content neworder-section table-design payment-boxes">
     <div class="row rowbox proposal-row">
         <div class="col-md-12">
             <div id="dvdetails">

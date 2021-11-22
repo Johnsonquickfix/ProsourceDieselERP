@@ -31,7 +31,7 @@ function getVendor() {
     });
 }
 
-
+/*
 $('#ddlvendor').change(function () {
     var vendorid = $('#ddlvendor').val();
     var obj = {
@@ -50,8 +50,9 @@ $('#ddlvendor').change(function () {
         //error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 });
+*/
 
-function getWarehouse() {
+$('#ddlvendor').change(function () {
     var vendorid = $('#ddlvendor').val();
     var obj = {
         strValue2: vendorid,
@@ -70,7 +71,7 @@ function getWarehouse() {
         }
 
     });
-}
+});
 
 function getID() {
     jQuery.ajax({
@@ -91,13 +92,12 @@ function addProductWarehouseRule() {
     prefixcode = $("#txtprefixcode").val();
     product = $("#ddlProduct").val();
 
-    if (prefixcode == "") {
-        swal('Alert', 'Please Enter Suffix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
-    }
-    else if (product == 0) {
+    if (product == 0) {
         swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
-   
+    else if (prefixcode == "") {
+        swal('Alert', 'Please Enter Suffix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+    }
     
     else {
 
@@ -113,7 +113,7 @@ function addProductWarehouseRule() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     getID();
                     disable1stCol();
                     $("#details").show(1000);
@@ -141,6 +141,12 @@ function addProductWarehouseRuleDetails() {
     if (vendor == 0) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlvendor').focus(); });
     }
+    else if (country == 0) {
+        swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#txtcountry').focus(); });
+    }
+    else if (state == 0 || state == null) {
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
+    }
     else if (warehouse == 0) {
         swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); });
     }
@@ -164,7 +170,7 @@ function addProductWarehouseRuleDetails() {
             success: function (data) {
                 if (data.status == true) {
                     //$('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     reset();
                     ProductWarehouseRuleGrid();
                 }
@@ -362,8 +368,20 @@ $('#ddlProduct').change(function () {
 
             }
             else {
-                $("#ddlProduct").val("0").trigger('change');
-                swal('Alert', 'Product already exists in table', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+                //$("#ddlProduct").val("0").trigger('change');
+                //swal('Alert', 'Product already exists in table', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+                swal({ title: 'Product already exists?', text: "Want to add this product for more vendors ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes' }).
+                    then((result) => {
+                        if (result.value) {
+                            ReUseProduct(product);
+                            $("#details").show(1000);
+                            disable1stCol();
+                            $('#btnAddProduct').hide();
+                        }
+                        else {
+                            $("#details").hide(1000);
+                        }
+                    })
             }
         },
 
@@ -399,4 +417,22 @@ $('#txtprefixcode').change(function () {
         },
     })
 });
+
+function ReUseProduct(product) {
+    product_id = product;
+    var obj = {
+        id: product_id,
+    }
+    jQuery.ajax({
+        url: "/Setup/SelectProductToReUse/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            $('#txtprefixcode').val(data[0].prefix_code);
+            $('#hfwarehouserule').val(data[0].rowid);
+        },
+
+    });
+}
 

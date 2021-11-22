@@ -52,16 +52,17 @@
                 <div class="form-group">
                     <label for="country">Country<span style="color:red"></span></label>
                     @*<input type="text" class="form-control" id="txtcountry" readonly />*@
-                    <Select class="form-control" id="txtcountry">
-                        <option value="US" selected>US</option>
-                        <option value="CA">CA</option>
-                    </Select>
+                <Select class="form-control" id="txtcountry">
+                    <option value="">Select Country</option>
+                    <option value="US">US</option>
+                    <option value="CA">CA</option>
+                </Select>
                 </div>
 
                 <div class="form-group">
                     <label for="state">State<span style="color:red"></span></label>
                     @*<input type="text" class="form-control" id="txtstate" readonly />*@
-                    <Select class="form-control" id="txtstate">
+                    <Select class="form-control" multiple id="txtstate" style="width:100%">
                         <option></option>
                     </Select>
                 </div>
@@ -88,6 +89,8 @@
                             <th>Suffix</th>
                             <th>Vendor</th>
                             <th>Warehouse</th>
+                            <th>State</th>
+                            <th>Country</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -103,9 +106,9 @@
         $("#txtstate").select2({
             allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
-                url: '/Setup/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                url: '/Product/GetStateData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtcountry").val() }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
         });

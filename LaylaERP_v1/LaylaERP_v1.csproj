@@ -685,9 +685,11 @@
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
     <Content Include="js\PaymentInvoice\CheckDepositList.js" />
+    <Content Include="js\PaymentInvoice\CheckDepositPrint.js" />
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />

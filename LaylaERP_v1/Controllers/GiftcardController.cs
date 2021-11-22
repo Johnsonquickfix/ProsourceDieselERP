@@ -42,7 +42,7 @@ namespace LaylaERP.Controllers
                 Country = data.Rows[0]["Country"].ToString();
                 State = data.Rows[0]["State"].ToString();
                 City = data.Rows[0]["City"].ToString();
-                Zipcode = data.Rows[0]["Company"].ToString();
+                Zipcode = data.Rows[0]["ZipCode"].ToString();
                 Address = data.Rows[0]["Address1"].ToString();
                 Address2 = data.Rows[0]["Address2"].ToString();
                 PhoneNumber = data.Rows[0]["Phone"].ToString();

@@ -236,7 +236,7 @@ function Cleared() {
                 data: 'ref', title: 'VOU. No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     //return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" onclick="GetCheckDepositPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },

@@ -29,8 +29,8 @@ namespace LaylaERP.BAL
                     "left join wp_usermeta BA2 on u.id = BA2.user_id and BA2.meta_key = 'billing_address_2' " +
                     "left join wp_usermeta Bcomp on u.id = Bcomp.user_id and Bcomp.meta_key = 'billing_company'" +
                     " left join wp_usermeta ZC on u.id = ZC.user_id and ZC.meta_key='billing_postcode '" +
-                    " left join wp_usermeta BP on u.id = BP.user_id and BP.meta_key = 'billing_phone' " +
-                    "where u.user_email = '" + useremail + "' and fn.meta_value is not null";
+                    " left join wp_usermeta BP on u.id = BP.user_id and BP.meta_key = 'billing_phone' left join wp_usermeta wc on u.id = wc.user_id and wc.meta_key = 'wp_capabilities' " +
+                    "where u.user_email = '" + useremail + "' and wc.meta_value='customer'";
                 DataTable result = SQLHelper.ExecuteDataTable(strSql);
                 return result;
             }

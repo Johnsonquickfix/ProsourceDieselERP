@@ -901,10 +901,10 @@ function getItemList(pid, vid, Qty) {
             if (!pr.is_free) {
                 if (pr.reg_price > pr.sale_price) {
                     coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
-                    let pro_ids = pr.variation_id + " ";
+                    //let pro_ids = [pr.variation_id, -1];
                     let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
                     if (coupon_list.length > 0) {
-                        coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
+                        coupon_list[0].coupon_amount = coupon_amt; //coupon_list[0].product_ids = pro_ids;
                         if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
                     }
                 }
@@ -1562,8 +1562,7 @@ function bindCouponList(data) {
                 let cou_amt = parseFloat(data[i].coupon_amount) || 0.00;
                 layoutHtml = '<li id="li_' + data[i].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';
-                layoutHtml += '<i class="fa fa-gift"></i>';
-                layoutHtml += '<span>' + data[i].title.toString().toLowerCase() + '</span>';
+                layoutHtml += '<i class="fa fa-gift"></i><span>' + data[i].title.toString().toLowerCase() + '</span>';
                 layoutHtml += '<div class="pull-right">';
 
                 if (data[0].type == 'add_coupon') {
@@ -1710,7 +1709,7 @@ function deleteAllCoupons(coupon_type) {
                             zTotalTax = (((zGrossAmount - disc_amt) * tax_rate) / 100);
                             $(tr).find(".RowTax").text(zTotalTax.toFixed(2)); $(tr).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
                         }
-                    }); //console.log(auto_code);
+                    }); console.log(auto_code);
                     $.when(bindCouponList(auto_code)).done(function () { ApplyAutoCoupon(); });
                 }
             });

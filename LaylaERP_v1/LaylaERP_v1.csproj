@@ -651,6 +651,7 @@
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
     <Content Include="js\GooglePlace\index.js" />
@@ -1002,6 +1003,7 @@
     <Content Include="Views\EmailNotifications\GiftCardOrder.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
+    <Content Include="Views\Giftcard\GiftCardList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

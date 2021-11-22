@@ -372,5 +372,16 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        public JsonResult GetWarehouse(SearchModel model)
+        {
+            DataSet ds = SetupRepostiory.GetWarehouse(model);
+            List<SelectListItem> vendorlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                vendorlist.Add(new SelectListItem { Text = dr["wname"].ToString(), Value = dr["wid"].ToString() });
+            }
+            return Json(vendorlist, JsonRequestBehavior.AllowGet);
+        }
     }
 }

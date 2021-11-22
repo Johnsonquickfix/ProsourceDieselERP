@@ -1,20 +1,38 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().add(-24, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+        let order_type = $('#hfOrderType').val(); dataGCGridLoad(order_type);
+    });
     dataGCGridLoad();
-})
 
-function dataGCGridLoad(order_type) {
+})
+function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
+$('#txtOrderDate').val('');
+$('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
+function dataGCGridLoad() {
+    var order_type = '';
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
-    //var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
-    //if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
-    //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
-    //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    var monthYear = '', cus_id =  0;
+    if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     //if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
     //let dfa = "'" + sd + "' and '" + ed + "'";
     let table = $('#dtGCdata').DataTable({
         oSearch: { "sSearch": searchText },
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -33,7 +51,7 @@ function dataGCGridLoad(order_type) {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Orders/GetOrderList",
+        sAjaxSource: "/GiftCard/GetGiftCardOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd });
             aoData.push({ name: "strValue2", value: ed });
@@ -51,66 +69,20 @@ function dataGCGridLoad(order_type) {
         },
         columns: [
             {
-                'data': 'id', sWidth: "7%   ",
+                'data': 'id', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
-            {
-                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    return row.first_name + ' ' + row.last_name;
-                }
-            },
-            {
-                data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    if (isNullUndefAndSpace(row.billing_phone)) return row.billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
-                }
-            },
-            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
-            {
-                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
-                    let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
-                    return amt;
-                }
-            },
-            {
-                data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
-                    if (data == 'wc-pending') return 'Pending payment';
-                    else if (data == 'wc-processing') return 'Processing';
-                    else if (data == 'wc-on-hold') return 'On hold';
-                    else if (data == 'wc-completed') return 'Completed';
-                    else if (data == 'wc-cancelled') return 'Cancelled';
-                    else if (data == 'wc-refunded') return 'Refunded';
-                    else if (data == 'wc-failed') return 'Failed';
-                    else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
-                    else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
-                    else if (data == 'wc-podium') return 'Order via Podium';
-                    else if (data == 'wc-podiumrefund') return 'Podium Refunded';
-                    else if (data == 'draft') return 'draft';
-                    else return '-';
-                }
-            },
-            { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
-            {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
-                    let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
-                    if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                        else return pm_title;
-                    }
-                    else return pm_title;
-                }
-            },
-            {
-                'data': 'id', title: 'Action', sWidth: "8%",
-                'render': function (id, type, row, meta) {
-                    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
-                }
-            }
+            { data: 'order_id', title: 'Order id', sWidth: "10%" },
+            { data: 'code', title: 'Code', sWidth: "16%" },
+            { data: 'remaining', title: 'Balance', sWidth: "10%" },
+            { data: 'status', title: 'Status', sWidth: "10%" },
+            { data: 'delivery', title: 'Delivery', sWidth: "10%" },
+            { data: 'sender', title: 'From', sWidth: "10%" },
+            { data: 'recipient', title: 'To', sWidth: "12%" },
+            { data: 'expires', title: 'Expires', sWidth: "5%" },
+            { data: 'create_date', title: 'Creation Date', sWidth: "12%" },
         ]
     });
 }
@@ -132,4 +104,53 @@ function GetMonths() {
         $("#filter-by-date").append('<option value="' + moment(d2).format("YYYYMM") + '">' + moment(d2).format("MMM YY") + '</option>');
     }
     $("#filter-by-date").select2();
+}
+function orderStatus() {
+    let id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        id += $(this).val() + ",";
+    });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    let status = $('#ddlOrderStatus').val();
+
+    if (id == "") { swal('alert', 'Please select a gift card', 'error'); }
+    if (status == "") { swal('alert', 'Please select status', 'error'); }
+
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your order status?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                let obj = { strVal: id, status: status }
+                $.post('/GiftCard/ChangeGiftCardStatus', obj)
+                    .done(function (data) {
+                        if (data.status) {
+                            swal.insertQueueStep(data.message);
+                            //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
+                        }
+                        else { swal.insertQueueStep('something went wrong!'); }
+                        resolve();
+                    })
+            })
+        }
+    }]);
+}
+function CheckAll() {
+    debugger
+    var isChecked = $('#checkall').prop("checked");
+    $('#dtGCdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+}
+function Singlecheck(chk) {
+    var isChecked = $(chk).prop("checked");
+    var isHeaderChecked = $("#checkall").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkall").prop('checked', isChecked);
+    else {
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkall").prop('checked', isChecked);
+    }
 }

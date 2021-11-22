@@ -35,7 +35,7 @@
                                         <th>Label</th>
                                         <th>Type</th>
                                         <th>Accounting Account</th>
-                                        <th>Accounting code journal</th>
+                                        @*<th>Accounting code journal</th>*@
                                         <th>Initial Amount</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -76,9 +76,9 @@
                     "columns": [
                         { data: 'account_number', title: 'Account Number', sWidth: "10%" },
                         { data: 'label', title: 'Label', sWidth: "10%" },                      
-                        { data: 'type', title: 'Account Type', sWidth: "20%" },
+                        { data: 'type', title: 'Account Type', sWidth: "15%" },
                         { data: 'accounting', title: 'Accounting Account', sWidth: "15%" },
-                        { data: 'journal', title: 'Accounting code journal', sWidth: "15%" },
+                        //{ data: 'journal', title: 'Accounting code journal', sWidth: "15%" },
                         { data: 'initial_balance', title: 'Initial Balance', sWidth: "15%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         { data: 'status', title: 'Status', sWidth: "10%" },
                         {

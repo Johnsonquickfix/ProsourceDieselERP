@@ -286,6 +286,30 @@ namespace LaylaERP.Controllers
             }
 
         }
+        public JsonResult SelectProductToReUse(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SetupRepostiory.SelectProductToReUse(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch(Exception ex) { throw ex; }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = SetupRepostiory.GetState(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
 
     }
 }

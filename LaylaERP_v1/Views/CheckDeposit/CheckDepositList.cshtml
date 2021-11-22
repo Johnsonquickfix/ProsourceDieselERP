@@ -5,6 +5,17 @@
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 <!-- datatables CSS -->
+<style>
+    .payment-boxes .dataTables_scrollHeadInner {
+        width: 100% !important; 
+    }
+    .payment-boxes #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
+        text-align: left !important;
+    }
+    .payment-boxes #divpodata #dtdata.inventory-table td:first-child, #divpodata .check-table.inventory-table th:first-child {
+        width: 50px !important;
+    }
+</style> 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 <!-- datatables js -->
@@ -13,7 +24,7 @@
 <div class="page-title">
     <h2>Check Deposit List</h2>
 </div>
-<section class="content section-content neworder-section table-design">
+<section class="content section-content neworder-section table-design payment-boxes">
     <div class="nav-tabs-custom">
         <div class="row">
             <input type="hidden" id="hfType" value="" />
@@ -31,17 +42,22 @@
                             <select class="form-control " id="ddlbankaccount">
                             </select>
                             @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                            <button type="button" id="btnChange" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+                            <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
                         </div>
                         <div class="alignright actions bulkactions">
-                            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Go For Payment">Create Receipt</button>
+                            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Send to Bank">Send to Bank</button>
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="active" href="#tab_21" title="Click here to see Uncleared list" data-toggle="tab">Uncleared <span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see Cleared  List" data-toggle="tooltip"><a href="#tab_22" data-toggle="tab">Cleared <span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see Rejected List" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Rejected<span class="badge badge-danger"></span></a></li>
 
+        </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_21">
                 <div id="divpodata" class="row">
@@ -52,12 +68,12 @@
                                     <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                                         <thead>
                                             <tr>
-                                                <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
-                                                <th>#</th>
-
-                                                <th>Num</th>
-                                                <th>Bank</th>
+                                                <th align="right" width="2%"></th>
+                                                @*<th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
+                                                <th>Date</th>
+                                                <th>Check No</th>
                                                 <th>Transmitter</th>
+                                                <th>Bank Details</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -68,7 +84,66 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane" id="tab_22">
+                <div class="tab-content">
+                    <div id="divcanvel" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary table-design not-fixed">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="dtdatacleared" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Date</th>
+                                                        <th>Check No</th>
+                                                        <th>Transmitter</th>                                            
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_23">
+                <div class="tab-content">
+                    <div id="divrejected" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary table-design not-fixed">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="dtdatarejected" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                                <thead>
+                                                    <tr>
 
+                                                        <th width="5%"></th>
+                                                        @*<th width="5%"><input type="checkbox" name="checkallpr" id="checkallpr" onClick="CheckAllpr();"><label></label></th>*@
+                                                        <th>Date</th>
+                                                        <th>Check No</th>
+                                                        <th>Transmitter</th>
+                                                        <th>Bank Details</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*@Html.Partial("Rejected")
+        @Html.Partial("Cleared")*@
         </div>
     </div>
 </section>
@@ -76,4 +151,5 @@
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/PaymentInvoice/CheckDepositList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PaymentInvoice/CheckDepositPrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 @*<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@

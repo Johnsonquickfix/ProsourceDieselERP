@@ -52,9 +52,8 @@ namespace LaylaERP.Controllers
 
                 }
                 else
-                {
-                    int ID = 1;   
-                    //int ID = BankRepository.AddBankAccount(model);
+                {                  
+                    int ID = BankRepository.AddBankAccount(model);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);

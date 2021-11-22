@@ -42,7 +42,7 @@ namespace LaylaERP.Controllers
                 Country = data.Rows[0]["Country"].ToString();
                 State = data.Rows[0]["State"].ToString();
                 City = data.Rows[0]["City"].ToString();
-                Zipcode = data.Rows[0]["Company"].ToString();
+                Zipcode = data.Rows[0]["ZipCode"].ToString();
                 Address = data.Rows[0]["Address1"].ToString();
                 Address2 = data.Rows[0]["Address2"].ToString();
                 PhoneNumber = data.Rows[0]["Phone"].ToString();
@@ -94,6 +94,21 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult SendMailInvoice(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "GiftCardOrder", model);
+
+                result = SendEmail.SendEmails(model.b_email, "Your order #" + model.order_id + " has been received", renderedHTML);
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
         }
     }
 }

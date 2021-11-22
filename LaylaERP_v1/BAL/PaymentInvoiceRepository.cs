@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace LaylaERP.BAL
 {
@@ -155,8 +156,8 @@ namespace LaylaERP.BAL
             return result;
         }
 
-        public static DataTable GetCheckDepositList(string bank, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-       {
+        public static DataTable GetCheckDepositList(string bank, string status, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
@@ -166,6 +167,7 @@ namespace LaylaERP.BAL
                     fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@searchcriteria", searchid),
+                     new SqlParameter("@status", status),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@fk_bank", bank),
                     new SqlParameter("@pagesize", pagesize),
@@ -184,6 +186,137 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable GetCheckClearedDepositList(string bank, string status, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchid),
+                     new SqlParameter("@status", status),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@fk_bank", bank),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", "id"),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "CCL")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_checkdeposit_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataSet GetDataByID(string po_ids)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@searchcriteria", po_ids),
+                    new SqlParameter("@flag", "CDBID")
+                };
+
+                ds = SQLHelper.ExecuteDataSet("erp_checkdeposit_search", parameters);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataTable Paymenttobank(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_payment_various_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static DataTable  AmountStatusChange(long Pkey, string qFlag)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_payment_various_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static DataTable GetClearedDataList(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@searchcriteria", id),
+                    new SqlParameter("@Flag", "CCLD")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_checkdeposit_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetCheckDepositPrint(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", "CDP"), new SqlParameter("@userid", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_checkdeposit_search", para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";  
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
     }
 }

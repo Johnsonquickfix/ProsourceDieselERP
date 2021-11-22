@@ -87,12 +87,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Web</label><span style="color:red">*</span>
+                            <label for="tag">Web</label><span style="color:red"></span>
                             <input class="form-control" type="text" id="txtweb" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Comment</label><span style="color:red">*</span>
+                            <label for="tag">Comment</label><span style="color:red"></span>
                             <input class="form-control" type="text" id="txtcomment" />
                         </div>
 
@@ -104,8 +104,6 @@
                     </div>
 
                     <div class="col-sm-4">
-
-
                         <div class="form-group">
                             <label for="tag">Date</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtdate" /><span class="even-space"></span>
@@ -177,10 +175,9 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label for="tag">Accounting code journal</label><span style="color:red">*</span>
                             <select class="form-control select2" id="ddljournal">
-                                @*<option value="1">JR</option>*@
                             </select>
                         </div>
 
@@ -425,7 +422,7 @@
     $(document).ready(function () {
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
-        GetAccountByID(id);
+        setTimeout(function () { GetAccountByID(id); },1000);
 
         $(document).on('click', "#btnSave", function () {
             UpdateBankAccount();

@@ -23,7 +23,7 @@ function getNatureofJournal() {
         url: "/Bank/Getjournal",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Journal</option>';
+            var opt = '<option value="0">Please Select Journal</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -73,13 +73,6 @@ function AddBankAccount() {
     else if (state == "") {
         swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
     }
-
-    else if (web == "") {
-        swal('Alert', 'Please Enter Web Url', 'error').then(function () { swal.close(); $('#txtweb').focus(); });
-    }
-    else if (comment == "") {
-        swal('Alert', 'Please Enter Comment', 'error').then(function () { swal.close(); $('#txtcomment').focus(); });
-    }
     else if (inital == "") {
         swal('Alert', 'Please Enter Initial Amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
     }
@@ -122,10 +115,6 @@ function AddBankAccount() {
     else if (accounting == "-1") {
         swal('Alert', 'Please Select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
     }
-    else if (journal == "-1") {
-        swal('Alert', 'Please Select accounting code journal', 'error').then(function () { swal.close(); $('#ddljournal').focus(); });
-    }
-    
     else {
 
         var obj = {
@@ -163,7 +152,7 @@ function AddBankAccount() {
             success: function (data) {
                 if (data.status == true) {
                     //$('#parent > input:text').val('');
-                    swal('Success!', data.message, 'success').then((result) => { location.href = '../BankAccountList'; });
+                    swal('Success!', data.message, 'success').then((result) => { location.href = '../Bank/BankAccountList'; });
                 }
                 else {
                     swal('Error!', data.message, 'error');
@@ -218,12 +207,6 @@ function UpdateBankAccount() {
     else if (state == "") {
         swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
     }
-    else if (web == "") {
-        swal('Alert', 'Please Enter Web Url', 'error').then(function () { swal.close(); $('#txtweb').focus(); });
-    }
-    else if (comment == "") {
-        swal('Alert', 'Please Enter Comment', 'error').then(function () { swal.close(); $('#txtcomment').focus(); });
-    }
     else if (inital == "") {
         swal('Alert', 'Please Enter Initial Amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
     }
@@ -266,11 +249,7 @@ function UpdateBankAccount() {
     else if (accounting == "-1") {
         swal('Alert', 'Please Select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
     }
-    else if (journal == "-1") {
-        swal('Alert', 'Please Select accounting code journal', 'error').then(function () { swal.close(); $('#ddljournal').focus(); });
-    }
-
-
+    
     else {
 
         var obj = {

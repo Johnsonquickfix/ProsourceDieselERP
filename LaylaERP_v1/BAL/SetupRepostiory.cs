@@ -21,7 +21,7 @@ namespace LaylaERP.BAL
                                 + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                 + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                                 + " WHERE p.post_type = 'product' AND p.post_status = 'publish'";
-                                
+                                    
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT into product_warehouse_rule(product_id, prefix_code, status) values(@product_id, @prefix_code, @status);SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into product_warehouse_rule(product_id, prefix_code, status) values(@product_id, @prefix_code, @status); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@product_id", model.product_id),
@@ -121,7 +121,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT into product_warehouse_rule_details(fk_product_rule, country, state, fk_vendor, fk_warehouse) values(@fk_product_rule, @country, @state, @fk_vendor, @fk_warehouse);SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into product_warehouse_rule_details(fk_product_rule, country, state, fk_vendor, fk_warehouse) values(@fk_product_rule, @country, @state, @fk_vendor, @fk_warehouse); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@fk_product_rule", model.fk_product_rule),
@@ -191,7 +191,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "UPDATE product_warehouse_rule set product_id = @product_id, prefix_code = @prefix_code where product_id = '" + model.searchproductid + "';";
-                string strsql1 ="UPDATE product_warehouse_rule_details set fk_vendor=@fk_vendor, fk_warehouse=@fk_warehouse where rowid = '" + model.searchid + "';";
+                string strsql1 = "UPDATE product_warehouse_rule_details set country=@country, state=@state, fk_vendor=@fk_vendor, fk_warehouse=@fk_warehouse where rowid = '" + model.searchid + "';";
 
 
                 SqlParameter[] para =
@@ -199,6 +199,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@product_id", model.product_id),
                     new SqlParameter("@prefix_code",model.prefix_code),
 
+                    new SqlParameter("@country",model.country),
+                    new SqlParameter("@state",model.state),
                     new SqlParameter("@fk_vendor",model.fk_vendor),
                     new SqlParameter("@fk_warehouse",model.fk_warehouse),
 
@@ -264,6 +266,45 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable SelectProductToReUse(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                SqlParameter[] param = { 
+                    new SqlParameter("@product_id", id),
+                    new SqlParameter("@flag","ADDMORE"),
+                };
+                string strquery = "erp_product_warehouse_rule";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery,param);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetState(string strSearch, string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strwhere = "";
+                if (country != null)
+                {
+                    strwhere = "and Country='" + country + "'";
+                }
+                //DT = SQLHelper.ExecuteDataTable("SELECT distinct State,StateFullName from ZIPCodes1 where State like '" + strSearch + "%' or StateFullName like '" + strSearch + "%' order by StateFullName");
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_statelist  where (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') " + strwhere + " ;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Free product setup~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public static int GetFreeProductCount(SetupModel model)
         {
             try

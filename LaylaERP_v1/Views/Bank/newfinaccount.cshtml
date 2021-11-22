@@ -50,12 +50,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Web</label><span style="color:red">*</span>
+                            <label for="tag">Web</label><span style="color:red"></span>
                             <input class="form-control" type="text" id="txtweb"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Comment</label><span style="color:red">*</span>
+                            <label for="tag">Comment</label><span style="color:red"></span>
                             <input class="form-control" type="text" id="txtcomment" />
                         </div>
 
@@ -142,10 +142,9 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label for="tag">Accounting code journal</label><span style="color:red">*</span>
                             <select class="form-control select2" id="ddljournal">
-                                @*<option value="1">JR</option>*@
                             </select>
                         </div>
                         <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Save Bank Account Details" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
@@ -167,90 +166,7 @@
         setTimeout(function () { $(".select2").select2(); }, 2000);
     });
 </script>
-<script>
-    /*
-        function AddBankAccount() {
-            debugger
-            label = $("#txtbankcashlabel").val();
-            accounttype = $("#txtaccounttype").val();
-            status = $("#txtbankstatus").val();
-            country = $("#txtaccountcountry").val();
-            state = $("#txtstate").val();
-            web = $("#txtweb").val();
-            comment = $("#txtcomment").val();
-            inital = $("#txtinitial").val();
-            date = $("#txtdate").val();
-            minallowbalance = $("#txtminallowbalance").val();
-            desiredbalance = $("#txtdesiredbalance").val();
-            bankname = $("#txtbankname").val();
-            bankcode = $("#txtbankcode").val();
-            accountnumber = $("#txtaccountnumber").val();
-            iban = $("#txtIBAN").val();
-            bic = $("#txtBIC").val();
-            bankaddress = $("#txtbankaddress").val();
-            ownername = $("#txtaccountowner").val();
-            owneraddress = $("#txtowneraddress").val();
-            accounting = $("#ddlaccounting").val();
-            journal = $("#ddljournal").val();
-            currency = $("#txtcurrency").val();
 
-
-            if (label == "") {
-                swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
-            }
-
-
-            else {
-
-                var obj = {
-
-                    date_modified: date,
-                    label: label,
-                    account_type: accounttype,
-                    working_status: status,
-                    country_iban: country,
-                    state: state,
-                    comment: comment,
-                    initial_balance: inital,
-                    min_allowed: minallowbalance,
-                    min_desired: desiredbalance,
-                    bank: bankname,
-                    code_bank: bankcode,
-                    account_number: accountnumber,
-                    owner_address: owneraddress,
-                    iban_prefix: iban,
-                    bic: bic,
-                    bank_address: bankaddress,
-                    owner_name: ownername,
-                    owner_address: owneraddress,
-                    accounting_number: accounting,
-                    fk_accountancy_journal: journal,
-                    url: web,
-                    currency_code: currency,
-                }
-                $.ajax({
-                    url: '/Bank/AddBankAccount/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    beforeSend: function () { $("#loader").show(); },
-                    success: function (data) {
-                        if (data.status == true) {
-                            //$('#parent > input:text').val('');
-                            swal('Alert!', data.message, 'success');
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error');
-                        }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-                })
-
-            }
-
-        } */
-</script>
 <script>
     $(function () {
         $("#txtdate").datepicker({

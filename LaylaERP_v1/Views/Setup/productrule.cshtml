@@ -24,14 +24,14 @@
                 <input type="hidden" id="hfid" />
                 <input type="hidden" id="hfwarehouserule" />
                 <input type="hidden" id="hfproductid" />
-                <div class="form-group">
-                    <label for="suffixcode">Suffix-Code<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" id="txtprefixcode" />
-                </div>
 
                 <div class="form-group">
                     <label for="ddlproduct">Products<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlProduct" style="width:100%;"></select>
+                    <select class="form-control select1" id="ddlProduct" style="width:100%;"></select>
+                </div>
+                <div class="form-group">
+                    <label for="suffixcode">Suffix-Code<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="txtprefixcode" />
                 </div>
                 <div class="box-footer">
                     <a href="#" class="btn btn-danger" id="btnAddProduct"><span title="Click Here To Add Suffix-Code And Product" data-placement="bottom" data-toggle="tooltip"><b>Add</b></span></a>
@@ -46,22 +46,29 @@
 
                 <div class="form-group">
                     <label for="vendor">Vendor<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlvendor" style="width:100%;"></select>
+                    <select class="form-control select1" id="ddlvendor" style="width:100%;"></select>
                 </div>
 
                 <div class="form-group">
                     <label for="country">Country<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtcountry" readonly />
+                    @*<input type="text" class="form-control" id="txtcountry" readonly />*@
+                    <Select class="form-control" id="txtcountry">
+                        <option value="US" selected>US</option>
+                        <option value="CA">CA</option>
+                    </Select>
                 </div>
 
                 <div class="form-group">
                     <label for="state">State<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtstate" readonly />
+                    @*<input type="text" class="form-control" id="txtstate" readonly />*@
+                    <Select class="form-control" id="txtstate">
+                        <option></option>
+                    </Select>
                 </div>
 
                 <div class="form-group">
                     <label for="warehouse">Warehouse<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlwarehouse" style="width:100%;"></select>
+                    <select class="form-control select1" id="ddlwarehouse" style="width:100%;"></select>
                 </div>
                 <div class="box-footer">
                     <a href="#" class="btn btn-danger" id="btnAdd"><span title="Click Here To Add Record" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a> 
@@ -85,20 +92,29 @@
                         </tr>
                     </thead>
                 </table>
-
             </div>
         </div>
     </div>
-
-
 </div>
 
 <script>
     $(document).ready(function () {
+
+        $("#txtstate").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/Setup/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtcountry").val() }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+
+
         $("#loader").hide();
 
-        $(".select2").select2();
-        setTimeout(function () { $(".select2").select2(); }, 1000);
+        $(".select1").select2();
+        //setTimeout(function () { $(".select2").select2(); }, 1000);
         $("#details").hide();
         
         $("#btnReset").click(function () {

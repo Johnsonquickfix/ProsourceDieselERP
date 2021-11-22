@@ -1,11 +1,65 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $(".select2").select2();
+    getState();
 
+
+    $('#txtPostCode').change(function () {
+        City = $("#ddlCity").val();
+        State = $("#ddlState").val();
+        PostalCode = $("#txtPostCode").val();
+        var obj = {
+            billing_state: State, billing_city: City, billing_postcode: PostalCode
+        }
+        $.ajax({
+            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {
+                    $('#hfzipstatus').val(data.status);
+                } else {
+                    if ($('#ddlCountry').val() == "US") {
+                        $("#txtPostCode").val("");
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
+                            swal.close();
+                            $('#txtZipCode').focus();
+                        });
+                    }
+                }
+            },
+
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    });
+    $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; });
+});
+$('#ddlCountry').change(function () {
+    getState();
 })
-
+function getState() {
+    var obj = { strValue2: $("#ddlCountry").val() };
+    $.ajax({
+        url: "/Users/GetCustStateByCountry",
+        type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var data = JSON.parse(data);
+            var opt = '<option value="0">Please Select state</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
+            }
+            $('#ddlState').html(opt);
+        }
+    });
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Gift Card ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var todaydate = new Date().toLocaleDateString();
 function createPostMeta() {
@@ -45,7 +99,6 @@ function createPostStatus() {
     return postStatus;
 }
 function createItemsList() {
-
     let cid = 0;
     let itemsDetails = [];
     //Add Item Details
@@ -165,7 +218,6 @@ function isEdit(val) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function GiftCardPaymentModal() {
-
     //let pay_by = $('#lblOrderNo').data('pay_by').trim();
     let billing_first_name = $('#txtFirstName').val(), billing_last_name = $('#txtLastName').val();
     let billing_address_1 = $('#txtAddress1').val(), billing_address_2 = $('#txtAddress2').val();
@@ -232,7 +284,6 @@ function GiftCardPaymentModal() {
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
     myHtml += '<option value="podium">Podium</opion><option value="ppec_paypal">Paypal</opion>';
-
     //for (let i = 0; i < pay_mathod.length; i++) {
     //    myHtml += '<option value="' + pay_mathod[i].id + '">' + pay_mathod[i].text + '</option>';
     //}
@@ -245,7 +296,6 @@ function GiftCardPaymentModal() {
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" checked="" value="' + billing_email + '"><label class="form-check-label">Email Channel</label></div>';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" value="' + billing_phone.replace(/[^0-9]/g, "") + '"><label class="form-check-label">SMS Channel</label></div>';
     myHtml += '</div>';
-    //myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
 
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
     myHtml += '<button type="button" class="btn btn-primary hidden" id="btnResendInv">Resend Invoice $' + $('#orderTotal').text() + '</button>';
@@ -259,10 +309,6 @@ function GiftCardPaymentModal() {
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
-    //pay_by = pay_by.length > 0 ? pay_by : 'podium';
-    // pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
-    // $('#ddlPaymentMethod').val(pay_by).trigger('change'); 
-    //console.log(pay_by);
 }
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); }
@@ -554,7 +600,7 @@ function successModal(paymode, id, is_mail) {
 }
 function sendInvoice(paymode, id) {
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
-    let order_date = todaydate //$('#txtLogDate').val();
+    let order_date = todaydate; 
     let payment_method = paymode;
     let b_first_name = $('#txtFirstName').val(), b_last_name = $('#txtLastName').val();
     let b_company = $('#txtCompany').val();
@@ -565,17 +611,13 @@ function sendInvoice(paymode, id) {
     let s_first_name = $('#txtFirstName').val(), s_last_name = $('#txtLastName').val();
     let s_company = $('#txtCompany').val();
     let s_address_1 = $('#txtAddress1').val(), s_address_2 = $('#txtAddress2').val();
-    let s_postcode = todaydate //$('#txtLogDate').val();
+    let s_postcode = $('#txtPostCode').val();
     let s_city = $('#txtCity').val(), s_country = $('#ddlCountry').val(), s_state = $('#ddlState').val();
     let GrassAmount = parseFloat($('#SubTotal').text()) || 0;
-    //let TotalDiscount = parseFloat($('#discountTotal').text()) || 0;
     let TotalTax = parseFloat($('#salesTaxTotal').text()) || 0;
     let TotalShipping = parseFloat($('#shippingTotal').text()) || 0;
-    //let TotalStateRecycling = parseFloat($('#stateRecyclingFeeTotal').text()) || 0;
-    //let TotalFee = parseFloat($('#feeTotal').text()) || 0; //TotalGift = parseFloat($('#giftCardTotal').text()) || 0;
     let NetTotal = parseFloat($('#orderTotal').text()) || 0;
     let _item = [];
-
     var qty = parseFloat($('#totalQty').text()) || 0.00;
     var rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
     var grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
@@ -585,8 +627,6 @@ function sendInvoice(paymode, id) {
         variation_id: 0, product_name: $("#lblOrderNo").data("pname"), quantity: qty, sale_rate: rate,
         total: grossAmount, product_img: ''
     });
-
-
     var opt_mail = {
         order_id: order_id, order_date: order_date, payment_method: payment_method, b_first_name: b_first_name, b_last_name: b_last_name, b_company: b_company,
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,

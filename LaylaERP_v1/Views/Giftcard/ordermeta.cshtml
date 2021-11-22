@@ -24,25 +24,25 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Email">Email</label>
+                            <label class="control-label " for="Email">Email <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="email" id="txtSenderEmail" class="form-control" value="@Model.sender_email" placeholder="Email" disabled />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="First Name">First Name</label>
+                            <label class="control-label " for="First Name">First Name <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" value="@Model.FirstName" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Last Name">Last Name</label>
+                            <label class="control-label " for="Last Name">Last Name <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" value="@Model.LastName" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Contact No.">Contact No.</label>
+                            <label class="control-label " for="Contact No.">Contact No. <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="tel" id="txtPhone" class="form-control" placeholder="Contact No." value="@Model.PhoneNumber" />
                             </div>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group">
                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                            <label class="control-label " for="Address 1">Address</label>
+                            <label class="control-label " for="Address 1">Address <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="text" id="txtAddress1" class="form-control" placeholder="Address" value="@Model.Address" autocomplete="off" />
                             </div>
@@ -69,7 +69,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="City">City</label>
+                            <label class="control-label " for="City">City <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="tel" id="txtCity" class="form-control" placeholder="City" value="@Model.City" />
                             </div>
@@ -77,19 +77,19 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">State</label>
-                            <select class="form-control" id="ddlState" value="@Model.State">
-                                <option selected value=""></option>
+                            <label for="exampleInputEmail1">State <span style="color:red;">*</span></label>
+                            <select class="form-control select2" id="ddlState" value="">
+                                @*<option selected value=""></option>*@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Post/Zip Code">Zip Code</label>
+                            <label class="control-label " for="Post/Zip Code">Zip Code <span style="color:red;">*</span></label>
                             <div class="">
                                 <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" value="@Model.Zipcode" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Country</label>
+                            <label for="exampleInputEmail1">Country <span style="color:red;">*</span></label>
                             <select class="form-control" id="ddlCountry" value="@Model.Country">
                                 <option value="US">US - United States</option>
                                 <option value="CA">CA - Canada</option>
@@ -225,59 +225,28 @@
 
 <script>
     $(document).ready(function () {
-        $("#ddlState").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) {
-                    var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
-                    return JSON.stringify(obj);
-                },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                    console.log(jobj);
-                    return {
-                        results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.State }
-                        })
-                    };
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-
-        $('#txtPostCode').change(function () {
-            City = $("#ddlCity").val();
-            State = $("#ddlState").val();
-            PostalCode = $("#txtPostCode").val();
-            var obj = {
-                billing_state: State, billing_city: City, billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        $('#hfzipstatus').val(data.status);
-                    } else {
-                        if ($('#ddlCountry').val() == "US") {
-                            $("#txtPostCode").val("");
-                            $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
-                                swal.close();
-                                $('#txtZipCode').focus();
-                            });
-                        }
-                    }
-                },
-
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        });
-        $("#txtPhone").mask("(999) 999-9999");
+        //$("#ddlState").select2({
+        //    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+        //    ajax: {
+        //        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+        //        data: function (params) {
+        //            console.log(params)
+        //            var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+        //            return JSON.stringify(obj);
+        //        },
+        //        processResults: function (data) {
+        //            var jobj = JSON.parse(data);
+        //            console.log(jobj);
+        //            return {
+        //                results: $.map(jobj, function (item) {
+        //                    return { text: item.StateFullName, name: item.StateFullName, id: item.State }
+        //                })
+        //            };
+        //        },
+        //        error: function (xhr, status, err) { }, cache: true
+        //    }
+        //});
+        console.log('@Model.State');
+        $("#ddlState").val(@Model.State).trigger("change");
     })
 </script>

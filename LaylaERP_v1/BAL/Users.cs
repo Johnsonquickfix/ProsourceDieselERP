@@ -168,7 +168,17 @@
             return DT;
         }
 
-
+        public static DataTable GetStateByCountry(string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_statelist  where Country='" + country + "'");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
 
         public static DataTable DisplayAssignRole(string strvalue)
         {

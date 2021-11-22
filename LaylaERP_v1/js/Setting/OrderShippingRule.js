@@ -259,7 +259,7 @@ function dataGridLoad(order_type) {
             { data: 'Country', title: 'Country', sWidth: "15%" },
             { data: 'State', title: 'State', sWidth: "15%" },
             { data: 'vendrname', title: 'Vendor', sWidth: "15%" },
-/*            { data: 'title', title: 'Product', sWidth: "15%" },*/
+            { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
             { data: 'prefix_code', title: 'Suffix Code', sWidth: "15%" },
        
             { data: 'services', title: 'Services', sWidth: "15%" },
@@ -306,7 +306,8 @@ function EditData(id) {
             if (i[0].location !== null && i[0].location !== undefined)
                 $("#ddlState").select2("val", [i[0].location.split(',')]);
 
-            //setTimeout(function () { statedata(i[0].location, i[0].Statefullname); }, 2000);
+            setTimeout(function () { $('#ddlwarehouse').val(i[0].fk_warehouse).trigger('change') }, 1000);
+            console.log(i[0].fk_warehouse);
         },
         complete: function () { $("#loader").hide(); },
         error: function (msg) { alert(msg); }
@@ -335,6 +336,7 @@ function Adddetails() {
         .toArray().map(item => item.value).join();
     fk_product = fk_productval;
     fk_vendor = $("#ddlvender").val();
+    warehouse = $("#ddlwarehouse").val();
 
     //taxprise = $("#txttaxprice").val();
 
@@ -344,14 +346,17 @@ function Adddetails() {
     else if (Countryval == "") {
         swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
     }
-    else if (fk_product == "") {
-        swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
-    }
-    else if (location == "") {
+    else if (locationval == "" || locationval == null) {
         swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
+    }
+    else if (fk_product == "" || fk_product == null) {
+        swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (fk_vendor == "") {
         swal('Alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+    }
+    else if (warehouse == "") {
+        swal('Alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); });
     }
     else {
         var obj = {
@@ -361,8 +366,8 @@ function Adddetails() {
             countryshipping: Countryval,
             services: services,
             fk_products: fk_product,
-            fk_vendor: fk_vendor
-            //Shipping_taxrate: taxprise
+            fk_vendor: fk_vendor,
+            fk_warehouse: warehouse
         }
 
         $.ajax({
@@ -403,4 +408,30 @@ function Adddetails() {
              
         })
     }
+}
+
+$('#ddlvender').change(function () {
+    getWarehouse();
+});
+
+function getWarehouse() {
+    var vendorid = $('#ddlvender').val();
+    var obj = {
+        strValue2: vendorid,
+    }
+    $.ajax({
+        url: "/Setting/GetWarehouse",
+        dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var opt = '<option value="0">Please Select Warehouse</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+
+            }
+            $('#ddlwarehouse').html(opt);
+        }
+
+    });
 }

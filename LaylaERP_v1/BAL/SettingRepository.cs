@@ -280,7 +280,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = '{1}',fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select string_agg(prefix_code,' ') from product_warehouse_rule where product_id in ({1})), fk_warehouse={7} where rowid = {6}", model.location, model.fk_products, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID, model.fk_warehouse));
+                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = '{1}',fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select string_agg(prefix_code,',') from product_warehouse_rule where product_id in ({1})), fk_warehouse={7} where rowid = {6}", model.location, model.fk_products, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID, model.fk_warehouse));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -298,7 +298,7 @@ namespace LaylaERP.BAL
                 //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) values ({0},{1},'{2}',{3},'{4}','{5}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services,model.countryshipping));
                 
                 //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},'{1}','{2}',{3},'{4}','{5}', (select group_concat(prefix_code)  from product_warehouse_rule where product_id in ({1}) ) prefix_code", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping));
-                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code, fk_warehouse) select {0},'{1}','{2}',{3},'{4}','{5}', (select string_agg(prefix_code,' ')  from product_warehouse_rule where product_id in ({1}) ) prefix_code, {6}", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping, model.fk_warehouse));
+                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code, fk_warehouse) select {0},'{1}','{2}',{3},'{4}','{5}', (select string_agg(prefix_code,',')  from product_warehouse_rule where product_id in ({1}) ) prefix_code, {6}", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping, model.fk_warehouse));
 
 
                 /// step 6 : wp_posts

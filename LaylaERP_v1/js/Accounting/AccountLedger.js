@@ -139,7 +139,11 @@ function formatPartially(d) {
                 wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.inv_num + '</td>';
                 wrHTML += '<td style="width:5%; text-align:left;">' + row.code_journal + '</td>';
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.doc_date + '</td>';
-                wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                if (row.code_journal == "AC")
+                   wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                else
+                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="PurchaseSalesPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')
                     wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' + '$' + row.debit + '</td>';

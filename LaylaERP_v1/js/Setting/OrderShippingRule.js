@@ -319,6 +319,8 @@ function statedata(id, name) {
 }
 function ClearControl() {
     $('#ddlCountry').val('').trigger('change');
+    $('#ddlwarehouse').val('0').trigger('change');
+    $('#ddlvender').val(null).trigger('change');
    // $("#txtPrice").val('0');
 }
 function Adddetails() {

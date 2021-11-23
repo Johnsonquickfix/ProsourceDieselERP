@@ -319,10 +319,10 @@ namespace LaylaERP.BAL
                                 + " where eba.rowid = '"+id+"'"; */
                 string strSql = "SELECT eba.rowid as bank, ep.rowid as id, wpt.PaymentType as paymenttype, eba.account_number as bankaccount, iif (epi.type = 'SO',epi.amount,'0')as debit, iif (epi.type = 'PO',epi.amount,'0') as credit,"
                                //+ "eba.initial_balance + sum(iif (epi.type = 'SO',epi.amount,'0') - iif (epi.type = 'PO',epi.amount,'0')) over (order by ep.datep rows between unbounded preceding and current row) as balance,"
-                               +" (Select eba.initial_balance + sum(iif(epi1.type = 'SO', epi1.amount, '0') - iif(epi1.type = 'PO', epi1.amount, '0')) from erp_payment ep1 inner JOIN erp_payment_invoice epi1 on epi1.fk_payment = ep1.rowid where ep1.fk_bank = eba.rowid and ep1.datep <= ep.datep) as balance,"
-                               +" convert(varchar(12),ep.datep,101) as operation_date, ep.num_payment as num_payment, wv.name as vendor, convert(varchar(12),ep.datec,101) as value_date from erp_payment ep"
+                               + " (Select eba.initial_balance + sum(iif(epi1.type = 'SO', epi1.amount, '0') - iif(epi1.type = 'PO', epi1.amount, '0')) from erp_payment ep1 inner JOIN erp_payment_invoice epi1 on epi1.fk_payment = ep1.rowid where ep1.fk_bank = eba.rowid and ep1.datep <= ep.datep and ((ep1.fk_payment = 3 and ep1.status = 2) or (ep1.fk_payment in (1,2)))) as balance,"
+                               + " convert(varchar(12),ep.datep,101) as operation_date, ep.num_payment as num_payment, wv.name as vendor, convert(varchar(12),ep.datec,101) as value_date from erp_payment ep"
                                + " left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment"
-                               + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "'";
+                               + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2)))";
 
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -340,7 +340,7 @@ namespace LaylaERP.BAL
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
                 strSql += "; SELECT (Count(ep.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ep.rowid) TotalRecord " +
                     "from erp_payment ep " +
-                    "left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code WHERE eba.rowid = '" + id + "' " + strWhr.ToString();
+                    "left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code WHERE eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2)))" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -430,5 +430,50 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable PendingBankEntriesList(string id, string userstatus, string sMonths, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT eba.rowid as bank, ep.rowid as id, wpt.PaymentType as paymenttype, eba.account_number as bankaccount, iif (epi.type = 'SO',epi.amount,'0')as debit, iif (epi.type = 'PO',epi.amount,'0') as credit,"
+                               //+ "eba.initial_balance + sum(iif (epi.type = 'SO',epi.amount,'0') - iif (epi.type = 'PO',epi.amount,'0')) over (order by ep.datep rows between unbounded preceding and current row) as balance,"
+                               + " (Select sum(iif(epi1.type = 'SO', epi1.amount, '0') - iif(epi1.type = 'PO', epi1.amount, '0')) from erp_payment ep1 inner JOIN erp_payment_invoice epi1 on epi1.fk_payment = ep1.rowid where ep1.fk_bank = eba.rowid and ep1.datep <= ep.datep and ((ep1.fk_payment = 3 and ep1.status in (0,7)))) as balance,"
+                               + " convert(varchar(12),ep.datep,101) as operation_date, ep.num_payment as num_payment, wv.name as vendor, convert(varchar(12),ep.datec,101) as value_date from erp_payment ep"
+                               + " left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment"
+                               + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status in(0,7)))";
+
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (epi.amount like '%" + searchid + "%' OR wpt.PaymentType like '%" + searchid + "%' OR eba.account_number like '%" + searchid + "%' OR wv.name like '%" + searchid + "%' OR ep.num_payment like '%" + searchid + "%' )";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(ep.datep as date) BETWEEN " + sMonths;
+                }
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(ep.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ep.rowid) TotalRecord " +
+                    "from erp_payment ep " +
+                    "left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code WHERE eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status in (0,7)))" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

@@ -80,8 +80,10 @@ function updateProductWarehouseRule() {
     warehouse = $("#ddlwarehouse").val();
     productid = $("#hfproductid").val();
     country = $("#txtcountry").val();
-    state = $("#txtstate").val();
-
+    //state = $("#txtstate").val();
+    var statearray = $('#txtstate option:selected')
+        .toArray().map(item => item.value).join();
+    state = statearray;
     
     if (product == 0) {
         swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
@@ -139,5 +141,31 @@ function updateProductWarehouseRule() {
 
 }
 
+function SelectedStateCounty() {
+    $("#txtstate").empty();
+    var obj = { strValue1: $("#txtcountry").val() }
+    $.ajax({
+        url: '/Product/SelectedStateData/' + 1,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#txtstate").append('<option value="' + datalog[i].State + '" selected>' + datalog[i].StateFullName + '</option>');
+            }
+        },
+        error: function (msg) { alert(msg); },
+        async: false
+    });
+
+
+}
+
+
+$("#txtcountry").change(function () {
+    SelectedStateCounty();
+});
 
 

@@ -52,7 +52,7 @@
                 <div class="form-group">
                     <label for="state">State<span style="color:red"></span></label>
                     @*<input type="text" class="form-control" id="txtstate" readonly />*@
-                    <Select class="form-control" id="txtstate">
+                    <Select class="form-control" multiple id="txtstate" style="width: 100%;">
                         <option></option>
                     </Select>
                 </div>
@@ -85,16 +85,15 @@
 
         $(".select1").select2();
 
-        $("#txtstate").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/Setup/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtcountry").val() }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-
+            $("#txtstate").select2({
+                allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                ajax: {
+                    url: '/Product/GetStateData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtcountry").val() }; return JSON.stringify(obj); },
+                    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
     });
 
 
@@ -117,12 +116,15 @@
                         $("#ddlProduct").val(jobj[0].pid).trigger('change');
                         setTimeout(function () { $("#ddlwarehouse").val(jobj[0].warehouseid).trigger('change'); }, 2000);
                         $("#ddlvendor").val(jobj[0].vendorid).trigger('change');
-                        $("#txtcountry").val(jobj[0].country);
+                        $("#txtcountry").val(jobj[0].country).trigger('change');
                         //$("#txtstate").val(jobj[0].state);
                         $("#hfid").val(jobj[0].id);
                         $("#hfproductid").val(jobj[0].pid);
                         $("#txtprefixcode").val(jobj[0].code);
-                        $("#txtstate").empty().append('<option value="' + jobj[0].state + '" selected>' + jobj[0].state + '</option>');
+
+                        if (jobj[0].state !== null && jobj[0].state !== undefined)
+                        $("#txtstate").select2("val", [jobj[0].state.split(',')]);   
+                        //$("#txtstate").empty().append('<option value="' + jobj[0].state + '" selected>' + jobj[0].state + '</option>');
                         //$("#ddlwarehouse").append('<option value="' + jobj[0].warehouseid + '" selected>' + jobj[0].warehouse + '</option>');
                     }
                 },

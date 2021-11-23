@@ -667,7 +667,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "select inv_complete,inv_num,code_journal,PO_SO_ref,label_operation,case when max(debit) = '0.00000000' then '' else Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) end debit,case when max(credit) = '0.00000000' then '' else Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) end credit,FORMAT(p.doc_date,'MM/dd/yyyy hh:mm tt') doc_date,"
+                string strSql = "select inv_complete,inv_num,code_journal,PO_SO_ref,label_operation,case when max(debit) = '0.00000000' then '' else Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) end debit,case when max(credit) = '0.00000000' then '' else Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) end credit,FORMAT(p.doc_date,'MM/dd/yyyy hh:mm tt') doc_date,convert(varchar,doc_date,101) datecrt,"
                                  + " (select Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalDebit, "
                                  + " (select Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalcredit,(select Cast(CONVERT(DECIMAL(10,2),sum(debit) -  sum(credit)) as nvarchar)  from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalbal"
                                  + " from erp_accounting_bookkeeping p"

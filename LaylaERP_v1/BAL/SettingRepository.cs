@@ -180,13 +180,14 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "select DISTINCT eoar.rowid rowid, eoaf.name rulrname,location State,eslcun.CountryFullName Country,"
-                + " wv.name vendrname,services,prefix_code"
+                + " wv.name vendrname,services,prefix_code, ww.ref warehouse "
                 + " from erp_order_automation_rule eoar"
                 + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
                 //+ " left OUTER join erp_StateList esl on esl.State = eoar.location "
                  + " left OUTER join erp_StateList eslcun on eslcun.Country = eoar.country"
                 //+ " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
                 + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
+                + " left OUTER join wp_warehouse ww on ww.rowid = eoar.fk_warehouse"
                 + " WHERE eoar.rowid > 0" + strWhr
 
               + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY";
@@ -198,6 +199,7 @@ namespace LaylaERP.BAL
                 + " left OUTER join erp_StateList eslcun on eslcun.Country = eoar.country"
                 //+ " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
                 + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
+                + " left OUTER join wp_warehouse ww on ww.rowid = eoar.fk_warehouse"
                 + " WHERE eoar.rowid > 0 " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -237,7 +239,7 @@ namespace LaylaERP.BAL
                 //string strSql = "SELECT rowid ID,fk_rule,location,Statefullname,fk_product,fk_vendor,services,ScD.country from erp_order_automation_rule ScD left outer join erp_StateList esl on esl.State = ScD.location"
                 //             + " WHERE rowid = " + model.strVal + " ";
 
-                string strSql = "SELECT rowid ID,fk_rule,location,fk_product,fk_vendor,services,Country from erp_order_automation_rule ScD"
+                string strSql = "SELECT rowid ID,fk_rule,location,fk_product,fk_vendor,services,Country, fk_warehouse from erp_order_automation_rule ScD"
                            + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -278,7 +280,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = '{1}',fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select string_agg(prefix_code,' ') from product_warehouse_rule where product_id in ({1})) where rowid = {6}", model.location, model.fk_products, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID));
+                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = '{1}',fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select string_agg(prefix_code,',') from product_warehouse_rule where product_id in ({1})), fk_warehouse={7} where rowid = {6}", model.location, model.fk_products, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID, model.fk_warehouse));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -296,7 +298,7 @@ namespace LaylaERP.BAL
                 //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) values ({0},{1},'{2}',{3},'{4}','{5}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services,model.countryshipping));
                 
                 //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},'{1}','{2}',{3},'{4}','{5}', (select group_concat(prefix_code)  from product_warehouse_rule where product_id in ({1}) ) prefix_code", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping));
-                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},'{1}','{2}',{3},'{4}','{5}', (select string_agg(prefix_code,' ')  from product_warehouse_rule where product_id in ({1}) ) prefix_code", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping));
+                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code, fk_warehouse) select {0},'{1}','{2}',{3},'{4}','{5}', (select string_agg(prefix_code,',')  from product_warehouse_rule where product_id in ({1}) ) prefix_code, {6}", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping, model.fk_warehouse));
 
 
                 /// step 6 : wp_posts
@@ -314,8 +316,13 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) text FROM wp_posts AS p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' group by p.id, p.post_title, meta_value  ORDER BY p.ID;"
-                            + " Select t.term_id id,name text From wp_terms t Left Join wp_term_taxonomy tt On t.term_id = tt.term_id WHERE tt.taxonomy = 'product_cat'";
+                /*   string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) text FROM wp_posts AS p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' group by p.id, p.post_title, meta_value  ORDER BY p.ID;"
+                               + " Select t.term_id id,name text From wp_terms t Left Join wp_term_taxonomy tt On t.term_id = tt.term_id WHERE tt.taxonomy = 'product_cat'";*/
+                string strSQl = "SELECT COALESCE(ps.id,p.id) id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                                   + " FROM wp_posts as p"
+                                   + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                   + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                   + " WHERE p.post_type = 'product' AND p.post_status = 'publish'";
 
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
@@ -324,5 +331,20 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+        public static DataSet GetWarehouse(SearchModel model)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT v.rowid as vid, v.name as vname, w.rowid as wid, w.ref as wname,v.fk_state as state, v.fk_country as country FROM wp_VendorWarehouse vs"
+                               + " inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid"
+                              + " inner join wp_vendor v on v.rowid = vs.VendorID where v.rowid='" + model.strValue2 + "'";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

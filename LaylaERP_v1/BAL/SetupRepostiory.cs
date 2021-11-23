@@ -144,7 +144,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code"
+                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code, pwrd.country, pwrd.state "
                                   +" FROM wp_posts as p"
                                   +" LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                   +" left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"

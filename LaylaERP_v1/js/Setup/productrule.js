@@ -135,7 +135,10 @@ function addProductWarehouseRuleDetails() {
     fkproductrule = $("#hfwarehouserule").val();
     vendor = $("#ddlvendor").val();
     country = $("#txtcountry").val();
-    state = $("#txtstate").val();
+    var statearray = $('#txtstate option:selected')
+        .toArray().map(item => item.value).join();
+    state = statearray;
+    //state = $("#txtstate").val();
     warehouse = $("#ddlwarehouse").val();
 
     if (vendor == 0) {
@@ -227,6 +230,8 @@ function ProductWarehouseRuleGrid() {
                     { data: 'code', title: 'Suffix', sWidth: "15%" },
                     { data: 'vendor', title: 'Vendor', sWidth: "20%" },
                     { data: 'warehouse', title: 'Warehouse', sWidth: "10%" },
+                    { data: 'state', title: 'State', sWidth: "10%" },
+                    { data: 'country', title: 'Country', sWidth: "10%" },
                     {
                         'data': 'id',
                         'sortable': true,
@@ -435,4 +440,32 @@ function ReUseProduct(product) {
 
     });
 }
+
+function SelectedStateCounty() {
+    $("#txtstate").empty();
+    var obj = { strValue1: $("#txtcountry").val() }
+    $.ajax({
+        url: '/Product/SelectedStateData/' + 1,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#txtstate").append('<option value="' + datalog[i].State + '" selected>' + datalog[i].StateFullName + '</option>');
+            }
+
+        },
+        error: function (msg) { alert(msg); },
+        async: false
+    });
+
+
+}
+
+
+$("#txtcountry").change(function () {
+    SelectedStateCounty();
+});
 

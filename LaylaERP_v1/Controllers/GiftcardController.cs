@@ -19,6 +19,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult GiftCardList()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GiftCard(FormCollection collection)
         {
@@ -75,7 +79,17 @@ namespace LaylaERP.Controllers
         public ActionResult ordermeta(GiftCardModel model,long id = 0)
         {
             ViewBag.id = id;
-            return View(model);
+            if (id > 0)
+            {
+                List<string> Emaillist = new List<string>();
+                Emaillist.Add("steven.quickfix@gmail.com");
+                model.recipientList = Emaillist.ToList();
+                return View(model);
+            }
+            else
+            {
+                return View(model);
+            }
         }
         [HttpPost]
         public JsonResult SaveGiftCardOrder(OrderModel model)
@@ -109,6 +123,41 @@ namespace LaylaERP.Controllers
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
+        }
+        [HttpGet]
+        public JsonResult GetGiftCardOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                DataTable dt = GiftCardRepository.GiftCardOrderList(fromdate, todate, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult ChangeGiftCardStatus(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                GiftCardRepository or = new GiftCardRepository();
+                or.ChangeGiftCardStatus(model, strID);
+                return Json(new { status = true, message = "Gift Card Status has been Changed successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
     }
 }

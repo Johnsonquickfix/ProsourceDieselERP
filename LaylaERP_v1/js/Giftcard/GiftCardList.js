@@ -12,19 +12,31 @@
         startDate: moment().add(-24, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
-        let order_type = $('#hfOrderType').val(); dataGCGridLoad(order_type);
+        let order_type = $('#hfOrderType').val(); dataGCGridLoad();
     });
     dataGCGridLoad();
+    $("#ddlUser").select2({
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+        ajax: {
+            url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+            error: function (xhr, status, err) { }, cache: true
+        }
+    });
 
 })
+
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 $('#txtOrderDate').val('');
 $('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
+
+
 function dataGCGridLoad() {
     var order_type = '';
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
-    var monthYear = '', cus_id =  0;
+    var monthYear = '', cus_id = $('#ddlUser').val() || 0;
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
@@ -75,14 +87,16 @@ function dataGCGridLoad() {
                 }
             },
             { data: 'order_id', title: 'Order id', sWidth: "10%" },
-            { data: 'code', title: 'Code', sWidth: "16%" },
-            { data: 'remaining', title: 'Balance', sWidth: "10%" },
+            { data: 'code', title: 'Code', sWidth: "18%" },
+            { data: 'remaining', title: 'Balance', sWidth: "5%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
             { data: 'delivery', title: 'Delivery', sWidth: "10%" },
             { data: 'sender', title: 'From', sWidth: "10%" },
-            { data: 'recipient', title: 'To', sWidth: "12%" },
+            { data: 'recipient', title: 'To', sWidth: "10%" },
+            { data: 'RedeemedBy', title: 'Redeemed By', sWidth: "12%" },
+            
             { data: 'expires', title: 'Expires', sWidth: "5%" },
-            { data: 'create_date', title: 'Creation Date', sWidth: "12%" },
+            { data: 'create_date', title: 'Creation Date', sWidth: "5%" },
         ]
     });
 }
@@ -105,29 +119,31 @@ function GetMonths() {
     }
     $("#filter-by-date").select2();
 }
-function orderStatus() {
+function giftcardStatus() {
     let id = "";
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         id += $(this).val() + ",";
     });
     id = id.replace(/,(?=\s*$)/, '');
-    $("#checkAll").prop('checked', false);
+    $("#checkall").prop('checked', false);
     let status = $('#ddlOrderStatus').val();
 
-    if (id == "") { swal('alert', 'Please select a gift card', 'error'); }
-    if (status == "") { swal('alert', 'Please select status', 'error'); }
+    if (id == '') { swal('alert', 'Please select a gift card', 'error'); return; }
+    console.log(id);
+    if (status == '') { swal('alert', 'Please select status', 'error'); }
 
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your order status?",
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your Gift Card status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let obj = { strVal: id, status: status }
+                let obj = { strValue1: id, strValue2: status }
                 $.post('/GiftCard/ChangeGiftCardStatus', obj)
                     .done(function (data) {
                         if (data.status) {
                             swal.insertQueueStep(data.message);
                             //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
+                        dataGCGridLoad();
                         }
                         else { swal.insertQueueStep('something went wrong!'); }
                         resolve();
@@ -137,7 +153,6 @@ function orderStatus() {
     }]);
 }
 function CheckAll() {
-    debugger
     var isChecked = $('#checkall').prop("checked");
     $('#dtGCdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 }

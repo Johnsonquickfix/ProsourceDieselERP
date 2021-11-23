@@ -144,13 +144,12 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
         [HttpPost]
-        public JsonResult ChangeGiftCardStatus(OrderPostStatusModel model)
+        public JsonResult ChangeGiftCardStatus(SearchModel model)
         {
-            string strID = model.strVal;
+            string strID = model.strValue1;
             if (strID != "")
             {
-                GiftCardRepository or = new GiftCardRepository();
-                or.ChangeGiftCardStatus(model, strID);
+                new GiftCardRepository().ChangeGiftCardStatus(model, strID);
                 return Json(new { status = true, message = "Gift Card Status has been Changed successfully!!", url = "" }, 0);
             }
             else

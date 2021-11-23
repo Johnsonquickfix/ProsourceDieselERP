@@ -287,7 +287,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "SERCH"),
-                    new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID),
+                    !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                     new SqlParameter("@isactive", userstatus),
                     new SqlParameter("@searchcriteria", searchid),
                     new SqlParameter("@pageno", pageno),

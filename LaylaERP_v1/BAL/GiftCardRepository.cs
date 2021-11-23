@@ -111,17 +111,14 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int ChangeGiftCardStatus(OrderPostStatusModel model, string ID)
+        public int ChangeGiftCardStatus(SearchModel model, string ID)
         {
             try
             {
-                string strsql = string.Format("update wp_wc_order_stats set status=@status where order_id  in ({0}); ", ID)
-                    + string.Format("update wp_posts set post_status=@status,post_modified=@post_modified,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
+                string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active=@status where id in ({0}); ", ID);
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@status", model.status),
-                    new SqlParameter("@post_modified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
-                    new SqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                    new SqlParameter("@status", model.strValue2)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
               

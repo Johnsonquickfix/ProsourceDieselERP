@@ -5,8 +5,25 @@ body {
     color: #4f4f4f !important;
     font-size: 12px !important;
 }
-
-button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+#GiftModal {
+    font-size: 15px;
+}
+.neworder-section #dtGCdata  .table-blue th{overflow:hidden;}
+.podiumchannel{display:inline-flex; justify-content:flex-start; align-items:center;}
+.podiumchannel .form-check-label{margin-bottom:0px; margin-left:5px;}
+.podiumchannel .form-check-inline{display:inline-flex; margin-right:25px;}
+#GiftModal .modal-footer{display:flex; align-items:center;}
+#GiftModal .modal-footer .col-md-3{width:auto; padding-left:0px;}
+#GiftModal .modal-footer .col-md-6{width:auto; margin-right:auto;}
+#GiftModal thead {
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+#GiftModal .table{margin-top:25px; margin-bottom:10px;}
+#GiftModal th, #GiftModal td {
+    border-bottom: 1px solid #ddd;
+}
+    button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Open Sans', sans-serif;
 }
 .nav > li > a{padding-top:8px; padding-bottom:8px;}
@@ -2999,3 +3016,5 @@ i.fa.fa-calendar {
 .payment-boxes #divpodata #dtdata.inventory-table td:first-child, #divpodata .check-table.inventory-table th:first-child {
     width: 50px !important;
 }
+
+#GiftModal{font-size:15px;}

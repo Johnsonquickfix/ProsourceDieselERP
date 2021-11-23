@@ -133,17 +133,19 @@ function formatPartially(d) {
             let Totalcredit = '';
             let Totalbaolance = '';
             let account = 0;
+            let datect = '';
             if (result.length == 0) { wrHTML += '<tbody class="line_items_' + d.rowid + '"><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
                 Totaldebit = row.totalDebit; Totalcredit = row.totalcredit; Totalbaolance = row.totalbal; account = row.inv_complete;
+                datect = row.datecrt;
                 wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.inv_num + '</td>';
                 wrHTML += '<td style="width:5%; text-align:left;">' + row.code_journal + '</td>';
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.doc_date + '</td>';
                 if (row.code_journal == "AC")
-                   wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
                 else
-                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="PurchaseSalesPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
-
+                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#"  onclick="PurchaseSalesPrint(' + row.inv_num + ',\'' + datect + '\');"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                //console.log(row.datecrt);
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')
                     wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' + '$' + row.debit + '</td>';

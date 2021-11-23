@@ -22,8 +22,9 @@
             <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Bank account</span></a></li>
             <li><a href="#tab_2" data-toggle="tab"><span title="Bank Entries" data-placement="bottom" data-toggle="tooltip">Bank Entries</span></a></li>
             @* <li><a href="#tab_3" data-toggle="tab"><span title="Entries" data-placement="bottom" data-toggle="tooltip">Entries</span></a></li>
-                <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
-                    <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
+        <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+            <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
+            <li><a href="#tab_4" data-toggle="tab">Pending Entries</a></li>
             <li><a href="#tab_7" data-toggle="tab"><span title="Linked Files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
         </ul>
         <div class="tab-content">
@@ -310,7 +311,35 @@
                 </div>
             </div>
             <div class="tab-pane" id="tab_4">
-                @*<h2 class="box-title">Monthly reporting</h2>*@
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="table-responsive bank-table-wrapper">
+                                    <table id="PendingBankEntriesdata" class="table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Ref</th>
+                                                <th>Oper. Date</th>
+                                                <th>Vaue Date</th>
+                                                <th>Payment Type</th>
+                                                <th>Number</th>
+                                                <th>Vendor</th>
+                                                <th>Bank Account</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                        @*<tfoot align="right">
+                                    <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                                </tfoot>*@
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane" id="tab_6">
                 @*<h2 class="box-title">Account statements</h2>*@

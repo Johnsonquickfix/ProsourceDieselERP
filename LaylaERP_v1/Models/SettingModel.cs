@@ -214,6 +214,8 @@ namespace LaylaERP.Models
         public int fk_vendor { get; set; }
         public string countryshipping { get; set; }
 
+        public int fk_warehouse { get; set; }
+
     }
 
     public static class GlobalVariables

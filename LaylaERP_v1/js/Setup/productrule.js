@@ -223,14 +223,16 @@ function ProductWarehouseRuleGrid() {
             $('#dtdata').dataTable({
                 destroy: true,
                 scrollX: false,
+                bAutoWidth: true,
+                responsive: true,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'id', title: 'Id', sWidth: "5%" },
-                    { data: 'product', title: 'Product', sWidth: "25%" },
-                    { data: 'code', title: 'Suffix', sWidth: "15%" },
-                    { data: 'vendor', title: 'Vendor', sWidth: "20%" },
+                    { data: 'id', title: 'Id', sWidth: "10%" },
+                    { data: 'product', title: 'Product', sWidth: "20%" },
+                    { data: 'code', title: 'Suffix', sWidth: "10%" },
+                    { data: 'vendor', title: 'Vendor', sWidth: "10%" },
                     { data: 'warehouse', title: 'Warehouse', sWidth: "10%" },
-                    { data: 'state', title: 'State', sWidth: "10%" },
+                    { data: 'state', title: 'State', sWidth: "30%"},
                     { data: 'country', title: 'Country', sWidth: "10%" },
                     {
                         'data': 'id',
@@ -244,6 +246,14 @@ function ProductWarehouseRuleGrid() {
                     },
                 ],
                 "order": [[0, 'desc']],
+                columnDefs: [
+                    {
+                        render: function (data, type, full, meta) {
+                            return "<div class='text-wrap'>" + data + "</div>";
+                        },
+                        targets:5
+                    }
+                ]
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {

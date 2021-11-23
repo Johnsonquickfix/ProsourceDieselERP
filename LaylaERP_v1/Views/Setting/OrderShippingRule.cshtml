@@ -77,14 +77,21 @@
                         <div class="form-group d-flex">
                             <label class="col-sm-3 control-label">Products<span style="color:red;"> *</span></label>
                             <div class="col-sm-9">
-                                <select class="form-control select2" id="ddlProduct"  placeholder="Select Products" multiple style="width: 100%;"></select>
+                                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" multiple style="width: 100%;"></select>
                             </div>
                         </div>
                         <div class="form-group d-flex">
                             <label class="col-sm-3 control-label">Vendor<span style="color:red;"> *</span></label>
                             <div class="col-sm-9">
                                 <select class="form-control select2" id="ddlvender" placeholder="Select Vendor" style="width: 100%;">
-                                    <option value="">Select Vendor</option>
+                                    <option value="">Please Select Vendor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Warehouse<span style="color:red;"> *</span></label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" id="ddlwarehouse" placeholder="Select Warehouse" style="width: 100%;">
                                 </select>
                             </div>
                         </div>
@@ -99,7 +106,7 @@
                         <div class="form-group d-flex">
                             <div class="col-sm-12 text-right">
                                 <button id="btnsavedetails" title="Click here to add/update details" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
-                            
+
                                 <button id="btncl" title="Click here to Cancel" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
                             </div>
                         </div>
@@ -121,8 +128,8 @@
                                 <th>Country</th>
                                 <th>State</th>
                                 <th>Vendor</th>
-                                @*<th>Product</th>*@
-                                <th>Product</th>
+                                <th>Warehouse</th>
+                                <th>Suffix Code</th>
                                 <th>Services</th>
                                 <th></th>
                             </tr>

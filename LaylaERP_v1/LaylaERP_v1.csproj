@@ -1004,6 +1004,7 @@
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
     <Content Include="Views\Giftcard\GiftCardList.cshtml" />
+    <Content Include="Views\Podium\todaysgift.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

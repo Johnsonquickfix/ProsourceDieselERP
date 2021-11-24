@@ -215,7 +215,6 @@ function PendingEntriesList() {
             { data: 'bankaccount', title: 'Bank Account', sWidth: "10%" },
             { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
 
         ],
     });
@@ -237,6 +236,7 @@ function PendingEntriesBalance() {
                 $("#txtpendingentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
                 $("#txtpendingentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
                 $("#txtpendingbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+                $("#txtunclearbalance").text('' + parseFloat(d[0].balance).toFixed(2));
             }
         },
         error: function (msg) {

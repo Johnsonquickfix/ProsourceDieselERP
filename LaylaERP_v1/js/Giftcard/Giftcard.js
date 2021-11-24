@@ -12,8 +12,9 @@
     var date = new Date();
     date.setDate(date.getDate());
     $('#gift_date').datepicker({
-        startDate: date
-    });
+        startDate: date,
+        format: 'mm/dd/yyyy',
+    }).datepicker("setDate", 'now');
 })
 
 $(".radio_amt").click(function () {

@@ -475,5 +475,20 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable PendingBankEntriesBalance(long id)
+        {
+            SqlParameter[] parm = { new SqlParameter("@flag", "PENDING"), new SqlParameter("@id", id) };
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "erp_bank";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery, parm);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

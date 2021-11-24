@@ -60,10 +60,16 @@ function Search() {
                 //},
                 { data: 'post_date', title: 'Create Date', sWidth: "10%" },
                 { data: 'post_status', sWidth: "10%", title: 'Status', sWidth: "10%" },
-                { data: 'Total', title: 'Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                  { data: 'Discount', title: 'Discount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                    { data: 'Tax', title: 'Tax', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                 { data: 'TransactionID', title: 'TransactionID', sWidth: "10%" },
+                { data: 'subtotal', title: 'Sub-Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },                
+                { data: 'Discount', title: 'Total Savings', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'shipping', title: 'Shipping', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Tax', title: 'Sale Tax', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'State_Recycling_Fee', title: 'State Recycling Fee', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Fee', title: 'Fee', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'gift_card', title: 'Gift Card', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Total', title: 'Order Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+         
+                  
             ],
             columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
         });

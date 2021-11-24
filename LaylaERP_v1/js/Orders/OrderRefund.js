@@ -40,7 +40,10 @@ function getOrderInfo() {
             var data = JSON.parse(result);
             if (data.length > 0) {
                 if (data[0].is_edit == '1') {
-                    $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                    if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
+                        $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                    else
+                        $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
                 }
                 else {
                     $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
@@ -248,6 +251,8 @@ function getOrderItemList(oid) {
         $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
+        if (((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt) <= 0)
+            $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
         //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
         $("#order_line_items,#order_fee_line_items").find(".rowCalulate").change(function () { calculateRefunOnQty(); });
         $("#order_line_items,#order_fee_line_items").find(".rowAmountCalulate").change(function () { calculateRefunOnAmount(); });
@@ -526,7 +531,9 @@ function saveCO() {
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
-    //console.log(postStatus, itemsDetails); return;
+    let bal = $('#netPaymentTotal').text() || 0.00;
+    if (net_total > bal) { swal('Alert!', 'Order amount cannot refund more than ' + bal.fixed(2) + '.', "error"); return false; }
+    //console.log(postStatus, itemsDetails, totalPay, net_total); return;
     if (totalPay > net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",

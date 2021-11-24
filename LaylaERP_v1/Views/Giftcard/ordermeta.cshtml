@@ -6,6 +6,7 @@
 }
 <div class="page-title">
     <h2 class="page-heading">Gift Card Billing Details</h2>
+    <input type="button" value="Back" id="btnGiftBackOrder" class="btn btn-danger" onclick="javascript:window.history.back(-1);return false;" />
 </div>
 
 <section class="content content-section p-0">
@@ -78,7 +79,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1">State <span style="color:red;">*</span></label>
-                            <select class="form-control select2" id="ddlState" value="">
+                            <select class="form-control select2" id="ddlState" value="@Model.State">
                                 @*<option selected value=""></option>*@
                             </select>
                         </div>
@@ -224,29 +225,27 @@
 <script src="@Url.Content("~/js/Giftcard/GiftcardOrder.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>
+    function preloadFunc() {
+        getState();
+        function getState() {
+            var obj = { strValue2: $("#ddlCountry").val() };
+            $.ajax({
+                url: "/Users/GetCustStateByCountry",
+                type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    var opt = '<option value="0">Please Select state</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
+                    }
+                    $('#ddlState').html(opt);
+                }
+            });
+        }
+    }
+    window.onpaint = preloadFunc();
     $(document).ready(function () {
-        //$("#ddlState").select2({
-        //    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-        //    ajax: {
-        //        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-        //        data: function (params) {
-        //            console.log(params)
-        //            var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
-        //            return JSON.stringify(obj);
-        //        },
-        //        processResults: function (data) {
-        //            var jobj = JSON.parse(data);
-        //            console.log(jobj);
-        //            return {
-        //                results: $.map(jobj, function (item) {
-        //                    return { text: item.StateFullName, name: item.StateFullName, id: item.State }
-        //                })
-        //            };
-        //        },
-        //        error: function (xhr, status, err) { }, cache: true
-        //    }
-        //});
-        console.log('@Model.State');
-        $("#ddlState").val(@Model.State).trigger("change");
+        $("#ddlState").val('@Model.State').trigger('change');
     })
 </script>

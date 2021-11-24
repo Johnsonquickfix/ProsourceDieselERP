@@ -1,8 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
     $(".select2").select2();
-    getState();
-    console.log($("#EmployeeListdata").data('deliverydate'));
 
     $('#txtPostCode').change(function () {
         City = $("#ddlCity").val();
@@ -40,28 +38,16 @@
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
-    console.log($("#txtPhone").val().length);
+
+
 
 });
 $('#ddlCountry').change(function () {
     getState();
 })
-function getState() {
-    var obj = { strValue2: $("#ddlCountry").val() };
-    $.ajax({
-        url: "/Users/GetCustStateByCountry",
-        type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var data = JSON.parse(data);
-            var opt = '<option value="0">Please Select state</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
-            }
-            $('#ddlState').html(opt);
-        }
-    });
-}
+$("#btnGiftBackOrder").click(function () {
+    localStorage.setItem("Orderdeliverydate", $("#EmployeeListdata").data('deliverydate'));
+});
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Gift Card ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var todaydate = new Date().toLocaleDateString();
 function createPostMeta() {
@@ -211,6 +197,7 @@ function ValidateData() {
     else if ($('#txtFirstName').val() == "") { swal('Alert', 'Please Enter First Name', 'error').then((result) => { $('#txtFirstName').focus(); return false; }); return false; }
     else if ($('#txtLastName').val() == "") { swal('Alert', 'Please enter Last Name', 'error').then((result) => { $('#txtLastName').focus(); return false; }); }
     else if ($('#txtPhone').val() == "" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
+    else if ($('#txtPhone').val().length != "14" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter 10 digit phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
     else if ($('#txtAddress1').val() == "") { swal('Alert', 'Please enter Address1', 'error').then((result) => { $('#txtAddress1').focus(); return false; }); return false; }
     else if ($('#txtCity').val() == "") { swal('Alert', 'Please enter City', 'error').then((result) => { $('#txtCity').focus(); return false; }); return false; }
     else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter State', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }

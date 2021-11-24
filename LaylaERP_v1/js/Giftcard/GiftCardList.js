@@ -88,7 +88,13 @@ function dataGCGridLoad() {
             },
             { data: 'order_id', title: 'Order id', sWidth: "10%" },
             { data: 'code', title: 'Code', sWidth: "18%" },
-            { data: 'remaining', title: 'Balance', sWidth: "5%" },
+            {
+                data: 'remaining', title: 'Balance', sWidth: "5%",
+                'render': function (data, type, full) {
+                
+                    return '$' + parseFloat(data).toFixed(2);
+                }
+            },
             { data: 'status', title: 'Status', sWidth: "10%" },
             { data: 'delivery', title: 'Delivery', sWidth: "10%" },
             { data: 'sender', title: 'From', sWidth: "10%" },

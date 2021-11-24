@@ -9,6 +9,14 @@
         });
         $('#gift_date').datepicker();
     });
+    var date = new Date();
+    date.setDate(date.getDate());
+    $('#gift_date').datepicker({
+        startDate: date
+    });
+    $('#gift_date').datepicker({
+        format: 'mm/dd/yyyy',
+    }).datepicker("setDate", 'now');
 })
 
 $(".radio_amt").click(function () {
@@ -35,7 +43,9 @@ function validateForm() {
         swal('Alert', 'Please select amount', 'error'); return false;
     }
     else if (giftTo == "") { swal('Alert', 'Please Enter email to', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
+    //else if (!pattern.test(giftTo)) { swal('Alert', 'Please Enter valid email', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
     else if (giftFrom == "") { swal('Alert', 'Please enter email from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
+    else if (!pattern.test(giftFrom)) { swal('Alert', 'Please enter valid email ', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
     else { }
 }
 

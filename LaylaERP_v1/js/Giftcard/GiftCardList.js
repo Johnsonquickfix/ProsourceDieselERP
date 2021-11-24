@@ -16,7 +16,7 @@
     });
     dataGCGridLoad();
     $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by Customer...",
         ajax: {
             url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },

@@ -2,7 +2,7 @@
     $("#loader").hide();
     $(".select2").select2();
     getState();
-
+    console.log($("#EmployeeListdata").data('deliverydate'));
 
     $('#txtPostCode').change(function () {
         City = $("#ddlCity").val();
@@ -39,7 +39,9 @@
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
-    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; });
+    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
+    console.log($("#txtPhone").val().length);
+
 });
 $('#ddlCountry').change(function () {
     getState();
@@ -114,6 +116,9 @@ function createItemsList() {
     let customerNotes = $("#txtOrderNotes").text();
     let sender_email = $("#txtSenderEmail").val();
     let sender = $("#txtFirstName").val() + ' ' + $("#txtLastName").val();
+    let deliver_date = $("#EmployeeListdata").data('deliverydate') || 0;
+   
+
     itemsDetails.push({
         order_item_id: $("#EmployeeListdata").data('orderitemid'), PKey: 0, order_id: 0, customer_id: cid, product_type: 'line_item',
         product_id: product_id, variation_id: 0, product_name: productName,
@@ -130,47 +135,47 @@ function createItemsList() {
             itemsDetails.push({
                 order_item_id: order_item_id, order_id: 0, product_name: gift_productName,
                 product_type: 'gift_card', total: gift_amt, recipient: gift_recipient, sender: sender, sender_email: sender_email,
-                customerNotes: customerNotes,
+                customerNotes: customerNotes, delivery_date: deliver_date,
             });
     });
     return itemsDetails;
 }
-function createGiftCardList() {
-    let cid = 0;
-    let itemsDetails = [];
-    //Add Gift Card Details
-    $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseInt($('#totalQty').text()) || 0;
-        let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
-        let grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
-        let discountAmount = 0.00;
-        let taxAmount = 0.00;
-        let shippinAmount = 0.00;
-        itemsDetails.push({
-            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item',
-            product_id: 853309, variation_id: 0, product_name: $("#lblOrderNo").data("pname"),
-            quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount,
-            shipping_amount: shippinAmount, shipping_tax_amount: 0
-        });
-    });
+//function createGiftCardList() {
+//    let cid = 0;
+//    let itemsDetails = [];
+//    //Add Gift Card Details
+//    $('#order_line_items > tr').each(function (index, tr) {
+//        let qty = parseInt($('#totalQty').text()) || 0;
+//        let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
+//        let grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
+//        let discountAmount = 0.00;
+//        let taxAmount = 0.00;
+//        let shippinAmount = 0.00;
+//        itemsDetails.push({
+//            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item',
+//            product_id: 853309, variation_id: 0, product_name: $("#lblOrderNo").data("pname"),
+//            quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount,
+//            shipping_amount: shippinAmount, shipping_tax_amount: 0
+//        });
+//    });
 
-    //Add Fee
-    $('#order_fee_line_items > tr').each(function (index, tr) {
-        let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
-        if (gift_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
+//    //Add Fee
+//    $('#order_fee_line_items > tr').each(function (index, tr) {
+//        let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
+//        if (gift_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
 
-        itemsDetails.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: parseFloat($(tr).find(".TotalAmount").text()) || 0.00 });
-    });
-    //Add State Recycling Fee
-    itemsDetails.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, product_name: 'State Recycling Fee', product_type: 'fee', total: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
-    //Add Shipping
-    itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
-    //Add Tax
-    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
+//        itemsDetails.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: parseFloat($(tr).find(".TotalAmount").text()) || 0.00 });
+//    });
+//    //Add State Recycling Fee
+//    itemsDetails.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, product_name: 'State Recycling Fee', product_type: 'fee', total: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
+//    //Add Shipping
+//    itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
+//    //Add Tax
+//    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+//    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
 
-    return itemsDetails;
-}
+//    return itemsDetails;
+//}
 function saveGiftCard() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, cid = 0;
     if (!ValidateData()) { $("#loader").hide(); return false };

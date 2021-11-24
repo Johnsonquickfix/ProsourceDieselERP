@@ -203,7 +203,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pageno", pageno),
                     //new SqlParameter("@fk_bank", bank),
                     new SqlParameter("@pagesize", pagesize),
-                    new SqlParameter("@sortcol", "id"),
+                    new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
                     new SqlParameter("@flag", "SSPY")
                 };

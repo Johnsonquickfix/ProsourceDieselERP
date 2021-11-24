@@ -13,7 +13,10 @@
     date.setDate(date.getDate());
     var dDate = localStorage.getItem("Orderdeliverydate");
     if (dDate != null) {
-        console.log(dDate);
+        $('#gift_date').datepicker({
+            startDate: date,
+            format: 'mm/dd/yyyy',
+        })
         $('#gift_date').val(dDate);
         localStorage.removeItem("Orderdeliverydate");
     }
@@ -63,8 +66,4 @@ function validateEmails(string) {
         }
     }
     return true;
-}
-function validatedate(date1) {
-    console.log(date1);
-   
 }

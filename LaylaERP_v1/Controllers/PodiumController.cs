@@ -130,12 +130,13 @@ namespace LaylaERP.Controllers
                         sender_email = dr["sender_email"].ToString(),
                         message = dr["message"].ToString(),
                         balance = Convert.ToDouble(dr["balance"]),
-                        delivered = dr["delivered"].ToString()
+                        delivered = dr["delivered"].ToString(),
                     };
                     status = true;
                     String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
                     result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
-
+                    Response.Write(result);
+                  
                 }
             }
             catch { status = false; result = ""; }

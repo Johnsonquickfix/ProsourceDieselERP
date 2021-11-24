@@ -221,6 +221,31 @@ function PendingEntriesList() {
     });
 }
 
+PendingEntriesBalance();
+function PendingEntriesBalance() {
+    var ID = $("#hfid").val();
+    var obj = { id: ID }
+    $.ajax({
+        url: "/Bank/PendingBankEntriesBalance",
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                $("#txtpendingentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
+                $("#txtpendingentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
+                $("#txtpendingbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+            }
+        },
+        error: function (msg) {
+
+        }
+    });
+}
+
+
 /*
 function getGrandTotalFull() {
     $.ajax({

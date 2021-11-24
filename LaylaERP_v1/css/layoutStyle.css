@@ -3009,7 +3009,7 @@ i.fa.fa-calendar {
     width: 100% !important;
 }
 
-.payment-boxes #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
+.payment-boxes #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {z
     text-align: left !important;
 }
 

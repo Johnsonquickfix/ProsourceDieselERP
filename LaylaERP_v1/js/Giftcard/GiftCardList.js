@@ -16,7 +16,7 @@
     });
     dataGCGridLoad();
     $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by Customer...",
         ajax: {
             url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -88,7 +88,13 @@ function dataGCGridLoad() {
             },
             { data: 'order_id', title: 'Order id', sWidth: "10%" },
             { data: 'code', title: 'Code', sWidth: "18%" },
-            { data: 'remaining', title: 'Balance', sWidth: "5%" },
+            {
+                data: 'remaining', title: 'Balance', sWidth: "5%",
+                'render': function (data, type, full) {
+                
+                    return '$' + parseFloat(data).toFixed(2);
+                }
+            },
             { data: 'status', title: 'Status', sWidth: "10%" },
             { data: 'delivery', title: 'Delivery', sWidth: "10%" },
             { data: 'sender', title: 'From', sWidth: "10%" },

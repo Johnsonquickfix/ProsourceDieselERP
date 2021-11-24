@@ -529,7 +529,9 @@ function saveCO() {
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
-    //console.log(postStatus, itemsDetails); return;
+    let bal = $('#netPaymentTotal').text() || 0.00;
+    if (net_total > bal) { swal('Alert!', 'Order amount cannot refund more than ' + bal.fixed(2) + '.', "error"); return false; }
+    //console.log(postStatus, itemsDetails, totalPay, net_total); return;
     if (totalPay > net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",

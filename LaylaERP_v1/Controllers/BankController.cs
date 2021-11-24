@@ -291,5 +291,17 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+        public JsonResult PendingBankEntriesBalance(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.PendingBankEntriesBalance(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
     }
 }

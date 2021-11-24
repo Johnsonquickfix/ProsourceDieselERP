@@ -129,5 +129,17 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static DataTable TodayGiftCardsList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "SGCOD") };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

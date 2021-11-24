@@ -14,12 +14,8 @@
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     },
 
-    );
-    
-
-
-
-});
+    ); 
+}); 
 
 function Search() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');

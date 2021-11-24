@@ -37,10 +37,13 @@ function getOrderInfo() {
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
-            var data = JSON.parse(result);
+            var data = JSON.parse(result); 
             if (data.length > 0) {
                 if (data[0].is_edit == '1') {
-                    $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                    if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
+                        $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
+                    else
+                        $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
                 }
                 else {
                     $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');

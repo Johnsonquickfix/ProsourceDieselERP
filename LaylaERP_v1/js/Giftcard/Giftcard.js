@@ -12,9 +12,7 @@
     var date = new Date();
     date.setDate(date.getDate());
     $('#gift_date').datepicker({
-        startDate: date
-    });
-    $('#gift_date').datepicker({
+        startDate: date,
         format: 'mm/dd/yyyy',
     }).datepicker("setDate", 'now');
 })

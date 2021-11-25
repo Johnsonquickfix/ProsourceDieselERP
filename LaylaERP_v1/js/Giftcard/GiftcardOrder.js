@@ -126,51 +126,17 @@ function createItemsList() {
     });
     return itemsDetails;
 }
-//function createGiftCardList() {
-//    let cid = 0;
-//    let itemsDetails = [];
-//    //Add Gift Card Details
-//    $('#order_line_items > tr').each(function (index, tr) {
-//        let qty = parseInt($('#totalQty').text()) || 0;
-//        let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
-//        let grossAmount = parseFloat($('#orderTotal').text()) || 0.00;
-//        let discountAmount = 0.00;
-//        let taxAmount = 0.00;
-//        let shippinAmount = 0.00;
-//        itemsDetails.push({
-//            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item',
-//            product_id: 853309, variation_id: 0, product_name: $("#lblOrderNo").data("pname"),
-//            quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount,
-//            shipping_amount: shippinAmount, shipping_tax_amount: 0
-//        });
-//    });
 
-//    //Add Fee
-//    $('#order_fee_line_items > tr').each(function (index, tr) {
-//        let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
-//        if (gift_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
-
-//        itemsDetails.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: parseFloat($(tr).find(".TotalAmount").text()) || 0.00 });
-//    });
-//    //Add State Recycling Fee
-//    itemsDetails.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, product_name: 'State Recycling Fee', product_type: 'fee', total: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
-//    //Add Shipping
-//    itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
-//    //Add Tax
-//    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-//    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
-
-//    return itemsDetails;
-//}
 function saveGiftCard() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, cid = 0;
+    let oid = parseInt($('#hfOrderNo').val()), cid = 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
 
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add recipient.', "error").then((result) => { return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-    $('#btnOrderCheckout').prop("disabled", true); $('#btnOrderCheckout').text("Waiting...");
+    //$('#btnOrderCheckout').prop("disabled", true);
+    $('#btnOrderCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Giftcard/SaveGiftCardOrder",
@@ -179,6 +145,7 @@ function saveGiftCard() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 if (postStatus.net_total > 0) {
+                    //$('#btnOrderCheckout').prop("disabled", false);
                     $('#hfOrderNo').val(result[0].id);
                     GiftCardPaymentModal();
                 }
@@ -220,7 +187,7 @@ function GiftCardPaymentModal() {
     let shipping_country = "";
     let shipping_address_1 = $('#txtAddress1').val(), shipping_address_2 = $('#txtAddress2').val();
     let shipping_city = $('#txtCity').val(), shipping_state = $('#ddlState').val(), shipping_postcode = $('#txtPostCode').val();
-    let pay_mathod = $('#lblOrderNo').data('pay_option');
+   // let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
     myHtml += '<div class="modal-dialog modal-lg">';

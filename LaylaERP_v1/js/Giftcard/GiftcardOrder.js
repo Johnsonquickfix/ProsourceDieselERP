@@ -150,7 +150,7 @@ function saveGiftCard() {
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add recipient.', "error").then((result) => { return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-    $('#btnOrderCheckout').prop("disabled", true);
+   /* $('#btnOrderCheckout').prop("disabled", true);*/
     $('#btnOrderCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
@@ -160,15 +160,14 @@ function saveGiftCard() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 if (postStatus.net_total > 0) {
-                    $('#btnOrderCheckout').prop("disabled", false);
                     $('#hfOrderNo').val(result[0].id);
                     GiftCardPaymentModal();
                 }
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $("#loader").hide(); $('#btnOrderCheckout').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnOrderCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { $("#loader").hide();  $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
     });
     $('#btnOrderCheckout').text("Checkout");
     return false;

@@ -366,5 +366,47 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static DataTable GetGrandTotal(string searchid, DateTime? fromdate, DateTime? todate, string searchcriteria)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                //string strWhr = string.Empty;
+                //if (!string.IsNullOrEmpty(searchid))
+                //{
+                //    strWhr += " and thirdparty_code = '" + searchid + "'";
+                //}
+                //if (sMonths != null)
+                //{
+                //    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                //}
+                //string strSql = "SELECT Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar)  as debit, Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) as credit, Cast(CONVERT(DECIMAL(10,2),sum(debit) -  sum(credit)) as nvarchar) as balance from erp_accounting_bookkeeping"
+                //                + " where 1 = 1 ";
+                //strSql += strWhr;
+                //dt = SQLHelper.ExecuteDataTable(strSql);
+
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchcriteria),
+                     new SqlParameter("@status", searchid),
+                    new SqlParameter("@pageno", "0"),
+                    //new SqlParameter("@fk_bank", bank),
+                    new SqlParameter("@pagesize", "0"),
+                    new SqlParameter("@sortcol", "0"),
+                    new SqlParameter("@sortdir", "0"),
+                    new SqlParameter("@flag", "GTol")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_payment_status_search", parameters);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

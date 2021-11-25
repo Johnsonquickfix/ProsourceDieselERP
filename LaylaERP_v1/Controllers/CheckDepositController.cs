@@ -197,5 +197,23 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(new { com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
+
+        public JsonResult GetGrandTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.GetGrandTotal(model.strValue1, fromdate, todate,model.strValue4);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

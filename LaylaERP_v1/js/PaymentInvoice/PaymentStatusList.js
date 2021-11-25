@@ -23,7 +23,7 @@ function Search() {
     if (account == "0") { swal('alert', 'Please select Type', 'error'); }
     else { 
         let table = $('#dtdata').DataTable({
-            columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+            columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],

@@ -45,6 +45,22 @@
 $('#ddlCountry').change(function () {
     getState();
 })
+function getState() {
+    var obj = { strValue2: $("#ddlCountry").val() };
+    $.ajax({
+        url: "/Users/GetCustStateByCountry",
+        type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var data = JSON.parse(data);
+            var opt = '<option value="0">Please Select state</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
+            }
+            $('#ddlState').html(opt);
+        }
+    });
+}
 $("#btnGiftBackOrder").click(function () {
     localStorage.setItem("Orderdeliverydate", $("#EmployeeListdata").data('deliverydate'));
 });
@@ -103,7 +119,6 @@ function createItemsList() {
     let sender_email = $("#txtSenderEmail").val();
     let sender = $("#txtFirstName").val() + ' ' + $("#txtLastName").val();
     let deliver_date = $("#EmployeeListdata").data('deliverydate') || 0;
-   
 
     itemsDetails.push({
         order_item_id: $("#EmployeeListdata").data('orderitemid'), PKey: 0, order_id: 0, customer_id: cid, product_type: 'line_item',

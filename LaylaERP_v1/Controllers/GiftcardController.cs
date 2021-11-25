@@ -32,7 +32,7 @@ namespace LaylaERP.Controllers
             if (giftamount == "Other") { giftamount = collection["amount"]; }
             string GiftToMultiple = collection["GiftToMultiple"].TrimEnd(',');
             string[] Emaillist = GiftToMultiple.Split(',');
-            string senderemail = collection["GiftFrom"];
+            string senderemail = collection["GiftFrom"].Trim();
             string FirstName = "", LastName = "", Company = "", Country = "", State = "", City = "", Zipcode = "", Address = "", Address2 = "", PhoneNumber = "", OrderNotes = "";
             string message = collection["GiftMessage"];
             string delivery_date = collection["DeliveryDate"];

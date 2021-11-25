@@ -219,11 +219,6 @@
     <div class="map" id="map" style="display:none;"></div>
 </section>
 <div class="modal in printable " id="GiftModal" role="dialog" aria-hidden="true"></div>
-
-<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>
-<script src="@Url.Content("~/js/Giftcard/GiftcardOrder.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
 <script>
     function preloadFunc() {
         getState();
@@ -249,3 +244,7 @@
         $("#ddlState").val('@Model.State').trigger('change');
     })
 </script>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="@Url.Content("~/js/Giftcard/GiftcardOrder.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+

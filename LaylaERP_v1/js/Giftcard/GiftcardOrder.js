@@ -150,7 +150,7 @@ function saveGiftCard() {
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add recipient.', "error").then((result) => { return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-    //$('#btnOrderCheckout').prop("disabled", true);
+    $('#btnOrderCheckout').prop("disabled", true);
     $('#btnOrderCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
@@ -160,7 +160,7 @@ function saveGiftCard() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 if (postStatus.net_total > 0) {
-                    //$('#btnOrderCheckout').prop("disabled", false);
+                    $('#btnOrderCheckout').prop("disabled", false);
                     $('#hfOrderNo').val(result[0].id);
                     GiftCardPaymentModal();
                 }
@@ -168,7 +168,7 @@ function saveGiftCard() {
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); $('#btnOrderCheckout').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
+        complete: function () { $("#loader").hide(); $('#btnOrderCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
     });
     $('#btnOrderCheckout').text("Checkout");
     return false;
@@ -194,6 +194,7 @@ function isEdit(val) {
 function GiftCardPaymentModal() {
     //let pay_by = $('#lblOrderNo').data('pay_by').trim();
     let billing_first_name = $('#txtFirstName').val(), billing_last_name = $('#txtLastName').val();
+    let billing_company = $('#txtCompany').val();
     let billing_address_1 = $('#txtAddress1').val(), billing_address_2 = $('#txtAddress2').val();
     let billing_city = $('#txtCity').val(), billing_state = $('#ddlState').val(), billing_postcode = $('#txtPostCode').val();
     let billing_phone = $('#txtPhone').val(), billing_email = $('#txtSenderEmail').val();
@@ -216,7 +217,7 @@ function GiftCardPaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong ><br>' + billing_company +' <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
     myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
@@ -306,8 +307,7 @@ function PodiumPayment() {
         _lineItems.push({ description: $("#lblOrderNo").data("pname"), amount: grossAmount * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-    /* console.log(opt_inv); return;*/
-    console.log('Start Podium Payment Processing...');
+
     let option = { strValue1: 'getToken' };
     swal.queue([{
         title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
@@ -316,7 +316,7 @@ function PodiumPayment() {
             $.get('/Setting/GetPodiumToken', option).then(response => {
 
                 let access_token = response.message;
-                console.log(access_token, opt_inv);
+             
                 //let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 //if (inv_id.length > 0 && pay_by.includes('podium')) {
                 //    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';

@@ -83,13 +83,14 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataTable GetBankAccount()
+        public static DataTable GetBankAccountList()
         {
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT eba.rowid as ID,eba.account_number,eba.label, (case WHEN eba.account_type=1 then 'Saving Account' when eba.account_type=2 then 'Current or Credit Card Account' when eba.account_type=3 then 'Cash Account' end) as type,eaa.label as accounting,concat(code,'-',eaj.label) journal,iif(working_status=1,'Open','Close') as status, eba.initial_balance from erp_bank_account eba left join erp_accounting_account eaa on eaa.account_number= eba.accounting_number left join erp_accounting_journal eaj on eaj.rowid=eba.fk_accountancy_journal";
-                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                SqlParameter[] parm = {new SqlParameter("@flag", "BANKLIST") };
+                string strquery = "erp_bank";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery,parm);
                 dtr = ds.Tables[0];
             }
             catch (Exception ex)

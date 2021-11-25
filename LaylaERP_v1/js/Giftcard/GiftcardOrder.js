@@ -492,7 +492,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
     myHtml += '<tr>';
     myHtml += '<td align="center" style="padding:0;">';
-    myHtml += '<table role="presentation" style="width:602px;border-collapse:collapse;border-spacing:0;text-align:left;">';
+    myHtml += '<table role="presentation" style="width:100%;border-collapse:collapse;border-spacing:0;text-align:left;">';
     myHtml += '<tr>';
     myHtml += '<td align="center" style="padding: 10px 15px; background-color: #f8f8f8;">';
     myHtml += '<table role="presentation" style="width:100%;">';
@@ -523,7 +523,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '</table>';
     myHtml += '</td>';
     myHtml += '</tr>';
-    myHtml += '<tr><td ><h2 style="font-size:20px; margin:25px 0px 10px 0px;">Order details</h2></td></tr>';
+    myHtml += '<tr><td style="padding: 9px 12px;"><h2 style="font-size:20px; margin:25px 0px 10px 0px;">Order details</h2></td></tr>';
     myHtml += '<tr>';
     myHtml += '<td >';
 

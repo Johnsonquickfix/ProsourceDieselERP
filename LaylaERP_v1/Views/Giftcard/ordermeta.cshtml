@@ -220,6 +220,13 @@
 </section>
 <div class="modal in printable " id="GiftModal" role="dialog" aria-hidden="true"></div>
 <script>
+    
+    //window.onpaint = preloadFunc();
+    $(document).ready(function () {
+        preloadFunc();
+
+        $("#ddlState").val('@Model.State').trigger('change');
+    });
     function preloadFunc() {
         getState();
         function getState() {
@@ -235,14 +242,11 @@
                         opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
                     }
                     $('#ddlState').html(opt);
-                }
+                },
+                async: false
             });
         }
     }
-    window.onpaint = preloadFunc();
-    $(document).ready(function () {
-        $("#ddlState").val('@Model.State').trigger('change');
-    })
 </script>
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>

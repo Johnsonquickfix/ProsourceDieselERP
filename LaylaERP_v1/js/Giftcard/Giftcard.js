@@ -40,7 +40,7 @@ function validateForm() {
         amount = $('#txtAmount').val();
     }
     let giftTo = $('#txtGiftTo').val().trim();
-    let giftFrom = $('#txtGiftFrom').val();
+    let giftFrom = $('#txtGiftFrom').val().trim();
     let giftMessage = $('#txtGiftMessage').val();
     let giftdate = $('#gift_date').val();
     let recipient = [];

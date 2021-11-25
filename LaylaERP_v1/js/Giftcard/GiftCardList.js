@@ -18,9 +18,9 @@
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by Customer...",
         ajax: {
-            url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            url: '/GiftCard/GetRedeemedCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) {  return { text: item.displayname, name: item.displayname, id:item.id } }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
     });
@@ -32,11 +32,16 @@ $('#txtOrderDate').val('');
 $('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
 
 
+$("#btnOtherFilter").click(function () {
+    dataGCGridLoad();
+    $('#ddlUser').empty();
+})
+
 function dataGCGridLoad() {
     var order_type = '';
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
-    var monthYear = '', cus_id = $('#ddlUser').val() || 0;
+    var monthYear = '', cus_id = $('#ddlUser').text().trim();
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
@@ -67,7 +72,7 @@ function dataGCGridLoad() {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd });
             aoData.push({ name: "strValue2", value: ed });
-            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') });
+            aoData.push({ name: "strValue3", value: cus_id });
             aoData.push({ name: "strValue4", value: order_type });
             var col = 'id';
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
@@ -91,18 +96,23 @@ function dataGCGridLoad() {
             {
                 data: 'remaining', title: 'Balance', sWidth: "5%",
                 'render': function (data, type, full) {
-                
                     return '$' + parseFloat(data).toFixed(2);
                 }
             },
-            { data: 'status', title: 'Status', sWidth: "10%" },
-            { data: 'delivery', title: 'Delivery', sWidth: "10%" },
+            { data: 'status', title: 'Status', sWidth: "7%" },
+            { data: 'delivery', title: 'Delivery', sWidth: "7%" },
             { data: 'sender', title: 'From', sWidth: "10%" },
             { data: 'recipient', title: 'To', sWidth: "10%" },
             { data: 'RedeemedBy', title: 'Redeemed By', sWidth: "12%" },
             
             { data: 'expires', title: 'Expires', sWidth: "5%" },
             { data: 'create_date', title: 'Creation Date', sWidth: "5%" },
+            //{
+            //    'data': 'id', title: 'Action', sWidth: "6%",
+            //    'render': function (id, type, row, meta) {
+            //        return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
+            //    }
+            //}
         ]
     });
 }

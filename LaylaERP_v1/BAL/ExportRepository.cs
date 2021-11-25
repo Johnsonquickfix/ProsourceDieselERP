@@ -358,12 +358,16 @@ namespace LaylaERP.BAL
                                 + " (SELECT concat(billing_address_1,' ', billing_city,' ', billing_postcode))as address"
                         + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE DATE(ur.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ur.ID DESC";*/
                     sqlquery = "SELECT ur.id,user_nicename, CONVERT(VARCHAR(12), user_registered, 101) created_date, user_status,"
-                          + " umadd.meta_value as address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
+                          + " (CONCAT(ISNULL(umadd.meta_value+', ',''), ISNULL(umacity.meta_value+', ',''), ISNULL(umastate.meta_value+', ',''),ISNULL(umpostcode.meta_value,''))) address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
                           + " umph.meta_value billing_phone from wp_users ur INNER JOIN wp_usermeta um on um.meta_key = 'wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
-                          + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = ur.ID"
-                          + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = ur.ID"
-                          + " LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key = 'first_name' And umfn.user_id = ur.ID"
-                          + " LEFT OUTER JOIN wp_usermeta umln on umln.meta_key = 'last_name' And umln.user_id = ur.ID WHERE cast(user_registered as date)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and cast(user_registered as date)<='" + todateusers.ToString("yyyy-MM-dd") + "' order by ur.id  desc";
+                          + " LEFT OUTER JOIN wp_usermeta umph on umph.user_id = ur.ID and umph.meta_key = 'billing_phone'"
+                          + " LEFT OUTER JOIN wp_usermeta umadd on umadd.user_id = ur.ID and umadd.meta_key = 'billing_address_1'"
+                          + " LEFT OUTER JOIN wp_usermeta umfn on umfn.user_id = ur.ID  and umfn.meta_key = 'first_name'"
+                          + " LEFT OUTER JOIN wp_usermeta umln on umln.user_id = ur.ID and umln.meta_key = 'last_name'"
+                          + " LEFT OUTER JOIN wp_usermeta umacity on umacity.user_id = ur.ID and umacity.meta_key = 'billing_city'"
+                          + " LEFT OUTER JOIN wp_usermeta umastate on umastate.user_id = ur.ID and umastate.meta_key = 'billing_state'"
+                          + " LEFT OUTER JOIN wp_usermeta umpostcode on umpostcode.user_id = ur.ID and umpostcode.meta_key = 'billing_postcode'"
+                          + " WHERE cast(user_registered as date)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and cast(user_registered as date)<='" + todateusers.ToString("yyyy-MM-dd") + "' order by ur.id  desc";
                 }
                 else
                 {
@@ -379,14 +383,16 @@ namespace LaylaERP.BAL
                     //      + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'";
 
                     sqlquery = "SELECT top 100 ur.id,user_nicename, CONVERT(VARCHAR(12), user_registered, 101) created_date, user_status,"
-                               + " CONCAT(umadd.meta_value,'') address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
+                               + " (CONCAT(ISNULL(umadd.meta_value+', ',''), ISNULL(umacity.meta_value+', ',''), ISNULL(umastate.meta_value+', ',''),ISNULL(umpostcode.meta_value,''))) address,user_email,CONCAT(umfn.meta_value, ' ', umln.meta_value) name ,"
                                + " umph.meta_value billing_phone from wp_users ur INNER JOIN wp_usermeta um on um.meta_key = 'wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
-                               + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = ur.ID"
-                               + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = ur.ID"
-                               //+ " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = ur.ID"
-                               //+ " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = ur.ID"
-                               + " LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key = 'first_name' And umfn.user_id = ur.ID"
-                               + " LEFT OUTER JOIN wp_usermeta umln on umln.meta_key = 'last_name' And umln.user_id = ur.ID WHERE 1 = 1 order by ur.id  desc";
+                               + " LEFT OUTER JOIN wp_usermeta umph on umph.user_id = ur.ID and umph.meta_key = 'billing_phone'"
+                               + " LEFT OUTER JOIN wp_usermeta umadd on umadd.user_id = ur.ID and umadd.meta_key = 'billing_address_1'"
+                               + " LEFT OUTER JOIN wp_usermeta umfn on umfn.user_id = ur.ID  and umfn.meta_key = 'first_name'"
+                               + " LEFT OUTER JOIN wp_usermeta umln on umln.user_id = ur.ID and umln.meta_key = 'last_name'"
+                               + " LEFT OUTER JOIN wp_usermeta umacity on umacity.user_id = ur.ID and umacity.meta_key = 'billing_city'"
+                               + " LEFT OUTER JOIN wp_usermeta umastate on umastate.user_id = ur.ID and umastate.meta_key = 'billing_state'"
+                               + " LEFT OUTER JOIN wp_usermeta umpostcode on umpostcode.user_id = ur.ID and umpostcode.meta_key = 'billing_postcode'"
+                               + " WHERE 1 = 1 order by ur.id desc";
                 }
                 customersexportlist.Clear();
                 DataSet ds1 = new DataSet();

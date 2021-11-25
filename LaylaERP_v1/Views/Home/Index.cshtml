@@ -758,34 +758,38 @@
         }
 
         $("#userprofile").on("change", "#txtPostCode", function (t) {
-            City = $("#txtCity").val();
-            State = $("#txtState").val();
-            PostalCode = $("#txtPostCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        $('#hfzipstatus').val(data.status);
-                    }
-                    else {
-                        $("#txtPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
-                    }
-                },
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
+            console.log($("#txtCountry").val());
+            if ($("#txtCountry").val() == "US") {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#hfzipstatus').val(data.status);
+                        }
+                        else {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
         });
 
         function UpdateProfile() {

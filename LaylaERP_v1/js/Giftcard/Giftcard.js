@@ -16,7 +16,7 @@
         $('#gift_date').datepicker({
             startDate: date,
             format: 'mm/dd/yyyy',
-        })
+        }).datepicker("setDate", dDate);
         $('#gift_date').val(dDate);
         localStorage.removeItem("Orderdeliverydate");
     }

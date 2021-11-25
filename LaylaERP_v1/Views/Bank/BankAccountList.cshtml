@@ -35,8 +35,8 @@
                                         <th>Label</th>
                                         <th>Type</th>
                                         <th>Accounting Account</th>
-                                        @*<th>Accounting code journal</th>*@
-                                        <th>Initial Amount</th>
+                                        <th>Open Account Initial Amount</th>
+                                        <th>Balance</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -62,7 +62,7 @@
     function BankAccountList() {
         
         $.ajax({
-            url: '/Bank/GetBankAccount',
+            url: '/Bank/GetBankAccountList',
             method: 'post',
             datatype: 'json',
             contentType: "application/json; charset=utf-8",
@@ -79,7 +79,8 @@
                         { data: 'type', title: 'Account Type', sWidth: "15%" },
                         { data: 'accounting', title: 'Accounting Account', sWidth: "15%" },
                         //{ data: 'journal', title: 'Accounting code journal', sWidth: "15%" },
-                        { data: 'initial_balance', title: 'Initial Balance', sWidth: "15%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                        { data: 'initial_balance', title: 'Open Account Initial Balance', sWidth: "15%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                        { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         { data: 'status', title: 'Status', sWidth: "10%" },
                         {
                             'data': 'ID', sWidth: "8%",
@@ -89,8 +90,6 @@
                             }
                         },
                     ],
-
-
                     "order": [[0, 'desc']],
                 });
             },

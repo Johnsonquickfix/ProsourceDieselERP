@@ -89,12 +89,12 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetBankAccount()
+        public JsonResult GetBankAccountList()
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = BankRepository.GetBankAccount();
+                DataTable dt = BankRepository.GetBankAccountList();
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

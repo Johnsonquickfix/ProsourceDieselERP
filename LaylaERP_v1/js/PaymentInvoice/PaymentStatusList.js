@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -24,6 +23,7 @@ function Search() {
     if (account == "0") { swal('alert', 'Please select Type', 'error'); }
     else { 
         let table = $('#dtdata').DataTable({
+            columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -39,7 +39,10 @@ function Search() {
                 $('.dataTables_filter input').unbind();
                 $('.dataTables_filter input').bind('keyup', function (e) {
                     var code = e.keyCode || e.which;
-                    if (code == 13) { table.search(this.value).draw(); }
+                    if (code == 13) {
+                        table.search(this.value).draw();
+                        getGrandTotal(this.value);
+                    }
                 });
             },
             sAjaxSource: "/CheckDeposit/GetPaymentStatusList",
@@ -47,9 +50,9 @@ function Search() {
                 aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: "0" });
                 if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
                 oSettings.jqXHR = $.ajax({
-                    dataType: 'json', type: "GET", async: false, url: sSource, data: aoData,
+                    dataType: 'json', type: "GET",url: sSource, data: aoData,
                     "success": function (data) {
-                        let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                         return fnCallback(dtOption);
                     }
                 });
@@ -74,9 +77,41 @@ function Search() {
          
                   
             ],
-            columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
+            //columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
         });
-    }   
+    }
+
+    setTimeout(function () { getGrandTotal(); }, 100);
+    
+}
+
+function getGrandTotal(val) {
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    var account = $('#ddlstatus').val();
+    let src = val;
+    console.log(src);
+    let obj = { strValue1: account, strValue2: sd, strValue3: ed, strValue4: src };
+    $.ajax({
+        url: "/CheckDeposit/GetGrandTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: obj,
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+               // if (parseFloat(d[0].debit).toFixed(2) > 0) {
+                $("#totalsub").text('$' + parseFloat(d[0].Gsubtotal).toFixed(2)); $("#totalsaving").text('$' + parseFloat(d[0].GDiscount).toFixed(2)); $("#totalshiiping").text('$' + parseFloat(d[0].Gshipping).toFixed(2));
+                $("#totalsaltax").text('$' + parseFloat(d[0].GTax).toFixed(2)); $("#totalstatefee").text('$' + parseFloat(d[0].GState_Recycling_Fee).toFixed(2)); $("#totalfee").text('$' + parseFloat(d[0].GFee).toFixed(2));
+                $("#totalgigtcard").text('$' + parseFloat(d[0].Ggift_card).toFixed(2)); $("#totalothertotal").text('$' + parseFloat(d[0].GTotal).toFixed(2));
+               // }
+            }
+        },
+        error: function (msg) {
+
+        }
+    });
 }
 
  

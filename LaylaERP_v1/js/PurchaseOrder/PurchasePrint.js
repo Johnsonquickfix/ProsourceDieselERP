@@ -41,12 +41,14 @@ function getPurchaseOrderPrint(id, is_mail) {
             error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     }
-} 
+}
 function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); //console.log(result);
+    let data = JSON.parse(result.data); console.log(result);
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
-    
-    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00;  total_net = 0.00;
+    let so_no = parseInt(data['po'][0].fk_projet) || 0;
+    let va_cp = so_no > 0 ? 33.3 : 66.3;
+
+    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
 
@@ -81,6 +83,11 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref_supplier + '</td>';
     myHtml += '                                    </tr>';
+    if (so_no > 0) {
+        myHtml += '                                    <tr>';
+        myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Sale Order Reference No:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].fk_projet + '</td>';
+        myHtml += '                                    </tr>';
+    }
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
     myHtml += '                                    </tr>';
@@ -94,18 +101,26 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
     myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">';
     myHtml += '    <tr>';
-    myHtml += '        <td style="padding:0;width: 66.9%">';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: ' + va_cp + '%">';
     myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
     myHtml += '            </p>';
     myHtml += '        </td>';
-    myHtml += '        <td style="padding:0;width: 33.1" align="left">';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33.1" align="left">';
     myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].warehouse + '<br>' + data['po'][0].wrh_add + '<br>' + data['po'][0].wrh_city + ', ' + data['po'][0].wrh_town + ' ' + data['po'][0].wrh_zip + ', ' + (data['po'][0].wrh_country == "CA" ? "Canada" : data['po'][0].fk_cowrh_countryuntry == "US" ? "United States" : data['po'][0].wrh_country) + '<br>Phone: ' + data['po'][0].wrh_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
     myHtml += '            </p>';
     myHtml += '        </td>';
+    if (so_no > 0) {
+        myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33.1" align="left">';
+        myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Ship To:</h3>';
+        myHtml += '            <p class="recipientInfo" style="width: 100%;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
+        myHtml += '               ' + data['Table3'][0].s_first_name + ' ' + data['Table3'][0].s_last_name + '<br>' + data['Table3'][0].s_address_1 + '<br>' + (data['Table3'][0].s_address_2.length > 0 ? data['Table3'][0].s_address_2 + '<br>' : '') + data['Table3'][0].s_city + ', ' + data['Table3'][0].s_state + ' ' + data['Table3'][0].s_postcode + ', ' + (data['Table3'][0].s_country == "CA" ? "Canada" : data['Table3'][0].s_country == "US" ? "United States" : data['Table3'][0].s_country) + '<br>Phone: ' + data['Table3'][0].b_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>' + data['Table3'][0].b_email;
+        myHtml += '            </p>';
+        myHtml += '        </td>';
+    }
     myHtml += '     </tr>';
     myHtml += '     </table>';
     myHtml += '</td >';
@@ -194,7 +209,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '            </td>';
     myHtml += '            <td style="vertical-align: top; width:50%; padding:0px;">';
     myHtml += '                <table cellpadding="0" cellspacing="0" style="border:1px solid #ddd;border-top:0px;border-collapse: collapse;width: 100%; table-layout: fixed;">';
-    myHtml += '                    <tr>';  
+    myHtml += '                    <tr>';
     myHtml += '                        <td class="text-right" style="width: 40%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + number_format(total_qty, 0, '.', ',') + '</td>';
     myHtml += '                        <td class="text-right" style="border-right: 1px solid #ddd; width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Subtotal</td>';
     myHtml += '                        <td class="text-right" style="width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_gm, 2, '.', ',') + '</td>';
@@ -229,7 +244,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                    </tr>';
     myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net-paid_amt), 2, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
     myHtml += '                </table>';
     myHtml += '            </td>';

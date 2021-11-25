@@ -2127,8 +2127,8 @@ function PaymentModal() {
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
-    //pay_by = pay_by.length > 0 ? pay_by : 'podium';
-    pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
+    pay_by = pay_by.length > 0 ? pay_by : 'podium';
+    //pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {

@@ -23,7 +23,7 @@ function Search() {
     var account = $('#ddlstatus').val();
     if (account == "0") { swal('alert', 'Please select Type', 'error'); }
     else { 
-        $('#dtdata').DataTable({
+        let table = $('#dtdata').DataTable({
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -34,6 +34,13 @@ function Search() {
                 infoFiltered: "",
                 infoEmpty: "No records found",
                 processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            },
+            initComplete: function () {
+                $('.dataTables_filter input').unbind();
+                $('.dataTables_filter input').bind('keyup', function (e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) { table.search(this.value).draw(); }
+                });
             },
             sAjaxSource: "/CheckDeposit/GetPaymentStatusList",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {

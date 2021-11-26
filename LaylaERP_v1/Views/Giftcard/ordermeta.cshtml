@@ -13,8 +13,8 @@
     
     <div class="box box-primary">
         <div class="box-header with-border">
-            <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
-            <h4 class="box-title" id="lblOrderNo" data-pay_option="@ViewBag.pay_option" data-pname="Layla E-Gift Card" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
+            <input type="hidden" id="hfOrderNo" value="@Model.order_id" />
+            <h4 class="box-title" id="lblOrderNo" data-pay_option="@ViewBag.pay_option" data-pname="Layla E-Gift Card" data-pay_by="" data-pay_id="">Order #@Model.order_id detail</h4>
             <div class="radtype_span">
                 <h5 class="payment-history"></h5>
             </div>
@@ -219,12 +219,14 @@
     <div class="map" id="map" style="display:none;"></div>
 </section>
 <div class="modal in printable " id="GiftModal" role="dialog" aria-hidden="true"></div>
-
-<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>
-<script src="@Url.Content("~/js/Giftcard/GiftcardOrder.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
 <script>
+    
+    //window.onpaint = preloadFunc();
+    $(document).ready(function () {
+        preloadFunc();
+
+        $("#ddlState").val('@Model.State').trigger('change');
+    });
     function preloadFunc() {
         getState();
         function getState() {
@@ -240,12 +242,13 @@
                         opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
                     }
                     $('#ddlState').html(opt);
-                }
+                },
+                async: false
             });
         }
     }
-    window.onpaint = preloadFunc();
-    $(document).ready(function () {
-        $("#ddlState").val('@Model.State').trigger('change');
-    })
 </script>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="@Url.Content("~/js/Giftcard/GiftcardOrder.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+

@@ -3,12 +3,14 @@ using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace LaylaERP.Controllers
 {
@@ -27,19 +29,86 @@ namespace LaylaERP.Controllers
         public ActionResult GiftCard(FormCollection collection)
         {
             string giftamount = collection["hfAmount"];
-            if (giftamount == "Other")
-            {
-                giftamount = collection["amount"];
-            }
+            if (giftamount == "Other") { giftamount = collection["amount"]; }
             string GiftToMultiple = collection["GiftToMultiple"].TrimEnd(',');
             string[] Emaillist = GiftToMultiple.Split(',');
-
-            string senderemail = collection["GiftFrom"];
+            string senderemail = collection["GiftFrom"].Trim();
             string FirstName = "", LastName = "", Company = "", Country = "", State = "", City = "", Zipcode = "", Address = "", Address2 = "", PhoneNumber = "", OrderNotes = "";
-           
-            DataTable data = new GiftCardRepository().GetCustomerAddressByEmail(senderemail);
+            string message = collection["GiftMessage"];
+            string delivery_date = collection["DeliveryDate"];
+            int oid = 0;
+
+
+            List<OrderPostMetaModel> postmeta = new List<OrderPostMetaModel>();
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_key", meta_value = "wc_order_" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_customer_user", meta_value = "0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_payment_method", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_payment_method_title", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_customer_ip_address", meta_value = "::1" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_customer_user_agent", meta_value = "0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_created_via", meta_value = "checkout" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_cart_hash", meta_value = "0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_company", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_company", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_first_name", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_last_name", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_address_1", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_address_2", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_city", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_state", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_postcode", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_country", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_email", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_billing_phone", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_version", meta_value = "4.8.0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_prices_include_tax", meta_value = "no" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_address_index", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "is_vat_exempt", meta_value = "no" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_download_permissions_granted", meta_value = "yes" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_recorded_sales", meta_value = "yes" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_recorded_coupon_usage_counts", meta_value = "yes" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_stock_reduced", meta_value = "yes" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_edit_lock", meta_value = "1" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_first_name", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_last_name", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_address_1", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_address_2", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_city", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_state", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_postcode", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_country", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_email", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_shipping_phone", meta_value = "" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_currency", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_total", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_cart_discount", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_cart_discount_tax", meta_value = "0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_shipping", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_shipping_tax", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_tax", meta_value = "0.00" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "employee_id", meta_value = "0" });
+            postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "employee_name", meta_value = "0.00" });
+
+            string[] order_stats_XML = new string[] { };
+            string[] order_items_XML = new string[] { };
+
+            OrderModel omodel = new OrderModel();
+            omodel.order_statsXML = JsonConvert.SerializeObject(order_stats_XML);
+            omodel.postmetaXML = JsonConvert.SerializeObject(postmeta);
+            omodel.order_itemsXML = JsonConvert.SerializeObject(order_items_XML);
+
+            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+            System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + omodel.order_statsXML + "}", "Items");
+            System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + omodel.postmetaXML + "}", "Items");
+            System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + omodel.order_itemsXML + "}", "Items");
+            System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + omodel.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + omodel.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
+
+            DataTable data = GiftCardRepository.AddGiftCardOrders(omodel.order_id, "I", om.UserID, om.UserName, collection["GiftFrom"], postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+
             if (data.Rows.Count > 0)
             {
+                oid = Convert.ToInt32(data.Rows[0]["id"].ToString());
                 FirstName = data.Rows[0]["FirstName"].ToString();
                 LastName = data.Rows[0]["LastName"].ToString();
                 Company = data.Rows[0]["Company"].ToString();
@@ -51,10 +120,11 @@ namespace LaylaERP.Controllers
                 Address2 = data.Rows[0]["Address2"].ToString();
                 PhoneNumber = data.Rows[0]["Phone"].ToString();
                 OrderNotes = data.Rows[0]["Company"].ToString();
-               
+
             }
             GiftCardModel model = new GiftCardModel
             {
+                order_id = oid,
                 amount = Convert.ToDecimal(giftamount),
                 recipient = GiftToMultiple,
                 sender_email = senderemail,
@@ -76,14 +146,65 @@ namespace LaylaERP.Controllers
             };
             return View("ordermeta", model);
         }
+
+        //public ActionResult GiftCard(FormCollection collection)
+        //{
+        //    string giftamount = collection["hfAmount"];
+        //    if (giftamount == "Other")
+        //    {
+        //        giftamount = collection["amount"];
+        //    }
+        //    string GiftToMultiple = collection["GiftToMultiple"].TrimEnd(',');
+        //    string[] Emaillist = GiftToMultiple.Split(',');
+
+        //    string senderemail = collection["GiftFrom"];
+        //    string FirstName = "", LastName = "", Company = "", Country = "", State = "", City = "", Zipcode = "", Address = "", Address2 = "", PhoneNumber = "", OrderNotes = "";
+
+        //    DataTable data = new GiftCardRepository().GetCustomerAddressByEmail(senderemail);
+        //    if (data.Rows.Count > 0)
+        //    {
+        //        FirstName = data.Rows[0]["FirstName"].ToString();
+        //        LastName = data.Rows[0]["LastName"].ToString();
+        //        Company = data.Rows[0]["Company"].ToString();
+        //        Country = data.Rows[0]["Country"].ToString();
+        //        State = data.Rows[0]["State"].ToString();
+        //        City = data.Rows[0]["City"].ToString();
+        //        Zipcode = data.Rows[0]["ZipCode"].ToString();
+        //        Address = data.Rows[0]["Address1"].ToString();
+        //        Address2 = data.Rows[0]["Address2"].ToString();
+        //        PhoneNumber = data.Rows[0]["Phone"].ToString();
+        //        OrderNotes = data.Rows[0]["Company"].ToString();
+
+        //    }
+        //    GiftCardModel model = new GiftCardModel
+        //    {
+        //        amount = Convert.ToDecimal(giftamount),
+        //        recipient = GiftToMultiple,
+        //        sender_email = senderemail,
+        //        message = collection["GiftMessage"],
+        //        delivery_date = collection["DeliveryDate"],
+        //        FirstName = FirstName,
+        //        LastName = LastName,
+        //        Company = Company,
+        //        Country = Country,
+        //        State = State,
+        //        City = City,
+        //        Zipcode = Zipcode,
+        //        Address = Address,
+        //        Address2 = Address2,
+        //        PhoneNumber = PhoneNumber,
+        //        OrderNotes = OrderNotes,
+        //        recipientList = Emaillist.ToList(),
+        //        qty = Emaillist.Length,
+        //    };
+        //    return View("ordermeta", model);
+        //}
         public ActionResult ordermeta(GiftCardModel model,long id = 0)
         {
-            ViewBag.id = id;
             if (id > 0)
             {
-                List<string> Emaillist = new List<string>();
-                Emaillist.Add("steven.quickfix@gmail.com");
-                model.recipientList = Emaillist.ToList();
+                DataTable data = new GiftCardRepository().GetOrderInfoByGCID(id);
+                model.order_id = id;
                 return View(model);
             }
             else
@@ -104,7 +225,7 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
-                JSONresult = JsonConvert.SerializeObject(GiftCardRepository.AddGiftCardOrdersPost(model.order_id, "I", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+                JSONresult = JsonConvert.SerializeObject(GiftCardRepository.AddGiftCardOrders(model.order_id, "U", om.UserID, om.UserName,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
@@ -157,6 +278,19 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
+        }
+
+        [HttpPost]
+        public JsonResult GetRedeemedCustomerList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = GiftCardRepository.GetRedeemedCustomers(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

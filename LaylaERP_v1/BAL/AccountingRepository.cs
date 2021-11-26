@@ -709,7 +709,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "SELECT Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar)  as debit, Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) as credit, Cast(CONVERT(DECIMAL(10,2),sum(debit) -  sum(credit)) as nvarchar) as balance from erp_accounting_bookkeeping"
+                string strSql = "SELECT Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar)  as debit, Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) as credit, Cast(CONVERT(DECIMAL(10,2),sum(credit) -  sum(debit)) as nvarchar) as balance from erp_accounting_bookkeeping"
                                 + " where 1 = 1 ";
                 strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);

@@ -604,7 +604,7 @@
                 },
                 success: function (data) {
                     if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                         //GetProductvariationID(id);
                     }
                     // EMPTY THE ARRAY.
@@ -679,11 +679,11 @@
                         if (data.url == "Manage") {
                             //alert('d');
                             GetProductvariationID(id);
-                            swal('Alert!', data.message, 'success');
+                            swal('Success!', data.message, 'success');
                         }
                         else {
                             $("#hfUpdatedID").val(data.ID);
-                            swal('Alert!', data.message, 'success');
+                            swal('Success!', data.message, 'success');
                         }
                     }
                     // EMPTY THE ARRAY.
@@ -808,7 +808,7 @@ function UpdateImagevarition(input, Id) {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
         },
@@ -833,7 +833,7 @@ function UpdateImagevaritionpopup(input, Id) {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
         },
@@ -858,7 +858,7 @@ function AddProductImages() {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {               
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
         },
@@ -883,7 +883,7 @@ function AddProductpopupImages() {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
         },
@@ -1024,11 +1024,11 @@ function AddProduct() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
                     }
                     else {
                         $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();

@@ -16,7 +16,7 @@
         $('#gift_date').datepicker({
             startDate: date,
             format: 'mm/dd/yyyy',
-        })
+        }).datepicker("setDate", dDate);
         $('#gift_date').val(dDate);
         localStorage.removeItem("Orderdeliverydate");
     }
@@ -40,7 +40,7 @@ function validateForm() {
         amount = $('#txtAmount').val();
     }
     let giftTo = $('#txtGiftTo').val().trim();
-    let giftFrom = $('#txtGiftFrom').val();
+    let giftFrom = $('#txtGiftFrom').val().trim();
     let giftMessage = $('#txtGiftMessage').val();
     let giftdate = $('#gift_date').val();
     let recipient = [];

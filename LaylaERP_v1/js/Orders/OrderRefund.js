@@ -481,6 +481,9 @@ function createItemsList() {
                 tax_rate = parseFloat(((taxAmount / ((grossAmount - discountAmount) * 0.01)) / 100).toFixed(4));
                 grossAmount = ((refundamt * 100) / ((tax_rate * 100) + 100)).toFixed(2);
             }
+            else if (taxAmount == 0 && tax_rate == 0) {
+                tax_rate = 0.00; grossAmount = refundamt;
+            }
             discountAmount = 0, taxAmount = (refundamt - grossAmount).toFixed(2), shippinAmount = 0;
             _itmes.push({
                 order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
@@ -513,7 +516,7 @@ function createItemsList() {
     //});
     //State Recycling Fee
     $('#order_state_recycling_fee_line_items > tr').each(function (index, tr) {
-        _amt = (parseFloat($(tr).find(".TotalAmount").text()) || 0.00) / mattotalCount;
+        _amt = parseFloat($(tr).find(".TotalAmount").text()) || 0.00; _amt = mattotalCount > 0 ? (_amt / mattotalCount) : 0.00;
         _amt = _amt * matreturnCount; $('#order_state_recycling_fee_line_items').find(".RefundAmount").text(_amt.toFixed(2));
         if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: -_amt });
     });
@@ -541,7 +544,7 @@ function saveCO() {
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
-    console.log(postStatus,totalPay, net_total, AvailableGiftCardAmount);
+    //console.log(postMeta, postStatus, itemsDetails);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
     //return;
     if (totalPay > net_total) {

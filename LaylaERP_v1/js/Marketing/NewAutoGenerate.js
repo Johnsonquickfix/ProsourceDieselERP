@@ -223,11 +223,11 @@ function AddCoupons() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../AutoGenerate'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../AutoGenerate'; });
                     }
                     else {
                         $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'AutoGenerate'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = 'AutoGenerate'; });
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();

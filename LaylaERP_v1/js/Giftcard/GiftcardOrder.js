@@ -721,7 +721,7 @@ function ReSendGiftCard() {
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        error: function (xhr, status, err) { $("#loader").hide(); },
         complete: function () { },
     });
 }

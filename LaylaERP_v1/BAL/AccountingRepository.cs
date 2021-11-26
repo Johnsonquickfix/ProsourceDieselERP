@@ -492,7 +492,7 @@ namespace LaylaERP.BAL
             {
                 string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit," 
                                +" (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
-                               +" ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
+                               + " ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 

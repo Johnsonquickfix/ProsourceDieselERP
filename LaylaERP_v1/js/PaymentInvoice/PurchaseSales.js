@@ -121,7 +121,7 @@ function printcheck(vid, Alltotal, result, zGAmt, zTDiscount, zTotalTax, zShippi
     $(result).each(function (index, tr) {
         if (tr.product_type == 'line_item') {
             //console.log(tr);
-            myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + tr.product_name + ' × ' + tr.quantity + '</span></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + tr.reg_price.toFixed(2)  + '</span></td></tr>';
+            myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + tr.product_name + '</span><strong class="product-quantity">× ' + tr.quantity + '</span></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + tr.reg_price.toFixed(2)  + '</span></td></tr>';
         //myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
         //    myHtml += '    <td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;">' + tr.product_name + '</td>';
         //myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + tr.reg_price.toFixed(2) + '</td>';

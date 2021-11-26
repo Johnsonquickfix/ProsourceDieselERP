@@ -482,6 +482,7 @@
                 string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
                 DataTable dt = OrderRepository.GiftCardDetails(model.order_id);
                 StringBuilder strSql = new StringBuilder();
+                decimal totalRefundAmount = 0;
                 foreach (DataRow dr in dt.Rows)
                 {
                     order_item_id = Convert.ToInt64(dr["order_item_id"]);
@@ -495,9 +496,9 @@
                         decimal RefundAmount = 0;
                         if (model.NetTotal >= metaAmount && model.NetTotal > 0 && metaAmount > 0)
                         {
+                            totalRefundAmount += metaAmount;
                             RefundAmount = metaAmount;
                             strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
-                            //strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
                                 "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, DATEDIFF(s,'1970-01-01 00:00:00', GETUTCDATE()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
                             SendGiftCardMailInvoice(order_item_id, RefundAmount);
@@ -505,6 +506,7 @@
                         }
                         else if (model.NetTotal < metaAmount && model.NetTotal > 0)
                         {
+                            totalRefundAmount += model.NetTotal;
                             RefundAmount = model.NetTotal;
                             strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
                             // strSql.Append(string.Format("Update wp_woocommerce_gc_activity set  amount=amount-{0} where object_id={1} and type='used';", RefundAmount, order_item_id));
@@ -514,7 +516,10 @@
                             model.NetTotal = model.NetTotal - RefundAmount;
                         }
                     }
+
                 }
+                strSql.Append(string.Format("Update wp_postmeta set  meta_value={0} where post_id={1} and meta_key='_refund_giftcard_amount';", totalRefundAmount, model.order_id));
+
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception Ex) { throw Ex; }

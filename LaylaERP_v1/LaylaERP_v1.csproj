@@ -199,6 +199,7 @@
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -1009,6 +1010,7 @@
     <Content Include="Views\Giftcard\GiftCardList.cshtml" />
     <Content Include="Views\Podium\todaysgift.cshtml" />
     <Content Include="Views\CheckDeposit\PaymentStatusList.cshtml" />
+    <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

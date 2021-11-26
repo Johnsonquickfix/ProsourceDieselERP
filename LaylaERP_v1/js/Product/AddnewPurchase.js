@@ -218,7 +218,7 @@ $("#btnaddupdatechild").click(function (e) {
                     var layoutHtml = '';
                     $('#order_line_items').empty().append(layoutHtml);
                     bindChildproductsservices();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
             },
             complete: function () {
@@ -266,7 +266,7 @@ $("#btnservicessave").click(function (e) {
                     //var layoutHtml = '';
                     //$('#Product_services').empty();
                    bindChildproductsservices();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
             },
             complete: function () {
@@ -640,11 +640,11 @@ function AddBuyingt() {
                     if (data.url == "Manage") {
                         bindbuyingprice();
                         bindwarehouse();
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     else {
                        // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
@@ -725,11 +725,11 @@ function btncopybuying() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         bindbuyingprice();
-                        swal('Alert!', 'vender details has been copied', 'success');
+                        swal('Success!', 'vender details has been copied', 'success');
                     }
                     else {
                         // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
@@ -889,10 +889,10 @@ function DeleteUser(id) {
             if (data.status == true) {
                 if (data.url == "Manage") {
                     bindbuyingprice();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else {
-                    swal('Alert!', data.message, 'success');
+                    swal('success!', data.message, 'success');
                 }
 
             }
@@ -926,10 +926,10 @@ function ActiveUser(id) {
             if (data.status == true) {
                 if (data.url == "Manage") {
                     bindbuyingprice();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
 
             }
@@ -983,11 +983,11 @@ function AddWarehouse() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         bindwarehouse();
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     else {
                         // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
@@ -1113,10 +1113,10 @@ function Deletewarehouser(id) {
             if (data.status == true) {
                 if (data.url == "Manage") {           
                     bindwarehouse();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
 
             }
@@ -1150,10 +1150,10 @@ function Activewarehouser(id) {
             if (data.status == true) {
                 if (data.url == "Manage") {
                     bindwarehouse();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
 
             }
@@ -1204,11 +1204,11 @@ function AddNotes() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {                       
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     else {
                         // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
@@ -1428,10 +1428,10 @@ function Deletefileupload(id) {
             if (data.status == true) {
                 if (data.url == "Manage") {
                     bindfileuploade();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
                 else {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                 }
 
             }

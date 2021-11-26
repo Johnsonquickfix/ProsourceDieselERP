@@ -167,7 +167,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) pid,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
+                string strquery = "SELECT pwrd.rowid as id, pwrd.fk_product_rule, COALESCE(ps.id,p.id) pid,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
                                   + " FROM wp_posts as p"
                                   + " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
@@ -247,7 +247,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
+//~~~~~~~~~~~~~~~~~~~~~~~Check prefix code exits or not for product rule
         public static int GetPrefixCount(SetupModel model)
         {
             try
@@ -303,7 +303,36 @@ namespace LaylaERP.BAL
             return DT;
         }
 
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Check the product rule exixts or not ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public static DataTable CountRuleForState(SetupModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strsql = "SELECT state FROM product_warehouse_rule_details INNER JOIN dbo.split('" + model.state + "', ',') s ON s.items IN(SELECT items FROM dbo.split(STATE, ',') )"
+                               + " WHERE fk_vendor = '" + model.fk_vendor + "' and fk_warehouse = '" + model.fk_warehouse + "' and fk_product_rule = '" + model.fk_product_rule + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strsql);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
 
+        public static DataTable CountRuleForUpdateState(SetupModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strsql = "SELECT state FROM product_warehouse_rule_details INNER JOIN dbo.split('" + model.state + "', ',') s ON s.items NOT IN(SELECT items FROM dbo.split(STATE, ',') )"
+                               + " WHERE fk_vendor = '" + model.fk_vendor + "' and fk_product_rule = '" + model.fk_product_rule + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strsql);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Free product setup~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public static int GetFreeProductCount(SetupModel model)
         {

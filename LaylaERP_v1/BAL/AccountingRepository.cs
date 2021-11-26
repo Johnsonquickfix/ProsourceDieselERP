@@ -492,7 +492,7 @@ namespace LaylaERP.BAL
             {
                 string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit," 
                                +" (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
-                               +" ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
+                               + " ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 
@@ -709,7 +709,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "SELECT Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar)  as debit, Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) as credit, Cast(CONVERT(DECIMAL(10,2),sum(debit) -  sum(credit)) as nvarchar) as balance from erp_accounting_bookkeeping"
+                string strSql = "SELECT Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar)  as debit, Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) as credit, Cast(CONVERT(DECIMAL(10,2),sum(credit) -  sum(debit)) as nvarchar) as balance from erp_accounting_bookkeeping"
                                 + " where 1 = 1 ";
                 strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);

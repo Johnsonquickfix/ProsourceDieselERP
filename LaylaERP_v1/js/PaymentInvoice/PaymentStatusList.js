@@ -65,7 +65,24 @@ function Search() {
                 //    }
                 //},
                 { data: 'post_date', title: 'Create Date', sWidth: "10%" },
-                { data: 'post_status', sWidth: "10%", title: 'Status', sWidth: "10%" },
+                //{ data: 'post_status', sWidth: "10%", title: 'Status', sWidth: "10%" },
+                {
+                    data: 'post_status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
+                        if (data == 'wc-pending') return 'Pending payment';
+                        else if (data == 'wc-processing') return 'Processing';
+                        else if (data == 'wc-on-hold') return 'On hold';
+                        else if (data == 'wc-completed') return 'Completed';
+                        else if (data == 'wc-cancelled') return 'Cancelled';
+                        else if (data == 'wc-refunded') return 'Refunded';
+                        else if (data == 'wc-failed') return 'Failed';
+                        else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
+                        else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
+                        else if (data == 'wc-podium') return 'Order via Podium';
+                        else if (data == 'wc-podiumrefund') return 'Podium Refunded';
+                        else if (data == 'draft') return 'draft';
+                        else return '-';
+                    }
+                },
                 { data: 'subtotal', title: 'Sub-Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },                
                 { data: 'Discount', title: 'Total Savings', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                 { data: 'shipping', title: 'Shipping', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },

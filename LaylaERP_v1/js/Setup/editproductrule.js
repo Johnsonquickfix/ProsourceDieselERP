@@ -84,7 +84,8 @@ function updateProductWarehouseRule() {
     var statearray = $('#txtstate option:selected')
         .toArray().map(item => item.value).join();
     state = statearray;
-    
+    rule = $('#hfwarehouserule').val();
+
     if (product == 0) {
         swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
@@ -115,6 +116,7 @@ function updateProductWarehouseRule() {
             searchproductid: productid,
             country: country,
             state: state,
+            fk_product_rule: rule,
         }
         $.ajax({
             url: '/Setup/UpdateProductWarehouseRule/', dataType: 'json', type: 'Post',
@@ -163,9 +165,6 @@ function SelectedStateCounty() {
 
 }
 
-
 $("#txtcountry").change(function () {
     SelectedStateCounty();
 });
-
-

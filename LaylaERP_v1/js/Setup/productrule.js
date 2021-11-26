@@ -162,7 +162,6 @@ function addProductWarehouseRuleDetails() {
             country: country,
             state: state,
             fk_warehouse: warehouse,
-
         }
         $.ajax({
             url: '/Setup/AddProductWarehouseRuleDetails/', dataType: 'json', type: 'Post',
@@ -478,4 +477,3 @@ function SelectedStateCounty() {
 $("#txtcountry").change(function () {
     SelectedStateCounty();
 });
-

@@ -716,7 +716,7 @@ function ReSendGiftCard() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             result = JSON.parse(result);
-            if (result[0].Response == "Success") {
+            if (result[0].status == "true") {
                 swal('Success', 'Email Send successfully.', "success");
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }

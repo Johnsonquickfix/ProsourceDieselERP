@@ -67,16 +67,16 @@ function getOrderInfo() {
                 var tPhone = data[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                 let billing_Details = '<strong>' + data[0].b_first_name + ' ' + data[0].b_last_name + '</strong><br>';
                 billing_Details += (data[0].b_company.length > 0 ? data[0].b_company + '<br>' : '') + (data[0].b_address_1.length > 0 ? data[0].b_address_1 + '<br>' : '')
-                    + (data[0].b_address_2.length > 0 ? data[0].b_address_2 + '<br>' : '') + (data[0].b_city.length > 0 ? data[0].b_city + ', ' : '') + (data[0].b_state.length > 0 ? data[0].b_state + ', ' : '')
-                    + (data[0].b_country.length > 0 ? data[0].b_country + ' ' : '') + (data[0].b_postcode.length > 0 ? data[0].b_postcode : '');
+                    + (data[0].b_address_2.length > 0 ? data[0].b_address_2 + '<br>' : '') + (data[0].b_city.length > 0 ? data[0].b_city + ', ' : '') + (data[0].b_state.length > 0 ? data[0].b_state + ' ' : '')
+                    + (data[0].b_postcode.length > 0 ? data[0].b_postcode + ' ' : '') + (data[0].b_country.length > 0 ? data[0].b_country : '');
                 billing_Details += '<br><strong>Email address:</strong><br>' + data[0].b_email + '<br><strong>Phone:</strong><br>' + tPhone;
                 $('.billing-address').empty().append(billing_Details);
 
                 ///shipping_Details
                 let shipping_Details = '<strong>' + data[0].s_first_name + ' ' + data[0].s_last_name + '</strong><br>';
                 shipping_Details += (data[0].s_company.length > 0 ? data[0].s_company + '<br>' : '') + (data[0].s_address_1.length > 0 ? data[0].s_address_1.trim() + '<br>' : '')
-                    + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ', ' : '')
-                    + (data[0].s_country.length > 0 ? data[0].s_country + ' ' : '') + (data[0].s_postcode.length > 0 ? data[0].s_postcode : '');
+                    + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ' ' : '')
+                    + (data[0].s_postcode.length > 0 ? data[0].s_postcode + ' ' : '') + (data[0].s_country.length > 0 ? data[0].s_country : '');
                 $('.shipping-address').empty().append(shipping_Details);
                 $('.shipping-address').data('shipcountry', data[0].s_country.trim());
                 $('.shipping-address').data('shipstate', data[0].s_state.trim());

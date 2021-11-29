@@ -43,6 +43,11 @@
     $(document).on("click", "#btnResendEmail", function (t) { t.preventDefault(); ReSendGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
+    $("#GiftModal").on("change", "#ddlPaymentMethod", function (t) {
+        t.preventDefault();
+        if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
+        else { $('.podiumchannel').addClass('hidden'); }
+    });
 });
 function disableall() {
     $("#btnOrderCheckout").hide();
@@ -238,7 +243,11 @@ function GiftCardPaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong ><br>' + billing_company +' <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong ><br>';
+    if (billing_company != '') {
+        myHtml += '' + billing_company + '<br>';
+    }
+    myHtml += '' + billing_address_1 + (billing_address_2 > 0 ? ' <br> ' : '') + billing_address_2 + ' <br> ' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' <br> Phone: ' + billing_phone + ' <br> Email: ' + billing_email + '</address >';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
     myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
@@ -287,7 +296,7 @@ function GiftCardPaymentModal() {
     myHtml += '</span>';
     myHtml += '</div>';
     myHtml += '</div>';
-
+    
     myHtml += '<div class="col-md-6 podiumchannel">';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" checked="" value="' + billing_email + '"><label class="form-check-label">Email Channel</label></div>';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" value="' + billing_phone.replace(/[^0-9]/g, "") + '"><label class="form-check-label">SMS Channel</label></div>';
@@ -307,7 +316,7 @@ function GiftCardPaymentModal() {
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtSenderEmail").val()); }
     else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
@@ -363,7 +372,7 @@ function updatePayment(oid, taskUid) {
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
     ];
     let opt = { OrderPostMeta: _postMeta };
-    $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
+    $.post('/GiftCard/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
         if (response.status == true) { $("#GiftModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
@@ -371,13 +380,17 @@ function updatePayment(oid, taskUid) {
 
 ///Accept paypal Payment
 function createPaypalXML(oid, pp_no, pp_email) {
-    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = todaydate.split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
+    let taxPer = 0.00; dfa = todaydate.split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
+    var qty = parseFloat($('#totalQty').text()) || 0.00;
     let _items = [];
     let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
     let discountAmount = 0.00;
     let taxAmount = 0.00;
-    _items.push({ name: $("#lblOrderNo").data("pname"), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+    _items.push({
+        name: $("#lblOrderNo").data("pname"), quantity: qty,unit_amount: { currency_code: "USD", value: rate },tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 },
+        discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
+    });
     let paupal_xml = {
         //id: inv_id, status: "DRAFT",
         detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
@@ -395,7 +408,10 @@ function createPaypalXML(oid, pp_no, pp_email) {
             {
                 billing_info: {
                     name: { given_name: $('#txtFirstName').val(), surname: $('#txtLastName').val() },
-                    address: { address_line_1: $('#txtAddress1').val() + ' ' + $('#txtAddress2').val(), admin_area_2: $('#txtCity').val(), admin_area_1: $('#ddlState').val(), postal_code: $('#txtPostCode').val(), country_code: $('#ddlCountry').val() },
+                    address: {
+                        address_line_1: $('#txtAddress1').val() + ' ' + $('#txtAddress2').val(), admin_area_2: $('#txtCity').val(),
+                        admin_area_1: $('#ddlState').val(), postal_code: $('#txtPostCode').val(), country_code: $('#ddlCountry').val()
+                    },
                     email_address: pp_email,
                     //phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
                 },
@@ -409,13 +425,14 @@ function createPaypalXML(oid, pp_no, pp_email) {
         configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
         amount: {
             breakdown: {
-                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
+                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } } 
             }
         }
     }
     return paupal_xml;
 }
 function PaypalPayment(ppemail) {
+    paypal_baseurl = 'https://api-m.sandbox.paypal.com';
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
     let option_pp = createPaypalXML(oid, pp_no, ppemail)
     console.log('Start PayPal Payment Processing...');
@@ -425,8 +442,9 @@ function PaypalPayment(ppemail) {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
                 let access_token = response.message;
-                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
+                let pay_by = 'paypal', inv_id = '';
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''),
+                    action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
@@ -464,7 +482,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
         success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
             let opt = { OrderPostMeta: _postMeta };
-            $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
+            $.post('/GiftCard/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#GiftModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 successModal('PayPal', id[id.length - 2], true);
@@ -580,11 +598,6 @@ function successModal(paymode, id, is_mail) {
     $('#GiftModal .modal-body').append(myHtml);
 
     myHtml = '';
-    //$('#order_line_items > tr').each(function (index, tr) {
-    //    var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-    //    var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-    //    myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
-    //});
     $('#tblorder_details tbody').append(myHtml);
 
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
@@ -713,3 +726,5 @@ function ReSendGiftCard() {
         complete: function () { },
     });
 }
+
+

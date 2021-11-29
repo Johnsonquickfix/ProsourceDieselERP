@@ -64,32 +64,32 @@ namespace LaylaERP.BAL
         //        throw ex;
         //    }
         //}
-        public static DataTable AddGiftCardOrdersPost(long Pkey, string qFlag, long UserID, string UserName, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
-        {
-            var dt = new DataTable();
-            try
-            {
-                long id = Pkey;
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@pkey", Pkey),
-                    new SqlParameter("@qflag", qFlag),
-                    new SqlParameter("@userid", UserID),
-                    new SqlParameter("@username", UserName),
-                    new SqlParameter("@postsXML", postsXML.OuterXml),
-                    new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
-                    new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
-                    new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
-                    new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
-                };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return dt;
-        }
+        //public static DataTable AddGiftCardOrdersPost(long Pkey, string qFlag, long UserID, string UserName, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
+        //{
+        //    var dt = new DataTable();
+        //    try
+        //    {
+        //        long id = Pkey;
+        //        SqlParameter[] parameters =
+        //        {
+        //            new SqlParameter("@pkey", Pkey),
+        //            new SqlParameter("@qflag", qFlag),
+        //            new SqlParameter("@userid", UserID),
+        //            new SqlParameter("@username", UserName),
+        //            new SqlParameter("@postsXML", postsXML.OuterXml),
+        //            new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
+        //            new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
+        //            new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
+        //            new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
+        //        };
+        //        dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //    return dt;
+        //}
         public static DataTable AddGiftCardOrders(long Pkey, string qFlag, long UserID, string UserName, string UserEmail, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
         {
             var dt = new DataTable();
@@ -109,7 +109,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
                     new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
                 };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_orderdummy", parameters);
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
             }
             catch (Exception ex)
             {
@@ -222,6 +222,41 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static int UpdatePaymentInvoice(List<OrderPostMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                if (Payment_method.ToLower() == "podium")
+                {
+                    //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", model[0].post_id));
+                    //// step 3 : Add Order Note
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
+                }
+                else
+                {
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pending", model[0].post_id));
+                }
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
         }
     }
 }

@@ -345,6 +345,72 @@ namespace LaylaERP.Controllers
 
             return Json(new { status = status, message = result }, 0);
         }
+        [HttpPost]
+        public JsonResult UpdatePaymentInvoiceID(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = GiftCardRepository.UpdatePaymentInvoice(model.OrderPostMeta);
+                if (res > 0)
+                {
+                    result = "Order placed successfully.";
+                    status = true;
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+        public JsonResult UpdatePaypalPaymentAccept(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
 
+                DataTable giftdetails = GiftCardRepository.AddGiftCardOrders(model.order_id, "UPP", 0, model.b_first_name,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                JSONresult = JsonConvert.SerializeObject(giftdetails);
+                if (giftdetails.Rows[0]["delivered"].ToString() == "1")
+                {
+                    SendGiftCardMailInvoice(giftdetails);
+                }
+
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult SendGiftCardMailInvoice(DataTable dt)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    GiftCardModel model = new GiftCardModel
+                    {
+                        order_id = Convert.ToInt64(dr["order_id"]),
+                        code = dr["code"].ToString(),
+                        recipient = dr["recipient"].ToString(),
+                        sender = dr["sender"].ToString(),
+                        sender_email = dr["sender_email"].ToString(),
+                        message = dr["message"].ToString(),
+                        balance = Convert.ToDouble(dr["balance"]),
+                        delivered = dr["delivered"].ToString(),
+                    };
+                    status = true;
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                    result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                }
+            }
+            catch { status = false; result = ""; }
+
+            return Json(new { status = status, message = result }, 0);
+        }
     }
 }

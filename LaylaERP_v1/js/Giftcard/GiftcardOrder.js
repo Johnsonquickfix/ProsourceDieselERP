@@ -1,7 +1,11 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $("#btnResendEmail").hide();
     $(".select2").select2();
-
+    var url = window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+    if (id != "Giftcard") { disableall(); }
+    else { $("#btnResendEmail").hide(); $("#btnResendEmail").prop("disabled", true); }
     $('#txtPostCode').change(function () {
         City = $("#ddlCity").val();
         State = $("#ddlState").val();
@@ -36,12 +40,30 @@
     });
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
+    $(document).on("click", "#btnResendEmail", function (t) { t.preventDefault(); ReSendGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
-
-
-
 });
+function disableall() {
+    $("#btnOrderCheckout").hide();
+    $("#btnResendEmail").show();
+    $("#btnOrderCheckout").prop("disabled", true);
+    $("#txtFirstName").prop("disabled", true); 
+    $("#txtLastName").prop("disabled", true);
+    $("#txtPhone").prop("disabled", true);
+    $("#txtLastName").prop("disabled", true);
+    $("#txtPostCode").prop("disabled", true);
+    $("#txtSenderEmail").prop("disabled", true);
+    $("#txtOrderNotes").prop("disabled", true);
+    $("#ddlCountry").prop("disabled", true);
+    $("#ddlState").prop("disabled", true);
+    $("#txtCity").prop("disabled", true);
+    $("#txtAddress1").prop("disabled", true);
+    $("#txtAddress2").prop("disabled", true);
+    $("#txtCompany").prop("disabled", true);
+ 
+}
+
 $('#ddlCountry').change(function () {
     getState();
 })
@@ -674,3 +696,20 @@ function beforeSendFun() { $("#loader").show(); }
 function completeFun() { $("#loader").hide(); }
 function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
 
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ReSendGiftCard ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ReSendGiftCard() {
+    var obj = { order_id:parseInt($('#hfOrderNo').val()) }
+    $.ajax({
+        type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/Giftcard/ResendSendMailInvoice",
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            if (result.status == true) {
+                swal('Success', 'Email Send successfully.', "success");
+            }
+            else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
+        },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { },
+    });
+}

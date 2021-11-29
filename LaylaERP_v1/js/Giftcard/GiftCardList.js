@@ -107,12 +107,13 @@ function dataGCGridLoad() {
             
             { data: 'expires', title: 'Expires', sWidth: "5%" },
             { data: 'create_date', title: 'Creation Date', sWidth: "5%" },
-            //{
-            //    'data': 'id', title: 'Action', sWidth: "6%",
-            //    'render': function (id, type, row, meta) {
-            //        return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
-            //    }
-            //}
+            {
+                'data': 'id', title: 'Action', sWidth: "6%",
+                'render': function (id, type, row, meta) {
+                  
+                    return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
+                }
+            }
         ]
     });
 }

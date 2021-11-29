@@ -38,7 +38,6 @@ namespace LaylaERP.Controllers
             string delivery_date = collection["DeliveryDate"];
             int oid = 0;
 
-
             List<OrderPostMetaModel> postmeta = new List<OrderPostMetaModel>();
             postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_order_key", meta_value = "wc_order_" });
             postmeta.Add(new OrderPostMetaModel { post_id = oid, meta_key = "_customer_user", meta_value = "0" });
@@ -204,7 +203,27 @@ namespace LaylaERP.Controllers
             if (id > 0)
             {
                 DataTable data = new GiftCardRepository().GetOrderInfoByGCID(id);
-                model.order_id = id;
+                string GiftToMultiple = data.Rows[0]["Recipient"].ToString().TrimEnd(',');
+                string[] Emaillist = GiftToMultiple.Split(',');
+                model.order_id = Convert.ToInt32(data.Rows[0]["post_id"]);
+                model.sender_email = data.Rows[0]["sender_email"].ToString();
+                model.FirstName = data.Rows[0]["FirstName"].ToString();
+                model.LastName = data.Rows[0]["LastName"].ToString();
+                model.Company = data.Rows[0]["Company"].ToString();
+                model.Country = data.Rows[0]["Country"].ToString();
+                model.State = data.Rows[0]["State"].ToString();
+                model.City = data.Rows[0]["City"].ToString();
+                model.Zipcode = data.Rows[0]["ZipCode"].ToString();
+                model.Address = data.Rows[0]["Address"].ToString();
+                model.Address2 = data.Rows[0]["Address2"].ToString();
+                model.PhoneNumber = data.Rows[0]["PhoneNumber"].ToString();
+                model.OrderNotes = data.Rows[0]["Company"].ToString();
+                model.recipient = GiftToMultiple;
+                model.recipientList = Emaillist.ToList();
+                
+                model.message = data.Rows[0]["Message"].ToString();
+                model.qty = Convert.ToInt32(data.Rows[0]["Qty"].ToString());
+                model.amount = Convert.ToDecimal(data.Rows[0]["amount"].ToString()) / model.qty;
                 return View(model);
             }
             else
@@ -245,6 +264,8 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+
+      
         [HttpGet]
         public JsonResult GetGiftCardOrderList(JqDataTableModel model)
         {
@@ -292,5 +313,38 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult ResendSendMailInvoice(GiftCardModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                DataTable dt = GiftCardRepository.GetGiftCardDetails(model.order_id);
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        model.order_id = Convert.ToInt64(dr["order_id"]);
+                        model.code = dr["code"].ToString();
+                        model.recipient = dr["recipient"].ToString();
+                        model.sender = dr["sender"].ToString();
+                        model.sender_email = dr["sender_email"].ToString();
+                        model.message = dr["message"].ToString();
+                        model.balance = Convert.ToDouble(dr["remaining"]);
+                        model.delivered = dr["delivered"].ToString();
+                        status = true;
+                        String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                        result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                       // Response.Write(result);
+                    }
+                }
+
+            }
+            catch { status = false; result = ""; }
+
+            return Json(new { status = status, message = result }, 0);
+        }
+
     }
 }

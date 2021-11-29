@@ -4,14 +4,8 @@
     $(".select2").select2();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
-    console.log(id);
-    if (id != "Giftcard") {
-        disableall();
-    }
-    else {
-        $("#btnResendEmail").hide();
-        $("#btnResendEmail").prop("disabled", true);
-    }
+    if (id != "Giftcard") { disableall(); }
+    else { $("#btnResendEmail").hide(); $("#btnResendEmail").prop("disabled", true); }
     $('#txtPostCode').change(function () {
         City = $("#ddlCity").val();
         State = $("#ddlState").val();
@@ -49,9 +43,6 @@
     $(document).on("click", "#btnResendEmail", function (t) { t.preventDefault(); ReSendGiftCard(); });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
-
-
-
 });
 function disableall() {
     $("#btnOrderCheckout").hide();
@@ -707,21 +698,18 @@ function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide()
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ReSendGiftCard ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function ReSendGiftCard() {
-    var obj = {
-        order_id:parseInt($('#hfOrderNo').val())
-    }
+    var obj = { order_id:parseInt($('#hfOrderNo').val()) }
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Giftcard/ResendSendMailInvoice",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
-            result = JSON.parse(result);
-            if (result[0].status == "true") {
+            if (result.status == true) {
                 swal('Success', 'Email Send successfully.', "success");
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { },
     });
 }

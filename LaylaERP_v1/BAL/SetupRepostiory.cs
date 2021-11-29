@@ -324,8 +324,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strsql = "SELECT state FROM product_warehouse_rule_details INNER JOIN dbo.split('" + model.state + "', ',') s ON s.items NOT IN(SELECT items FROM dbo.split(STATE, ',') )"
-                               + " WHERE fk_vendor = '" + model.fk_vendor + "' and fk_product_rule = '" + model.fk_product_rule + "'";
+                string strsql = "SELECT state FROM product_warehouse_rule_details INNER JOIN dbo.split('" + model.state + "', ',') s ON s.items IN(SELECT items FROM dbo.split(STATE, ',') )"
+                               + " WHERE fk_vendor = '" + model.fk_vendor + "' and fk_product_rule = '" + model.fk_product_rule + "' and rowid NOT IN ('"+model.searchid+"') ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strsql);
                 dtr = ds.Tables[0];
             }

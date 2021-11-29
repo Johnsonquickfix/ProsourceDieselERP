@@ -53,7 +53,7 @@
                                 + " from wp_users as ur"
                                 + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
                                 + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
-                strWhr += " where concat(User_Login, ' ', user_email,' ',replace(replace(replace(replace(ump.meta_value,'(', ''),')', ''),'-', ''),' ', '')) like  '%" + strSearch + "%';";
+                strWhr += " where User_Login + ' ' + user_email + ' ' + replace(replace(replace(replace(ump.meta_value,'(', ''),')', ''),'-', ''),' ', '') like '%" + strSearch + "%';";
 
                 DT = SQLHelper.ExecuteDataTable(strWhr);
             }

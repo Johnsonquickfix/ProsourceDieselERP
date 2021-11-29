@@ -396,21 +396,21 @@ function bindCustomerOrders(id) {
                         let row = JSON.parse(dtrow.meta_data);
                         let defval = '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (isNullAndUndef(row._billing_company) ? row._billing_company : '') + '" data-ba1="' + (isNullAndUndef(row._billing_address_1) ? row._billing_address_1 : '') + '" data-ba2="' + (isNullAndUndef(row._billing_address_2) ? row._billing_address_2 : '') + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '" data-bem="' + row._billing_email + '"';
-                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (isNullAndUndef(row._shipping_company) ? row._shipping_company : '') + '" data-sa1="' + (isNullAndUndef(row._shipping_address_1) ? row._shipping_address_1 : '') + '" data-sa2="' + (isNullAndUndef(row._shipping_address_2) ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
+                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (isNullAndUndef(row._shipping_company) ? row._shipping_company : '') + '" data-sa1="' + (isNullAndUndef(row._shipping_address_1) ? row._shipping_address_1 : '') + '" data-sa2="' + (isNullAndUndef(row._shipping_address_2) ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._shipping_country + '" data-spc="' + row._shipping_postcode + '"';
                         return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use This Address for Order</button>'
                     }
                 },
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
                 {
                     data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + '</address>';
+                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country+ '</address>';
                         return val;
                     }
                 }
@@ -429,7 +429,7 @@ function ShowUseAddress(chk) {
 }
 function selectOrderAddress(ele) {
     let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
-    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var oid = parseInt($('#hfOrderNo').val()) || 0; console.log(ele);
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
         if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
@@ -1847,6 +1847,7 @@ function getItemShippingCharge(isFinalcal) {
         $(".TotalAmount").data("shippingamt", 0.00);
 
         $.when(GetSRTaxRate()).done(function () {
+            if (options.strValue4 == '') return false;
             $.post('/Orders/GetProductShipping', options).then(response => {
                 response = JSON.parse(response);
                 $("#order_line_items > tr.paid_item").each(function (index, tr) {
@@ -1992,7 +1993,7 @@ function saveCO() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
-                $.when(getOrderItemList(oid)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true); });
+                $.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true); });
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },

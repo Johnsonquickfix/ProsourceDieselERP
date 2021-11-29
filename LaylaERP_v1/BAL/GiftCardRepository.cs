@@ -18,19 +18,19 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strSql = "Select TOP 1 fn.meta_value as FirstName, fl.meta_value as LastName, bco.meta_value as Country, bs.meta_value as State, bc.meta_value as City, " +
-                    "BA1.meta_value as Address1,BA2.meta_value as Address2,Bcomp.meta_value as Company, BP.meta_value as Phone,ZC.meta_value as ZipCode " +
-                    "from wp_users u left join wp_usermeta fn on u.id = fn.user_id and fn.meta_key = 'billing_first_name' " +
-                    "left join wp_usermeta fl on u.id = fl.user_id and fl.meta_key = 'billing_last_name' " +
-                    "left join wp_usermeta bco on u.id = bco.user_id and bco.meta_key = 'billing_country' " +
-                    "left join wp_usermeta bs on u.id = bs.user_id and bs.meta_key = 'billing_state' " +
-                    "left join wp_usermeta bc on u.id = bc.user_id and bc.meta_key = 'billing_city' " +
-                    "left join wp_usermeta BA1 on u.id = BA1.user_id and BA1.meta_key = 'billing_address_1' " +
-                    "left join wp_usermeta BA2 on u.id = BA2.user_id and BA2.meta_key = 'billing_address_2' " +
-                    "left join wp_usermeta Bcomp on u.id = Bcomp.user_id and Bcomp.meta_key = 'billing_company'" +
-                    " left join wp_usermeta ZC on u.id = ZC.user_id and ZC.meta_key='billing_postcode '" +
-                    " left join wp_usermeta BP on u.id = BP.user_id and BP.meta_key = 'billing_phone' left join wp_usermeta wc on u.id = wc.user_id and wc.meta_key = 'wp_capabilities' " +
-                    "where u.user_email = '" + id + "' and wc.meta_value='customer'";
+                string strSql = "SELECT  post_id, Recipient,Amount,Qty,[Message],_billing_first_name FirstName,_billing_last_name LastName,_billing_country Country,_billing_state [State],_billing_city City, " +
+                    "_billing_address_1 Address, _billing_address_2 Address2,_billing_company Company, _billing_postcode ZipCode,_billing_phone PhoneNumber, " +
+                    "employee_id, employee_name, _billing_email sender_email FROM(SELECT  post_id, meta_key, meta_value, (Select top 1 Rlist.meta_value as Recipient from wp_woocommerce_order_items oi inner " +
+                    "join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join wp_woocommerce_order_itemmeta Rlist on oi.order_item_id = Rlist.order_item_id and Rlist.meta_key = 'wc_gc_giftcard_to_multiple' where order_id = meta.post_id) Recipient," +
+                    "(Select top 1 amt.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join " +
+                    "wp_woocommerce_order_itemmeta amt on oi.order_item_id = amt.order_item_id and amt.meta_key = 'wc_gc_giftcard_amount' where order_id = meta.post_id) Amount, " +
+                    "(Select top 1 qty.meta_value from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id " +
+                    "left join wp_woocommerce_order_itemmeta qty on oi.order_item_id = qty.order_item_id and qty.meta_key = '_qty' where order_id = meta.post_id) Qty, " +
+                    "(Select top 1 msg.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left " +
+                    "join wp_woocommerce_order_itemmeta msg on oi.order_item_id = msg.order_item_id and msg.meta_key = 'wc_gc_giftcard_message' where order_id = meta.post_id) [Message] " +
+                    "FROM wp_postmeta meta where post_id = (select order_id from wp_woocommerce_gc_cards where id = '"+ id + "') ) AS SourceTable PIVOT(MIN([meta_value]) FOR[meta_key] IN " +
+                    "(_billing_first_name, _billing_last_name, _billing_country, _billing_state, _billing_city, _billing_address_1, _billing_address_2, _billing_company, _billing_postcode, _billing_phone, employee_id, employee_name, _billing_email)) " +
+                    "AS PivotOutput";
                 DataTable result = SQLHelper.ExecuteDataTable(strSql);
                 return result;
             }
@@ -64,32 +64,32 @@ namespace LaylaERP.BAL
         //        throw ex;
         //    }
         //}
-        public static DataTable AddGiftCardOrdersPost(long Pkey, string qFlag, long UserID, string UserName, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
-        {
-            var dt = new DataTable();
-            try
-            {
-                long id = Pkey;
-                SqlParameter[] parameters =
-                {
-                    new SqlParameter("@pkey", Pkey),
-                    new SqlParameter("@qflag", qFlag),
-                    new SqlParameter("@userid", UserID),
-                    new SqlParameter("@username", UserName),
-                    new SqlParameter("@postsXML", postsXML.OuterXml),
-                    new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
-                    new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
-                    new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
-                    new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
-                };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return dt;
-        }
+        //public static DataTable AddGiftCardOrdersPost(long Pkey, string qFlag, long UserID, string UserName, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
+        //{
+        //    var dt = new DataTable();
+        //    try
+        //    {
+        //        long id = Pkey;
+        //        SqlParameter[] parameters =
+        //        {
+        //            new SqlParameter("@pkey", Pkey),
+        //            new SqlParameter("@qflag", qFlag),
+        //            new SqlParameter("@userid", UserID),
+        //            new SqlParameter("@username", UserName),
+        //            new SqlParameter("@postsXML", postsXML.OuterXml),
+        //            new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
+        //            new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
+        //            new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
+        //            new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
+        //        };
+        //        dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //    return dt;
+        //}
         public static DataTable AddGiftCardOrders(long Pkey, string qFlag, long UserID, string UserName, string UserEmail, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
         {
             var dt = new DataTable();
@@ -109,7 +109,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
                     new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
                 };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_orderdummy", parameters);
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_order", parameters);
             }
             catch (Exception ex)
             {
@@ -193,6 +193,23 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
+        public static DataTable GetGiftCardDetails(long OrderID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+              
+
+                SqlParameter[] parameters = {
+                    new SqlParameter("@order_id", OrderID),
+                    new SqlParameter("@flag", "RSGCO")
+                        };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
         public static DataTable GetRedeemedCustomers(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -205,6 +222,41 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static int UpdatePaymentInvoice(List<OrderPostMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                if (Payment_method.ToLower() == "podium")
+                {
+                    //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", model[0].post_id));
+                    //// step 3 : Add Order Note
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
+                }
+                else
+                {
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pending", model[0].post_id));
+                }
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
         }
     }
 }

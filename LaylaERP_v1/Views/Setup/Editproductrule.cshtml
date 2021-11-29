@@ -121,7 +121,7 @@
                         $("#hfid").val(jobj[0].id);
                         $("#hfproductid").val(jobj[0].pid);
                         $("#txtprefixcode").val(jobj[0].code);
-
+                        $("#hfwarehouserule").val(jobj[0].fk_product_rule);
                         if (jobj[0].state !== null && jobj[0].state !== undefined)
                         $("#txtstate").select2("val", [jobj[0].state.split(',')]);   
                         //$("#txtstate").empty().append('<option value="' + jobj[0].state + '" selected>' + jobj[0].state + '</option>');

@@ -110,25 +110,32 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddProductWarehouseRuleDetails(SetupModel model)
         {
-            
-            int ID = SetupRepostiory.AddProductWarehouseRuleDetails(model);
-            if (ID > 0)
+            DataTable dt1 = SetupRepostiory.CountRuleForState(model);
+            if (dt1.Rows.Count > 0)
             {
-                
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = false, message = "Product rule already exists for these states", url = "" }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                int ID = SetupRepostiory.AddProductWarehouseRuleDetails(model);
+                if (ID > 0)
+                {
+
+                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
             }
         }
 
-        public JsonResult GetTableWarehouseRule()
+        public JsonResult GetTableWarehouseRule(SetupModel model)
         {
-
             string JSONresult = string.Empty;
             try
             {
+
                 DataTable dt = SetupRepostiory.GetTableWarehouseRule();
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
@@ -164,12 +171,19 @@ namespace LaylaERP.Controllers
 
         [HttpPost]
         public JsonResult UpdateProductWarehouseRule(SetupModel model)
-        {
-            
+        { 
             if (model.searchid > 0)
             {
-                SetupRepostiory.UpdateProductWarehouseRule(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                DataTable dt1 = SetupRepostiory.CountRuleForUpdateState(model);
+                if (dt1.Rows.Count > 0)
+                {
+                    return Json(new { status = false, message = "Product rule already exists for some states", url = "" }, 0);
+                }
+                else
+                {
+                    SetupRepostiory.UpdateProductWarehouseRule(model);
+                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                }
             }
             else
             {
@@ -310,6 +324,5 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
     }
 }

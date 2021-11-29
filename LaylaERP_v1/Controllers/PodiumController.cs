@@ -86,7 +86,7 @@ namespace LaylaERP.Controllers
                                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-                                DataTable giftdetails = GiftCardRepository.AddGiftCardOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                                DataTable giftdetails = GiftCardRepository.AddGiftCardOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                                 if (giftdetails.Rows[0]["delivered"].ToString() == "1")
                                 {
                                     SendGiftCardMailInvoice(giftdetails);

@@ -2458,7 +2458,7 @@ function sendInvoice(paymode, id) {
     let s_first_name = $('#txtshipfirstname').val(), s_last_name = $('#txtshiplastname').val();
     let s_company = $('#txtshipcompany').val();
     let s_address_1 = $('#txtshipaddress1').val(), s_address_2 = $('#txtshipaddress2').val();
-    let s_postcode = $('#txtLogDate').val();
+    let s_postcode = $('#txtbillzipcode').val();
     let s_city = $('#txtshipcity').val(), s_country = $('#ddlshipcountry').val(), s_state = $('#ddlshipstate').val();
     let GrassAmount = parseFloat($('#SubTotal').text()) || 0;
     let TotalDiscount = parseFloat($('#discountTotal').text()) || 0;

@@ -174,16 +174,16 @@ namespace LaylaERP.Controllers
         { 
             if (model.searchid > 0)
             {
-                //DataTable dt1 = SetupRepostiory.CountRuleForUpdateState(model);
-                //if (dt1.Rows.Count == 0)
-                //{
-                //    return Json(new { status = false, message = "Product rule already exists for some states", url = "" }, 0);
-                //}
-                //else
-                //{
+                DataTable dt1 = SetupRepostiory.CountRuleForUpdateState(model);
+                if (dt1.Rows.Count > 0)
+                {
+                    return Json(new { status = false, message = "Product rule already exists for some states", url = "" }, 0);
+                }
+                else
+                {
                     SetupRepostiory.UpdateProductWarehouseRule(model);
                     return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
-                //}
+                }
             }
             else
             {

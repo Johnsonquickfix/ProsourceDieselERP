@@ -331,12 +331,12 @@ namespace LaylaERP.Controllers
                         model.sender = dr["sender"].ToString();
                         model.sender_email = dr["sender_email"].ToString();
                         model.message = dr["message"].ToString();
-                        model.balance = Convert.ToDouble(dr["balance"]);
+                        model.balance = Convert.ToDouble(dr["remaining"]);
                         model.delivered = dr["delivered"].ToString();
                         status = true;
                         String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
                         result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
-                        Response.Write(result);
+                       // Response.Write(result);
                     }
                 }
 

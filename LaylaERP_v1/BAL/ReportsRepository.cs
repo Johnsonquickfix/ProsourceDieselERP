@@ -358,10 +358,10 @@ namespace LaylaERP.BAL
                             uobj.fee = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
                         else
                             uobj.fee = "";
-                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["SubTotal"].ToString()))
-                            uobj.subtotal = "$" + ds1.Tables[0].Rows[i]["SubTotal"].ToString();
-                        else
-                            uobj.subtotal = "";
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["SubTotal"].ToString()))
+                        //    uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["SubTotal"].ToString()) + ;
+                        //else
+                        uobj.subtotal = "$" + (Convert.ToDecimal(ds1.Tables[0].Rows[i]["Total"].ToString()) - Convert.ToDecimal(ds1.Tables[0].Rows[i]["Tax"].ToString()) - Convert.ToDecimal(ds1.Tables[0].Rows[i]["Fee"].ToString()) + Convert.ToDecimal(ds1.Tables[0].Rows[i]["Discount"].ToString()));
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString()))
                             uobj.Discount = "$" + ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString();
                         else

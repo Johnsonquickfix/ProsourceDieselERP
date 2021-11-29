@@ -246,5 +246,44 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Forecast Inventory Report~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public static DataSet ProductListForeCast(string vendorID)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select fk_product id,p.post_title text from Product_Purchase_Items ppi left join wp_posts p on p.id = ppi.fk_product where 1 = 1 and ppi.fk_vendor = '" + vendorID + "'";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable GetForecastReport(string from_date, string to_date, int vendorid)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                SqlParameter[] param = 
+                    { 
+                    new SqlParameter("@vendorid", vendorid),
+                    new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")), 
+                    new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),
+                };
+                string strSql = "erp_forecastreport";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, param);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dtr;
+        }
     }
 }

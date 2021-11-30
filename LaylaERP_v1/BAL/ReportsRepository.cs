@@ -992,5 +992,106 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+
+        public static DataTable GetPaymentStatusList(string bank, string status, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchid),
+                     //new SqlParameter("@status", bank),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@statustype", bank),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "SSPY")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_report_status_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static void GetStatusDetails(string from_date, string to_date, string Type)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@type", Type),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_OrderStatus_List", parameters);                   
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["post_date"].ToString();
+
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString())  ;
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.Discount = "";
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                            uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        else
+                            uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+
     }
 }

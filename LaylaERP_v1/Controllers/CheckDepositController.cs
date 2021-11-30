@@ -209,7 +209,7 @@ namespace LaylaERP_v1.Controllers
                 if (!string.IsNullOrEmpty(model.strValue3))
                     todate = Convert.ToDateTime(model.strValue3);
 
-                DataTable dt = PaymentInvoiceRepository.GetGrandTotal(model.strValue1, fromdate, todate,model.strValue4);
+                DataTable dt = PaymentInvoiceRepository.GetGrandTotal(model.strValue1, fromdate, todate,model.strValue4, model.strValue5);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

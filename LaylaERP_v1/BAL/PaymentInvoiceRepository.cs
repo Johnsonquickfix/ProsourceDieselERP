@@ -201,7 +201,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@searchcriteria", searchid),
                      new SqlParameter("@status", bank),
                     new SqlParameter("@pageno", pageno),
-                    //new SqlParameter("@fk_bank", bank),
+                    new SqlParameter("@statustype", status),
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
@@ -367,7 +367,7 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        public static DataTable GetGrandTotal(string searchid, DateTime? fromdate, DateTime? todate, string searchcriteria)
+        public static DataTable GetGrandTotal(string searchid, DateTime? fromdate, DateTime? todate, string searchcriteria,string statustype)
         {
             DataTable dt = new DataTable();
             try
@@ -393,7 +393,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@searchcriteria", searchcriteria),
                      new SqlParameter("@status", searchid),
                     new SqlParameter("@pageno", "0"),
-                    //new SqlParameter("@fk_bank", bank),
+                    new SqlParameter("@statustype", statustype),
                     new SqlParameter("@pagesize", "0"),
                     new SqlParameter("@sortcol", "0"),
                     new SqlParameter("@sortdir", "0"),

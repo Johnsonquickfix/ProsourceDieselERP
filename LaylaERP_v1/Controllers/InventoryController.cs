@@ -25,6 +25,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastInventory()
+        {
+            return View();
+        }
         public JsonResult GetVarientList(InventoryModel model)
         {
             string result = string.Empty;
@@ -188,6 +192,32 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["Warehouse"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ProductListForeCast(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.ProductListForeCast(model.strValue1);
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["text"].ToString(), Value = dr["id"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetForecastReport(string Month, string Year, int vendorid)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+                var to_date = from_date.AddMonths(1).AddDays(-1);
+                DataTable dt = InventoryRepository.GetForecastReport(from_date.ToString(), to_date.ToString(),vendorid);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

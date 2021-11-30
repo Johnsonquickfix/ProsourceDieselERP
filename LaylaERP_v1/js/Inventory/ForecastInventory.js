@@ -1,8 +1,4 @@
-﻿var d = new Date();
-var m = d.getMonth() + 1;
-var y = d.getFullYear();
-
-getVendorList();
+﻿getVendorList();
 function getVendorList() {
     $.ajax({
         url: "/Inventory/GetVendorList",
@@ -42,11 +38,11 @@ function getProductList() {
 }
 
 function ForeCastreport() {
-    var d = new Date();
-    var m = d.getMonth();
-    var y = d.getFullYear();
+    //var d = new Date();
+    //var m = d.getMonth();
+    //var y = d.getFullYear();
 
-    var obj = {vendorid: $('#ddlVendorList').val(), Month: m, Year: y }
+    var obj = {vendorid: $('#ddlVendorList').val()}
     $.ajax({
         url: '/Inventory/GetForecastReport',
         method: 'post',
@@ -61,11 +57,12 @@ function ForeCastreport() {
                 data: JSON.parse(data),
                 "columns": [
                     { data: 'id', title: 'ID', sWidth: "5%" },
-                    { data: 'post_title', title: 'Product', sWidth: "10%" },
-                    { data: 'stock', title: 'In Stock', sWidth: "20%" },
-                    { data: 'prev_sale', title: 'Previous Month Sale', sWidth: "15%" },
-                    { data: 'daily_v', title: 'Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
-                    { data: 'remain_days', title: 'Remaining Days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '')},
+                    { data: 'post_title', title: 'Product', sWidth: "25%" },
+                    { data: 'stock', title: 'In Stock', sWidth: "10%" },
+                    { data: 'prev_sale', title: 'Previous Month Sale', sWidth: "10%" },
+                    { data: 'daily_velocity', title: 'Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
+                    { data: 'remain_days', title: 'Remaining Days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
+                    { data: 'run_out_date', title: 'Run Out Date', sWidth: "10%"},
                 ],
                 "order": [[0, 'asc']],
             });

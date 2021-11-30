@@ -223,12 +223,14 @@ function GiftCardPaymentModal() {
     let billing_company = $('#txtCompany').val();
     let billing_address_1 = $('#txtAddress1').val(), billing_address_2 = $('#txtAddress2').val();
     let billing_city = $('#txtCity').val(), billing_state = $('#ddlState').val(), billing_postcode = $('#txtPostCode').val();
+    billing_country = $('#ddlCountry').val();
     let billing_phone = $('#txtPhone').val(), billing_email = $('#txtSenderEmail').val();
 
     let shipping_first_name = $('#txtFirstName').val(), shipping_last_name = $('#txtLastName').val();
     let shipping_country = "";
     let shipping_address_1 = $('#txtAddress1').val(), shipping_address_2 = $('#txtAddress2').val();
     let shipping_city = $('#txtCity').val(), shipping_state = $('#ddlState').val(), shipping_postcode = $('#txtPostCode').val();
+    shipping_country = $('#ddlCountry').val();
    // let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
@@ -247,10 +249,10 @@ function GiftCardPaymentModal() {
     if (billing_company != '') {
         myHtml += '' + billing_company + '<br>';
     }
-    myHtml += '' + billing_address_1 + (billing_address_2 > 0 ? ' <br> ' : '') + billing_address_2 + ' <br> ' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' <br> Phone: ' + billing_phone + ' <br> Email: ' + billing_email + '</address >';
+    myHtml += '' + billing_address_1 + (billing_address_2 > 0 ? ' <br> ' : '') + billing_address_2 + ' <br> ' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' ' + billing_country + ' <br> Phone: ' + billing_phone + ' <br> Email: ' + billing_email + '</address >';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + ' ' + shipping_country + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items
@@ -599,7 +601,7 @@ function successModal(paymode, id, is_mail) {
     }
 }
 function sendInvoice(paymode, id) {
-    debugger
+    
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
     let order_date = todaydate; 
     let payment_method = paymode;

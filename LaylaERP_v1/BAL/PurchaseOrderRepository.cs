@@ -381,5 +381,16 @@ namespace LaylaERP.BAL
             }
             return result;
         }
+        public static DataSet GetPurchaseOrderPrintList()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "POPRT") };
+                ds = SQLHelper.ExecuteDataSet("erp_purchase_order_search", parameters);
+            }
+            catch (Exception ex) { throw ex; }
+            return ds;
+        }
     }
 }

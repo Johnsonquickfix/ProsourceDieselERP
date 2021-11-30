@@ -333,7 +333,8 @@ namespace LaylaERP.Controllers
                         model.message = dr["message"].ToString();
                         model.balance = Convert.ToDouble(dr["remaining"]);
                         model.delivered = dr["delivered"].ToString();
-                        if (model.delivered == "1" && dr["delivered"].ToString() == "on")
+                        model.is_active = dr["is_active"].ToString();
+                        if (model.delivered == "1" && model.is_active.Trim() == "on")
                         {
                             status = true;
                             String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);

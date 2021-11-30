@@ -4,12 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- datatables CSS -->
-<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-<!-- datatables js -->
+@*datatables js*@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 <div class="page-title">
     <h2 class="page-heading">Forecast Inventory</h2>
 </div>
@@ -47,6 +46,7 @@
                                         <th>Previous Month Sale</th>
                                         <th>Daily Velocity</th>
                                         <th>Remaining Days</th>
+                                        <th>Run Out Date</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -69,11 +69,11 @@
         $('.select2').select2();
     })
 
-$(function () {
-$("#txtsaldate").datepicker({
-format: 'mm-dd-yyyy',
-}).datepicker("setDate", 'now');
-});
+    $(function () {
+        $("#txtsaldate").datepicker({
+            format: 'mm-dd-yyyy',
+        }).datepicker("setDate", 'now');
+    });
 
     $("#btnSearch").click(function () { ForeCastreport(); })
 </script>

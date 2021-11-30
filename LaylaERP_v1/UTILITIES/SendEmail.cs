@@ -124,6 +124,41 @@
             }
             return result;
         }
+
+        public static string SendEmails(string SenderEmailID, string SenderEmailPwd, string SMTPServerName, int SMTPServerPortNo, bool SSL, string varReceipientEmailId, string strSubject, string strBody, string fileHtml)
+        {
+            string result = "Your mail has been sent successfuly !";
+            try
+            {
+                using (MailMessage mm = new MailMessage(SenderEmailID.ToString(), varReceipientEmailId, strSubject, strBody))
+                {
+                    mm.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = SMTPServerName.Trim(); // "smtp.gmail.com";
+                    smtp.EnableSsl = SSL;
+                    NetworkCredential NetworkCred = new NetworkCredential(SenderEmailID.Trim(), SenderEmailPwd.Trim());
+                    smtp.UseDefaultCredentials = true;//false
+                    smtp.Credentials = NetworkCred;
+                    //smtp.Timeout = 5000;
+                    //GlobalVariable.strSMTPServerPortNo = "587";
+                    smtp.Port = SMTPServerPortNo; // 587;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    if (!string.IsNullOrEmpty(fileHtml))
+                    {
+                        byte[] inputBytes = Encoding.UTF8.GetBytes(fileHtml);
+                        var stream = new System.IO.MemoryStream(inputBytes);
+                        mm.Attachments.Add(new Attachment(stream, "invoice.html"));
+                    }
+                    smtp.Send(mm);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = "Please contact your Administrator!!";
+                //throw ex;
+            }
+            return result;
+        }
     }
 
 }

@@ -86,28 +86,10 @@ namespace LaylaERP.Controllers
                                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-                                DataTable gdt = GiftCardRepository.AddGiftCardOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
-                                if (gdt.Rows[0]["delivered"].ToString() == "1")
+                                DataTable giftdetails = GiftCardRepository.AddGiftCardOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                                if (giftdetails.Rows[0]["delivered"].ToString() == "1")
                                 {
-                                    foreach (DataRow gdr in gdt.Rows)
-                                    {
-                                        GiftCardModel model = new GiftCardModel
-                                        {
-                                            order_id = Convert.ToInt64(gdr["order_id"]),
-                                            code = gdr["code"].ToString(),
-                                            recipient = gdr["recipient"].ToString(),
-                                            sender = gdr["sender"].ToString(),
-                                            sender_email = gdr["sender_email"].ToString(),
-                                            message = gdr["message"].ToString(),
-                                            balance = Convert.ToDouble(gdr["balance"]),
-                                            delivered = gdr["delivered"].ToString(),
-                                        };
-                                     
-                                        String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                                        result = SendEmail.SendEmails(gdr["recipient"].ToString(), "You have received a $" + Convert.ToDouble(gdr["balance"]) + " Gift Card from " + gdr["sender"].ToString() + "", renderedHTML);
-                                        Response.Write(result);
-
-                                    }
+                                    SendGiftCardMailInvoice(giftdetails);
                                 }
                             }
                         }

@@ -258,5 +258,25 @@ namespace LaylaERP.BAL
             catch { }
             return result;
         }
+
+        public static string GetSendEmailHTML(GiftCardModel model)
+        {
+            string dt = "";
+            try
+            {
+                SqlParameter[] parameters = {
+                    new SqlParameter("@qflag", "SNGCM"),
+                    new SqlParameter("@pkey", model.order_id),
+                    new SqlParameter("@sender", model.sender),
+                    new SqlParameter("@message", model.message),
+                    new SqlParameter("@balance", model.balance),
+                    new SqlParameter("@code", model.code),
+                };
+                dt = SQLHelper.ExecuteScalar("usp_SendEmailTemplate", parameters).ToString();
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

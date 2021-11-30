@@ -91,20 +91,21 @@ namespace LaylaERP.Controllers
                                 {
                                     foreach (DataRow gdr in giftdetails.Rows)
                                     {
-                                        GiftCardModel model = new GiftCardModel
-                                        {
-                                            order_id = Convert.ToInt64(gdr["order_id"]),
-                                            code = gdr["code"].ToString(),
-                                            recipient = gdr["recipient"].ToString(),
-                                            sender = gdr["sender"].ToString(),
-                                            sender_email = gdr["sender_email"].ToString(),
-                                            message = gdr["message"].ToString(),
-                                            balance = Convert.ToDouble(gdr["balance"]),
-                                            delivered = gdr["delivered"].ToString(),
-                                        };
-                                        String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                                         result = SendEmail.SendEmails(gdr["recipient"].ToString(), "You have received a $" + Convert.ToDouble(gdr["balance"]) + " Gift Card from " + gdr["sender"].ToString() + "", renderedHTML);
-                                        Response.Write(result);
+                                        SendEmail.SendEmails("Steven.quickfix@gmail.com", "You have received a $100 Gift Card from steven methew", "This is a test mail");
+                                        //GiftCardModel model = new GiftCardModel
+                                        //{
+                                        //    order_id = Convert.ToInt64(gdr["order_id"]),
+                                        //    code = gdr["code"].ToString(),
+                                        //    recipient = gdr["recipient"].ToString(),
+                                        //    sender = gdr["sender"].ToString(),
+                                        //    sender_email = gdr["sender_email"].ToString(),
+                                        //    message = gdr["message"].ToString(),
+                                        //    balance = Convert.ToDouble(gdr["balance"]),
+                                        //    delivered = gdr["delivered"].ToString(),
+                                        //};
+                                        //String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                                        // result = SendEmail.SendEmails(gdr["recipient"].ToString(), "You have received a $" + Convert.ToDouble(gdr["balance"]) + " Gift Card from " + gdr["sender"].ToString() + "", renderedHTML);
+                                        //Response.Write(result);
 
                                     }
                                 }

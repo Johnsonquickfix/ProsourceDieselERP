@@ -328,25 +328,19 @@ function PodiumPayment() {
     let bill_email = $("#txtSenderEmail").val();
     let bill_to = $('input[name="podiumchannel"]:checked').val();
     let bill_name = $('#txtFirstName').val() + ' ' + $('#txtLastName').val();
-
     let _lineItems = [];
-
     let qty = parseFloat($('#totalQty').text()) || 0.00;
     let grossAmount = parseFloat($('#orderTotal').text().replace('$', '')) || 0.00;
     if (grossAmount > 0)
         _lineItems.push({ description: $("#lblOrderNo").data("pname"), amount: grossAmount * 100 });
-
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-
     let option = { strValue1: 'getToken' };
     swal.queue([{
         title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumToken', option).then(response => {
-
                 let access_token = response.message;
-             
                 //let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 //if (inv_id.length > 0 && pay_by.includes('podium')) {
                 //    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
@@ -367,6 +361,7 @@ function PodiumPayment() {
     }]);
 }
 function updatePayment(oid, taskUid) {
+    debugger
     let _postMeta = [
         { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
@@ -483,7 +478,9 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             console.log(senddata);
             let opt = { OrderPostMeta: _postMeta };
             $.post('/GiftCard/UpdatePaymentInvoiceID', opt).then(result => {
-                swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
+                swal('Success!', result.message, 'success');
+                $('#lblOrderNo').data('pay_id', id);
+
                 $("#GiftModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 successModal('PayPal', id[id.length - 2], true);
             }).catch(err => { console.log(err); swal.hideLoading(); });
@@ -571,13 +568,8 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<tbody></tbody>';
     myHtml += '<tfoot>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#SubTotal').text() + '</span></td></tr>';
-    /*myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + $('#discountTotal').text()  + '</span></td></tr>';*/
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#shippingTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
-    /*myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';*/
-    /*myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';*/
-    //if (parseFloat($('#giftCardTotal').text()) > 0)
-    //    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#giftCardTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#orderTotal').text() + '</span></td></tr>';
     myHtml += '</tfoot>';
     myHtml += '</table>';
@@ -607,6 +599,7 @@ function successModal(paymode, id, is_mail) {
     }
 }
 function sendInvoice(paymode, id) {
+    debugger
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
     let order_date = todaydate; 
     let payment_method = paymode;
@@ -714,7 +707,7 @@ function ReSendGiftCard() {
     var obj = { order_id:parseInt($('#hfOrderNo').val()) }
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/Giftcard/ResendSendMailInvoice",
+        url: "/Giftcard/ResendMailInvoice",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status == true) {

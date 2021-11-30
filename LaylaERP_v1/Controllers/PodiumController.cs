@@ -134,7 +134,7 @@ namespace LaylaERP.Controllers
                     };
                     status = true;
                     String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                    result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                    result = SendEmail.SendEmails(dr["recipient"].ToString(), "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
                     Response.Write(result);
                   
                 }

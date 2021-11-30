@@ -707,6 +707,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1013,6 +1014,7 @@
     <Content Include="Views\CheckDeposit\PaymentStatusList.cshtml" />
     <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
     <Content Include="Views\Inventory\ForecastInventory.cshtml" />
+    <Content Include="Views\Reports\OrderType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

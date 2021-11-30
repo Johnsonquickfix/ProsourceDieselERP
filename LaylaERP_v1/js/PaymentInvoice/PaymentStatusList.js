@@ -20,7 +20,9 @@ function Search() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlstatus').val();
-    if (account == "0") { swal('alert', 'Please select Type', 'error'); }
+    var type = $('#ddltype').val();
+    if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }
+    else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
     else { 
         let table = $('#dtdata').DataTable({
             columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
@@ -47,14 +49,14 @@ function Search() {
             },
             sAjaxSource: "/CheckDeposit/GetPaymentStatusList",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: "0" });
+                aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: type });
                 if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
                 oSettings.jqXHR = $.ajax({
                     dataType: 'json', type: "GET",url: sSource, data: aoData,
                     "success": function (data) {
                         var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                         return fnCallback(dtOption);
-                    }
+                    } 
                 });
             },
             columns: [
@@ -95,10 +97,28 @@ function Search() {
                   
             ],
             //columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
+            "dom": 'lBftipr',
+            "buttons": [
+
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> Export',
+                    filename: function () {
+                        var from = $("#txtOrderDate").val().replaceAll('/', '.');
+                        //var to = $("#end_date").val().replaceAll('/', '.');
+                        return from ;
+                    },
+                },
+
+            ],
+
         });
     }
 
-    setTimeout(function () { getGrandTotal(); }, 100);
+   // setTimeout(function () {
+        getGrandTotal();
+    //}, 50);
     
 }
 
@@ -106,9 +126,10 @@ function getGrandTotal(val) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlstatus').val();
+    var type = $('#ddltype').val();
     let src = val;
     console.log(src);
-    let obj = { strValue1: account, strValue2: sd, strValue3: ed, strValue4: src };
+    let obj = { strValue1: account, strValue2: sd, strValue3: ed, strValue4: src, strValue5: type };
     $.ajax({
         url: "/CheckDeposit/GetGrandTotal",
         type: "GET",

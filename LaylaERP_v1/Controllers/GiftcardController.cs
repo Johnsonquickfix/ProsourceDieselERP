@@ -314,7 +314,7 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult ResendSendMailInvoice(GiftCardModel model)
+        public JsonResult ResendMailInvoice(GiftCardModel model)
         {
             string result = string.Empty;
             bool status = false;
@@ -333,9 +333,13 @@ namespace LaylaERP.Controllers
                         model.message = dr["message"].ToString();
                         model.balance = Convert.ToDouble(dr["remaining"]);
                         model.delivered = dr["delivered"].ToString();
-                        status = true;
-                        String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                        result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                        model.is_active = dr["is_active"].ToString();
+                        if (model.delivered == "1" && model.is_active.Trim() == "on")
+                        {
+                            status = true;
+                            String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                            result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from " + model.sender + "", renderedHTML);
+                        }
                        // Response.Write(result);
                     }
                 }

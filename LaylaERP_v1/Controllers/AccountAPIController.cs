@@ -250,10 +250,10 @@
                         return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);
                     }
                     else
-                        return Json(new { status = false, message = "Your account has been suspended. Please contact to your Administrator", url = "" }, 0);
+                        return Json(new { status = false, message = "Please contact to your Administrator", url = "" }, 0);
                 }
                 else
-                    return Json(new { status = false, message = "Please Check Username and Password!", url = "" }, 0);
+                    return Json(new { status = false, message = "Please Check Username Or Password!", url = "" }, 0);
 
             }
             return Json(new { status = false, message = "Invalid User", url = "" }, 0);

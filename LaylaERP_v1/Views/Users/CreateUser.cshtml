@@ -55,19 +55,19 @@
                                     <input type="hidden" id="hfzipstatus" />
                                     <input type="hidden" id="hfvpassordshow" />
                                     <label for="exampleInputEmail1">User Login</label>
-                                    <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name">
+                                    <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">E-mail</label>
-                                    <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                                    <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">First Name</label>
-                                    <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
+                                    <input type="text" class="form-control" id="txtFirstName" placeholder="First Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Last Name</label>
-                                    <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
+                                    <input type="text" class="form-control" id="txtLastName" placeholder="Last Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">User Status</label>
@@ -88,7 +88,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Contact Number</label>
-                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
+                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Address Line 2</label>
-                                    <input type="text" class="form-control" id="txtAddress2" placeholder="Address Line 2">
+                                    <input type="text" class="form-control" id="txtAddress2" placeholder="Address Line 2" autocomplete="off">
 
                                 </div>
                                 @*<div class="form-group">
@@ -109,7 +109,7 @@
                                     </div>*@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">City</label>
-                                    <input type="text" id="txtCity" class="form-control" />
+                                    <input type="text" id="txtCity" class="form-control" autocomplete="off" />
                                 </div>
 
                             </div>
@@ -129,7 +129,7 @@
                                 <div class="form-group">
                                     <label class="control-label" for="Zip Code">Zip Code</label>
                                     <div class="">
-                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code">
+                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" autocomplete="off">
                                     </div>
                                 </div>
 
@@ -143,7 +143,7 @@
                                 <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Password</label>
                                     <span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>
-                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
+                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password" autocomplete="off">
                                     @*<span class="genrate_password" id="message">Generate Password</span>*@
                                     <span class="" id='result'></span>
                                 </div>
@@ -151,7 +151,7 @@
                                 <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Confirm Password</label>
                                     <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
-                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password" autocomplete="off">
                                     <span class="genrate_password" id="message"></span>
                                 </div>
 
@@ -381,7 +381,7 @@
                         }
                         else {
                             $("#txtUserEmail").val("");
-                            swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                            swal('Alert', 'User email already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
                         }
                     },
 

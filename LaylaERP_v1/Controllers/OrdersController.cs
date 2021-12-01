@@ -452,8 +452,11 @@
             string result = string.Empty;
             try
             {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1)) fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) todate = Convert.ToDateTime(model.strValue2);
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                DataTable dt = OrderRepository.OrderCounts(om.UserID);
+                DataTable dt = OrderRepository.OrderCounts(fromdate, todate, om.UserID);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

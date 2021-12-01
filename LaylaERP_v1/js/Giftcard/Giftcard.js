@@ -11,13 +11,15 @@
     });
     var date = new Date();
     date.setDate(date.getDate());
+    document.getElementById("gift_date").defaultValue = date;
     var dDate = localStorage.getItem("Orderdeliverydate");
+
     if (dDate != null) {
         $('#gift_date').datepicker({
             startDate: date,
             format: 'mm/dd/yyyy',
         }).datepicker("setDate", dDate);
-        $('#gift_date').val(dDate);
+        //$('#gift_date').val(dDate);
         localStorage.removeItem("Orderdeliverydate");
     }
     else {

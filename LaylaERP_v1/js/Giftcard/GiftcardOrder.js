@@ -249,10 +249,10 @@ function GiftCardPaymentModal() {
     if (billing_company != '') {
         myHtml += '' + billing_company + '<br>';
     }
-    myHtml += '' + billing_address_1 + (billing_address_2 > 0 ? ' <br> ' : '') + billing_address_2 + ' <br> ' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' ' + billing_country + ' <br> Phone: ' + billing_phone + ' <br> Email: ' + billing_email + '</address >';
+    myHtml += '' + billing_address_1 + ' ' + (billing_address_2 > 0 ? ' <br> ' : '') + billing_address_2 + ' <br> ' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' ' + billing_country + ' <br> Phone: ' + billing_phone + ' <br> Email: ' + billing_email + '</address >';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + ' ' + shipping_country + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + ' ' + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + ' ' + shipping_country + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items

@@ -428,7 +428,7 @@
                 {
                     UpdateUserProfile(model, model.ID);
                     UpdateProfile_MetaData(model, model.ID);
-                    return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Profile saved successfully!!", url = "" }, 0);
                 }
 
             }
@@ -441,7 +441,7 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                return Json(new { status = true, message = "Password has been update successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Password Updated Successfully!!", url = "" }, 0);
             }
             else
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

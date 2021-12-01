@@ -145,10 +145,10 @@
         t.preventDefault();
         let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
-        successModal(pay_mode, pay_id, false);
+        successModal(pay_mode, pay_id, false, false);
     });
-    /*start add order item meta*/
-    $(document).on("click", ".add_order_item_meta", function (t) {
+/*start add order item meta*/
+    $(document).on("click", ".view_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
         let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
         $.post('/Orders/GetOrderItemMeta', { strValue1: _item_id }).then(response => {
@@ -749,19 +749,14 @@ function getOrderItemList(oid) {
             if (row.product_type == 'line_item') {
                 let PKey = row.product_id + '_' + row.variation_id;
                 itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
-                if (row.is_free)
-                    itemHtml += '<td class="text-center item-action"></td>';
-                else
-                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 
                 if (row.is_free) {
-                    itemHtml += '<td>' + row.product_name + '</td>';
-                    itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 else {
-                    itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
-                    itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td>' + row.product_name + '<div class="view-addmeta">' + row.meta_data + '</div></td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
@@ -1996,7 +1991,7 @@ function saveCO() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
-                $.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true); });
+                $.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true); });
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
@@ -2205,7 +2200,7 @@ function updatePayment(oid, taskUid) {
     let opt = { OrderPostMeta: _postMeta };
     $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
-        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
+        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
 }
 
@@ -2295,7 +2290,7 @@ function PaypalPayment(ppemail) {
                     else {
                         swal('Success!', 'Order placed successfully.', 'success');
                         $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                        successModal('PayPal', inv_id, true);
+                        successModal('PayPal', inv_id, true, true);
                     }
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
@@ -2321,7 +2316,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                successModal('PayPal', id[id.length - 2], true);
+                successModal('PayPal', id[id.length - 2], true, true);
             }).catch(err => { console.log(err); swal.hideLoading(); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -2348,7 +2343,7 @@ function CancelPaypalInvoice(access_token, pp_email, invoice_no) {
     });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Success modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function successModal(paymode, id, is_mail) {
+function successModal(paymode, id, is_mail, is_back) {
     //console.log(id, id.toString().substring(4).replace(/\-/g, ''));
     id = id.toString().substring(4).replace(/\-/g, '');
     var modalHtml = '';
@@ -2356,7 +2351,8 @@ function successModal(paymode, id, is_mail) {
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-body no-padding" ></div>';
     modalHtml += '<div class="modal-footer">';
-    modalHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
+    if (is_back) modalHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
+    else modalHtml += '<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">OK</button>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';

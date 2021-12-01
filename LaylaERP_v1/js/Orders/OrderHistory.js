@@ -85,7 +85,6 @@ function GetMonths() {
     }
     $("#filter-by-date").select2();
 }
-
 ///Get Order Counts
 function GetOrderDetails() {
     var opt = { strValue1: '' };

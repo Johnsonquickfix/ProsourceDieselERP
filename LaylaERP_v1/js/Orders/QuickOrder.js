@@ -148,7 +148,7 @@
         successModal(pay_mode, pay_id, false, false);
     });
 /*start add order item meta*/
-    $(document).on("click", ".view_order_item_meta", function (t) {
+    $(document).on("click", ".add_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
         let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
         $.post('/Orders/GetOrderItemMeta', { strValue1: _item_id }).then(response => {

@@ -732,7 +732,8 @@
                         if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
                             productsModel.meta_data = sdr["meta_data"].ToString().Trim();
                         else
-                            productsModel.meta_data = "[{\"id\": 0,\"item_id\": " + productsModel.order_item_id.ToString() + ", \"key\": \"\", \"value\": \"\"}]";
+                            productsModel.meta_data = string.Empty;
+                        //productsModel.meta_data = "[{\"id\": 0,\"item_id\": " + productsModel.order_item_id.ToString() + ", \"key\": \"\", \"value\": \"\"}]";
                         ///// free item
                         //if (productsModel.product_id == 78676) { productsModel.is_free = true; }
                         //else if (productsModel.product_id == 632713) { productsModel.is_free = true; }

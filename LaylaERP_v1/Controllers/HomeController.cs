@@ -84,14 +84,14 @@
 
 
 
-                    Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
+                    //Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
                     ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
 
 
                 }
                 else
                 {
-                    ViewBag.Result = "User does not Exist with this User Name.";
+                    ViewBag.Result = "User does not exist with this user name.";
                 }
 
             }

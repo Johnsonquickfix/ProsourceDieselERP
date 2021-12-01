@@ -1004,7 +1004,7 @@
         }
 
         //Get Order History 
-        public static DataTable OrderCounts(long UserID)
+        public static DataTable OrderCounts(DateTime? fromdate, DateTime? todate, long UserID)
         {
             DataTable dt = new DataTable();
             try
@@ -1016,6 +1016,8 @@
                 }
                 SqlParameter[] parameters =
                 {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@userid", UserID),
                     new SqlParameter("@flag", "ORDTC")
                 };

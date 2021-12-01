@@ -753,13 +753,15 @@ function getOrderItemList(oid) {
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
                     itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-
-                itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
-                itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                
                 if (row.is_free) {
+                    itemHtml += '<td>' + row.product_name + '</td>';
+                    itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 else {
+                    itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
+                    itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';

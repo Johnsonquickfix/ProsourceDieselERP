@@ -1,41 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "PaymentStatusList";
+    ViewBag.Title = "PartialRefund";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
-<style>
-    .grand-payment-list{overflow:auto;}
-    .grand-payment-list .col-sm-2{padding-left:10px;padding-right:20px;}
-    .grand-payment-list .col-sm-1{padding-left:10px;padding-right:20px;}
-    .grand-payment-list {padding-left: 0px; padding-right: 0px;}
-    .grand-payment-list .col-sm-2.grands-1 {width: 10%;}
-    .grand-payment-list .col-sm-2.grands-2{width:20%;} 
-    .grand-payment-list .col-sm-1.grands-3{text-align:right;width:8%} 
-    .grand-payment-list .col-sm-1.grands-4{text-align:right;    width: 8%;} 
-    .grand-payment-list .col-sm-1.grands-5{text-align:right;width: 8%;} 
-    .grand-payment-list .col-sm-1.grands-6{text-align:right;width: 8%;} 
-    .grand-payment-list .col-sm-1.grands-7{text-align:right;    width: 11%;} 
-    .grand-payment-list .col-sm-1.grands-8{text-align:right;    width: 9%;} 
-    .grand-payment-list .col-sm-1.grands-9{text-align:right; width: 8%;} 
-    .grand-payment-list .col-sm-1.grands-10{text-align:right; width: 10%;}
-    .grand-payment-list .form-group{display:flex;min-width:1030px;}
-    .paymentblue_table{table-layout:fixed !important;min-width:1030px;}
-    .paymentblue_table th{white-space:normal !important;}
-    .payment-boxes #divpodata #dtdata.inventory-table.paymentblue_table td:first-child, #divpodata .check-table.inventory-table.paymentblue_table th:first-child{width:10% !important;}
-    .paymentblue_table th:nth-child(2){width:10% !important;}
-    .paymentblue_table th:nth-child(3){width:10% !important;}
-    .paymentblue_table th:nth-child(4){width:8% !important;}
-    .paymentblue_table th:nth-child(5){width:8% !important;}
-    .paymentblue_table th:nth-child(6){width:8% !important;}
-    .paymentblue_table th:nth-child(7){width:8% !important;}
-    .paymentblue_table th:nth-child(8){width:11% !important;}
-    .paymentblue_table th:nth-child(9){width:9% !important;}
-    .paymentblue_table th:nth-child(10){width:8% !important;}
-    .paymentblue_table th:nth-child(11){width:10% !important;}
-
-</style>
-
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 <!-- datatables js -->
@@ -46,7 +14,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2>Payment Deposit List</h2>
+    <h2>Partial Refund Orders</h2>
 </div>
 <section class="content section-content neworder-section table-design payment-boxes">
     <div class="nav-tabs-custom">
@@ -63,18 +31,7 @@
                             </div>
                         </div>
                         <div class="alignleft actions">
-                            <select class="form-control" id="ddlstatus"> 
-                                <option value="0" selected="selected">Select</option>
-                                <option value="podium">Podium</option>
-                                <option value="ppec_paypal">Paypal</option>
-                                <option value="authorize_net_cim_credit_card">Credit Card</option>
-                            </select>
-                            @*<select class="form-control" id="ddltype">
-                                <option value="0" selected="selected">Select</option>
-                                <option value="1">Both</option>
-                                <option value="Discount">Coupon Orders</option>
-                                <option value="gift_card">Gift Card Orders</option>
-                            </select>*@
+                          
                             @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
                             <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
                         </div>
@@ -92,10 +49,8 @@
                                     <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
                                         <thead>
                                             <tr>
-
-                                                @*
-                                        <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
                                                 <th>ID</th>
+
                                                 <th>Create Date</th>
                                                 <th>Status</th>
                                                 <th>Sub-Total</th>
@@ -106,55 +61,12 @@
                                                 <th>Fee</th>
                                                 <th>Gift Card</th>
                                                 <th>Order Total</th>
+                                                <th>Refund Total</th>
                                             </tr>
                                         </thead>
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="box box-primary">
-                            <div class="box-header grand-payment-list">
-                                <div class="form-group">
-                                    <div class="col-sm-2 grands-1">
-                                        <label class="control-label">Grand Total</label>
-                                    </div>
-                                    <div class="col-sm-2 grands-2">
-                                        <span class="control-label" id="totaldebit" style="font-weight: bold; text-align: right"></span>
-                                    </div>
-                                    @*<div class="col-sm-1">
-                                        <span class="control-label" id="totaldebit" style="font-weight: bold; text-align: right"></span>
-                                    </div>*@
-                                    <div class="col-sm-1 grands-3">
-                                        <span class="control-label" id="totalsub" style="font-weight: bold; text-align: right "></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-4">
-                                        <span class="control-label" id="totalsaving" style="font-weight: bold; text-align: right "></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-5">
-                                        <span class="control-label" id="totalshiiping" style="font-weight: bold; text-align: right "></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-6">
-                                        <span class="control-label" id="totalsaltax" style="font-weight: bold; text-align: right "></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-7">
-                                        <span class="control-label" id="totalstatefee" style="font-weight: bold; text-align: right"></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-8">
-                                        <span class="control-label" id="totalfee" style="font-weight: bold; text-align: right"></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-9">
-                                        <span class="control-label" id="totalgigtcard" style="font-weight: bold; text-align: right"></span>
-                                    </div>
-                                    <div class="col-sm-1 grands-10">
-                                        <span class="control-label" id="totalothertotal" style="font-weight: bold; text-align: right"></span>
-                                    </div>
-                                </div>
-                                </div>
                         </div>
                     </div>
                 </div>
@@ -165,14 +77,7 @@
 <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
 <script src="~/js/common.js"></script>
-<script src="@Url.Content("~/js/PaymentInvoice/PaymentStatusList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
- 
+<script src="@Url.Content("~/js/Report/PartialRefund.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
-<script>
-    (function () {
-        var target = $(".grand-payment-list");
-        $(".dataTables_scrollBody").scroll(function () {
-            target.prop("scrollLeft", this.scrollLeft);
-        });
-    })();
-</script>
+
+

@@ -89,12 +89,17 @@
                         //smtp.Send(mailMessage);
 
                     }
+
+
+
                     Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
-                    ViewBag.Result = "Reset password link has been send, Please check email";
+                    ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
+
+
                 }
                 else
                 {
-                    ViewBag.Result = "User does not Exist with this User Name.";
+                    ViewBag.Result = "User does not exist with this user name.";
                 }
 
             }
@@ -431,7 +436,7 @@
                 {
                     UpdateUserProfile(model, model.ID);
                     UpdateProfile_MetaData(model, model.ID);
-                    return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Profile saved successfully!!", url = "" }, 0);
                 }
 
             }
@@ -444,7 +449,7 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                return Json(new { status = true, message = "Password has been update successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Password Updated Successfully!!", url = "" }, 0);
             }
             else
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

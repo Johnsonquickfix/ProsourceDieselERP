@@ -86,28 +86,10 @@ namespace LaylaERP.Controllers
                                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-                                DataTable giftdetails = GiftCardRepository.AddGiftCardOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
-                                if (giftdetails.Rows[0]["delivered"].ToString() == "1")
+                                DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                                if (giftdetails.Tables[1].Rows[0]["delivered"].ToString() == "1")
                                 {
-                                    foreach (DataRow gdr in giftdetails.Rows)
-                                    {
-                                        SendEmail.SendEmails("Steven.quickfix@gmail.com", "You have received a $100 Gift Card from steven methew", "This is a test mail");
-                                        //GiftCardModel model = new GiftCardModel
-                                        //{
-                                        //    order_id = Convert.ToInt64(gdr["order_id"]),
-                                        //    code = gdr["code"].ToString(),
-                                        //    recipient = gdr["recipient"].ToString(),
-                                        //    sender = gdr["sender"].ToString(),
-                                        //    sender_email = gdr["sender_email"].ToString(),
-                                        //    message = gdr["message"].ToString(),
-                                        //    balance = Convert.ToDouble(gdr["balance"]),
-                                        //    delivered = gdr["delivered"].ToString(),
-                                        //};
-                                        //String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                                        // result = SendEmail.SendEmails(gdr["recipient"].ToString(), "You have received a $" + Convert.ToDouble(gdr["balance"]) + " Gift Card from " + gdr["sender"].ToString() + "", renderedHTML);
-                                        //Response.Write(result);
-
-                                    }
+                                    SendGiftCardEMails(giftdetails);
                                 }
                             }
                         }
@@ -151,12 +133,51 @@ namespace LaylaERP.Controllers
                         delivered = dr["delivered"].ToString(),
                     };
                     status = true;
-                    //String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                    String renderedHTML = GiftCardRepository.GetSendEmailHTML(model);
-                   // result = SendEmail.SendEmails(dr["recipient"].ToString(), "You have received a $" + Convert.ToDouble(dr["balance"]) + " Gift Card from " + dr["sender"].ToString() + "", renderedHTML);
-                    result = SendEmail.SendEmails("Steven.quickfix@gmail.com", "You have received a $500 Gift Card from Steven Methew", renderedHTML);
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                    result = SendEmail.SendEmails(dr["recipient"].ToString(), "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
                     Response.Write(result);
                   
+                }
+            }
+            catch { status = false; result = ""; }
+
+            return Json(new { status = status, message = result }, 0);
+        }
+
+        public JsonResult SendGiftCardEMails(DataSet ds)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
+                int SMTPServerPortNo = 587; bool SSL = false;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
+                    SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
+                    SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
+                    //SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    //SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
+                }
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    GiftCardModel model = new GiftCardModel
+                    {
+                        order_id = Convert.ToInt64(dr["order_id"]),
+                        code = dr["code"].ToString(),
+                        recipient = dr["recipient"].ToString(),
+                        sender = dr["sender"].ToString(),
+                        sender_email = dr["sender_email"].ToString(),
+                        message = dr["message"].ToString(),
+                        balance = Convert.ToDouble(dr["balance"]),
+                        delivered = dr["delivered"].ToString(),
+                    };
+                    status = true;
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                    result = SendEmail.SendEmails(SenderEmailID,SenderEmailPwd,SMTPServerName,SMTPServerPortNo,SSL,dr["recipient"].ToString(), "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML,string.Empty);
+                    Response.Write(result);
+
                 }
             }
             catch { status = false; result = ""; }

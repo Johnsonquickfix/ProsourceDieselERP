@@ -732,7 +732,8 @@
                         if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
                             productsModel.meta_data = sdr["meta_data"].ToString().Trim();
                         else
-                            productsModel.meta_data = "[{\"id\": 0,\"item_id\": " + productsModel.order_item_id.ToString() + ", \"key\": \"\", \"value\": \"\"}]";
+                            productsModel.meta_data = string.Empty;
+                        //productsModel.meta_data = "[{\"id\": 0,\"item_id\": " + productsModel.order_item_id.ToString() + ", \"key\": \"\", \"value\": \"\"}]";
                         ///// free item
                         //if (productsModel.product_id == 78676) { productsModel.is_free = true; }
                         //else if (productsModel.product_id == 632713) { productsModel.is_free = true; }
@@ -1004,7 +1005,7 @@
         }
 
         //Get Order History 
-        public static DataTable OrderCounts(long UserID)
+        public static DataTable OrderCounts(DateTime? fromdate, DateTime? todate, long UserID)
         {
             DataTable dt = new DataTable();
             try
@@ -1016,6 +1017,8 @@
                 }
                 SqlParameter[] parameters =
                 {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@userid", UserID),
                     new SqlParameter("@flag", "ORDTC")
                 };

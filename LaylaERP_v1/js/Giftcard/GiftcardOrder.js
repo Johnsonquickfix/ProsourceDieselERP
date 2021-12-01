@@ -223,14 +223,14 @@ function GiftCardPaymentModal() {
     let billing_company = $('#txtCompany').val();
     let billing_address_1 = $('#txtAddress1').val(), billing_address_2 = $('#txtAddress2').val();
     let billing_city = $('#txtCity').val(), billing_state = $('#ddlState').val(), billing_postcode = $('#txtPostCode').val();
-    billing_country = $('#ddlCountry').val();
+    let billing_country = $('#ddlCountry').val();
     let billing_phone = $('#txtPhone').val(), billing_email = $('#txtSenderEmail').val();
 
     let shipping_first_name = $('#txtFirstName').val(), shipping_last_name = $('#txtLastName').val();
-    let shipping_country = "";
+    
     let shipping_address_1 = $('#txtAddress1').val(), shipping_address_2 = $('#txtAddress2').val();
     let shipping_city = $('#txtCity').val(), shipping_state = $('#ddlState').val(), shipping_postcode = $('#txtPostCode').val();
-    shipping_country = $('#ddlCountry').val();
+    let shipping_country = $('#ddlCountry').val();
    // let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header

@@ -392,5 +392,20 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
             return ds;
         }
+        public static DataTable SendInvoiceUpdate(XmlDocument orderXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@qflag", "SINV"),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+            return dt;
+        }
     }
 }

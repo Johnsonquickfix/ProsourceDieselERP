@@ -410,7 +410,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country+ '</address>';
+                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country + '</address>';
                         return val;
                     }
                 }
@@ -1894,9 +1894,10 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift }
     );
-    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_gift_amount', meta_value: _gift }, { post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
+    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
     else { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: '' }); }
     return postMetaxml;

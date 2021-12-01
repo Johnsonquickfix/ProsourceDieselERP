@@ -1,4 +1,5 @@
 ﻿using LaylaERP.BAL;
+using LaylaERP.Models;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -198,10 +200,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = ShipRepository.GenerateShippingOrder();
+                SendPOInvoice();
             }
             catch { }
             return View();
-        } 
+        }
         public static void LogData(string order_number, string tracking_number, string carrier, string jsonData)
         {
             try
@@ -232,6 +235,167 @@ namespace LaylaERP.Controllers
                 objStreamWriter.Close();
             }
             catch { }
+        }
+
+        public static void SendPOInvoice()
+        {
+            try
+            {
+                string vendor_email = string.Empty;
+                DataSet ds = PurchaseOrderRepository.GetPurchaseOrderPrintList();
+                string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
+                int SMTPServerPortNo = 587; bool SSL = false;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
+                    SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
+                    SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
+                    //SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
+                }
+                string str_meta = string.Empty;
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    vendor_email = dr["vendor_email"] != DBNull.Value ? dr["vendor_email"].ToString().Trim() : "";
+                    string myHtml = "<table id=\"invoice\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;\">"
+                    + "<tr>"
+                    + "    <td align=\"center\" style=\"padding:0;\">"
+                    + "        <table class=\"container_table\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border:2px solid #e6e6e6; width:995px\">"
+                    + "            <tr>"
+                    + "                <td style=\"padding:15px;\">"
+                    + "                    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"table-layout:fixed;width:100%;border-bottom: 1px solid #ddd;\">"
+                    + "                        <tr>"
+                    + "                            <td style=\"padding:0; vertical-align: top;width:66.9%\">"
+                    + "                                <img src=\"https://laylaerp.com/Images/layla1-logo.png\" alt=\"\" width=\"95\" height=\"41\"/>"
+                    + "                                <p style=\"margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">"
+                    + dr["company_address"].ToString() + ".<br> Phone: " + Regex.Replace(dr["company_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString()
+                    + "                                </p>"
+                    + "                            </td>"
+                    + "                            <td style=\"padding: 0; vertical-align:top; width:33.1%\" align\"left\">"
+                    + "                                <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">"
+                    + "                                    <tr><td colspan=\"2\" style=\"padding: 0px 2.5px 0px 0px\"><h2 style=\"color:#9da3a6;font-family: sans-serif;font-weight:700;margin:0px 0px 8px 0px;font-size: 30px;\">Invoice</h2></td></tr>"
+                    + "                                    <tr><td style=\"font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height: 1.4; padding:0px 2.5px;\">Invoice No #:</td><td style=\"padding:0px 2.5px;font-family: sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;\">" + dr["ref_ext"].ToString() + "</td></tr>"
+                    + "                                    <tr><td style=\"font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height: 1.4; padding:0px 2.5px;\">Invoice Date:</td><td style=\"padding:0px 2.5px;font-family: sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;\">" + dr["date_creation"].ToString() + "</td></tr>"
+                    + "                                    <tr><td style=\"font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height: 1.4; padding:0px 2.5px;\">Reference:</td><td style=\"padding:0px 2.5px;font-family: sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;\">" + dr["ref_supplier"].ToString() + "</td></tr>"
+                    + "                                    <tr><td style=\"font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height: 1.4; padding:0px 2.5px;\">Sale Order Reference No:</td><td style=\"padding:0px 2.5px;font-family: sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;\">" + dr["fk_projet"].ToString() + "</td></tr>"
+                    + "                                    <tr><td style=\"font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height: 1.4; padding:0px 2.5px;\">Expected Delivery Date:</td><td style=\"padding:0px 2.5px;font-family: sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;\">" + dr["date_livraison"].ToString() + "</td></tr>"
+                    + "                                </table>"
+                    + "                            </td>"
+                    + "                        </tr>"
+                    + "                    </table>"
+                    + "                </td>"
+                    + "            </tr>"
+                    + "<tr>"
+                    + "<td style=\"padding:0px 15px 0px 15px;\">"
+                    + "    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;\">"
+                    + "    <tr>"
+                    + "        <td style=\"vertical-align: text-top;padding:0;width:33.1%\">"
+                    + "            <h3 style=\"font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;\">Vendor:</h3>"
+                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["vendor_address"].ToString() + "</p>"
+                    + "        </td>"
+                    + "        <td style=\"vertical-align: text-top;padding:0;width: 33.1\" align=\"left\">"
+                    + "            <h3 style=\"font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;color:#2c2e2f;font-weight:200;\">Delivery Address:</h3>"
+                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["delivery_address"].ToString() + "<br>Phone: " + Regex.Replace(dr["delivery_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "</p>"
+                    + "        </td>"
+                    + "        <td style=\"vertical-align: text-top;padding:0;width: 33.1\" align=\"left\">"
+                    + "            <h3 style=\"font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;color:#2c2e2f;font-weight:200;\">Ship To:</h3>"
+                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["ship_address"].ToString() + "<br>Phone: " + Regex.Replace(dr["ship_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["ship_email"].ToString() + "</p>"
+                    + "        </td>"
+                    + "     </tr>"
+                    + "     </table>"
+                    + "</td >"
+                    + "</tr >"
+                    + "<tr>"
+                    + "<td style=\"padding:0px 15px 0px 15px;\">"
+                    + "    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;width:100%;table-layout: fixed;\">"
+                    + "        <thead style=\"border:1px solid #ddd;background-color: #f9f9f9;\">"
+                    + "            <tr>"
+                    + "                <th style=\"width:12%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Item#</th>"
+                    + "                <th style=\"width:48%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Description</th>"
+                    + "                <th style=\"width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Quantity</th>"
+                    + "                <th style=\"width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Price</th>"
+                    + "                <th style=\"width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Amount</th>"
+                    + "            </tr>"
+                    + "        </thead>"
+                    + "        <tbody>" + dr["items"].ToString() + "</tbody>"
+                    + "    </table>"
+                    + "</td>"
+                    + "</tr>"
+                    + "<tr>"
+                    + "<td style=\"padding:0px 15px 15px 15px;\">"
+                    + "    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;width: 100%;table-layout:fixed;\">"
+                    + "        <tr>"
+                    + "            <td style=\"vertical-align:top;width:50%;padding:0px;\">"
+                    + "                <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;width:100%; table-layout: fixed;\">"
+                    + "                    <tr><td style=\"color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;\">Comments or Special Instructions</td></tr>"
+                    + "                    <tr><td style=\"padding:5px 12px;text-align:left;font-family:sans-serif;font-size:12px; color:#4f4f4f;line-height:1.4;\">1. Payment term:" + dr["PaymentTerm"].ToString() + ", " + dr["Balance"].ToString() + "</td></tr>"
+                    + "                    <tr><td style=\"padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;\">2. " + dr["location_incoterms"].ToString() + "</td></tr>"
+                    + "                    <tr>"
+                    + "                        <td style=\"border-top: 1px solid #ddd;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">"
+                    + "                            <h4 style=\"text-align:left;font-family:sans-serif;color: #555;font-size:16px;line-height:18px;margin-bottom:5px;margin-top:0px;vertical-align:middle;text-align: left;width: 100%;font-weight: 600;\">Notes</h4>"
+                    + "                            <p style=\"text-align:left;font-family:sans-serif;color: #4f4f4f;font-size: 12px;line-height: 18px;margin-bottom: 0px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 400;\">" + dr["note_public"].ToString() + "</p>"
+                    + "                        </td>"
+                    + "                    </tr>"
+                    + "                </table>"
+                    + "            </td>"
+                    + "            <td style=\"vertical-align: top; width:50%; padding:0px;\">"
+                    + "                <table cellpadding=\"0\" cellspacing=\"0\" style=\"border:1px solid #ddd;border-top:0px;border-collapse: collapse;width: 100%; table-layout: fixed;\">"
+                    + "                    <tr>"
+                    + "                        <td style=\"width: 40%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">0</td>"
+                    + "                        <td style=\"border-right: 1px solid #ddd; width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Subtotal</td>"
+                    + "                        <td style=\"width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">$" + dr["total_ht"].ToString() + "</td>"
+                    + "                    </tr>"
+                    + "                    <tr>"
+                    + "                        <td colspan=\"2\" style=\"border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Item discounts</td>"
+                    + "                        <td style=\"padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">-$" + dr["discount"].ToString() + "</td>"
+                    + "                    </tr>"
+                    + "                    <tr>"
+                    + "                        <td colspan=\"2\" style=\"border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Amount tax</td>"
+                    + "                        <td style=\"padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">$" + dr["localtax1"].ToString() + "</td>"
+                    + "                    </tr>"
+                    + "                    <tr>"
+                    + "                        <td colspan=\"2\" style=\"border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Shipping</td>"
+                    + "                        <td style=\"padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">$" + dr["localtax2"].ToString() + "</td>"
+                    + "                    </tr>"
+                    + "                    <tr>"
+                    + "                        <td colspan=\"2\" style=\"border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Other Fee</td>"
+                    + "                        <td style=\"padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">$ 0.00</td>"
+                    + "                    </tr>"
+                    + "                    <tr style=\"background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;\">"
+                    + "                        <td colspan=\"2\" style=\"border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">Total</td>"
+                    + "                        <td style=\"padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">$" + dr["total_ttc"].ToString() + "</td>"
+                    + "                    </tr>"
+                    + "                </table>"
+                    + "            </td>"
+                    + "        </tr>"
+                    + "    </table>"
+                    + "</td>"
+                    + "</tr>"
+                    + "</table>"
+                    + "</td>"
+                    + "</tr>"
+                    + "</table>";
+
+                    string strBody = "Dear User,<br /> Atteched please find your PO number #" + dr["ref_ext"].ToString() + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />" + dr["company_address"].ToString() + ".<br> Phone: " + Regex.Replace(dr["company_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString();
+
+                    if (!string.IsNullOrEmpty(vendor_email) && !string.IsNullOrEmpty(SenderEmailID))
+                    {
+                        try
+                        {
+                            UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, vendor_email, "Your Purchase order #" + dr["ref_ext"].ToString() + " has been received", strBody, myHtml);
+                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ id: " + dr["rowid"].ToString() + " }";
+                        }
+                        catch { }
+                    }
+
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
+                }
+            }
+            catch (Exception ex) { }
         }
     }
 }

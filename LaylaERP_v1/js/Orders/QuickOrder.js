@@ -410,7 +410,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country+ '</address>';
+                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country + '</address>';
                         return val;
                     }
                 }
@@ -1894,9 +1894,10 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift }
     );
-    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_gift_amount', meta_value: _gift }, { post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
+    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
     else { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: '' }); }
     return postMetaxml;
@@ -2032,16 +2033,16 @@ function updateCO() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {
     let pay_by = $('#lblOrderNo').data('pay_by').trim();//$('#lblOrderNo').data('pay_by').trim() > 0 ? $('#lblOrderNo').data('pay_by').trim() : 'podium';
-    let billing_country = $('#txtbillcompany').val();
+    let billing_company = $('#txtbillcompany').val();
     let billing_first_name = $('#txtbillfirstname').val(), billing_last_name = $('#txtbilllastname').val();
     let billing_address_1 = $('#txtbilladdress1').val(), billing_address_2 = $('#txtbilladdress2').val();
-    let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val();
+    let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val(), billing_country = $('#ddlbillcountry').val();
     let billing_phone = $('#txtbillphone').val(), billing_email = $('#txtbillemail').val();
 
     let shipping_first_name = $('#txtshipfirstname').val(), shipping_last_name = $('#txtshiplastname').val();
-    let shipping_country = $('#txtshipcompany').val();
+    let shipping_company = $('#txtshipcompany').val();
     let shipping_address_1 = $('#txtshipaddress1').val(), shipping_address_2 = $('#txtshipaddress2').val();
-    let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val();
+    let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val(), shipping_country = $('#ddlshipcountry').val();
     let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
@@ -2056,10 +2057,10 @@ function PaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_country + (billing_country.length > 0 ? '<br>' : '') + billing_address_1 + (billing_address_2.length > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_company + (billing_company.length > 0 ? '<br>' : '') + billing_address_1 + (billing_address_2.length > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' ' + billing_country + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_country + (shipping_country.length > 0 ? '<br>' : '') + shipping_address_1 + (shipping_address_2.length > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_company + (shipping_company.length > 0 ? '<br>' : '') + shipping_address_1 + (shipping_address_2.length > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + ' ' + shipping_country + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items

@@ -117,6 +117,33 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataSet AddGiftCardMailOrders(long Pkey, string qFlag, long UserID, string UserName, string UserEmail, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
+        {
+            var dt = new DataSet();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@username", UserName),
+                    new SqlParameter("@useremail", UserEmail),
+                    new SqlParameter("@postsXML", postsXML.OuterXml),
+                    new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
+                    new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
+                    new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
+                    new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataSet("wp_posts_giftcard_order", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
         //gift card
         public static DataTable GetPodiumGiftOrdersList()
         {

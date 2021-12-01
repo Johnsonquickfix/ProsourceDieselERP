@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
+using LaylaERP.Models;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -55,6 +57,10 @@ namespace LaylaERP.Controllers
              return View();
         }
         public ActionResult CommissionEarnAgent()
+        {
+            return View();
+        }
+        public ActionResult OrderType()
         {
             return View();
         }
@@ -310,6 +316,37 @@ namespace LaylaERP.Controllers
             var to_date = from_date.AddMonths(1).AddDays(-1);
 
             ReportsRepository.GetSalesTaxRefunded(from_date.ToString(), to_date.ToString(), txtState);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        [HttpGet]
+        public JsonResult GetPaymentStatusList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = ReportsRepository.GetPaymentStatusList(model.strValue1, model.strValue4, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+
+        public ActionResult GetStatusDetails(string Month, string Year, string Type)
+        {
+             
+
+            ReportsRepository.GetStatusDetails(Month, Year, Type);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;

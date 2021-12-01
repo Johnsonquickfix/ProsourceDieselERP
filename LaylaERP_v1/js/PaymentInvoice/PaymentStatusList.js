@@ -20,9 +20,9 @@ function Search() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlstatus').val();
-    var type = $('#ddltype').val();
+   // var type = $('#ddltype').val();
     if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }
-    else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
+    //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
     else { 
         let table = $('#dtdata').DataTable({
             columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
@@ -49,7 +49,7 @@ function Search() {
             },
             sAjaxSource: "/CheckDeposit/GetPaymentStatusList",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: type });
+                aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: '0' });
                 if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
                 oSettings.jqXHR = $.ajax({
                     dataType: 'json', type: "GET",url: sSource, data: aoData,
@@ -116,9 +116,9 @@ function Search() {
         });
     }
 
-   // setTimeout(function () {
+    setTimeout(function () {
         getGrandTotal();
-    //}, 50);
+    }, 50);
     
 }
 
@@ -126,10 +126,10 @@ function getGrandTotal(val) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlstatus').val();
-    var type = $('#ddltype').val();
+   // var type = $('#ddltype').val();
     let src = val;
     console.log(src);
-    let obj = { strValue1: account, strValue2: sd, strValue3: ed, strValue4: src, strValue5: type };
+    let obj = { strValue1: account, strValue2: sd, strValue3: ed, strValue4: src, strValue5: '0' };
     $.ajax({
         url: "/CheckDeposit/GetGrandTotal",
         type: "GET",

@@ -1018,6 +1018,7 @@
     <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
     <Content Include="Views\Inventory\ForecastInventory.cshtml" />
     <Content Include="Views\Reports\OrderType.cshtml" />
+    <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

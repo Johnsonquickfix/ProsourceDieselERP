@@ -394,16 +394,56 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
 
-                DataTable giftdetails = GiftCardRepository.AddGiftCardOrders(model.order_id, "UPP", 0, model.b_first_name,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(model.order_id, "UPP", 0, model.b_first_name,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 JSONresult = JsonConvert.SerializeObject(giftdetails);
-                if (giftdetails.Rows[0]["delivered"].ToString() == "1")
+                if (giftdetails.Tables[1].Rows[0]["delivered"].ToString() == "1")
                 {
-                    SendGiftCardMailInvoice(giftdetails);
+                    SendGiftCardEMails(giftdetails);
                 }
 
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        public JsonResult SendGiftCardEMails(DataSet ds)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
+                int SMTPServerPortNo = 587; bool SSL = false;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
+                    SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
+                    SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
+                    //SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    //SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
+                }
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    GiftCardModel model = new GiftCardModel
+                    {
+                        order_id = Convert.ToInt64(dr["order_id"]),
+                        code = dr["code"].ToString(),
+                        recipient = dr["recipient"].ToString(),
+                        sender = dr["sender"].ToString(),
+                        sender_email = dr["sender_email"].ToString(),
+                        message = dr["message"].ToString(),
+                        balance = Convert.ToDouble(dr["balance"]),
+                        delivered = dr["delivered"].ToString(),
+                    };
+                    status = true;
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
+                    result = SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, dr["recipient"].ToString(), "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML, string.Empty);
+                   
+
+                }
+            }
+            catch { status = false; result = ""; }
+
+            return Json(new { status = status, message = result }, 0);
         }
         public JsonResult SendGiftCardMailInvoice(DataTable dt)
         {

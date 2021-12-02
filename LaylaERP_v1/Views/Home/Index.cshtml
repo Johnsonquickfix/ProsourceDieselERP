@@ -783,7 +783,7 @@
                         else {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Post/Zip code is not valid for State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                         }
                     },
 
@@ -819,7 +819,7 @@
                         else {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Post/Zip code is not valid for State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                         }
                     },
 
@@ -875,79 +875,83 @@
                 address2 = '';
 
             if (NickName == "") {
-                swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+                swal('Alert', 'Please enter user name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
             }
             else if (Email == "") {
-                swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
             }
             else if (FirstName == "") {
-                swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+                swal('Alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
             }
             else if (LastName == "") {
-                swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
+                swal('Alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
             }
             else if ($('#txtUserRole').val() == 0) {
-                swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+                swal('Alert', 'Please select user type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
             }
             else if (Phone == "") {
-                swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+                swal('Alert', 'Please enter contact no.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
             }
             else if (address == "") {
-                swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+                swal('Alert', 'Please enter address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
             }
 
             else if ($('#txtCity').val() == 0) {
-                swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+                swal('Alert', 'Please select city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
             }
             else if ($('#txtState').val() == 0) {
-                swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+                swal('Alert', 'Please select state', 'error').then(function () { swal.close(); $('#txtState').focus(); });
             }
             else if (Zipcode == "") {
-                swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                swal('Alert', 'Please enter post/zip code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
             }
             else if ($('#txtCountry').val() == 0) {
-                swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+                swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
             }
 
 
             else {
-                var obj = {
-                    ID: ID,
-                    user_email: Email,
-                    user_nicename: NickName,
-                    first_name: FirstName,
-                    last_name: LastName,
-                    address: address,
-                    country: country,
-                    phone: Phone,
-                    user_role: UserRole,
-                    User_Image: Picture,
-                    billing_postcode: Zipcode,
-                    billing_state: State,
-                    billing_city: City,
-                    billing_address_2: address2
+               // $("#userprofile").on("change", "#txtPostCode", function (t) 
+                $("#txtPostCode").change();
+                if ($("#hfzipstatus").val() == "true") {
+                    var obj = {
+                        ID: ID,
+                        user_email: Email,
+                        user_nicename: NickName,
+                        first_name: FirstName,
+                        last_name: LastName,
+                        address: address,
+                        country: country,
+                        phone: Phone,
+                        user_role: UserRole,
+                        User_Image: Picture,
+                        billing_postcode: Zipcode,
+                        billing_state: State,
+                        billing_city: City,
+                        billing_address_2: address2
+                    }
+                    $.ajax({
+                        url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                //swal('Success!', data.message, 'success');
+                                swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
+                                //$("#userprofile").modal("hide");
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error')
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+                    })
                 }
-                $.ajax({
-                    url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    beforeSend: function () { $("#loader").show(); },
-                    success: function (data) {
-                        if (data.status == true) {
-                            //swal('Success!', data.message, 'success');
-                            swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
-                            //$("#userprofile").modal("hide");
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error')
-                        }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (error) {
-                        swal('Error!', 'something went wrong', 'error');
-                    },
-                })
             }
         }
 

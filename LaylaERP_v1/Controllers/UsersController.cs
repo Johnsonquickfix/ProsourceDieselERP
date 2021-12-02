@@ -279,7 +279,7 @@ namespace LaylaERP.Controllers
                 if (model.ID > 0)
                 {
                     UsersRepositry.EditCustomerStatus(model);
-                    return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Customer status updated successfully!!", url = "" }, 0);
                 }
                 else
                 {
@@ -296,7 +296,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.DeleteUsers(strID);
-                return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Users status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -312,7 +312,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.ActiveUsers(strID);
-                return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Users status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -328,7 +328,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.changeRoleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status  updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -345,7 +345,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.GrantroleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -361,7 +361,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.RevokeroleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -397,34 +397,34 @@ namespace LaylaERP.Controllers
             myModel.country = dt.Rows[0]["country"];
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];
-            string role = dt.Rows[0]["user_role"].ToString();
+            //string role = dt.Rows[0]["roletype"].ToString();
 
-            if (role == "accounting")
-                role = "Accounting";
-            else if (role == "administrator")
-                role = "Administrator";
-            else if (role == "author")
-                role = "Author";
-            else if (role == "contributor")
-                role = "Contributor";
-            else if (role == "editor")
-                role = "Editor";
-            else if (role == "modsquad")
-                role = "Mod Squad";
-            else if (role == "wpseo_editor")
-                role = "SEO Editor";
-            else if (role == "seo_manager")
-                role = "SEO Manager";
-            else if (role == "shop_manager")
-                role = "Shop Manager";
-            else if (role == "shop_manager")
-                role = "Shop Manager";
-            else if (role == "subscriber")
-                role = "Subscriber";
-            else if (role == "supplychainmanager")
-                role = "Supply Chain Manager";
-            else
-                role = dt.Rows[0]["user_role"].ToString();
+            //if (role == "accounting")
+            //    role = "Accounting";
+            //else if (role == "administrator")
+            //    role = "Administrator";
+            //else if (role == "author")
+            //    role = "Author";
+            //else if (role == "contributor")
+            //    role = "Contributor";
+            //else if (role == "editor")
+            //    role = "Editor";
+            //else if (role == "modsquad")
+            //    role = "Mod Squad";
+            //else if (role == "wpseo_editor")
+            //    role = "SEO Editor";
+            //else if (role == "seo_manager")
+            //    role = "SEO Manager";
+            //else if (role == "shop_manager")
+            //    role = "Shop Manager";
+            //else if (role == "shop_manager")
+            //    role = "Shop Manager";
+            //else if (role == "subscriber")
+            //    role = "Subscriber";
+            //else if (role == "supplychainmanager")
+            //    role = "Supply Chain Manager";
+            //else
+            string role = dt.Rows[0]["roletype"].ToString();
 
 
             // role = role.Replace("_", " ");    StateFullName       
@@ -465,7 +465,7 @@ namespace LaylaERP.Controllers
                         Adduser_MetaData(model, ID);
                         Adduser_MetaData_More(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "User record  saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -506,7 +506,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         
-                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -522,7 +522,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -537,7 +537,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -635,7 +635,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Role has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Role saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -670,7 +670,7 @@ namespace LaylaERP.Controllers
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);
                 new UsersRepositry().UpdateDeletePermission(role_id, strDel);
-                return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User permission shanged successfully!!", url = "" }, 0);
             }
             else
             {
@@ -685,7 +685,7 @@ namespace LaylaERP.Controllers
             if (roletoid > 0)
             {
                 new UsersRepositry().CopyPermission(roletoid, role_id);
-                return Json(new { status = true, message = "User Permission has been Copied successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User permission copied successfully!!", url = "" }, 0);
             }
             else
             {

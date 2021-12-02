@@ -482,33 +482,33 @@
                 ViewBag.user_phone = DT.Rows[0]["phone"].ToString();
                 ViewBag.user_address = DT.Rows[0]["address"].ToString();
                 ViewBag.User_Image = DT.Rows[0]["User_Image"];
-                string role = DT.Rows[0]["user_role"].ToString();
-                if (role == "accounting")
-                    role = "Accounting";
-                else if (role == "administrator")
-                    role = "Administrator";
-                else if (role == "author")
-                    role = "Author";
-                else if (role == "contributor")
-                    role = "Contributor";
-                else if (role == "editor")
-                    role = "Editor";
-                else if (role == "modsquad")
-                    role = "Mod Squad";
-                else if (role == "wpseo_editor")
-                    role = "SEO Editor";
-                else if (role == "seo_manager")
-                    role = "SEO Manager";
-                else if (role == "shop_manager")
-                    role = "Shop Manager";
-                else if (role == "shop_manager")
-                    role = "Shop Manager";
-                else if (role == "subscriber")
-                    role = "Subscriber";
-                else if (role == "supplychainmanager")
-                    role = "Supply Chain Manager";
-                else
-                    role = role;
+                string role = DT.Rows[0]["roletype"].ToString();
+                //if (role == "accounting")
+                //    role = "Accounting";
+                //else if (role == "administrator")
+                //    role = "Administrator";
+                //else if (role == "author")
+                //    role = "Author";
+                //else if (role == "contributor")
+                //    role = "Contributor";
+                //else if (role == "editor")
+                //    role = "Editor";
+                //else if (role == "modsquad")
+                //    role = "Mod Squad";
+                //else if (role == "wpseo_editor")
+                //    role = "SEO Editor";
+                //else if (role == "seo_manager")
+                //    role = "SEO Manager";
+                //else if (role == "shop_manager")
+                //    role = "Shop Manager";
+                //else if (role == "shop_manager")
+                //    role = "Shop Manager";
+                //else if (role == "subscriber")
+                //    role = "Subscriber";
+                //else if (role == "supplychainmanager")
+                //    role = "Supply Chain Manager";
+                //else
+                //    role = role;
                 ViewBag.user_role = role;
                 ViewBag.user_status = DT.Rows[0]["user_status"];
                 ViewBag.id = id;

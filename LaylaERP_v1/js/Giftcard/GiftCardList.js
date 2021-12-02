@@ -92,7 +92,14 @@ function dataGCGridLoad() {
                 }
             },
             { data: 'order_id', title: 'Order id', sWidth: "10%" },
-            { data: 'code', title: 'Code', sWidth: "18%" },
+            {
+                'data': 'code', title: 'Code', sWidth: "18%",
+                'render': function (id, type, row, meta) {
+
+                    return '<a href="GiftCardActivity/' + row.id + '" data-toggle="tooltip" title="View Activity">' + id + '</a> '
+                }
+            },
+          
             {
                 data: 'remaining', title: 'Balance', sWidth: "5%",
                 'render': function (data, type, full) {

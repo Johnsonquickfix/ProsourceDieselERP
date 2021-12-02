@@ -1,5 +1,4 @@
-﻿$(document).ready(function () {
-    $('.billinfo,.billnote').prop("disabled", true);
+﻿$(document).ready(function () {    
     $("#txtbillphone").mask("(999) 999-9999");
     CategoryWiseProducts();
     $(".addnvar,.addnvar-qty").change(function (t) {
@@ -330,7 +329,7 @@ function CategoryWiseProducts() {
                                 else strHTML += '<option value="0-0-0">No Variations</option>';
                             });
                             strHTML += '</select>';
-                            strHTML += '<input min="1" class="form-control addnvar-qty" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
+                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
                             if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
                             else strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '</span></div>';
                             strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden">Add to Cart</a>';
@@ -668,7 +667,7 @@ function initMap() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
-    $('.view-addmeta').empty();
+    $('.view-addmeta').empty(); $('.billinfo,.billnote').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
         $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
@@ -968,7 +967,7 @@ function bindItemListDataTable(data) {
 }
 function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
+    swal({ text: 'Would you like to remove this item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 $('#tritemId_' + id).remove();
@@ -1035,7 +1034,7 @@ function AddItemMetaModal(id, itemid, meta_list) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function DeleteNotes(id) {
     let option = { comment_ID: id }; let oid = parseInt($('#hfOrderNo').val()) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 ajaxFunction('/Orders/OrderNoteDelete', option, beforeSendFun, function (result) {
@@ -1093,7 +1092,7 @@ function ApplyFee(orderitemid, feevalue) {
     }, completeFun, errorFun, false);
 }
 function RemoveFee(orderitemid) {
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
@@ -1179,7 +1178,7 @@ function ApplyGiftCard() {
 }
 function deleteAllGiftCard(GiftCode) {
     let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to remove this Gift Card?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
@@ -1667,7 +1666,7 @@ function deleteAllCoupons(coupon_type) {
         $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
     }
     else if (coupon_type != '') {
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
+        swal({ title: '', text: 'Would you like to remove this coupon?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {
                     //Remove Coupon
@@ -1982,7 +1981,7 @@ function saveCO() {
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
-    console.log(obj);
+    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",
@@ -2010,7 +2009,7 @@ function updateCO() {
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     //console.log(obj);
     swal.queue([{
-        title: 'Are you sure?', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

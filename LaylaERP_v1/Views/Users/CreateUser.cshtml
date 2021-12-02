@@ -135,7 +135,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Country</label>
-                                    <select class="form-control" id="txtCountry">
+                                    <select class="form-control select1" id="txtCountry">
                                         <option value="US">US - United States</option>
                                         <option value="CA">CA - Canada</option>
                                     </select>
@@ -176,6 +176,7 @@
     var strength = 1;
     $(document).ready(function () {
         $("#loader").hide();
+        $('.select1').select2();
         //$.get('GetCity', function (data) {
         //    $.each(data, function (index, value) {
         //        $('<option>').val(value).text(value).appendTo("#txtCity");
@@ -197,13 +198,13 @@
 
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
-        $(document).on('change', "#txtCountry", function () {
+        /*$(document).on('change', "#txtCountry", function () {
             $('#txtAddress').val("");
             $("#txtAddress2").val("");
             $("#txtCity").val("");
             $("#txtPostCode").val("");
             $("#txtState").val(null).trigger('change');
-        });
+        });*/
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -803,6 +804,15 @@
         }
     }
 </script>
+<script>
+    $('#txtCountry').on('select2:select', function (e) {
+        $('#txtAddress').val("");
+        $("#txtAddress2").val("");
+        $("#txtCity").val("");
+        $("#txtPostCode").val("");
+        $("#txtState").val(null).trigger('change');
+    });
+</script>
 <!--Google Place API -->
 @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>

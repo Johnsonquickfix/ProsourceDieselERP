@@ -648,38 +648,38 @@
 
 
         if (NickName == "") {
-            swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+            swal('Alert', 'Please enter user name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
         }
         else if (Email == "") {
-            swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+            swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
         }
         else if (FirstName == "") {
-            swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+            swal('Alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
         }
         else if (LastName == "") {
-            swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
+            swal('Alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
         }
         else if ($('#txtUserRole').val() == 0) {
-            swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+            swal('Alert', 'Please select user type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
         }
         else if (Phone == "") {
-            swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+            swal('Alert', 'Please enter contact no.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
         }
         else if (address == "") {
-            swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+            swal('Alert', 'Please enter address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
         }
 
         else if ($('#txtCity').val() == 0) {
-            swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            swal('Alert', 'Please select city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
         }
         else if ($('#txtState').val() == 0) {
-            swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+            swal('Alert', 'Please select state', 'error').then(function () { swal.close(); $('#txtState').focus(); });
         }
         else if (Zipcode == "") {
-            swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+            swal('Alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
         }
         else if ($('#txtCountry').val() == 0) {
-            swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+            swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
         }
         else if (Password != "") {
             if (Password.length < 8) {
@@ -690,7 +690,7 @@
             }
             else if (ConfirmPassword == "") {
                 console.log(strength);
-                swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else if (Password !== ConfirmPassword) {
                 swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });

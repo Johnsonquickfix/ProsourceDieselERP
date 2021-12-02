@@ -208,14 +208,18 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int ChangeGiftCardOrderStatus(string ID)
+        public DataTable ChangeGiftCardOrderStatus(string ID)
         {
             try
             {
-                string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active='off' where order_id in ({0}); ", ID);
-
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
-
+                //string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active='off' where order_id in ({0}); ", ID);
+                string strsql = "wp_posts_giftcard_search";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag","DGC"),
+                    new SqlParameter("@order_id", ID)
+                };
+                DataTable result = SQLHelper.ExecuteDataTable(strsql,para);
                 return result;
             }
             catch (Exception Ex)

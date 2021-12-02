@@ -515,13 +515,15 @@ namespace LaylaERP.BAL
             try
             {
 
-
+                if(!string.IsNullOrEmpty(model.password))
+                    model.password = EncryptedPwd(model.password);
                 string strsql = "erp_user_iud";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@qflag", "U"),
                     new SqlParameter("@id", model.ID),
                     new SqlParameter("@user_login", model.user_nicename),
+                    new SqlParameter("@user_pass", model.password),
                     new SqlParameter("@user_nicename", model.user_nicename),
                     new SqlParameter("@user_email", model.user_email),
                     new SqlParameter("@display_name", model.user_nicename),

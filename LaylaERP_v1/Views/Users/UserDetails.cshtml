@@ -154,9 +154,9 @@
 
                             </div>
                             @*<div class="form-group">
-                                    <label for="exampleInputEmail1">State</label>
-                                    <input type="text" class="form-control" id="txtState" value="@Model.State">
-                                </div>*@
+            <label for="exampleInputEmail1">State</label>
+            <input type="text" class="form-control" id="txtState" value="@Model.State">
+        </div>*@
                             <div class="form-group">
                                 <label class="control-label" for="Zip Code">Zip Code</label>
                                 <div class="">
@@ -169,20 +169,36 @@
                                 <select class="form-control" id="txtCountry">
                                     @if (Model.country == "US")
                                     {
-                                    <option selected value="US">US - United States</option>
-                                    <option value="CA">CA - Canada</option>
+                                        <option selected value="US">US - United States</option>
+                                        <option value="CA">CA - Canada</option>
                                     }
                                     @if (Model.country == "CA")
                                     {
-                                    <option selected value="CA">CA - Canada</option>
-                                    <option value="US">US - United States</option>
+                                        <option selected value="CA">CA - Canada</option>
+                                        <option value="US">US - United States</option>
                                     }
 
                                 </select>
                             </div>
+                            <div id="divpassword">
+                                <div class="form-group form-password-group">
+                                    <label for="exampleInputEmail1">Password</label>
+                                    <span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>
+                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password" autocomplete="off">
+                                    @*<span class="genrate_password" id="message">Generate Password</span>*@
+                                    <span class="" id='result'></span>
+                                </div>
 
+                                <div class="form-group form-password-group">
+                                    <label for="exampleInputEmail1">Confirm Password</label>
+                                    <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
+                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password" autocomplete="off">
+                                    <span class="genrate_password" id="message"></span>
+                                </div>
+
+                            </div>
+                            </div>
                         </div>
-                    </div>
                     <div class="box-footer text-right">
                         <a href="javascript:void(0);" class="btn btn-danger" id="btnSave"><span title="Click Here To Update User's Details" data-placement="bottom" data-toggle="tooltip"><b>Update User</b></span></a>                        
                     </div>
@@ -204,8 +220,38 @@
             return i == allItems.indexOf(item);
         }).join(',');
         $("#txtUserRole").val(uniqueList);
-        //code end to remove repetation of words
 
+        console.log(uniqueList);
+
+        //var user_type = string;
+        //let val = string, txt = $(this).data('usertext');
+        //    //console.log(val);
+        //    // console.log(sValue);
+        //    let i = sValue.toLowerCase().trim().indexOf(val);
+        //    //let i = sValue.trim().indexOf(val);
+        //    if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;       
+        // user_type.substring(0, user_type.length - 2);
+
+        //console.log(user_type);
+
+
+
+
+
+
+
+
+        //code end to remove repetation of words  divpassword
+        if ('@Model.user_rolecurrent'.toUpperCase() == "ADMINISTRATOR") {
+
+            if ('@Model.user_role' != 'Administrator')
+                $("#divpassword").show();
+            else
+                $("#divpassword").hide();
+        }
+        else {
+            $("#divpassword").hide();
+        }
        // $('#txtUserRole').append(uniqueList);
         //document.getElementById('txtUserRole').value = uniqueList;
         //$.get('GetState', function (data) {
@@ -244,8 +290,12 @@
         //})
 
         $(document).on('change', "#txtCountry", function () {
-            //$('#txtState').empty();
-        })
+            $('#txtAddress').val("");
+            $("#txtAddress2").val("");
+            $("#txtCity").val("");
+            $("#txtPostCode").val("");
+            $("#txtState").val(null).trigger('change');
+        });
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -283,21 +333,108 @@
         //            $('<option selected>').val(value).text(value).appendTo("#txtState");
 
         //    })
-        //}) 
+        //})
 
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
+
+        $(document).on('click', "#PasswordShow", function () {
+            if ($('#txtPassword').val() == "")
+                swal('Alert', 'Password is not generated!', 'error');
+            else
+                swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
+
+        })
+
+
+        $(document).on('click', "#btnGeneratePassword", function () {
+            $("#txtPassword").val("");
+            $("#txtConfirmPassword").val("");
+            Password = $("#txtPassword").val();
+            var obj = {
+                password: Password,
+            }
+            $.ajax({
+                url: '/Users/CreatePassword/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        $('#txtPassword').val(data.message);
+                        $('#txtConfirmPassword').val(data.message);
+                        $('#hfvpassordshow').val(data.message);
+                        $("#txtPassword").change();
+                        if ($('#txtPassword').val().trim() == $('#txtConfirmPassword').val().trim()) {
+                            $('#message').html('Matching').css('color', 'green');
+                        } else
+                            $('#message').html('Not Matching').css('color', 'red');
+                    }
+                    else {
+                        $("#txtPassword").val("");
+                        $("#txtConfirmPassword").val("");
+                        //swal('Alert', 'Post zip code is not  valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
+        $('#txtState').change(function () {
+            if ($("#txtPostCode").val() != '') {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                countryval = $("#txtCountry").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode,
+                    country: countryval
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            //swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                            // $('#hfzipstatus').val(data.status);
+                            $('#hfzipstatus').val(data.status);
+
+                        }
+                        else {
+                            if ($('#txtCountry').val() == "US") {
+                                $("#txtPostCode").val("");
+                                $('#hfzipstatus').val(data.status);
+                                swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            }
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+        });
 
         $('#txtPostCode').change(function () {
 
             City = $("#txtCity").val();
             State = $("#txtState").val();
             PostalCode = $("#txtPostCode").val();
+            countryval = $("#txtCountry").val();
             var obj = {
                 billing_state: State,
                 billing_city: City,
-                billing_postcode: PostalCode
+                billing_postcode: PostalCode,
+                country: countryval
             }
             $.ajax({
                 url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
@@ -394,11 +531,80 @@
 
         });
 
+        passwordcheck();
     });
 
 
+  
+    $("#txtPassword").change(function () {
+        $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+        result = $('#result').html();
+        if (result == "Password strength is weak") {
+            $('#result').attr({ 'style': 'color:Red;' });
+
+        }
+        if (result == "Password Strength is low") {
+            $('#result').attr({ 'style': 'color:Olive;' });
+        }
+        if (result == "Password strength is medium") {
+            $('#result').attr({ 'style': 'color:Lime;' });
+        }
+        if (result == "Password strength is strong") {
+            $('#result').attr({ 'style': 'color:Green;' });
+        }
+        Password = $("#txtPassword").val();
+        strength = 1;
+        var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+        jQuery.map(arr, function (regexp) {
+            if (Password.match(regexp))
+                strength++;
+        });
+
+    })
+    $("#txtPassword").on("input", function () {
+        $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+        result = $('#result').html();
+        if (result == "Password strength is weak") {
+            $('#result').attr({ 'style': 'color:Red;' });
+
+        }
+        if (result == "Password Strength is low") {
+            $('#result').attr({ 'style': 'color:Olive;' });
+        }
+        if (result == "Password strength is medium") {
+            $('#result').attr({ 'style': 'color:Lime;' });
+        }
+        if (result == "Password strength is strong") {
+            $('#result').attr({ 'style': 'color:Green;' });
+        }
+        Password = $("#txtPassword").val();
+        strength = 1;
+        var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+        jQuery.map(arr, function (regexp) {
+            if (Password.match(regexp))
+                strength++;
+        });
+
+    })
+    function getAllUserType(sValue) {
+        if (sValue != null) {
+            var user_type = '';
+            $('.subsubsub li').each(function (index) {
+                let val = $(this).data('uservalue'), txt = $(this).data('usertext');
+                //console.log(val);
+                // console.log(sValue);
+                let i = sValue.toLowerCase().trim().indexOf(val);
+                //let i = sValue.trim().indexOf(val);
+                if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
+            });
+            return user_type.substring(0, user_type.length - 2);
+        }
+        else
+            return '';
+    }
+
     function AddCustomer() {
-        //debugger
+        debugger
 
 
         var ImageURL;
@@ -434,8 +640,12 @@
         State = $("#txtState").val();
         address2 = $("#txtAddress2").val();
         user_status = $("#ddlstatus").val();
+        Password = $("#txtPassword").val();
+        ConfirmPassword = $("#txtConfirmPassword").val();
 
-        if (NickName == "") {
+
+
+       if (NickName == "") {
             swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
         }
         else if (Email == "") {
@@ -468,9 +678,60 @@
         }
         else if ($('#txtCountry').val() == 0) {
             swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+       }
+       else if (Password != "") {
+           if (Password.length < 8) {
+               swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+           }
+           else if (strength < 5) {
+               swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+           }
+           else if (ConfirmPassword == "") {
+               console.log(strength);
+               swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+           }
+           else if (Password !== ConfirmPassword) {
+               swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+           }
+           else {
+               var obj = {
+                   ID: ID,
+                   user_email: Email,
+                   user_nicename: NickName,
+                   first_name: FirstName,
+                   last_name: LastName,
+                   address: address,
+                   country: country,
+                   phone: Phone,
+                   user_role: UserRole,
+                   User_Image: Picture,
+                   billing_postcode: Zipcode,
+                   billing_state: State,
+                   billing_city: City,
+                   billing_address_2: address2,
+                   user_status: user_status,
+                   password: ConfirmPassword,
+               }
+               $.ajax({
+                   url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
+                   contentType: "application/json; charset=utf-8",
+                   data: JSON.stringify(obj),
+                   dataType: "json",
+                   beforeSend: function () { $("#loader").show(); },
+                   success: function (data) {
+                       if (data.status == true) {
+                           //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                           swal('Success!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                       }
+                       else {
+                           swal('Alert!', data.message, 'error');
+                       }
+                   },
+                   complete: function () { $("#loader").hide(); },
+                   error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+               })
+           }
         }
-
-
 
         else {
             // $("#txtPostCode").change();
@@ -491,6 +752,7 @@
                 billing_city: City,
                 billing_address_2: address2,
                 user_status: user_status,
+                password: ConfirmPassword,
             }
             $.ajax({
                 url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
@@ -554,7 +816,15 @@
         }
         return input;
     }
-
+    function passwordcheck() {
+        $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
+            
+            if ($('#txtPassword').val().trim() == $('#txtConfirmPassword').val().trim()) {
+                $('#message').html('Matching').css('color', 'green');
+            } else
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+    }
 
     function readURL(input) {
         if (input.files && input.files[0]) {

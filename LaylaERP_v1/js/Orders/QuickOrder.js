@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {    
+﻿$(document).ready(function () {
     $("#txtbillphone").mask("(999) 999-9999");
     CategoryWiseProducts();
     $(".addnvar,.addnvar-qty").change(function (t) {
@@ -146,7 +146,7 @@
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
         successModal(pay_mode, pay_id, false, false);
     });
-/*start add order item meta*/
+    /*start add order item meta*/
     $(document).on("click", ".add_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
         let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
@@ -748,7 +748,7 @@ function getOrderItemList(oid) {
             if (row.product_type == 'line_item') {
                 let PKey = row.product_id + '_' + row.variation_id;
                 itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
-                
+
                 if (row.is_free) {
                     itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
@@ -2199,7 +2199,7 @@ function updatePayment(oid, taskUid) {
     let opt = { OrderPostMeta: _postMeta };
     $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
-        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true, true); }
+        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, false, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
 }
 
@@ -2272,24 +2272,24 @@ function PaypalPayment(ppemail) {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                let access_token = response.message;
-                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(data => {
-                    console.log('Invoice has been Created.');
-                    let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
+                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
                     $("txtbillemail").data('surl', sendURL);
-                    if (action_method == 'POST') {
-                        SendPaypalInvoice(oid, pp_no, access_token, sendURL);
-                    }
+                    if (action_method == 'POST') { SendPaypalInvoice(oid, pp_no, access_token, sendURL); }
                     else {
-                        swal('Success!', 'Order placed successfully.', 'success');
-                        $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                        successModal('PayPal', inv_id, true, true);
+                        let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
+                        let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
+                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
+                            swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
+                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                            successModal('PayPal', inv_id, true, true);
+                        }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
                     }
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
@@ -2311,7 +2311,8 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
         },
         success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
-            let opt = { OrderPostMeta: _postMeta };
+            let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
+            let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
             $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
@@ -2384,7 +2385,7 @@ function successModal(paymode, id, is_mail, is_back) {
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#txtLogDate').val() + '</strong></td>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + $('#orderTotal').text() + '</strong></td>';
     if (paymode == 'PayPal')
-        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="https://www.sandbox.paypal.com/invoice/p/#' + id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Pay $' + $('#orderTotal').text() + '</a></td>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="' + paypal_baseurl_pay + '/invoice/p/#' + id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Pay $' + $('#orderTotal').text() + '</a></td>';
     else if (paymode == 'authorize_net_cim_credit_card')
         myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Credit Card</strong></td>';
     else
@@ -2438,9 +2439,9 @@ function successModal(paymode, id, is_mail, is_back) {
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
     //var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#billModal .modal-body').html() }
-    if ($('#txtbillemail').val().length > 5 && is_mail == true) {
-        sendInvoice(paymode, id)
-    }
+    //if ($('#txtbillemail').val().length > 5 && is_mail == true) {
+    //    sendInvoice(paymode, id)
+    //}
 }
 
 function sendInvoice(paymode, id) {

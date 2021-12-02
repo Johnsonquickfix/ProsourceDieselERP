@@ -71,7 +71,7 @@ namespace LaylaERP.Controllers
                     Updateuser_MetaData(model, model.ID);
                     Updateuser_MetaData_BillingAddress(model, model.ID);
                     Updateuser_MetaData_ShippingAddress(model, model.ID);
-                    return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "Manage", id = model.ID }, 0);
+                    return Json(new { status = true, message = "Customer record updated successfully!!", url = "Manage", id = model.ID }, 0);
                 }
                 else
                 {
@@ -82,7 +82,7 @@ namespace LaylaERP.Controllers
                         Adduser_MetaData_BillingAddress(model, ID);
                         Adduser_MetaData_ShippingAddress(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Customer Record has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Customer record saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -100,7 +100,7 @@ namespace LaylaERP.Controllers
                 if (model.ID > 0)
                 {
                     Repo.EditCustomerStatus(model);
-                    return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Customer status updated successfully!!", url = "" }, 0);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 Repo.DeleteCustomer(strID);
-                return Json(new { status = true, message = "Customer Status has been Deleted successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Customer status deleted successfully!!", url = "" }, 0);
             }
             else
             {
@@ -130,7 +130,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 Repo.ChangeCustomerStatus(model, strID);
-                return Json(new { status = true, message = "Customer Status has been Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Customer status changed successfully!!", url = "" }, 0);
             }
             else
             {

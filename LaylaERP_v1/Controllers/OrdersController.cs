@@ -531,9 +531,10 @@
             {
                 int res = OrderRepository.UpdatePaymentInvoice(model.OrderPostMeta);
                 if (res > 0)
-                {
+                {                    
                     result = "Order placed successfully.";
                     status = true;
+                    SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
                 }
             }
             catch { status = false; result = ""; }

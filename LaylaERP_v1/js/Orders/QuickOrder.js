@@ -2272,24 +2272,24 @@ function PaypalPayment(ppemail) {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                let access_token = response.message;
-                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(data => {
-                    console.log('Invoice has been Created.');
-                    let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
+                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
                     $("txtbillemail").data('surl', sendURL);
-                    if (action_method == 'POST') {
-                        SendPaypalInvoice(oid, pp_no, access_token, sendURL);
-                    }
+                    if (action_method == 'POST') { SendPaypalInvoice(oid, pp_no, access_token, sendURL); }
                     else {
-                        swal('Success!', 'Order placed successfully.', 'success');
-                        $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                        successModal('PayPal', inv_id, true, true);
+                        let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
+                        let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
+                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
+                            swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
+                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                            successModal('PayPal', inv_id, true, true);
+                        }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
                     }
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
@@ -2311,7 +2311,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
         },
         success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
-            let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id.toString().substring(4).replace(/\-/g, '');
+            let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
             let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
             $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);

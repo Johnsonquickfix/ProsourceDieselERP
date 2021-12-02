@@ -108,7 +108,7 @@ function Search() {
                 {
                     extend: 'csv',
                     className: 'button',
-                    text: '<i class="fas fa-file-csv"></i> Export',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
                     filename: function () {
                         var from = $("#txtOrderDate").val().replaceAll('/', '.');
                         //var to = $("#end_date").val().replaceAll('/', '.');

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -240,7 +241,7 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                string orders_json = string.Empty, order_refund_json = string.Empty;
+                string vendor_email = string.Empty;
                 DataSet ds = PurchaseOrderRepository.GetPurchaseOrderPrintList();
                 string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
                 int SMTPServerPortNo = 587; bool SSL = false;
@@ -249,12 +250,13 @@ namespace LaylaERP.Controllers
                     SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
                     SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
                     SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
-                    //SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
                     SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
                 }
-
+                string str_meta = string.Empty;
                 foreach (DataRow dr in ds.Tables[1].Rows)
                 {
+                    vendor_email = dr["vendor_email"] != DBNull.Value ? dr["vendor_email"].ToString().Trim() : "";
                     string myHtml = "<table id=\"invoice\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;\">"
                     + "<tr>"
                     + "    <td align=\"center\" style=\"padding:0;\">"
@@ -266,7 +268,7 @@ namespace LaylaERP.Controllers
                     + "                            <td style=\"padding:0; vertical-align: top;width:66.9%\">"
                     + "                                <img src=\"https://laylaerp.com/Images/layla1-logo.png\" alt=\"\" width=\"95\" height=\"41\"/>"
                     + "                                <p style=\"margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">"
-                    + dr["company_address"].ToString() + ".<br> Phone: " + dr["company_phone"].ToString() + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString()
+                    + dr["company_address"].ToString() + ".<br> Phone: " + Regex.Replace(dr["company_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString()
                     + "                                </p>"
                     + "                            </td>"
                     + "                            <td style=\"padding: 0; vertical-align:top; width:33.1%\" align\"left\">"
@@ -293,11 +295,11 @@ namespace LaylaERP.Controllers
                     + "        </td>"
                     + "        <td style=\"vertical-align: text-top;padding:0;width: 33.1\" align=\"left\">"
                     + "            <h3 style=\"font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;color:#2c2e2f;font-weight:200;\">Delivery Address:</h3>"
-                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["delivery_address"].ToString() + "<br>Phone: " + dr["delivery_phone"].ToString() + "</p>"
+                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["delivery_address"].ToString() + "<br>Phone: " + Regex.Replace(dr["delivery_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "</p>"
                     + "        </td>"
                     + "        <td style=\"vertical-align: text-top;padding:0;width: 33.1\" align=\"left\">"
                     + "            <h3 style=\"font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;color:#2c2e2f;font-weight:200;\">Ship To:</h3>"
-                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["delivery_address"].ToString() + "<br>Phone: " + dr["delivery_phone"].ToString() + "</p>"
+                    + "            <p style=\"width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;\">" + dr["ship_address"].ToString() + "<br>Phone: " + Regex.Replace(dr["ship_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["ship_email"].ToString() + "</p>"
                     + "        </td>"
                     + "     </tr>"
                     + "     </table>"
@@ -374,17 +376,23 @@ namespace LaylaERP.Controllers
                     + "</tr>"
                     + "</table>";
 
-                    string strBody = "Dear User,<br /> Atteched please find your PO number #" + dr["ref_ext"].ToString() + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />";
+                    string strBody = "Dear User,<br /> Atteched please find your PO number #" + dr["ref_ext"].ToString() + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />" + dr["company_address"].ToString() + ".<br> Phone: " + Regex.Replace(dr["company_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString();
 
-                    UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, "johnson.quickfix@gmail.com", "Your Purchase order #" + dr["ref_ext"].ToString() + " has been received", strBody, myHtml);
-                }
-                if (!string.IsNullOrEmpty(orders_json))
-                {
-                    //var dyn = JsonConvert.DeserializeObject<dynamic>(orders_json);
-                    //foreach (var o in dyn.orders)
+                    if (!string.IsNullOrEmpty(vendor_email) && !string.IsNullOrEmpty(SenderEmailID))
                     {
-
+                        try
+                        {
+                            UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, vendor_email, "Your Purchase order #" + dr["ref_ext"].ToString() + " has been received", strBody, myHtml);
+                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ id: " + dr["rowid"].ToString() + " }";
+                        }
+                        catch { }
                     }
+
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
                 }
             }
             catch (Exception ex) { }

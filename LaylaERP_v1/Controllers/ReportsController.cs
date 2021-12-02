@@ -64,6 +64,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult SalesRepresentative()
+        {
+            return View();
+        }
+        public ActionResult PartialRefund()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -347,6 +356,33 @@ namespace LaylaERP.Controllers
              
 
             ReportsRepository.GetStatusDetails(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        public JsonResult GetEmployee(SearchModel model)
+        {
+            DataSet ds = ReportsRepository.GetEmployee();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["user_login"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetSalesDetails(string Month, string Year, string Type)
+        {
+
+
+            ReportsRepository.GetSalesDetails(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public ActionResult GetPartialRefund(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetPartialRefund(Month, Year, Type);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;

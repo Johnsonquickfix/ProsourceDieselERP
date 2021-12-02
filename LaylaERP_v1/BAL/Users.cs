@@ -22,7 +22,7 @@
             try
             {
                 UserPassword = EncryptedPwd(UserPassword);
-                string strSql = "Select id,user_login, user_pass,user_status,user_email,um.meta_value from wp_users ur Left outer join wp_usermeta um on um.user_id = ur.id and meta_key = 'wp_capabilities' where(user_login = @UserName Or user_email = @UserName) And user_pass = @UserPassword ;"
+                string strSql = "Select top 1 id,user_login, user_pass,user_status,user_email,um.meta_value from wp_users ur Left outer join wp_usermeta um on um.user_id = ur.id and meta_key = 'wp_capabilities' where user_status = 0 and (user_login = @UserName Or user_email = @UserName) And user_pass = @UserPassword ;"
                                 + " Select * from wp_system_settings;"
                                 + " Select * from erp_entityinfo;";
                 SqlParameter[] parameters =
@@ -442,7 +442,7 @@
             DataSet ds = new DataSet();
             try
             {
-                string strSql = "Select user_login,user_email,user_nicename from wp_users  where(user_login = @UserName Or user_email = @UserName)";
+                string strSql = "Select user_login,user_email,user_nicename from wp_users  where(user_login = @UserName Or user_email = @UserName); Select SenderEmailID,SenderEmailPwd,SMTPServerName,587 SMTPServerPortNo,SSL from wp_system_settings";
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@UserName", UserName)

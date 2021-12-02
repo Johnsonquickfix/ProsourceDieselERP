@@ -605,7 +605,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "SELECT cast(sum(debit) as decimal(10,2)) as debit, cast(sum(credit) as decimal(10,2)) as credit, cast(sum(credit)-sum(debit) as decimal(10,2)) as balance from erp_accounting_bookkeeping where 1 = 1";
+                string strSql = "SELECT cast(isnull(sum(debit),0) as decimal(10,2)) as debit, cast(isnull(sum(credit),0) as decimal(10,2)) as credit, cast(isnull(sum(credit)-sum(debit),0) as decimal(10,2)) as balance from erp_accounting_bookkeeping where 1 = 1";
                 strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);
 

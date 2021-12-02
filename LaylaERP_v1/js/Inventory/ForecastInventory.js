@@ -60,9 +60,11 @@ function ForeCastreport() {
                     { data: 'post_title', title: 'Product', sWidth: "25%" },
                     { data: 'stock', title: 'In Stock', sWidth: "10%" },
                     { data: 'prev_sale', title: 'Previous Month Sale', sWidth: "10%" },
-                    { data: 'daily_velocity', title: 'Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
+                    { data: 'daily_velocity', title: 'Projected Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
                     { data: 'remain_days', title: 'Remaining Days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
-                    { data: 'run_out_date', title: 'Run Out Date', sWidth: "10%"},
+                    { data: 'run_out_date', title: 'Run Out Date', sWidth: "10%" },
+                    { data: 'week_velocity', title: 'Projected Weekly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
+                    { data: 'month_velocity', title: 'Projected Monthly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
                 ],
                 "order": [[0, 'asc']],
             });

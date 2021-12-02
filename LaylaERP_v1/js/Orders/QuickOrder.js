@@ -1,5 +1,4 @@
-﻿$(document).ready(function () {
-    $('.billinfo,.billnote').prop("disabled", true);
+﻿$(document).ready(function () {    
     $("#txtbillphone").mask("(999) 999-9999");
     CategoryWiseProducts();
     $(".addnvar,.addnvar-qty").change(function (t) {
@@ -145,9 +144,9 @@
         t.preventDefault();
         let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
-        successModal(pay_mode, pay_id, false);
+        successModal(pay_mode, pay_id, false, false);
     });
-    /*start add order item meta*/
+/*start add order item meta*/
     $(document).on("click", ".add_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
         let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
@@ -330,7 +329,7 @@ function CategoryWiseProducts() {
                                 else strHTML += '<option value="0-0-0">No Variations</option>';
                             });
                             strHTML += '</select>';
-                            strHTML += '<input min="1" class="form-control addnvar-qty" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
+                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
                             if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
                             else strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '</span></div>';
                             strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden">Add to Cart</a>';
@@ -410,7 +409,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country+ '</address>';
+                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country + '</address>';
                         return val;
                     }
                 }
@@ -668,7 +667,7 @@ function initMap() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
-    $('.view-addmeta').empty();
+    $('.view-addmeta').empty(); $('.billinfo,.billnote').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
         $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
@@ -749,17 +748,14 @@ function getOrderItemList(oid) {
             if (row.product_type == 'line_item') {
                 let PKey = row.product_id + '_' + row.variation_id;
                 itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
-                if (row.is_free)
-                    itemHtml += '<td class="text-center item-action"></td>';
-                else
-                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-
-                itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
-                itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                
                 if (row.is_free) {
+                    itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 else {
+                    itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                    itemHtml += '<td>' + row.product_name + '<div class="view-addmeta">' + row.meta_data + '</div></td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
                     itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
@@ -971,7 +967,7 @@ function bindItemListDataTable(data) {
 }
 function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
+    swal({ text: 'Would you like to remove this item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 $('#tritemId_' + id).remove();
@@ -1038,7 +1034,7 @@ function AddItemMetaModal(id, itemid, meta_list) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function DeleteNotes(id) {
     let option = { comment_ID: id }; let oid = parseInt($('#hfOrderNo').val()) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 ajaxFunction('/Orders/OrderNoteDelete', option, beforeSendFun, function (result) {
@@ -1096,7 +1092,7 @@ function ApplyFee(orderitemid, feevalue) {
     }, completeFun, errorFun, false);
 }
 function RemoveFee(orderitemid) {
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
@@ -1182,7 +1178,7 @@ function ApplyGiftCard() {
 }
 function deleteAllGiftCard(GiftCode) {
     let gc_orderitemID = parseInt($('#li_' + GiftCode.replaceAll(' ', '_')).data("orderitemid")) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Gift Card?', type: "question", showCancelButton: true })
+    swal({ title: '', text: 'Would you like to remove this Gift Card?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 let obj = { order_id: gc_orderitemID, payment_method_title: GiftCode };
@@ -1670,7 +1666,7 @@ function deleteAllCoupons(coupon_type) {
         $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
     }
     else if (coupon_type != '') {
-        swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
+        swal({ title: '', text: 'Would you like to remove this coupon?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {
                     //Remove Coupon
@@ -1894,9 +1890,10 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift }
     );
-    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_gift_amount', meta_value: _gift }, { post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
+    if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
     else { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: '' }); }
     return postMetaxml;
@@ -1984,7 +1981,7 @@ function saveCO() {
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
-    console.log(obj);
+    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",
@@ -1993,7 +1990,7 @@ function saveCO() {
             result = JSON.parse(result);
             if (result[0].Response == "Success") {
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
-                $.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true); });
+                $.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true); });
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
@@ -2012,7 +2009,7 @@ function updateCO() {
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     //console.log(obj);
     swal.queue([{
-        title: 'Are you sure?', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
@@ -2032,16 +2029,16 @@ function updateCO() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {
     let pay_by = $('#lblOrderNo').data('pay_by').trim();//$('#lblOrderNo').data('pay_by').trim() > 0 ? $('#lblOrderNo').data('pay_by').trim() : 'podium';
-    let billing_country = $('#txtbillcompany').val();
+    let billing_company = $('#txtbillcompany').val();
     let billing_first_name = $('#txtbillfirstname').val(), billing_last_name = $('#txtbilllastname').val();
     let billing_address_1 = $('#txtbilladdress1').val(), billing_address_2 = $('#txtbilladdress2').val();
-    let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val();
+    let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val(), billing_country = $('#ddlbillcountry').val();
     let billing_phone = $('#txtbillphone').val(), billing_email = $('#txtbillemail').val();
 
     let shipping_first_name = $('#txtshipfirstname').val(), shipping_last_name = $('#txtshiplastname').val();
-    let shipping_country = $('#txtshipcompany').val();
+    let shipping_company = $('#txtshipcompany').val();
     let shipping_address_1 = $('#txtshipaddress1').val(), shipping_address_2 = $('#txtshipaddress2').val();
-    let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val();
+    let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val(), shipping_country = $('#ddlshipcountry').val();
     let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
@@ -2056,10 +2053,10 @@ function PaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_country + (billing_country.length > 0 ? '<br>' : '') + billing_address_1 + (billing_address_2.length > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_company + (billing_company.length > 0 ? '<br>' : '') + billing_address_1 + (billing_address_2.length > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + ' ' + billing_country + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_country + (shipping_country.length > 0 ? '<br>' : '') + shipping_address_1 + (shipping_address_2.length > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_company + (shipping_company.length > 0 ? '<br>' : '') + shipping_address_1 + (shipping_address_2.length > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + ' ' + shipping_country + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items
@@ -2202,7 +2199,7 @@ function updatePayment(oid, taskUid) {
     let opt = { OrderPostMeta: _postMeta };
     $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
-        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
+        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
 }
 
@@ -2292,7 +2289,7 @@ function PaypalPayment(ppemail) {
                     else {
                         swal('Success!', 'Order placed successfully.', 'success');
                         $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                        successModal('PayPal', inv_id, true);
+                        successModal('PayPal', inv_id, true, true);
                     }
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
@@ -2318,7 +2315,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                successModal('PayPal', id[id.length - 2], true);
+                successModal('PayPal', id[id.length - 2], true, true);
             }).catch(err => { console.log(err); swal.hideLoading(); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -2345,7 +2342,7 @@ function CancelPaypalInvoice(access_token, pp_email, invoice_no) {
     });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Success modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function successModal(paymode, id, is_mail) {
+function successModal(paymode, id, is_mail, is_back) {
     //console.log(id, id.toString().substring(4).replace(/\-/g, ''));
     id = id.toString().substring(4).replace(/\-/g, '');
     var modalHtml = '';
@@ -2353,7 +2350,8 @@ function successModal(paymode, id, is_mail) {
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-body no-padding" ></div>';
     modalHtml += '<div class="modal-footer">';
-    modalHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
+    if (is_back) modalHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
+    else modalHtml += '<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">OK</button>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';

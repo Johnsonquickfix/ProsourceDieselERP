@@ -306,17 +306,17 @@
                 });
             });
 
-            $('#userprofile').on('shown.bs.modal', function () {
-                $("#txtCity").select2({
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search City",
-                    ajax: {
-                        url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });
-            });
+            //$('#userprofile').on('shown.bs.modal', function () {
+            //    $("#txtCity").select2({
+            //        allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+            //        ajax: {
+            //            url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            //            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            //            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
+            //            error: function (xhr, status, err) { }, cache: true
+            //        }
+            //    });
+            //});
             $("#userprofile").on("keyup", "#txtPhone", function (evt) {
                 var phoneNumber = document.getElementById('txtPhone');
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -468,9 +468,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">City<span style="color:red;"> *</span></label>
-                                            <select id="txtCity" class="form-control select2">
+                                            @*<select id="txtCity" class="form-control select2">
                                                 <option selected value="@ViewBag.City">@ViewBag.City </option>
-                                            </select>
+                                            </select>*@
+                                            <input type="text" class="form-control" id="txtCity" value="@ViewBag.City" placeholder="City">
+
 
                                         </div> </div>
                                     <div class="col-sm-4">
@@ -760,7 +762,7 @@
         $("#userprofile").on("change", "#txtPostCode", function (t) {
 
             console.log($("#txtCountry").val());
-            if ($("#txtCountry").val() == "US") {
+            if ($("#txtCountry").val() == "US" ) {
                 City = $("#txtCity").val();
                 State = $("#txtState").val();
                 PostalCode = $("#txtPostCode").val();
@@ -781,7 +783,43 @@
                         else {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            swal('Alert', 'Post/Zip code is not valid for State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+        });
+
+
+        $("#userprofile").on("change", "#txtState", function (t) {
+
+            console.log($("#txtCountry").val());
+            if ($("#txtCountry").val() == "US" && $("#txtPostCode").val() != '') {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#hfzipstatus').val(data.status);
+                        }
+                        else {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Post/Zip code is not valid for State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                         }
                     },
 
@@ -889,8 +927,9 @@
                     beforeSend: function () { $("#loader").show(); },
                     success: function (data) {
                         if (data.status == true) {
-                            swal('Success!', data.message, 'success');
-                            $("#userprofile").modal("hide");
+                            //swal('Success!', data.message, 'success');
+                            swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
+                            //$("#userprofile").modal("hide");
                         }
                         else {
                             swal('Alert!', data.message, 'error')
@@ -1089,7 +1128,8 @@
                     dataType: "json",
                     success: function (data) {
                         if (data.status == true) {
-                            swal('Alert!', data.message, 'success');
+                            //swal('Alert!', data.message, 'success');
+                            swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
                             $("#resetpassword").modal("hide");
                             $("#userprofile").modal("show");
                         }

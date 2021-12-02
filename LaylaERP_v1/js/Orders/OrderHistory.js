@@ -1,20 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $(".subsubsub li a").click(function (e) {
-        $('.subsubsub li a').removeClass('current');
-        $(this).addClass('current');
-    });
-    //datePickers(
-    //    moment().subtract(24, 'month').startOf('month'),moment().subtract(0, 'month').endOf('month'),
-    //    $('#txtOrderDate'), 'YYYY-MM', true,
-    //    {
-    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    //        'Last Three Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    //        'Last Year': [moment().subtract(12, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //    },
-    //    true, true
-    //);
+    $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -22,15 +8,21 @@
             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
             'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'This Year': [moment().startOf('year'), moment().endOf('year')]
         },
-        startDate: moment().add(-24, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
-        let order_type = $('#hfOrderType').val(); dataGridLoad(order_type);
+        $('#txtOrderDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
+        let order_type = $('#hfOrderType').val();
+        $.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
     });
     $('#txtOrderDate').val('');
-    $('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
+    $('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val(''); let order_type = $('#hfOrderType').val();
+        $.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
+    });
     //GetMonths();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -41,7 +33,6 @@
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    GetOrderDetails();
     var urlParams = new URLSearchParams(window.location.search);
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
     $.when(GetOrderDetails()).done(function () {
@@ -85,10 +76,12 @@ function GetMonths() {
     }
     $("#filter-by-date").select2();
 }
-
 ///Get Order Counts
 function GetOrderDetails() {
-    var opt = { strValue1: '' };
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
+    let opt = { strValue1: sd, strValue2: ed };
     $.ajax({
         type: "POST", url: '/Orders/GetOrdersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
@@ -130,20 +123,13 @@ function dataGridLoad(order_type) {
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
     let dfa = "'" + sd + "' and '" + ed + "'";
 
-
     let table = $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText },
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
             $('.dataTables_filter input').unbind();
@@ -154,25 +140,21 @@ function dataGridLoad(order_type) {
         },
         sAjaxSource: "/Orders/GetOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: sd });
-            aoData.push({ name: "strValue2", value: ed });
-            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') });
-            aoData.push({ name: "strValue4", value: order_type });
-            var col = 'id';
+            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
+            aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
-                "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                success: function (data) {
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
                 }
             });
         },
         columns: [
             {
-                'data': 'id', sWidth: "7%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                'data': 'id', sWidth: "7%   ", 'render': function (id, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(id).html() + '"><label></label>';
                 }
             },
             { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
@@ -183,7 +165,8 @@ function dataGridLoad(order_type) {
             },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    if (isNullUndefAndSpace(row.billing_phone)) return row.billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
+                    let phone = isNullUndefAndSpace(id) ? id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") : id;
+                    return phone;
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
@@ -225,8 +208,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "8%",
-                'render': function (id, type, row, meta) {
+                'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }

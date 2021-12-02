@@ -830,6 +830,14 @@
             }
         });
 
+        $("#userprofile").on("change", "#txtCountry", function (t) {
+            $('#txtAddress').val("");
+            $("#txtAddress2").val("");
+            $("#txtCity").val("");
+            $("#txtPostCode").val("");
+            $("#txtState").val(null).trigger('change');
+        });
+
         function UpdateProfile() {
             var ImageURL;
             var canvas = document.createElement('canvas');

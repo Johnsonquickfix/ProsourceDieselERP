@@ -436,6 +436,8 @@ namespace LaylaERP.Controllers
             myModel.address2 = dt.Rows[0]["address2"];
             myModel.postcode = dt.Rows[0]["postcode"];
 
+            myModel.user_rolecurrent = CommanUtilities.Provider.GetCurrent().UserType;
+
             return PartialView("UserDetails", myModel);
             // return myModel;
         }
@@ -555,7 +557,7 @@ namespace LaylaERP.Controllers
                 Updateuser_MetaData(model, model.ID);
                 Updateuser_MetaData_More(model, model.ID);
                 ModelState.Clear();
-                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User record updated successfully!!", url = "" }, 0);
             }
             else
             {

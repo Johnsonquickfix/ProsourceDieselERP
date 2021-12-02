@@ -198,8 +198,12 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
-           // $('#txtState').empty();
-        })
+            $('#txtAddress').val("");
+            $("#txtAddress2").val("");
+            $("#txtCity").val("");
+            $("#txtPostCode").val("");
+            $("#txtState").val(null).trigger('change');
+        });
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -261,7 +265,10 @@
 
 
         $(document).on('click', "#btnGeneratePassword", function () {
+
             Password = $("#txtPassword").val();
+            $("#txtPassword").val("");
+            $("#txtConfirmPassword").val("");
             var obj = {
                 password: Password,
             }
@@ -272,10 +279,16 @@
                 dataType: "json",
                 success: function (data) {
                     if (data.status == true) {
+                        $("#txtPassword").val("");
+                        $("#txtConfirmPassword").val("");
                         $('#txtPassword').val(data.message);
                         $('#txtConfirmPassword').val(data.message);
                         $('#hfvpassordshow').val(data.message);
                         $("#txtPassword").change();
+                        if ($('#txtPassword').val().trim() == $('#txtConfirmPassword').val().trim()) {
+                            $('#message').html('Matching').css('color', 'green');
+                        } else
+                            $('#message').html('Not Matching').css('color', 'red');
                     }
                     else {
                         $("#txtPassword").val("");
@@ -328,6 +341,46 @@
                     swal('Error!', 'something went wrong', 'error');
                 },
             })
+        });
+      
+        $('#txtState').change(function () {
+            if ($("#txtPostCode").val() != '') {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                countryval = $("#txtCountry").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode,
+                    country: countryval
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            //swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                            // $('#hfzipstatus').val(data.status);
+                            $('#hfzipstatus').val(data.status);
+
+                        }
+                        else {
+                            if ($('#txtCountry').val() == "US") {
+                                $("#txtPostCode").val("");
+                                $('#hfzipstatus').val(data.status);
+                                swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            }
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
         });
 
         $('#txtUserNickName').change(function () {
@@ -465,6 +518,10 @@
     //        }
     //    }); 
     //});
+
+   
+
+
 
     function AddCustomer() {
         debugger

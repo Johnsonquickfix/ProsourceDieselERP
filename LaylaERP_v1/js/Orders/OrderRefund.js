@@ -594,7 +594,7 @@ function saveCO() {
                     $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                     $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
                     $('.billinfo').prop("disabled", true);
-                    swal('Success!', 'Order placed successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                    swal('Success!', 'Order refunded successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
                 }
                 else { swal('Error', data[0].Response, "error").then((result) => { return false; }); }
             },

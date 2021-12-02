@@ -26,35 +26,35 @@ function AddCustomer() {
     //    swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     //}
     if (Email == "") {
-       swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+       swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
     }
 
     else if (FirstName == "") {
-        swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
+        swal('alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
     }
 
     else if (LastName == "") {
-        swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
+        swal('alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
     }
     else if (BillingPhone == "") {
-        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+        swal('alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
     }
     else if (BillingAddress1 == "") {
-        swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
+        swal('alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
     }
     /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
     else if (BillingCity == "") {
-        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+        swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
     }
-    else if (BillingState == "") {
-        swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+    else if (BillingState == null) {
+        swal('alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
     }
     else if (BillingPostcode == "") {
-        swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+        swal('alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
     }
 
     else if (BillingCountry == "") {
-        swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+        swal('alert', 'Please enter country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
     }
 
     else {
@@ -75,7 +75,7 @@ function AddCustomer() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../Customer'; });
+                        swal('Success', data.message, 'success').then((result) => { location.href = '../Customer'; });
                     }
                     else {
                         $('#fetch_results > input:text').val('');

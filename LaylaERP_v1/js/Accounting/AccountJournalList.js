@@ -12,6 +12,7 @@
         startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
+            $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text('');
         AccountJournalList(true);
     });
     getGrandTotal(true);
@@ -20,6 +21,7 @@
     AccountJournalList(true);
 
     $('#ddlVendor').change(function () {
+        $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text('')
         AccountJournalList(true);
         getGrandTotal(true);
     });
@@ -175,6 +177,7 @@ function getVendor() {
 
 
 function getGrandTotal(is_date) {
+    debugger
     let urid = $("#ddlVendor").val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -189,7 +192,7 @@ function getGrandTotal(is_date) {
         success: function (data) {
             var d = JSON.parse(data);
             if (d.length > 0) {
-                if (parseInt(d[0].debit).toFixed(2) > 0) {
+                if (parseInt(d[0].debit).toFixed(2) > 0 || parseInt(d[0].debit).toFixed(2) == 0) {
                     $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2)); $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2)); $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
                 }
             }

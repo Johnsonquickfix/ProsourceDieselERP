@@ -442,7 +442,7 @@
             DataSet ds = new DataSet();
             try
             {
-                string strSql = "Select user_login,user_email,user_nicename from wp_users  where(user_login = @UserName Or user_email = @UserName)";
+                string strSql = "Select user_login,user_email,user_nicename from wp_users  where(user_login = @UserName Or user_email = @UserName); Select SenderEmailID,SenderEmailPwd,SMTPServerName,587 SMTPServerPortNo,SSL from wp_system_settings";
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@UserName", UserName)

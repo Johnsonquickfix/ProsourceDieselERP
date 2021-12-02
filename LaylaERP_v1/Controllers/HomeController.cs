@@ -36,28 +36,37 @@
             if (!string.IsNullOrEmpty(model.UserName))
             {
                 DataSet u = Users.ForgotPassword(model.UserName);
-                DataSet ds = Users.GetEmailCredentials();
+                //DataSet ds = Users.GetEmailCredentials();
                 if (u.Tables[0].Rows.Count > 0)
                 {
                     string UserName = u.Tables[0].Rows[0]["user_login"].ToString();
                     string Nicename = u.Tables[0].Rows[0]["user_nicename"].ToString();
                     string Email = u.Tables[0].Rows[0]["user_email"].ToString();
 
+                    string SenderEmailID = u.Tables[1].Rows[0]["SenderEmailID"].ToString();
+                    string SenderEmailPwd = u.Tables[1].Rows[0]["SenderEmailPwd"].ToString();
+                    string SMTPServerPortNo = u.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
+                    string SMTPServerName = u.Tables[1].Rows[0]["SMTPServerName"].ToString();
+                    bool SSL = Convert.ToBoolean(u.Tables[1].Rows[0]["SSL"]);
+                    string fileattach = string.Empty;
+
                     using (MailMessage mailMessage = new MailMessage())
-
                     {
-
                         mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
 
-                        mailMessage.Subject = "Request for Reset Password....";
+                        mailMessage.Subject = "Reset Password";
 
-                        mailMessage.Body = "A request for reset password got from UserName : " + UserName + " and Email : " + Email;
+                        mailMessage.Body = "UserName : " + UserName + " and Email : " + Email;
 
                         mailMessage.IsBodyHtml = true;
 
-                       string emails = "david.quickfix1@gmail.com";
+                        /*string SenderEmailID = "david.quickfix1@gmail.com";
+                        string SenderEmailPwd = "Quick!123";
+                        string SMTPServerPortNo = "587";
+                        string SMTPServerName = "smtp.gmail.com";
+                        string fileattach = string.Empty;*/
 
-                        SendEmail.SendEmails(emails,mailMessage.Subject,mailMessage.Body);
+                        SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject,mailMessage.Body, fileattach);
 
                         //SmtpClient smtp = new SmtpClient();
 
@@ -79,12 +88,11 @@
 
                         //smtp.Send(mailMessage);
 
-
                     }
 
 
 
-                    //Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
+                    Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
                     ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
 
 

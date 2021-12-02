@@ -250,10 +250,10 @@
                         return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);
                     }
                     else
-                        return Json(new { status = false, message = "Please contact to your Administrator", url = "" }, 0);
+                        return Json(new { status = false, message = "Please contact to your administrator", url = "" }, 0);
                 }
                 else
-                    return Json(new { status = false, message = "Please Check Username Or Password!", url = "" }, 0);
+                    return Json(new { status = false, message = "Please check username or password!", url = "" }, 0);
 
             }
             return Json(new { status = false, message = "Invalid User", url = "" }, 0);
@@ -493,7 +493,7 @@
 
 
             }
-            return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+            return Json(new { status = true, message = "Email send successfully! Contact you soon.", url = "" }, 0);
             //return Json(true,0);
         }
     }

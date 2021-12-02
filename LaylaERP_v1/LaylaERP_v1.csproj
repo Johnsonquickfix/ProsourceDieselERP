@@ -654,6 +654,7 @@
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\Giftcard\GiftCardActivity.js" />
     <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
@@ -1017,8 +1018,6 @@
     <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
     <Content Include="Views\Inventory\ForecastInventory.cshtml" />
     <Content Include="Views\Reports\OrderType.cshtml" />
-    <Content Include="Views\Reports\PartialRefund.cshtml" />
-    <Content Include="Views\Reports\SalesRepresentative.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

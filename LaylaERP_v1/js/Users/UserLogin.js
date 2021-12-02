@@ -2,7 +2,7 @@
     var uID = $('#txtUserId').val();
     var uPass = $('#txturPassword').val();
     if (uID == "") { swal('Alert!', 'Please enter user name!', "error"); }
-    else if (uPass == "") { swal('Alert!', "Enter enter Password.", "error"); }
+    else if (uPass == "") { swal('Alert!', "Please enter password!", "error"); }
     else {
         $('#a-autoid-0-announce').text("Waiting...");
         var obj = { UserName: uID, PassWord: uPass }

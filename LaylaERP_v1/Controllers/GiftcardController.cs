@@ -25,6 +25,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult GiftCardActivity()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GiftCard(FormCollection collection)
         {
@@ -103,7 +107,7 @@ namespace LaylaERP.Controllers
             System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + omodel.order_itemsXML + "}", "Items");
             System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + omodel.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + omodel.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
-            DataTable data = GiftCardRepository.AddGiftCardOrders(omodel.order_id, "I", om.UserID, om.UserName, collection["GiftFrom"], postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+            DataTable data = GiftCardRepository.AddGiftCardOrders(omodel.order_id, "I", om.UserID, om.UserName, senderemail, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
 
             if (data.Rows.Count > 0)
             {
@@ -264,8 +268,6 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
-
-      
         [HttpGet]
         public JsonResult GetGiftCardOrderList(JqDataTableModel model)
         {
@@ -298,9 +300,21 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
-
         }
-
+        [HttpPost]
+        public JsonResult ChangeGiftCardOrderStatus(SearchModel model)
+        {
+            string strID = model.strValue1;
+            if (strID != "")
+            {
+                new GiftCardRepository().ChangeGiftCardOrderStatus(strID);
+                return Json(new { status = true, message = "Gift Card Disabled successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+        }
         [HttpPost]
         public JsonResult GetRedeemedCustomerList(SearchModel model)
         {
@@ -313,7 +327,6 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
         public JsonResult ResendMailInvoice(GiftCardModel model)
         {
             string result = string.Empty;
@@ -339,6 +352,10 @@ namespace LaylaERP.Controllers
                             status = true;
                             String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
                             result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from " + model.sender + "", renderedHTML);
+                        }
+                        else
+                        {
+                            result = "Gift card is InActive";
                         }
                        // Response.Write(result);
                     }
@@ -415,6 +432,32 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
 
             return Json(new { status = status, message = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetGCActivity(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = GiftCardRepository.GiftCardActivity(model.strValue1);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public JsonResult GetGCActivityList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+
+                DataTable dt = GiftCardRepository.GiftCardActivityList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace LaylaERP.BAL
                     "left join wp_woocommerce_order_itemmeta qty on oi.order_item_id = qty.order_item_id and qty.meta_key = '_qty' where order_id = meta.post_id) Qty, " +
                     "(Select top 1 msg.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left " +
                     "join wp_woocommerce_order_itemmeta msg on oi.order_item_id = msg.order_item_id and msg.meta_key = 'wc_gc_giftcard_message' where order_id = meta.post_id) [Message] " +
-                    "FROM wp_postmeta meta where post_id = (select order_id from wp_woocommerce_gc_cards where id = '"+ id + "') ) AS SourceTable PIVOT(MIN([meta_value]) FOR[meta_key] IN " +
+                    "FROM wp_postmeta meta where post_id = (select order_id from wp_woocommerce_gc_cards where id = '" + id + "') ) AS SourceTable PIVOT(MIN([meta_value]) FOR[meta_key] IN " +
                     "(_billing_first_name, _billing_last_name, _billing_country, _billing_state, _billing_city, _billing_address_1, _billing_address_2, _billing_company, _billing_postcode, _billing_phone, employee_id, employee_name, _billing_email)) " +
                     "AS PivotOutput";
                 DataTable result = SQLHelper.ExecuteDataTable(strSql);
@@ -200,7 +200,22 @@ namespace LaylaERP.BAL
                     new SqlParameter("@status", model.strValue2)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-              
+
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int ChangeGiftCardOrderStatus(string ID)
+        {
+            try
+            {
+                string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active='off' where order_id in ({0}); ", ID);
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+
                 return result;
             }
             catch (Exception Ex)
@@ -225,7 +240,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-              
+
 
                 SqlParameter[] parameters = {
                     new SqlParameter("@order_id", OrderID),
@@ -242,7 +257,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                
+
                 string strWhr = "Select id,user_email displayname from (select id,user_email, ROW_NUMBER() OVER(PARTITION BY user_email order by id desc) rn from wp_woocommerce_gc_activity where type = 'used' and id> 109 and user_email like  '%" + strSearch + "%')a where rn = 1";
                 DT = SQLHelper.ExecuteDataTable(strWhr);
             }
@@ -303,6 +318,54 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             { throw ex; }
+            return dt;
+        }
+
+        public static DataTable GiftCardActivity(string id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@flag", "SGCAH")
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        
+        public static DataTable GiftCardActivityList(string id, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "SGCAL")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("wp_posts_giftcard_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return dt;
         }
     }

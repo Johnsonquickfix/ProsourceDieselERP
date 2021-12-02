@@ -5,7 +5,7 @@
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     if (id != "Giftcard") { disableall(); }
-    else { $("#btnResendEmail").hide(); $("#btnResendEmail").prop("disabled", true); }
+    else { $("#btnResendEmail").hide(); $("#ddlGiftcardStatus").hide(); $("#btnResendEmail").prop("disabled", true); }
     $('#txtPostCode').change(function () {
         City = $("#ddlCity").val();
         State = $("#ddlState").val();
@@ -40,7 +40,19 @@
     });
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
-    $(document).on("click", "#btnResendEmail", function (t) { t.preventDefault(); ReSendGiftCard(); });
+    $(document).on("click", "#btnResendEmail", function (t) {
+        t.preventDefault();
+        var gc_status = $("#ddlGiftcardStatus").val();
+        if (gc_status == "") {
+            swal('Error', 'Choose a action...', "error")
+        }
+        else if (gc_status == "Send_to_recipient") {
+            ReSendGiftCard();
+        }
+        else if (gc_status == "Disable") {
+            changeStatus();
+        }
+    });
     $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
     $("#GiftModal").on("change", "#ddlPaymentMethod", function (t) {
@@ -71,6 +83,10 @@ function disableall() {
 
 $('#ddlCountry').change(function () {
     getState();
+    $("#txtAddress1").val('');
+    $("#txtAddress2").val('');
+    $("#txtCity").val('');
+    $("#txtPostCode").val('');
 })
 function getState() {
     var obj = { strValue2: $("#ddlCountry").val() };
@@ -363,7 +379,6 @@ function PodiumPayment() {
     }]);
 }
 function updatePayment(oid, taskUid) {
-    debugger
     let _postMeta = [
         { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
@@ -715,11 +730,32 @@ function ReSendGiftCard() {
             if (result.status == true) {
                 swal('Success', 'Email Send successfully.', "success");
             }
-            else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
+            else {
+                swal('Error', result.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { },
     });
+}
+
+function changeStatus() {
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your Gift Card status?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                let obj = { strValue1: parseInt($('#hfOrderNo').val()) }
+                $.post('/GiftCard/ChangeGiftCardOrderStatus', obj)
+                    .done(function (data) {
+                        if (data.status) {
+                            swal.insertQueueStep(data.message);
+                        }
+                        else { swal.insertQueueStep('something went wrong!'); }
+                        resolve();
+                    })
+            })
+        }
+    }]);
 }
 
 

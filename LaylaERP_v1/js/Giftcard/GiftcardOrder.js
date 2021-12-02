@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+   
+    
     $("#loader").hide();
     $("#btnResendEmail").hide();
     $(".select2").select2();
@@ -146,6 +148,9 @@ function createPostStatus() {
     return postStatus;
 }
 function createItemsList() {
+    var date = new Date();
+    date.setDate(date.getDate());
+    console.log(date);
     let cid = 0;
     let itemsDetails = [];
     //Add Item Details
@@ -161,7 +166,7 @@ function createItemsList() {
     let customerNotes = $("#txtOrderNotes").text();
     let sender_email = $("#txtSenderEmail").val();
     let sender = $("#txtFirstName").val() + ' ' + $("#txtLastName").val();
-    let deliver_date = $("#EmployeeListdata").data('deliverydate') || 0;
+    let deliver_date = $("#EmployeeListdata").data('deliverydate') || todaydate;
 
     itemsDetails.push({
         order_item_id: $("#EmployeeListdata").data('orderitemid'), PKey: 0, order_id: 0, customer_id: cid, product_type: 'line_item',

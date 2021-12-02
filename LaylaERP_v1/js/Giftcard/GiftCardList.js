@@ -168,7 +168,7 @@ function giftcardStatus() {
     if (status == '') { swal('alert', 'Please select status', 'error'); }
 
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your Gift Card status?",
+        confirmButtonText: 'Yes, Update it!', text: "Do you want to change your gift card status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
@@ -180,7 +180,7 @@ function giftcardStatus() {
                             //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
                         dataGCGridLoad();
                         }
-                        else { swal.insertQueueStep('something went wrong!'); }
+                        else { swal.insertQueueStep(data.message); }
                         resolve();
                     })
             })

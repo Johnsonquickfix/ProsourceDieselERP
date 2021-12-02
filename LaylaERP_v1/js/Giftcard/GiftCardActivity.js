@@ -8,42 +8,41 @@
 
 function GetActivity(id) {
     var obj = { strValue1: id };
-    
-        $.ajax({
-            url: "/GiftCard/GetGCActivity",
-            type: "Post", contentType: "application/json; charset=utf-8", dataType: 'json',
-            data: JSON.stringify(obj),
-            success: function (data) {
-                data = JSON.parse(data);
-                $("#lblCode").text(data[0].code);
-                $("#btnStatus").val(data[0].status);
-                $("#lblAvailableBalance").text('$' + data[0].remaining);
-                $("#lblCreationDate").text(data[0].create_date);
-                $("#lblOrder").text(data[0].order_id);
-                $("#lblIssuedValue").text('$' + data[0].balance);
-                $("#lblRedeemDate").text(data[0].RedeemedDate);
-                $("#lblRedeemBy").text(data[0].RedeemedBy);
-                $("#txtFrom").val(data[0].sender);
-                $("#txtto").val(data[0].recipient);
-                $("#txtMessage").val(data[0].message);
-                $("#txtDeliveryDate").val(data[0].DeliveryDate);
-                $("#txtExpirationDate").val(data[0].expires);
-                
-            }
-        });
+    $.ajax({
+        url: "/GiftCard/GetGCActivity",
+        type: "Post", contentType: "application/json; charset=utf-8", dataType: 'json',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            $("#lblCode").text(data[0].code);
+            $("#btnStatus").text(data[0].status);
+            $("#lblDeliveryStatus").text(data[0].delivery);
+            $("#lblAvailableBalance").text('$' + data[0].remaining);
+            $("#lblCreationDate").text(data[0].create_date);
+            $("#lblOrder").text(data[0].order_id);
+            $("#lblIssuedValue").text('$' + data[0].balance);
+            $("#lblRedeemDate").text(data[0].RedeemedDate);
+            $("#lblRedeemBy").text(data[0].RedeemedBy);
+            $("#txtFrom").val(data[0].sender);
+            $("#txtto").val(data[0].recipient);
+            $("#txtMessage").val(data[0].message);
+            $("#txtDeliveryDate").val(data[0].DeliveryDate);
+            $("#txtExpirationDate").val(data[0].expires);
+        }
+    });
 }
 
-function GetActivityList(id)  {
-   
+function GetActivityList(id) {
+
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
-  
+
 
     let table = $('#GiftCardActivityList').DataTable({
         oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-         scrollX: true, scrollY: ($(window).height() - 215),
+        scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -74,18 +73,11 @@ function GetActivityList(id)  {
             });
         },
         columns: [
-           
-           
-            { data: 'type', title: 'Event', sWidth: "20%" },
-            { data: 'user_email', title: 'Customer', sWidth: "20%" },
             { data: 'gc_code', title: 'Gift Card', sWidth: "20%" },
-        
+            { data: 'user_email', title: 'Customer', sWidth: "20%" },
+            { data: 'type', title: 'Event', sWidth: "20%" },
             { data: 'amount', title: 'Amount', sWidth: "20%" },
-
             { data: 'date', title: 'Date', sWidth: "20%" },
-          
-          
-           
         ]
     });
 }

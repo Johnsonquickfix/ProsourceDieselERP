@@ -279,7 +279,7 @@ namespace LaylaERP.Controllers
                 if (model.ID > 0)
                 {
                     UsersRepositry.EditCustomerStatus(model);
-                    return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Customer status updated successfully!!", url = "" }, 0);
                 }
                 else
                 {
@@ -296,7 +296,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.DeleteUsers(strID);
-                return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Users status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -312,7 +312,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.ActiveUsers(strID);
-                return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Users status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -328,7 +328,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.changeRoleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status  updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -345,7 +345,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.GrantroleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -361,7 +361,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.RevokeroleStatus(model);
-                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -465,7 +465,7 @@ namespace LaylaERP.Controllers
                         Adduser_MetaData(model, ID);
                         Adduser_MetaData_More(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "User record  saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -506,7 +506,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         
-                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -522,7 +522,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -537,7 +537,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -635,7 +635,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Role has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Role saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -670,7 +670,7 @@ namespace LaylaERP.Controllers
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);
                 new UsersRepositry().UpdateDeletePermission(role_id, strDel);
-                return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User permission shanged successfully!!", url = "" }, 0);
             }
             else
             {
@@ -685,7 +685,7 @@ namespace LaylaERP.Controllers
             if (roletoid > 0)
             {
                 new UsersRepositry().CopyPermission(roletoid, role_id);
-                return Json(new { status = true, message = "User Permission has been Copied successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User permission copied successfully!!", url = "" }, 0);
             }
             else
             {

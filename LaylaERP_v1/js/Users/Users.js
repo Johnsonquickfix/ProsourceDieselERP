@@ -18,10 +18,11 @@ function GetUsersCount() {
             let alltotal = 0;
             let items = $('<li class="all" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="all" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
             $.each(data, function (index, value) {
-                items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+               // items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+                items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > </li >').appendTo("#role-ul"); //(<span class="count">0</span>)
                 alltotal = alltotal + parseInt(value.cnt);
             })
-            items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+            //items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
             $('#all').find(".count").text(number_format(alltotal-1));
             let id = $("#hfStatusType").val();
             if (id != '')

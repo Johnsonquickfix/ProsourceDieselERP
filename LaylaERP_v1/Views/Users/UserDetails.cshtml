@@ -166,7 +166,7 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Country</label>
-                                <select class="form-control" id="txtCountry">
+                                <select class="form-control select1" id="txtCountry">
                                     @if (Model.country == "US")
                                     {
                                         <option selected value="US">US - United States</option>
@@ -213,7 +213,7 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-
+        $('.select1').select2();
         //Code to remove repetation of words
         @*var string = '@Model.user_role';
         var uniqueList = string.split(',').filter(function (item, i, allItems) {
@@ -289,13 +289,13 @@
         //    })
         //})
 
-        $(document).on('change', "#txtCountry", function () {
+       /* $(document).on('change', "#txtCountry", function () {
             $('#txtAddress').val("");
             $("#txtAddress2").val("");
             $("#txtCity").val("");
             $("#txtPostCode").val("");
             $("#txtState").val(null).trigger('change');
-        });
+        }); */
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -897,6 +897,15 @@
             //marker.setVisible(true);
         }
     }
+</script>
+<script>
+    $('#txtCountry').on('select2:select', function (e) {
+        $('#txtAddress').val("");
+        $("#txtAddress2").val("");
+        $("#txtCity").val("");
+        $("#txtPostCode").val("");
+        $("#txtState").val(null).trigger('change');
+    });
 </script>
 <!--Google Place API -->
 @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@

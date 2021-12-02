@@ -2286,8 +2286,7 @@ function PaypalPayment(ppemail) {
                         let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
                         let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
                         $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
-                            swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
-                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                            swal('Success!', result.message, 'success'); $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                             successModal('PayPal', inv_id, true, true);
                         }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
                     }

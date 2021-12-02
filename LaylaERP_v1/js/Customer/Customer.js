@@ -98,6 +98,7 @@ function AddCustomer() {
             },
             complete: function () {
                 $("#loader").hide();
+                isEdit(false);
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');

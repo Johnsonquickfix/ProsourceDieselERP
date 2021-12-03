@@ -105,7 +105,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div title="Enter state">
-                                                <label for="exampleInputEmail1">State</label>
+                                                <label for="exampleInputEmail1">State</label><span style="color:red">*</span>
                                                 <select class="form-control" id="txtState">
                                                     <option selected value="">Select State</option>
                                                 </select>
@@ -244,7 +244,6 @@
                                 </div>
                                 </div>
                 </div> -->
-
         </div>
     </div>
 </section>
@@ -350,15 +349,7 @@
                 },
             })
         });
-
-
-
-
-    });
-
-
-
-
+});
 
 
     document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
@@ -384,6 +375,16 @@
         }
         return input;
     }
+
+    $('#txtEmail').change(function () {
+        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        var emailaddressVal = $("#txtEmail").val();
+        if (!emailReg.test(emailaddressVal)) {
+            $("#txtEmail").val('');
+            swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        }
+    });
+
 
 </script>
 
@@ -419,22 +420,25 @@
         email = $("#txtEmail").val();
 
         if (ref == "") {
-            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+            swal('Alert', 'Please enter reference name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
         }
         else if (lieu == "") {
-            swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
+            swal('Alert', 'Please enter short name location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
         }
         else if (phone == "") {
-            swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+            swal('Alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
         }
         else if (address == "") {
-            swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+            swal('Alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
         }
         else if (city == "") {
-            swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+        }
+        else if (town == "" || town == null) {
+            swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtState').focus(); });
         }
         else if (zip == "") {
-            swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+            swal('Alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
         }
         else {
 

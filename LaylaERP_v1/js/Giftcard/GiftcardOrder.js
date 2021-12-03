@@ -165,7 +165,7 @@ function createItemsList() {
     let discountAmount = 0.00;
     let taxAmount = 0.00;
     let shippinAmount = 0.00;
-    let customerNotes = $("#txtOrderNotes").text();
+    let customerNotes = $("#txtOrderNotes").val();
     let sender_email = $("#txtSenderEmail").val();
     let sender = $("#txtFirstName").val() + ' ' + $("#txtLastName").val();
     let deliver_date = $("#EmployeeListdata").data('deliverydate') || todaydate;
@@ -651,8 +651,7 @@ function sendInvoice(paymode, id) {
         order_id: order_id, order_date: order_date, payment_method: payment_method, b_first_name: b_first_name, b_last_name: b_last_name, b_company: b_company,
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,
         s_first_name: s_first_name, s_last_name: s_last_name, s_company: s_company, s_address_1: s_address_1, s_address_2: s_address_2, s_postcode: s_postcode, s_city: s_city, s_country: s_country, s_state: s_state,
-        paypal_id: id, GrassAmount: GrassAmount, TotalTax: TotalTax, TotalShipping: TotalShipping, //TotalStateRecycling: TotalStateRecycling,
-        // TotalFee: TotalFee, TotalGift: TotalGift,TotalDiscount: TotalDiscount,
+        paypal_id: id, GrassAmount: GrassAmount, TotalTax: TotalTax, TotalShipping: TotalShipping,
         NetTotal: NetTotal,OrderProducts: _item
     }
     $.ajax({

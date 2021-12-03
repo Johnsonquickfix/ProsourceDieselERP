@@ -16,7 +16,7 @@
     });
     dataGCGridLoad();
     $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by Customer...",
+        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by customer...",
         ajax: {
             url: '/GiftCard/GetRedeemedCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -65,7 +65,7 @@ function dataGCGridLoad() {
             $('.dataTables_filter input').unbind();
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table.search(this.value).draw(); }
+                if (code == 13) { table.search(this.value.trim()).draw(); }
             });
         },
         sAjaxSource: "/GiftCard/GetGiftCardOrderList",
@@ -91,9 +91,9 @@ function dataGCGridLoad() {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'order_id', title: 'Order id', sWidth: "10%" },
+            { data: 'order_id', title: 'Order id', sWidth: "5%" },
             {
-                'data': 'code', title: 'Code', sWidth: "18%",
+                'data': 'code', title: 'Code', sWidth: "20%",
                 'render': function (id, type, row, meta) {
 
                     return '<a href="GiftCardActivity/' + row.id + '" data-toggle="tooltip" title="View Activity">' + id + '</a> '
@@ -108,8 +108,8 @@ function dataGCGridLoad() {
             },
             { data: 'status', title: 'Status', sWidth: "7%" },
             { data: 'delivery', title: 'Delivery', sWidth: "7%" },
-            { data: 'sender', title: 'From', sWidth: "10%" },
-            { data: 'recipient', title: 'To', sWidth: "10%" },
+            { data: 'sender', title: 'From', sWidth: "9%" },
+            { data: 'recipient', title: 'To', sWidth: "9%" },
             { data: 'RedeemedBy', title: 'Redeemed By', sWidth: "12%" },
 
             { data: 'expires', title: 'Expires', sWidth: "5%" },
@@ -207,7 +207,6 @@ function Singlecheck(chk) {
 
 //Check PayPal Payment Status.
 function PaymentStatus(oid, pp_id, email) {
-    console.log(oid, pp_id, email);
     paypal_baseurl = 'https://api-m.sandbox.paypal.com';
     let option = { strValue1: 'getToken' };
     $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
@@ -223,7 +222,7 @@ function PaymentStatus(oid, pp_id, email) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
@@ -250,7 +249,7 @@ function PaymentStatus(oid, pp_id, email) {
                     }]);
                 }
                 else {
-                    swal(status, 'Request has been sent for payment.', 'info');
+                    swal(status, 'Request sent for payment.', 'info');
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },

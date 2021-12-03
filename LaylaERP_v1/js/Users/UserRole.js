@@ -43,32 +43,39 @@ function CopyRoles() {
 //Give Permission
 
 $('#btnApprove').click(function () {
-    var n1 = $('#tt').tree('getChecked');  // get checked nodes
-    var n2 = $('#tt').tree('getChecked', 'indeterminate');	// get indeterminate nodes
-    var nodes = n1.concat(n2);
+    var status = $("#userrole").val();
+    var copystatus = $("#ddlCopyRole").val();
+    if (status == "") { swal('alert', 'Please select roles', 'error'); }
+    //else if (copystatus == "") { swal('alert', 'Please select copyroles', 'error'); }
+    else {
 
-    //var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
-    //debugger
-    var addnodes = ''; var id = ''; var flag = ''; var addid = ''; var editid = ''; var deleteid = '';
+        var n1 = $('#tt').tree('getChecked');  // get checked nodes
+        var n2 = $('#tt').tree('getChecked', 'indeterminate');	// get indeterminate nodes
+        var nodes = n1.concat(n2);
 
-    for (var i = 0; i < nodes.length; i++) {
-        addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
-        editnodes = $('#chk_edit_' + nodes[i].id).prop('checked');
-        deletenodes = $('#chk_del_' + nodes[i].id).prop('checked');
-        if (id != '') id += ','; id += nodes[i].id;
-       
-        if (addnodes == true) { if (addid != '') addid += ','; addid += nodes[i].id; }
-        if (editnodes == true) { if (editid != '') editid += ','; editid += nodes[i].id; }
-        if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
+        //var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
+        //debugger
+        var addnodes = ''; var id = ''; var flag = ''; var addid = ''; var editid = ''; var deleteid = '';
+
+        for (var i = 0; i < nodes.length; i++) {
+            addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
+            editnodes = $('#chk_edit_' + nodes[i].id).prop('checked');
+            deletenodes = $('#chk_del_' + nodes[i].id).prop('checked');
+            if (id != '') id += ','; id += nodes[i].id;
+
+            if (addnodes == true) { if (addid != '') addid += ','; addid += nodes[i].id; }
+            if (editnodes == true) { if (editid != '') editid += ','; editid += nodes[i].id; }
+            if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
+        }
+        for (var i = 0; i < n1.length; i++) {
+            if (flag != '') flag += ','; flag += 'C';
+        }
+        for (var i = 0; i < n2.length; i++) {
+            if (flag != '') flag += ','; flag += 'I';
+        }
+
+        ChangePermission(id, addid, editid, deleteid, flag);
     }
-    for (var i = 0; i < n1.length; i++) {
-        if (flag != '') flag += ','; flag += 'C';
-    }
-    for (var i = 0; i < n2.length; i++) {
-        if (flag != '') flag += ','; flag += 'I';
-    }
-   
-    ChangePermission(id, addid, editid, deleteid,flag);
 })
 
 function ChangePermission(id, addid, editid, deleteid,flag) {
@@ -117,10 +124,16 @@ $('#btnSaveRole').click(function () {
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
-                swal("Success!", data.message, "success");
-                $("#roleModal").modal('hide');
-                GetRoles();
-                CopyRoles();
+                if (data.status == true) {
+                    swal("Success!", data.message, "success");
+                    $("#roleModal").modal('hide');
+                    GetRoles();
+                    CopyRoles();
+                    console.log(data.status);
+                }
+                else {
+                    swal("Alert!", data.message, "error");
+                }
                 //parent.location.reload();
             },
             error: function () {

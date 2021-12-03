@@ -75,11 +75,11 @@ namespace LaylaERP.Controllers
 
                 if (ID > 0)
                 {
-                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
+                    b_status = true; JSONstring = "Purchase record  updated successfully!!";
                 }
                 else
                 {
-                    b_status = false; JSONstring = "Invalid Details.";
+                    b_status = false; JSONstring = "Invalid details.";
                 }
             }
             catch (Exception Ex)
@@ -103,12 +103,12 @@ namespace LaylaERP.Controllers
                     if (model.fk_status == 6)
                     {
                         Session["ROPO"] = "PO3";
-                        JSONstring = "Purchase Record has been Closed successfully!!";
+                        JSONstring = "Purchase record closed successfully!!";
                     }
                     else if (model.fk_status == 5)
                     {
                         Session["ROPO"] = "PO2";
-                        JSONstring = "Purchase Record has been Opened successfully!!";
+                        JSONstring = "Purchase record opened successfully!!";
                     }
                     else
                     {
@@ -117,7 +117,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    b_status = false; JSONstring = "Invalid Details.";
+                    b_status = false; JSONstring = "Invalid details.";
                 }
             }
             catch (Exception Ex)
@@ -319,7 +319,7 @@ namespace LaylaERP.Controllers
                         DataTable dt = ReceptionRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
                         if (dt.Rows.Count > 0)
                         {
-                            return Json(new { status = false, message = "File has been already uploaded", url = "" }, 0);
+                            return Json(new { status = false, message = "File already uploaded", url = "" }, 0);
                         }
                         else
                         {
@@ -335,7 +335,7 @@ namespace LaylaERP.Controllers
 
                             if (resultOne > 0)
                             {
-                                return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
+                                return Json(new { status = true, message = "File upload successfully!!", url = "Manage" }, 0);
                             }
                             else
                             {
@@ -356,7 +356,7 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
         }
@@ -376,7 +376,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
 

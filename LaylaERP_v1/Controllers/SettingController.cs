@@ -162,7 +162,7 @@ namespace LaylaERP.Controllers
                 {
                     Update_Setting(model, model.ID);
                     Update_EntityInfo(model, model.ID);
-                    return Json(new { status = true, message = "Setting has been saved successfully, Please login again!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Setting saved successfully, Please login again!!", url = "" }, 0);
                 }
                 
             }
@@ -210,20 +210,20 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Rule has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Rule saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Rule Can not be Duplicate", url = "" }, 0);
+                    return Json(new { status = false, message = "Rule Can not be duplicate", url = "" }, 0);
                 }
 
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
         public JsonResult GetRule()
         {
@@ -252,7 +252,7 @@ namespace LaylaERP.Controllers
             DataTable dt = SettingRepository.Getcountrystatecountry(model);
             if (dt.Rows.Count > 0 && model.ID == 0)
             {
-                return Json(new { status = false, message = "Rule with state with same product has been already existed", url = "" }, 0);
+                return Json(new { status = false, message = "Rule with state with same product already existed", url = "" }, 0);
             }
             else
             {
@@ -261,7 +261,7 @@ namespace LaylaERP.Controllers
                 {
                     //model.location = state[x].Trim();
                     SettingRepository.updateshippingrule(model);
-                    msg = "Details has been updated successfully!!";
+                    msg = "Details updated successfully!!";
                     //return Json(new { status = true, message = "", url = "Manage" }, 0);
                 }
                 else
@@ -269,7 +269,7 @@ namespace LaylaERP.Controllers
                     //model.location = state[x].Trim();
                     SettingRepository.Addshippingruledetails(model);
                     //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
-                    msg = "Details has been save successfully!!";
+                    msg = "Details save successfully!!";
                 }
             }
 
@@ -350,7 +350,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
                     ModelState.Clear();
-                    return Json(new { status = true, message = "Rule has been delete successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Rule delete successfully!!", url = "" }, 0);
                 }
                 else
                 {

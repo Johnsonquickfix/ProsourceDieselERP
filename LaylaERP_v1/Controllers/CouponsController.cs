@@ -64,7 +64,7 @@ namespace LaylaERP.Controllers
 
                     CouponsRepository.EditCoupons(model, model.ID);
                     Update_MetaData(model, model.ID);
-                    return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "Manage" }, 0);
+                    return Json(new { status = true, message = "Coupons record updated successfully!!", url = "Manage" }, 0);
                 }
                 else
                 {
@@ -73,11 +73,11 @@ namespace LaylaERP.Controllers
                     {
                         Adduser_MetaData(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Coupons has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Coupons saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace LaylaERP.Controllers
 
                     CouponsRepository.EditAutoCoupons(model, model.ID);
                     UpdateAuto_MetaData(model, model.ID);
-                    return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "Manage" }, 0);
+                    return Json(new { status = true, message = "Coupons record updated successfully!!", url = "Manage" }, 0);
                 }
                 else
                 {
@@ -108,11 +108,11 @@ namespace LaylaERP.Controllers
                     {
                         AdduserAuto_MetaData(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Coupons has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Coupons saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
             }
@@ -268,7 +268,7 @@ namespace LaylaERP.Controllers
             {
                 CouponsRepository or = new CouponsRepository();
                 or.ChangeTrash(model, strID);
-                return Json(new { status = true, message = "Coupons has been move to trash successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Coupons move to trash successfully!!", url = "" }, 0);
             }
             else
             {
@@ -378,7 +378,7 @@ namespace LaylaERP.Controllers
 
                     CouponsRepository or = new CouponsRepository();
                     or.CoupanAutogenrate(month + year, Expiredate);
-                    return Json(new { status = true, message = "Auto generate coupon has been prepared!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Auto generate coupon prepared!!", url = "" }, 0);
                 }
             }
             else

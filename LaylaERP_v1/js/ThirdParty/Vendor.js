@@ -41,7 +41,7 @@ function getNatureofJournal() {
         url: "/Accounting/GetNatureofJournal",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Nature of Journal</option>';
+            var opt = '<option value="-1">Please select nature of journal</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -141,17 +141,17 @@ $('#btnNextTab1').click(function (e) {
     NatureofJournal = $("#ddlNatureofJournal").val();
 
     var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (VendorType == "-1") { swal('alert', 'Please Select Vendor Type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
-    else if (VendorName == "") { swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
-    else if (AliasName == "") { swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
-    else if (Address1 == "") { swal('alert', 'Please Enter Address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }) }
-    else if (City == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
-    else if (Status == "") { swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
-    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
-    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
-    else if (Country == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
-    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
-    //else if (NatureofJournal == "-1") { swal('alert', 'Please Select Nature of Journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
+    if (VendorType == "-1") { swal('alert', 'Please select vendor type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
+    else if (VendorName == "") { swal('alert', 'Please enter vendor name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
+    else if (AliasName == "") { swal('alert', 'Please enter alias name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
+    else if (Address1 == "") { swal('alert', 'Please enter address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }) }
+    else if (City == "") { swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
+    else if (Status == "") { swal('alert', 'Please enter status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
+    else if (State == "") { swal('alert', 'Please enter state', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
+    else if (ZipCode == "") { swal('alert', 'Please enter zipcode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
+    else if (Country == "-1") { swal('alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
+    else if (Phone == "") { swal('alert', 'Please enter phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
+    //else if (NatureofJournal == "-1") { swal('alert', 'Please select nature of journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
     else {
         var obj = {
             rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,
@@ -213,8 +213,8 @@ $('#btnNextTab3').click(function (e) {
     PaypalReceiverEmail = $("#txtPaypalReceiverEmail").val(); PaypalIdentitytoken = $("#txtPaypalIdentitytoken").val(); PaypalPaymentAction = $("#ddlPaypalPaymentAction").val(); 
     PaypalAPIUserName = $("#txtPaypalAPIUserName").val(); PaypalAPIPassword = $("#txtPaypalAPIPassword").val(); PaypalAPISignature = $("#txtPaypalAPISignature").val();
 
-    if (PaymentTerms == "-1") { swal('alert', 'Please Select Payment Terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
-    else if (Balancedays == "-1") { swal('alert', 'Please Select Balance Net', 'error').then(function () { swal.close(); $('#ddlBalancedays').focus(); }) }
+    if (PaymentTerms == "-1") { swal('alert', 'Please select payment terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
+    else if (Balancedays == "-1") { swal('alert', 'Please select balance net', 'error').then(function () { swal.close(); $('#ddlBalancedays').focus(); }) }
    
     else {
         var obj = {
@@ -429,14 +429,14 @@ $('#btnNextTab6').click(function (e) {
     DiscountType2 = $("#ddlDiscountType2").val();
     Discount = $("#txtDiscount").val();
     //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    //if (DiscountType1 == "-1") { swal('alert', 'Please Select Discount Type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
-    //else if (DefaultDiscount == "") { swal('alert', 'Please Enter Default Discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
-    //else if (MinimumOrderAmount == "") { swal('alert', 'Please Enter Minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
-    //else if (AccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
-    //else if (AccountEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
+    //if (DiscountType1 == "-1") { swal('alert', 'Please select discount type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
+    //else if (DefaultDiscount == "") { swal('alert', 'Please enter default discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
+    //else if (MinimumOrderAmount == "") { swal('alert', 'Please enter minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
+    //else if (AccountName == "") { swal('alert', 'Please enter account name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
+    //else if (AccountEmail == "") { swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
     //else if (!pattern.test(AccountEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
-    //else if (DiscountType2 == "-1") { swal('alert', 'Please Select Discount Type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
-    //else if (Discount == "") { swal('alert', 'Please Enter Discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
+    //else if (DiscountType2 == "-1") { swal('alert', 'Please select discount type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
+    //else if (Discount == "") { swal('alert', 'Please enter discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
     //else { }
     var obj = {
         rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, DiscountMinimumOrderAmount: MinimumOrderAmount, AccountName: AccountName,
@@ -509,14 +509,14 @@ $('#btnNextTab6').click(function (e) {
 
 //    //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 //    //if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please Enter Bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please Enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
-//    //else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please Enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please enter account name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please enter bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please enter account name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
+//    //else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
 
-//    //else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
+//    //else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
 //    //else if (PaymentMethod == "3" && ChequeDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtChequeDescription').focus(); }) }
 //    //else if (PaymentMethod == "3" && ChequeInstructions == "") { swal('alert', 'Please Enter Instructions', 'error').then(function () { swal.close(); $('#txtChequeInstructions').focus(); }) }
 
@@ -605,16 +605,16 @@ $('#btnSaveContact').click(function (e) {
     ContactFax = $("#txtContactFax").val();
     ContactNotes = $("#txtContactNotes").val();
 
-    if (ContactName == "") { swal('alert', 'Please Enter Name', 'error').then(function () { swal.close(); $('#txtContactName').focus(); }) }
-    else if (ContactTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtContactTitle').focus(); }) }
-    else if (ContactAddress == "") { swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtContactAddress').focus(); }) }
-    else if (ContactCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtContactCity').focus(); }) }
-    else if (ContactState == "-1") { swal('alert', 'Please Select  State', 'error').then(function () { swal.close(); $('#ddlContactState').focus(); }) }
-    else if (ContactZipCode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtContactZipCode').focus(); }) }
-    else if (ContactCountry == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlContactCountry').focus(); }) }
-    //else if (ContactOffice == "") { swal('alert', 'Please Enter Office', 'error').then(function () { swal.close(); $('#txtContactOffice').focus(); }) }
-    //else if (ContactPhone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtContactPhone').focus(); }) }
-    //else if (ContactEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
+    if (ContactName == "") { swal('alert', 'Please enter name', 'error').then(function () { swal.close(); $('#txtContactName').focus(); }) }
+    else if (ContactTitle == "") { swal('alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txtContactTitle').focus(); }) }
+    else if (ContactAddress == "") { swal('alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtContactAddress').focus(); }) }
+    else if (ContactCity == "") { swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtContactCity').focus(); }) }
+    else if (ContactState == "-1") { swal('alert', 'Please select  state', 'error').then(function () { swal.close(); $('#ddlContactState').focus(); }) }
+    else if (ContactZipCode == "") { swal('alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtContactZipCode').focus(); }) }
+    else if (ContactCountry == "-1") { swal('alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlContactCountry').focus(); }) }
+    //else if (ContactOffice == "") { swal('alert', 'Please enter office', 'error').then(function () { swal.close(); $('#txtContactOffice').focus(); }) }
+    //else if (ContactPhone == "") { swal('alert', 'Please enter phone', 'error').then(function () { swal.close(); $('#txtContactPhone').focus(); }) }
+    //else if (ContactEmail == "") { swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
     else {
         var obj = {
             rowid: ID, ContactID: ContactID, ContactName: ContactName, ContactTitle: ContactTitle, ContactEmail: ContactEmail, ContactOffice: ContactOffice,
@@ -659,7 +659,7 @@ $('#btnSaveContact').click(function (e) {
 $('#btnLinkWarehouse').click(function (e) {
     ID = $("#hfid").val();
     WarehouseList = $("#ddlWarehouseList").val();
-    if (WarehouseList == "-1") { swal('alert', 'Please Select Warehouse List', 'error').then(function () { swal.close(); $('#ddlWarehouseList').focus(); }) }
+    if (WarehouseList == "-1") { swal('alert', 'Please select warehouse list', 'error').then(function () { swal.close(); $('#ddlWarehouseList').focus(); }) }
     else {
         var obj = { rowid: ID, WarehouseID: WarehouseList, }
         $.ajax({
@@ -699,7 +699,7 @@ function getVendorType() {
         url: "/ThirdParty/GetVendorType",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Vendor Type</option>';
+            var opt = '<option value="-1">Please select vendor type</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -713,7 +713,7 @@ function getIncoterm() {
         url: "/ThirdParty/GetIncoterm",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select IncoTerm</option>';
+            var opt = '<option value="-1">Please select incoterm</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -727,7 +727,7 @@ function getWarehouse() {
         url: "/ThirdParty/GetWarehouse",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Warehouse</option>';
+            var opt = '<option value="-1">Please select warehouse</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -742,7 +742,7 @@ function getPaymentTerm() {
         url: "/ThirdParty/GetPaymentTerm",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Payment Term</option>';
+            var opt = '<option value="-1">Please select payment term</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -757,7 +757,7 @@ function getBalanceDays() {
         url: "/ThirdParty/GetBalanceDays",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Balance Days</option>';
+            var opt = '<option value="-1">Please select balance days</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -772,7 +772,7 @@ function getDiscountType() {
         url: "/ThirdParty/GetDiscountType",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Discount Type 2</option>';
+            var opt = '<option value="-1">Please select discount type 2</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -787,7 +787,7 @@ function getPaymentMethod() {
         url: "/ThirdParty/GetPaymentMethod",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Payment Method</option>';
+            var opt = '<option value="-1">Please select payment method</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -831,7 +831,7 @@ function getThirdPartyType() {
 
     ];
     var items = "";
-    items += "<option value='-1'>-- Please select Third Party Type --</option>";
+    items += "<option value='-1'>-- Please select thirdparty type --</option>";
     $.each(data, function (index, value) {
         items += "<option value=" + this['ID'] + ">" + this['Text'] + "</option>";
     })
@@ -848,7 +848,7 @@ function getWorkforce() {
 
     ];
     var items = "";
-    items += "<option value='-1'>-- Please select Workforce --</option>";
+    items += "<option value='-1'>-- Please select workforce --</option>";
     $.each(data, function (index, value) {
         items += "<option value=" + this['ID'] + ">" + this['Text'] + "</option>";
     })
@@ -859,7 +859,7 @@ function getAssignedtoSalesRepresentative() {
         { "ID": "1", "Text": "SuperAdmin" },
     ];
     var items = "";
-    items += "<option value='-1'>-- Please Select Sales Representative --</option>";
+    items += "<option value='-1'>-- Please select sales representative --</option>";
     $.each(data, function (index, value) {
         items += "<option value=" + this['Text'] + ">" + this['Text'] + "</option>";
     })
@@ -870,7 +870,7 @@ function getShippingMethod() {
         url: "/ThirdParty/GetShippingMethod",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Shipping Method</option>';
+            var opt = '<option value="-1">Please select shipping method</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -1583,7 +1583,7 @@ function orderStatus() {
     $("#checkAll").prop('checked', false);
     var status = $('#ddlOrderStatus').val();
 
-    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
+    if (id == "") { swal('alert', 'Please select a purchase order.', 'error'); }
     else if (status == "") { swal('alert', 'Please select status.', 'error'); }
     else {
         var obj = { Search: id, Status: status }

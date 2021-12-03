@@ -505,6 +505,11 @@
                                                 <option selected value="CA">CA - Canada</option>
                                                 <option value="US">US - United States</option>
                                                 }
+                                                @if (ViewBag.country == "")
+                                                {
+                                                <option selected value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                                }
 
                                             </select>
                                         </div>

@@ -123,12 +123,14 @@
             $("#userrole").prop("disabled", true);
             $("#ddlCopyRole").hide();
             $("#lblcopyrole").hide();
+            console.log('dd');
         }
         else {
             CopyRoles();
             CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
-            setTimeout(function () { $('#userrole').val(roletype).trigger('change'); }, 3000);
-            //setTimeout(function () { fillCheckMenu(); }, 3000);      
+            setTimeout(function () { $('#userrole').val('').trigger('change'); }, 3000);
+            //setTimeout(function () { fillCheckMenu(); }, 3000);   
+            console.log('ff');
         }
 
     

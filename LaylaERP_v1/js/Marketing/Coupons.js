@@ -187,7 +187,7 @@ function AddCoupons() {
 
 
     if (couponcode == "") {
-        swal('Alert', 'Please Enter Coupon Code', 'error').then(function () { swal.close(); $('#txtGenrateCouponCode').focus(); });
+        swal('Alert', 'Please enter coupon code', 'error').then(function () { swal.close(); $('#txtGenrateCouponCode').focus(); });
     }
     //else if (CouponExpiryDate == "") {
     //    swal('Alert', 'Please Enter Coupon Expiry Date', 'error').then(function () { swal.close(); $('#txtCouponExpiryDate').focus(); });

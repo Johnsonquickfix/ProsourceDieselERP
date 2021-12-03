@@ -1040,7 +1040,7 @@
             })
             $(document).on('click', "#PasswordShow", function () {
                 if ($('#txtPassword').val() == "")
-                    swal('Alert', 'Password is not zenrated', 'error');
+                    swal('Alert', 'Password is not generated', 'error');
                 else
                     swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
 
@@ -1060,6 +1060,10 @@
                             $('#txtPassword').val(data.message);
                             $('#txtConfirmPassword').val(data.message);
                             $("#txtPassword").change();
+                            if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
+                                $('#message').html('Matching').css('color', 'green');
+                            } else
+                                $('#message').html('Not matching').css('color', 'red');
                         }
                         else {
                             $("#txtPassword").val("");
@@ -1117,7 +1121,7 @@
                 if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
                     $('#message').html('Matching').css('color', 'green');
                 } else
-                    $('#message').html('Not Matching').css('color', 'red');
+                    $('#message').html('Not matching').css('color', 'red');
             });
         }
         function ResetPassword() {
@@ -1125,13 +1129,13 @@
             Password = $("#txtPassword").val();
             ConfirmPassword = $("#txtConfirmPassword").val();
             if (Password == "") {
-                swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+                swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
             }
             else if (ConfirmPassword == "") {
-                swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Please enter confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else if (Password !== ConfirmPassword) {
-                swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else {
                 var obj = {

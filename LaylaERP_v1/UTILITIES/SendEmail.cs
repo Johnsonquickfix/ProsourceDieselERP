@@ -64,11 +64,11 @@
                         smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
                         smtp.EnableSsl = om.SSL;
                         NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
-                        smtp.UseDefaultCredentials = false;
+                        smtp.UseDefaultCredentials = true;//false;
                         smtp.Credentials = NetworkCred;
                         //smtp.Timeout = 5000;
                         //GlobalVariable.strSMTPServerPortNo = "587";
-                        smtp.Port = Convert.ToInt32(om.SMTPServerPortNo); // 587;
+                        smtp.Port = 587; //Convert.ToInt32(om.SMTPServerPortNo); 
                         smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                         smtp.Send(mm);
                     }
@@ -105,7 +105,7 @@
                         smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
                         smtp.EnableSsl = true;
                         NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
-                        smtp.UseDefaultCredentials = false;
+                        smtp.UseDefaultCredentials = true; //false;
                         smtp.Credentials = NetworkCred;
                         //smtp.Timeout = 5000;
                         //GlobalVariable.strSMTPServerPortNo = "587";

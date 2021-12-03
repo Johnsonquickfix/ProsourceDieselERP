@@ -37,6 +37,7 @@
                 $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
                 $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
                 $('#txtIncoTerms').val(_details[0].location_incoterms);
+                $('#ddlwarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
             }
         }, 50);
     });
@@ -132,10 +133,44 @@
     }
 
 });
+//function getMasters() {
+//    $.ajax({
+//        url: "/PurchaseOrder/GetAllMaster",
+//        type: "Get", beforeSend: function () { $("#loader").show(); },
+//        success: function (data) {
+//            let dt = JSON.parse(data);
+//            //Payment Terms
+//            $("#ddlPaymentTerms").html('<option value="0">Select Payment Term</option>');
+//            for (i = 0; i < dt['Table'].length; i++) { $("#ddlPaymentTerms").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+
+//            //Payment Type
+//            $("#ddlPaymentType").html('<option value="0">Select Payment Type</option>');
+//            for (i = 0; i < dt['Table1'].length; i++) { $("#ddlPaymentType").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+//            //Balance
+//            $("#ddlBalancedays").html('<option value="0">Select Balance days</option>');
+//            for (i = 0; i < dt['Table2'].length; i++) { $("#ddlBalancedays").append('<option value="' + dt['Table2'][i].id + '">' + dt['Table2'][i].text + '</option>'); }
+
+//            //Balance
+//            $("#ddlIncoTerms").html('<option value="0">Select Incoterms</option>');
+//            for (i = 0; i < dt['Table3'].length; i++) { $("#ddlIncoTerms").append('<option value="' + dt['Table3'][i].id + '">' + dt['Table3'][i].text + '</option>'); }
+
+//            //Warehouse
+//            $("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
+//            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+
+//            $("#ddlwarehouse").html('<option value="0">Select Warehoused</option>');
+//            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+//        },
+//        complete: function () { $("#loader").hide(); },
+//        error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+//    });
+//}
+
 function getMasters() {
+    let option = { strValue1: 'GETMD', strValue2: 0 };
     $.ajax({
-        url: "/PurchaseOrder/GetAllMaster",
-        type: "Get", beforeSend: function () { $("#loader").show(); },
+        url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             let dt = JSON.parse(data);
             //Payment Terms
@@ -150,16 +185,21 @@ function getMasters() {
             $("#ddlBalancedays").html('<option value="0">Select Balance days</option>');
             for (i = 0; i < dt['Table2'].length; i++) { $("#ddlBalancedays").append('<option value="' + dt['Table2'][i].id + '">' + dt['Table2'][i].text + '</option>'); }
 
-            //Balance
+            //Incoterms
             $("#ddlIncoTerms").html('<option value="0">Select Incoterms</option>');
             for (i = 0; i < dt['Table3'].length; i++) { $("#ddlIncoTerms").append('<option value="' + dt['Table3'][i].id + '">' + dt['Table3'][i].text + '</option>'); }
 
-            //Warehouse
+
+             //Warehouse
             $("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
             for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
 
-            $("#ddlwarehouse").html('<option value="0">Select Warehoused</option>');
-            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+            //$("#ddlwarehouse").html('<option value="0">Select Warehoused</option>');
+            //for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+
+            //Warehouse
+            //$("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
+            //for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '" data-ad="' + dt['Table4'][i].address + '">' + dt['Table4'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -178,7 +218,7 @@ function getVendor() {
     });
 }
 function getwarehaouseid() {
-    //let VendorID = parseInt($('#ddlVendor').val()) || 0;
+   let VendorID = parseInt($('#ddlVendor').val()) || 0;
     //$.ajax({
     //    url: "/Reception/Getwarehouse", dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
     //    type: "Get",
@@ -190,7 +230,17 @@ function getwarehaouseid() {
     //        }
     //    }, async: false
     //});
-
+    let option = { strValue1: 'GEVWH', strValue2: VendorID };
+    $.ajax({
+        url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let dt = JSON.parse(data); console.log(dt);
+            $("#ddlwarehouse").html('<option value="0">Select Warehouse</option>');
+            for (i = 0; i < dt['Table'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table'][i].id + '" data-ad="' + dt['Table'][i].address + '">' + dt['Table'][i].text + '</option>'); }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+    });
     $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
 }
 function getVendorDetails() {
@@ -479,7 +529,7 @@ function getPurchaseOrderInfo() {
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
                         $('#ddlwarehousepo').val(data['po'][i].fk_warehouse).trigger('change');
-                        $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
+                        $('#ddlwarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         $("#hfid").val(data['po'][i].rowid);
                         $("#hfstatus").val(data['po'][i].fk_status);
                         //console.log(data['po'][i].fk_status);

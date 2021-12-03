@@ -723,6 +723,7 @@ function saveVendorPO() {
                 if (data.status == true) {
                     //$('#lblPoNo').data('id', data.id);
                     getPurchaseOrderInfo();
+                    $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
                     getPurchasehistory();
                     if ($("#hfstatus").val() == "6") {
                         $('.btnEdit').hide();

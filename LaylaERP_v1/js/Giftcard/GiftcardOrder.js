@@ -233,15 +233,15 @@ function saveGiftCard() {
 
 function ValidateData() {
     if ($('#txtSenderEmail').val().trim() == "") { swal('Alert', 'Please enter e-mail', 'error'); }
-    else if ($('#txtFirstName').val() == "") { swal('Alert', 'Please Enter First Name', 'error').then((result) => { $('#txtFirstName').focus(); return false; }); return false; }
-    else if ($('#txtLastName').val() == "") { swal('Alert', 'Please enter Last Name', 'error').then((result) => { $('#txtLastName').focus(); return false; }); }
+    else if ($('#txtFirstName').val() == "") { swal('Alert', 'Please enter first name', 'error').then((result) => { $('#txtFirstName').focus(); return false; }); return false; }
+    else if ($('#txtLastName').val() == "") { swal('Alert', 'Please enter last name', 'error').then((result) => { $('#txtLastName').focus(); return false; }); }
     else if ($('#txtPhone').val() == "" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
     else if ($('#txtPhone').val().length != "14" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter 10 digit phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
-    else if ($('#txtAddress1').val() == "") { swal('Alert', 'Please enter Address1', 'error').then((result) => { $('#txtAddress1').focus(); return false; }); return false; }
-    else if ($('#txtCity').val() == "") { swal('Alert', 'Please enter City', 'error').then((result) => { $('#txtCity').focus(); return false; }); return false; }
-    else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter State', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }
-    else if ($('#txtPostCode').val() == "") { swal('Alert', 'Please enter Zip Code', 'error').then((result) => { $('#txtPostCode').focus(); return false; }); return false; }
-    else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select Country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
+    else if ($('#txtAddress1').val() == "") { swal('Alert', 'Please enter address1', 'error').then((result) => { $('#txtAddress1').focus(); return false; }); return false; }
+    else if ($('#txtCity').val() == "") { swal('Alert', 'Please enter city', 'error').then((result) => { $('#txtCity').focus(); return false; }); return false; }
+    else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter state', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }
+    else if ($('#txtPostCode').val() == "") { swal('Alert', 'Please enter zip code', 'error').then((result) => { $('#txtPostCode').focus(); return false; }); return false; }
+    else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
     return true;
 }
 function isEdit(val) {
@@ -745,7 +745,7 @@ function ReSendGiftCard() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status == true) {
-                swal('Success', 'Email Send successfully.', "success");
+                swal('Success', 'Email send successfully.', "success");
             }
             else {
                 swal('Error', result.message, "error").then((result) => { return false; }); }

@@ -16,7 +16,7 @@
     });
     dataGCGridLoad();
     $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by Customer...",
+        allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by customer...",
         ajax: {
             url: '/GiftCard/GetRedeemedCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -207,7 +207,6 @@ function Singlecheck(chk) {
 
 //Check PayPal Payment Status.
 function PaymentStatus(oid, pp_id, email) {
-    console.log(oid, pp_id, email);
     paypal_baseurl = 'https://api-m.sandbox.paypal.com';
     let option = { strValue1: 'getToken' };
     $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
@@ -223,7 +222,7 @@ function PaymentStatus(oid, pp_id, email) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
@@ -250,7 +249,7 @@ function PaymentStatus(oid, pp_id, email) {
                     }]);
                 }
                 else {
-                    swal(status, 'Request has been sent for payment.', 'info');
+                    swal(status, 'Request sent for payment.', 'info');
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },

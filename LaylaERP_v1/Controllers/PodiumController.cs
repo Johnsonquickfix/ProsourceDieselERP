@@ -48,6 +48,11 @@ namespace LaylaERP.Controllers
                                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
                                 OrderRepository.AddOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+
+                                if (id > 0)
+                                {
+                                    OrderRepository.OrderInvoiceMail(id);
+                                }
                             }
                         }
                         catch { }

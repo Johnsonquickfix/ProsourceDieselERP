@@ -91,9 +91,9 @@ function dataGCGridLoad() {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'order_id', title: 'Order id', sWidth: "10%" },
+            { data: 'order_id', title: 'Order id', sWidth: "5%" },
             {
-                'data': 'code', title: 'Code', sWidth: "18%",
+                'data': 'code', title: 'Code', sWidth: "20%",
                 'render': function (id, type, row, meta) {
 
                     return '<a href="GiftCardActivity/' + row.id + '" data-toggle="tooltip" title="View Activity">' + id + '</a> '
@@ -108,8 +108,8 @@ function dataGCGridLoad() {
             },
             { data: 'status', title: 'Status', sWidth: "7%" },
             { data: 'delivery', title: 'Delivery', sWidth: "7%" },
-            { data: 'sender', title: 'From', sWidth: "10%" },
-            { data: 'recipient', title: 'To', sWidth: "10%" },
+            { data: 'sender', title: 'From', sWidth: "9%" },
+            { data: 'recipient', title: 'To', sWidth: "9%" },
             { data: 'RedeemedBy', title: 'Redeemed By', sWidth: "12%" },
 
             { data: 'expires', title: 'Expires', sWidth: "5%" },

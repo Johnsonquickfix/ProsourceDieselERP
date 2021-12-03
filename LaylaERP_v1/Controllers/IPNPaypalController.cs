@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -88,7 +89,7 @@ namespace LaylaERP.Controllers
         }
 
         private void ProcessVerificationResponse(string verificationResponse)
-        {            
+        {
             if (verificationResponse.Equals("VERIFIED"))
             {
                 //BAL.OrderRepository.UpdatePaymentLog(verificationResponse);
@@ -107,8 +108,12 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-                BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
-
+                DataTable dt = BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    long or_id = (dr["id"] != Convert.DBNull) ? Convert.ToInt64(dr["id"]) : 0;
+                    BAL.OrderRepository.OrderInvoiceMail(or_id);
+                }
             }
             else if (verificationResponse.Equals("INVALID"))
             {
@@ -122,8 +127,13 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + str + "}", "Items");
 
-               BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                DataTable dt = BAL.OrderRepository.AddOrdersPost(0, "IPNPU", 0, id, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
 
+                foreach (DataRow dr in dt.Rows)
+                {
+                    long or_id = (dr["id"] != Convert.DBNull) ? Convert.ToInt64(dr["id"]) : 0;
+                    BAL.OrderRepository.OrderInvoiceMail(or_id);
+                }
             }
             else
             {

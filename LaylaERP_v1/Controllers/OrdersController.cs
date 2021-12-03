@@ -515,7 +515,7 @@
             {
                 OrderRepository or = new OrderRepository();
                 or.ChangeOrderStatus(model, strID);
-                return Json(new { status = true, message = "Order Status has been Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Order status changed successfully!!", url = "" }, 0);
             }
             else
             {

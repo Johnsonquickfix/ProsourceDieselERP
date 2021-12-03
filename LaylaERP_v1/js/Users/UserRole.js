@@ -25,7 +25,9 @@ function CopyRoles() {
         $('#ddlCopyRole').bind(items);
     })
 };
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 //function Singlecheck() {
 //    var isChecked = $('#CheckSingle').prop("checked");
 //    var isHeaderChecked = $("#checkAll").prop("checked");
@@ -45,7 +47,7 @@ function CopyRoles() {
 $('#btnApprove').click(function () {
     var status = $("#userrole").val();
     var copystatus = $("#ddlCopyRole").val();
-    if (status == "") { swal('alert', 'Please select roles', 'error'); }
+    if (status == "") { swal('alert', 'Please select user role', 'error'); }
     //else if (copystatus == "") { swal('alert', 'Please select copyroles', 'error'); }
     else {
 
@@ -75,6 +77,7 @@ $('#btnApprove').click(function () {
         }
 
         ChangePermission(id, addid, editid, deleteid, flag);
+        isEdit(false);
     }
 })
 
@@ -286,7 +289,7 @@ $('#checkAdd').click(function () {
     }
 });
 $('#checkEdit').click(function () {
-    alert('hhh');
+  
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkEdit').prop("checked");
     for (var i = 0; i < nodes.length; i++) {
@@ -299,7 +302,7 @@ $('#checkEdit').click(function () {
     }
 });
 $('#checkDelete').click(function () {
-    alert('hhh');
+
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkDelete').prop("checked");
     for (var i = 0; i < nodes.length; i++) {

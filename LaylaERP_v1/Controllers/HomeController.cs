@@ -59,7 +59,7 @@
                     {
                         mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
                         mailMessage.Subject = "Reset Password";
-                        mailMessage.Body = "UserName : " + UserName + " and Password: " + model1.pwd ;
+                        mailMessage.Body = @"<img src=https://dev.laylaerp.com/Images/layla1-logo.png /><br>" + "<p>We got a reset password request.</p> <p>Please login with a new password and change your password from your profile after logging in with a new password.</p>" + "<p>User name: " + UserName + "</p> <p>New password: " + model1.pwd +"</p>";
                         mailMessage.IsBodyHtml = true;
 
                         /*string SenderEmailID = "david.quickfix1@gmail.com";
@@ -73,7 +73,7 @@
                         {
                             SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject, mailMessage.Body, fileattach);
                             ForgotPasswordRepository.Updateuserpassword(model1);
-                            ViewBag.Result = "New password sent, please check your email";
+                            ViewBag.Result = "New password sent. Please check your email !";
                         }
                         //SmtpClient smtp = new SmtpClient();
 
@@ -104,6 +104,10 @@
                     ViewBag.Result = "User does not exist with this email id.";
                 }
 
+            }
+            else
+            {
+                ViewBag.Result = "Please enter email id.";
             }
             return View();
         }
@@ -451,7 +455,7 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                return Json(new { status = true, message = "Password Updated Successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Password updated successfully!!", url = "" }, 0);
             }
             else
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

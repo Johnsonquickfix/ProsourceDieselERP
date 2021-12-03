@@ -126,7 +126,7 @@ namespace LaylaERP.BAL
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 fromdate = DateTime.Parse(from_date);
                 todate = DateTime.Parse(to_date);
-                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+                if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
                 {
                     long user = CommanUtilities.Provider.GetCurrent().UserID;
                     strWhr = " and pm.meta_value = '" + user + "'";
@@ -304,7 +304,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and convert(date,p.post_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
                 }
-                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+                if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
                 {
                     long user = CommanUtilities.Provider.GetCurrent().UserID;
                     strWhr += " and pm.meta_value = '" + user + "'";
@@ -460,7 +460,7 @@ namespace LaylaERP.BAL
             {
                 datebetween = " and convert(date,p.post_date) >= convert(date,dateadd(DAY,-20,getdate()))";
             }
-            if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+            if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strWhr = " and pm_uc.meta_value = '" + user + "'";

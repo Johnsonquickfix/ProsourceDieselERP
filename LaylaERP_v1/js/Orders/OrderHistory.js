@@ -209,7 +209,10 @@ function dataGridLoad(order_type) {
             },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
+                    if (row.shipped_items == 0)
+                        return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>'
+                    else
+                        return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }
         ]
@@ -266,6 +269,22 @@ function orderStatus() {
     }]);
 }
 
+function cancelorder(id) {
+    swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                let obj = { strVal: id, status: 'wc-cancelled' }
+                $.post('/Orders/ChangeOrderStatus', obj).done(function (data) {
+                    if (data.status) {
+                        sswal('Success', data.message, "success");
+                        GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
+                    }
+                })
+            }
+        });
+    return false;
+}
+
 //Check PayPal Payment Status.
 function PaymentStatus(oid, pp_id, email) {
     let option = { strValue1: 'getToken' };
@@ -282,7 +301,7 @@ function PaymentStatus(oid, pp_id, email) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
@@ -301,7 +320,7 @@ function PaymentStatus(oid, pp_id, email) {
                     }]);
                 }
                 else {
-                    swal(status, 'Request has been sent for payment.', 'info');
+                    swal(status, 'Request sent for payment.', 'info');
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
@@ -332,7 +351,7 @@ function podiumPaymentStatus(oid, podium_id, email) {
                         let _paystatus = [{ post_id: oid, meta_key: '_podium_payment_uid', meta_value: payment_uid }, { post_id: oid, meta_key: '_podium_location_uid', meta_value: location_uid },
                         { post_id: oid, meta_key: '_podium_invoice_number', meta_value: invoiceNumber }, { post_id: oid, meta_key: '_podium_status', meta_value: 'PAID' }];
                         swal.queue([{
-                            title: status, confirmButtonText: 'Yes, Update it!', text: "Your Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                            title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                             preConfirm: function () {
                                 return new Promise(function (resolve) {
                                     let opt = { order_id: oid, b_first_name: order_note, order_itemmetaXML: JSON.stringify(_paystatus) };
@@ -348,7 +367,7 @@ function podiumPaymentStatus(oid, podium_id, email) {
                             }
                         }]);
                     }
-                    else { swal.hideLoading(); swal(status, 'Request has been sent for payment.', 'info'); }
+                    else { swal.hideLoading(); swal(status, 'Request sent for payment.', 'info'); }
                 }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'No invoice for the invoice UID.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
         }

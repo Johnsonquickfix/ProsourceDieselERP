@@ -294,7 +294,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 new GiftCardRepository().ChangeGiftCardStatus(model, strID);
-                return Json(new { status = true, message = "Gift Card Status Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Gift card status changed successfully!!", url = "" }, 0);
             }
             else
             {
@@ -466,7 +466,7 @@ namespace LaylaERP.Controllers
                     };
                     status = true;
                     String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
-                    result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML);
+                    result = SendEmail.SendEmails(model.recipient, "You have received a $" + model.balance + " Gift Card from " + model.sender + "", renderedHTML);
                 }
             }
             catch { status = false; result = ""; }

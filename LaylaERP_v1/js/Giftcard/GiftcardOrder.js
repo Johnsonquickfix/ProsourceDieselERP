@@ -1,9 +1,4 @@
 ﻿$(document).ready(function () {
-
-    console.log(new Date().toLocaleDateString('en-US', {
-        month: '2-digit', day: '2-digit', year: 'numeric'
-    }));
-    
     $("#loader").hide();
     $("#btnResendEmail").hide();
     $(".select2").select2();
@@ -14,12 +9,9 @@
     $('#txtPostCode').on('keyup',function () {
         checkZip();
     });
-
     $('#ddlState').change(function () {
         checkZip();
     })
-    
-
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $(document).on("click", "#btnResendEmail", function (t) {
@@ -233,15 +225,15 @@ function saveGiftCard() {
 
 function ValidateData() {
     if ($('#txtSenderEmail').val().trim() == "") { swal('Alert', 'Please enter e-mail', 'error'); }
-    else if ($('#txtFirstName').val() == "") { swal('Alert', 'Please Enter First Name', 'error').then((result) => { $('#txtFirstName').focus(); return false; }); return false; }
-    else if ($('#txtLastName').val() == "") { swal('Alert', 'Please enter Last Name', 'error').then((result) => { $('#txtLastName').focus(); return false; }); }
+    else if ($('#txtFirstName').val() == "") { swal('Alert', 'Please enter first name', 'error').then((result) => { $('#txtFirstName').focus(); return false; }); return false; }
+    else if ($('#txtLastName').val() == "") { swal('Alert', 'Please enter last name', 'error').then((result) => { $('#txtLastName').focus(); return false; }); }
     else if ($('#txtPhone').val() == "" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
     else if ($('#txtPhone').val().length != "14" || $('#txtPhone').val() == "() -") { swal('Alert', 'Please enter 10 digit phone Number', 'error').then((result) => { $('#txtPhone').focus(); return false; }); return false; }
-    else if ($('#txtAddress1').val() == "") { swal('Alert', 'Please enter Address1', 'error').then((result) => { $('#txtAddress1').focus(); return false; }); return false; }
-    else if ($('#txtCity').val() == "") { swal('Alert', 'Please enter City', 'error').then((result) => { $('#txtCity').focus(); return false; }); return false; }
-    else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter State', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }
-    else if ($('#txtPostCode').val() == "") { swal('Alert', 'Please enter Zip Code', 'error').then((result) => { $('#txtPostCode').focus(); return false; }); return false; }
-    else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select Country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
+    else if ($('#txtAddress1').val() == "") { swal('Alert', 'Please enter address1', 'error').then((result) => { $('#txtAddress1').focus(); return false; }); return false; }
+    else if ($('#txtCity').val() == "") { swal('Alert', 'Please enter city', 'error').then((result) => { $('#txtCity').focus(); return false; }); return false; }
+    else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter state', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }
+    else if ($('#txtPostCode').val() == "") { swal('Alert', 'Please enter zip code', 'error').then((result) => { $('#txtPostCode').focus(); return false; }); return false; }
+    else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
     return true;
 }
 function isEdit(val) {
@@ -374,15 +366,6 @@ function PodiumPayment() {
             swal.showLoading();
             $.get('/Setting/GetPodiumToken', option).then(response => {
                 let access_token = response.message;
-                //let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-                //if (inv_id.length > 0 && pay_by.includes('podium')) {
-                //    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
-                //    let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
-                //    $.ajax({
-                //        type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                //        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                //    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
-                //}
                 $.ajax({
                     type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
@@ -629,7 +612,9 @@ function successModal(paymode, id, is_mail) {
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
     //var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#GiftModal .modal-body').html() }
     if ($('#txtSenderEmail').val().length > 5 && is_mail == true) {
-        sendInvoice(paymode, id)
+        if (paymode == 'PayPal') {
+            sendInvoice(paymode, id)
+        }
     }
 }
 function sendInvoice(paymode, id) {
@@ -745,7 +730,7 @@ function ReSendGiftCard() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status == true) {
-                swal('Success', 'Email Send successfully.', "success");
+                swal('Success', 'Email send successfully.', "success");
             }
             else {
                 swal('Error', result.message, "error").then((result) => { return false; }); }

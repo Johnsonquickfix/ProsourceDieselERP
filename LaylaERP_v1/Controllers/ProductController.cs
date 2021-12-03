@@ -138,7 +138,7 @@ namespace LaylaERP.Controllers
             {
                 ProductRepository or = new ProductRepository();
                 or.Changestatus(model, strID);
-                return Json(new { status = true, message = "Product stats has been update successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Product stats update successfully!!", url = "" }, 0);
             }
             else
             {
@@ -285,20 +285,20 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Shipping Class has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Shipping class saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Shipping Class Can not be Duplicate", url = "" }, 0);
+                    return Json(new { status = false, message = "Shipping class can not be duplicate", url = "" }, 0);
                 }
 
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
 
         public JsonResult deleteShippingprice(ProductModel model)
@@ -310,14 +310,14 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
                     ModelState.Clear();
-                    return Json(new { status = true, message = "Shipping Class has been delete successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Shipping class delete successfully!!", url = "" }, 0);
                 }
                 else
                 {
                     return Json(new { status = false, message = "No data found for delete", url = "" }, 0);
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
         public JsonResult BuyingPrice(ProductModel model)
         {
@@ -358,7 +358,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
 
@@ -383,7 +383,7 @@ namespace LaylaERP.Controllers
                 if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
                 else
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    return Json(new { status = false, message = "Invalid details", url = "" }, 0);
 
             }
             //else
@@ -442,7 +442,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
         public JsonResult DeleteProductwarehouse(ProductModel model)
@@ -460,7 +460,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
         public JsonResult ActiveProductwarehouse(ProductModel model)
@@ -478,7 +478,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
         [HttpPost]
@@ -496,7 +496,7 @@ namespace LaylaERP.Controllers
                     DataTable dt = ProductRepository.Getcountrystatecountry(model);
                     if (dt.Rows.Count > 0 && model.ID == 0)
                     {
-                        return Json(new { status = false, message = "Shipping Class with country state has been already existed", url = "" }, 0);
+                        return Json(new { status = false, message = "Shipping class with country state already existed", url = "" }, 0);
                     }
                     else
                     {
@@ -505,7 +505,7 @@ namespace LaylaERP.Controllers
                         {
                             model.statecode = state[x].Trim();
                             ProductRepository.updateshippingclass(model);
-                            msg = "Details has been updated successfully!!";
+                            msg = "Details updated successfully!!";
                             //return Json(new { status = true, message = "", url = "Manage" }, 0);
                         }
                         else
@@ -513,14 +513,14 @@ namespace LaylaERP.Controllers
                             model.statecode = state[x].Trim();
                             ProductRepository.AddshippingPricedetails(model);
                             //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
-                            msg = "Details has been save successfully!!";
+                            msg = "Details save successfully!!";
                         }
                     }
                 }
             }
             else
             {
-                msg = "Please Select State!!";
+                msg = "Please select state!!";
                 //model.statecode = null;
                 //DataTable dt = ProductRepository.Getcountrystatecountry(model);
                 //if (dt.Rows.Count > 0 && model.ID == 0)
@@ -559,11 +559,11 @@ namespace LaylaERP.Controllers
                 resultOne = ProductRepository.Deletefileuploade(model);
             if (resultOne > 0)
             {
-                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "Deleted successfully!!", url = "Manage" }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
         public JsonResult DeleteBuyingPrice(ProductModel model)
@@ -581,7 +581,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
 
@@ -600,7 +600,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
         public JsonResult CreateProduct(ProductModel model)
@@ -619,9 +619,9 @@ namespace LaylaERP.Controllers
                 UpdateVariation_MetaData(model, model.ID);
                 update_term(model, model.ID);
                 if (model.updatedID > 0)
-                    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Product record updated successfully!!", url = "" }, 0);
                 else
-                    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+                    return Json(new { status = true, message = "Product record updated successfully!!", url = "Manage" }, 0);
             }
             else
             {
@@ -638,11 +638,11 @@ namespace LaylaERP.Controllers
                     Adduser_MetaData(model, ID);
                     Add_term(model, ID);
                     ModelState.Clear();
-                    return Json(new { status = true, message = "Product has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Product saved successfully!!", url = "" }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                 }
             }
         }
@@ -888,7 +888,7 @@ namespace LaylaERP.Controllers
                         DataTable dt = ProductRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
                         if (dt.Rows.Count > 0)
                         {
-                            return Json(new { status = false, message = "File has been already uploaded", url = "" }, 0);
+                            return Json(new { status = false, message = "File already uploaded", url = "" }, 0);
                         }
                         else
                         {
@@ -904,18 +904,18 @@ namespace LaylaERP.Controllers
 
                             if (resultOne > 0)
                             {
-                                return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
+                                return Json(new { status = true, message = "File upload successfully!!", url = "Manage" }, 0);
                             }
                             else
                             {
-                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                             }
                         }
                     }
 
                     else
                     {
-                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                        return Json(new { status = false, message = "File type " + FileExtension + " not allowed", url = "" }, 0);
                     }
                 }
                 else
@@ -925,7 +925,7 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
         }
@@ -1067,11 +1067,11 @@ namespace LaylaERP.Controllers
                     varFieldsName = "attribute_" +  attributeheader[y].Trim().ToLower();
                     ProductRepository.AddProductsMetaVariation(Convert.ToInt64(ID), varFieldsName, "");
                 }
-                return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
+                return Json(new { status = true, message = "Product attributes saved successfully!!", ID = ID }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
+                return Json(new { status = false, message = "Invalid details", id = ID }, 0);
             }
 
 
@@ -1088,7 +1088,7 @@ namespace LaylaERP.Controllers
                 // ProductRepository.EditProducts(model, model.ID);
                 Update_AttributeMetaData(model, Convert.ToInt64(IDs));
                 //update_term(model, model.ID);
-                return Json(new { status = true, message = "Product Attributes has been updated successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "Product attributes updated successfully!!", url = "Manage" }, 0);
             }
             else
             {
@@ -1109,11 +1109,11 @@ namespace LaylaERP.Controllers
                     ProductRepository.Add_term(Convert.ToInt32(producttypeID), ID);
                     //Add_term(model, ID);
                     ModelState.Clear();
-                    return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
+                    return Json(new { status = true, message = "Product attributes saved successfully!!", ID = ID }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
+                    return Json(new { status = false, message = "Invalid details", id = ID }, 0);
                 }
             }
 
@@ -1145,7 +1145,7 @@ namespace LaylaERP.Controllers
                 int reprice = ProductRepository.addprice(model.ProductPostPriceMeta);
             }
             catch { status = false; result = ""; }
-            return Json(new { status = true, message = "Product Variations has been update successfully!!", ID = 1 }, 0);
+            return Json(new { status = true, message = "Product variations update successfully!!", ID = 1 }, 0);
 
             // fields.ProductPostMeta
             // model.ProductPostMeta = Convert. fields.ToList(); 
@@ -1667,21 +1667,21 @@ namespace LaylaERP.Controllers
                             ProductRepository.UpdateBothImage(FileNamethumb , FileName, Convert.ToInt32(ID));
                         else
                              ProductRepository.PopupBothImage(FileNamethumb ,FileName, Convert.ToInt32(ID));
-                        return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
+                        return Json(new { status = true, message = "Product image uploaded successfully!!", url = "", id = model.term_id }, 0);
                     }
                     else
-                        return Json(new { status = true, message = "Invalid Details!!", url = "", id = model.term_id }, 0);
+                        return Json(new { status = true, message = "Invalid details!!", url = "", id = model.term_id }, 0);
 
                 }
                 else
                 {
-                    return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+                    return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
 
                 }
 
             }
             else
-                return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
+                return Json(new { status = false, message = "Please upload file", url = "" }, 0);
 
         }
 
@@ -1725,7 +1725,7 @@ namespace LaylaERP.Controllers
                 }
             }
             catch { status = false; result = ""; }
-            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
+            return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
         }
 
         public JsonResult UpdateChildvariations(ProductModel model)
@@ -1742,7 +1742,7 @@ namespace LaylaERP.Controllers
                 }
             }
             catch { status = false; result = ""; }
-            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
+            return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
         }
 
         [HttpPost]
@@ -1847,7 +1847,7 @@ namespace LaylaERP.Controllers
                     }
                     else
                     {
-                        return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+                        return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
 
                     }
                 }
@@ -1873,7 +1873,7 @@ namespace LaylaERP.Controllers
 
                     ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
                     new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
-                    return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
+                    return Json(new { status = true, message = "Product category updated successfully!!", url = "", id = model.term_id }, 0);
                 }
                 else
                 {
@@ -1884,11 +1884,11 @@ namespace LaylaERP.Controllers
                         int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                         ProductRepository.postmeta(thumbnailID, ImagePath);
                         new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
-                        return Json(new { status = true, message = "Product category has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Product category saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
                     }
                 }
             }
@@ -1921,10 +1921,10 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
 
-                    return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Product category deleted successfully!!", url = "", id = ID }, 0);
                 }
                 else
-                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
             }
             else
             {
@@ -1939,10 +1939,10 @@ namespace LaylaERP.Controllers
                 int ID = new ProductRepository().DeleteProductCategory(termID);
                 if (ID > 0)
                 {
-                    return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Product category deleted successfully!!", url = "", id = ID }, 0);
                 }
                 else
-                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
             }
             else
             {

@@ -79,7 +79,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    b_status = false; JSONstring = "Invalid Details.";
+                    b_status = false; JSONstring = "Invalid details.";
                 }
             }
             catch (Exception Ex)
@@ -117,7 +117,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    b_status = false; JSONstring = "Invalid Details.";
+                    b_status = false; JSONstring = "Invalid details.";
                 }
             }
             catch (Exception Ex)
@@ -335,7 +335,7 @@ namespace LaylaERP.Controllers
 
                             if (resultOne > 0)
                             {
-                                return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
+                                return Json(new { status = true, message = "File upload successfully!!", url = "Manage" }, 0);
                             }
                             else
                             {
@@ -356,7 +356,7 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
         }
@@ -376,7 +376,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
 

@@ -455,7 +455,7 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                return Json(new { status = true, message = "Password Updated Successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Password updated successfully!!", url = "" }, 0);
             }
             else
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

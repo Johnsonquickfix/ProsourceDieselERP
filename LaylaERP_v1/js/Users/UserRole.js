@@ -25,7 +25,9 @@ function CopyRoles() {
         $('#ddlCopyRole').bind(items);
     })
 };
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 //function Singlecheck() {
 //    var isChecked = $('#CheckSingle').prop("checked");
 //    var isHeaderChecked = $("#checkAll").prop("checked");
@@ -75,6 +77,7 @@ $('#btnApprove').click(function () {
         }
 
         ChangePermission(id, addid, editid, deleteid, flag);
+        isEdit(false);
     }
 })
 

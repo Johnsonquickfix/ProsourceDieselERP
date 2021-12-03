@@ -1,6 +1,6 @@
 ﻿$("#loader").hide();
 function GetRoles() {
-    $.get('GetRoles', function (data) {
+    $.get('GetSystemAdminRoles', function (data) {
         var items = "";
         $('#userrole').empty();
         items += $("<option value=''>Please select</option>").appendTo("#userrole");
@@ -14,7 +14,7 @@ function GetRoles() {
 };
 
 function CopyRoles() {
-    $.get('GetRoles', function (data) {
+    $.get('GetSystemAdminRoles', function (data) {
         var items = "";
         $('#ddlCopyRole').empty();
         items += $("<option value=''>Please select</option>").appendTo("#ddlCopyRole");

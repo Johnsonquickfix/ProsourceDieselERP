@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";
+            ViewBag.pay_option = "[" + pay_method + "]";            
             return View();
         }
         // GET: Mines of Moria (Quick Orders)
@@ -37,7 +37,8 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";
+            ViewBag.pay_option = "[" + pay_method + "]"; 
+            ///OrderRepository.OrderInvoiceMail(id);
             return View();
         }
         // GET: Order Refund
@@ -531,7 +532,7 @@
             {
                 int res = OrderRepository.UpdatePaymentInvoice(model.OrderPostMeta);
                 if (res > 0)
-                {                    
+                {
                     result = "Order placed successfully.";
                     status = true;
                     SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);

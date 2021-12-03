@@ -844,7 +844,8 @@
                 {
                     new SqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%m/%d/%Y') date_created,"
+
+                string strSQl = "select os.id order_id,convert(varchar,os.post_date,101) date_created,"
                             + " max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
                             + " max(case meta_key when '_billing_company' then meta_value else '' end) b_company,max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
@@ -859,6 +860,7 @@
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " where os.id = @order_id"
                             + " group by os.id,os.post_date";
+
                 SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
@@ -894,10 +896,12 @@
                 obj.GrassAmount = obj.OrderProducts.Sum(x => x.total);
                 obj.TotalDiscount = obj.OrderProducts.Sum(x => x.discount);
                 obj.TotalTax = obj.OrderProducts.Sum(x => x.tax_amount);
-                obj.TotalShipping = obj.OrderProducts.Sum(x => x.total);
-                obj.TotalFee = obj.OrderProducts.Sum(x => x.total);
+                obj.TotalShipping = obj.OrderProducts.Sum(x => x.shipping_amount);
+                obj.TotalStateRecycling = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name == "State Recycling Fee").Sum(x => x.total);
+                obj.TotalFee = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name != "State Recycling Fee").Sum(x => x.total);
+                obj.TotalGift = obj.OrderProducts.Where(f => f.product_type == "gift_card").Sum(x => x.total);
 
-                obj.NetTotal = (obj.GrassAmount - obj.TotalDiscount) + obj.TotalTax + obj.TotalShipping + obj.TotalFee;
+                obj.NetTotal = (obj.GrassAmount - obj.TotalDiscount) + obj.TotalTax + obj.TotalShipping + obj.TotalStateRecycling + obj.TotalFee;
             }
             catch (Exception ex)
             { throw ex; }
@@ -1363,6 +1367,18 @@
                 throw new Exception(ex.Message);
             }
             return result;
+        }
+
+        //Sent Invoice in mail
+        public static void OrderInvoiceMail(long OrderID)
+        {
+            try
+            {
+                OrderModel order_obj = OrderRepository.OrderInvoice(OrderID);
+                String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "NewOrder", order_obj);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has been received", renderedHTML, string.Empty);
+            }
+            catch { }
         }
     }
 }

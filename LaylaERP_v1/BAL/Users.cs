@@ -51,7 +51,18 @@
             { throw ex; }
             return dtr;
         }
-
+        public static DataTable GetSystemAdminRoles()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select id, user_type from wp_user_classification where id not in (65) order by id desc";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
         public static DataTable GetRolesType()
         {
             DataTable dtr = new DataTable();

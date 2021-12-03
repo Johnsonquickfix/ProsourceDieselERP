@@ -53,8 +53,8 @@ function validateForm() {
     if (amount == "") {
         swal('Alert', 'Please select amount', 'error'); return false;
     }
-    else if (giftTo == "") { swal('Alert', 'Please Enter email to', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
-    else if (!validateEmails(giftTo)) { swal('Alert', 'Please Enter valid email(To)', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
+    else if (giftTo == "") { swal('Alert', 'Please enter email to', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
+    else if (!validateEmails(giftTo)) { swal('Alert', 'Please enter valid email(To)', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
     else if (giftFrom == "") { swal('Alert', 'Please enter email from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
     else if (!pattern.test(giftFrom)) { swal('Alert', 'Please enter valid email(From) ', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
     else { }

@@ -27,7 +27,7 @@ namespace LaylaERP.BAL
                 DateTime endDate = DateTime.Parse(to_date, us);
                 strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
-            if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+            if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strQuery += " and pm.meta_value = '" + user + "'";
@@ -48,7 +48,7 @@ namespace LaylaERP.BAL
                 DateTime endDate = DateTime.Parse(to_date, us);
                 strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
-            if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+            if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strQuery += " and pm.meta_value = '" + user + "'";
@@ -84,7 +84,7 @@ namespace LaylaERP.BAL
                 DateTime endDate = DateTime.Parse(to_date, us);
                 strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
-            if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+            if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strQuery += " and pm.meta_value = '" + user + "'";

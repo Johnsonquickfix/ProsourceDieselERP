@@ -15,6 +15,7 @@
     .swal2-container .swal2-popup {
         max-width: 500px;
     }
+
     body .swal2-popup .swal2-styled {
         background-color: rgb(48, 133, 214) !important;
         border-left-color: rgb(48, 133, 214) !important;
@@ -57,16 +58,16 @@
         <div class="col-md-12">
             <div class="user-top-section">
                 <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions bulkactions">
-                        <select class="form-control" id="ddlOrderStatus">
-                            <option value="wc-on-hold">On hold</option>
-                            <option value="wc-completed">Completed</option>
-                            <option value="wc-cancelled">Cancelled</option>
-                            <option value="wc-refunded">Refunded</option>
-                            <option value="wc-failed">Failed</option>
-                        </select>
-                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Change Order Status">Change</button>
-                    </div>
+                    @*<div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlOrderStatus">
+                                <option value="wc-on-hold">On hold</option>
+                                <option value="wc-completed">Completed</option>
+                                <option value="wc-cancelled">Cancelled</option>
+                                <option value="wc-refunded">Refunded</option>
+                                <option value="wc-failed">Failed</option>
+                            </select>
+                            <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Change Order Status">Change</button>
+                        </div>*@
                     <div class="alignleft actions">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>

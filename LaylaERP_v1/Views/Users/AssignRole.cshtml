@@ -109,7 +109,7 @@
     $(document).ready(function () {
         var loc = window.location.pathname;
         GetRoles();
-       
+        
         /**/
         var roletype = $('#hfroletype').val();
 
@@ -123,14 +123,14 @@
             $("#userrole").prop("disabled", true);
             $("#ddlCopyRole").hide();
             $("#lblcopyrole").hide();
-            console.log('dd');
+            //console.log('dd');
         }
         else {
             CopyRoles();
             CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
             setTimeout(function () { $('#userrole').val('').trigger('change'); }, 3000);
             //setTimeout(function () { fillCheckMenu(); }, 3000);   
-            console.log('ff');
+            //console.log('ff');
         }
 
     
@@ -138,6 +138,7 @@
            // alert('sddf');
         })
 
+        isEdit(true);
        
 })
     

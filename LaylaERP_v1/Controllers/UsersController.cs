@@ -361,7 +361,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.GrantroleStatus(model);
-                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role permission changed successfully!!", url = "" }, 0);
             }
             else
             {
@@ -377,7 +377,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 UsersRepositry.RevokeroleStatus(model);
-                return Json(new { status = true, message = "User role status updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User role permission changed successfully!!", url = "" }, 0);
             }
             else
             {
@@ -686,7 +686,7 @@ namespace LaylaERP.Controllers
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);
                 new UsersRepositry().UpdateDeletePermission(role_id, strDel);
-                return Json(new { status = true, message = "User permission shanged successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "User permission changed successfully!!", url = "" }, 0);
             }
             else
             {

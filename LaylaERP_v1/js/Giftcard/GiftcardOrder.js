@@ -1,5 +1,8 @@
 ﻿$(document).ready(function () {
-   
+
+    console.log(new Date().toLocaleDateString('en-US', {
+        month: '2-digit', day: '2-digit', year: 'numeric'
+    }));
     
     $("#loader").hide();
     $("#btnResendEmail").hide();
@@ -8,38 +11,15 @@
     var id = url.substring(url.lastIndexOf('/') + 1);
     if (id != "Giftcard") { disableall(); }
     else { $("#btnResendEmail").hide(); $("#ddlGiftcardStatus").hide(); $("#btnResendEmail").prop("disabled", true); }
-    $('#txtPostCode').change(function () {
-        City = $("#ddlCity").val();
-        State = $("#ddlState").val();
-        PostalCode = $("#txtPostCode").val();
-        var obj = {
-            billing_state: State, billing_city: City, billing_postcode: PostalCode
-        }
-        $.ajax({
-            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-                if (data.status == true) {
-                    $('#hfzipstatus').val(data.status);
-                } else {
-                    if ($('#ddlCountry').val() == "US") {
-                        $("#txtPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
-                            swal.close();
-                            $('#txtZipCode').focus();
-                        });
-                    }
-                }
-            },
-
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+    $('#txtPostCode').on('keyup',function () {
+        checkZip();
     });
+
+    $('#ddlState').change(function () {
+        checkZip();
+    })
+    
+
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
     $(document).on("click", "#btnResendEmail", function (t) {
@@ -83,6 +63,39 @@ function disableall() {
  
 }
 
+function checkZip() {
+    City = $("#ddlCity").val();
+    State = $("#ddlState").val();
+    PostalCode = $("#txtPostCode").val();
+    var obj = {
+        billing_state: State, billing_city: City, billing_postcode: PostalCode
+    }
+    $.ajax({
+        url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                $('#hfzipstatus').val(data.status);
+            } else {
+                if ($('#ddlCountry').val() == "US") {
+                    $("#txtPostCode").val("");
+                    $('#hfzipstatus').val(data.status);
+                    swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
+                        swal.close();
+                        $('#txtZipCode').focus();
+                    });
+                }
+            }
+        },
+
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+
 $('#ddlCountry').change(function () {
     getState();
     $("#txtAddress1").val('');
@@ -98,7 +111,7 @@ function getState() {
         data: JSON.stringify(obj),
         success: function (data) {
             var data = JSON.parse(data);
-            var opt = '<option value="0">Please Select state</option>';
+            var opt = '<option value="0">Please select state</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].State + '">' + data[i].StateFullName + '</option>';
             }
@@ -110,7 +123,7 @@ $("#btnGiftBackOrder").click(function () {
     localStorage.setItem("Orderdeliverydate", $("#EmployeeListdata").data('deliverydate'));
 });
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Gift Card ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-var todaydate = new Date().toLocaleDateString();
+var todaydate = new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'});
 function createPostMeta() {
     let oid = $('#hfOrderNo').val(), _total = parseFloat($('#orderTotal').text()) || 0.00;
     let postMetaxml = [];
@@ -148,9 +161,6 @@ function createPostStatus() {
     return postStatus;
 }
 function createItemsList() {
-    var date = new Date();
-    date.setDate(date.getDate());
-    console.log(date);
     let cid = 0;
     let itemsDetails = [];
     //Add Item Details
@@ -397,10 +407,11 @@ function updatePayment(oid, taskUid) {
 
 ///Accept paypal Payment
 function createPaypalXML(oid, pp_no, pp_email) {
+
     let taxPer = 0.00; dfa = todaydate.split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
     var qty = parseFloat($('#totalQty').text()) || 0.00;
-    let _items = [];
+    let _items = [], fee_total = 0.00, custom_label = 'Other Fee';
     let rate = parseFloat($("#SubTotal").data('amount')) || 0.00;
     let discountAmount = 0.00;
     let taxAmount = 0.00;
@@ -442,7 +453,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
         configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
         amount: {
             breakdown: {
-                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } } 
+                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
             }
         }
     }
@@ -452,6 +463,7 @@ function PaypalPayment(ppemail) {
     paypal_baseurl = 'https://api-m.sandbox.paypal.com';
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
     let option_pp = createPaypalXML(oid, pp_no, ppemail)
+    console.log(option_pp);
     console.log('Start PayPal Payment Processing...');
     swal.queue([{
         title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
@@ -745,7 +757,7 @@ function ReSendGiftCard() {
 
 function changeStatus() {
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your Gift Card status?",
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your gift card status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

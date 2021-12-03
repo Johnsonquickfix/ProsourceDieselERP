@@ -20,7 +20,7 @@
         ajax: {
             url: '/GiftCard/GetRedeemedCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) {  return { text: item.displayname, name: item.displayname, id:item.id } }) }; },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
     });
@@ -99,7 +99,7 @@ function dataGCGridLoad() {
                     return '<a href="GiftCardActivity/' + row.id + '" data-toggle="tooltip" title="View Activity">' + id + '</a> '
                 }
             },
-          
+
             {
                 data: 'remaining', title: 'Balance', sWidth: "5%",
                 'render': function (data, type, full) {
@@ -111,14 +111,14 @@ function dataGCGridLoad() {
             { data: 'sender', title: 'From', sWidth: "10%" },
             { data: 'recipient', title: 'To', sWidth: "10%" },
             { data: 'RedeemedBy', title: 'Redeemed By', sWidth: "12%" },
-            
+
             { data: 'expires', title: 'Expires', sWidth: "5%" },
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "5%", render: function (id, type, row) {
                     let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
                     if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
                         if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.order_id.replace('#', '') + ',\'' + row.paypal_id + '\',\'' + row.sender_email + '\');">' + pm_title + '</a>';
-                       // else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        // else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
                         else return pm_title;
                     }
                     else return pm_title;
@@ -128,7 +128,7 @@ function dataGCGridLoad() {
             {
                 'data': 'id', title: 'Action', sWidth: "6%",
                 'render': function (id, type, row, meta) {
-                  
+
                     return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
                 }
             }
@@ -178,7 +178,7 @@ function giftcardStatus() {
                         if (data.status) {
                             swal.insertQueueStep(data.message);
                             //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
-                        dataGCGridLoad();
+                            dataGCGridLoad();
                         }
                         else { swal.insertQueueStep(data.message); }
                         resolve();
@@ -223,19 +223,27 @@ function PaymentStatus(oid, pp_id, email) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
                                 let opt = { order_id: oid, b_first_name: '', order_itemmetaXML: JSON.stringify(_paystatus) };
                                 $.post('/GiftCard/UpdatePaypalPaymentAccept', opt).done(function (data) {
-                                    console.log(data);
                                     data = JSON.parse(data);
-                                    if (data[0].Response == "Success") {
+                                    let resp = '';
+                                    if (data != null) {
+                                        $.each(data, function (i, item) {
+                                            resp = item[0].Response;
+                                        });
+                                    }
+                                    if (resp == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtGCdata').DataTable().ajax.reload();//order_Split(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    console.log(jqXHR, textStatus, errorThrown);
+
                                 });
                             });
                         }

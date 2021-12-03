@@ -480,7 +480,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename + "'";
+                string strquery = "select count(ID) from wp_users inner join wp_usermeta on wp_usermeta.user_id =  wp_users.ID and wp_usermeta.meta_key='wp_capabilities' and lower(meta_value) not in ('customer') where user_login = '" + model.user_nicename + "' ";
                 SqlParameter[] para =
                 {
 

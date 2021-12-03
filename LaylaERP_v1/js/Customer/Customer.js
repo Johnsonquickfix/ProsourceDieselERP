@@ -58,51 +58,55 @@ function AddCustomer() {
     }
 
     else {
-        var obj = {
-            ID: ID,
-            user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,
-            billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
-            billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
-        }
-        $.ajax({
-            url: '/Customer/NewUser/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    if (data.url == "Manage") {
-                        swal('Success', data.message, 'success').then((result) => { location.href = '../Customer'; });
+        $("#txtPostCode").change();
+        if ($("#hfzipstatus").val() == "true") {
+            var obj = {
+                ID: ID,
+                user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,
+                billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
+                billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
+            }
+            $.ajax({
+                url: '/Customer/NewUser/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        if (data.url == "Manage") {
+                            swal('Success', data.message, 'success').then((result) => { location.href = '../Customer'; });
+                        }
+                        else {
+                            $('#fetch_results > input:text').val('');
+                            swal('Alert!', data.message, 'success').then((result) => { location.href = 'Customer'; });
+                        }
+                        // swal('Alert!', data.message, 'success');
+                        $("#parent").find(":input").each(function () {
+                            switch (this.type) {
+                                case "text":
+                                case "email":
+                                case "tel":
+                                    $(this).val('');
+                                    break;
+                            }
+                        });
                     }
                     else {
-                        $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Customer'; });
+                        //swal('Alert!', data.message, 'error')
                     }
-                   // swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text":
-                            case "email":
-                            case "tel":
-                                $(this).val('');
-                                break;
-                        }
-                    });
-                }
-                else {
-                    //swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+                },
+                complete: function () {
+                    $("#loader").hide();
+                    isEdit(false);
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
     }
 
 }

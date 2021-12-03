@@ -418,7 +418,7 @@ function Status() {
         var obj = { strVal: id, status: status }
         //var checkstr = confirm('are you sure want to update this?');
         //if (checkstr == true) {
-        swal({ title: "Are you sure?", text: 'Would you like to ' + statusval +' this Product?', type: "question", showCancelButton: true })
+        swal({ title: "", text: 'Would you like to ' + statusval +' this Product?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {                 
         $.ajax({

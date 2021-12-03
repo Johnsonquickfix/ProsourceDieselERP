@@ -21,6 +21,7 @@
         <div class="box-body">
             <div class="form-horizontal create-new-customer" id="parent">
                 <input type="hidden" id="hfid" value="@ViewBag.id" />
+                <input type="hidden" id="hfzipstatus" />
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group" style="display:none;">
@@ -79,11 +80,11 @@
                     </div>
                     <div class="col-md-4">
                         @*<div class="form-group">
-                                <label class="control-label " for="State/Country">State</label>
-                                <div class="">
-                                    <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
-                                </div>
-                            </div>*@
+                    <label class="control-label " for="State/Country">State</label>
+                    <div class="">
+                        <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
+                    </div>
+                </div>*@
                         <div class="form-group">
                             <label for="exampleInputEmail1">State</label><span style="color:red">*</span>
                             <select class="form-control" id="txtBillingState">
@@ -166,8 +167,12 @@
 
         $('.select1').select2();
 
+        isEdit(true);
     });
 
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 
     $('#txtUserEmail').change(function () {
 
@@ -206,49 +211,6 @@
 
     });
 
-    /*
-        $('#txtBillingCountry').change(function () {
-            $("#txtBillingAddress1").val("");
-            $("#txtBillingAddress2").val("");
-            $("#txtBillingPostCode").val("");
-            $("#txtBillingState").val(null).trigger('change');
-
-            $("#txtBillingCity").val("");
-            City = $("#txtBillingCity").val();
-            State = $("#txtBillingState").val();
-            PostalCode = $("#txtBillingPostCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
-                        // $('#hfzipstatus').val(data.status);
-                        $('#hfzipstatus').val(data.status);
-
-                    }
-                    else {
-                        $("#txtBillingPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        if ($("#txtBillingState").val() != null) {
-                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
-                        }
-                    }
-                },
-
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }); */
-
     $('#txtBillingPostCode').change(function () {
         City = $("#txtBillingCity").val();
         State = $("#txtBillingState").val();
@@ -285,6 +247,44 @@
             },
         })
     });
+
+    $('#txtBillingState').change(function () {
+        if ($("#txtBillingPostCode").val() != '' && $("#txtBillingState").val() != null) {
+            City = $("#txtBillingCity").val();
+            State = $("#txtBillingState").val();
+            PostalCode = $("#txtBillingPostCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#txtBillingCountry').val() == "US") {
+                            $("#txtBillingPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+        });
 
     document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtBillingPhone');

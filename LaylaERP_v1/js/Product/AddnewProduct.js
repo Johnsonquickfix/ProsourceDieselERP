@@ -1011,7 +1011,7 @@ function AddProduct() {
             _gift_card_expiration_days: dayexpire,
             _gift_card_template_default_use_image: Recipientemail
         }
-        var checkstr = confirm('are you sure want to save/update product?');
+        var checkstr = confirm('Want to save/update product?');
         if (checkstr == true) {
         $.ajax({
             url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',

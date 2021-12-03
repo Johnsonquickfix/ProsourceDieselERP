@@ -52,15 +52,15 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
 
-                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Data saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
 
 
@@ -89,11 +89,11 @@ namespace LaylaERP.Controllers
             {
                 AgentCommissionRateRepository.UpdateCommission(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "" }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
         }

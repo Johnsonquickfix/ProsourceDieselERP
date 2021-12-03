@@ -267,7 +267,7 @@
         $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
 
         if (id == "") { swal('alert', 'Please select user from list', 'error'); }
-        else if (status == "1") { swal('alert', 'Please select Bulk Action', 'error'); }
+        else if (status == "1") { swal('alert', 'Please select bulk action', 'error'); }
         else {
 
             if (status == "1") { UpdateCustomerStatus(); }

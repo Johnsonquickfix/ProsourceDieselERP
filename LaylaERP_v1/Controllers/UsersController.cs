@@ -302,7 +302,7 @@ namespace LaylaERP.Controllers
                     return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
 
         [HttpPost]
@@ -655,16 +655,16 @@ namespace LaylaERP.Controllers
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid details", url = "" }, 0);
                     }
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Role Can not be Duplicate", url = "" }, 0);
+                    return Json(new { status = false, message = "Role Can not be duplicate", url = "" }, 0);
                 }
 
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid details", url = "" }, 0);
         }
 
         public JsonResult ChangePermission(UserClassification model)

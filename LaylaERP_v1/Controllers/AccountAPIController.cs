@@ -452,46 +452,33 @@
         //[ValidateGoogleCaptcha]
         public ActionResult ContactUs(string name, string email, string subject, string content)
         {
+            string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
+            int SMTPServerPortNo = 587; bool SSL = false;
+
             DataSet ds = Users.GetEmailCredentials();
 
+            SenderEmailID = ds.Tables[0].Rows[0]["SenderEmailID"].ToString();
+            SenderEmailPwd = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
             List<string> lstEmail = email.Split(',').ToList();
 
             using (MailMessage mailMessage = new MailMessage())
-
             {
-
-                mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
-
+                mailMessage.From = new MailAddress(email); // new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
                 mailMessage.Subject = subject;
-
                 mailMessage.Body = content;
-
                 mailMessage.IsBodyHtml = true;
-
-                mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
-
+                mailMessage.To.Add(new MailAddress(SenderEmailID));
 
                 SmtpClient smtp = new SmtpClient();
-
                 smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
-
-                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
-
+                smtp.EnableSsl = SSL; //Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
                 System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
-
-                NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
-
-                NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
-
+                NetworkCred.UserName = SenderEmailID.Trim();// ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
+                NetworkCred.Password = SenderEmailPwd.Trim();// ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
                 smtp.UseDefaultCredentials = true;
-
                 smtp.Credentials = NetworkCred;
-
-                smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
-
-                //smtp.Send(mailMessage);
-
-
+                smtp.Port = SMTPServerPortNo; //Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
+                smtp.Send(mailMessage);
             }
             return Json(new { status = true, message = "Email send successfully! Contact you soon.", url = "" }, 0);
             //return Json(true,0);

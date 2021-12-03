@@ -33,15 +33,20 @@
         [HttpPost]
         public ActionResult ForgotPassword(LoginModel model)
         {
+            PasswordModel model1 = new PasswordModel();
+
             if (!string.IsNullOrEmpty(model.UserName))
             {
-                DataSet u = Users.ForgotPassword(model.UserName);
+                DataSet u = ForgotPasswordRepository.ForgotPassword(model.UserName);
                 //DataSet ds = Users.GetEmailCredentials();
                 if (u.Tables[0].Rows.Count > 0)
                 {
+                    Random ran = new Random();
+                    model1.pwd = Convert.ToString(ran.Next());
                     string UserName = u.Tables[0].Rows[0]["user_login"].ToString();
                     string Nicename = u.Tables[0].Rows[0]["user_nicename"].ToString();
                     string Email = u.Tables[0].Rows[0]["user_email"].ToString();
+                    model1.ID = Convert.ToInt32(u.Tables[0].Rows[0]["ID"]);
 
                     string SenderEmailID = u.Tables[1].Rows[0]["SenderEmailID"].ToString();
                     string SenderEmailPwd = u.Tables[1].Rows[0]["SenderEmailPwd"].ToString();
@@ -53,11 +58,8 @@
                     using (MailMessage mailMessage = new MailMessage())
                     {
                         mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
-
                         mailMessage.Subject = "Reset Password";
-
-                        mailMessage.Body = "UserName : " + UserName + " and Email : " + Email;
-
+                        mailMessage.Body = "UserName : " + UserName + " and Password: " + model1.pwd ;
                         mailMessage.IsBodyHtml = true;
 
                         /*string SenderEmailID = "david.quickfix1@gmail.com";
@@ -66,8 +68,13 @@
                         string SMTPServerName = "smtp.gmail.com";
                         string fileattach = string.Empty;*/
 
-                        SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject,mailMessage.Body, fileattach);
-
+                        //SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject,mailMessage.Body, fileattach);
+                        if(model1.ID > 0)
+                        {
+                            SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject, mailMessage.Body, fileattach);
+                            ForgotPasswordRepository.Updateuserpassword(model1);
+                            ViewBag.Result = "New password sent, please check your email";
+                        }
                         //SmtpClient smtp = new SmtpClient();
 
                         //smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
@@ -89,17 +96,12 @@
                         //smtp.Send(mailMessage);
 
                     }
-
-
-
                     Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
-                    ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
-
-
+                    //ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
                 }
                 else
                 {
-                    ViewBag.Result = "User does not exist with this user name.";
+                    ViewBag.Result = "User does not exist with this email id.";
                 }
 
             }

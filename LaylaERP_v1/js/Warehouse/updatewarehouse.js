@@ -179,72 +179,76 @@ function AddWarehouse() {
     email = $("#txtEmail").val();
 
     if (ref == "") {
-        swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+        swal('Alert', 'Please enter reference name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
     }
     else if (lieu == "") {
-        swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
+        swal('Alert', 'Please enter short name location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
     }
     else if (phone == "") {
-        swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+        swal('Alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
     }
     else if (address == "") {
-        swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+        swal('Alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
     }
     else if (city == "") {
-        swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+    }
+    else if (town == "" || town == null) {
+        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtState').focus(); });
     }
     else if (zip == "") {
-        swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+        swal('Alert', 'Please enter zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
     }
 
     else {
-
-        var obj = {
-            rowid: rowid,
-            reff: ref,
-            lieu: lieu,
-            description: description,
-            address: address,
-            zip: zip,
-            town: town,
-            country: country,
-            phone: phone,
-            fax: fax,
-            //statut: statut,
-            address1: address1,
-            city: city,
-            status: status,
-            warehouse_type: warehousetype,
-            //cor_phone: corphone,
-            //cor_address: coraddress,
-            //cor_address1: coraddress1,
-            //cor_city: corcity,
-            //cor_state: corstate,
-            //cor_zip: corzip,
-            //cor_country: corcountry,
-            //note_public: publicnote,
-            //note_private: privatenote,
-            email: email,
+        $("#txtZipCode").change();
+        if ($("#hfzipstatus").val() == "true") {
+            var obj = {
+                rowid: rowid,
+                reff: ref,
+                lieu: lieu,
+                description: description,
+                address: address,
+                zip: zip,
+                town: town,
+                country: country,
+                phone: phone,
+                fax: fax,
+                //statut: statut,
+                address1: address1,
+                city: city,
+                status: status,
+                warehouse_type: warehousetype,
+                //cor_phone: corphone,
+                //cor_address: coraddress,
+                //cor_address1: coraddress1,
+                //cor_city: corcity,
+                //cor_state: corstate,
+                //cor_zip: corzip,
+                //cor_country: corcountry,
+                //note_public: publicnote,
+                //note_private: privatenote,
+                email: email,
+            }
+            $.ajax({
+                url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Success', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
         }
-        $.ajax({
-            url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    //$('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
-                }
-                else {
-                    swal('Alert!', data.message, 'error');
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
-
     }
 
 }
@@ -1114,7 +1118,7 @@ $("#btnupload").click(function () {
             success: function (data) {
                 if (data.status == true) {
                     BankLinkedFiles();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                 }
                 else { swal('Alert!', data.message, 'error'); }
             },
@@ -1190,7 +1194,7 @@ function DeleteBankLinkedFiles(id) {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     BankLinkedFiles();
                 }
                 else { swal('Alert!', data.message, 'error') }
@@ -1611,16 +1615,16 @@ function EditWarehouseinfo() {
     publicnote = $("#txtpublic").val();
 
     if (coraddress == "") {
-        swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtCorAddress').focus(); });
+        swal('Alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtCorAddress').focus(); });
     }
     else if (corcity == "") {
-        swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); });
+        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); });
     }
     else if (corstate == "") {
-        swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtCorState').focus(); });
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtCorState').focus(); });
     }
     else if (corzip == "") {
-        swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
+        swal('Alert', 'Please enter zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
     }
 
     else {
@@ -1644,7 +1648,7 @@ function EditWarehouseinfo() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     resetaddressinfo();
                     WarehouseAddressInfoList();
                 }

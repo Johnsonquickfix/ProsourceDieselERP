@@ -86,14 +86,14 @@ function dataGCGridLoad() {
         },
         columns: [
             {
-                'data': 'id', sWidth: "5%   ",
+                'data': 'id', sWidth: "3%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
             { data: 'order_id', title: 'Order id', sWidth: "5%" },
             {
-                'data': 'code', title: 'Code', sWidth: "20%",
+                'data': 'code', title: 'Code', sWidth: "22%",
                 'render': function (id, type, row, meta) {
 
                     return '<a href="GiftCardActivity/' + row.id + '" data-toggle="tooltip" title="View Activity">' + id + '</a> '

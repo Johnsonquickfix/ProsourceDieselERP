@@ -741,7 +741,7 @@ function ReSendGiftCard() {
 
 function changeStatus() {
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your gift card status?",
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change the status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

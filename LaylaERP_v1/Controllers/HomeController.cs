@@ -73,7 +73,7 @@
                         {
                             SendEmail.SendEmails(SenderEmailID.ToString(), SenderEmailPwd.ToString(), SMTPServerName.ToString(), Convert.ToInt32(SMTPServerPortNo), SSL, Email.ToString(), mailMessage.Subject, mailMessage.Body, fileattach);
                             ForgotPasswordRepository.Updateuserpassword(model1);
-                            ViewBag.Result = "New password sent. Please check your email !";
+                            ViewBag.Result = "New password sent. Please check your email!";
                         }
                         //SmtpClient smtp = new SmtpClient();
 

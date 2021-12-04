@@ -168,7 +168,7 @@ function giftcardStatus() {
     if (status == '') { swal('alert', 'Please select status', 'error'); }
 
     swal.queue([{
-        confirmButtonText: 'Yes, Update it!', text: "Do you want to change your gift card status?",
+        confirmButtonText: 'Yes, Update it!', text: "Do you want to change the status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
@@ -222,7 +222,7 @@ function PaymentStatus(oid, pp_id, email) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update the status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];

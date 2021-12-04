@@ -8,7 +8,7 @@
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().add(-29, 'day'),
+        startDate: moment(),
         autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
         opens: 'left',
@@ -66,8 +66,9 @@ function getProducts() {
 
 function ProductStockGrid() {
     var dfa = $('#txtDate').val().split('-');
-    let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
-    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
+    //let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
+    //let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
+    let sd = dfa[0], ed = dfa[1];
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
     console.log(obj);
@@ -90,7 +91,7 @@ function ProductStockGrid() {
         },
         destroy: true, ajax: {
             url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { return JSON.parse(data); }
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [

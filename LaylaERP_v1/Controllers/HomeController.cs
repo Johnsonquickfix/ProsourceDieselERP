@@ -101,7 +101,7 @@
                 }
                 else
                 {
-                    ViewBag.Result = "User does not exist with this email id.";
+                    ViewBag.Result = "No user exist for this email id.";
                 }
 
             }

@@ -17,7 +17,7 @@ function GetActivity(id) {
             $("#lblCode").text(data[0].code);
             $("#btnStatus").text(data[0].status);
             $("#lblDeliveryStatus").text(data[0].delivery);
-            $("#lblAvailableBalance").text('$' + data[0].remaining);
+            $("#lblAvailableBalance").text('$' + parseFloat(data[0].remaining).toFixed(2));
             $("#lblCreationDate").text(data[0].create_date);
             $("#lblOrder").text(data[0].order_id);
             $("#lblIssuedValue").text('$' + data[0].balance);

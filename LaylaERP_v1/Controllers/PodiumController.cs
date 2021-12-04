@@ -94,6 +94,7 @@ namespace LaylaERP.Controllers
                                 DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(id, "UPP", 0, str_note,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                                 if (giftdetails.Tables[1].Rows[0]["delivered"].ToString() == "1")
                                 {
+                                    GiftCardRepository.OrderInvoiceMail(id);
                                     SendGiftCardEMails(giftdetails);
                                 }
                             }

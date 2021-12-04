@@ -62,7 +62,7 @@ namespace LaylaERP.Controllers
                     int ID = WarehouseRepository.AddWarehouse(model);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Warehouse data saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -142,7 +142,7 @@ namespace LaylaERP.Controllers
             {
                 WarehouseRepository.Updatewarehouses(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Warehouse data updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -312,7 +312,7 @@ namespace LaylaERP.Controllers
             {
                 WarehouseRepository.Updatewarehousesinfo(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Warehouse data updated successfully!!", url = "" }, 0);
             }
             else
             {

@@ -6,7 +6,7 @@
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-   
+
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 <script src="~/Scripts/jquery.js" type="text/javascript"></script>
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="user-top-section">
                 <div class="tablenav top tablenav-top2">
-
+                    <input type="hidden" id="hfEdit" value="" />
                     <div>
                         <button type="button" id="btnnewshipping" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
                             <i class="fa fa-plus"></i> Add New Shipping
@@ -55,8 +55,8 @@
                             <label class="col-sm-3 control-label">Shipping Class</label>
                             <div class="col-sm-9">
                                 <select id="txtShippingClass" class="form-control">
-                                    <option  value="">Please select</option>
-                                  
+                                    <option value="">Please select</option>
+
                                 </select>
                             </div>
                         </div>
@@ -118,8 +118,8 @@
                                 </select>
                             </div>
                             @*<div class="col-sm-3">
-            <input type="text" id="txttaxprice" placeholder="Tax Price" value="0" class="form-control">
-        </div>*@
+                                    <input type="text" id="txttaxprice" placeholder="Tax Price" value="0" class="form-control">
+                                </div>*@
                         </div>
                         <div class="form-group d-flex">
                             <div class="col-sm-11 text-right">
@@ -150,7 +150,7 @@
                                 <th>Method</th>
                                 <th>Price</th>
                                 <th>Cost Type</th>
-                                <th>Taxable</th>                             
+                                <th>Taxable</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -206,30 +206,40 @@
                             </select>
                         </div>
                     </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Country</label>
-                                <div class="col-sm-9">
-                                    <select id="ddlCountrydel" class="form-control">
-                                        <option value="">Select Country</option>
-                                        <option value="US">United States</option>
-                                        <option value="CA">Canada</option>
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Country</label>
+                        <div class="col-sm-9">
+                            <select id="ddlCountrydel" class="form-control">
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                            </select>
                         </div>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="btndelete" class="btn btn-danger"><i class="fa fa-save"></i> Delete </button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="btndelete" class="btn btn-danger"><i class="fa fa-save"></i> Delete </button>
         </div>
     </div>
 </div>
+</div>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Product/ShippingClass.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
- 
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("#btnsavedetails", "#hfEdit", "", loc);
+        CheckPermissions("#btncl", "#hfEdit", "", loc);
+        CheckPermissions("#btnnewshipping", "#hfEdit", "", loc);
+        CheckPermissions("#btndeleteshipping", "#hfEdit", "", loc);
+    });
+
+</script>
 
 
 
- 
+

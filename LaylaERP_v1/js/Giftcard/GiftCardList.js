@@ -164,7 +164,6 @@ function giftcardStatus() {
     let status = $('#ddlOrderStatus').val();
 
     if (id == '') { swal('alert', 'Please select a gift card', 'error'); return; }
-    console.log(id);
     if (status == '') { swal('alert', 'Please select status', 'error'); }
 
     swal.queue([{
@@ -176,6 +175,7 @@ function giftcardStatus() {
                 $.post('/GiftCard/ChangeGiftCardStatus', obj)
                     .done(function (data) {
                         if (data.status) {
+                            console.log(data);
                             swal.insertQueueStep(data.message);
                             //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
                             dataGCGridLoad();

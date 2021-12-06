@@ -50,13 +50,17 @@
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
     });
-
+     isEdit(true);
  });
+
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 
 $('#btnSave').click(function () {
     var Shipping = $('#txtShippingName').val();
     if (Shipping == "") {
-        swal("alert", "Please enter Shipping Name", "error").then(function () { swal.close(); $('#txtShippingName').focus(); })
+        swal("alert", "Please enter shipping name", "error").then(function () { swal.close(); $('#txtShippingName').focus(); })
     }
     else {
         var obj = { Shippingclass_Name: Shipping }
@@ -70,6 +74,7 @@ $('#btnSave').click(function () {
                     swal("Success", data.message, "success");
                     $("#roleModal").modal('hide');
                     fillshiping();
+                  
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -90,10 +95,10 @@ $('#btndelete').click(function () {
     var Shipping = $('#ddlShippingClassdel').val();
     var country = $('#ddlCountrydel').val();
     if (Shipping == "") {
-        swal("alert", "Please select Shipping Class", "error").then(function () { swal.close(); $('#ddlShippingClassdel').focus(); })
+        swal("alert", "Please select shipping class", "error").then(function () { swal.close(); $('#ddlShippingClassdel').focus(); })
     }
     else if (country == "") {
-        swal("alert", "Please select Country", "error").then(function () { swal.close(); $('#ddlCountrydel').focus(); })
+        swal("alert", "Please selectcCountry", "error").then(function () { swal.close(); $('#ddlCountrydel').focus(); })
     }
     else {
         var obj = { fk_ShippingID: Shipping, countrycode: country }
@@ -140,13 +145,13 @@ function Adddetails() {
     //taxprise = $("#txttaxprice").val();
 
     if (fk_ShippingID == "") {
-        swal('Alert', 'Please Select Shipping Class', 'error').then(function () { swal.close(); $('#txtShippingClass').focus(); });
+        swal('Alert', 'Please select shipping class', 'error').then(function () { swal.close(); $('#txtShippingClass').focus(); });
     }
     else if (Countryval == "") {
-        swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
+        swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
     }
     else if (stateval == "") {
-        swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
+        swal('Alert', 'Please select state', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
     }
     else {
         var obj = {
@@ -160,7 +165,7 @@ function Adddetails() {
             taxable: taxval
             //Shipping_taxrate: taxprise
         }
-        console.log(obj);
+       // console.log(obj);
         $.ajax({
             url: '/Product/CreateShipname/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -177,6 +182,7 @@ function Adddetails() {
                         $('#ddlState').val(null).trigger('change');
                         ClearControl();
                         swal('Success!', data.message, 'success');
+                        isEdit(false);
                     }
                     else {
                         dataGridLoad('');
@@ -417,8 +423,10 @@ function dataGridLoad(order_type) {
             {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
+                    if ($("#hfEdit").val() == "1") {
                     return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
-               
+                    }
+                    else { return "No Permission"; }
                     
                 }
             }

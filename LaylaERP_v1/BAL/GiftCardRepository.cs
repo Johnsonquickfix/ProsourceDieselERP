@@ -190,16 +190,17 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int ChangeGiftCardStatus(SearchModel model, string ID)
+        public DataTable ChangeGiftCardStatus(SearchModel model, string ID)
         {
             try
             {
-                string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active=@status where id in ({0}); ", ID);
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@status", model.strValue2)
+                    new SqlParameter("@status", model.strValue2),
+                    new SqlParameter("@gc_ID",ID),
+                    new SqlParameter("@Flag","EDGC"),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                DataTable result =SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", para);
 
                 return result;
             }

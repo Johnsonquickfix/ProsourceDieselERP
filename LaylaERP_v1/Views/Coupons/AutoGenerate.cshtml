@@ -17,16 +17,17 @@
         <div class="col-md-12">
             <div class="user_subCrumbs">
                 <input type="hidden" id="hfType" value="" />
+                <input type="hidden" id="hfEdit" value="" />
                 @*<input type="hidden" id="hfuserType" value="@ViewBag.user_role" />*@
                 @*<ul id="allul" class="subsubsub">
-                    <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
-                    <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
-                    <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>
-                    <li class="draft"><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
-                    <li class="pending"><a href="javascript:void(0);" id="pending">Pending(<span class="count">0</span>)</a> |</li>
-                    <li class="private"><a href="javascript:void(0);" id="private">Private (<span class="count">0</span>)</a> </li>
-                    <li class="trash"><a href="javascript:void(0);" id="trash">Trash (<span class="count">0</span>)</a> </li>
-                </ul>*@
+            <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
+            <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
+            <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>
+            <li class="draft"><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
+            <li class="pending"><a href="javascript:void(0);" id="pending">Pending(<span class="count">0</span>)</a> |</li>
+            <li class="private"><a href="javascript:void(0);" id="private">Private (<span class="count">0</span>)</a> </li>
+            <li class="trash"><a href="javascript:void(0);" id="trash">Trash (<span class="count">0</span>)</a> </li>
+        </ul>*@
             </div>
         </div>
     </div>
@@ -94,8 +95,11 @@
  
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Marketing/AutoGenerateCoupons.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("#btnAdd", "#hfEdit", "", loc);
     });
 </script>
 

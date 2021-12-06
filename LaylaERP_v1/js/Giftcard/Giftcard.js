@@ -28,7 +28,12 @@
             format: 'mm/dd/yyyy',
         }).datepicker("setDate", 'now');
     }
+    isEdit(true);
 })
+
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 
 $(".radio_amt").click(function () {
     let amount = $(this).text().replace('$', '');
@@ -57,7 +62,10 @@ function validateForm() {
     else if (!validateEmails(giftTo)) { swal('Alert', 'Please enter valid email(To)', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false; }
     else if (giftFrom == "") { swal('Alert', 'Please enter email from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
     else if (!pattern.test(giftFrom)) { swal('Alert', 'Please enter valid email(From) ', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
-    else { }
+    else {
+        
+    }
+    isEdit(false);
 }
 function validateEmails(string) {
     var regex = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;

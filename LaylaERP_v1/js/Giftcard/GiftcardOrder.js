@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    isEdit(true);
     $("#btnResendEmail").hide();
     $(".select2").select2();
     var url = window.location.pathname;
@@ -7,10 +8,10 @@
     if (id != "Giftcard") { disableall(); }
     else { $("#btnResendEmail").hide(); $("#ddlGiftcardStatus").hide(); $("#btnResendEmail").prop("disabled", true); }
     $('#txtPostCode').on('keyup',function () {
-        checkZip();
+        checkZip(); isEdit(true);
     });
     $('#ddlState').change(function () {
-        checkZip();
+        checkZip(); isEdit(true);
     })
     $("#txtPhone").mask("(999) 999-9999");
     $(document).on("click", "#btnOrderCheckout", function (t) { t.preventDefault(); saveGiftCard(); });
@@ -34,6 +35,7 @@
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
         else { $('.podiumchannel').addClass('hidden'); }
     });
+   
 });
 function disableall() {
     $("#btnOrderCheckout").hide();
@@ -234,7 +236,7 @@ function ValidateData() {
     else if ($('#ddlState').val() == "") { swal('Alert', 'Please enter state', 'error').then((result) => { $('#txtState').focus(); return false; }); return false; }
     else if ($('#txtPostCode').val() == "") { swal('Alert', 'Please enter zip code', 'error').then((result) => { $('#txtPostCode').focus(); return false; }); return false; }
     else if ($('#ddlCountry').val() == "") { swal('Alert', 'Please select country', 'error').then((result) => { $('#ddlCountry').focus(); return false; }); return false; }
-    return true;
+    return true; isEdit(true);
 }
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');

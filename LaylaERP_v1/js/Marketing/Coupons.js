@@ -2,6 +2,7 @@
 
 $(document).ready(function () {
     $("#loader").hide();
+    isEdit(true);
     bindProduct();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
@@ -104,6 +105,10 @@ $(document).ready(function () {
         AddCoupons();
     })
 });
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
+
 function bindProduct() {
     $.ajax({ method: 'post', url: '/Coupons/GetProductList', data: JSON.stringify({ strValue1: '' }), async: false }).done(function (result, textStatus, jqXHR) {
         result = JSON.parse(result);
@@ -240,7 +245,7 @@ function AddCoupons() {
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
-
+                    isEdit(false);
                 }
                 else {
                     swal('Alert!', data.message, 'error')

@@ -167,6 +167,28 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Country<span style="color:red;"> *</span></label>
                                 <select class="form-control select1" id="txtCountry">
+                                    @*@{
+                                        if (Model.country == "US")
+                                        {
+                                            <option selected value="US">US - United States</option>
+                                            <option value="CA">CA - Canada</option>
+                                        }
+                                        else if (Model.country == "CA")
+                                        {
+                                            <option selected value="CA">CA - Canada</option>
+                                            <option value="US">US - United States</option>
+                                        }
+                                        else if (Model.country == "")
+                                        {
+                                            <option selected value="US">US - United States</option>
+                                            <option value="CA">CA - Canada</option>
+                                        }
+                                        else
+                                        {
+                                            <option selected value="US">US - United States</option>
+                                            <option value="CA">CA - Canada</option>
+                                        }
+                                    }*@
                                     @if (Model.country == "US")
                                     {
                                         <option selected value="US">US - United States</option>

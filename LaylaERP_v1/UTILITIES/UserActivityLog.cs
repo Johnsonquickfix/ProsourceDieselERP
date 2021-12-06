@@ -79,17 +79,32 @@
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT  " + (pageno - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,DATE_FORMAT(log_date, '%a %b %e %Y %H:%i') log_date,ip_address,mac_id,module_name,description,log_type_id,"
-                            + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
-                            + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
+                //string strSql = "SELECT  " + (pageno - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,DATE_FORMAT(log_date, '%a %b %e %Y %H:%i') log_date,ip_address,mac_id,module_name,description,log_type_id,"
+                //            + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
+                //            + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
+                //if (userid > 0)
+                //    strWhr += " and ur.id = " + userid.ToString();
+                //strWhr += " and convert(date,log_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') ";
+                //strWhr += " and convert(date,log_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
+
+                //strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno).ToString() + ", " + pagesize.ToString();
+
+                //strSql += "; SELECT ceil(Count(ual.user_id)/" + pagesize.ToString() + ") TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
+
+                string strSql = "SELECT  " + (pageno - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,FORMAT(log_date,'MM/dd/yyyy hh:mm tt') log_date,ip_address,mac_id,module_name,description,log_type_id,"
+                         + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
+                         + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
                 if (userid > 0)
                     strWhr += " and ur.id = " + userid.ToString();
                 strWhr += " and convert(date,log_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') ";
                 strWhr += " and convert(date,log_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
 
-                strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno).ToString() + ", " + pagesize.ToString();
+                //strSql += strWhr + " order by log_date DESC  " + (pageno).ToString() + ", " + pagesize.ToString();
 
-                strSql += "; SELECT ceil(Count(ual.user_id)/" + pagesize.ToString() + ") TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
+                strSql += strWhr + " order by log_date DESC "  + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ";
+
+                strSql += "; SELECT Count(ual.user_id)/" + pagesize.ToString() + " TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
+
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

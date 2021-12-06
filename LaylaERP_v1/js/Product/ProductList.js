@@ -31,16 +31,18 @@
             tr.addClass('shown');
         }
     });
-
+    $("#loader").hide();
      getParentCategory();
     GetDetails();
-    setTimeout(function () { dataGridLoad(''); }, 100);
-    $("#loader").hide();
+    dataGridLoad(''); 
+   /* setTimeout(function () { dataGridLoad(''); }, 1000);*/
+   
     $('#all').click(function () { var order_type = ""; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#published').click(function () { var order_type = "publish"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#private').click(function () { var order_type = "private"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#trash').click(function () { var order_type = "trash"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfType').val(); dataGridLoad(order_type); });
+    $("#loader").hide();
  });
 
 function space(noOfSpaces) {
@@ -65,7 +67,8 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + ' (' + data[i].count + ')' +'</option>';
             }
             $('#ddltype').html(opt);
-        }
+        },
+        async: false
     });
 }
 
@@ -241,10 +244,10 @@ function dataGridLoad(order_type) {
 
 
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": '' }, order: [[0, "asc"]],
+        oSearch: { "sSearch": '' }, order: [[0, "asc"]], bProcessing: true, responsive: true, scrollX: true,
        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
        //bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
-        scrollX: true,
+        
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -369,9 +372,12 @@ function dataGridLoad(order_type) {
                 'render': function (id, type, row) {
                     if (row.post_parent > 0)
                         return ' <b></b>';
-                    else
-                        return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
-
+                    else {
+                        if ($("#hfEdit").val() == "1") {
+                            return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                        }
+                        else { return "No Permission"; }
+                    }
                 }
             }
         ],
@@ -413,12 +419,12 @@ function Status() {
     var statusval = $("#ddlbulkaction :selected").text();  
     console.log(statusval);
     if (id == "") { swal('alert', 'Please select product from list', 'error'); }
-    else if (status == "0") { swal('alert', 'Please select Bulk Action', 'error'); }
+    else if (status == "0") { swal('alert', 'Please select bulk action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
         //var checkstr = confirm('are you sure want to update this?');
         //if (checkstr == true) {
-        swal({ title: "", text: 'Would you like to ' + statusval +' this Product?', type: "question", showCancelButton: true })
+        swal({ title: "", text: 'Would you like to ' + statusval +' this product?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {                 
         $.ajax({

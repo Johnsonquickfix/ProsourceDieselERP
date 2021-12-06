@@ -893,8 +893,8 @@
 
                 obj.OrderProducts = GetOrderProductList(OrderID);
 
-                obj.GrassAmount = obj.OrderProducts.Sum(x => x.total);
-                obj.TotalDiscount = obj.OrderProducts.Sum(x => x.discount);
+                obj.GrassAmount = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.total);
+                obj.TotalDiscount = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.discount);
                 obj.TotalTax = obj.OrderProducts.Sum(x => x.tax_amount);
                 obj.TotalShipping = obj.OrderProducts.Sum(x => x.shipping_amount);
                 obj.TotalStateRecycling = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name == "State Recycling Fee").Sum(x => x.total);

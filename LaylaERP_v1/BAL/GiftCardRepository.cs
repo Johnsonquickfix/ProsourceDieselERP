@@ -227,17 +227,17 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable TodayGiftCardsList()
+        public static DataSet TodayGiftCardsList()
         {
-            DataTable dt = new DataTable();
+            DataSet ds = new DataSet();
             try
             {
                 SqlParameter[] parameters = { new SqlParameter("@flag", "SGCOD") };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+                ds = SQLHelper.ExecuteDataSet("wp_posts_giftcard_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }
-            return dt;
+            return ds;
         }
         public static DataTable GetGiftCardDetails(long OrderID)
         {

@@ -1,7 +1,9 @@
 
 $(document).ready(function () {
     $("#loader").hide();
+
     var urlpath = window.location.pathname;
+    CheckPermissions("#btnAddNewCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
    // alert(pathid);
     $("#btnbackproduct").hide();
@@ -17,13 +19,13 @@ $(document).ready(function () {
     $(".select2").select2();
     getParentCategory();
     CategoryList();
+    isEdit(true);
 })
-//$('#txtCategoryName').keyup(function () {
-//    var cat = $('#txtCategoryName').val().trim();
-//    $(this).val(txt.replace(/^(.)|\s(.)/g, function ($1) { return $1.toUpperCase(); }));
-//    cat = cat.replace(/\s/g, '-');
-//    $('#txtCategorySlug').val(cat);
-//})
+
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
+
 $('#txtCategoryName').keyup(function (event) {
     var textBox = event.target;
     var start = textBox.selectionStart;
@@ -34,6 +36,7 @@ $('#txtCategoryName').keyup(function (event) {
     var cat = $('#txtCategoryName').val().toLowerCase().trim();
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
+    isEdit(true);
 });
 function space(noOfSpaces) {
     var space = "# ", returnValue = "";
@@ -57,6 +60,7 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
             }
             $('#ddlParentCategory').html(opt);
+            isEdit(true);
         }
     });
 }
@@ -108,12 +112,14 @@ $('#btnAddNewCategory').click(function () {
                     $("#ProdCat option[value='-1']").attr('selected', true)
                     $("#ddlDisplayType").val("products");
                     swal('Alert!', data.message, 'success');
+                  
                 }
                 else { swal('Alert!', data.message, 'error') }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false);},
             error: function (error) { swal('Error!', error.message, 'error'); },
         })
+        
     }
 });
 
@@ -200,12 +206,15 @@ function CategoryList() {
             {
                 'data': 'ID', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    if (id == 80) {
-                        return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
+                    if ($("#hfEdit").val() == "1") {
+                        if (id == 80) {
+                            return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
+                        }
+                        else {
+                            return '<a href="#" onclick="GetCategoryByID(' + id + ');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        }
                     }
-                    else {
-                        return '<a href="#" onclick="GetCategoryByID(' + id + ');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
-                    }
+                    else { return "No Permission"; }
                 }
             }
         ]
@@ -227,6 +236,7 @@ function Singlecheck() {
         });
         $("#checkAll").prop('checked', isChecked);
     }
+    isEdit(true);
 }
 $('#btnApply').click(function () {
     var id = "";
@@ -341,6 +351,7 @@ function GetCategoryByID(id) {
 
                     $("#ddlDisplayType").val(d[0].DisplayType);
                     $("#txtDescription").val(d[0].description);
+                    
                 }
             },
             complete: function () { $("#loader").hide(); },
@@ -348,7 +359,7 @@ function GetCategoryByID(id) {
 
             }
         });
-
+    isEdit(true);
 }
 $('#btnReset').click(function () {
     $("#hfid").val('');

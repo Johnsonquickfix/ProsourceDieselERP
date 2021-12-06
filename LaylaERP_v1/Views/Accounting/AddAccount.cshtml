@@ -84,8 +84,13 @@
                     })
                 });
 
-
+                isEdit(true);
             });
+
+            function isEdit(val) {
+                localStorage.setItem('isEdit', val ? 'yes' : 'no');
+            }
+
             function AddAccount() {
                 debugger
                 var groupofaccount1 = $("#ddlParentAccount option:selected");
@@ -98,16 +103,16 @@
                 //groupofaccount = $("#selector option:selected");
 
                 if (pcgversion == "") {
-                    swal('Alert', 'Please Enter Chart Of Account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
+                    swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
                 }
                 else if (accountnumber == "") {
-                    swal('Alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
+                    swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
                 }
                 else if (label == "") {
-                    swal('Alert', 'Please Enter Label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
+                    swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
                 }
                 else if (parentaccount == 0) {
-                    swal('Alert', 'Please Select Parent Account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
+                    swal('Alert', 'Please select parent account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
                 }
                 //else if (groupofaccount == "") {
                 //    swal('Alert', 'Please Enter Group Of Account', 'error').then(function () { swal.close(); $('#txtGroupOfAccount').focus(); });
@@ -131,14 +136,14 @@
                         success: function (data) {
                             if (data.status == true) {
                                 //$('#parent > input:text').val('');
-                                swal('Alert!', data.message, 'success').then((result) => { location.href = '../chartofaccounts'; });
+                                swal('Success', data.message, 'success').then((result) => { location.href = '../chartofaccounts'; });
                                 reset();
                             }
                             else {
                                 swal('Alert!', data.message, 'error');
                             }
                         },
-                        complete: function () { $("#loader").hide(); },
+                        complete: function () { $("#loader").hide(); isEdit(false); },
                         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
                     })
 

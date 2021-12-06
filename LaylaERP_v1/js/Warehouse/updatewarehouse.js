@@ -142,7 +142,10 @@ function AddWarehouseinfo() {
                 swal('Alert!', data.message, 'error');
             }
         },
-        complete: function () { $("#loader").hide(); },
+        complete: function () {
+            $("#loader").hide();
+            isEdit(false);
+        },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
 
@@ -179,7 +182,7 @@ function AddWarehouse() {
     email = $("#txtEmail").val();
 
     if (ref == "") {
-        swal('Alert', 'Please enter reference name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+        swal('Alert', 'Please enter ref', 'error').then(function () { swal.close(); $('#txtref').focus(); });
     }
     else if (lieu == "") {
         swal('Alert', 'Please enter short name location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
@@ -194,7 +197,7 @@ function AddWarehouse() {
         swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
     }
     else if (town == "" || town == null) {
-        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtState').focus(); });
     }
     else if (zip == "") {
         swal('Alert', 'Please enter zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
@@ -245,7 +248,10 @@ function AddWarehouse() {
                         swal('Alert!', data.message, 'error');
                     }
                 },
-                complete: function () { $("#loader").hide(); },
+                complete: function () {
+                    $("#loader").hide();
+                    isEdit(false);
+                },
                 error: function (error) { swal('Error!', 'something went wrong', 'error'); },
             })
         }

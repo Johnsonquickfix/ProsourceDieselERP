@@ -58,7 +58,7 @@ function AddCustomer() {
     }
 
     else {
-        $("#txtPostCode").change();
+        $("#txtBillingPostCode").change();
         if ($("#hfzipstatus").val() == "true") {
             var obj = {
                 ID: ID,

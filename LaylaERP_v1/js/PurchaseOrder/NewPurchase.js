@@ -2,8 +2,7 @@
     $("#loader").hide(); $('.billinfo').prop("disabled", true);
     $('#txtPODate,#txtPlanneddateofdelivery').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
     $(".select2").select2();
-    getVendor(); getMasters();
-    getPurchaseOrderInfo()
+    $.when(getVendor(), getMasters()).done(function () { getPurchaseOrderInfo(); });
     $("#ddlVendor").change(function () {
         let today = new Date();
         $('#txtPODate').val(today.toLocaleDateString("en-US"));
@@ -410,7 +409,7 @@ function getPurchaseOrderInfo() {
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
-                try {
+                //try {
                     let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
                     $.each(data['po'], function (key, row) {
                         VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
@@ -489,10 +488,10 @@ function getPurchaseOrderInfo() {
                         }
                     });
                     getPurchaseOrderPayments(oid);
-                }
-                catch (error) {
-                    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
-                }
+                //}
+                //catch (error) {
+                //    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                //}
             },
             complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false

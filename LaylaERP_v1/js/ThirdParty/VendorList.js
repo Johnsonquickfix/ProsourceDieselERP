@@ -3,9 +3,11 @@
     var loc = window.location.pathname;
     CheckPermissions("#btnAddVendor", "#hfEdit", "", loc);
     VendorGrid();
-   
+    isEdit(true);
 })
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function VendorGrid() {
     var urid = parseInt($("#ddlSearchStatus").val());
     var sid = "";

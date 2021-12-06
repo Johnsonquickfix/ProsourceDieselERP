@@ -102,7 +102,7 @@
       //  $('#btnbackcategory').attr("disabled", "disabled");
       //  $("#btnbackcategory").off('click');
        
-       
+        isEdit(true);
     }
     $("#txtregularprice").keyup(function () {
         var $this = $(this);

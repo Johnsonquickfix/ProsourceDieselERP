@@ -25,8 +25,11 @@
     getNatureofJournal();
     InvoiceGrid();
     $(document).on('click', '#btnChange', function () { orderStatus(); });
+    isEdit(true);
 })
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 $('#ddlDiscountType1').change(function () {
     let discount = $('#ddlDiscountType1').val();
     if (discount == "Percentage") {
@@ -181,7 +184,7 @@ $('#btnNextTab1').click(function (e) {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader").hide(); 
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');

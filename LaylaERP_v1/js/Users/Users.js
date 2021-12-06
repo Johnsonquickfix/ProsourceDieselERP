@@ -135,7 +135,7 @@ function Datagrid(role_type, type) {
             }
         ]
     }
-    console.log(role_type, type);
+    //console.log(role_type, type);
     var id;
     if (searchText == '') {
         $('#dtdata').DataTable({

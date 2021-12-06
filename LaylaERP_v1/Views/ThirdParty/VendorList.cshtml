@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Manage Vendors";
 }
-
+<input type="hidden" id="hfEdit" value="" />
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -63,6 +63,6 @@
 
 </section>
 <script src="@Url.Content("~/js/ThirdParty/VendorList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 

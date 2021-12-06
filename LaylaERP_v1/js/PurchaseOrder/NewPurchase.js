@@ -411,9 +411,9 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0, status_id = 0;
+                    let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
                     $.each(data['po'], function (key, row) {
-                        VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0;
+                        VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                         $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
                         $('#ddlVendor').val(row.fk_supplier).trigger('change');
                         $('#ddlPaymentTerms').val(row.fk_payment_term).trigger('change');
@@ -421,7 +421,7 @@ function getPurchaseOrderInfo() {
                         $('#ddlIncoTerms').val(row.fk_incoterms).trigger('change');
                         $('#ddlPaymentType').val(row.fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(row.note_public); $('#txtNotePrivate').val(row.note_private);
-                        $('#txtIncoTerms').val(row.location_incoterms); getVendorWarehouse(VendorID);                        
+                        $('#txtIncoTerms').val(row.location_incoterms); getVendorWarehouse(VendorID);
                         $('#ddlWarehouse').val(row.fk_warehouse).trigger('change');
                         $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
                         if (!row.date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(row.date_livraison);
@@ -430,21 +430,28 @@ function getPurchaseOrderInfo() {
                         var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
                         $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
 
-                        if (status_id == 1) {
-                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
-                            else
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        }
-                        else if (status_id == 3) {
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        }
-                        else {
+                        if (fk_projet > 0) {
                             $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
-                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
+                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Purchase Order (Sales) is not editable.</div>');
+                        }
+                        else {
+                            if (status_id == 1) {
+                                if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
+                                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
+                                else
+                                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                            }
+                            else if (status_id == 3) {
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                            }
+                            else {
+                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button>');
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                                $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
+                            }
                         }
                     });
                     getVendorProducts(VendorID);

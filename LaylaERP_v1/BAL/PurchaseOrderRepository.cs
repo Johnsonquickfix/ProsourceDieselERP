@@ -226,7 +226,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
                 string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,convert(varchar,date_livraison,101) date_livraison,"
-                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,convert(varchar,date_creation,101) date_creation from commerce_purchase_order where rowid = @po_id;"
+                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,convert(varchar,date_creation,101) date_creation,fk_projet from commerce_purchase_order where rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,convert(varchar,date_start,101) date_start,convert(varchar,date_end,101) date_end,rang"
                                 + " from commerce_purchase_order_detail where fk_purchase = @po_id;";

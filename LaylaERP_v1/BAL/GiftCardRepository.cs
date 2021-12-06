@@ -227,17 +227,17 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable TodayGiftCardsList()
+        public static DataSet TodayGiftCardsList()
         {
-            DataTable dt = new DataTable();
+            DataSet ds = new DataSet();
             try
             {
                 SqlParameter[] parameters = { new SqlParameter("@flag", "SGCOD") };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+                ds = SQLHelper.ExecuteDataSet("wp_posts_giftcard_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }
-            return dt;
+            return ds;
         }
         public static DataTable GetGiftCardDetails(long OrderID)
         {
@@ -371,6 +371,66 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static void OrderInvoiceMail(long OrderID)
+        {
+            try
+            {
+                OrderModel order_obj = GiftCardRepository.OrderInvoice(OrderID);
+                String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "GiftCardOrder", order_obj);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has been received", renderedHTML, string.Empty);
+            }
+            catch { }
+        }
+
+        public static OrderModel OrderInvoice(long OrderID)
+        {
+            OrderModel obj = new OrderModel();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@order_id", OrderID),
+                    new SqlParameter("@Flag", "GGCOD"),
+
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("wp_posts_giftcard_search", parameters);
+                while (sdr.Read())
+                {
+                    obj.order_id = (sdr["order_id"] != Convert.DBNull) ? Convert.ToInt64(sdr["order_id"]) : 0;
+                    obj.order_date = (sdr["date_created"] != Convert.DBNull) ? sdr["date_created"].ToString() : "";
+                    obj.payment_method = (sdr["payment_method"] != Convert.DBNull) ? sdr["payment_method"].ToString() : "";
+                    obj.payment_method_title = (sdr["payment_method_title"] != Convert.DBNull) ? sdr["payment_method_title"].ToString() : "";
+                    obj.b_first_name = (sdr["b_first_name"] != Convert.DBNull) ? sdr["b_first_name"].ToString() : "";
+                    obj.b_last_name = (sdr["b_last_name"] != Convert.DBNull) ? sdr["b_last_name"].ToString() : "";
+                    obj.b_company = (sdr["b_company"] != Convert.DBNull) ? sdr["b_company"].ToString() : "";
+                    obj.b_address_1 = (sdr["b_address_1"] != Convert.DBNull) ? sdr["b_address_1"].ToString() : "";
+                    obj.b_address_2 = (sdr["b_address_2"] != Convert.DBNull) ? sdr["b_address_2"].ToString() : "";
+                    obj.b_postcode = (sdr["b_postcode"] != Convert.DBNull) ? sdr["b_postcode"].ToString() : "";
+                    obj.b_city = (sdr["b_city"] != Convert.DBNull) ? sdr["b_city"].ToString() : "";
+                    obj.b_country = (sdr["b_country"] != Convert.DBNull) ? sdr["b_country"].ToString() : "";
+                    obj.b_state = (sdr["b_state"] != Convert.DBNull) ? sdr["b_state"].ToString() : "";
+                    obj.b_email = (sdr["b_email"] != Convert.DBNull) ? sdr["b_email"].ToString() : "";
+                    obj.b_phone = (sdr["b_phone"] != Convert.DBNull) ? sdr["b_phone"].ToString() : "";
+                    obj.s_first_name = (sdr["s_first_name"] != Convert.DBNull) ? sdr["s_first_name"].ToString() : "";
+                    obj.s_last_name = (sdr["s_last_name"] != Convert.DBNull) ? sdr["s_last_name"].ToString() : "";
+                    obj.s_company = (sdr["s_company"] != Convert.DBNull) ? sdr["s_company"].ToString() : "";
+                    obj.s_address_1 = (sdr["s_address_1"] != Convert.DBNull) ? sdr["s_address_1"].ToString() : "";
+                    obj.s_address_2 = (sdr["s_address_2"] != Convert.DBNull) ? sdr["s_address_2"].ToString() : "";
+                    obj.s_postcode = (sdr["s_postcode"] != Convert.DBNull) ? sdr["s_postcode"].ToString() : "";
+                    obj.s_city = (sdr["s_city"] != Convert.DBNull) ? sdr["s_city"].ToString() : "";
+                    obj.s_country = (sdr["s_country"] != Convert.DBNull) ? sdr["s_country"].ToString() : "";
+                    obj.s_state = (sdr["s_state"] != Convert.DBNull) ? sdr["s_state"].ToString() : "";
+                    obj.paypal_id = (sdr["paypal_id"] != Convert.DBNull) ? sdr["paypal_id"].ToString() : "";
+                    obj.GrassAmount = Convert.ToDecimal(sdr["GrassAmount"]);
+                    obj.TotalTax = Convert.ToDecimal(sdr["TotalTax"]);
+                    obj.NetTotal = Convert.ToDecimal(sdr["NetTotal"]);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return obj;
         }
     }
 }

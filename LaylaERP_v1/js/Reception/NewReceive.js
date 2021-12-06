@@ -71,6 +71,8 @@
         }
         else { $('#txtIncoTerms').val(''); }
     });
+
+   
     $(document).on("click", ".btnEdit", function (t) {
         t.preventDefault(); $("#loader").show();
         $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", true); //$('#txtbillfirstname').focus();
@@ -123,13 +125,28 @@
 
     $(".btnpoopen").hide();
 
-    if ($("#hfstatus").val() == "6") {
-        $('.btnEdit').hide();
-        $('.btnpoopen').show();
+    
+
+    let fk_projetval = 0;
+    fk_projetval = parseInt($("#hfsaleno").val()) || 0
+    console.log(fk_projetval);
+    if (fk_projetval == "0" && $("#hfstatus").val() == "3") {
+        $(".btnEdit").show();
     }
     else {
-        $('.btnEdit').show();
-        $('.btnpoopen').hide();
+        
+        if ($("#hfstatus").val() == "6") {
+            $('.btnEdit').hide();
+            $('.btnpoopen').show();
+        }
+        else if ($("#hfstatus").val() == "5") {
+            $('.btnEdit').show();
+            $('.btnpoopen').hide();
+        }
+        else {
+            $('.btnEdit').hide();
+        }
+
     }
 
 });
@@ -505,6 +522,7 @@ function AddProductModal(proc_type, row_num) {
 //}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Purchase Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getPurchaseOrderInfo() {
+    $('#divAlert').empty();
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
@@ -516,10 +534,10 @@ function getPurchaseOrderInfo() {
             url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0;
+                    let data = JSON.parse(result); let VendorID = 0, fk_projet = 0;
                     //console.log(data);
                     for (let i = 0; i < data['po'].length; i++) {
-                        VendorID = parseInt(data['po'][i].fk_supplier) || 0;
+                        VendorID = parseInt(data['po'][i].fk_supplier) || 0; fk_projet = parseInt(data['po'][i].fk_projet) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
                         $('#ddlPaymentTerms').val(data['po'][i].fk_payment_term).trigger('change');
@@ -532,7 +550,8 @@ function getPurchaseOrderInfo() {
                         $('#ddlwarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         $("#hfid").val(data['po'][i].rowid);
                         $("#hfstatus").val(data['po'][i].fk_status);
-                        //console.log(data['po'][i].fk_status);
+                        $("#hfsaleno").val(fk_projet);
+                        //console.log(data['po'][i].fk_status hfsaleno);
                         if (data['po'][i].fk_status == "5")
                             $(".btnpoclosed").show();
                         else
@@ -540,6 +559,12 @@ function getPurchaseOrderInfo() {
 
 
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
+
+                        if (fk_projet > 0) {
+                            $(".top-action").empty();
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Purchase Order (Sales) is not editable.</div>');
+                        }
 
                     }
                     // console.log($("#hfid").val());

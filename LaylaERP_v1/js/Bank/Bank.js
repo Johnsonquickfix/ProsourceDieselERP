@@ -68,52 +68,52 @@ function AddBankAccount() {
 
 
     if (label == "") {
-        swal('Alert', 'Please Enter Bank or cash label', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
+        swal('Alert', 'Please enter bank or cash label', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
     }
     else if (state == "") {
-        swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
     }
     else if (inital == "") {
-        swal('Alert', 'Please Enter Initial Amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
+        swal('Alert', 'Please enter initial amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
     }
     else if (date == "") {
-        swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtdate').focus(); });
+        swal('Alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txtdate').focus(); });
     }
     else if (minallowbalance == "") {
-        swal('Alert', 'Please Enter Minimum Allow Balance', 'error').then(function () { swal.close(); $('#txtminallowbalance').focus(); });
+        swal('Alert', 'Please enter minimum allowed balance', 'error').then(function () { swal.close(); $('#txtminallowbalance').focus(); });
     }
     else if (desiredbalance == "") {
-        swal('Alert', 'Please Enter Minimum Desierd Balance', 'error').then(function () { swal.close(); $('#txtdesiredbalance').focus(); });
+        swal('Alert', 'Please enter minimum desierd balance', 'error').then(function () { swal.close(); $('#txtdesiredbalance').focus(); });
     }
     else if (bankname == "") {
-        swal('Alert', 'Please Enter Bank Name', 'error').then(function () { swal.close(); $('#txtbankname').focus(); });
+        swal('Alert', 'Please enter bank name', 'error').then(function () { swal.close(); $('#txtbankname').focus(); });
     }
     else if (bankcode == "") {
-        swal('Alert', 'Please Enter Bank Code', 'error').then(function () { swal.close(); $('#txtbankcode').focus(); });
+        swal('Alert', 'Please enter bank code', 'error').then(function () { swal.close(); $('#txtbankcode').focus(); });
     }
     else if (accountnumber == "") {
-        swal('Alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtaccountnumber').focus(); });
+        swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtaccountnumber').focus(); });
     }
     else if (iban == "") {
-        swal('Alert', 'Please Enter IBAN number', 'error').then(function () { swal.close(); $('#txtIBAN').focus(); });
+        swal('Alert', 'Please enter IBAN number', 'error').then(function () { swal.close(); $('#txtIBAN').focus(); });
     }
     else if (bic == "") {
-        swal('Alert', 'Please Enter BIC/SWAT code', 'error').then(function () { swal.close(); $('#txtBIC').focus(); });
+        swal('Alert', 'Please enter BIC/SWAT code', 'error').then(function () { swal.close(); $('#txtBIC').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter Currency Code', 'error').then(function () { swal.close(); $('#txtcurrency').focus(); });
+        swal('Alert', 'Please enter currency code', 'error').then(function () { swal.close(); $('#txtcurrency').focus(); });
     }
     else if (bankaddress == "") {
-        swal('Alert', 'Please Enter Bank address', 'error').then(function () { swal.close(); $('#txtbankaddress').focus(); });
+        swal('Alert', 'Please enter bank address', 'error').then(function () { swal.close(); $('#txtbankaddress').focus(); });
     }
     else if (ownername == "") {
-        swal('Alert', 'Please Enter Owner Name', 'error').then(function () { swal.close(); $('#txtaccountowner').focus(); });
+        swal('Alert', 'Please enter owner name', 'error').then(function () { swal.close(); $('#txtaccountowner').focus(); });
     }
     else if (owneraddress == "") {
-        swal('Alert', 'Please Enter Owner Address', 'error').then(function () { swal.close(); $('#txtowneraddress').focus(); });
+        swal('Alert', 'Please enter owner address', 'error').then(function () { swal.close(); $('#txtowneraddress').focus(); });
     }
     else if (accounting == "-1") {
-        swal('Alert', 'Please Select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
+        swal('Alert', 'Please select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
     }
     else {
 
@@ -202,52 +202,52 @@ function UpdateBankAccount() {
 
 
     if (label == "") {
-        swal('Alert', 'Please Enter Bank or cash label', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
+        swal('Alert', 'Please enter bank or cash label', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
     }
     else if (state == "") {
-        swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtstate').focus(); });
     }
     else if (inital == "") {
-        swal('Alert', 'Please Enter Initial Amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
+        swal('Alert', 'Please enter initial amount', 'error').then(function () { swal.close(); $('#txtinitial').focus(); });
     }
     else if (date == "") {
-        swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtdate').focus(); });
+        swal('Alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txtdate').focus(); });
     }
     else if (minallowbalance == "") {
-        swal('Alert', 'Please Enter Minimum Allow Balance', 'error').then(function () { swal.close(); $('#txtminallowbalance').focus(); });
+        swal('Alert', 'Please enter minimum allowed balance', 'error').then(function () { swal.close(); $('#txtminallowbalance').focus(); });
     }
     else if (desiredbalance == "") {
-        swal('Alert', 'Please Enter Minimum Desierd Balance', 'error').then(function () { swal.close(); $('#txtdesiredbalance').focus(); });
+        swal('Alert', 'Please enter minimum desierd balance', 'error').then(function () { swal.close(); $('#txtdesiredbalance').focus(); });
     }
     else if (bankname == "") {
-        swal('Alert', 'Please Enter Bank Name', 'error').then(function () { swal.close(); $('#txtbankname').focus(); });
+        swal('Alert', 'Please enter bank name', 'error').then(function () { swal.close(); $('#txtbankname').focus(); });
     }
     else if (bankcode == "") {
-        swal('Alert', 'Please Enter Bank Code', 'error').then(function () { swal.close(); $('#txtbankcode').focus(); });
+        swal('Alert', 'Please enter bank code', 'error').then(function () { swal.close(); $('#txtbankcode').focus(); });
     }
     else if (accountnumber == "") {
-        swal('Alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtaccountnumber').focus(); });
+        swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtaccountnumber').focus(); });
     }
     else if (iban == "") {
-        swal('Alert', 'Please Enter IBAN number', 'error').then(function () { swal.close(); $('#txtIBAN').focus(); });
+        swal('Alert', 'Please enter IBAN number', 'error').then(function () { swal.close(); $('#txtIBAN').focus(); });
     }
     else if (bic == "") {
-        swal('Alert', 'Please Enter BIC/SWAT code', 'error').then(function () { swal.close(); $('#txtBIC').focus(); });
+        swal('Alert', 'Please enter BIC/SWAT code', 'error').then(function () { swal.close(); $('#txtBIC').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter Currency Code', 'error').then(function () { swal.close(); $('#txtcurrency').focus(); });
+        swal('Alert', 'Please enter currency code', 'error').then(function () { swal.close(); $('#txtcurrency').focus(); });
     }
     else if (bankaddress == "") {
-        swal('Alert', 'Please Enter Bank address', 'error').then(function () { swal.close(); $('#txtbankaddress').focus(); });
+        swal('Alert', 'Please enter bank address', 'error').then(function () { swal.close(); $('#txtbankaddress').focus(); });
     }
     else if (ownername == "") {
-        swal('Alert', 'Please Enter Owner Name', 'error').then(function () { swal.close(); $('#txtaccountowner').focus(); });
+        swal('Alert', 'Please enter owner name', 'error').then(function () { swal.close(); $('#txtaccountowner').focus(); });
     }
     else if (owneraddress == "") {
-        swal('Alert', 'Please Enter Owner Address', 'error').then(function () { swal.close(); $('#txtowneraddress').focus(); });
+        swal('Alert', 'Please enter owner address', 'error').then(function () { swal.close(); $('#txtowneraddress').focus(); });
     }
     else if (accounting == "-1") {
-        swal('Alert', 'Please Select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
+        swal('Alert', 'Please select accounting account', 'error').then(function () { swal.close(); $('#ddlaccounting').focus(); });
     }
     
     else {
@@ -293,7 +293,7 @@ function UpdateBankAccount() {
                     swal('Alert!', data.message, 'error');
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false) },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 

@@ -554,6 +554,10 @@
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
 
                 JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "UPP", 0, model.b_first_name, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+                if (model.order_id > 0)
+                {
+                    OrderRepository.OrderInvoiceMail(model.order_id);
+                }
             }
             catch { }
             return Json(JSONresult, 0);

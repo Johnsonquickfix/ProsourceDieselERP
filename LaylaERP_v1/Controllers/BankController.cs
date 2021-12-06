@@ -56,7 +56,7 @@ namespace LaylaERP.Controllers
                     int ID = BankRepository.AddBankAccount(model);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Bank data saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -119,7 +119,7 @@ namespace LaylaERP.Controllers
             if (model.rowid> 0)
             {
                 BankRepository.UpdateBankAccount(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Bank data updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -208,7 +208,7 @@ namespace LaylaERP.Controllers
             {
                 int ID = BankRepository.DeleteBankLinkedFiles(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Bank Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Bank linked files deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }

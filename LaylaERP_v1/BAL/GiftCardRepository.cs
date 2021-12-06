@@ -190,16 +190,17 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int ChangeGiftCardStatus(SearchModel model, string ID)
+        public DataTable ChangeGiftCardStatus(SearchModel model, string ID)
         {
             try
             {
-                string strsql = string.Format("Update wp_woocommerce_gc_cards set is_active=@status where id in ({0}); ", ID);
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@status", model.strValue2)
+                    new SqlParameter("@status", model.strValue2),
+                    new SqlParameter("@gc_ID",ID),
+                    new SqlParameter("@Flag","EDGC"),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                DataTable result =SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", para);
 
                 return result;
             }
@@ -227,17 +228,17 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable TodayGiftCardsList()
+        public static DataSet TodayGiftCardsList()
         {
-            DataTable dt = new DataTable();
+            DataSet ds = new DataSet();
             try
             {
                 SqlParameter[] parameters = { new SqlParameter("@flag", "SGCOD") };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_giftcard_search", parameters);
+                ds = SQLHelper.ExecuteDataSet("wp_posts_giftcard_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }
-            return dt;
+            return ds;
         }
         public static DataTable GetGiftCardDetails(long OrderID)
         {

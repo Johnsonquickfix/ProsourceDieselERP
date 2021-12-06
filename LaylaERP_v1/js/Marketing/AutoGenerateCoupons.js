@@ -63,7 +63,10 @@ function dataGridLoad(order_type) {
             {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="NewAutoGenerate/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="NewAutoGenerate/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    }
+                    else { return "No Permission"; }
                 }
             }
         ]

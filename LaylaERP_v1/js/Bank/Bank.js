@@ -158,7 +158,7 @@ function AddBankAccount() {
                     swal('Error!', data.message, 'error');
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 

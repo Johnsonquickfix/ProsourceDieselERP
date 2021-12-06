@@ -223,7 +223,7 @@
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%" + strSearch + "%' limit 20;");
+                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%" + strSearch + "%' ;");
             }
             catch (Exception ex)
             { throw ex; }

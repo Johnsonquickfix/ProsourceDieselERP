@@ -101,7 +101,6 @@ function reset() {
 */
 
 function AddWarehouseinfo() {
-    debugger
     //Additional info
     rowid = $("#hfid").val();
     corphone = $("#txtCorContact").val();
@@ -152,7 +151,6 @@ function AddWarehouseinfo() {
 }
 
 function AddWarehouse() {
-    debugger
     rowid = $("#hfid").val();
     ref = $("#txtref").val();
     lieu = $("#txtShortNameLocation").val();

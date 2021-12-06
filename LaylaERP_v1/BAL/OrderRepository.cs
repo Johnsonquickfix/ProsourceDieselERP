@@ -896,7 +896,7 @@
                 obj.GrassAmount = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.total);
                 obj.TotalDiscount = obj.OrderProducts.Where(f => f.product_type == "coupon").Sum(x => x.discount);
                 obj.TotalTax = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.tax_amount);
-                obj.TotalShipping = obj.OrderProducts.Where(f => f.product_type == "shipping").Sum(x => x.shipping_amount);
+                obj.TotalShipping = obj.OrderProducts.Where(f => f.product_type == "shipping").Sum(x => x.total);
                 obj.TotalStateRecycling = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name == "State Recycling Fee").Sum(x => x.total);
                 obj.TotalFee = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name != "State Recycling Fee").Sum(x => x.total);
                 obj.TotalGift = obj.OrderProducts.Where(f => f.product_type == "gift_card").Sum(x => x.total);

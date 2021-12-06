@@ -164,7 +164,6 @@ function giftcardStatus() {
     let status = $('#ddlOrderStatus').val();
 
     if (id == '') { swal('alert', 'Please select a gift card', 'error'); return; }
-    console.log(id);
     if (status == '') { swal('alert', 'Please select status', 'error'); }
 
     swal.queue([{

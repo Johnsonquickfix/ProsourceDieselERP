@@ -350,39 +350,39 @@
 
 
     $('#txtState').change(function () {
-        City = $("#txtCity").val();
-        State = $("#txtState").val();
-        PostalCode = $("#txtZipCode").val();
-        var obj = {
-            billing_state: State,
-            billing_city: City,
-            billing_postcode: PostalCode
-        }
-        $.ajax({
-            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-                if (data.status == true) {
-
-                    $('#hfzipstatus').val(data.status);
-
-                }
-                else {
-                    if ($('#txtCountry').val() == "US") {
-                        $("#txtZipCode").val("");
+        if ($("#txtZipCode").val() != '' && $("#txtState").val() != null) {
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == true) {
                         $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
                     }
-                }
-            },
+                    else {
+                        if ($('#txtCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
 
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
     });
 
     document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
@@ -418,7 +418,13 @@
         }
     });
 
-
+    $("#txtCountry").change(function () {
+        $("#txtState").val(null).trigger('change');
+        $("#txtCity").val('');
+        $("#txtZipCode").val('');
+        $("#txtAddress").val('');
+        $("#txtAddress1").val('');
+    });
 </script>
 
 <script>
@@ -453,7 +459,7 @@
         email = $("#txtEmail").val();
 
         if (ref == "") {
-            swal('Alert', 'Please enter reference name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+            swal('Alert', 'Please enter ref', 'error').then(function () { swal.close(); $('#txtref').focus(); });
         }
         else if (lieu == "") {
             swal('Alert', 'Please enter short name location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
@@ -584,4 +590,4 @@
 
 
 <!-- Google API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>

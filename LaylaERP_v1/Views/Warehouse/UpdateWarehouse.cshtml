@@ -105,7 +105,7 @@
 
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">State</label>
+                                        <label for="exampleInputEmail1">State<span style="color:red">*</span></label>
 
                                         <select class="form-control" id="txtState">
                                             <option selected value="@Model.town">@Model.town</option>
@@ -1023,10 +1023,14 @@
         ////getAccountingAccount();
         setTimeout(function () { $(".select1").select2(); }, 2000);
         ////$(".select2").select2();
-
+        isEdit(true);
 
     });
-   
+ //document.ready end
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 
 
     //For phone number javascript
@@ -1062,39 +1066,41 @@
 
      //For Zip Code javascript end
     $('#txtState').change(function () {
-        City = $("#txtCity").val();
-        State = $("#txtState").val();
-        PostalCode = $("#txtZipCode").val();
-        var obj = {
-            billing_state: State,
-            billing_city: City,
-            billing_postcode: PostalCode
-        }
-        $.ajax({
-            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-                //console.log(data);
-                if (data.status == true) {
+        if ($("#txtZipCode").val() != '' && $("#txtState").val() != null) {
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.status == true) {
 
-                    $('#hfzipstatus').val(data.status);
-
-                }
-                else {
-                    if ($('#txtCountry').val() == "US") {
-                        $("#txtZipCode").val("");
                         $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
-                    }
-                }
-            },
 
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+                    }
+                    else {
+                        if ($('#txtCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
     });
 
     $('#txtZipCode').change(function () {
@@ -1133,6 +1139,14 @@
         })
     });
 
+    $('#txtEmail').change(function () {
+        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        var emailaddressVal = $("#txtEmail").val();
+        if (!emailReg.test(emailaddressVal)) {
+            $("#txtEmail").val('');
+            swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        }
+    });
 </script>
 
 
@@ -1189,11 +1203,11 @@
     }
 
     $("#txtCountry").change(function () {
-        $("#txtState").val(null);
+        $("#txtState").val(null).trigger('change');
         $("#txtCity").val('');
         $("#txtZipCode").val('');
         $("#txtAddress").val('');
-        $("txtAddress1").val('');
+        $("#txtAddress1").val('');
 
     })
    

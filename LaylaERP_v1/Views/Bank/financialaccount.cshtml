@@ -479,8 +479,12 @@
         //getAccountingAccount();
         //setTimeout(function () { $(".select2").select2(); }, 2000);
         //$(".select2").select2();
-
+        isEdit(true);
     });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 </script>
 
 

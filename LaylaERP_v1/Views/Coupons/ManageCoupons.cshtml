@@ -18,6 +18,7 @@
             <div class="user_subCrumbs">
                 <input type="hidden" id="hfType" value="" />
                 <input type="hidden" id="hfuserType" value="@ViewBag.user_role" />
+                <input type="hidden" id="hfEdit" value="" />
                 <ul id="allul" class="subsubsub">
                     <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
                     <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
@@ -149,8 +150,11 @@
 </div>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Marketing/CouponsManage.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("#btnAdd", "#hfEdit", "", loc);
     });
 </script>
 

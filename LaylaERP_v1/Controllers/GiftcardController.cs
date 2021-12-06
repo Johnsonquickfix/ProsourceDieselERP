@@ -290,7 +290,7 @@ namespace LaylaERP.Controllers
             if (strID != "")
             {
                 new GiftCardRepository().ChangeGiftCardStatus(model, strID);
-                return Json(new { status = true, message = "Gift card status changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Status changed successfully!", url = "" }, 0);
             }
             else
             {

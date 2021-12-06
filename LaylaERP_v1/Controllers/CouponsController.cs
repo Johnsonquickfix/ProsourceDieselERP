@@ -235,9 +235,11 @@ namespace LaylaERP.Controllers
                 else
                 {
                     DateTime now = CommonDate.CurrentDate();
-                   // var now = DateTime.Now;
-                    var first = new DateTime(now.Year, now.Month+1, 1);
-                    var Expiredate = first.Date.ToString("MM/dd/yyyy");
+
+                    DateTime firstDayNextMonth = now.AddDays(-now.Day + 1).AddMonths(1);
+                    // var now = DateTime.Now;
+                    //var first = new DateTime(now.Year, now.Month+1, 1);
+                    var Expiredate = firstDayNextMonth.Date.ToString("MM/dd/yyyy");
                     dt = CouponsRepository.GetListUserType(Expiredate, userid,model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                     result = JsonConvert.SerializeObject(dt, Formatting.Indented);
                 }

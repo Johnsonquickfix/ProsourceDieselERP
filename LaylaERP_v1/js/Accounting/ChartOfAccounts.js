@@ -41,8 +41,12 @@ function ChartOfAccountGrid() {
                     {
                         'data': 'ID', sWidth: "8%",
                         'render': function (id, type, full, meta) {
-
-                            return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            if ($("#hfEdit").val() == "1") {
+                                return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            }
+                            else {
+                                return "No Permission";
+                            }
 
                         }
                     },
@@ -77,7 +81,7 @@ function ChangeStatus(id, status) {
 
                 ChartOfAccountGrid();
 
-                swal('Alert!', data.message, 'success');
+                swal('Success', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
         },

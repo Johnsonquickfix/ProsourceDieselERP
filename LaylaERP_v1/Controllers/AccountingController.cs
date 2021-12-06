@@ -195,7 +195,7 @@ namespace LaylaERP.Controllers
                 if (model.rowid > 0 )
                 {
                     AccountingRepository.UpdateAccount(model);
-                    return Json(new { status = true, message = "Data has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    return Json(new { status = true, message = "Chart of account updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace LaylaERP.Controllers
                     int ID = AccountingRepository.AddAccount(model);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Chart of account saved successfully!!", url = "" }, 0);
                     }
                     else
                     {

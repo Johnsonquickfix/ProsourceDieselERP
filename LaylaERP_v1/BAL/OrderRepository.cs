@@ -901,7 +901,7 @@
                 obj.TotalFee = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name != "State Recycling Fee").Sum(x => x.total);
                 obj.TotalGift = obj.OrderProducts.Where(f => f.product_type == "gift_card").Sum(x => x.total);
 
-                obj.NetTotal = (obj.GrassAmount - obj.TotalDiscount) + obj.TotalTax + obj.TotalShipping + obj.TotalStateRecycling + obj.TotalFee;
+                obj.NetTotal = (obj.GrassAmount - (obj.TotalDiscount + obj.TotalGift)) + obj.TotalTax + obj.TotalShipping + obj.TotalStateRecycling + obj.TotalFee;
             }
             catch (Exception ex)
             { throw ex; }

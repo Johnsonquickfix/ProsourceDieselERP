@@ -1,4 +1,11 @@
-﻿VendorGrid();
+﻿$(document).ready(function () {
+   
+    var loc = window.location.pathname;
+    CheckPermissions("#btnAddVendor", "#hfEdit", "", loc);
+    VendorGrid();
+   
+})
+
 function VendorGrid() {
     var urid = parseInt($("#ddlSearchStatus").val());
     var sid = "";
@@ -36,13 +43,13 @@ function VendorGrid() {
                     //return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
                 }
             },
-            { data: 'VendorName', title: 'Vendor Name'}, 
+            { data: 'VendorName', title: 'Vendor Name' },
             { data: 'vendor_type', title: 'Vendor Type' },
-            { data: 'AliasName', title: 'Alias Name'},
+            { data: 'AliasName', title: 'Alias Name' },
             { data: 'zip', title: 'Zip Code' },
-            { data: 'address', title: 'Address'},
+            { data: 'address', title: 'Address' },
             {
-                
+
                 data: 'phone', title: 'Phone',
                 render: function (toFormat) {
                     var tPhone = '';
@@ -58,10 +65,10 @@ function VendorGrid() {
             {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
-                    /*  if ($("#hfEdit").val() == "1") {*/
-                    return '<a href="../ThirdParty/NewVendor/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
-                    //}
-                    //else { return "No Permission"; }
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="../ThirdParty/NewVendor/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    }
+                    else { return "No Permission"; }
                 }
             }
 

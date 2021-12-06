@@ -289,8 +289,8 @@ namespace LaylaERP.Controllers
             string strID = model.strValue1;
             if (strID != "")
             {
-                new GiftCardRepository().ChangeGiftCardStatus(model, strID);
-                return Json(new { status = true, message = "Status changed successfully!", url = "" }, 0);
+                DataTable dt = new GiftCardRepository().ChangeGiftCardStatus(model, strID);
+                return Json(new { status = dt.Rows[0]["status"].ToString(), message = dt.Rows[0]["Message"], url = "" }, 0);
             }
             else
             {

@@ -1016,41 +1016,7 @@
         //Select 2 javascript end
 
         //For zip code javascript
-        $('#txtZipCode').change(function () {
-            City = $("#txtCity").val();
-            State = $("#txtState").val();
-            PostalCode = $("#txtZipCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    if (data.status == true) {
-
-                        $('#hfzipstatus').val(data.status);
-
-                    }
-                    else {
-                        if ($('#txtCountry').val() == "US") {
-                            $("#txtZipCode").val("");
-                            $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
-                        }
-                    }
-                },
-
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        });
+        
 
 
         $(".select1").select2();
@@ -1060,7 +1026,7 @@
 
 
     });
-    //For Zip Code javascript end
+   
 
 
     //For phone number javascript
@@ -1094,6 +1060,7 @@
 
     //for phone number format javascript end
 
+     //For Zip Code javascript end
     $('#txtState').change(function () {
         City = $("#txtCity").val();
         State = $("#txtState").val();
@@ -1109,7 +1076,7 @@
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 if (data.status == true) {
 
                     $('#hfzipstatus').val(data.status);
@@ -1129,6 +1096,43 @@
             },
         })
     });
+
+    $('#txtZipCode').change(function () {
+        City = $("#txtCity").val();
+        State = $("#txtState").val();
+        PostalCode = $("#txtZipCode").val();
+        var obj = {
+            billing_state: State,
+            billing_city: City,
+            billing_postcode: PostalCode
+        }
+        $.ajax({
+            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.status == true) {
+
+                    $('#hfzipstatus').val(data.status);
+
+                }
+                else {
+                    if ($('#txtCountry').val() == "US") {
+                        $("#txtZipCode").val("");
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                    }
+                }
+            },
+
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    });
+
 </script>
 
 
@@ -1183,6 +1187,16 @@
 
         }
     }
+
+    $("#txtCountry").change(function () {
+        $("#txtState").val(null);
+        $("#txtCity").val('');
+        $("#txtZipCode").val('');
+        $("#txtAddress").val('');
+        $("txtAddress1").val('');
+
+    })
+   
 </script>
 
 <script>
@@ -1240,4 +1254,4 @@
 <script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Warehouse/vendorwarehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <!-- Google API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>

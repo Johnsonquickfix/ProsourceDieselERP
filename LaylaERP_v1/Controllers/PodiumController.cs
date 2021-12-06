@@ -110,10 +110,10 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                DataTable dt = GiftCardRepository.TodayGiftCardsList();
-                if(dt.Rows.Count > 0)
+                DataSet ds = GiftCardRepository.TodayGiftCardsList();
+                if (ds.Tables[1].Rows[0]["delivered"].ToString() == "1")
                 {
-                    SendGiftCardMailInvoice(dt);
+                    SendGiftCardEMails(ds);
                 }
             }
             catch { }

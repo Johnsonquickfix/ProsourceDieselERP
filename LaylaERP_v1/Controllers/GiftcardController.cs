@@ -3,14 +3,10 @@ using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 
 namespace LaylaERP.Controllers
 {
@@ -202,7 +198,7 @@ namespace LaylaERP.Controllers
         //    };
         //    return View("ordermeta", model);
         //}
-        public ActionResult ordermeta(GiftCardModel model,long id = 0)
+        public ActionResult ordermeta(GiftCardModel model, long id = 0)
         {
             if (id > 0)
             {
@@ -224,7 +220,7 @@ namespace LaylaERP.Controllers
                 model.OrderNotes = data.Rows[0]["Company"].ToString();
                 model.recipient = GiftToMultiple;
                 model.recipientList = Emaillist.ToList();
-                
+
                 model.message = data.Rows[0]["Message"].ToString();
                 model.qty = Convert.ToInt32(data.Rows[0]["Qty"].ToString());
                 model.amount = Convert.ToDecimal(data.Rows[0]["amount"].ToString()) / model.qty;
@@ -248,7 +244,7 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
-                JSONresult = JsonConvert.SerializeObject(GiftCardRepository.AddGiftCardOrders(model.order_id, "U", om.UserID, om.UserName,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+                JSONresult = JsonConvert.SerializeObject(GiftCardRepository.AddGiftCardOrders(model.order_id, "U", om.UserID, om.UserName, "", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
@@ -307,7 +303,7 @@ namespace LaylaERP.Controllers
             string strID = model.strValue1;
             if (strID != "")
             {
-                DataTable dt =  new GiftCardRepository().ChangeGiftCardOrderStatus(strID);
+                DataTable dt = new GiftCardRepository().ChangeGiftCardOrderStatus(strID);
                 return Json(new { status = dt.Rows[0]["status"].ToString(), message = dt.Rows[0]["Message"], url = "" }, 0);
             }
             else
@@ -357,7 +353,7 @@ namespace LaylaERP.Controllers
                         {
                             result = "Gift card is InActive";
                         }
-                       // Response.Write(result);
+                        // Response.Write(result);
                     }
                 }
 
@@ -394,7 +390,7 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
 
-                DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(model.order_id, "UPP", 0, model.b_first_name,"", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(model.order_id, "UPP", 0, model.b_first_name, "", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 JSONresult = JsonConvert.SerializeObject(giftdetails);
                 if (giftdetails.Tables[1].Rows[0]["delivered"].ToString() == "1")
                 {
@@ -437,7 +433,7 @@ namespace LaylaERP.Controllers
                     status = true;
                     String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", model);
                     result = SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, dr["recipient"].ToString(), "You have received a $" + model.balance + " Gift Card from from " + model.sender + "", renderedHTML, string.Empty);
-                   
+
 
                 }
             }

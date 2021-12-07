@@ -93,6 +93,7 @@
         }
         $('.btnpoopen').hide();
         $("#loader").hide();
+        isEdit(true);
 
     });
     $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); $('.btnpoopen').hide(); });
@@ -116,6 +117,7 @@
     $(document).on("click", "#btnSave", function (t) {
         t.preventDefault();
         saveVendorPO();
+         
     });
     $(document).on("click", "#btnPrintPdf", function (t) {
         t.preventDefault();
@@ -184,6 +186,9 @@
 //    });
 //}
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function getMasters() {
     let option = { strValue1: 'GETMD', strValue2: 0 };
     $.ajax({
@@ -768,7 +773,7 @@ function saveVendorPO() {
                     swal('Error!', data.message, 'error')
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         });
     }

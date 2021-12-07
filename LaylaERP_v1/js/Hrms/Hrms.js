@@ -28,8 +28,11 @@
    
     EmployeeLinkedFiles();
     $('input:checkbox').prop('checked', true);
-   
+    isEdit(true);
 })
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 
 $("#txtPassword").change(function () {
     $('#result').html(passwordStrength($('#txtPassword').val(), ""))

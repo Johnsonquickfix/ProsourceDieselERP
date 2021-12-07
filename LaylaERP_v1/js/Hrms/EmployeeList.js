@@ -1,7 +1,12 @@
 ﻿$(document).ready(function () {
+    var loc = window.location.pathname;
+    CheckPermissions("#btnAddEmployee", "#hfEdit", "", loc);
     EmployeeList();
+    isEdit(true);
 })
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 $('#btnSearch').click(function () {
     EmployeeList();
 })
@@ -80,7 +85,10 @@ function EmployeeList() {
             {
                 'data': 'ID', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../../Hrms/Employee/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="../../Hrms/Employee/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    }
+                    else { return "No Permission"; }
                 }
             }
         ]

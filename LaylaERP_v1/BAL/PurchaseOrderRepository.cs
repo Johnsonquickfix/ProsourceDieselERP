@@ -278,7 +278,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetPurchaseOrder(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(string userstatus, string searchid, int pageno, int pagesize, string salestatus, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -293,7 +293,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
-                    new SqlParameter("@sortdir", SortDir)
+                    new SqlParameter("@sortdir", SortDir),
+                     new SqlParameter("@salestatus", salestatus)
                 };
                 DataSet ds = SQLHelper.ExecuteDataSet("erp_purchase_order_search", parameters);
                 dt = ds.Tables[0];

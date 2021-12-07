@@ -21,6 +21,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="user-top-section">
+                <input type="hidden" id="hfEdit" value="" />
                 <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions bulkactions">
                         <select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
@@ -83,7 +84,13 @@
 
 
 </section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("", "#hfEdit", "", loc);
+    });
+</script>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchaseOrderList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

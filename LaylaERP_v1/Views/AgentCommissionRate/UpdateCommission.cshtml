@@ -56,8 +56,12 @@
         $(document).on('click', "#btnSave", function () {
             UpdateMenus();
         })
-
+        isEdit(true);
     });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 </script>
 
 <script>
@@ -70,13 +74,13 @@
 
 
         if (aovrange1 == "") {
-            swal('Alert', 'Please Enter AOV Range 1', 'error').then(function () { swal.close(); $('#txtaovrange1').focus(); });
+            swal('Alert', 'Please enter aov range 1', 'error').then(function () { swal.close(); $('#txtaovrange1').focus(); });
         }
         else if (aovrange2 == "") {
-            swal('Alert', 'Please Enter AOV Range 2', 'error').then(function () { swal.close(); $('#txtaovrange2').focus(); });
+            swal('Alert', 'Please enter aov range 2', 'error').then(function () { swal.close(); $('#txtaovrange2').focus(); });
         }
         else if (commrate == "") {
-            swal('Alert', 'Please Enter Commission Rate', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
+            swal('Alert', 'Please enter commission rate', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
         }
 
         else {
@@ -96,13 +100,13 @@
                 success: function (data) {
                     if (data.status == true) {
                         //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'AgentCommissionRate'; });
+                        swal('Success', data.message, 'success').then((result) => { location.href = 'AgentCommissionRate'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error');
                     }
                 },
-                complete: function () { $("#loader").hide(); },
+                complete: function () { $("#loader").hide(); isEdit(false); },
                 error: function (error) { swal('Error!', 'something went wrong', 'error'); },
             })
         }

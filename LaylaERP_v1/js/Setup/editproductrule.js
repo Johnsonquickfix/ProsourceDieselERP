@@ -31,7 +31,6 @@ function getVendor() {
     });
 }
 
-
 $('#ddlvendor').change(function () {
     var vendorid = $('#ddlvendor').val();
     var obj = {

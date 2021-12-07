@@ -529,7 +529,8 @@
             string JSONresult = string.Empty;
             try
             {
-                JSONresult = JsonConvert.SerializeObject(OrderRepository.OrderCancel(model.order_id));
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.OrderCancel(model.order_id, om.UserID));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

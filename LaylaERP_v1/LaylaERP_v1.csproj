@@ -200,7 +200,6 @@
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
-    <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -557,9 +556,6 @@
     <Content Include="Content\default.png" />
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
-    <Content Include="Content\dx\icons\dxicons.ttf" />
-    <Content Include="Content\dx\icons\dxicons.woff" />
-    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\easyui\easyui.css" />
     <Content Include="Content\easyui\images\accordion_arrows.png" />
     <Content Include="Content\easyui\images\blank.gif" />
@@ -613,7 +609,6 @@
     <Content Include="Images\Customer.png" />
     <Content Include="Images\datagrid_icons.png" />
     <Content Include="Images\datebox_arrow.png" />
-    <Content Include="Images\gift-card-layla.png" />
     <Content Include="Images\gift-card.png" />
     <Content Include="Images\home-404.jpg" />
     <Content Include="Images\layla1-logo.png" />
@@ -621,7 +616,6 @@
     <Content Include="Images\layout_arrows.png" />
     <Content Include="Images\linkbutton_bg.png" />
     <Content Include="Images\loading.gif" />
-    <Content Include="Images\logo-mail-1.png" />
     <Content Include="Images\menu_arrows.png" />
     <Content Include="Images\messager_icons.png" />
     <Content Include="Images\order.png" />
@@ -658,7 +652,6 @@
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
-    <Content Include="js\Giftcard\GiftCardActivity.js" />
     <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
@@ -679,7 +672,6 @@
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
-    <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
@@ -698,7 +690,6 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
-    <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
@@ -712,10 +703,6 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
-    <Content Include="js\Reception\SalesPurchaseList.js" />
-    <Content Include="js\Report\OrderTypeList.js" />
-    <Content Include="js\Report\PartialRefund.js" />
-    <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -751,6 +738,9 @@
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
+    <Content Include="Content\dx\icons\dxicons.ttf" />
+    <Content Include="Content\dx\icons\dxicons.woff" />
+    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1015,13 +1005,6 @@
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
     <Content Include="Views\Giftcard\GiftCardList.cshtml" />
-    <Content Include="Views\Podium\todaysgift.cshtml" />
-    <Content Include="Views\CheckDeposit\PaymentStatusList.cshtml" />
-    <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
-    <Content Include="Views\Inventory\ForecastInventory.cshtml" />
-    <Content Include="Views\Reports\OrderType.cshtml" />
-    <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
-    <Content Include="Views\Reception\SalesPO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -430,6 +430,7 @@ function cancelorder(id) {
     return false;
 }
 function cancelpayment(data) {
+    let invoice_amt = parseFloat(data.total_sales) || 0.00;
     if (data.payment_method == "ppec_paypal") {
         if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
             swal.queue([{
@@ -443,8 +444,34 @@ function cancelpayment(data) {
                             type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                         }).then(response => {
-                            swal('Success!', 'Order successfully cancelled.', "success");
+                            swal('Success!', 'Order cancelled successfully.', "success");
                             $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+                }
+            }]);
+        }
+        else if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
+            swal.queue([{
+                title: 'PayPal payment refund processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
+                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.payid + '/refunds';
+                        let date = new Date();
+                        let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
+                        let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
+                        $.ajax({
+                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                        }).then(response => {
+                            swal('Success!', 'Order cancelled successfully.', "success");
+                            let option = { post_ID: data.post_id, comment_content: 'PayPal Refund Issued for $' + invoice_amt + '. transaction ID = ' + response.refund_id, is_customer_note: '' };
+                            $.post('/Orders/OrderNoteAdd', option).then(response => {
+                                swal('Success!', 'Order refunded successfully.', "success");
+                                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                            }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
@@ -464,8 +491,29 @@ function cancelpayment(data) {
                             type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                         }).then(response => {
-                            swal('Success!', 'Order successfully cancelled.', "success");
+                            swal('Success!', 'Order cancelled successfully.', "success");
                             $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+                }
+            }]);
+        }
+        else if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
+            swal.queue([{
+                title: 'Podium payment refund processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
+                        let opt_refund = { reason: 'requested_by_customer', locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", amount: invoice_amt * 100, paymentUid: data.payment_uid, note: '' };
+                        $.ajax({
+                            type: 'post', url: podium_baseurl + '/v4/invoices/' + data.payid + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + response.message); }
+                        }).then(result => {
+                            let option = { post_ID: data.post_id, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                            $.post('/Orders/OrderNoteAdd', option).then(response => {
+                                swal('Success!', 'Order refunded successfully.', "success");
+                                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                            }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }

@@ -20,6 +20,7 @@
 <section class="content section-content table-design customer-section">
 
     <div class="nav-tabs-custom Receive-order-PO">
+        <input type="hidden" id="hfEdit" value="" />
         <input type="text" id="ROPOrder" name="ROPOrder" value="@Session["ROPO"]" style="display:none" />
         <ul class="nav nav-tabs">
             <li class="active ROPO-1" title="Click here to see Ordered" data-toggle="tooltip"><a class="active" href="#tab_21" title="Click here to see Pending list" data-toggle="tab">Ordered<span class="badge badge-danger"></span></a></li>
@@ -86,8 +87,14 @@
         </div>
     </div>
 </section>
-
-<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("", "#hfEdit", "", loc);
+    });
+</script>
+    <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
 <script src="@Url.Content("~/js/Reception/ReceivePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Reception/ReceiveOrderList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

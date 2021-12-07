@@ -30,7 +30,7 @@ namespace LaylaERP.BAL
                 }
                 //if (userstatus != null)
                 //{
-                //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                 strWhr += " and fk_projet = 0 ";
                 //}
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ");
 
@@ -131,7 +131,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select distinct MAX(p.rowid) rowid, p.fk_purchase id, MAX(cpo.ref) ref,MAX(cpo.fk_projet) fk_projet,MAX(v.name) vendor_name,MAX(v.address) address,MAX(v.town) town,MAX(v.fk_country) fk_country,MAX(v.fk_state) fk_state,MAX(v.zip) zip ,MAX(v.phone) phone,MAX(s.Status) Status,max(CONVERT(VARCHAR(12), p.date_livraison, 107)) date_livraison from commerce_purchase_receive_order p  "
                                  + " inner join commerce_purchase_order cpo on cpo.rowid = p.fk_purchase inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID "
-                                 + " where p.fk_status= 6 and 1 = 1  GROUP by p.fk_purchase ";
+                                 + " where p.fk_status= 6 and cpo.fk_projet = 0 and 1 = 1  GROUP by p.fk_purchase ";
 
                 strSql += strWhr + string.Format(" order by rowid desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -202,7 +202,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select distinct MAX(p.rowid) rowid, p.fk_purchase id, MAX(cpo.ref) ref,MAX(cpo.fk_projet) fk_projet,MAX(v.name) vendor_name,MAX(v.address) address,MAX(v.town) town,MAX(v.fk_country) fk_country,MAX(v.fk_state) fk_state,MAX(v.zip) zip ,MAX(v.phone) phone,MAX(s.Status) Status,max(CONVERT(VARCHAR(12), p.date_livraison, 107)) date_livraison from commerce_purchase_receive_order p  "
                                 + " inner join commerce_purchase_order cpo on cpo.rowid = p.fk_purchase inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID "
-                                + " where p.fk_status= 5 and 1 = 1  GROUP by p.fk_purchase ";
+                                + " where p.fk_status= 5 and cpo.fk_projet = 0 and 1 = 1  GROUP by p.fk_purchase ";
 
                 strSql += strWhr + string.Format(" order by rowid desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);

@@ -524,6 +524,17 @@
 
         }
         [HttpPost]
+        public JsonResult OrderCancel(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.OrderCancel(model.order_id));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
         public JsonResult UpdatePaymentInvoiceID(OrderModel model)
         {
             string result = string.Empty;

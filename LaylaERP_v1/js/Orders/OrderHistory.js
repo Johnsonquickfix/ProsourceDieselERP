@@ -124,8 +124,7 @@ function dataGridLoad(order_type) {
     let dfa = "'" + sd + "' and '" + ed + "'";
 
     let table = $('#dtdata').DataTable({
-        oSearch: { "sSearch": searchText },
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -209,10 +208,18 @@ function dataGridLoad(order_type) {
             },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    if (row.shipped_items == 0)
-                        return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>'
-                    else
-                        return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
+                    let refund_amt = parseFloat(row.refund_total) || 0.00;
+
+                    if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                    else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                    else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                    else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                    else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    //if (row.shipped_items == 0)
+                    //    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>'
+                    //else
+                    //    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }
         ]
@@ -269,22 +276,6 @@ function orderStatus() {
     }]);
 }
 
-function cancelorder(id) {
-    swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
-        .then((result) => {
-            if (result.value) {
-                let obj = { strVal: id, status: 'wc-cancelled' }
-                $.post('/Orders/ChangeOrderStatus', obj).done(function (data) {
-                    if (data.status) {
-                        sswal('Success', data.message, "success");
-                        GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
-                    }
-                })
-            }
-        });
-    return false;
-}
-
 //Check PayPal Payment Status.
 function PaymentStatus(oid, pp_id, email) {
     let option = { strValue1: 'getToken' };
@@ -329,6 +320,36 @@ function PaymentStatus(oid, pp_id, email) {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         swal('Alert!', 'Something went wrong, please try again.', "error");
     });
+}
+function PaypalPaymentCancel(ppemail) {
+    console.log('Start PayPal Payment Cancel.');
+    swal.queue([{
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
+                let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
+                //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
+                $.ajax({
+                    type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(data => {
+                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
+                    $("txtbillemail").data('surl', sendURL);
+                    if (action_method == 'POST') { SendPaypalInvoice(oid, pp_no, access_token, sendURL); }
+                    else {
+                        let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
+                        let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
+                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
+                            swal('Success!', result.message, 'success'); $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                            successModal('PayPal', inv_id, true, true);
+                        }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
+                    }
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
 }
 
 //Check podium Payment Status.
@@ -390,4 +411,65 @@ function order_Split(order_id, email) {
 function sendInvoice(id, email) {
     var opt_mail = { order_number: id, option_name: 'wc_email_customer_processing_order', recipients: email, site_title: 'Lyala', site_address: 'us', site_url: '' }
     $.post('/EmailNotifications/SendMailNotification', opt_mail).done(function (response) { console.log(response); });
+}
+///cancel order
+function cancelorder(id) {
+    console.log(id);
+    swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                let obj = { order_id: id }
+                $.post('/Orders/OrderCancel', obj).done(function (data) {
+                    console.log(JSON.parse(data));
+                    data = JSON.parse(data);
+                    if (data[0].response == "success") { cancelpayment(data[0]); }
+                    else { swal('Error', data[0].payment_method_title, "error"); }
+                });
+            }
+        });
+    return false;
+}
+function cancelpayment(data) {
+    if (data.payment_method == "ppec_paypal") {
+        if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
+            swal.queue([{
+                title: 'PayPal Invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
+                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.payid + '/cancel';
+                        let opt_cnl = { subject: "Invoice Cancelled", note: "Cancelling the invoice", send_to_invoicer: true, send_to_recipient: true, additional_recipients: [data.billing_email] }
+                        $.ajax({
+                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                        }).then(response => {
+                            swal('Success!', 'Order successfully cancelled.', "success");
+                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+                }
+            }]);
+        }
+    }
+    else if (data.payment_method = "podium") {
+        if (data.post_status == "wc-pendingpodiuminv" || data.post_status == "wc-pending") {
+            swal.queue([{
+                title: 'Podium Invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
+                        let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.payid + '/cancel';
+                        let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
+                        $.ajax({
+                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                        }).then(response => {
+                            swal('Success!', 'Order successfully cancelled.', "success");
+                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+                }
+            }]);
+        }
+    }
 }

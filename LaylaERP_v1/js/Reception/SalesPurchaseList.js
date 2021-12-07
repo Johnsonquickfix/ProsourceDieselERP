@@ -5,7 +5,7 @@
 function PurchaseOrderGrid() {
     let urid = 1;
     let table = $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {

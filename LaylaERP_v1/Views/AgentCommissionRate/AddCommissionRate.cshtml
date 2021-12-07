@@ -6,7 +6,7 @@
 }
 
 <div class="page-title">
-    <h2 class="page-heading">Add Commission Rate</h2><a class="btn btn-danger" href="AgentCommissionRate">Back to List</a>
+    <h2 class="page-heading">Add Commission Rate</h2><span title="Click here to back to commission list" data-placement="bottom" data-toggle="tooltip"><a class="btn btn-danger" href="AgentCommissionRate">Back to List</a></span>
 </div>
 
 <div class="createuser-section section_wrapper">
@@ -20,17 +20,17 @@
                                 <input type="hidden" id="hfid" value="@Model.id" />
                                 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">AOV Range1</label>
+                                    <label for="exampleInputEmail1">AOV Range1 <span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtaovrange1" placeholder="Enter AOV Range1">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">AOV Range2</label>
+                                    <label for="exampleInputEmail1">AOV Range2 <span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtaovrange2" placeholder="Enter AOV Range2">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Commission Rate</label>
+                                    <label for="exampleInputEmail1">Commission Rate <span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtcommrate" placeholder="Enter Commission Rate">
                                 </div>
 
@@ -39,8 +39,8 @@
                     </div>
                     <div class="box-footer">
                         <div class="text-right">
-                            <a href="#" class="btn btn-danger" id="btnSave"><b>Add</b></a>
-                        </div>
+                            <span title="Click here to save commission rate" data-placement="bottom" data-toggle="tooltip"><a href="#" class="btn btn-danger" id="btnSave"><b>Add</b></a></span>
+</div>
                     </div>
                 </div>
                 <!-- /.nav-tabs-custom -->

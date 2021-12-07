@@ -557,6 +557,9 @@
     <Content Include="Content\default.png" />
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
+    <Content Include="Content\dx\icons\dxicons.ttf" />
+    <Content Include="Content\dx\icons\dxicons.woff" />
+    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\easyui\easyui.css" />
     <Content Include="Content\easyui\images\accordion_arrows.png" />
     <Content Include="Content\easyui\images\blank.gif" />
@@ -747,9 +750,6 @@
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
-    <Content Include="Content\dx\icons\dxicons.ttf" />
-    <Content Include="Content\dx\icons\dxicons.woff" />
-    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -24,8 +24,9 @@
 <div class="page-title">
     <h2 class="page-heading">Suffix Split Logic</h2>
 </div>
+<input type="hidden" id="hfEdit" />
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-6" id="addproduct">
         <div class="box box-primary">
             <div class="box-body">
                 <input type="hidden" id="hfid" />
@@ -146,7 +147,12 @@
             addProductWarehouseRuleDetails();
         });
 
+        var loc = window.location.pathname;
+        CheckPermissions("#addproduct", "#hfEdit", "", loc);
+
     })
+
 </script>
 
 <script src="@Url.Content("~/js/Setup/productrule.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

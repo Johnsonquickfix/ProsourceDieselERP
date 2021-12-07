@@ -41,7 +41,7 @@ namespace LaylaERP.Controllers
             {
 
                 FNT.EditFeeNTaxStatus(model);
-                return Json(new { status = true, message = "State Recycle Fee has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "State recycle fee updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace LaylaERP.Controllers
 
                 FNT.AddFeeNTax(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "State Recycle Fee has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "State recycle fee saved successfully!!", url = "" }, 0);
 
 
             }
@@ -77,14 +77,11 @@ namespace LaylaERP.Controllers
             {
 
                 FNT.EditFeeNTaxStatus(model);
-                return Json(new { status = true, message = " State Recycle Fee has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = " State recycle fee updated successfully!!", url = "" }, 0);
 
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
-
-
-
 
         [HttpPost]
         public JsonResult Getproduct(SearchModel model)

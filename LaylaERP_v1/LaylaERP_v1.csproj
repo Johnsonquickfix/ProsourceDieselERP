@@ -557,6 +557,9 @@
     <Content Include="Content\default.png" />
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
+    <Content Include="Content\dx\icons\dxicons.ttf" />
+    <Content Include="Content\dx\icons\dxicons.woff" />
+    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\easyui\easyui.css" />
     <Content Include="Content\easyui\images\accordion_arrows.png" />
     <Content Include="Content\easyui\images\blank.gif" />
@@ -709,6 +712,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
@@ -747,9 +751,6 @@
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
-    <Content Include="Content\dx\icons\dxicons.ttf" />
-    <Content Include="Content\dx\icons\dxicons.woff" />
-    <Content Include="Content\dx\icons\dxicons.woff2" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1020,6 +1021,7 @@
     <Content Include="Views\Inventory\ForecastInventory.cshtml" />
     <Content Include="Views\Reports\OrderType.cshtml" />
     <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
+    <Content Include="Views\Reception\SalesPO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

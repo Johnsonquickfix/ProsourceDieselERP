@@ -22,16 +22,17 @@
                 <input type="hidden" id="hfcity" />
                 <input type="hidden" id="hfstate" />
                 <input type="hidden" id="hfproduct" />
+                <input type="hidden" id="hfzipstatus" />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label " for="StateRecycleFee ">State Recycle Fee</label>
+                            <label class="control-label " for="StateRecycleFee ">State Recycle Fee <span style="color:red">*</span></label>
                             <div class="">
                                 <input type="text" id="StateRecycleFee" class="form-control" placeholder="State Recycle Fee " />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Item_Name">Item/Product Name</label>
+                            <label class="control-label " for="Item_Name">Product Name <span style="color:red">*</span></label>
                             <div class="">
                                 <select class="form-control" id="Item_Name">
                                     <option value=""></option>
@@ -40,7 +41,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="ShipCity">Ship City</label>
+                            <label class="control-label " for="ShipCity">Ship City <span style="color:red">*</span></label>
                             <div class="">
                                 <Select class="form-control" id="shipcity">
                                     <option></option>
@@ -51,7 +52,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label " for="ShipState">Ship State</label>
+                            <label class="control-label " for="ShipState">Ship State <span style="color:red">*</span></label>
                             <div class="">
                                 <Select class="form-control" id="shipstate">
                                     <option></option>
@@ -59,18 +60,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Ship_Zip_PostCode">Ship Zip Code</label>
+                            <label class="control-label " for="Ship_Zip_PostCode">Ship Zip Code <span style="color:red">*</span></label>
                             <div class="">
                                 <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="Ship Zip Code" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="ShipState">Ship Country</label>
+                            <label class="control-label " for="ShipState">Ship Country <span style="color:red">*</span></label>
                             <div class="">
                                 @*<Select class="form-control" id="shipcountry">
-                                    <option value="US - United States" selected>US</option>
-                                    <option value="CA - Canada">CA</option>
-                                </Select>*@
+                            <option value="US - United States" selected>US</option>
+                            <option value="CA - Canada">CA</option>
+                        </Select>*@
                                 <Select class="form-control" id="shipcountry">
                                     <option value="US" selected>US</option>
                                     <option value="CA">CA</option>
@@ -85,14 +86,14 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                          <div class="form-group">
-                            <div class="">
-                                <input type="checkbox" id="chkactive" name="isactive" /><label for="active">Active</label>
+                            <div class="form-group">
+                                <div class="">
+                                    <input type="checkbox" id="chkactive" name="isactive" /><label for="active">Active</label>
+                                </div>
                             </div>
-                          </div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
         <div class="box-footer">
@@ -141,7 +142,7 @@
         });
 
         $("#Item_Name").select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search Item",
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
             ajax: {
                 url: '/FeeNTax/Getproduct', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -158,8 +159,8 @@
             //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
         }
         $("#ShipCity").empty().append('<option>' + $("#cityid").val() + '</option>');
-        $('#Ship_Zip_PostCode').change(function () {
 
+        $('#Ship_Zip_PostCode').change(function () {
             City = $("#shipcity").val();
             State = $("#shipstate").val();
             PostalCode = $("#Ship_Zip_PostCode").val();
@@ -179,13 +180,12 @@
                     if (data.status == true) {
                         // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                         // $('#hfzipstatus').val(data.status);
-                        //$('#hfzipstatus').val(data.status);
-
+                        $('#hfzipstatus').val(data.status);
                     }
                     else {
                         $("#Ship_Zip_PostCode").val("");
-                        // $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for city and state', 'error').then(function () { swal.close(); $('#Ship_Zip_PostCode').focus(); });
                     }
                 },
 
@@ -195,13 +195,58 @@
             })
         });
 
-
-
-
         $(document).on('click', "#btnSave", function () {
             AddFeeNTax();
         })
 
+        isEdit(true);
+    });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
+
+    $('#shipstate').change(function () {
+        if ($("#Ship_Zip_PostCode").val() != "" && $("#shipstate").val() != null) {
+            City = $("#shipcity").val();
+            State = $("#shipstate").val();
+            PostalCode = $("#Ship_Zip_PostCode").val();
+            countryval = $("#shipcountry").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode,
+                country: countryval
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+                    }
+                    else {
+                        $("#Ship_Zip_PostCode").val("");
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for city and state', 'error').then(function () { swal.close(); $('#Ship_Zip_PostCode').focus(); });
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+    });
+
+    $('#shipcountry').change(function () {
+        $("#shipcity").val('').trigger('change');
+        $("#shipstate").val('').trigger('change');
+        $("#Ship_Zip_PostCode").val('');
     });
 
     //document.getElementById('StateRecycleFee').addEventListener('keyup', function (evt) {

@@ -103,6 +103,21 @@
             }
             return dt;
         }
+        public static DataTable OrderCancel(long orderid)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@flag", "SOCAN"),
+                    new SqlParameter("@order_id", orderid)
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", para);
+            }
+            catch (Exception Ex) { throw Ex; }
+            return dt;
+        }
 
         public static DataTable GetProducts(string strSearch)
         {

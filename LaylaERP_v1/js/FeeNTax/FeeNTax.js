@@ -79,7 +79,6 @@ function Datagrid() {
 //}
 
 function AddFeeNTax() {
-    debugger
     id = $("#hfid").val();
     Staterecyclefee = $("#StateRecycleFee").val();
     //Item_name = $("#Item_Name").text().trim();
@@ -95,54 +94,58 @@ function AddFeeNTax() {
     isactive = $("#chkactive").prop("checked") ? 1 : 0;
 
     if (Staterecyclefee == "") {
-        swal('alert', 'Please Enter StateRecyclefee', 'error').then(function () { swal.close(); $('#StateRecycleFee').focus(); })
+        swal('alert', 'Please enter state recycle fee', 'error').then(function () { swal.close(); $('#StateRecycleFee').focus(); })
     }
     else if (Item_name == "") {
-        swal('alert', 'Please Enter item_name', 'error').then(function () { swal.close(); $('#Item_Name').focus(); })
+        swal('alert', 'Please enter product name', 'error').then(function () { swal.close(); $('#Item_Name').focus(); })
     }
     else if (City == "") {
-        swal('alert', 'Please Select City', 'error').then(function () { swal.close(); $('#shipcity').focus(); })
+        swal('alert', 'Please enter ship city', 'error').then(function () { swal.close(); $('#shipcity').focus(); })
     }
     else if (State == "") {
-        swal('alert', 'Please Select State', 'error').then(function () { swal.close(); $('#shipstate').focus(); })
+        swal('alert', 'Please enter ship state', 'error').then(function () { swal.close(); $('#shipstate').focus(); })
     }
     else if (Zip == "") {
-        swal('alert', 'Please Enter zip', 'error').then(function () { swal.close(); $('#Ship_Zip_PostCode').focus(); })
+        swal('alert', 'Please enter ship zip code', 'error').then(function () { swal.close(); $('#Ship_Zip_PostCode').focus(); })
     }
 
     else {
-        var obj = {
-            id: id, staterecyclefee: Staterecyclefee, item_name: Item_name, city: City, state: State, zip: Zip,
-            country: Country, item_parent_id: item_parent_id, is_taxable: istaxable, is_active: isactive,
-        }
-        $.ajax({
-            url: '/FeeNTax/StateRecycleTax/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    $('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../Index'; });
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+        $("#Ship_Zip_PostCode").change();
+        if ($("#hfzipstatus").val() == "true") {
+            var obj = {
+                id: id, staterecyclefee: Staterecyclefee, item_name: Item_name, city: City, state: State, zip: Zip,
+                country: Country, item_parent_id: item_parent_id, is_taxable: istaxable, is_active: isactive,
+            }
+            $.ajax({
+                url: '/FeeNTax/StateRecycleTax/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        $('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../Index'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                complete: function () {
+                    $("#loader").hide();
+                    isEdit(false);
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
 
-        //function EditUser(id) {
-        //    window.location.href = 'StateRecyleTax?id=' + i.id;
-        //}
+            //function EditUser(id) {
+            //    window.location.href = 'StateRecyleTax?id=' + i.id;
+            //}
+        }
     }
 }
 
@@ -160,6 +163,7 @@ function GetFeeNTaxByID(id) {
         success: function (data) {
             var i = JSON.parse(data);
             console.log(i);
+            $("#shipcountry").val(i[0].country).trigger('change');
             $("#StateRecycleFee").val(i[0].staterecyclefee);
             $("#shipcity").empty().append('<option value="' + i[0].city + '" selected>' + i[0].city + '</option>');
             $("#shipstate").empty().append('<option value="' + i[0].state + '" selected>' + i[0].state + '</option>');
@@ -167,13 +171,10 @@ function GetFeeNTaxByID(id) {
             $("#Ship_Zip_PostCode").val(i[0].zip);
             i[0].is_taxable == true ? $("#chktaxable").prop("checked", true) : $("#chktaxable").prop("checked", false);
             i[0].is_active == true ? $("#chkactive").prop("checked", true) : $("#chkactive").prop("checked", false);
-            $("#shipcountry").val(i[0].country).trigger('change');
             $('#Item_Name').val(i[0].item_parent_id).trigger('change');
-
         },
         error: function (msg) { alert(msg); }
     });
-
 }
 
 function UpdateFeeNTaxStatus() {

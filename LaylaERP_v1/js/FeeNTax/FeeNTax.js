@@ -127,7 +127,7 @@ function AddFeeNTax() {
                 success: function (data) {
                     if (data.status == true) {
                         $('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../Index'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../Index'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error')
@@ -189,7 +189,7 @@ function UpdateFeeNTaxStatus() {
         success: function (data) {
             console.log(data);
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else {
                 swal('Alert!', data.message, 'error')

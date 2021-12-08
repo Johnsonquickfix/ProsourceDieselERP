@@ -1015,6 +1015,7 @@
     <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
     <Content Include="Views\Reception\SalesPO.cshtml" />
     <Content Include="Views\Reports\OrderTotalChart.cshtml" />
+    <Content Include="Views\Setting\ExceptionLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

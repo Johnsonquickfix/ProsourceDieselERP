@@ -1,13 +1,11 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide(); $('.select2').select2();
+    $("#loader").hide(); 
     PurchaseOrderGrid();
-    $('#btnSearch').click(function () { PurchaseOrderGrid(); });
-    $(document).on('click', '#btnChange', function () { orderStatus(); });
 });
 function PurchaseOrderGrid() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+    let urid = 1;
     let table = $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -27,7 +25,7 @@ function PurchaseOrderGrid() {
         },
         sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid }, { name: "strValue2", value: "PO" });
+            aoData.push({ name: "strValue1", value: urid }, { name: "strValue2", value: "SPO" });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
             oSettings.jqXHR = $.ajax({
@@ -39,19 +37,16 @@ function PurchaseOrderGrid() {
             });
         },
         aoColumns: [
-            {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-                }
-            },
+            //{
+            //    'data': 'id', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+            //    }
+            //},
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    if ($("#hfEdit").val() == "1") {
-                        return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    }
-                    else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
+                    return '<a>' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
@@ -79,46 +74,4 @@ function PurchaseOrderGrid() {
         ]
     });
 }
-function CheckAll() {
-    var isChecked = $('#checkall').prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-}
-function Singlecheck(chk) {
-    var isChecked = $(chk).prop("checked");
-    var isHeaderChecked = $("#checkall").prop("checked");
-    if (isChecked == false && isHeaderChecked)
-        $("#checkall").prop('checked', isChecked);
-    else {
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-            if ($(this).prop("checked") == false)
-                isChecked = false;
-        });
-        $("#checkall").prop('checked', isChecked);
-    }
-}
-function orderStatus() {
-    let id = "";
-    $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
-    id = id.replace(/,(?=\s*$)/, ''); $("#checkAll").prop('checked', false);
-    let status = $('#ddlOrderStatus').val();
 
-    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); return false; }
-    if (status == "") { swal('alert', 'Please select status.', 'error'); return false; }
-
-    swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your status?",
-        showLoaderOnConfirm: true, showCancelButton: true, icon: "question",
-        preConfirm: function () {
-            return new Promise(function (resolve) {
-                let obj = { Search: id, Status: status };
-                $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', obj)
-                    .done(function (data) {
-                        data = JSON.parse(data);
-                        if (data[0].Response == "Success") { swal.insertQueueStep(data.message); PurchaseOrderGrid(); }
-                        else { swal.insertQueueStep('something went wrong!'); }
-                        resolve();
-                    });
-            });
-        }
-    }]);
-}

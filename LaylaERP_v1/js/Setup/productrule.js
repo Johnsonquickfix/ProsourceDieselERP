@@ -93,10 +93,10 @@ function addProductWarehouseRule() {
     product = $("#ddlProduct").val();
 
     if (product == 0) {
-        swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (prefixcode == "") {
-        swal('Alert', 'Please Enter Suffix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+        swal('Alert', 'Please enter suffix code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
     }
     
     else {
@@ -180,7 +180,7 @@ function addProductWarehouseRuleDetails() {
                     swal('Alert!', data.message, 'error');
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide();},
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 
@@ -239,8 +239,13 @@ function ProductWarehouseRuleGrid() {
                         'searchable': false,
                         sWidth: "10%",
                         'render': function (id, type, full, meta) {
-                            //return '<a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
-                            return '<a href="../Setup/Editproductrule/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            if ($("#hfEdit").val() == "1") {
+                                //return '<a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                                return '<a href="../Setup/Editproductrule/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            }
+                            else {
+                                return "No permission";
+                            }
                         }
                     },
                 ],

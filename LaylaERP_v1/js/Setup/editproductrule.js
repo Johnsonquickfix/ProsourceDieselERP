@@ -31,7 +31,6 @@ function getVendor() {
     });
 }
 
-
 $('#ddlvendor').change(function () {
     var vendorid = $('#ddlvendor').val();
     var obj = {
@@ -87,10 +86,10 @@ function updateProductWarehouseRule() {
     rule = $('#hfwarehouserule').val();
 
     if (product == 0) {
-        swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (prefixcode == "") {
-        swal('Alert', 'Please Enter Prefix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+        swal('Alert', 'Please enter prefix code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
     }
     else if (vendor == 0) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlvendor').focus(); });
@@ -127,15 +126,14 @@ function updateProductWarehouseRule() {
             success: function (data) {
                 if (data.status == true) {
                     swal('Success', data.message, 'success').then((result) => { location.href = '../productrule'; });
-                    reset();
-                    ProductWarehouseRuleGrid();
-                    
+                    //reset();
+                    //ProductWarehouseRuleGrid();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 

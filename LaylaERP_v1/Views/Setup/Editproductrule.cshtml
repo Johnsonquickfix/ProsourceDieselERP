@@ -94,9 +94,12 @@
                     error: function (xhr, status, err) { }, cache: true
                 }
             });
+        isEdit(true);
     });
 
-
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 </script>
 
 <script>

@@ -42,6 +42,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult SalesPO()
+        {
+            return View();
+        }
 
         public JsonResult Getwarehouse(SearchModel model)
         {
@@ -379,6 +383,7 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
+         
 
     }
 }

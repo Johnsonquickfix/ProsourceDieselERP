@@ -419,7 +419,7 @@ function cancelorder(id) {
             if (result.value) {
                 let obj = { order_id: id }
                 $.post('/Orders/OrderCancel', obj).done(function (data) {
-                    console.log(JSON.parse(data));
+                    //console.log(JSON.parse(data));
                     data = JSON.parse(data);
                     if (data[0].response == "success") { cancelpayment(data[0]); }
                     else { swal('Error', data[0].payment_method_title, "error"); }

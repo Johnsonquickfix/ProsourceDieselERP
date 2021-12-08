@@ -261,7 +261,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataTable GetForecastReport(string from_date, string to_date, int vendorid)
+        public static DataTable GetForecastReport(string from_date, string to_date, int vendorid, string stockfromdate, string stocktodate)
         {
             DataTable dtr = new DataTable();
             try
@@ -274,6 +274,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@vendorid", vendorid),
                     new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")), 
                     new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),
+                    new SqlParameter("@stockfromdate",stockfromdate),
+                    new SqlParameter("@stocktodate",stocktodate),
                 };
                 string strSql = "erp_forecastreport";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql, param);

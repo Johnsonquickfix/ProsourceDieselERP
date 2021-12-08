@@ -414,13 +414,12 @@ function sendInvoice(id, email) {
 }
 ///cancel order
 function cancelorder(id) {
-    console.log(id);
     swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 let obj = { order_id: id }
                 $.post('/Orders/OrderCancel', obj).done(function (data) {
-                    console.log(JSON.parse(data));
+                    //console.log(JSON.parse(data));
                     data = JSON.parse(data);
                     if (data[0].response == "success") { cancelpayment(data[0]); }
                     else { swal('Error', data[0].payment_method_title, "error"); }
@@ -478,10 +477,10 @@ function cancelpayment(data) {
             }]);
         }
     }
-    else if (data.payment_method = "podium") {
-        if (data.post_status == "wc-pendingpodiuminv" || data.post_status == "wc-pending") {
+    else if (data.payment_method == "podium") {
+        if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
             swal.queue([{
-                title: 'Podium Invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                title: 'Podium invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
                 onOpen: () => {
                     swal.showLoading();
                     $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
@@ -519,5 +518,34 @@ function cancelpayment(data) {
                 }
             }]);
         }
+    }
+    else if (data.payment_method == "authorize_net_cim_credit_card") {
+        if (data.post_status == "wc-pendingpodiuminv" || data.post_status == "wc-pending") {
+            swal.queue([{
+                title: 'Authorize.Net payment processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    let option = { order_id: data.post_id, NetTotal: invoice_amt };
+                    $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
+                        console.log('Authorize.Net ', response);
+                        if (response.status) {
+                            swal('Alert!', 'Order cancelled successfully.', "success");
+                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                        }
+                    }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                }
+            }]);
+        }
+    }
+    else if (data.payment_method == "giftcard") {
+        console.log(data);
+        swal.queue([{
+            title: 'Refund order processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+            onOpen: () => {
+                swal.showLoading();
+                swal('Alert!', 'Order cancelled successfully.', "success");
+                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+            }
+        }]);
     }
 }

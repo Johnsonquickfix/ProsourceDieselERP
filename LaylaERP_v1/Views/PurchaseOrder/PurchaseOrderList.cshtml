@@ -86,7 +86,8 @@
 </section>
 <script type="text/javascript">
     $(document).ready(function () {
-        var loc = window.location.pathname;
+        var loc = window.location.pathname;     
+        CheckPermissions("#btnAddVendor", "#hfEdit", "", loc);
         CheckPermissions("", "#hfEdit", "", loc);
     });
 </script>

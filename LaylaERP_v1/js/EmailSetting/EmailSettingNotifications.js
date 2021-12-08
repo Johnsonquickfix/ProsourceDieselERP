@@ -65,7 +65,7 @@ function addemailnotification() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader").hide(); isEdit(false);
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');

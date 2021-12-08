@@ -449,6 +449,7 @@ namespace LaylaERP.BAL
             chartData.Clear();
             string strWhr = string.Empty;
             string datebetween = string.Empty;
+            string query = string.Empty;
             CultureInfo us = new CultureInfo("en-US");
             if (from_date != null)
             {
@@ -464,12 +465,25 @@ namespace LaylaERP.BAL
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strWhr = " and pm_uc.meta_value = '" + user + "'";
+                query = "select convert(varchar(6), Sales_date_val, 107) Sales_date,*from(select convert(date, p.post_date) as Sales_date_val, pm_uc.meta_value as Employee,"
+                       + " sum(convert(float, pm_st.meta_value)) as Total from wp_posts p"
+                       + " left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id'"
+                       + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
+                       + " where convert(date, p.post_date) <= convert(date, getdate()) " + datebetween.ToString()
+                       + " and p.post_type = 'shop_order' and p.post_status in ('wc-completed', 'wc-pending', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString()
+                       + " group by  convert(date, p.post_date), pm_uc.meta_value) tt order by Sales_date_val desc";
             }
-            string query = "select convert(varchar(6),p.post_date,107) as Sales_date, pm_uc.meta_value as Employee, sum(convert(float,pm_st.meta_value)) as Total"
-                + " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' "
-                + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
-                + " where convert(date,p.post_date) <= convert(date,getdate()) " + datebetween.ToString() //+ " and pm_st.meta_value > 0 "
-                +" and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString() + " group by convert(varchar(6),p.post_date,107),pm_uc.meta_value";
+            else
+            {
+                query = "select convert(varchar(6), Sales_date_val, 107) Sales_date,*from(select convert(date, p.post_date) as Sales_date_val,"
+                       + " sum(convert(float, pm_st.meta_value)) as Total from wp_posts p"
+                       + " left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id'"
+                       + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
+                       + " where convert(date, p.post_date) <= convert(date, getdate()) " + datebetween.ToString()
+                       + " and p.post_type = 'shop_order' and p.post_status in ('wc-completed', 'wc-pending', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pendingpodiuminv')"
+                       + " group by  convert(date, p.post_date)) tt order by Sales_date_val desc";
+            }
+
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             chartData.Add(new object[]
                         {

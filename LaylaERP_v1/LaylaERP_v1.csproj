@@ -1006,6 +1006,14 @@
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
     <Content Include="Views\Giftcard\GiftCardList.cshtml" />
+    <Content Include="Views\Podium\todaysgift.cshtml" />
+    <Content Include="Views\CheckDeposit\PaymentStatusList.cshtml" />
+    <Content Include="Views\PromotionalEmail\PromoEmail.cshtml" />
+    <Content Include="Views\Inventory\ForecastInventory.cshtml" />
+    <Content Include="Views\Reports\OrderType.cshtml" />
+    <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
+    <Content Include="Views\Reception\SalesPO.cshtml" />
+    <Content Include="Views\Reports\OrderTotalChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

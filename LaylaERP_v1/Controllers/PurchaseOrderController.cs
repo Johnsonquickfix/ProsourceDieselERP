@@ -160,7 +160,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength,model.strValue2, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

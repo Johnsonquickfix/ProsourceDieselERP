@@ -132,7 +132,10 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    }
+                    else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
@@ -366,8 +369,10 @@ function PoClosureGridColleps() {
             {
                 'data': 'ref', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
+                    if ($("#hfEdit").val() == "1") {
                     return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-
+                    }
+                    else { return "No Permission"; }
                 }
             }
 
@@ -468,8 +473,10 @@ function PoPartiallyColleps() {
             {
                 'data': 'ref', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
+                    if ($("#hfEdit").val() == "1") {
                     return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    
+                    }
+                    else { return "No Permission"; }
                 }
             }
         ],

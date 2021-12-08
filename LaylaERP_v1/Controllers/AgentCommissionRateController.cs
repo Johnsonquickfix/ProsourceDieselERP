@@ -52,7 +52,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
 
-                        return Json(new { status = true, message = "Data saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Commission rate saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
@@ -89,7 +89,7 @@ namespace LaylaERP.Controllers
             {
                 AgentCommissionRateRepository.UpdateCommission(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "Data saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Commission rate updated successfully!!", url = "" }, 0);
             }
             else
             {

@@ -40,7 +40,7 @@ namespace LaylaERP.Controllers
             return Json(new { status = status, message = result }, 0);
         }
 
-        public ActionResult Cancel(EmailSettingModel model)
+        public ActionResult Cancel(OrderModel model)
         {
             return View(model);
         }

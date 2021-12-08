@@ -11,7 +11,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">Update Menu</h2>
-    <a class="btn btn-danger" href="Menus">Back to List</a>
+    <span title="Click here to back to menu list" data-placement="bottom" data-toggle="tooltip"><a class="btn btn-danger" href="Index">Back to List</a></span>
 </div>
 <div class="createuser-section section_wrapper">
     <div class="create-user-box">
@@ -23,21 +23,21 @@
                             <div class="col-sm-6">
                                 <input type="hidden" id="hfid" value="@Model.menu_id" />
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Menu Code</label>
+                                    <label for="exampleInputEmail1">Menu Code<span style="color:red">*</span></label>
                                     <input type="email" class="form-control" id="txtmenucode" placeholder="Enter Menu Code" value="@Model.menu_code">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Menu Name</label>
+                                    <label for="exampleInputEmail1">Menu Name<span style="color:red">*</span></label>
                                     <input type="email" class="form-control" id="txtmenuname" placeholder="Enter Menu Name" value="@Model.menu_name">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Menu Url</label>
+                                    <label for="exampleInputEmail1">Menu Url<span style="color:red">*</span></label>
                                     <input type="text" class="form-control" id="txtmenuurl" placeholder="Enter Menu Url" value="@Model.menu_url">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Menu Icon</label>
+                                    <label for="exampleInputEmail1">Menu Icon<span style="color:red">*</span></label>
                                     <input type="text" class="form-control" id="txtmenuicon" placeholder="Enter Menu Icon" value="@Model.menu_icon">
                                 </div>
                                 <div class="form-group">
@@ -88,7 +88,12 @@
         })
         getMenuId();
         dropdownfill();
+        isEdit(true);
     });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 </script>
 
 <script>
@@ -104,16 +109,16 @@
         status = $("#chkmenustatus").prop("checked") ? 1 : 0;
 
         if (menucode == "") {
-            swal('Alert', 'Please Enter Menu Code', 'error').then(function () { swal.close(); $('#txtmenucode').focus(); });
+            swal('Alert', 'Please enter menu code', 'error').then(function () { swal.close(); $('#txtmenucode').focus(); });
         }
         else if (menuname == "") {
-            swal('Alert', 'Please Enter Menu Name', 'error').then(function () { swal.close(); $('#txtmenuname').focus(); });
+            swal('Alert', 'Please enter menu name', 'error').then(function () { swal.close(); $('#txtmenuname').focus(); });
         }
         else if (menuurl == "") {
-            swal('Alert', 'Please Enter Menu url', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
+            swal('Alert', 'Please enter menu url', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
         }
         else if (menuicon == "") {
-            swal('Alert', 'Please Enter Menu Icon', 'error').then(function () { swal.close(); $('#txtmenuicon').focus(); });
+            swal('Alert', 'Please enter menu icon', 'error').then(function () { swal.close(); $('#txtmenuicon').focus(); });
         }
         
         else { 
@@ -136,13 +141,13 @@
                     success: function (data) {
                         if (data.status == true) {
                             //$('#parent > input:text').val('');
-                            swal('Success!', data.message, 'success').then((result) => { location.href = 'Menus'; });
+                            swal('Success!', data.message, 'success').then((result) => { location.href = 'Index'; });
                         }
                         else {
                             swal('Error!', data.message, 'error');
                         }
                     },
-                    complete: function () { $("#loader").hide(); },
+                    complete: function () { $("#loader").hide(); isEdit(false);},
                     error: function (error) { swal('Error!', 'something went wrong', 'error'); },
                 })
             

@@ -131,5 +131,14 @@
 
 
 </section>
+<script>
+    $(document).ready(function () {
+        isEdit(true);
+    });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
+</script>
         <script src="@Url.Content("~/js/EmailSetting/EmailSettingNotifications.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

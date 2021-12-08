@@ -6,7 +6,7 @@
 }
 
 <div class="page-title">
-    <h2 class="page-heading">Update Commission Rate</h2><a class="btn btn-danger" href="AgentCommissionRate">Back to List</a>
+    <h2 class="page-heading">Update Commission Rate</h2><span title="Click here to back to commission rate list" data-placement="bottom" data-toggle="tooltip"><a class="btn btn-danger" href="AgentCommissionRate">Back to List</a></span>
 </div>
 
 <div class="createuser-section section_wrapper">
@@ -20,17 +20,17 @@
                                 <input type="hidden" id="hfid" value="@Model.id" />
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">AOV Range1</label>
+                                    <label for="exampleInputEmail1">AOV Range1<span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtaovrange1" placeholder="Enter AOV Range1" value="@Model.AOV_Range1">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">AOV Range2</label>
+                                    <label for="exampleInputEmail1">AOV Range2<span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtaovrange2" placeholder="Enter AOV Range2" value="@Model.AOV_Range2">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Commission Rate</label>
+                                    <label for="exampleInputEmail1">Commission Rate<span style="color:red">*</span></label>
                                     <input type="number" class="form-control" id="txtcommrate" placeholder="Enter Commission" value="@Model.Comm_Rate">
                                 </div>
                             </div>
@@ -38,8 +38,8 @@
                     </div>
                     <div class="box-footer">
                         <div class="text-right">
-                            <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
-                        </div>
+                            <span title="Click here to update commission rate" data-placement="bottom" data-toggle="tooltip"><a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a></span>
+</div>
                     </div>
                 </div>
                 <!-- /.nav-tabs-custom -->
@@ -56,8 +56,12 @@
         $(document).on('click', "#btnSave", function () {
             UpdateMenus();
         })
-
+        isEdit(true);
     });
+
+    function isEdit(val) {
+        localStorage.setItem('isEdit', val ? 'yes' : 'no');
+    }
 </script>
 
 <script>
@@ -70,13 +74,13 @@
 
 
         if (aovrange1 == "") {
-            swal('Alert', 'Please Enter AOV Range 1', 'error').then(function () { swal.close(); $('#txtaovrange1').focus(); });
+            swal('Alert', 'Please enter aov range 1', 'error').then(function () { swal.close(); $('#txtaovrange1').focus(); });
         }
         else if (aovrange2 == "") {
-            swal('Alert', 'Please Enter AOV Range 2', 'error').then(function () { swal.close(); $('#txtaovrange2').focus(); });
+            swal('Alert', 'Please enter aov range 2', 'error').then(function () { swal.close(); $('#txtaovrange2').focus(); });
         }
         else if (commrate == "") {
-            swal('Alert', 'Please Enter Commission Rate', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
+            swal('Alert', 'Please enter commission rate', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
         }
 
         else {
@@ -96,13 +100,13 @@
                 success: function (data) {
                     if (data.status == true) {
                         //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'AgentCommissionRate'; });
+                        swal('Success', data.message, 'success').then((result) => { location.href = 'AgentCommissionRate'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error');
                     }
                 },
-                complete: function () { $("#loader").hide(); },
+                complete: function () { $("#loader").hide(); isEdit(false); },
                 error: function (error) { swal('Error!', 'something went wrong', 'error'); },
             })
         }

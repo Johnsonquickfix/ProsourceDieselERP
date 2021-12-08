@@ -502,7 +502,7 @@ function getPurchaseOrderInfo() {
     }
     else {
         $('.billinfo,.orderfiles').prop("disabled", true); $('#lblPoNo').text('Draft');
-        $("#loader").hide(); $('.page-heading').text('Add New Order');
+        $("#loader").hide(); $('.page-heading').text('New Purchase Order');
         $(".top-action").empty(); $(".order-files").addClass('hidden');
     }
 }
@@ -536,7 +536,7 @@ function getPurchaseOrderPayments(oid) {
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
-        $("#loader").hide(); $('.page-heading').text('Add New Order');
+        $("#loader").hide(); $('.page-heading').text('New Purchase Order');
         $(".top-action").empty();
     }
 }
@@ -594,10 +594,10 @@ function saveVendorPO() {
     let note_public = $("#txtNotePublic").val();
     let note_private = $("#txtNotePrivate").val();
     let _list = createItemsList();
-    if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
-    else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (wh_id <= 0) { swal('alert', 'Please Select Warehouse.', 'error').then(function () { swal.close(); $('#ddlWarehouse').focus(); }) }
-    else if (date_livraison == "") { swal('alert', 'Please Select Planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
+    if (vendorid <= 0) { swal('alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
+    else if (payment_type <= 0) { swal('alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (wh_id <= 0) { swal('alert', 'Please select warehouse.', 'error').then(function () { swal.close(); $('#ddlWarehouse').focus(); }) }
+    else if (date_livraison == "") { swal('alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
     else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     else {
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
@@ -610,7 +610,7 @@ function saveVendorPO() {
         let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option);
         swal.queue([{
-            title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order?",
+            title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to save your order?",
             showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve) {
@@ -618,7 +618,7 @@ function saveVendorPO() {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             $('#lblPoNo').data('id', result[0].id); getPurchaseOrderInfo();
-                            swal('Success', 'Purchase Order has been saved successfully.', "success"); //getOrderInfo();
+                            swal('Success', 'Purchase order saved successfully.', "success"); //getOrderInfo();
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
@@ -630,7 +630,7 @@ function saveVendorPO() {
 function orderStatusUpdate(oid) {
     let option = { Search: oid, Status: '3' }
     swal.queue([{
-        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order status?",
+        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to update your order status?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
@@ -640,7 +640,7 @@ function orderStatusUpdate(oid) {
                         $('#lblPoNo').data('id', result[0].id);
                         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        swal('Success', 'Purchase Order has been updated successfully.', "success"); getPurchaseOrderPrint(oid, true);
+                        swal('Success', 'Purchase order updated successfully.', "success"); getPurchaseOrderPrint(oid, true);
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     resolve();

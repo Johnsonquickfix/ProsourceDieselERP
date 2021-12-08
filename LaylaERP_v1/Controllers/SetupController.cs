@@ -121,7 +121,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
 
-                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Product rule saved successfully!!", url = "" }, 0);
                 }
                 else
                 {
@@ -182,7 +182,7 @@ namespace LaylaERP.Controllers
                 else
                 {
                     SetupRepostiory.UpdateProductWarehouseRule(model);
-                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Product rule updated successfully!!", url = "" }, 0);
                 }
             }
             else
@@ -240,7 +240,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Free product saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -292,7 +292,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 SetupRepostiory.UpdateFreeProduct(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Free product updated successfully!!", url = "" }, 0);
             }
             else
             {

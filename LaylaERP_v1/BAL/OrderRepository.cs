@@ -103,6 +103,22 @@
             }
             return dt;
         }
+        public static DataTable OrderCancel(long orderid, long UserID)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@flag", "SOCAN"),
+                    new SqlParameter("@order_id", orderid),
+                    new SqlParameter("@userid", UserID)
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", para);
+            }
+            catch (Exception Ex) { throw Ex; }
+            return dt;
+        }
 
         public static DataTable GetProducts(string strSearch)
         {
@@ -1376,7 +1392,18 @@
             {
                 OrderModel order_obj = OrderRepository.OrderInvoice(OrderID);
                 String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "NewOrder", order_obj);
-                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has been received", renderedHTML, string.Empty);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has received", renderedHTML, string.Empty);
+            }
+            catch { }
+        }
+        //Sent Invoice in mail
+        public static void OrderCancelInvoiceMail(long OrderID)
+        {
+            try
+            {
+                OrderModel order_obj = OrderRepository.OrderInvoice(OrderID);
+                String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "Cancel", order_obj);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has cancelled", renderedHTML, string.Empty);
             }
             catch { }
         }

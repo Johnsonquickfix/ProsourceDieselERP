@@ -1392,7 +1392,18 @@
             {
                 OrderModel order_obj = OrderRepository.OrderInvoice(OrderID);
                 String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "NewOrder", order_obj);
-                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has been received", renderedHTML, string.Empty);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has received", renderedHTML, string.Empty);
+            }
+            catch { }
+        }
+        //Sent Invoice in mail
+        public static void OrderCancelInvoiceMail(long OrderID)
+        {
+            try
+            {
+                OrderModel order_obj = OrderRepository.OrderInvoice(OrderID);
+                String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "Cancel", order_obj);
+                SendEmail.SendEmails_outer(order_obj.b_email, "Your order #" + OrderID + " has cancelled", renderedHTML, string.Empty);
             }
             catch { }
         }

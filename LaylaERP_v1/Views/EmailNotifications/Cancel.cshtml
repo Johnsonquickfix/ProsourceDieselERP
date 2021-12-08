@@ -4,12 +4,16 @@
 }
 
 <!DOCTYPE html>
-
+@model  LaylaERP.Models.OrderModel
+@{
+    Layout = null;
+}
 <html>
 <head>
-    <title>TODO supply a title</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
+    <title>Layla Order Cancelled Invoice</title>
 </head>
 <body>
     <div id="wrapper" dir="ltr" style="background-color:#59595b;margin:0;padding:70px 0 70px 0;width:100%">
@@ -29,7 +33,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td id="header_wrapper" style="padding:36px 48px;display:block">
-                                                        <h1 style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff">Order Cancelled: #788442</h1>
+                                                        <h1 style="font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff">Order Cancelled: #@Model.order_id</h1>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -49,13 +53,13 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td valign="top" style="padding:48px 48px 0">
-                                                                        <div id="body_content_inner" style="color:#636363;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left">
+                                                                        <div id="body_content_inner" style="color:#636363;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left">
 
-                                                                            <p style="margin:0 0 16px">Alas. Just to let you know — Albert J has cancelled order #788442:</p>
+                                                                            <p style="margin:0 0 16px">Alas. Just to let you know — @Model.s_first_name  @Model.s_last_name has cancelled order #@Model.order_id:</p>
 
 
                                                                             <h2 style="color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left">
-                                                                                <a href="http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D" style="font-weight:normal;text-decoration:underline;color:#ff4100" target="_blank">[Order #788442]</a> (December 6, 2021)
+                                                                                <a href="http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D" style="font-weight:normal;text-decoration:underline;color:#ff4100" target="_blank">[Order #@Model.order_id]</a> @String.Format("({0:MMMM dd, yyyy})", @Model.order_date)
                                                                             </h2>
 
                                                                             <div style="margin-bottom:40px">
@@ -63,60 +67,76 @@
                                                                                     <thead>
                                                                                         <tr>
                                                                                             <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Product</th>
-                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Quantity</th>
-                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Price</th>
+                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">Quantity</th>
+                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">Price</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
-                                                                                        <tr>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word">
-                                                                                                Layla Double-Sided Mattress Cover - Cal King (#MATTCOV02-CK)
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                2
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                <span><span>$</span>438.50</span>
-                                                                                            </td>
-                                                                                        </tr>
-
-                                                                                        <tr>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word">
-                                                                                                Layla Double-Sided Mattress Cover - Queen (#MATTCOV02-Q)
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                1
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                <span><span>$</span>190.50</span>
-                                                                                            </td>
-                                                                                        </tr>
-
-                                                                                        <tr>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word">
-                                                                                                Hybrid Mattress Cover - Twin (#HYBRCOV01T)
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                1
-                                                                                            </td>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
-                                                                                                <span><span>$</span>250.78</span>
-                                                                                            </td>
-                                                                                        </tr>
-
+                                                                                        @if (Model.OrderProducts != null)
+                                                                                        {
+                                                                                            foreach (var item in Model.OrderProducts)
+                                                                                            {
+                                                                                                if (item.product_type == "line_item")
+                                                                                                {
+                                                                                                    <tr>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word">
+                                                                                                            @item.product_name
+                                                                                                        </td>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:right;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
+                                                                                                            @item.quantity
+                                                                                                        </td>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:right;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
+                                                                                                            @String.Format("${0:0.00}", @item.total)
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                }
+                                                                                            }
+                                                                                        }
                                                                                     </tbody>
                                                                                     <tfoot>
                                                                                         <tr>
                                                                                             <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;border-top-width:4px">Subtotal:</th>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;border-top-width:4px"><span><span>$</span>879.78</span></td>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right;border-top-width:4px">@String.Format("${0:0.00}", @Model.GrassAmount)</td>
+                                                                                        </tr>
+                                                                                        @if (Model.TotalDiscount != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Discount:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:-0.00}", @Model.TotalDiscount)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        <tr>
+                                                                                            <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;">Shipping:</th>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right;">@String.Format("${0:0.00}", @Model.TotalShipping)</td>
                                                                                         </tr>
                                                                                         <tr>
                                                                                             <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Tax:</th>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left"><span><span>$</span>0.00</span></td>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalTax)</td>
                                                                                         </tr>
+                                                                                        @if (Model.TotalStateRecycling != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">State Recycling Fee:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalStateRecycling)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalFee != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Fee:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalFee)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalGift != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Gift Card:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${-0:0.00}", @Model.TotalGift)</td>
+                                                                                            </tr>
+                                                                                        }
                                                                                         <tr>
                                                                                             <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Total:</th>
-                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left"><span><span>$</span>879.78</span></td>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.NetTotal)</td>
                                                                                         </tr>
                                                                                     </tfoot>
                                                                                 </table>
@@ -127,10 +147,18 @@
                                                                                 <tbody>
                                                                                     <tr>
                                                                                         <td valign="top" width="50%" style="text-align:left;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;border:0;padding:0">
-                                                                                            <h2 style="color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left">Billing address</h2>
+                                                                                            <h2 style="color:#ff4100;display:block;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left">Billing address</h2>
 
                                                                                             <address style="padding:12px 12px 0;color:#636363;border:1px solid #e5e5e5">
-                                                                                                Albert J<br>121 New Street<br>NY, NY 10001									<br>12132312333													<p style="margin:0 0 16px"><a href="mailto:paul.quickfix@gmail.com" target="_blank">paul.quickfix@gmail.com</a></p>
+                                                                                                @Model.b_first_name  @Model.b_last_name
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_company))
+                                                                                                {@Model.b_company <br>}
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_address_1))
+                                                                                                {@Model.b_address_1<br>}
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_address_2))
+                                                                                                {@Model.b_address_2<br>}
+                                                                                                @Model.b_city, @Model.b_state @Model.b_postcode @Model.b_country
+                                                                                                <br>@Model.b_phone	<p style="margin:0 0 16px"><a href="mailto:@Model.b_email" target="_blank">@Model.b_email</a></p>
                                                                                             </address>
                                                                                         </td>
                                                                                     </tr>

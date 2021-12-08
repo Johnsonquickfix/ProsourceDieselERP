@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";            
+            ViewBag.pay_option = "[" + pay_method + "]";
             return View();
         }
         // GET: Mines of Moria (Quick Orders)
@@ -37,7 +37,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]"; 
+            ViewBag.pay_option = "[" + pay_method + "]";
             ///OrderRepository.OrderInvoiceMail(id);
             return View();
         }
@@ -530,7 +530,14 @@
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                JSONresult = JsonConvert.SerializeObject(OrderRepository.OrderCancel(model.order_id, om.UserID));
+                DataTable dt = OrderRepository.OrderCancel(model.order_id, om.UserID);
+                JSONresult = JsonConvert.SerializeObject(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    if (dt.Rows[0]["response"].ToString().Trim() == "success")
+                        OrderRepository.OrderCancelInvoiceMail(model.order_id);
+                }
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

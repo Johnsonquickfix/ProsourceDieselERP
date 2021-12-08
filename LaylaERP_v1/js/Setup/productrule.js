@@ -180,7 +180,7 @@ function addProductWarehouseRuleDetails() {
                     swal('Alert!', data.message, 'error');
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide();},
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 

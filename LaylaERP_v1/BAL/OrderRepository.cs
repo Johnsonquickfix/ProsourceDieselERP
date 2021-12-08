@@ -103,7 +103,7 @@
             }
             return dt;
         }
-        public static DataTable OrderCancel(long orderid)
+        public static DataTable OrderCancel(long orderid, long UserID)
         {
             var dt = new DataTable();
             try
@@ -111,7 +111,8 @@
                 SqlParameter[] para =
                 {
                     new SqlParameter("@flag", "SOCAN"),
-                    new SqlParameter("@order_id", orderid)
+                    new SqlParameter("@order_id", orderid),
+                    new SqlParameter("@userid", UserID)
                 };
                 dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", para);
             }

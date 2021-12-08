@@ -1006,8 +1006,10 @@
     <Content Include="Views\CheckDeposit\CheckDepositList.cshtml" />
     <Content Include="Views\CheckDeposit\CheckDepositPayment.cshtml" />
     <Content Include="Views\Giftcard\GiftCardList.cshtml" />
+    <Content Include="Views\Setting\ExceptionLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Files\" />
   </ItemGroup>

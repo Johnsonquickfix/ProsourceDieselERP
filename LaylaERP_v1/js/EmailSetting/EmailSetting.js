@@ -13,16 +13,16 @@ function addchanges() {
     footertextval = $("#txtfootertext").val(); 
 
     if (fromnameval == "") {
-        swal('Alert', 'Please Enter From Name', 'error').then(function () { swal.close(); $('#txtfromname').focus(); });
+        swal('Alert', 'Please enter from name', 'error').then(function () { swal.close(); $('#txtfromname').focus(); });
     }
     else if (fromaddressval == "") {
-        swal('Alert', 'Please Enter From Address', 'error').then(function () { swal.close(); $('#txtfromaddress').focus(); });
+        swal('Alert', 'Please enter from address', 'error').then(function () { swal.close(); $('#txtfromaddress').focus(); });
     }
     else if (headerimagval == "") {
-        swal('Alert', 'Please Enter Header Image', 'error').then(function () { swal.close(); $('#txtheaderimage').focus(); });
+        swal('Alert', 'Please enter header image', 'error').then(function () { swal.close(); $('#txtheaderimage').focus(); });
     }
     else if (footertextval == "") {
-        swal('Alert', 'Please Enter Footer Text', 'error').then(function () { swal.close(); $('#txtfootertext').focus(); });
+        swal('Alert', 'Please enter footer text', 'error').then(function () { swal.close(); $('#txtfootertext').focus(); });
     }
     else {
         var obj = {
@@ -126,8 +126,12 @@ function dataGridLoad() {
             {
                 'data': 'email_notify_key', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
-                    return '<a class="btn btn-danger" title="Click here to view details" data-toggle="tooltip" onClick="ManageEmailNotifications(' + id + ')" href="ManageEmailNotifications/' + id + '">Manage</a>'
-                  
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a class="btn btn-danger" title="Click here to view details" data-toggle="tooltip" onClick="ManageEmailNotifications(' + id + ')" href="ManageEmailNotifications/' + id + '">Manage</a>'
+                    }
+                    else {
+                        return "No Permission";
+                    }
                     
 
                 }

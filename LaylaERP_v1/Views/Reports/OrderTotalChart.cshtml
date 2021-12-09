@@ -60,6 +60,7 @@
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
         },
         );
+        Search();
     });
     function Search() {
         $("#loader").show();
@@ -81,14 +82,16 @@
                 success: function (result) {
                     console.log(result);
                     _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
-                    _list = [{ name: 'Total', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
-                        { name: 'Tax', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                    _list = [
                         { name: 'SubTotal', data: $.map(result, function (v) { return parseFloat(v.address); }) },
-                        { name: 'StateRecyclingFee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
-                        { name: 'Gift Card', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
-                        { name: 'Fee', data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                        { name: 'Discount', data: $.map(result, function (v) { return parseFloat(v.total); }) },
                         { name: 'Shipping', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                        { name: 'Discount', data: $.map(result, function (v) { return parseFloat(v.total); }) }];
+                        { name: 'SaleTax', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                        { name: 'StateRecyclingFee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Fee', data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                        { name: 'Gift Card', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                        { name: 'Total', data: $.map(result, function (v) { return parseFloat(v.tax); }) }  
+                    ];
 
                     bindChart();
                 },
@@ -101,7 +104,7 @@
         Highcharts.chart('container_chart', {
             chart: { type: 'spline' },
             title: {
-                text: 'Date wise order details'
+                text: 'Date wise Sales Order Chart'
             },
             //subtitle: { text: 'Irregular time data in Highcharts JS' },
             xAxis: { categories: _list_cat },

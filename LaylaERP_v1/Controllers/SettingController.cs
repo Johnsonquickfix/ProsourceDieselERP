@@ -79,8 +79,18 @@ namespace LaylaERP.Controllers
         public ActionResult ExceptionLog()
         {
             string datepath = System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString();
-            string[] texts = System.IO.File.ReadAllLines(Server.MapPath("~/AppLog/ExpectionLog"+datepath+".txt"));
-            ViewBag.Data = texts;
+            string path = @"~/AppLog/ExpectionLog" + datepath + ".txt";
+            if (System.IO.File.Exists(Server.MapPath(path)))
+            {
+                string[] texts = System.IO.File.ReadAllLines(Server.MapPath("~/AppLog/ExpectionLog" + datepath + ".txt"));
+                ViewBag.Data = texts;
+            }
+            else
+            {
+                string[] message = { "No Record Found!" };
+                ViewBag.Data = message;
+                return View();
+            }
             return View();
         }
         [HttpPost]

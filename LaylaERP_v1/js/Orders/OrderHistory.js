@@ -444,7 +444,7 @@ function cancelpayment(data) {
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                         }).then(response => {
                             swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false););
+                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }

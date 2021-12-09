@@ -58,7 +58,7 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@user_id", OM.UserID),
-                    new SqlParameter("@log_date", DateTime.Now),
+                    new SqlParameter("@log_date", DateTime.UtcNow),
                     new SqlParameter("@log_type_id", Convert.ToInt32(logType)),
                     new SqlParameter("@ip_address", OM.LoginIPAddress),
                     new SqlParameter("@mac_id", OM.LoginMacAddress),

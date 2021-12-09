@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿var table_oh;
+$(document).ready(function () {
     $("#loader").hide();
     $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
     $('#txtOrderDate').daterangepicker({
@@ -123,7 +124,7 @@ function dataGridLoad(order_type) {
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
     let dfa = "'" + sd + "' and '" + ed + "'";
 
-    let table = $('#dtdata').DataTable({
+    table_oh = $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
@@ -416,10 +417,9 @@ function sendInvoice(id, email) {
 function cancelorder(id) {
     swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
         .then((result) => {
-            if (result.value) {
+            if (result.value) {                
                 let obj = { order_id: id }
                 $.post('/Orders/OrderCancel', obj).done(function (data) {
-                    //console.log(JSON.parse(data));
                     data = JSON.parse(data);
                     if (data[0].response == "success") { cancelpayment(data[0]); }
                     else { swal('Error', data[0].payment_method_title, "error"); }
@@ -444,7 +444,7 @@ function cancelpayment(data) {
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                         }).then(response => {
                             swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false););
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
@@ -468,7 +468,7 @@ function cancelpayment(data) {
                             let option = { post_ID: data.post_id, comment_content: 'PayPal Refund Issued for $' + invoice_amt + '. transaction ID = ' + response.refund_id, is_customer_note: '' };
                             $.post('/Orders/OrderNoteAdd', option).then(response => {
                                 swal('Success!', 'Order refunded successfully.', "success");
-                                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
                             }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
 
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
@@ -491,7 +491,7 @@ function cancelpayment(data) {
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                         }).then(response => {
                             swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
@@ -511,7 +511,7 @@ function cancelpayment(data) {
                             let option = { post_ID: data.post_id, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
                             $.post('/Orders/OrderNoteAdd', option).then(response => {
                                 swal('Success!', 'Order refunded successfully.', "success");
-                                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
                             }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                         }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                     }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
@@ -530,7 +530,7 @@ function cancelpayment(data) {
                         console.log('Authorize.Net ', response);
                         if (response.status) {
                             swal('Alert!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
                         }
                     }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
                 }
@@ -538,13 +538,12 @@ function cancelpayment(data) {
         }
     }
     else if (data.payment_method == "giftcard") {
-        console.log(data);
         swal.queue([{
             title: 'Refund order processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
             onOpen: () => {
                 swal.showLoading();
                 swal('Alert!', 'Order cancelled successfully.', "success");
-                $.when(GetOrderDetails()).done(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true) });
+                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
             }
         }]);
     }

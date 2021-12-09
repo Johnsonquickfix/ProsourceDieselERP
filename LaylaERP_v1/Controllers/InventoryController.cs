@@ -222,5 +222,22 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult GetForecastAllReport(string Month, string Year, string stockfromdate, string stocktodate)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                //Month = DateTime.Now.AddMonths(-1).Month.ToString();
+                Month = Convert.ToDateTime(stockfromdate).AddMonths(-1).Month.ToString();
+                //Year = DateTime.Now.Year.ToString();
+                Year = Convert.ToDateTime(stockfromdate).Year.ToString();
+                var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+                var to_date = from_date.AddMonths(1).AddDays(-1);
+                DataTable dt = InventoryRepository.GetForecastAllReport(from_date.ToString(), to_date.ToString(), stockfromdate, stocktodate);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

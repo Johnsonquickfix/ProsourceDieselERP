@@ -242,6 +242,7 @@
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
+    <Compile Include="Models\Reports.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\SetupModel.cs" />

@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $('#txtOrderDate').daterangepicker({
+    $('#txtOrderDate,#txtForecastDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -13,26 +13,12 @@
     }, function (start, end, label) {
        
     });
-
-/*
-    $('#txtForecastDate').daterangepicker({
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
-        startDate: moment(), autoUpdateInput: true, alwaysShowCalendars: true,
-        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-    }, function (start, end, label) {
-        
-    }); */
+    getVendorList();
+    $("#btnSearch").click(function () { ForeCastreport(true); })
+    ForecastReportAll(true);
+    $("#btnSearch1").click(function () { ForecastReportAll(true); })
 });
 
-
-getVendorList();
 function getVendorList() {
     $.ajax({
         url: "/Inventory/GetVendorList",
@@ -109,17 +95,17 @@ function ForeCastreport(is_date) {
     });
 
 }
-/*
+
 //Forecast report for all products
-ForecastReportAll();
-function ForecastReportAll() {
+function ForecastReportAll(is_date) {
+    debugger
     let sd = $('#txtForecastDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtForecastDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
     var obj = { stockfromdate: sd, stocktodate: ed }
     $.ajax({
-        url: '/Inventory/GetForecastReport',
+        url: '/Inventory/GetForecastAllReport',
         method: 'post',
         datatype: 'json',
         contentType: "application/json; charset=utf-8",
@@ -149,4 +135,4 @@ function ForecastReportAll() {
         }
     });
 
-} */
+}

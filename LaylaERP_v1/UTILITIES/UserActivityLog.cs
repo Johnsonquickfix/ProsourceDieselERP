@@ -147,5 +147,41 @@
             }
             catch { }
         }
+
+        public static void ExpectionErrorLog(Exception ex, string URL, string query)
+        {
+            try
+            {
+                OperatorModel OM = CommanUtilities.Provider.GetCurrent();
+                StringBuilder strErrorLog = new StringBuilder();
+                strErrorLog.Append("\r\n ==========================================================================================================");
+                strErrorLog.Append("\r\n Date Time: " + System.DateTime.Now.ToString());
+                strErrorLog.Append("\r\n URL: " + URL);
+                strErrorLog.Append("\r\n Host: " + Net.Host);
+                strErrorLog.Append("\r\n IP: " + OM.LoginIPAddress);
+                strErrorLog.Append("\r\n Error Query: " + query);
+                strErrorLog.Append("\r\n Error: " + ex.Message);
+                strErrorLog.Append("\r\n Source : " + ex.Source);
+                strErrorLog.Append("\r\n StackTrace: " + ex.StackTrace);
+                String FileName = string.Empty;
+                if (HttpContext.Current != null)
+                    FileName = HttpContext.Current.Server.MapPath("~//AppLog//ExpectionLog" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                else
+                    FileName = HttpRuntime.AppDomainAppPath.ToString() + ("AppLog//ExpectionLog" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                if (!File.Exists(FileName))
+                {
+                    File.Create(FileName).Dispose();
+                    string str = "\r\n=========================================================================================================="
+                               + "\r\n                                               LaylaERP                                                   "
+                               + "\r\n                                             Expection Log                                    "
+                               + "\r\n==========================================================================================================";
+                    strErrorLog.Insert(0, str);
+                }
+                StreamWriter objStreamWriter = new StreamWriter(FileName, true);// Open for appending!
+                objStreamWriter.WriteLine(strErrorLog);
+                objStreamWriter.Close();
+            }
+            catch(Exception ex1) { throw ex1; }
+        }
     }
 }

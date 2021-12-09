@@ -216,12 +216,13 @@ function getOrderItemList(oid) {
             }
             else if (row.product_type == 'refund_items') {
                 if (row.product_name == "line_item") {
+                    let _total = (row.total - row.tax_amount), _totaltax = row.tax_amount;
                     let max_return = parseInt($("#tritemId_" + orderitemid).data("qty")) + parseInt(row.quantity);
                     $("#tritemId_" + orderitemid).find('[name=txt_RefundQty]').attr({ "max": max_return, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_return + ')' });
-                    $("#tritemId_" + orderitemid).data("returnqty", row.quantity); $("#tritemId_" + orderitemid).data("returnamt", row.total);
+                    $("#tritemId_" + orderitemid).data("returnqty", row.quantity); $("#tritemId_" + orderitemid).data("returnamt", _total.toFixed(2));
                     if (row.quantity != 0) $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.quantity + '</span>');
-                    $("#tritemId_" + orderitemid).find('.TotalAmount').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
-                    //$("#tritemId_" + orderitemid).find('.RowTax').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.tax_amount + '</span>');
+                    $("#tritemId_" + orderitemid).find('.TotalAmount').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + _total.toFixed(2) + '</span>');
+                    $("#tritemId_" + orderitemid).find('.RowTax').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + _totaltax.toFixed(2) + '</span>');
 
                     let max_amt = parseFloat($("#txt_RefundAmt_" + orderitemid).data("maxamt")) - row.total;
                     $("#txt_RefundAmt_" + orderitemid).attr({ "max": max_amt, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_amt + ')' });
@@ -457,11 +458,12 @@ function createItemsList() {
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         let srfee = parseFloat($(tr).data("srfee")) || 0.00; mattotalCount += srfee > 0 ? qty : 0;
-        if (refundqty > 0 && refundamt == 0) {
+        if (refundqty > 0 && refundamt == 0) {           
             matreturnCount += srfee > 0 ? refundqty : 0;
             /// calculate tax Rate
             if (taxAmount > 0 && tax_rate == 0) { tax_rate = parseFloat(((taxAmount / ((grossAmount - discountAmount) * 0.01)) / 100).toFixed(4)); }
             grossAmount = grossAmount - discountAmount + lastrefundamt;/// balance gross amount
+            //grossAmount = grossAmount - discountAmount;/// balance gross amount
             qty = qty + lastrefundqty;/// balance Quantity 
             grossAmount = grossAmount > 0 ? (grossAmount / qty) * refundqty : 0;
             discountAmount = 0;

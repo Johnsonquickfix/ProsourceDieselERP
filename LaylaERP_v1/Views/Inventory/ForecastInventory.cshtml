@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "ForecastInventory";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -16,11 +17,16 @@
     <div class="row index_col_row">
         <div class="col-md-3">
             <div class="form-group">
-                <label>Vendor</label>
                 <select class="form-control select2" id="ddlVendorList" placeholder="Select Vendor" style="width: 100%;"></select>
             </div>
         </div>
-        <div class="col-md-3 text-center mt-25 d-flex">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-3">
             <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
         </div>
         <div class="col-md-3">
@@ -77,6 +83,9 @@
         }).datepicker("setDate", 'now');
     });
 
-    $("#btnSearch").click(function () { ForeCastreport(); })
+    $("#btnSearch").click(function () { ForeCastreport(true); })
 </script>
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+<script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Inventory/ForecastInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

@@ -124,6 +124,7 @@ function getOrderItemList(oid) {
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
                 zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
                 zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
+                zTDiscount = zTDiscount + row.discount;
                 if (row.tax_amount > 0) tax_rate = parseFloat(((row.tax_amount / ((row.total - row.discount) * 0.01)) / 100).toFixed(4))
                 $('#order_line_items').append(itemHtml);
             }
@@ -154,7 +155,7 @@ function getOrderItemList(oid) {
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
-                zTDiscount = zTDiscount + cou_amt;
+                //zTDiscount = zTDiscount + cou_amt;
             }
             else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
                 recyclingfeeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';

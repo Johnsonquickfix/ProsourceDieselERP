@@ -515,7 +515,7 @@ namespace LaylaERP.BAL
                                 + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (inv_complete like '%" + searchid + "%' OR code_journal like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%' OR v.name like '%" + searchid + "%') ";
+                    strWhr += " and (inv_num like '%" + searchid + "%' OR inv_complete like '%" + searchid + "%' OR code_journal like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%' OR v.name like '%" + searchid + "%') ";
                 }
                 if (userstatus != null)
                 {
@@ -526,7 +526,7 @@ namespace LaylaERP.BAL
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + ", id desc OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
                 strSql += "; SELECT (Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);

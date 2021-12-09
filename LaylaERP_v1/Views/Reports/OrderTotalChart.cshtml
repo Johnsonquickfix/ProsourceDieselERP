@@ -1,7 +1,638 @@
 ﻿
 @{
     ViewBag.Title = "OrderTotalChart";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 
-<h2>OrderTotalChart</h2>
+<h2>Order Total Chart</h2>
 
+@*<script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>*@
+
+
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.@*js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>*@
+
+
+
+<figure class="highcharts-figure">
+    <div class="row">
+        <input type="hidden" id="hfType" value="" />
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions">
+                        <div class="input-group">
+                            <input type="hidden" id="hfhref" />
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                    </div>
+                    <div class="alignleft actions">
+                        @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
+                        <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="containermmm"></div>
+    <div id="container_chart"></div>
+    <p class="highcharts-description">
+        Chart showing data loaded dynamically. The individual data points can
+        be clicked to display more information.
+    </p>
+</figure>
+
+<script src="~/js/linq.js"></script>
+
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+
+
+<script src="~/Content/highcharts/highcharts.js"></script>
+<script src="~/Content/highcharts/series-label.js"></script>
+<script src="~/Content/highcharts/data.js"></script>
+<script src="~/Content/highcharts/exporting.js"></script>
+<script src="~/Content/highcharts/export-data.js"></script>
+<script src="~/Content/highcharts/accessibility.js"></script>
+
+<script type="text/javascript">
+    var _list_cat = ['1', '2']
+    var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
+    $(document).ready(function () {
+
+        $('#txtOrderDate').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+            locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+        },
+        );
+
+    });
+
+    function Search() {
+        var Complainletteryear = [];
+        var Total = [];
+        var concluded = [];
+        var N_concluded = [];
+
+        let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var account = "1";
+        // var type = $('#ddltype').val();
+        if (account == "0") { swal('alert', 'Please Select Sales', 'error'); }
+        //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
+        else {
+            $.ajax({
+                type: 'POST',
+                // contentType: 'application/json; charset=utf-8',
+                url: '/Reports/GetText',
+                data: { Month: sd, Year: ed, Type: account },
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list = [{ name: 'Tax', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
+                    { name: 'Total', data: $.map(result, function (v) { return parseFloat(v.total); }) }];
+
+                    bindChart(); 
+                },
+                error: function (Result) { alert("Error"); }
+            });
+        }
+    }
+    function bindChart() {
+        Highcharts.chart('container_chart', {
+            chart: { type: 'spline' },
+            title: { text: 'Snow depth at Vikjafjellet, Norway' },
+            subtitle: { text: 'Irregular time data in Highcharts JS' },
+            xAxis: { categories: _list_cat },
+            yAxis: {
+                title: { text: 'Temperature' },
+                labels: { formatter: function () { return this.value; } }
+            },
+            tooltip: { crosshairs: true, shared: true },
+            plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+            colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+            series: _list
+        });
+        $('.highcharts-credits').remove();
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function loadChart(category, val2, val3) {
+
+
+
+
+        json = Object.assign({}, val2);
+
+        const jsonString = JSON.stringify(Object.assign({}, val2))
+        const json_obj = JSON.parse(jsonString);
+
+        console.log(json);
+        console.log(json);
+        console.log(json_obj);
+        //console.log(JSON.parse(val2));
+        //console.log(JSON.stringify(json));
+
+        //  var newstring = val2.replace(/\'/g, '');
+        let newstr = '[' + val2.join(', ') + ']';
+        console.log(newstr);
+        console.log(',', JSON.parse(JSON.stringify(val2.join(', '))));
+
+        let valoflist = JSON.parse(JSON.stringify(val2));
+
+
+        var title = {
+            text: '-'
+        };
+        var subtitle = {
+            text: '-'
+        };
+        var xAxis = {
+            categories: JSON.parse(JSON.stringify(category))
+        };
+        var yAxis = {
+            title: {
+                text: 'Temperature (\xB0C)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        };
+
+        var tooltip = {
+            valueSuffix: '\xB0C'
+        }
+        var legend = {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        };
+        var series = [
+            {
+                name: 'Tokyo',
+                data: [7.00, 6.90, 9.50, 14.50, 18.20, 21.50, 25.20,
+                    26.50, 23.30, 18.30, 13.90, 9.60, 7.00, 6.90, 9.50, 14.50, 18.20, 21.54, 25.25,
+                    26.15, 23.13, 18.43, 13.98, 9.46]
+            },
+            //    {
+            //        name: 'Tokyo1',
+            //        data: JSON.parse(newstr)
+            //    },
+            {
+                name: 'Tokyo2',
+                data: [10.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
+                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            },
+            {
+                name: 'Tokyo3',
+                data: [200.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
+                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 0.0, 90.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            },
+            {
+                name: 'Tokyo4',
+                data: [310.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
+                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 80.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            },
+            {
+                name: 'Tokyo5',
+                data: [210.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
+                    95.0, 25.0, 60.0, 5.0, 0.0, 40.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            },
+            {
+
+                name: 'Total',
+                data: [520.00, 0.00, 150.00, 150.00, 150.00, 150.00, 150.00, 200.00, 60.00, 95.00, 25.00, 60.00, 0.00, 20.00, 25.00, 0.00, 150.00, 1727.00, 150.00, 40.00, 54.50, 150.00, 244.90, 244.90]
+            },
+            {
+                name: 'Discount',
+                data: [JSON.parse(JSON.stringify(val2.join(', ')))]
+            },
+
+        ];
+        console.log('[' + val2.join(', ') + ']');
+        var json = {};
+        json.title = title;
+        json.subtitle = subtitle;
+        json.xAxis = xAxis;
+        json.yAxis = yAxis;
+        json.tooltip = tooltip;
+        json.legend = legend;
+        json.series = series;
+
+        $('#container').highcharts(json);
+
+
+
+
+
+
+
+
+
+        //Highcharts.chart('container', {
+        //    chart: {
+        //        type: 'column',
+        //    },
+        //    title: {
+        //        text: 'No. of Application Received yearly '
+        //    },
+        //    subtitle: {
+        //        text: 'Source: LocalDb.com'
+        //    },
+        //    xAxis: {
+        //        categories: category,
+        //        crosshair: true
+        //    },
+        //    yAxis: {
+        //        min: 0,
+        //        title: {
+        //            text: 'Number of Application'
+        //        }
+        //    },
+
+        //    series: [{
+        //        name: 'Total',
+        //        data: val2,
+        //        color: '#ccb1fc',
+        //    }, {
+        //        name: 'Concluded',
+        //        data: val3,
+        //        color: '#b0ceff',
+        //    }]
+        //});
+    }
+
+
+
+
+
+
+    function DreawChart(category, val2, val3) {
+        console.log(category);
+        console.log(val2);
+        // A point click event that uses the Renderer to draw a label next to the point
+        // On subsequent clicks, move the existing label instead of creating a new one.
+        Highcharts.addEvent(Highcharts.Point, 'click', function () {
+            if (this.series.options.className.indexOf('popup-on-click') !== -1) {
+                const chart = this.series.chart;
+                const date = Highcharts.dateFormat('%A, %b %e, %Y', this.x);
+                const text = `<b>${date}</b><br/>${this.y} ${this.series.name}`;
+
+                const anchorX = this.plotX + this.series.xAxis.pos;
+                const anchorY = this.plotY + this.series.yAxis.pos;
+                const align = anchorX < chart.chartWidth - 200 ? 'left' : 'right';
+                const x = align === 'left' ? anchorX + 10 : anchorX - 10;
+                const y = anchorY - 30;
+                if (!chart.sticky) {
+                    chart.sticky = chart.renderer
+                        .label(text, x, y, 'callout', anchorX, anchorY)
+                        .attr({
+                            align,
+                            fill: 'rgba(0, 0, 0, 0.75)',
+                            padding: 10,
+                            zIndex: 7 // Above series, below tooltip
+                        })
+                        .css({
+                            color: 'white'
+                        })
+                        .on('click', function () {
+                            chart.sticky = chart.sticky.destroy();
+                        })
+                        .add();
+                } else {
+                    chart.sticky
+                        .attr({ align, text })
+                        .animate({ anchorX, anchorY, x, y }, { duration: 250 });
+                }
+            }
+        });
+
+        Highcharts.chart('container', {
+
+            chart: {
+                scrollablePlotArea: {
+                    minWidth: 700
+                }
+            },
+
+            //data: {
+            ////JSON.parse(series);
+
+            //csvURL: 'https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/analytics.csv',
+            //beforeParse: function (csv) {
+            //    return csv.replace(/\n\n/g, '\n');
+            //}
+
+
+
+            //},
+
+            title: {
+                text: '-'
+            },
+
+            subtitle: {
+                text: '-'
+            },
+
+            xAxis: {
+                //tickInterval: 7 * 24 * 3600 * 1000, // one week
+                //tickWidth: 0,
+                //gridLineWidth: 1,
+                //labels: {
+                //    align: 'left',
+                //    x: 3,
+                //    y: -3
+                //}
+                categories: category,
+                crosshair: true
+            },
+
+            //yAxis: [{ // left y axis
+            //    title: {
+            //        text: null
+            //    },
+            //    labels: {
+            //        align: 'left',
+            //        x: 3,
+            //        y: 16,
+            //        format: '{value:.,0f}'
+            //    },
+            //    showFirstLabel: false
+            //}, { // right y axis
+            //    linkedTo: 0,
+            //    gridLineWidth: 0,
+            //    opposite: true,
+            //    title: {
+            //        text: null
+            //    },
+            //    labels: {
+            //        align: 'right',
+            //        x: -3,
+            //        y: 16,
+            //        format: '{value:.,0f}'
+            //    },
+            //    showFirstLabel: false
+            //}],
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Number of Application'
+                }
+            },
+            legend: {
+                align: 'left',
+                verticalAlign: 'top',
+                borderWidth: 0
+            },
+
+            tooltip: {
+                shared: true,
+                crosshairs: true
+            },
+
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    className: 'popup-on-click',
+                    marker: {
+                        lineWidth: 1
+                    }
+                }
+            },
+
+            series: [{
+                name: 'Total',
+                lineWidth: 4,
+                data: val2,
+                marker: {
+                    radius: 4
+                }
+            }, {
+                name: 'Descount',
+                data: val3,
+
+            }]
+        });
+
+    }
+</script>
+
+
+<script>
+
+    let createChart = () => {
+        let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var account = "1";
+        console.log(sd, ed, account);
+        $.ajax({
+            url: '/Reports/GetGrafixDetailsList',
+            data: { Month: sd, Year: ed, Type: account },
+            dataType: 'json',
+            type: 'POST',
+            //    contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data);
+                // Define arrays.
+                let arrSales = [];          // array for sales figure.
+                let arrCategories = [];     // array for categories.
+
+                let iCnt = 0;               // just a counter.
+
+                $.each(data, function () {
+
+                    // populate arrays with values.
+
+                    arrSales.push([data[iCnt].SalesFigure]);
+                    arrCategories.push([data[iCnt].Month])
+
+                    iCnt += 1;
+
+                });
+                console.log(arrSales);
+                console.log(arrCategories);
+                // Create and show the chart.
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'line'
+                    },
+
+                    xAxis: {		// the 'x' axis or 'category' axis.
+                        categories: arrCategories
+                    },
+
+                    yAxis: {        // the 'y' axis or 'value' axis.
+                        min: 0, max: 80,
+                        title: { text: 'Figures' },
+                        allowDecimals: true,
+                        plotLines: [{
+                            value: 35,
+                            color: '#1464F4',
+                            dashStyle: 'longdashdot',       // default value is solid.
+                            width: 2,
+                            label: {
+                                text: 'Min Target (35)'
+                            }
+                        }]
+                    },
+
+                    title: {
+                        text: 'Monthly Sales Chart'
+                    },
+
+                    series: [
+                        {
+                            name: 'Year - 2019',
+                            data: arrSales
+                        }
+                    ],
+
+                    colors: ['rgb(102,203,22)']
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                let error = jQuery.parseJSON(XMLHttpRequest.responseText);
+                console.log("Error message: " + error.Message);
+            }
+        });
+    }
+
+    // Now, call the function.
+</script>
+
+<script type="text/javascript">
+    function DreawChartfff(series) {
+        console.log(series);
+        var chartitle = {
+            text: 'Daily visits at www.highcharts.com'
+        }
+        var chartsubtitle = {
+            text: 'Source: Google Analytics'
+        }
+        var chartxaxis = {
+            tickInterval: 7 * 24 * 3600 * 1000, // one week
+            tickWidth: 0,
+            gridLineWidth: 1,
+            labels: {
+                align: 'left',
+                x: 3,
+                y: -3
+            }
+        }
+        var chartyaxis = [{ // left y axis
+            title: {
+                text: null
+            },
+            labels: {
+                align: 'left',
+                x: 3,
+                y: 16,
+                format: '{value:.,0f}'
+            },
+            showFirstLabel: false
+        }, { // right y axis
+            linkedTo: 0,
+            gridLineWidth: 0,
+            opposite: true,
+            title: {
+                text: null
+            },
+            labels: {
+                align: 'right',
+                x: -3,
+                y: 16,
+                format: '{value:.,0f}'
+            },
+            showFirstLabel: false
+        }]
+        var chartooltip = {
+            shared: true,
+            crosshairs: true
+        }
+        var chartlegend = {
+            align: 'left',
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            borderWidth: 0
+        }
+        var chartplotoptions = {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function (e) {
+                            hs.htmlExpand(null, {
+                                pageOrigin: {
+                                    x: e.pageX || e.clientX,
+                                    y: e.pageY || e.clientY
+                                },
+                                headingText: this.series.name,
+                                maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
+                                    this.y + ' visits',
+                                width: 200
+                            });
+                        }
+                    }
+                },
+                marker: {
+                    lineWidth: 1
+                }
+            }
+        }
+        var chartseries = [{
+            name: 'All visits',
+            lineWidth: 4,
+            marker: {
+                radius: 4
+            }
+        }, {
+            name: 'New visitors'
+        }]
+        $.each(function (series) {
+            // $.series(function (csv) {
+            $('#container').highcharts({
+                data: {
+                    csv: csv
+                },
+                title: chartitle,
+                subtitle: chartsubtitle,
+                xAxis: chartxaxis,
+                yAxis: chartyaxis,
+                tooltip: chartooltip,
+                legend: chartlegend,
+                plotOptions: chartplotoptions,
+                series: chartseries
+            });
+        });
+
+    };
+</script>

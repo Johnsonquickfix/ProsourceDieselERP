@@ -13,6 +13,7 @@ namespace LaylaERP.Controllers
 {
     public class ReportsController : Controller
     {
+      
         // GET: Reports
         public ActionResult Index()
         {
@@ -53,8 +54,8 @@ namespace LaylaERP.Controllers
             return View();
         }
         public ActionResult SalesTaxRefundReport()
-        {           
-             return View();
+        {
+            return View();
         }
         public ActionResult CommissionEarnAgent()
         {
@@ -91,7 +92,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public ActionResult GetArizonaSalesOrder(string Year)
         {
-           // var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+            // var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
             //var to_date = from_date.AddMonths(1).AddDays(-1);
 
             DateTime from_date = new DateTime(Convert.ToInt32(Year), 1, 1);
@@ -180,7 +181,7 @@ namespace LaylaERP.Controllers
             //var to_date = from_date.AddMonths(1).AddDays(-1);
             // string from_date = Convert.ToDateTime("07/01/2021").ToString("dd/MM/yyyy");
             //string to_date = Convert.ToDateTime("07/31/2021").ToString("dd/MM/yyyy");
-      
+
 
             ReportsRepository.GetPodiumOrderDetails(Month, Year);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
@@ -231,7 +232,7 @@ namespace LaylaERP.Controllers
 
 
             //string from_date = fromday.ToString() + "/" + fromonth.ToString() + "/" + yearf.ToString();
-            
+
             ReportsRepository.GetPodiumEmployeeOrderDetails(Month, Year);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
@@ -289,7 +290,7 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetMRF(string Month, string Year,string txtState)
+        public ActionResult GetMRF(string Month, string Year, string txtState)
         {
             var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
             var to_date = from_date.AddMonths(1).AddDays(-1);
@@ -357,7 +358,7 @@ namespace LaylaERP.Controllers
 
         public ActionResult GetStatusDetails(string Month, string Year, string Type)
         {
-             
+
 
             ReportsRepository.GetStatusDetails(Month, Year, Type);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
@@ -391,5 +392,49 @@ namespace LaylaERP.Controllers
             k.MaxJsonLength = int.MaxValue;
             return k;
         }
+        public ActionResult GetGrafixDetails(string Month, string Year, string Type)
+        {
+
+
+            ReportsRepository.GetGrafixDetails(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        public JsonResult GetText(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetGrafixDetails(Month, Year, Type);
+            var list = ReportsRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetGrafixDetailData(string Month, string Year)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetGrafixDetail(Month, Year, "");
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetGrafixDetailsList(string Month, string Year, string Type)
+        {
+            List<ReportsModel> obj = new List<ReportsModel>();
+            try
+            {
+                obj = ReportsRepository.GetProductListDetails(Month, Year, Type);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
+        
     }
+
+         
 }

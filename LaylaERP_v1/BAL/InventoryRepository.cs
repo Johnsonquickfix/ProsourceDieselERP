@@ -270,7 +270,8 @@ namespace LaylaERP.BAL
                 fromdate = DateTime.Parse(from_date);
                 todate = DateTime.Parse(to_date);
                 SqlParameter[] param = 
-                    { 
+                    {
+                    new SqlParameter("@flag", "FCA"),
                     new SqlParameter("@vendorid", vendorid),
                     new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")), 
                     new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),

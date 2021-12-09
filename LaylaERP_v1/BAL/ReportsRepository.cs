@@ -1270,16 +1270,16 @@ namespace LaylaERP.BAL
                         Export_Details uobj = new Export_Details();
                         //uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
 
-                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["EmpName"].ToString()))
-                        //    uobj.first_name = ds1.Tables[0].Rows[i]["EmpName"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.first_name = ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
 
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Day Index"].ToString()))
                             uobj.billing_city = ds1.Tables[0].Rows[i]["Day Index"].ToString();
 
-                        //uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["Tax"].ToString();
 
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
-                        //    uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                          uobj.address =  ds1.Tables[0].Rows[i]["subtotal"].ToString();
                         //else
                         //    uobj.address = "";
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
@@ -1290,10 +1290,10 @@ namespace LaylaERP.BAL
                             uobj.total =  ds1.Tables[0].Rows[i]["Discount"].ToString();
                         else
                             uobj.total = "";
-                        //uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
-                        //uobj.billing_state = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        uobj.billing_state = ds1.Tables[0].Rows[i]["Fee"].ToString();
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
-                        //    uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                         uobj.fee =  ds1.Tables[0].Rows[i]["shipping"].ToString();
                         //else
                         //    uobj.fee = "";
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))

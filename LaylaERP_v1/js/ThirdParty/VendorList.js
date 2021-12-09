@@ -68,13 +68,12 @@ function VendorGrid() {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../ThirdParty/NewVendor/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        
+                        return '<a href="../ThirdParty/NewVendor/' + id + '" onclick="ActivityLog(\'Edit Vendor\',\'ThirdParty/VendorList\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }
             }
-
-
         ]
     });
 }
@@ -82,3 +81,21 @@ function VendorGrid() {
 $('#btnSearch').click(function () {
     VendorGrid();
 })
+
+function ActivityLog(ModuleName, ModuleURL) {
+    console.log(ModuleName, ModuleURL);
+    var obj = {
+        ModuleName: ModuleName, ModuleURL: ModuleURL
+    }
+    $.ajax({
+        url: '/ThirdParty/ActivityDbLog/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) { },
+        //error: function (error) {
+        //    swal('Error!', 'something went wrong', 'error');
+        //},
+    })
+
+}

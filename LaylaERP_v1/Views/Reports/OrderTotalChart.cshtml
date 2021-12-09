@@ -1,30 +1,14 @@
 ﻿
 @{
     ViewBag.Title = "OrderTotalChart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
-
+<div id="loader" class="d-flex align-items-center">
+    <img src="data:image/gif;base64,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" align="">
+    <span>&nbsp;&nbsp;Loading......</span>
+</div>
 <h2>Order Total Chart</h2>
-
-@*<script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="https://code.highcharts.com/modules/series-label.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>*@
-
-
-@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
-    </script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-
-    <script src="https://code.jquery.com/jquery-1.12.4.@*js"></script>
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://code.highcharts.com/modules/data.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>*@
-
-
-
 <figure class="highcharts-figure">
     <div class="row">
         <input type="hidden" id="hfType" value="" />
@@ -46,20 +30,11 @@
             </div>
         </div>
     </div>
-    <div id="containermmm"></div>
     <div id="container_chart"></div>
-    <p class="highcharts-description">
-        Chart showing data loaded dynamically. The individual data points can
-        be clicked to display more information.
-    </p>
 </figure>
-
 <script src="~/js/linq.js"></script>
-
 <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
-
-
 <script src="~/Content/highcharts/highcharts.js"></script>
 <script src="~/Content/highcharts/series-label.js"></script>
 <script src="~/Content/highcharts/data.js"></script>
@@ -71,7 +46,7 @@
     var _list_cat = ['1', '2']
     var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
     $(document).ready(function () {
-
+        $("#loader").hide();
         $('#txtOrderDate').daterangepicker({
             ranges: {
                 'Today': [moment(), moment()],
@@ -85,15 +60,9 @@
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
         },
         );
-
     });
-
     function Search() {
-        var Complainletteryear = [];
-        var Total = [];
-        var concluded = [];
-        var N_concluded = [];
-
+        $("#loader").show();
         let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
         let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
         var account = "1";
@@ -103,536 +72,64 @@
         else {
             $.ajax({
                 type: 'POST',
-                // contentType: 'application/json; charset=utf-8',
                 url: '/Reports/GetText',
                 data: { Month: sd, Year: ed, Type: account },
                 dataType: 'json',
+                beforeSend: function () {
+                    $("#loader").show();
+                },
                 success: function (result) {
                     console.log(result);
                     _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
-                    _list = [{ name: 'Tax', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
-                    { name: 'Total', data: $.map(result, function (v) { return parseFloat(v.total); }) }];
+                    _list = [{ name: 'Total', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
+                        { name: 'Tax', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                        { name: 'SubTotal', data: $.map(result, function (v) { return parseFloat(v.address); }) },
+                        { name: 'StateRecyclingFee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Gift Card', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                        { name: 'Fee', data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                        { name: 'Shipping', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
+                        { name: 'Discount', data: $.map(result, function (v) { return parseFloat(v.total); }) }];
 
-                    bindChart(); 
+                    bindChart();
                 },
-                error: function (Result) { alert("Error"); }
+                error: function (Result) { alert("Error"); },
+                complete: function () { $("#loader").hide(); }
             });
         }
     }
     function bindChart() {
         Highcharts.chart('container_chart', {
             chart: { type: 'spline' },
-            title: { text: 'Snow depth at Vikjafjellet, Norway' },
-            subtitle: { text: 'Irregular time data in Highcharts JS' },
+            title: {
+                text: 'Date wise order details'
+            },
+            //subtitle: { text: 'Irregular time data in Highcharts JS' },
             xAxis: { categories: _list_cat },
-            yAxis: {
-                title: { text: 'Temperature' },
-                labels: { formatter: function () { return this.value; } }
-            },
-            tooltip: { crosshairs: true, shared: true },
-            plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
-            colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
-            series: _list
-        });
-        $('.highcharts-credits').remove();
-    }
-
-</script>
-
-<script type="text/javascript">
-
-    function loadChart(category, val2, val3) {
-
-
-
-
-        json = Object.assign({}, val2);
-
-        const jsonString = JSON.stringify(Object.assign({}, val2))
-        const json_obj = JSON.parse(jsonString);
-
-        console.log(json);
-        console.log(json);
-        console.log(json_obj);
-        //console.log(JSON.parse(val2));
-        //console.log(JSON.stringify(json));
-
-        //  var newstring = val2.replace(/\'/g, '');
-        let newstr = '[' + val2.join(', ') + ']';
-        console.log(newstr);
-        console.log(',', JSON.parse(JSON.stringify(val2.join(', '))));
-
-        let valoflist = JSON.parse(JSON.stringify(val2));
-
-
-        var title = {
-            text: '-'
-        };
-        var subtitle = {
-            text: '-'
-        };
-        var xAxis = {
-            categories: JSON.parse(JSON.stringify(category))
-        };
-        var yAxis = {
-            title: {
-                text: 'Temperature (\xB0C)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        };
-
-        var tooltip = {
-            valueSuffix: '\xB0C'
-        }
-        var legend = {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        };
-        var series = [
-            {
-                name: 'Tokyo',
-                data: [7.00, 6.90, 9.50, 14.50, 18.20, 21.50, 25.20,
-                    26.50, 23.30, 18.30, 13.90, 9.60, 7.00, 6.90, 9.50, 14.50, 18.20, 21.54, 25.25,
-                    26.15, 23.13, 18.43, 13.98, 9.46]
-            },
-            //    {
-            //        name: 'Tokyo1',
-            //        data: JSON.parse(newstr)
-            //    },
-            {
-                name: 'Tokyo2',
-                data: [10.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
-                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            },
-            {
-                name: 'Tokyo3',
-                data: [200.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
-                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 0.0, 90.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            },
-            {
-                name: 'Tokyo4',
-                data: [310.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
-                    95.0, 25.0, 60.0, 5.0, 0.0, 0.0, 80.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            },
-            {
-                name: 'Tokyo5',
-                data: [210.0, 0.0, 520.0, 0.0, 150.0, 150.0, 150.0, 150.0, 150.0, 20.0, 60.0,
-                    95.0, 25.0, 60.0, 5.0, 0.0, 40.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            },
-            {
-
-                name: 'Total',
-                data: [520.00, 0.00, 150.00, 150.00, 150.00, 150.00, 150.00, 200.00, 60.00, 95.00, 25.00, 60.00, 0.00, 20.00, 25.00, 0.00, 150.00, 1727.00, 150.00, 40.00, 54.50, 150.00, 244.90, 244.90]
-            },
-            {
-                name: 'Discount',
-                data: [JSON.parse(JSON.stringify(val2.join(', ')))]
-            },
-
-        ];
-        console.log('[' + val2.join(', ') + ']');
-        var json = {};
-        json.title = title;
-        json.subtitle = subtitle;
-        json.xAxis = xAxis;
-        json.yAxis = yAxis;
-        json.tooltip = tooltip;
-        json.legend = legend;
-        json.series = series;
-
-        $('#container').highcharts(json);
-
-
-
-
-
-
-
-
-
-        //Highcharts.chart('container', {
-        //    chart: {
-        //        type: 'column',
-        //    },
-        //    title: {
-        //        text: 'No. of Application Received yearly '
-        //    },
-        //    subtitle: {
-        //        text: 'Source: LocalDb.com'
-        //    },
-        //    xAxis: {
-        //        categories: category,
-        //        crosshair: true
-        //    },
-        //    yAxis: {
-        //        min: 0,
-        //        title: {
-        //            text: 'Number of Application'
-        //        }
-        //    },
-
-        //    series: [{
-        //        name: 'Total',
-        //        data: val2,
-        //        color: '#ccb1fc',
-        //    }, {
-        //        name: 'Concluded',
-        //        data: val3,
-        //        color: '#b0ceff',
-        //    }]
-        //});
-    }
-
-
-
-
-
-
-    function DreawChart(category, val2, val3) {
-        console.log(category);
-        console.log(val2);
-        // A point click event that uses the Renderer to draw a label next to the point
-        // On subsequent clicks, move the existing label instead of creating a new one.
-        Highcharts.addEvent(Highcharts.Point, 'click', function () {
-            if (this.series.options.className.indexOf('popup-on-click') !== -1) {
-                const chart = this.series.chart;
-                const date = Highcharts.dateFormat('%A, %b %e, %Y', this.x);
-                const text = `<b>${date}</b><br/>${this.y} ${this.series.name}`;
-
-                const anchorX = this.plotX + this.series.xAxis.pos;
-                const anchorY = this.plotY + this.series.yAxis.pos;
-                const align = anchorX < chart.chartWidth - 200 ? 'left' : 'right';
-                const x = align === 'left' ? anchorX + 10 : anchorX - 10;
-                const y = anchorY - 30;
-                if (!chart.sticky) {
-                    chart.sticky = chart.renderer
-                        .label(text, x, y, 'callout', anchorX, anchorY)
-                        .attr({
-                            align,
-                            fill: 'rgba(0, 0, 0, 0.75)',
-                            padding: 10,
-                            zIndex: 7 // Above series, below tooltip
-                        })
-                        .css({
-                            color: 'white'
-                        })
-                        .on('click', function () {
-                            chart.sticky = chart.sticky.destroy();
-                        })
-                        .add();
-                } else {
-                    chart.sticky
-                        .attr({ align, text })
-                        .animate({ anchorX, anchorY, x, y }, { duration: 250 });
-                }
-            }
-        });
-
-        Highcharts.chart('container', {
-
-            chart: {
-                scrollablePlotArea: {
-                    minWidth: 700
-                }
-            },
-
-            //data: {
-            ////JSON.parse(series);
-
-            //csvURL: 'https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/analytics.csv',
-            //beforeParse: function (csv) {
-            //    return csv.replace(/\n\n/g, '\n');
-            //}
-
-
-
+            //yAxis: {
+            //    title: { text: 'Amount' },
+            //    labels: { formatter: function () { return this.value; } }
             //},
+            yAxis: [{ // left y axis
+                title: { text: null },
+                labels: { align: 'left', x: 3, y: 16, format: '{value:.,0f}' },
+                showFirstLabel: false
+            }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
+                title: { text: 'Amount' },
+                labels: { align: 'right', x: -3, y: 16, format: '{value:.,0f}' },
+                showFirstLabel: false
+            }],
 
-            title: {
-                text: '-'
-            },
-
-            subtitle: {
-                text: '-'
-            },
-
-            xAxis: {
-                //tickInterval: 7 * 24 * 3600 * 1000, // one week
-                //tickWidth: 0,
-                //gridLineWidth: 1,
-                //labels: {
-                //    align: 'left',
-                //    x: 3,
-                //    y: -3
-                //}
-                categories: category,
-                crosshair: true
-            },
-
-            //yAxis: [{ // left y axis
-            //    title: {
-            //        text: null
-            //    },
-            //    labels: {
-            //        align: 'left',
-            //        x: 3,
-            //        y: 16,
-            //        format: '{value:.,0f}'
-            //    },
-            //    showFirstLabel: false
-            //}, { // right y axis
-            //    linkedTo: 0,
-            //    gridLineWidth: 0,
-            //    opposite: true,
-            //    title: {
-            //        text: null
-            //    },
-            //    labels: {
-            //        align: 'right',
-            //        x: -3,
-            //        y: 16,
-            //        format: '{value:.,0f}'
-            //    },
-            //    showFirstLabel: false
-            //}],
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Number of Application'
-                }
-            },
             legend: {
                 align: 'left',
                 verticalAlign: 'top',
                 borderWidth: 0
             },
 
-            tooltip: {
-                shared: true,
-                crosshairs: true
-            },
-
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    className: 'popup-on-click',
-                    marker: {
-                        lineWidth: 1
-                    }
-                }
-            },
-
-            series: [{
-                name: 'Total',
-                lineWidth: 4,
-                data: val2,
-                marker: {
-                    radius: 4
-                }
-            }, {
-                name: 'Descount',
-                data: val3,
-
-            }]
+            tooltip: { crosshairs: true, shared: true },
+            plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+            colors: ['#F74D17', '#62F717', '#2D7608', '#079AFA', '#464E4E', '#BABB98', '#33FFEC', '#95A993'],
+            series: _list
         });
-
+        $('.highcharts-credits').remove();
     }
-</script>
-
-
-<script>
-
-    let createChart = () => {
-        let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-        let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-        var account = "1";
-        console.log(sd, ed, account);
-        $.ajax({
-            url: '/Reports/GetGrafixDetailsList',
-            data: { Month: sd, Year: ed, Type: account },
-            dataType: 'json',
-            type: 'POST',
-            //    contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                console.log(data);
-                // Define arrays.
-                let arrSales = [];          // array for sales figure.
-                let arrCategories = [];     // array for categories.
-
-                let iCnt = 0;               // just a counter.
-
-                $.each(data, function () {
-
-                    // populate arrays with values.
-
-                    arrSales.push([data[iCnt].SalesFigure]);
-                    arrCategories.push([data[iCnt].Month])
-
-                    iCnt += 1;
-
-                });
-                console.log(arrSales);
-                console.log(arrCategories);
-                // Create and show the chart.
-                Highcharts.chart('container', {
-                    chart: {
-                        type: 'line'
-                    },
-
-                    xAxis: {		// the 'x' axis or 'category' axis.
-                        categories: arrCategories
-                    },
-
-                    yAxis: {        // the 'y' axis or 'value' axis.
-                        min: 0, max: 80,
-                        title: { text: 'Figures' },
-                        allowDecimals: true,
-                        plotLines: [{
-                            value: 35,
-                            color: '#1464F4',
-                            dashStyle: 'longdashdot',       // default value is solid.
-                            width: 2,
-                            label: {
-                                text: 'Min Target (35)'
-                            }
-                        }]
-                    },
-
-                    title: {
-                        text: 'Monthly Sales Chart'
-                    },
-
-                    series: [
-                        {
-                            name: 'Year - 2019',
-                            data: arrSales
-                        }
-                    ],
-
-                    colors: ['rgb(102,203,22)']
-                });
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                let error = jQuery.parseJSON(XMLHttpRequest.responseText);
-                console.log("Error message: " + error.Message);
-            }
-        });
-    }
-
-    // Now, call the function.
-</script>
-
-<script type="text/javascript">
-    function DreawChartfff(series) {
-        console.log(series);
-        var chartitle = {
-            text: 'Daily visits at www.highcharts.com'
-        }
-        var chartsubtitle = {
-            text: 'Source: Google Analytics'
-        }
-        var chartxaxis = {
-            tickInterval: 7 * 24 * 3600 * 1000, // one week
-            tickWidth: 0,
-            gridLineWidth: 1,
-            labels: {
-                align: 'left',
-                x: 3,
-                y: -3
-            }
-        }
-        var chartyaxis = [{ // left y axis
-            title: {
-                text: null
-            },
-            labels: {
-                align: 'left',
-                x: 3,
-                y: 16,
-                format: '{value:.,0f}'
-            },
-            showFirstLabel: false
-        }, { // right y axis
-            linkedTo: 0,
-            gridLineWidth: 0,
-            opposite: true,
-            title: {
-                text: null
-            },
-            labels: {
-                align: 'right',
-                x: -3,
-                y: 16,
-                format: '{value:.,0f}'
-            },
-            showFirstLabel: false
-        }]
-        var chartooltip = {
-            shared: true,
-            crosshairs: true
-        }
-        var chartlegend = {
-            align: 'left',
-            verticalAlign: 'top',
-            y: 20,
-            floating: true,
-            borderWidth: 0
-        }
-        var chartplotoptions = {
-            series: {
-                cursor: 'pointer',
-                point: {
-                    events: {
-                        click: function (e) {
-                            hs.htmlExpand(null, {
-                                pageOrigin: {
-                                    x: e.pageX || e.clientX,
-                                    y: e.pageY || e.clientY
-                                },
-                                headingText: this.series.name,
-                                maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
-                                    this.y + ' visits',
-                                width: 200
-                            });
-                        }
-                    }
-                },
-                marker: {
-                    lineWidth: 1
-                }
-            }
-        }
-        var chartseries = [{
-            name: 'All visits',
-            lineWidth: 4,
-            marker: {
-                radius: 4
-            }
-        }, {
-            name: 'New visitors'
-        }]
-        $.each(function (series) {
-            // $.series(function (csv) {
-            $('#container').highcharts({
-                data: {
-                    csv: csv
-                },
-                title: chartitle,
-                subtitle: chartsubtitle,
-                xAxis: chartxaxis,
-                yAxis: chartyaxis,
-                tooltip: chartooltip,
-                legend: chartlegend,
-                plotOptions: chartplotoptions,
-                series: chartseries
-            });
-        });
-
-    };
 </script>

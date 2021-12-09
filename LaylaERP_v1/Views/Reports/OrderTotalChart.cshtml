@@ -56,7 +56,7 @@
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             },
-            startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+            startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
         },
         );
@@ -127,11 +127,13 @@
                 verticalAlign: 'top',
                 borderWidth: 0
             },
-
+         
             tooltip: { crosshairs: true, shared: true },
             plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
-            colors: ['#F74D17', '#62F717', '#2D7608', '#079AFA', '#464E4E', '#BABB98', '#33FFEC', '#95A993'],
+            colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA'],
             series: _list
+
+           
         });
         $('.highcharts-credits').remove();
     }

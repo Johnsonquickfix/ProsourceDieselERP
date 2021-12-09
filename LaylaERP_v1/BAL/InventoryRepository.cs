@@ -271,9 +271,36 @@ namespace LaylaERP.BAL
                 todate = DateTime.Parse(to_date);
                 SqlParameter[] param = 
                     {
-                    new SqlParameter("@flag", "FCA"),
+                    new SqlParameter("@flag", "FCV"),
                     new SqlParameter("@vendorid", vendorid),
                     new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")), 
+                    new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),
+                    new SqlParameter("@stockfromdate",stockfromdate),
+                    new SqlParameter("@stocktodate",stocktodate),
+                };
+                string strSql = "erp_forecastreport";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, param);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dtr;
+        }
+
+        public static DataTable GetForecastAllReport(string from_date, string to_date, string stockfromdate, string stocktodate)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                SqlParameter[] param =
+                    {
+                    new SqlParameter("@flag", "FCA"),
+                    new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")),
                     new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),
                     new SqlParameter("@stockfromdate",stockfromdate),
                     new SqlParameter("@stocktodate",stocktodate),

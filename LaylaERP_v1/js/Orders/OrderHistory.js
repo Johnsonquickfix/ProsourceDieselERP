@@ -521,7 +521,7 @@ function cancelpayment(data) {
         }
     }
     else if (data.payment_method == "authorize_net_cim_credit_card") {
-        if (data.post_status == "wc-pendingpodiuminv" || data.post_status == "wc-pending") {
+        if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
             swal.queue([{
                 title: 'Authorize.Net payment processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
                 onOpen: () => {

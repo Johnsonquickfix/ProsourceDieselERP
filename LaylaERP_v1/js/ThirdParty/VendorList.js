@@ -41,7 +41,10 @@ function VendorGrid() {
             {
                 'data': 'VendorCode', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="../ThirdParty/NewVendor/' + full.ID + '">' + id + '</a>';
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="../ThirdParty/NewVendor/' + full.ID + '">' + id + '</a>';
+                    }
+                    else { return id; }
                     //return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
                 }
             },

@@ -117,7 +117,12 @@ function dataGridLoad() {
             {
                 'data': 'email_text', sWidth: "10%", title: 'Email',
                 'render': function (id, type, full, meta) {
-                    return '<a href="ManageEmailNotifications/' + full.email_notify_key + '">' + id + '</a>';
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="ManageEmailNotifications/' + full.email_notify_key + '">' + id + '</a>';
+                    }
+                    else {
+                        return "No permission";
+                    }
                 }
             },
             { data: 'email_content_type', title: 'Content type', sWidth: "12%" },

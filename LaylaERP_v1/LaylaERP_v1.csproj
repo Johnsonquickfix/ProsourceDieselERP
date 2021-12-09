@@ -264,6 +264,7 @@
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AppLog\ExpectionLog2021128.txt" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\bootstrap-datepicker\dist\css\bootstrap-datepicker.min.css" />
@@ -673,6 +674,7 @@
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
+    <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
@@ -1014,6 +1016,7 @@
     <Content Include="Views\Giftcard\GiftCardActivity.cshtml" />
     <Content Include="Views\Reception\SalesPO.cshtml" />
     <Content Include="Views\Reports\OrderTotalChart.cshtml" />
+    <Content Include="Views\Setting\ExceptionLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

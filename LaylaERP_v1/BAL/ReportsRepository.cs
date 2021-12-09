@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP_v1.Models;
 
 namespace LaylaERP.BAL
 {
@@ -1244,5 +1245,160 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
+
+
+        public static void GetGrafixDetails(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@id", Empid),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_totaldetails_List", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        //uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["EmpName"].ToString()))
+                        //    uobj.first_name = ds1.Tables[0].Rows[i]["EmpName"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Day Index"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["Day Index"].ToString();
+
+                        //uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                        //    uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        //else
+                        //    uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.tax =  ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.total =  ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.total = "";
+                        //uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        //uobj.billing_state = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                        //    uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        //else
+                        //    uobj.fee = "";
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                        //    uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        //else
+                        //    uobj.subtotal = "";
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                        //    uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        //else
+                        //    uobj.Discount = "";
+
+                        //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                        //    uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        //else
+                        //    uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static DataTable GetGrafixDetail(string from_date, string to_date, string Empid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@id", Empid),
+                     new SqlParameter("@todate", to_date)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_totaldetails_List", parameters);
+
+
+                //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                //                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
+                //                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 5 and 1 = 1";
+
+                //strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
+
+                //string strSql = "Select max(p.fk_purchase) id,max(p.rowid) RicD,p.ref refordervendor,sum(recqty) Quenty, string_agg(concat(' ' ,description, ' (*',recqty,')'), ',') des,max(CONVERT(VARCHAR(12), p.date_creation, 107)) dtcration,max(CONVERT(VARCHAR(12), p.date_creation, 107)) date_creation, Cast(CONVERT(DECIMAL(10,2),max(p.total_ttc)) as nvarchar) total_ttc from commerce_purchase_receive_order p "
+                //                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid  "
+                //                      + " where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 5 and 1 = 1 ";
+
+                //strSql += strWhr + string.Format(" group by  p.ref  order by RicD desc");
+
+
+
+                //dt = SQLHelper.ExecuteDataTable(strSql, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static List<ReportsModel> GetProductListDetails(string from_date, string to_date, string Empid)
+        {
+            List<ReportsModel> _list = new List<ReportsModel>();
+            try
+            {
+         
+
+                ReportsModel productsModel = new ReportsModel();
+                string strWhr = string.Empty;
+                 
+                        SqlParameter[] parameters =
+                        {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@id", Empid),
+                     new SqlParameter("@todate", to_date)
+                };
+                        string strSQl = "erp_totaldetails_List";
+                        //strSQl += ";";
+                        SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                        while (sdr.Read())
+                        {
+                            productsModel = new ReportsModel();
+                            if (sdr["Users"] != DBNull.Value)
+                                productsModel.SalesFigure = Convert.ToInt32(sdr["Users"]);
+                            else
+                                productsModel.SalesFigure = 0;                         
+
+                            if (sdr["Day Index"] != DBNull.Value)
+                                productsModel.Month = sdr["Day Index"].ToString();
+                            else
+                                productsModel.Month = string.Empty;
+
+
+                            _list.Add(productsModel);
+                        }
+                    }
+                
+            
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
     }
 }

@@ -75,7 +75,36 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+       [HttpGet]
+        public ActionResult ExceptionLog()
+        {
+            string datepath = System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString();
+            string[] texts = System.IO.File.ReadAllLines(Server.MapPath("~/AppLog/ExpectionLog"+datepath+".txt"));
+            ViewBag.Data = texts;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ExceptionLog(FormCollection collection)
+        {
+            DateTime datepath = Convert.ToDateTime(collection["txtLogDate"]);
+            string date = datepath.ToString("yyyyMMd");
+            string path = @"~/AppLog/ExpectionLog" + date + ".txt";
+            if (System.IO.File.Exists(Server.MapPath(path)))
+            {
+                string[] texts = System.IO.File.ReadAllLines(Server.MapPath("~/AppLog/ExpectionLog" + date + ".txt"));
+                ViewBag.Data = texts;
+                return View();
+            }
+            else
+            {
+               
+                string[] message = { "No Record Found!" };
+                ViewBag.Data = message;
+                return View();
+            }
 
+                
+        }
         public ActionResult OrderShippingRule()
         {
             return View();

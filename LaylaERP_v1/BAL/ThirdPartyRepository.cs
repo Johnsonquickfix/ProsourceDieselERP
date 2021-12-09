@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System;
 using System.Data;
 using System.Text;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -11,11 +12,12 @@ namespace LaylaERP.BAL
     {
         public int AddNewVendorBasicInfo(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
-                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal); SELECT SCOPE_IDENTITY();";
+                 strsql = "vendorbasicinfo";
+                //strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
+                //    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@vendor_type", model.vendor_type),
@@ -38,65 +40,73 @@ namespace LaylaERP.BAL
                     new SqlParameter("@Workinghours", model.Workinghours ?? (object)DBNull.Value),
                     new SqlParameter("@VendorStatus", model.VendorStatus),
                     new SqlParameter("@NatureofJournal", model.NatureofJournal),
+                     new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
+                    new SqlParameter("@nature", model.NatureofJournal),
+                    new SqlParameter("@active", model.VendorStatus),
+                     new SqlParameter("@qflag", "AVBI"),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
+
                 throw Ex;
             }
         }
-        public int AddJournal(ThirdPartyModel model, int id)
-        {
-            try
-            {
-                string strsql = "";
-                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT SCOPE_IDENTITY();";
-                SqlParameter[] para =
-                {
-                    new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
-                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
-                    new SqlParameter("@nature", model.NatureofJournal),
-                    new SqlParameter("@active", model.VendorStatus),
-                    new SqlParameter("@VendorID", id),
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
-        public int EditJournal(ThirdPartyModel model)
-        {
-            try
-            {
-                string strsql = "";
-                strsql = "Update erp_accounting_journal set code=@code,label=@label,nature=@nature,active=@active where VendorID=@ID;";
-                SqlParameter[] para =
-                {
-                    new SqlParameter("@ID", model.rowid),
-                    new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
-                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
-                    new SqlParameter("@nature", model.NatureofJournal),
-                    new SqlParameter("@active", model.VendorStatus),
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
+        //public int AddJournal(ThirdPartyModel model, int id)
+        //{
+        //    try
+        //    {
+        //        string strsql = "";
+        //        strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT SCOPE_IDENTITY();";
+        //        SqlParameter[] para =
+        //        {
+        //            new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+        //            new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
+        //            new SqlParameter("@nature", model.NatureofJournal),
+        //            new SqlParameter("@active", model.VendorStatus),
+        //            new SqlParameter("@VendorID", id),
+        //        };
+        //        int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+        //        return result;
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
+        //public int EditJournal(ThirdPartyModel model)
+        //{
+        //    try
+        //    {
+        //        string strsql = "";
+        //        strsql = "Update erp_accounting_journal set code=@code,label=@label,nature=@nature,active=@active where VendorID=@ID;";
+        //        SqlParameter[] para =
+        //        {
+        //            new SqlParameter("@ID", model.rowid),
+        //            new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+        //            new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
+        //            new SqlParameter("@nature", model.NatureofJournal),
+        //            new SqlParameter("@active", model.VendorStatus),
+        //        };
+        //        int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+        //        return result;
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
         public int EditVendorBasicInfo(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
                 //string strsql = "update wp_vendor set vendor_type=@vendor_type,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
-                string strsql = "vendorbasicinfo";
+                 strsql = "vendorbasicinfo";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@qflag", "U"),
@@ -120,6 +130,10 @@ namespace LaylaERP.BAL
                     new SqlParameter("@Workinghours", model.Workinghours),
                     new SqlParameter("@VendorStatus", model.VendorStatus),
                     new SqlParameter("@NatureofJournal", model.NatureofJournal),
+                    new SqlParameter("@code", model.VendorCode ?? (object)DBNull.Value),
+                    new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
+                    new SqlParameter("@nature", model.NatureofJournal),
+                    new SqlParameter("@active", model.VendorStatus),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -127,19 +141,23 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
+
                 throw Ex;
             }
         }
         public int AddVendorAdditionalInfo(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "update wp_vendor set CorAddress1=@CorAddress1,CorAddress2=@CorAddress2,CorCity=@CorCity,CorState=@CorState,CorZipCode=@CorZipCode,CorCountry=@CorCountry," +
-                    "CorPhone = @CorPhone,fk_workforce = @fk_workforce,fk_business_entity = @fk_business_entity, note_public = @note_public,note_private = @note_private where rowid=@rowid;";
+                strsql = "vendorbasicinfo";
+                //strsql = "update wp_vendor set CorAddress1=@CorAddress1,CorAddress2=@CorAddress2,CorCity=@CorCity,CorState=@CorState,CorZipCode=@CorZipCode,CorCountry=@CorCountry," +
+                //    "CorPhone = @CorPhone,fk_workforce = @fk_workforce,fk_business_entity = @fk_business_entity, note_public = @note_public,note_private = @note_private where rowid=@rowid;";
                 SqlParameter[] para =
                 {
-                     new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@qflag", "AVAI"),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@CorAddress1", model.CorAddress1 ?? (object)DBNull.Value),
                     new SqlParameter("@CorAddress2", model.CorAddress2 ?? (object)DBNull.Value),
                     new SqlParameter("@CorCity", model.CorCity ?? (object)DBNull.Value),
@@ -157,18 +175,22 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }
         public int AddVendorPaymentTerms(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "Update wp_vendor set capital=@capital,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms," +
-                    "Currency = @Currency,CreditLimit = @CreditLimit,outstanding_limit = @outstanding_limit,MinimumOrderQuanity = @MinimumOrderQuanity,order_min_amount = @order_min_amount where rowid=" + model.rowid + "";
+                 strsql = "vendorbasicinfo";
+                //strsql = "Update wp_vendor set capital=@capital,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms," +
+                //    "Currency = @Currency,CreditLimit = @CreditLimit,outstanding_limit = @outstanding_limit,MinimumOrderQuanity = @MinimumOrderQuanity,order_min_amount = @order_min_amount where rowid=" + model.rowid + "";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "AVPT"),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@capital", model.Capital ?? (object)DBNull.Value),
                     new SqlParameter("@PaymentTermsID", model.PaymentTermsID),
                     new SqlParameter("@BalanceID", model.BalanceID),
@@ -185,14 +207,16 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/"+ model.rowid + "",strsql);
                 throw Ex;
             }
         }
         public int AddVendorShipping(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
+               
                 strsql = "Insert into erp_VendorShippingMethod(VendorID,ShippingMethodID,FedexAccountNumber,FedexMeterNumber,FedexWebServicesKey,FedexWebServicesPassword,FedexMethodType,FedexMethodEnable," +
                     "FedexCustomServices,FedexDebugMode,UPSUserID,UPSPassword,UPSAccessKey,UPSAccountNumber,UPSOriginPostcode,UPSOriginCountry,UPSAPILicenceKey," +
                     "UPSLicenceEmail,UPSEnable,UPSMeasurementUnits,UPSEnableDebugMode,USPSEnable,USPSPostcode,USPSUserID,USPSCommercialrates,USPSPacking,USPSPriorityMailExpressTitle," +
@@ -263,14 +287,16 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor", strsql);
                 throw Ex;
             }
         }
         public int EditVendorShipping(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
+               
                 strsql = "Update erp_VendorShippingMethod set VendorID=@VendorID,ShippingMethodID=@ShippingMethodID,FedexAccountNumber=@FedexAccountNumber,FedexMeterNumber=@FedexMeterNumber,FedexWebServicesKey=@FedexWebServicesKey,FedexWebServicesPassword=@FedexWebServicesPassword,FedexMethodType=@FedexMethodType,FedexMethodEnable=@FedexMethodEnable," +
                     "FedexCustomServices = @FedexCustomServices,FedexDebugMode = @FedexDebugMode,UPSUserID = @UPSUserID,UPSPassword = @UPSPassword,UPSAccessKey = @UPSAccessKey,UPSAccountNumber = @UPSAccountNumber,UPSOriginPostcode = @UPSOriginPostcode,UPSOriginCountry = @UPSOriginCountry,UPSAPILicenceKey = @UPSAPILicenceKey," +
                     "UPSLicenceEmail = @UPSLicenceEmail,UPSEnable = @UPSEnable,UPSMeasurementUnits = @UPSMeasurementUnits,UPSEnableDebugMode = @UPSEnableDebugMode,USPSEnable = @USPSEnable,USPSPostcode = @USPSPostcode,USPSUserID = @USPSUserID,USPSCommercialrates = @USPSCommercialrates,USPSPacking = @USPSPacking,USPSPriorityMailExpressTitle = @USPSPriorityMailExpressTitle," +
@@ -335,17 +361,20 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }
         public int UpdateVendorShipping(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "update wp_vendor set fk_shipping_method=@fk_shipping_method,ShippingRate=@ShippingRate,ShippingLocation=@ShippingLocation where rowid=@rowid";
+                strsql = "vendorbasicinfo";
+                //strsql = "update wp_vendor set fk_shipping_method=@fk_shipping_method,ShippingRate=@ShippingRate,ShippingLocation=@ShippingLocation where rowid=@rowid";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "AVSI"),
                      new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@fk_shipping_method", model.ShippingMethodID ),
                     new SqlParameter("@ShippingRate", model.ShippingRate ),
@@ -356,17 +385,22 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }
         public int AddVendorTaxes(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "update wp_vendor set TaxMethod=@TaxMethod,DefaultTax=@DefaultTax,ShippingTax=@ShippingTax,CalculatedTax=@CalculatedTax,ShippingTaxIncludedinprice = @ShippingTaxIncludedinprice,TaxIncludedinPrice = @TaxIncludedinPrice where rowid=" + model.rowid + "";
+                 strsql = "vendorbasicinfo";
+                //strsql = "update wp_vendor set TaxMethod=@TaxMethod,DefaultTax=@DefaultTax,ShippingTax=@ShippingTax,CalculatedTax=@CalculatedTax,ShippingTaxIncludedinprice = @ShippingTaxIncludedinprice,TaxIncludedinPrice = @TaxIncludedinPrice where rowid=" + model.rowid + "";
                 SqlParameter[] para =
                 {
+                    
+                    new SqlParameter("@qflag", "AVTI"),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@TaxMethod", model.TaxMethod),
                     new SqlParameter("@DefaultTax", model.DefaultTax),
                     new SqlParameter("@ShippingTax", model.ShippingTax  ?? (object)DBNull.Value),
@@ -379,17 +413,21 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor", strsql);
                 throw Ex;
             }
         }
         public int AddVendorDiscount(ThirdPartyModel model)
         {
+            string strsql = "";
             try
             {
-                string strsql = "";
-                strsql = "Update wp_vendor set DiscountType1=@DiscountType1,DefaultDiscount=@DefaultDiscount,DiscountMinimumOrderAmount=@DiscountMinimumOrderAmount,AccountName = @AccountName,AccountEmail = @AccountEmail,DiscountType2 = @DiscountType2,Discount = @Discount where rowid=" + model.rowid + "";
+               strsql = "vendorbasicinfo";
+                //strsql = "Update wp_vendor set DiscountType1=@DiscountType1,DefaultDiscount=@DefaultDiscount,DiscountMinimumOrderAmount=@DiscountMinimumOrderAmount,AccountName = @AccountName,AccountEmail = @AccountEmail,DiscountType2 = @DiscountType2,Discount = @Discount where rowid=" + model.rowid + "";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "AVDI"),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@DiscountType1", model.DiscountType1 ?? (object)DBNull.Value),
                     new SqlParameter("@DefaultDiscount", model.DefaultDiscount),
                     new SqlParameter("@DiscountMinimumOrderAmount", model.DiscountMinimumOrderAmount),
@@ -403,6 +441,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }
@@ -410,15 +449,16 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "insert into wp_VendorPaymentDetails(VendorID,Paymentmethod,BankAccountName,BankAccountNumber,BankName,BankRoutingNumber," +
-                    "BankIBAN,BankSwift,ChequeTitle,ChequeDescription,ChequeInstructions,PaypalInvoiceAPIUsername,PaypalInvoiceAPIPassword,PaypalInvoiceAPISignature,PaypalTitle,PaypalDescription,PaypalEmail,PaypalProduction," +
-                    "PaypalIPNEmailNotification,PaypalReceiverEmail,PaypalIdentitytoken,PaypalPaymentAction,PaypalAPIUserName,PaypalAPIPassword,PaypalAPISignature) " +
-                    "Values(" + model.rowid + ", @Paymentmethod, @BankAccountName, @BankAccountNumber, @BankName, @BankRoutingNumber, @BankIBAN, @BankSwift, @ChequeTitle, @ChequeDescription, @ChequeInstructions," +
-                    "@PaypalInvoiceAPIUsername, @PaypalInvoiceAPIPassword, @PaypalInvoiceAPISignature, @PaypalTitle, @PaypalDescription, @PaypalEmail, @PaypalProduction," +
-                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature); SELECT SCOPE_IDENTITY();";
+                //string strsql = "";
+                //strsql = "insert into wp_VendorPaymentDetails(VendorID,Paymentmethod,BankAccountName,BankAccountNumber,BankName,BankRoutingNumber," +
+                //    "BankIBAN,BankSwift,ChequeTitle,ChequeDescription,ChequeInstructions,PaypalInvoiceAPIUsername,PaypalInvoiceAPIPassword,PaypalInvoiceAPISignature,PaypalTitle,PaypalDescription,PaypalEmail,PaypalProduction," +
+                //    "PaypalIPNEmailNotification,PaypalReceiverEmail,PaypalIdentitytoken,PaypalPaymentAction,PaypalAPIUserName,PaypalAPIPassword,PaypalAPISignature) " +
+                //    "Values(" + model.rowid + ", @Paymentmethod, @BankAccountName, @BankAccountNumber, @BankName, @BankRoutingNumber, @BankIBAN, @BankSwift, @ChequeTitle, @ChequeDescription, @ChequeInstructions," +
+                //    "@PaypalInvoiceAPIUsername, @PaypalInvoiceAPIPassword, @PaypalInvoiceAPISignature, @PaypalTitle, @PaypalDescription, @PaypalEmail, @PaypalProduction," +
+                //    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "AVPM"),
                     new SqlParameter("@Paymentmethod", model.Paymentmethod ?? (object)DBNull.Value),
                     new SqlParameter("@BankAccountName", model.BankAccountName ?? (object)DBNull.Value),
                     new SqlParameter("@BankAccountNumber", model.BankAccountNumber ?? (object)DBNull.Value),
@@ -444,7 +484,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@PaypalAPIPassword",model.PaypalAPIPassword ?? (object)DBNull.Value),
                     new SqlParameter("@PaypalAPISignature",model.PaypalAPISignature ?? (object)DBNull.Value),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("vendorbasicinfo", para));
                 return result;
             }
             catch (Exception Ex)
@@ -490,14 +530,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT SCOPE_IDENTITY();";
+                //string strsql = "";
+                //strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "AWFV"),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@WarehouseID", model.WarehouseID),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("vendorbasicinfo", para));
                 return result;
             }
             catch (Exception Ex)
@@ -509,14 +550,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "delete from wp_VendorWarehouse where ID=@WarehouseID and VendorID=@VendorID;";
+                //string strsql = "";
+                //strsql = "delete from wp_VendorWarehouse where ID=@WarehouseID and VendorID=@VendorID;";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@VendorID", model.rowid),
+                    new SqlParameter("@qflag", "DWFV"),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@WarehouseID", model.VendorWarehouseID),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("vendorbasicinfo", para));
                 return result;
             }
             catch (Exception Ex)
@@ -528,14 +570,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "delete from erp_VendorLinkedFiles where ID=@VendorLinkedFilesID and VendorID=@VendorID;";
+                //string strsql = "";
+                //strsql = "delete from erp_VendorLinkedFiles where ID=@VendorLinkedFilesID and VendorID=@VendorID;";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "DVLF"),
                     new SqlParameter("@VendorID", model.rowid),
-                    new SqlParameter("@VendorLinkedFilesID", model.VendorLinkedFilesID),
+                    new SqlParameter("@rowid", model.VendorLinkedFilesID),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("vendorbasicinfo", para));
                 return result;
             }
             catch (Exception Ex)
@@ -595,7 +638,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                     new SqlParameter("@qflag", "U"),
-                    new SqlParameter("@VendorID", model.rowid),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@Paymentmethod", model.Paymentmethod),
                     new SqlParameter("@BankAccountName", model.BankAccountName),
                     new SqlParameter("@BankAccountNumber", model.BankAccountNumber),
@@ -1160,5 +1203,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+      
     }
 }

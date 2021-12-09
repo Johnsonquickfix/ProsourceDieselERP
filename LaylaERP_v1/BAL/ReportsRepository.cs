@@ -6,7 +6,6 @@ using System.Linq;
 using System.Web;
 using LaylaERP.DAL;
 using LaylaERP.Models;
-using LaylaERP_v1.Models;
 
 namespace LaylaERP.BAL
 {

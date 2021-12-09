@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.Models;
-using LaylaERP_v1.Models;
 using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers

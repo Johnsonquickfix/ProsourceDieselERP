@@ -14,63 +14,120 @@
     <h2 class="page-heading">Forecast Inventory</h2>
 </div>
 <section class="content section-content neworder-section">
-    <div class="row index_col_row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <select class="form-control select2" id="ddlVendorList" placeholder="Select Vendor" style="width: 100%;"></select>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
-            </div>
-        </div>
-        <div class="col-md-3">
-            <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label></label>
-                <input class="form-control" type="text" id="txtsaldate" style="display:none" />
-            </div>
-        </div>
-    </div>
-    <!-- end top-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="dtForecastReportList" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Product</th>
-                                        <th>In Stock</th>
-                                        <th>Previous Month Sale</th>
-                                        <th>Projected Daily Velocity</th>
-                                        <th>Remaining Days</th>
-                                        <th>Run Out Date</th>
-                                        <th>Projected Weekly Velocity</th>
-                                        <th>Projected Monthly Velocity</th>
-                                    </tr>
-                                </thead>
-                            </table>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Forecast invetory</span></a></li>
+            @*<li><a href="#tab_2" data-toggle="tab"><span title="Bank Entries" data-placement="bottom" data-toggle="tooltip">Forecast inventory of all product</span></a></li>*@
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="row index_col_row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control select2" id="ddlVendorList" placeholder="Select Vendor" style="width: 100%;"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label></label>
+                            <input class="form-control" type="text" id="txtsaldate" style="display:none" />
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <div class="row">
-                        <div class="col-sm-12 inventory-btn">
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="dtForecastReportList" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Product</th>
+                                                    <th>In Stock</th>
+                                                    <th>Previous Month Sale</th>
+                                                    <th>Projected Daily Velocity</th>
+                                                    <th>Remaining Days</th>
+                                                    <th>Run Out Date</th>
+                                                    <th>Projected Weekly Velocity</th>
+                                                    <th>Projected Monthly Velocity</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <div class="row">
+                                    <div class="col-sm-12 inventory-btn">
 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_2">
+                <div class="row index_col_row">
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtForecastDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="dtForecastReportAllList" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Product</th>
+                                                    <th>In Stock</th>
+                                                    <th>Previous Month Sale</th>
+                                                    <th>Projected Daily Velocity</th>
+                                                    <th>Remaining Days</th>
+                                                    <th>Run Out Date</th>
+                                                    <th>Projected Weekly Velocity</th>
+                                                    <th>Projected Monthly Velocity</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <div class="row">
+                                    <div class="col-sm-12 inventory-btn">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+     </div>
 </section>
 <script>
     $(document).ready(function () {

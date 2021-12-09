@@ -765,6 +765,7 @@ function getOrderItemList(oid) {
                 zQty = zQty + (parseFloat(row.quantity) || 0.00);
                 zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
                 zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
+                zTDiscount = zTDiscount + row.discount;
             }
             else if (row.product_type == 'coupon') {
                 let cou_amt = parseFloat(row.discount) || 0.00;
@@ -798,7 +799,7 @@ function getOrderItemList(oid) {
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
-                zTDiscount = zTDiscount + cou_amt;
+                //zTDiscount = zTDiscount + cou_amt;
             }
             else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
                 recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
@@ -847,6 +848,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'tax') { $("#salesTaxTotal").data("orderitemid", orderitemid); }
             else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardRefundAmt += row.total; }
         });
+        console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
@@ -854,8 +856,8 @@ function getOrderItemList(oid) {
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
-        $("#salesTaxTotal").text(zTotalTax.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
+        $("#salesTaxTotal").text(zTotalTax.toFixed(2));        
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));

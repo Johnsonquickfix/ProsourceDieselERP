@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,14 +37,18 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                
                 if (model.rowid > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Update, "Edit Vendor Basic Info", "/ThirdParty/NewVendor/" + model.rowid+"" + ", " + Net.BrowserInfo);
                     new ThirdPartyRepository().EditVendorBasicInfo(model);
                     //new ThirdPartyRepository().EditJournal(model);
                     return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Add Vendor Basic Info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                     int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
                     if (ID > 0)
                     {
@@ -606,6 +611,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
+        [HttpPost]
+        public JsonResult ActivityDbLog(ActivityLogModel model)
+        {
+            string strmsg = "Log done";
+            try
+            {
+                UserActivityLog.WriteDbLog(LogType.Visit, model.ModuleName, model.ModuleURL + ", " + Net.BrowserInfo);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message }, 0);
+            }
+            return Json(new { message = strmsg }, 0);
+        }
     }
 }

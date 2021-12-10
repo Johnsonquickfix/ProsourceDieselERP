@@ -37,7 +37,7 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Add vendor Basic Info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save Basic Info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                 if (model.rowid > 0)
                 {
                     new ThirdPartyRepository().EditVendorBasicInfo(model);

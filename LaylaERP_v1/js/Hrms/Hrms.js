@@ -731,10 +731,13 @@ function setupAutocomplete(inputs) {
             cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'txtCountry', cState = 'txtState';
         else
             cAdd1 = 'txtAlternateAddress1', cZipCode = 'txtAlternateZipCode', cCity = 'txtAlternateCity', cCountry = 'txtAlternateCountry', cState = 'txtAlternateState';
+
+
         let obj = place.address_components.filter(element => element.types[0] == 'street_number');
         if (obj.length > 0)
             address = obj[0].long_name;
         obj = place.address_components.filter(element => element.types[0] == 'route');
+
         if (obj.length > 0)
             address = address + ' ' + obj[0].long_name;
         $("#" + cAdd1).val(address);
@@ -750,9 +753,9 @@ function setupAutocomplete(inputs) {
             $("#" + cCity).val('');
         obj = place.address_components.filter(element => element.types[0] == 'country');
         if (obj.length > 0)
-            $("#" + cCountry).val(obj[0].short_name).trigger('change');
+            $("#" + cCountry).val(obj[0].short_name);
         else
-            $("#" + cCountry).val('US').trigger('change');
+            $("#" + cCountry).val('US');
         obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
         if (obj.length > 0)
             $("#" + cState).val(obj[0].long_name);

@@ -99,8 +99,9 @@ function reset() {
 }
 //~~~~~~~~~~~~~~~~~~~End correct stock
 */
-
+//------------Warehouse additional info-------------------------------
 function AddWarehouseinfo() {
+    debugger
     //Additional info
     rowid = $("#hfid").val();
     corphone = $("#txtCorContact").val();
@@ -111,45 +112,57 @@ function AddWarehouseinfo() {
     corzip = $("#txtCorZipCode").val();
     corcountry = $("#txtCorCountry").val();
     publicnote = $("#txtpublic").val();
-    privatenote = $("#txtprivate").val();
 
-    var obj = {
-        rowid: rowid,
-        cor_phone: corphone,
-        cor_address: coraddress,
-        cor_address1: coraddress1,
-        cor_city: corcity,
-        cor_state: corstate,
-        cor_zip: corzip,
-        cor_country: corcountry,
-        note_public: publicnote,
-        note_private: privatenote,
-
+    if (coraddress == "") {
+        swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtCorAddress').focus(); });
     }
-    $.ajax({
-        url: '/Warehouse/Updatewarehousesinfo/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            if (data.status == true) {
-                //$('#parent > input:text').val('');
-                swal('Alert!', data.message, 'success');
-            }
-            else {
-                swal('Alert!', data.message, 'error');
-            }
-        },
-        complete: function () {
-            $("#loader").hide();
-            isEdit(false);
-        },
-        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-    })
+    else if (corcity == "") {
+        swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); });
+    }
+    else if (corstate == "") {
+        swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtCorState').focus(); });
+    }
+    else if (corzip == "") {
+        swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
+    }
 
+    else {
+        var obj = {
+            warehouse_id: rowid,
+            cor_phone: corphone,
+            cor_address: coraddress,
+            cor_address1: coraddress1,
+            cor_city: corcity,
+            cor_state: corstate,
+            cor_zip: corzip,
+            cor_country: corcountry,
+            note_public: publicnote,
+
+        }
+        $.ajax({
+            url: '/Warehouse/Addwarehousesinfo/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    WarehouseAddressInfoList();
+                    resetaddressinfo();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+    }
 }
+//--------------------------Add warehouse info end----------------------------------
 
+//---------Edit warehouse start--------------------------------------
 function AddWarehouse() {
     rowid = $("#hfid").val();
     ref = $("#txtref").val();
@@ -256,7 +269,7 @@ function AddWarehouse() {
     }
 
 }
-
+//------------------Edit warehouse end--------------------------
 /*
 function targetwarehouse() {
     $.get('/Warehouse/Gettargetwarehouse', function (data) {
@@ -1099,7 +1112,7 @@ function ProductWarehouseGrid() {
 
 
 
-// Linked Files program start
+//----------------------------- Linked Files program start------------------
 
 $("#btnupload").click(function () {
     WarehouseID = $("#hfid").val();
@@ -1208,7 +1221,7 @@ function DeleteBankLinkedFiles(id) {
         })
     }
 }
-
+//----------------------------- Linked Files program end-------------------------
 
 
 //----------------Damage Stock Portion------------------
@@ -1496,7 +1509,7 @@ function resetdamagestock() {
 */
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~End Damgage~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+//----------------------Edit warehouse additional info start----------------
 WarehouseAddressInfoList();
 function WarehouseAddressInfoList() {
     var ID = $("#hfid").val();
@@ -1577,7 +1590,8 @@ function EditSelectAddress(id) {
             $('#txtCorAddress').val(jobj[0].address);
             $("#txtCorAddress1").val(jobj[0].address1);
             $("#txtCorCity").val(jobj[0].city);
-            $("#txtCorState").val(jobj[0].state);
+            $("#txtCorState").append('<option value="' + jobj[0].state + '" selected>' + jobj[0].state + '</option>');
+            //$("#txtCorState").select2('').empty().select2({ data: [{ name: d[0].StateFullName, id: d[0].state, text: d[0].StateFullName }] })
             $("#txtCorZipCode").val(jobj[0].zip);
             $("#txtCorCountry").val(jobj[0].country).trigger('change');
             $("#txtpublic").val(jobj[0].note);
@@ -1605,7 +1619,6 @@ function resetaddressinfo() {
     $("#btnResetinfo").show();
 }
 
-
 function EditWarehouseinfo() {
     //Additional info
     rowid = $("#hfaddressid").val();
@@ -1632,36 +1645,39 @@ function EditWarehouseinfo() {
     }
 
     else {
-
-        var obj = {
-            address_id: rowid,
-            cor_phone: corphone,
-            cor_address: coraddress,
-            cor_address1: coraddress1,
-            cor_city: corcity,
-            cor_state: corstate,
-            cor_zip: corzip,
-            cor_country: corcountry,
-            note_public: publicnote,
+        $("#txtCorZipCode").change();
+        if ($("#hfCorZipStatus").val() == "true") {
+            var obj = {
+                address_id: rowid,
+                cor_phone: corphone,
+                cor_address: coraddress,
+                cor_address1: coraddress1,
+                cor_city: corcity,
+                cor_state: corstate,
+                cor_zip: corzip,
+                cor_country: corcountry,
+                note_public: publicnote,
+            }
+            $.ajax({
+                url: '/Warehouse/Editwarehousesinfo/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Success', data.message, 'success');
+                        resetaddressinfo();
+                        WarehouseAddressInfoList();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
         }
-        $.ajax({
-            url: '/Warehouse/Editwarehousesinfo/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Success', data.message, 'success');
-                    resetaddressinfo();
-                    WarehouseAddressInfoList();
-                }
-                else {
-                    swal('Alert!', data.message, 'error');
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
     }
 }
+//----------------------Edit warehouse additional info end---------------------

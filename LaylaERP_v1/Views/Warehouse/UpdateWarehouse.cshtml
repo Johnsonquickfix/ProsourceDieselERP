@@ -260,6 +260,7 @@
                 <div class="create-user-box">
                     <!-- /.col -->
                     <input type="hidden" id="hfaddressid" />
+                    <input type="hidden" id="hfCorZipStatus" />
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="box box-primary">
@@ -270,6 +271,7 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                         <label for="exampleInputEmail1">Address<span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="txtCorAddress" placeholder="Enter Address ">
                                     </div>
@@ -286,7 +288,9 @@
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">State<span style="color:red">*</span></label>
-                                        <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" />
+                                        @*<input type="text" id="txtCorState" class="form-control" placeholder="Enter State" />*@
+                                        <select class="form-control" id="txtCorState" style="width:100%">
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +308,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Country</label>
+                                        <label for="exampleInputEmail1">Country<span style="color:red">*</span></label>
                                         <select class="form-control" id="txtCorCountry">
                                             <option value="US">US - United States</option>
                                             <option value="CA">CA - Canada</option>
@@ -988,6 +992,27 @@
             }
         });
 
+        //---------------------Additional info-----------------------------------
+        $("#txtCorState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/Users/GetCustState/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#txtCorCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+        //-------------------------End state
         /*
                 var warehouseid = $("#hfid").val();
                 $('#ddlProduct').select2({
@@ -1016,7 +1041,7 @@
         //Select 2 javascript end
 
         //For zip code javascript
-        
+
 
 
         $(".select1").select2();
@@ -1026,7 +1051,7 @@
         isEdit(true);
 
     });
- //document.ready end
+    //document.ready end
 
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -1064,7 +1089,7 @@
 
     //for phone number format javascript end
 
-     //For Zip Code javascript end
+    //For Zip Code javascript end
     $('#txtState').change(function () {
         if ($("#txtZipCode").val() != '' && $("#txtState").val() != null) {
             City = $("#txtCity").val();
@@ -1147,6 +1172,82 @@
             swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
         }
     });
+
+    //--------------------------------Zip code for additional info page--------------------------
+    $('#txtCorZipCode').change(function () {
+        City = $("#txtCorCity").val();
+        State = $("#txtCorState").val();
+        PostalCode = $("#txtCorZipCode").val();
+        var obj = {
+            billing_state: State,
+            billing_city: City,
+            billing_postcode: PostalCode
+        }
+        $.ajax({
+            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.status == true) {
+
+                    $('#hfCorZipStatus').val(data.status);
+
+                }
+                else {
+                    if ($('#txtCorCountry').val() == "US") {
+                        $("#txtCorZipCode").val("");
+                        $('#hfCorZipStatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
+                    }
+                }
+            },
+
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    });
+
+    $('#txtCorState').change(function () {
+        if ($("#txtCorZipCode").val() != '' && $("#txtCorState").val() != null) {
+            City = $("#txtCorCity").val();
+            State = $("#txtCorState").val();
+            PostalCode = $("#txtCorZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.status == true) {
+
+                        $('#hfCorZipStatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#txtCorCountry').val() == "US") {
+                            $("#txtCorZipCode").val("");
+                            $('#hfCorZipStatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+    });
+
 </script>
 
 
@@ -1210,7 +1311,7 @@
         $("#txtAddress1").val('');
 
     })
-   
+
 </script>
 
 <script>
@@ -1263,9 +1364,57 @@
         });
     }
 </script>
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtCorAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
 
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtCorAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCorCity").val(obj[0].long_name);
+            else
+                $("#txtCorCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                $("#txtCorZipCode").val(obj[0].long_name);
+            else
+                $("#txtCorZipCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            if (obj.length > 0)
+                $("#txtCorState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtCorState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $("#txtCorCountry").val(obj[0].short_name);
+            else
+                $("#txtCorCountry").empty();
+        }
+    }
+</script>
 
 <script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Warehouse/vendorwarehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <!-- Google API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>

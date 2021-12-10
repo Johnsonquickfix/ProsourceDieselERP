@@ -712,7 +712,7 @@ namespace LaylaERP.Controllers
             int ID = WarehouseRepository.Addwarehousesinfo(model);
             if (ID > 0)
             {
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Warehouse additional info saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -741,7 +741,7 @@ namespace LaylaERP.Controllers
             {
                 WarehouseRepository.Editwarehousesinfo(model);
                 ModelState.Clear();
-                return Json(new { status = true, message = "Data has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Warehouse additional info updated successfully!!", url = "" }, 0);
             }
             else
             {

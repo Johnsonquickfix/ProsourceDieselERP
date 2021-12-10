@@ -848,7 +848,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'tax') { $("#salesTaxTotal").data("orderitemid", orderitemid); }
             else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardRefundAmt += row.total; }
         });
-        console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt);
+        //console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);

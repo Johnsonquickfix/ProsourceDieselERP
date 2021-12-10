@@ -2209,7 +2209,7 @@ function updatePayment(oid, taskUid) {
 function createPaypalXML(oid, pp_no, pp_email) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00;
+    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00; let note = $('#txtCustomerNotes').val(); note = (note != '' ? note : 'Layla Invoice.');
     let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
@@ -2230,7 +2230,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
     });
     let paupal_xml = {
         //id: inv_id, status: "DRAFT",
-        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
+        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: note, payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },

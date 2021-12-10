@@ -1,17 +1,5 @@
 ﻿$(document).ready(function () {
     $("#txtbillphone").mask("(999) 999-9999");
-    CategoryWiseProducts();
-    $(".addnvar,.addnvar-qty").change(function (t) {
-        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
-        let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
-        $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
-    });
-    $(".agentaddtocart").click(function (t) {
-        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
-        let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
-        if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
-        getItemList(pid, vid, qty);
-    });
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -79,7 +67,19 @@
             }
         });
     });
-    getOrderInfo();
+    $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
+    $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
+        else if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span></span>')
+    });
+    $(document).on("click", ".agentaddtocart", function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
+        getItemList(pid, vid, qty);
+    });
     $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
         t.preventDefault();
         let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
@@ -857,7 +857,7 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
-        $("#salesTaxTotal").text(zTotalTax.toFixed(2));        
+        $("#salesTaxTotal").text(zTotalTax.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));

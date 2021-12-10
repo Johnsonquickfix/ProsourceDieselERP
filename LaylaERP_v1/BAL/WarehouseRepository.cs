@@ -350,15 +350,15 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                {
                     //additional info
-                    new SqlParameter("@cor_phone", model.cor_phone),
-                    new SqlParameter("@cor_address", model.cor_address),
-                    new SqlParameter("@cor_address1", model.cor_address1),
-                    new SqlParameter("@cor_city", model.cor_city),
-                    new SqlParameter("@cor_state", model.cor_state),
-                    new SqlParameter("@cor_zip", model.cor_zip),
-                    new SqlParameter("@cor_country", model.cor_country),
-                    new SqlParameter("@note_public", model.note_public),
-                    new SqlParameter("@note_private", model.note_private),
+                    new SqlParameter("@cor_phone", model.cor_phone ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address", model.cor_address ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address1", model.cor_address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_city", model.cor_city ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_state", model.cor_state ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_zip", model.cor_zip ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_country", model.cor_country ?? (object)DBNull.Value),
+                    new SqlParameter("@note_public", model.note_public ?? (object)DBNull.Value),
+                    new SqlParameter("@note_private", model.note_private ?? (object)DBNull.Value),
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

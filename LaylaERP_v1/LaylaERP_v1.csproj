@@ -265,7 +265,6 @@
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AppLog\ExpectionLog2021128.txt" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\bootstrap-datepicker\dist\css\bootstrap-datepicker.min.css" />
@@ -1031,6 +1030,7 @@
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Files\" />
   </ItemGroup>

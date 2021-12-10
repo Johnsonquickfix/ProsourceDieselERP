@@ -1,17 +1,5 @@
 ﻿$(document).ready(function () {
     $("#txtbillphone").mask("(999) 999-9999");
-    CategoryWiseProducts();
-    $(".addnvar,.addnvar-qty").change(function (t) {
-        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
-        let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
-        $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
-    });
-    $(".agentaddtocart").click(function (t) {
-        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
-        let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
-        if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
-        getItemList(pid, vid, qty);
-    });
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -79,7 +67,19 @@
             }
         });
     });
-    getOrderInfo();
+    $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
+    $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
+        else if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span></span>')
+    });
+    $(document).on("click", ".agentaddtocart", function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
+        getItemList(pid, vid, qty);
+    });
     $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
         t.preventDefault();
         let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
@@ -848,7 +848,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'tax') { $("#salesTaxTotal").data("orderitemid", orderitemid); }
             else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardRefundAmt += row.total; }
         });
-        console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt);
+        //console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
@@ -857,7 +857,7 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
-        $("#salesTaxTotal").text(zTotalTax.toFixed(2));        
+        $("#salesTaxTotal").text(zTotalTax.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));
@@ -2209,7 +2209,7 @@ function updatePayment(oid, taskUid) {
 function createPaypalXML(oid, pp_no, pp_email) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00;
+    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00; let note = $('#txtCustomerNotes').val(); note = (note != '' ? note : 'Layla Invoice.');
     let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
@@ -2230,7 +2230,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
     });
     let paupal_xml = {
         //id: inv_id, status: "DRAFT",
-        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
+        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: note, payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },

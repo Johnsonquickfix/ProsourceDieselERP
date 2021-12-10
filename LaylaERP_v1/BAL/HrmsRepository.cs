@@ -191,15 +191,14 @@ namespace LaylaERP.BAL
             }
         }
         //Add customers
-        public static int AddNewEmployeeasUser(HrmsModel model, byte[] image)
+        public static DataTable AddNewEmployeeasUser(HrmsModel model, byte[] image)
         {
             try
             {
-            
                 model.pwd = EncryptedPwd(model.pwd);
                 string username = model.firstname + " " + model.lastname;
-
-                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
+                //string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
+                string strsql = "erp_Employee";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_login", model.email),
@@ -209,9 +208,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
                     new SqlParameter("@display_name", username),
                     new SqlParameter("@user_image", image),
+                    new SqlParameter("@qflag", "I"),
                 };
-
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                DataTable result = SQLHelper.ExecuteDataTable(strsql, para);
                 return result;
             }
             catch (Exception Ex)
@@ -441,14 +440,14 @@ namespace LaylaERP.BAL
 
                 long id = CommanUtilities.Provider.GetCurrent().UserID;
 
-                if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
-                {
+                //if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
+                //{
                     strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where 1=1 ";
-                }
-                else
-                {
-                    strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where fk_user='" + id + "' ";
-                }
+                //}
+                //else
+                //{
+                //    strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where fk_user='" + id + "' ";
+                //}
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(firstname,' ',lastname) like '%" + searchid + "%' OR email like '%" + searchid + "%' OR phone like '%" + searchid + "%')";

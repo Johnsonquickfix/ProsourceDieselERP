@@ -194,11 +194,11 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                int UserID = HrmsRepository.AddNewEmployeeasUser(model, image);
-                if (UserID > 0)
+                DataTable dt = HrmsRepository.AddNewEmployeeasUser(model, image);
+                if (Convert.ToInt32(dt.Rows[0]["userid"]) > 0)
                 {
-                    AddEmployeeMetaData(model,UserID);
-                    int ID = HrmsRepository.AddEmployeeBasicInfo(model, UserID);
+                    AddEmployeeMetaData(model, Convert.ToInt32(dt.Rows[0]["userid"]));
+                    int ID = HrmsRepository.AddEmployeeBasicInfo(model, Convert.ToInt32(dt.Rows[0]["userid"]));
                     if (ID > 0)
                     {
                         HrmsRepository.AddEmployeeBasicDetails(model, ID);
@@ -208,7 +208,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    return Json(new { status = false, message = dt.Rows[0]["ErrorMessage"], url = "" }, 0);
                 }
             }
         }

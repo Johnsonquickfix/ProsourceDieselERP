@@ -191,15 +191,14 @@ namespace LaylaERP.BAL
             }
         }
         //Add customers
-        public static int AddNewEmployeeasUser(HrmsModel model, byte[] image)
+        public static DataTable AddNewEmployeeasUser(HrmsModel model, byte[] image)
         {
             try
             {
-            
                 model.pwd = EncryptedPwd(model.pwd);
                 string username = model.firstname + " " + model.lastname;
-
-                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
+                //string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
+                string strsql = "erp_Employee";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_login", model.email),
@@ -209,9 +208,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
                     new SqlParameter("@display_name", username),
                     new SqlParameter("@user_image", image),
+                    new SqlParameter("@qflag", "I"),
                 };
-
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                DataTable result = SQLHelper.ExecuteDataTable(strsql, para);
                 return result;
             }
             catch (Exception Ex)

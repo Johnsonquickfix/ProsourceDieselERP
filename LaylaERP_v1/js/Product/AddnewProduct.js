@@ -297,8 +297,8 @@
                         //varHTML += '    </div>';
                         //varHTML += '</div>';
                         varHTML += '<div class="form-group d-flex mt-25">';
-                        varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
-                        varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control"></div>';
+                        varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control rowCalulate" placeholder="Variation price *"></div>';
+                        varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control rowCalulate"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
                         varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" value="0"  class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
@@ -590,39 +590,44 @@
        // console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+            let less = calculateFinal();
+            //console.log(less);
+            if (less == 1)
+                swal('Alert!', "Retail price should not be less then sale price", "error");
+            else {
+                var checkstr = confirm('are you sure want to save/update variations?');
+                if (checkstr == true) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Product/Savevariations',
+                        data: JSON.stringify(obj), //"{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
+                        dataType: 'json',
+                        headers: { "Content-Type": "application/json" },
+                        beforeSend: function () {
+                            $("#loader").show();
+                        },
+                        success: function (data) {
+                            if (data.status == true) {
+                                swal('Success!', data.message, 'success');
+                                //GetProductvariationID(id);
+                            }
+                            // EMPTY THE ARRAY.
+                            // alert(response.d);
+                        },
+                        complete: function () {
+                            $("#loader").hide();
+                            //location.href = '/Users/Users/';
+                            //window.location.href = '/Users/Users/';
 
-            var checkstr = confirm('are you sure want to save/update variations?');
-            if (checkstr == true) {
-            $.ajax({
-                type: 'POST',
-                url: '/Product/Savevariations',
-                data: JSON.stringify(obj), //"{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
-                dataType: 'json',
-                headers: { "Content-Type": "application/json" },
-                beforeSend: function () {
-                    $("#loader").show();
-                },
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Success!', data.message, 'success');
-                        //GetProductvariationID(id);
-                    }
-                    // EMPTY THE ARRAY.
-                    // alert(response.d);
-                },
-                complete: function () {
-                    $("#loader").hide();
-                    //location.href = '/Users/Users/';
-                    //window.location.href = '/Users/Users/';
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            // alert(errorThrown);
+                        }
+                    });
 
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    // alert(errorThrown);
+                } else {
+                    return false;
                 }
-            });
-
-            } else {
-                return false;
             }
         }
         else { alert("Fields cannot be empty.") }
@@ -724,15 +729,61 @@
     //    }
     //});
 
+    //$("input[name = txtregularvar]").change(function () {
+    //    //alert("The text has been changed.");
+    //    calculateFinal();
+    //});
+
+    //$("#product_variations > div.d-flex").each(function (index, div) {
+    //    $(div).find("input[name = txtregularvar]").each(function () {
+
+    //        let reg = this.value;
+    //        //console.log(reg);
+    //        //_attxml.push(
+    //        //    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_regular_price', meta_value: this.value }
+    //        //);
+    //    });
+    //});
+
+    $("#product_variations").find(".rowCalulate").change(function () { calculateFinal(); });
+
 });
+
+//$("#product_variations").find(".rowCalulate").change(function () { calculateFinal(); });
+
+function calculateFinal() {
+    let less = 0;
+    $("#product_variations > div.d-flex").each(function (index, row) {
+        let rPrice = 0.00, salpri = 0.00;
+        rPrice = parseFloat($(row).find("[name=txtregularvar]").val()) || 0.00;
+        salpri = parseFloat($(row).find("[name=txtSalepricevariation]").val()) || 0.00;
+        //console.log(rPrice);
+        //console.log(salpri);
+        if (salpri > rPrice) {
+            if (salpri == rPrice) {
+            }
+            else {
+                swal('Alert!', "Retail price should not be less then sale price", "error");
+                less = 1;
+                $(row).find("[name=txtregularvar]").focus();
+                $(row).find("[name=txtSalepricevariation]").focus();
+                //parseFloat($(row).find("[name=txtregularvar]").val(0.00));
+               // parseFloat($(row).find("[name=txtSalepricevariation]").val(0.00));
+            }
+        }
+    });
+    return less;
+
+}
+
 
 $('#chkgiftcard').change(function () {
     if ($(this).prop("checked")) {
-        console.log('s');
+       // console.log('s');
         $('#divdayexpire').show();
         $('#divRecipientemail').show();
     } else {
-        console.log('N');
+       // console.log('N');
         $('#divdayexpire').hide();
         $('#divRecipientemail').hide();
     }
@@ -1508,8 +1559,8 @@ function GetProductvariationID(ProductID) {
 
 
                 varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
-                varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
+                varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control rowCalulate" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
+                varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control rowCalulate" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
                 varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';

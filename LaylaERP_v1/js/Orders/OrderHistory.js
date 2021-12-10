@@ -114,16 +114,11 @@ function dataGridLoad(order_type) {
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
-    //let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'";
-
-    //var dfa = $('#txtOrderDate').val().split('-');
-    //let sd = dfa[0].split('/'); sd = "'" + sd[2].toString().trim() + '-' + sd[0].toString().trim() + '-' + sd[1].toString().trim() + "'";
-    //let ed = dfa[1].split('/'); ed = "'" + ed[2].toString().trim() + '-' + ed[0].toString().trim() + '-' + ed[1].toString().trim() + "'";
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
     let dfa = "'" + sd + "' and '" + ed + "'";
-
+    let _id = parseInt($('#hfOrderType').data('userid')) || 0, _editable = parseInt($('#hfOrderType').data('iseditable')) || 0;
     table_oh = $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
@@ -210,13 +205,25 @@ function dataGridLoad(order_type) {
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     let refund_amt = parseFloat(row.refund_total) || 0.00;
-
-                    if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                    else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
-                    else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                    else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
-                    else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
-                    else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    if (_editable == 1) {
+                        if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                        else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                        else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                        else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                        else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                        else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    }
+                    else if (_editable == 0 && _id == row.customer_id) {
+                        if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                        else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                        else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                        else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                        else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
+                        else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    }
+                    else {
+                        return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    }
                     //if (row.shipped_items == 0)
                     //    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>'
                     //else
@@ -417,7 +424,7 @@ function sendInvoice(id, email) {
 function cancelorder(id) {
     swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
         .then((result) => {
-            if (result.value) {                
+            if (result.value) {
                 let obj = { order_id: id }
                 $.post('/Orders/OrderCancel', obj).done(function (data) {
                     data = JSON.parse(data);

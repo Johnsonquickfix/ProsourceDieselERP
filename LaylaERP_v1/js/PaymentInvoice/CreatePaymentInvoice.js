@@ -21,9 +21,12 @@
 
     filldropdown();
     $('.billinfo').prop("disabled", true);
+    //isEdit(true);
 })
 
-
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function filldropdown() {
     $.ajax({
         url: "/PaymentInvoice/GetPaymentType",
@@ -91,8 +94,9 @@ $(document).on("click", ".btnEdit", function (t) {
     $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
     $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Pay"><i class="far fa-save"></i> Pay</button>');
     $("#loader").hide();
+    isEdit(true);
 });
-$(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
+$(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); isEdit(false);});
 function calculateFinal() {
     let tGrossAmt = 0.00;
     //main item
@@ -153,6 +157,8 @@ function saveVendorPO() {
             }
         }]);
     }
+
+    isEdit(false);
 }
 
 function createItemsList() {

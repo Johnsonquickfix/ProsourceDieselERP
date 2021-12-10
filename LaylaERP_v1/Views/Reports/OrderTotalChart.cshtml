@@ -56,11 +56,24 @@
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             },
-            startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+            startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
         },
         );
         Search();
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+        })
+        //Highcharts.setOptions({
+        //    lang: {
+        //        thousandsSep: ','
+        //    }
+        //});
+
     });
     function Search() {
         $("#loader").show();
@@ -84,13 +97,13 @@
                     _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
                     _list = [
                         { name: 'SubTotal', data: $.map(result, function (v) { return parseFloat(v.address); }) },
-                        { name: 'Discount', data: $.map(result, function (v) { return parseFloat(v.total); }) },
-                        { name: 'Shipping', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                        { name: 'SaleTax', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
-                        { name: 'StateRecyclingFee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
-                        { name: 'Fee', data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
-                        { name: 'Gift Card', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
-                        { name: 'Total', data: $.map(result, function (v) { return parseFloat(v.tax); }) }  
+                        { name: 'Discount', visible: false, data: $.map(result, function (v) { return parseFloat(v.total); }) },
+                        { name: 'Shipping', visible: false, data: $.map(result, function (v) { return parseFloat(v.fee); }) },
+                        { name: 'SaleTax', visible : false, data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                        { name: 'StateRecyclingFee', visible: false, data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Fee', visible: false, data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                        { name: 'Gift Card', visible: false, data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                        { name: 'Total', visible: false, data: $.map(result, function (v) { return parseFloat(v.tax); }) }
                     ];
 
                     bindChart();
@@ -98,7 +111,10 @@
                 error: function (Result) { alert("Error"); },
                 complete: function () { $("#loader").hide(); }
             });
-        }
+        }  
+
+       
+
     }
     function bindChart() {
         Highcharts.chart('container_chart', {
@@ -114,24 +130,38 @@
             //},
             yAxis: [{ // left y axis
                 title: { text: null },
-                labels: { align: 'left', x: 3, y: 16, format: '{value:.,0f}' },
+                labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
                 showFirstLabel: false
+               
+              
             }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
                 title: { text: 'Amount' },
-                labels: { align: 'right', x: -3, y: 16, format: '{value:.,0f}' },
+                labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
                 showFirstLabel: false
-            }],
+                }],
+  
 
             legend: {
                 align: 'left',
                 verticalAlign: 'top',
                 borderWidth: 0
-            },
 
+                //labelFormatter: function () {
+                //    if (this.name != 'Discount') {
+                //        return this.name;
+                //    }
+                //    else {
+                //        return this.enabled = false ;
+                //    }
+                //}
+            },
+         
             tooltip: { crosshairs: true, shared: true },
             plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
-            colors: ['#F74D17', '#62F717', '#2D7608', '#079AFA', '#464E4E', '#BABB98', '#33FFEC', '#95A993'],
+            colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA'],
             series: _list
+
+           
         });
         $('.highcharts-credits').remove();
     }

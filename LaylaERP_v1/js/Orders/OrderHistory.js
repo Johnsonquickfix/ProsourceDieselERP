@@ -429,6 +429,7 @@ function cancelorder(id) {
     return false;
 }
 function cancelpayment(data) {
+    console.log(data);
     let invoice_amt = parseFloat(data.total_sales) || 0.00;
     if (data.payment_method == "ppec_paypal") {
         if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
@@ -478,7 +479,7 @@ function cancelpayment(data) {
         }
     }
     else if (data.payment_method == "podium") {
-        if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
+        if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
             swal.queue([{
                 title: 'Podium invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
                 onOpen: () => {
@@ -520,7 +521,7 @@ function cancelpayment(data) {
         }
     }
     else if (data.payment_method == "authorize_net_cim_credit_card") {
-        if (data.post_status == "wc-pendingpodiuminv" || data.post_status == "wc-pending") {
+        if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
             swal.queue([{
                 title: 'Authorize.Net payment processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
                 onOpen: () => {

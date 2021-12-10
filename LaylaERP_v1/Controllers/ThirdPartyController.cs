@@ -37,23 +37,20 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save Basic Info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                 if (model.rowid > 0)
                 {
-                    UserActivityLog.WriteDbLog(LogType.Update, "Edit Vendor Basic Info", "/ThirdParty/NewVendor/" + model.rowid+"" + ", " + Net.BrowserInfo);
                     new ThirdPartyRepository().EditVendorBasicInfo(model);
                     //new ThirdPartyRepository().EditJournal(model);
-                    return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    return Json(new { status = true, message = "Vendor basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
-                    UserActivityLog.WriteDbLog(LogType.Submit, "Add Vendor Basic Info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                     int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
                     if (ID > 0)
                     {
                         //new ThirdPartyRepository().AddJournal(model,ID);
-                        return Json(new { status = true, message = "Vendor Basic info has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor basic info has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -69,6 +66,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Save vendor contact", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
+
                     int ID = new ThirdPartyRepository().AddVendorAdditionalInfo(model);
                     if (ID > 0)
                     {
@@ -92,19 +91,20 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Save vendor payment terms tab", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
                     int ID = new ThirdPartyRepository().AddVendorPaymentTerms(model);
                     if (ID > 0)
                     {
                         int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
                         if (id != model.rowid)
                         {
-                          new ThirdPartyRepository().AddPaymentMethods(model);
+                            new ThirdPartyRepository().AddPaymentMethods(model);
                         }
                         else
                         {
                             new ThirdPartyRepository().EditPaymentMethods(model);
                         }
-                        return Json(new { status = true, message = "Vendor Payment terms has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor payment terms has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -122,6 +122,8 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save vendor shipping", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
+
                 int id = new ThirdPartyRepository().GetShippingVendorID(model.rowid);
                 if (id != model.rowid)
                 {
@@ -150,45 +152,48 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddVendorTaxes(ThirdPartyModel model)
         {
-                if (model.rowid > 0)
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save vendor taxes", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
+
+            if (model.rowid > 0)
+            {
+                int ID = new ThirdPartyRepository().AddVendorTaxes(model);
+                if (ID > 0)
                 {
-                    int ID = new ThirdPartyRepository().AddVendorTaxes(model);
-                    if (ID > 0)
-                    {
-                        return Json(new { status = true, message = "Vendor Taxes has been saved successfully!!", url = "", id = ID }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                    }
+                    return Json(new { status = true, message = "Vendor Taxes has been saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
         }
         public JsonResult AddVendorDiscount(ThirdPartyModel model)
         {
-                if (model.rowid > 0)
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save vendor discount", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
+            if (model.rowid > 0)
+            {
+                int ID = new ThirdPartyRepository().AddVendorDiscount(model);
+                if (ID > 0)
                 {
-                    int ID = new ThirdPartyRepository().AddVendorDiscount(model);
-                    if (ID > 0)
-                    {
-                        return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                    }
+                    return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
         }
         //public JsonResult AddPaymentMethods(ThirdPartyModel model)
         //{
-            
+
         //        if (model.rowid > 0)
         //        {
         //            int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
@@ -214,36 +219,38 @@ namespace LaylaERP.Controllers
         //        {
         //            return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
         //        }
-            
+
         //    //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         //}
         public JsonResult AddContacts(ThirdPartyModel model)
         {
-                if (model.rowid > 0)
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save on the add contact", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
+            if (model.rowid > 0)
+            {
+                if (model.ContactID > 0)
                 {
-                    if (model.ContactID > 0)
-                    {
-                        new ThirdPartyRepository().EditVendorContacts(model);
-                        return Json(new { status = true, message = "Contact has been updated successfully!!", url = "", id = model.ContactID }, 0);
-                        
-                    }
-                    else
-                    {
-                        int ID = new ThirdPartyRepository().AddContacts(model);
-                        if (ID > 0)
-                            return Json(new { status = true, message = "Contacts has been saved successfully!!", url = "", id = ID }, 0);
-                        else
-                            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                    }
+                    new ThirdPartyRepository().EditVendorContacts(model);
+                    return Json(new { status = true, message = "Contact has been updated successfully!!", url = "", id = model.ContactID }, 0);
+
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+                    int ID = new ThirdPartyRepository().AddContacts(model);
+                    if (ID > 0)
+                        return Json(new { status = true, message = "Contacts has been saved successfully!!", url = "", id = ID }, 0);
+                    else
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
         }
 
         public JsonResult LinkWarehouse(ThirdPartyModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Link vendor warehouse", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 //if (model.ContactID > 0)
@@ -254,11 +261,11 @@ namespace LaylaERP.Controllers
                 //}
                 //else
                 //{
-                    int ID = new ThirdPartyRepository().LinkWarehouse(model);
-                    if (ID > 0)
-                        return Json(new { status = true, message = "Warehouse has been Linked successfully!!", url = "", id = ID }, 0);
-                    else
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                int ID = new ThirdPartyRepository().LinkWarehouse(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Warehouse has been Linked successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 //}
             }
             else
@@ -270,6 +277,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Delete vendor warehouse", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 int ID = new ThirdPartyRepository().DeleteWarehouse(model);
                 if (ID > 0)
                     return Json(new { status = true, message = "Warehouse has been deleted successfully!!", url = "", id = ID }, 0);
@@ -285,6 +293,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Delete vendor linked files", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 int ID = new ThirdPartyRepository().DeleteVendorLinkedFiles(model);
                 if (ID > 0)
                     return Json(new { status = true, message = "Vendor Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
@@ -489,7 +498,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-              
+
                 DataTable dt = ThirdPartyRepository.GetVendorContact(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
@@ -523,6 +532,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public ActionResult FileUpload(int VendorID, HttpPostedFileBase ImageFile)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Click on the add on the warehouse tab", "/ThirdParty/NewVendor/" + VendorID + "" + ", " + Net.BrowserInfo);
             try
             {
                 ThirdPartyModel model = new ThirdPartyModel();
@@ -581,7 +591,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = ThirdPartyRepository.GetVendorLinkedFiles(model.strValue1,model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = ThirdPartyRepository.GetVendorLinkedFiles(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -593,7 +603,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = ThirdPartyRepository.GetPurchaseOrder(model.strValue1,model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = ThirdPartyRepository.GetPurchaseOrder(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

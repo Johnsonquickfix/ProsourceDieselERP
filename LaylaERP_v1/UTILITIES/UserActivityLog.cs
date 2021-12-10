@@ -101,7 +101,8 @@
 
                 //strSql += strWhr + " order by log_date DESC  " + (pageno).ToString() + ", " + pagesize.ToString();
 
-                strSql += strWhr + " order by log_date DESC "  + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ";
+               // strSql += strWhr + " order by log_date DESC "  + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ";
+                strSql += strWhr + " order by ual.id DESC " + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ";
 
                 strSql += "; SELECT Count(ual.user_id)/" + pagesize.ToString() + " TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
 

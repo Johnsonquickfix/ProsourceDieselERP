@@ -193,6 +193,7 @@ $('#btnNextTab1').click(function (e) {
     }
 });
 $('#btnNextTab2').click(function (e) {
+    
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');
 });
@@ -1665,3 +1666,20 @@ function CalculateAmount() {
 }
 
 
+function ActivityLog(ModuleName, ModuleURL) {
+    console.log(ModuleName, ModuleURL);
+    var obj = {
+        ModuleName: ModuleName, ModuleURL: ModuleURL
+    }
+    $.ajax({
+        url: '/ThirdParty/ActivityDbLog/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) { },
+        //error: function (error) {
+        //    swal('Error!', 'something went wrong', 'error');
+        //},
+    })
+
+}

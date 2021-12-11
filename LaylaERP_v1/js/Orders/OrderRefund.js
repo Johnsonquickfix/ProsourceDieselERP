@@ -96,7 +96,7 @@ function getOrderItemList(oid) {
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardrefundAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
-        let tax_rate = 0.00;
+        let tax_rate = 0.00; 
         $.each(data, function (i, row) {
             let orderitemid = parseInt(row.order_item_id) || 0;
             if (row.product_type == 'line_item') {
@@ -215,7 +215,7 @@ function getOrderItemList(oid) {
                 $("#salesTaxTotal").data("orderitemid", orderitemid);
                 $("#hfTaxRate").data('freighttax', row.shipping_tax_amount);
             }
-            else if (row.product_type == 'refund_items') {
+            else if (row.product_type == 'refund_items') {                
                 if (row.product_name == "line_item") {
                     let _total = (row.total - row.tax_amount), _totaltax = row.tax_amount;
                     let max_return = parseInt($("#tritemId_" + orderitemid).data("qty")) + parseInt(row.quantity);
@@ -234,7 +234,7 @@ function getOrderItemList(oid) {
                     $("#trfeeid_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
                 }
                 else if (row.product_name == "shipping") {
-                    $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
+                    $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.shipping_amount + '</span>');
                 }
                 else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardrefundAmt += row.total; }
             }
@@ -469,7 +469,7 @@ function createItemsList() {
             grossAmount = grossAmount > 0 ? (grossAmount / qty) * refundqty : 0;
             discountAmount = 0;
             taxAmount = grossAmount * tax_rate;
-            shippinAmount = shippinAmount > 0 ? (shippinAmount / qty) * refundqty : 0;
+            shippinAmount = shippinAmount > 0 ? shippinAmount * refundqty : 0;
             _itmes.push({
                 order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
                 product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),

@@ -291,7 +291,7 @@ function GetSRTaxRate() {
         var opt = {
             strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipaddress1").val(), strValue3: $("#txtshipcity").val(), strValue4: s_state, strValue5: $("#ddlshipcountry").val()
         };
-        $.post('/Orders/GetTaxRate', opt).then(response => { console.log(response); $('#hfTaxRate').data('srfee', response.rate); });
+        $.post('/Orders/GetTaxRate', opt).then(response => {$('#hfTaxRate').data('srfee', response.rate); });
     }
     else { $('#hfTaxRate').data('srfee', 0.00); }
     //calculateDiscountAcount();
@@ -428,7 +428,7 @@ function ShowUseAddress(chk) {
 }
 function selectOrderAddress(ele) {
     let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
-    var oid = parseInt($('#hfOrderNo').val()) || 0; console.log(ele);
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
         if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
@@ -1707,7 +1707,7 @@ function deleteAllCoupons(coupon_type) {
                             zTotalTax = (((zGrossAmount - disc_amt) * tax_rate) / 100);
                             $(tr).find(".RowTax").text(zTotalTax.toFixed(2)); $(tr).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
                         }
-                    }); console.log(auto_code);
+                    }); 
                     $.when(bindCouponList(auto_code)).done(function () { ApplyAutoCoupon(); });
                 }
             });
@@ -1926,7 +1926,7 @@ function createItemsList() {
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         itemsDetails.push({
-            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0
+            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount * qty, shipping_tax_amount: 0
         });
     });
     //Add Coupon

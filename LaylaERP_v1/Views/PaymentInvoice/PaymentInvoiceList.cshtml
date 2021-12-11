@@ -21,8 +21,10 @@
     .payment.invoice.list .table-design #dtdata.inventory-table thead th {
         padding: 10px !important;
     }
+
     .payment.invoice.list .dataTables_scrollBody #dtdataPartially.inventory-table.table-blue thead th {
-    padding:10px !important;}
+        padding: 10px !important;
+    }
 </style>
 <div class="page-title">
     <h2>Payments</h2>
@@ -37,6 +39,7 @@
                         <div class="alignleft actions">
                             <div class="input-group">
                                 <input type="hidden" id="hfhref" />
+                                <input type="hidden" id="hfEdit" value="" />
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
                             </div>
@@ -124,9 +127,18 @@
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("#btnChange", "#hfEdit", "", loc);
+        //CheckPermissions("#btnChange", "#btnChange", "", loc);
+    });
+</script>
+
 <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/PaymentInvoice/PaymentInvoice.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

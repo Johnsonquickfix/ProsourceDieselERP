@@ -264,6 +264,21 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+        [HttpPost]
+        public JsonResult SendPaypalInvoice(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "GiftCardOrder", model);
+
+                result = SendEmail.SendEmails(model.b_email, "Payment request from Layla Sleep Inc.", "Hi " + model.b_first_name +" "+ model.b_last_name + ", please use this secure link to make your payment. Thank you! https://www.sandbox.paypal.com/invoice/p/#" + model.paypal_id + " ");
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
         [HttpGet]
         public JsonResult GetGiftCardOrderList(JqDataTableModel model)
         {
@@ -392,6 +407,7 @@ namespace LaylaERP.Controllers
 
                 DataSet giftdetails = GiftCardRepository.AddGiftCardMailOrders(model.order_id, "UPP", 0, model.b_first_name, "", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                 JSONresult = JsonConvert.SerializeObject(giftdetails);
+                GiftCardRepository.OrderInvoiceMail(model.order_id);
                 if (giftdetails.Tables[1].Rows[0]["delivered"].ToString() == "1")
                 {
                     SendGiftCardEMails(giftdetails);

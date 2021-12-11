@@ -29,7 +29,7 @@ namespace LaylaERP.BAL
                     + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
                     + " cast(umatotal.meta_value as decimal(10,2)) Total,"
                     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
-                    + " FROM wp_posts u"                
+                    + " FROM wp_posts u"
                     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
@@ -54,18 +54,18 @@ namespace LaylaERP.BAL
                 {
                     Export_Details uobj = new Export_Details();
                     uobj.order_item_type = "#" + ds1.Tables[0].Rows[i]["ID"].ToString();
-                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString()); 
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
                     uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
                     uobj.address = ds1.Tables[0].Rows[i]["address"].ToString();
                     uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
                         uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
                     else
-                        uobj.total = "$0";        
+                        uobj.total = "$0";
                     exportorderlist.Add(uobj);
                 }
             }
-                catch (Exception ex) { throw ex; }
+            catch (Exception ex) { throw ex; }
         }
         public static void GetArizonaSalesOrder(string from_date, string to_date)
         {
@@ -81,7 +81,7 @@ namespace LaylaERP.BAL
                     todate = DateTime.Parse(to_date);
 
                     ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                   // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
                     + " umadd.meta_value shiptostreet,"
                     + " umacity.meta_value shiptocity,"
                     + " umastate.meta_value shiptostate,"
@@ -175,14 +175,14 @@ namespace LaylaERP.BAL
                     + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
                     + " cast(umatotal.meta_value as decimal(10,2)) Total,"
                     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name,"
-                   // + " umitem.order_item_name orderItem,"
-                   //+ " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
-                   //+" stuff((select(ui.order_item_name + ' x ' + uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' for xml path('')),1,1,'')  itemname"
+                    // + " umitem.order_item_name orderItem,"
+                    //+ " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                    //+" stuff((select(ui.order_item_name + ' x ' + uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' for xml path('')),1,1,'')  itemname"
                     + " CONCAT(ui.order_item_name,' x ',+uim.meta_value) as itemname"
                     + " FROM wp_posts u"
                     + " LEFT join wp_woocommerce_order_items ui on ui.order_id = u.ID"
                     + " LEFT join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'"
-                    
+
                     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
@@ -213,7 +213,7 @@ namespace LaylaERP.BAL
                     uobj.address = ds1.Tables[0].Rows[i]["address"].ToString();
                     uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
                     uobj.orde_item_name = ds1.Tables[0].Rows[i]["itemname"].ToString();
-                    uobj.total = "$"+ ds1.Tables[0].Rows[i]["Total"].ToString();
+                    uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
                     exportorderlist.Add(uobj);
                 }
             }
@@ -232,7 +232,7 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"                   
+                    ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
                     + " cast(umatotal.meta_value as decimal(10,2)) Total,"
                     + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
                     + " cast(umatax.meta_value as decimal(10,2)) Tax,"
@@ -241,10 +241,10 @@ namespace LaylaERP.BAL
                     + " umorerItemmeta.meta_value SubTotal,"
                     + " umorerItemmetafee.meta_value Fee,"
                     + " umempname.meta_value EName"
-                    + " FROM wp_posts u"                    
+                    + " FROM wp_posts u"
                     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"              
+                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umtransaction on umtransaction.meta_key = '_transaction_id' And umtransaction.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_woocommerce_order_items umorerItem on umorerItem.order_item_type='line_item' And umorerItem.order_id = u.ID"
@@ -265,9 +265,9 @@ namespace LaylaERP.BAL
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
-                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());                    
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Podiumdate"].ToString()))
-                    uobj.created_date = Convert.ToDateTime(ds1.Tables[0].Rows[i]["Podiumdate"].ToString());
+                        uobj.created_date = Convert.ToDateTime(ds1.Tables[0].Rows[i]["Podiumdate"].ToString());
                     uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
                     uobj.address = ds1.Tables[0].Rows[i]["Discount"].ToString();
                     uobj.tax = ds1.Tables[0].Rows[i]["Tax"].ToString();
@@ -431,8 +431,8 @@ namespace LaylaERP.BAL
                 decimal valued = 0;
                 decimal CommissionValue = 0;
                 decimal total = 0;
-             
-               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+
+                // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
@@ -452,11 +452,11 @@ namespace LaylaERP.BAL
                         valued = Convert.ToDecimal(ds1.Tables[0].Rows[i]["Valued"].ToString());
                         CommissionValue = Convert.ToDecimal(ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString());
                         total = (valued * CommissionValue) / 100;
-                        uobj.total = "$" + total.ToString("#.##"); 
+                        uobj.total = "$" + total.ToString("#.##");
                     }
                     else
                         uobj.total = "";
-                     
+
                     exportorderlist.Add(uobj);
                 }
             }
@@ -501,7 +501,7 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static void GetMRF(string from_date, string to_date,string txtState)
+        public static void GetMRF(string from_date, string to_date, string txtState)
         {
             try
             {
@@ -581,14 +581,14 @@ namespace LaylaERP.BAL
                 }
 
 
-               // DataSet ds1 = new DataSet();
-               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                // DataSet ds1 = new DataSet();
+                // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
                     uobj.order_item_type = "#" + ds1.Tables[0].Rows[i]["ID"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["PaidDAte"].ToString()))
-                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["PaidDAte"].ToString());
+                        uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["PaidDAte"].ToString());
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["MRF"].ToString()))
                         uobj.orderstatus = "$" + ds1.Tables[0].Rows[i]["MRF"].ToString();
                     uobj.orderstatus = "$0";
@@ -623,12 +623,12 @@ namespace LaylaERP.BAL
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
-                    todate = DateTime.Parse(to_date);                   
+                    todate = DateTime.Parse(to_date);
 
-                        SqlParameter[] parameters =
-                      {
+                    SqlParameter[] parameters =
+                  {
                             new SqlParameter("@qflag", txtStatus),
-                            new SqlParameter("@fromdate", fromdate),                             
+                            new SqlParameter("@fromdate", fromdate),
                              new SqlParameter("@todate", todate)
                         };
 
@@ -714,17 +714,18 @@ namespace LaylaERP.BAL
                 }
 
 
-               // DataSet ds1 = new DataSet();
-               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
-                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)                {
+                // DataSet ds1 = new DataSet();
+                // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
                     Export_Details uobj = new Export_Details();
-                    uobj.order_item_type =   ds1.Tables[0].Rows[i]["ID"].ToString();
+                    uobj.order_item_type = ds1.Tables[0].Rows[i]["ID"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
-                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());                 
-                    uobj.orderstatus =   ds1.Tables[0].Rows[i]["post_status"].ToString();
+                        uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
+                    uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
                     uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shippingaddress"].ToString();
-                    uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingaddress"].ToString();                    
-                    uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();   
+                    uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingaddress"].ToString();
+                    uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
                     uobj.orde_item_name = ds1.Tables[0].Rows[i]["itemname"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
                         uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
@@ -738,7 +739,7 @@ namespace LaylaERP.BAL
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping_amount"].ToString()))
                         uobj.shipping_amount = "$" + ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
                     else
-                        uobj.shipping_amount = ""; 
+                        uobj.shipping_amount = "";
                     uobj.handling_amount = "";
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
                         uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
@@ -906,9 +907,9 @@ namespace LaylaERP.BAL
                     {
                         ssql = "SELECT distinct ID,post_date, post_status,"
                         + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
-                        + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"                    
+                        + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
                         + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"  
+                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
                         + " FROM wp_posts u"
                         + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
@@ -925,9 +926,9 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"                   
-                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"            
-                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"        
+                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                         + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
                     }
                     else
@@ -953,9 +954,9 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID" 
-                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"         
-                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"         
+                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                         + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
                     }
                 }
@@ -973,16 +974,16 @@ namespace LaylaERP.BAL
                     uobj.order_item_type = "#" + ds1.Tables[0].Rows[i]["ID"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
                         uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
-                   
+
                     uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shippingaddress"].ToString();
                     uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingaddress"].ToString();
-                   
+
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["RefundFee"].ToString()))
-                        uobj.fee = "$"+ ds1.Tables[0].Rows[i]["RefundFee"].ToString();
+                        uobj.fee = "$" + ds1.Tables[0].Rows[i]["RefundFee"].ToString();
                     else
                         uobj.fee = "$0";
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
-                        uobj.tax = "$"+ ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
                     else
                         uobj.tax = "$0";
 
@@ -1042,7 +1043,7 @@ namespace LaylaERP.BAL
                          new SqlParameter("@type", Type),
                      new SqlParameter("@todate", to_date)
                 };
-                    ds1 = SQLHelper.ExecuteDataSet("erp_OrderStatus_List", parameters);                   
+                    ds1 = SQLHelper.ExecuteDataSet("erp_OrderStatus_List", parameters);
 
                     for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                     {
@@ -1073,7 +1074,7 @@ namespace LaylaERP.BAL
                         else
                             uobj.fee = "";
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
-                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString())  ;
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
                         else
                             uobj.subtotal = "";
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
@@ -1279,21 +1280,21 @@ namespace LaylaERP.BAL
                         uobj.orderstatus = ds1.Tables[0].Rows[i]["Tax"].ToString();
 
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
-                          uobj.address =  ds1.Tables[0].Rows[i]["subtotal"].ToString();
+                        uobj.address = ds1.Tables[0].Rows[i]["subtotal"].ToString();
                         //else
                         //    uobj.address = "";
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
-                            uobj.tax =  ds1.Tables[0].Rows[i]["Total"].ToString();
+                            uobj.tax = ds1.Tables[0].Rows[i]["Total"].ToString();
                         else
                             uobj.tax = "";
                         if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
-                            uobj.total =  ds1.Tables[0].Rows[i]["Discount"].ToString();
+                            uobj.total = ds1.Tables[0].Rows[i]["Discount"].ToString();
                         else
                             uobj.total = "";
                         uobj.customer_id = ds1.Tables[0].Rows[i]["gift_card"].ToString();
                         uobj.billing_state = ds1.Tables[0].Rows[i]["Fee"].ToString();
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
-                         uobj.fee =  ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        uobj.fee = ds1.Tables[0].Rows[i]["shipping"].ToString();
                         //else
                         //    uobj.fee = "";
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
@@ -1316,6 +1317,44 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+        public static DataTable GetQuarerly(string year, string to_date, string Empid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+               
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (year != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@year",year ),
+                    new SqlParameter("@qflag","QD" ),
+
+                };
+                    dt = SQLHelper.ExecuteDataTable("erp_quartertotaldetails_List", parameters);
+
+                    //for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    //{
+                    //    Export_Details uobj = new Export_Details();
+                    //    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["1"].ToString()))
+                    //        uobj.qty = ds1.Tables[0].Rows[i]["1"].ToString();
+                    //    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["2"].ToString()))
+                    //        uobj.total = ds1.Tables[0].Rows[i]["2"].ToString();
+
+                    //    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["3"].ToString()))
+                    //        uobj.tax = ds1.Tables[0].Rows[i]["3"].ToString();
+                    //    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["4"].ToString()))
+                    //        uobj.Discount = ds1.Tables[0].Rows[i]["4"].ToString();
+                    //    exportorderlist.Add(uobj);
+                    //}
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return dt;
+        }
         public static DataTable GetGrafixDetail(string from_date, string to_date, string Empid)
         {
             DataTable dt = new DataTable();
@@ -1360,40 +1399,40 @@ namespace LaylaERP.BAL
             List<ReportsModel> _list = new List<ReportsModel>();
             try
             {
-         
+
 
                 ReportsModel productsModel = new ReportsModel();
                 string strWhr = string.Empty;
-                 
-                        SqlParameter[] parameters =
-                        {
+
+                SqlParameter[] parameters =
+                {
                     new SqlParameter("@qflag", "OL"),
                     new SqlParameter("@fromdate", from_date),
                          new SqlParameter("@id", Empid),
                      new SqlParameter("@todate", to_date)
                 };
-                        string strSQl = "erp_totaldetails_List";
-                        //strSQl += ";";
-                        SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
-                        while (sdr.Read())
-                        {
-                            productsModel = new ReportsModel();
-                            if (sdr["Users"] != DBNull.Value)
-                                productsModel.SalesFigure = Convert.ToInt32(sdr["Users"]);
-                            else
-                                productsModel.SalesFigure = 0;                         
+                string strSQl = "erp_totaldetails_List";
+                //strSQl += ";";
+                SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new ReportsModel();
+                    if (sdr["Users"] != DBNull.Value)
+                        productsModel.SalesFigure = Convert.ToInt32(sdr["Users"]);
+                    else
+                        productsModel.SalesFigure = 0;
 
-                            if (sdr["Day Index"] != DBNull.Value)
-                                productsModel.Month = sdr["Day Index"].ToString();
-                            else
-                                productsModel.Month = string.Empty;
+                    if (sdr["Day Index"] != DBNull.Value)
+                        productsModel.Month = sdr["Day Index"].ToString();
+                    else
+                        productsModel.Month = string.Empty;
 
 
-                            _list.Add(productsModel);
-                        }
-                    }
-                
-            
+                    _list.Add(productsModel);
+                }
+            }
+
+
             catch (Exception ex)
             { throw ex; }
             return _list;

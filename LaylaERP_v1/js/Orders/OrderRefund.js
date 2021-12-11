@@ -37,7 +37,7 @@ function getOrderInfo() {
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
-            var data = JSON.parse(result); console.log(data);
+            var data = JSON.parse(result); 
             if (data.length > 0) {
                 if (data[0].is_edit == '1') {
                     if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
@@ -548,10 +548,10 @@ function saveCO() {
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
-    console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
+    //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
     //return;
-    if (totalPay > net_total) {
+    if (totalPay >= net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
             url: "/Orders/SaveCustomerOrderRefund",

@@ -103,7 +103,7 @@
                                         </div><!--10-->
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Country<span style="color:red;"> *</span></label>
-                                            <select class="form-control select2" id="ddlCountry">
+                                            <select class="form-control" id="ddlCountry">
                                                 <option value="US">US - United States</option>
                                                 <option value="CA">CA - Canada</option>
                                                 <option value="CN">CN - China</option>
@@ -1319,7 +1319,8 @@
 </section>
 
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
@@ -1327,7 +1328,15 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         if (id != "NewVendor") {
-            GetVendorByID(id);
+            $.when(GetVendorByID(id)).then(
+                $('#ddlCountry').on('change', function () {
+                    $('#txtZipCode').val('');
+                    $('#txtAddress1').val('');
+                    $('#txtAddress2').val('');
+                    $('#txtCity').val('');
+                    $('#ddlState').val('');
+                    $('#ddlState').text('');
+                }));
         }
         SearchSelect("#ddlState");
         SearchSelect("#ddlContactState");

@@ -190,7 +190,7 @@ namespace LaylaERP.Controllers
                 HrmsRepository.EditEmployeeBasicDetails(model, model.rowid);
                 HrmsRepository.UpdateNewEmployeeasUser(model);
                 UpdateEmployeeMetaData(model, model.userid);
-                return Json(new { status = true, message = "Data has been Updated successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data Updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -204,7 +204,7 @@ namespace LaylaERP.Controllers
                         HrmsRepository.AddEmployeeBasicDetails(model, ID);
                         HrmsRepository.AddConfiguration(model, ID);
                     }
-                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Data saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditEmployeeAdditionalInfo(model, model.rowid);
-                return Json(new { status = true, message = "Employee Info has been Updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Employee Info Updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -230,7 +230,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditSalaryInfo(model, model.rowid);
-                return Json(new { status = true, message = "Employee Info has been Updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Employee Info Updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -242,7 +242,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditBankInfo(model, model.rowid);
-                return Json(new { status = true, message = "Bank Info has been Updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Bank Info Updated successfully!!", url = "" }, 0);
             }
             else
             {
@@ -290,7 +290,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 new HrmsRepository().UpdateEmployeeStatus(model);
-                return Json(new { status = true, message = "Employee status has been changed successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Employee status changed successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -459,7 +459,7 @@ namespace LaylaERP.Controllers
             {
                 int ID = new HrmsRepository().DeleteEmployeeLinkedFiles(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Employee Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Employee Linked Files deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }
@@ -480,14 +480,14 @@ namespace LaylaERP.Controllers
                 if (model.rowid > 0)
                 {
                     //new ThirdPartyRepository().EditVendorBasicInfo(model);
-                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    //return Json(new { status = true, message = "Product account updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
                     int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime, model.strValue4, model.strValue5);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Attendence has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Attendence saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -543,7 +543,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = ID }, 0);
             }
             else
             {
@@ -582,7 +582,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 HrmsRepository.UpdateLeave(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -609,7 +609,7 @@ namespace LaylaERP.Controllers
             if (!string.IsNullOrEmpty(strID))
             {
                 LeaveRepository.ChangeLeaveStatus(model, strID);
-                return Json(new { status = true, message = "Status has been Changed successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Status Changed successfully!!", url = "" }, 0);
             }
             else
             {
@@ -638,7 +638,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 LeaveRepository.UpdateGrantLeave(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -722,7 +722,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = ID }, 0);
             }
             else
             {
@@ -763,7 +763,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 HrmsConfigurationRepository.UpdateConfiguration(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -789,7 +789,7 @@ namespace LaylaERP.Controllers
             int ID = HrmsConfigurationRepository.AddHRADetails(model);
             if (ID > 0)
             {
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -826,7 +826,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 HrmsConfigurationRepository.UpdateHRA(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -852,7 +852,7 @@ namespace LaylaERP.Controllers
             int ID = DaRepository.AddDaDetails(model);
             if (ID > 0)
             {
-                return Json(new { status = true, message = "DA Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "DA Data saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {

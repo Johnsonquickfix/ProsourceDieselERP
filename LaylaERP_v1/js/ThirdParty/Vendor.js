@@ -30,6 +30,8 @@
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
+
+
 $('#ddlDiscountType1').change(function () {
     let discount = $('#ddlDiscountType1').val();
     if (discount == "Percentage") {
@@ -884,175 +886,179 @@ function getShippingMethod() {
     });
 }
 
-function GetVendorByID(id) {
-    var rowid = id;
-    var obj =
-        $.ajax({
-            url: "/ThirdParty/GetVendorByID/" + rowid,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: 'JSON',
-            data: JSON.stringify(obj),
-            success: function (data) {
-                var d = JSON.parse(data);
-                if (d.length > 0) {
-                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
 
-                    $("#txVendorName").val(d[0].VendorName);
-                    $("#txtAliasName").val(d[0].AliasName);
-                    $("#ddlvendortype").val(d[0].vendor_type).trigger("change");
-                    $("#txtVendorCode").val(d[0].VendorCode);
-                    $("#ddlStatus").val(d[0].status).trigger("change");
-                    $("#txtAddress1").val(d[0].address);
-                    $("#txtAddress2").val(d[0].address1);
-                    $("#txtCity").val(d[0].town);
-                    $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
-                    $("#ddlState").select2({
-                        allowClear: true, minimumInputLength: 3, placeholder: "Search State",
-                        ajax: {
-                            url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
-                            error: function (xhr, status, err) { }, cache: true
-                        }
-                    });
-                    $("#txtZipCode").val(d[0].zip);
-                    $("#ddlCountry").val(d[0].Country).trigger("change");
-                    var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
-                    $("#txtPhone").val(t);
-                    $("#txtFax").val(d[0].fax);
-                    $("#txtEMail").val(d[0].email);
-                    $("#txtWeb").val(d[0].url);
-                    $("#txtWorkinghours").val(d[0].Workinghours);
-                    d[0].VendorStatus == true ? $("#chkVendorStatus").prop("checked", true) : $("#chkVendorStatus").prop("checked", false);
-                    $("#txtCorAddress1").val(d[0].CorAddress1);
-                    $("#txtCorAddress2").val(d[0].CorAddress2);
-                    $("#txtCorCity").val(d[0].CorCity);
-                    $("#txtCorState").val(d[0].CorState);
-                    $("#txtCorZipCode").val(d[0].CorZipCode);
-                    $("#txtCorCountry").val(d[0].CorCountry);
-                    $("#txtCorPhone").val(d[0].CorPhone);
-                    $("#ddlWorkforce").val(d[0].Workforce).trigger("change");
-                    $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
-                    $("#txtNotesPublic").val(d[0].note_public);
-                    $("#txtNotesPrivate").val(d[0].note_private);
-                    $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change");
+    function GetVendorByID(id) {
+        var rowid = id;
+        var obj =
+            $.ajax({
+                url: "/ThirdParty/GetVendorByID/" + rowid,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
 
-                    $("#txtCapital").val(d[0].capital);
-                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
-                    $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
-                    $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
-                    console.log(d[0].IncotermsType);
-                    $("#txtIncoTerm").val(d[0].Incoterms);
-                    $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
-                    $("#txtCreditLimit").val(d[0].CreditLimit);
-                    $("#txtOutStandingLimit").val(d[0].outstanding_limit);
-                    $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
-                    $("#txtOrderMinAmt").val(d[0].order_min_amount);
+                        $("#txVendorName").val(d[0].VendorName);
+                        $("#txtAliasName").val(d[0].AliasName);
+                        $("#ddlvendortype").val(d[0].vendor_type).trigger("change");
+                        $("#txtVendorCode").val(d[0].VendorCode);
+                        $("#ddlStatus").val(d[0].status).trigger("change");
+                        $("#ddlCountry").val(d[0].Country);
+                        $("#txtAddress1").val(d[0].address);
+                        $("#txtAddress2").val(d[0].address1);
+                        $("#txtCity").val(d[0].town);
+                        $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+                        $("#ddlState").select2({
+                            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                            ajax: {
+                                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+                                error: function (xhr, status, err) { }, cache: true
+                            }
+                        });
+                        $("#txtZipCode").val(d[0].zip);
+                      
+                        var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+                        $("#txtPhone").val(t);
+                        $("#txtFax").val(d[0].fax);
+                        $("#txtEMail").val(d[0].email);
+                        $("#txtWeb").val(d[0].url);
+                        $("#txtWorkinghours").val(d[0].Workinghours);
+                        d[0].VendorStatus == true ? $("#chkVendorStatus").prop("checked", true) : $("#chkVendorStatus").prop("checked", false);
+                        $("#txtCorAddress1").val(d[0].CorAddress1);
+                        $("#txtCorAddress2").val(d[0].CorAddress2);
+                        $("#txtCorCity").val(d[0].CorCity);
+                        $("#txtCorState").val(d[0].CorState);
+                        $("#txtCorZipCode").val(d[0].CorZipCode);
+                        $("#txtCorCountry").val(d[0].CorCountry);
+                        $("#txtCorPhone").val(d[0].CorPhone);
+                        $("#ddlWorkforce").val(d[0].Workforce).trigger("change");
+                        $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
+                        $("#txtNotesPublic").val(d[0].note_public);
+                        $("#txtNotesPrivate").val(d[0].note_private);
+                        $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change");
 
-                    $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID).trigger("change");
-                    $("#txtShippingRate").val(d[0].ShippingRate);
-                    $("#txtShippingLocation").val(d[0].ShippingLocation);
+                        $("#txtCapital").val(d[0].capital);
+                        $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
+                        $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
+                        $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
+                        console.log(d[0].IncotermsType);
+                        $("#txtIncoTerm").val(d[0].Incoterms);
+                        $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
+                        $("#txtCreditLimit").val(d[0].CreditLimit);
+                        $("#txtOutStandingLimit").val(d[0].outstanding_limit);
+                        $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
+                        $("#txtOrderMinAmt").val(d[0].order_min_amount);
 
-                    $("#txtUPSUserID").val(d[0].UPSUserID);
-                    $("#txtUPSPassword").val(d[0].UPSPassword);
-                    $("#txtUPSAccessKey").val(d[0].UPSAccessKey);
-                    $("#txtUPSAccountNumber").val(d[0].UPSAccountNumber);
-                    $("#txtUPSOriginPostcode").val(d[0].UPSOriginPostcode);
-                    $("#txtUPSOriginCountry").val(d[0].UPSOriginCountry);
-                    $("#txtUPSAPILicenceKey").val(d[0].UPSAPILicenceKey);
-                    $("#txtUPSLicenceEmail").val(d[0].UPSLicenceEmail);
-                    d[0].UPSEnable == true ? $("#chkUPSEnable").prop("checked", true) : $("#chkUPSEnable").prop("checked", false);
-                    $("#ddlUPSMeasurementUnits").val(d[0].UPSMeasurementUnits == null ? "LBS/IN" : d[0].UPSMeasurementUnits);
-                    d[0].UPSEnableDebugMode == true ? $("#chkUPSEnableDebugMode").prop("checked", true) : $("#chkUPSEnableDebugMode").prop("checked", false);
-                    d[0].USPSEnable == true ? $("#chkUSPSEnableDisable").prop("checked", true) : $("#chkUSPSEnableDisable").prop("checked", false);
-                    $("#txtUSPSPostcode").val(d[0].USPSPostcode);
-                    $("#txtUSPSUserID").val(d[0].USPSUserID);
-                    d[0].USPSCommercialrates == true ? $("#chkUSPSCommercialrates").prop("checked", true) : $("#chkUSPSCommercialrates").prop("checked", false);
-                    d[0].USPSPacking == true ? $("#chkUSPSPacking").prop("checked", true) : $("#chkUSPSPacking").prop("checked", false);
-                    $("#txtUSPSPriorityMailExpressTitle").val(d[0].USPSPriorityMailExpressTitle);
-                    d[0].USPSPriorityMailExpress == true ? $("#chkPriorityMailExpress").prop("checked", true) : $("#chkPriorityMailExpress").prop("checked", false);
-                    d[0].USPSPriorityMailExpressHoldforPickup == true ? $("#chkPriorityMailExpressHoldforPickup").prop("checked", true) : $("#chkPriorityMailExpressHoldforPickup").prop("checked", false);
-                    d[0].USPSPriorityMailExpressSundayHoliday == true ? $("#chkPriorityMailExpressSundayHoliday").prop("checked", true) : $("#chkPriorityMailExpressSundayHoliday").prop("checked", false);
-                    $("#txtUSPSPriorityMailTitle").val(d[0].USPSPriorityMailTitle);
-                    d[0].USPSPriorityMail == true ? $("#chkPriorityMail").prop("checked", true) : $('#chkPriorityMail').prop("checked", false);
-                    d[0].USPSPriorityMailHoldForPickup == true ? $("#chkPriorityMailHoldforPickup").prop("checked", true) : $('#chkPriorityMailHoldforPickup').prop("checked", false);
-                    d[0].USPSPriorityMailKeysandIDs == true ? $("#chkPriorityMailKeysandIDs").prop("checked", true) : $('#chkPriorityMailKeysandIDs').prop("checked", false);
-                    d[0].USPSPriorityMailRegionalRateBoxA == true ? $("#chkPriorityMailRegionalRateBoxA").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxA').prop("checked", false);
-                    d[0].USPSPriorityMailRegionalRateBoxAHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxAHoldForPickup').prop("checked", false);
-                    d[0].USPSPriorityMailRegionalRateBoxB == true ? $("#chkPriorityMailRegionalRateBoxB").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxB').prop("checked", false);
-                    d[0].USPSPriorityMailRegionalRateBoxBHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxBHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxBHoldForPickup').prop("checked", false);
-                    $("#txtUSPSFirstClassMailTitle").val(d[0].FirstClassMailTitle);
-                    d[0].FirstClassMailPostcards == true ? $("#chkUSPSFirstClassMailPostcards").prop("checked", true) : $('#chkUSPSFirstClassMailPostcards').prop("checked", false);
-                    d[0].FirstClassMailLetter == true ? $("#chkUSPSFirstClassMailLetter").prop("checked", true) : $('#chkUSPSFirstClassMailLetter').prop("checked", false);
-                    d[0].FirstClassMailLargeEnvelope == true ? $("#chkUSPSFirstClassMailLargeEnvelope").prop("checked", true) : $('#chkUSPSFirstClassMailLargeEnvelope').prop("checked", false);
-                    d[0].FirstClassMailParcel == true ? $("#chkUSPSFirstClassMailParcel").prop("checked", true) : $('#chkUSPSFirstClassMailParcel').prop("checked", false);
-                    d[0].FirstClassMailLargePostcards == true ? $("#chkUSPSFirstClassMailLargePostcards").prop("checked", true) : $('#chkUSPSFirstClassMailLargePostcards').prop("checked", false);
-                    d[0].FirstClassMailKeysandIDs == true ? $("#chkUSPSFirstClassMailKeysandIDs").prop("checked", true) : $('#chkUSPSFirstClassMailKeysandIDs').prop("checked", false);
-                    d[0].FirstClassMailPackageService == true ? $("#chkUSPSFirstClassMailPackageService").prop("checked", true) : $('#chkUSPSFirstClassMailPackageService').prop("checked", false);
-                    d[0].FirstClassMailPackageServiceHoldForPickup == true ? $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked", true) : $('#chkUSPSFirstClassMailPackageServiceHoldForPickup').prop("checked", false);
-                    d[0].FirstClassMailMeteredLetter == true ? $("#chkUSPSFirstClassMailMeteredLetter").prop("checked", true) : $('#chkUSPSFirstClassMailMeteredLetter').prop("checked", false);
-                    $("#txtFedexAccountNumber").val(d[0].FedexAccountNumber);
-                    $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);
-                    $("#txtFedexWebServicesKey").val(d[0].FedexWebServicesKey);
-                    $("#txtFedexWebServicesPassword").val(d[0].FedexWebServicesPassword);
-                    $("#ddlFedexMethodType").val(d[0].FedexMethodType == null ? "Global" : d[0].FedexMethodType).trigger("change");
-                    d[0].FedexMethodEnable == true ? $("#chkFadexMethodEnable").prop("checked", true) : $('#chkFadexMethodEnable').prop("checked", false);
-                    d[0].FedexCustomServices == true ? $("#chkFadexCustomServices").prop("checked", true) : $('#chkFadexCustomServices').prop("checked", false);
-                    d[0].FedexDebugMode == true ? $("#chkFadexDebugMode").prop("checked", true) : $('#chkFadexDebugMode').prop("checked", false);
+                        $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID).trigger("change");
+                        $("#txtShippingRate").val(d[0].ShippingRate);
+                        $("#txtShippingLocation").val(d[0].ShippingLocation);
 
-                    $("#ddlTaxMethod").val(d[0].TaxMethod == null ? "Standard Tax Rate" : d[0].TaxMethod).trigger("change");
-                    $("#txtDefaultTax").val(d[0].DefaultTax);
-                    $("#txtShippingTax").val(d[0].ShippingTax);
-                    d[0].ShippingTaxIncludedinprice == true ? $("#chkShippingTaxIncludedinprice").prop("checked", true) : $('#chkShippingTaxIncludedinprice').prop("checked", false);
-                    $("#txtCalculatedtax").val(d[0].CalculatedTax);
-                    d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
+                        $("#txtUPSUserID").val(d[0].UPSUserID);
+                        $("#txtUPSPassword").val(d[0].UPSPassword);
+                        $("#txtUPSAccessKey").val(d[0].UPSAccessKey);
+                        $("#txtUPSAccountNumber").val(d[0].UPSAccountNumber);
+                        $("#txtUPSOriginPostcode").val(d[0].UPSOriginPostcode);
+                        $("#txtUPSOriginCountry").val(d[0].UPSOriginCountry);
+                        $("#txtUPSAPILicenceKey").val(d[0].UPSAPILicenceKey);
+                        $("#txtUPSLicenceEmail").val(d[0].UPSLicenceEmail);
+                        d[0].UPSEnable == true ? $("#chkUPSEnable").prop("checked", true) : $("#chkUPSEnable").prop("checked", false);
+                        $("#ddlUPSMeasurementUnits").val(d[0].UPSMeasurementUnits == null ? "LBS/IN" : d[0].UPSMeasurementUnits);
+                        d[0].UPSEnableDebugMode == true ? $("#chkUPSEnableDebugMode").prop("checked", true) : $("#chkUPSEnableDebugMode").prop("checked", false);
+                        d[0].USPSEnable == true ? $("#chkUSPSEnableDisable").prop("checked", true) : $("#chkUSPSEnableDisable").prop("checked", false);
+                        $("#txtUSPSPostcode").val(d[0].USPSPostcode);
+                        $("#txtUSPSUserID").val(d[0].USPSUserID);
+                        d[0].USPSCommercialrates == true ? $("#chkUSPSCommercialrates").prop("checked", true) : $("#chkUSPSCommercialrates").prop("checked", false);
+                        d[0].USPSPacking == true ? $("#chkUSPSPacking").prop("checked", true) : $("#chkUSPSPacking").prop("checked", false);
+                        $("#txtUSPSPriorityMailExpressTitle").val(d[0].USPSPriorityMailExpressTitle);
+                        d[0].USPSPriorityMailExpress == true ? $("#chkPriorityMailExpress").prop("checked", true) : $("#chkPriorityMailExpress").prop("checked", false);
+                        d[0].USPSPriorityMailExpressHoldforPickup == true ? $("#chkPriorityMailExpressHoldforPickup").prop("checked", true) : $("#chkPriorityMailExpressHoldforPickup").prop("checked", false);
+                        d[0].USPSPriorityMailExpressSundayHoliday == true ? $("#chkPriorityMailExpressSundayHoliday").prop("checked", true) : $("#chkPriorityMailExpressSundayHoliday").prop("checked", false);
+                        $("#txtUSPSPriorityMailTitle").val(d[0].USPSPriorityMailTitle);
+                        d[0].USPSPriorityMail == true ? $("#chkPriorityMail").prop("checked", true) : $('#chkPriorityMail').prop("checked", false);
+                        d[0].USPSPriorityMailHoldForPickup == true ? $("#chkPriorityMailHoldforPickup").prop("checked", true) : $('#chkPriorityMailHoldforPickup').prop("checked", false);
+                        d[0].USPSPriorityMailKeysandIDs == true ? $("#chkPriorityMailKeysandIDs").prop("checked", true) : $('#chkPriorityMailKeysandIDs').prop("checked", false);
+                        d[0].USPSPriorityMailRegionalRateBoxA == true ? $("#chkPriorityMailRegionalRateBoxA").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxA').prop("checked", false);
+                        d[0].USPSPriorityMailRegionalRateBoxAHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxAHoldForPickup').prop("checked", false);
+                        d[0].USPSPriorityMailRegionalRateBoxB == true ? $("#chkPriorityMailRegionalRateBoxB").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxB').prop("checked", false);
+                        d[0].USPSPriorityMailRegionalRateBoxBHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxBHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxBHoldForPickup').prop("checked", false);
+                        $("#txtUSPSFirstClassMailTitle").val(d[0].FirstClassMailTitle);
+                        d[0].FirstClassMailPostcards == true ? $("#chkUSPSFirstClassMailPostcards").prop("checked", true) : $('#chkUSPSFirstClassMailPostcards').prop("checked", false);
+                        d[0].FirstClassMailLetter == true ? $("#chkUSPSFirstClassMailLetter").prop("checked", true) : $('#chkUSPSFirstClassMailLetter').prop("checked", false);
+                        d[0].FirstClassMailLargeEnvelope == true ? $("#chkUSPSFirstClassMailLargeEnvelope").prop("checked", true) : $('#chkUSPSFirstClassMailLargeEnvelope').prop("checked", false);
+                        d[0].FirstClassMailParcel == true ? $("#chkUSPSFirstClassMailParcel").prop("checked", true) : $('#chkUSPSFirstClassMailParcel').prop("checked", false);
+                        d[0].FirstClassMailLargePostcards == true ? $("#chkUSPSFirstClassMailLargePostcards").prop("checked", true) : $('#chkUSPSFirstClassMailLargePostcards').prop("checked", false);
+                        d[0].FirstClassMailKeysandIDs == true ? $("#chkUSPSFirstClassMailKeysandIDs").prop("checked", true) : $('#chkUSPSFirstClassMailKeysandIDs').prop("checked", false);
+                        d[0].FirstClassMailPackageService == true ? $("#chkUSPSFirstClassMailPackageService").prop("checked", true) : $('#chkUSPSFirstClassMailPackageService').prop("checked", false);
+                        d[0].FirstClassMailPackageServiceHoldForPickup == true ? $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked", true) : $('#chkUSPSFirstClassMailPackageServiceHoldForPickup').prop("checked", false);
+                        d[0].FirstClassMailMeteredLetter == true ? $("#chkUSPSFirstClassMailMeteredLetter").prop("checked", true) : $('#chkUSPSFirstClassMailMeteredLetter').prop("checked", false);
+                        $("#txtFedexAccountNumber").val(d[0].FedexAccountNumber);
+                        $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);
+                        $("#txtFedexWebServicesKey").val(d[0].FedexWebServicesKey);
+                        $("#txtFedexWebServicesPassword").val(d[0].FedexWebServicesPassword);
+                        $("#ddlFedexMethodType").val(d[0].FedexMethodType == null ? "Global" : d[0].FedexMethodType).trigger("change");
+                        d[0].FedexMethodEnable == true ? $("#chkFadexMethodEnable").prop("checked", true) : $('#chkFadexMethodEnable').prop("checked", false);
+                        d[0].FedexCustomServices == true ? $("#chkFadexCustomServices").prop("checked", true) : $('#chkFadexCustomServices').prop("checked", false);
+                        d[0].FedexDebugMode == true ? $("#chkFadexDebugMode").prop("checked", true) : $('#chkFadexDebugMode').prop("checked", false);
 
-                    $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1).trigger("change");
-                    $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
-                    $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
-                    $("#txtAccountName").val(d[0].AccountName);
-                    $("#txtAccountEmail").val(d[0].AccountEmail);
-                    $("#ddlDiscountType2").val(d[0].DiscountType2 == null ? "-1" : d[0].DiscountType2).trigger("change");
-                    $("#txtDiscount").val(d[0].Discount);
+                        $("#ddlTaxMethod").val(d[0].TaxMethod == null ? "Standard Tax Rate" : d[0].TaxMethod).trigger("change");
+                        $("#txtDefaultTax").val(d[0].DefaultTax);
+                        $("#txtShippingTax").val(d[0].ShippingTax);
+                        d[0].ShippingTaxIncludedinprice == true ? $("#chkShippingTaxIncludedinprice").prop("checked", true) : $('#chkShippingTaxIncludedinprice').prop("checked", false);
+                        $("#txtCalculatedtax").val(d[0].CalculatedTax);
+                        d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
-                    $("#ddlPaymentMethod").val(d[0].Paymentmethod == null ? "-1" : d[0].Paymentmethod).trigger("change");
-                    $("#txtBankAccountName").val(d[0].BankAccountName);
-                    $("#txtBankAccountNumber").val(d[0].BankAccountNumber);
-                    $("#txtBankName").val(d[0].BankName);
-                    $("#txtBankRoutingNumber").val(d[0].BankRoutingNumber);
-                    $("#txtBankIBAN").val(d[0].BankIBAN);
-                    $("#txtBankSwift").val(d[0].BankSwift);
+                        $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1).trigger("change");
+                        $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
+                        $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
+                        $("#txtAccountName").val(d[0].AccountName);
+                        $("#txtAccountEmail").val(d[0].AccountEmail);
+                        $("#ddlDiscountType2").val(d[0].DiscountType2 == null ? "-1" : d[0].DiscountType2).trigger("change");
+                        $("#txtDiscount").val(d[0].Discount);
 
-                    $("#txtChequeTitle").val(d[0].ChequeTitle);
-                    $("#txtChequeDescription").val(d[0].ChequeDescription);
-                    $("#txtChequeInstructions").val(d[0].ChequeInstructions);
+                        $("#ddlPaymentMethod").val(d[0].Paymentmethod == null ? "-1" : d[0].Paymentmethod).trigger("change");
+                        $("#txtBankAccountName").val(d[0].BankAccountName);
+                        $("#txtBankAccountNumber").val(d[0].BankAccountNumber);
+                        $("#txtBankName").val(d[0].BankName);
+                        $("#txtBankRoutingNumber").val(d[0].BankRoutingNumber);
+                        $("#txtBankIBAN").val(d[0].BankIBAN);
+                        $("#txtBankSwift").val(d[0].BankSwift);
 
-                    $("#txtPPInvoiceAPIUsername").val(d[0].PaypalInvoiceAPIUsername);
-                    $("#txtPPInvoiceAPIPassword").val(d[0].PaypalInvoiceAPIPassword);
-                    $("#txtPPInvoiceAPISignature").val(d[0].PaypalInvoiceAPISignature);
+                        $("#txtChequeTitle").val(d[0].ChequeTitle);
+                        $("#txtChequeDescription").val(d[0].ChequeDescription);
+                        $("#txtChequeInstructions").val(d[0].ChequeInstructions);
 
-                    $("#txtPaypalTitle").val(d[0].PaypalTitle);
-                    $("#txtPaypalDescription").val(d[0].PaypalDescription);
-                    $("#txtPaypalEmail").val(d[0].PaypalEmail);
-                    d[0].PaypalProduction == true ? $("#chkPaypalProduction").prop("checked", true) : $('#chkPaypalProduction').prop("checked", false);
-                    $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
-                    $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
-                    $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
-                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction == null ? "-1" : d[0].PaypalPaymentAction).trigger("change");
-                    $("#txtPaypalAPIUserName").val(d[0].PaypalAPIUserName);
-                    $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
-                    $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);
-                    PaymentMethodBlock(d[0].Paymentmethod);
-                    ShippingMethodBlock(d[0].ShippingMethodID)
+                        $("#txtPPInvoiceAPIUsername").val(d[0].PaypalInvoiceAPIUsername);
+                        $("#txtPPInvoiceAPIPassword").val(d[0].PaypalInvoiceAPIPassword);
+                        $("#txtPPInvoiceAPISignature").val(d[0].PaypalInvoiceAPISignature);
+
+                        $("#txtPaypalTitle").val(d[0].PaypalTitle);
+                        $("#txtPaypalDescription").val(d[0].PaypalDescription);
+                        $("#txtPaypalEmail").val(d[0].PaypalEmail);
+                        d[0].PaypalProduction == true ? $("#chkPaypalProduction").prop("checked", true) : $('#chkPaypalProduction').prop("checked", false);
+                        $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
+                        $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
+                        $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
+                        $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction == null ? "-1" : d[0].PaypalPaymentAction).trigger("change");
+                        $("#txtPaypalAPIUserName").val(d[0].PaypalAPIUserName);
+                        $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
+                        $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);
+                        PaymentMethodBlock(d[0].Paymentmethod);
+                        ShippingMethodBlock(d[0].ShippingMethodID)
+
+                    }
+                },
+                error: function (msg) {
 
                 }
-            },
-            error: function (msg) {
+            });
+    }
 
-            }
-        });
-}
+
 function getVendorCode() {
     var obj =
         $.ajax({
@@ -1382,9 +1388,9 @@ function setupAutocomplete(inputs) {
             $("#" + cCity).val('');
         obj = place.address_components.filter(element => element.types[0] == 'country');
         if (obj.length > 0)
-            $("#" + cCountry).val(obj[0].short_name).trigger('change');
+            $("#" + cCountry).val(obj[0].short_name);
         else
-            $("#" + cCountry).val('US').trigger('change');
+            $("#" + cCountry).val('US');
         obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
         if (obj.length > 0)
             $("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
@@ -1683,3 +1689,4 @@ function ActivityLog(ModuleName, ModuleURL) {
     })
 
 }
+

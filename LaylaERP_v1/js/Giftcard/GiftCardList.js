@@ -14,6 +14,8 @@
     }, function (start, end, label) {
         let order_type = $('#hfOrderType').val(); dataGCGridLoad();
     });
+    var loc = window.location.pathname;
+    CheckPermissions("#btnAddGiftCard", "#hfEdit", "", loc);
     dataGCGridLoad();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Redeemed by customer...",
@@ -128,8 +130,10 @@ function dataGCGridLoad() {
             {
                 'data': 'id', title: 'Action', sWidth: "6%",
                 'render': function (id, type, row, meta) {
-
-                    return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> '
+                    }
+                    else { return "No Permission"; }
                 }
             }
         ]

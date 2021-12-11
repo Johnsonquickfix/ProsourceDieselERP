@@ -68,6 +68,8 @@
         // GET: Orders History/View
         public ActionResult OrdersHistory()
         {
+            ViewBag.iseditable = CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? 1 : 0;
+            ViewBag.userid = CommanUtilities.Provider.GetCurrent().UserID;
             return View();
         }
         [HttpPost]

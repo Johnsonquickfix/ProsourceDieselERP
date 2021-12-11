@@ -169,7 +169,7 @@ function dataGridLoad(order_type) {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
-                    amt += refund_gc_amt != 0 ? '<br>Refunded By Gift Card : $' + refund_gc_amt.toFixed(2): '';
+                    amt += refund_gc_amt != 0 ? '<br>Refunded by gift card : $' + refund_gc_amt.toFixed(2): '';
                     return amt;
                 }
             },

@@ -37,7 +37,7 @@ function getOrderInfo() {
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
-            var data = JSON.parse(result);
+            var data = JSON.parse(result); console.log(data);
             if (data.length > 0) {
                 if (data[0].is_edit == '1') {
                     if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
@@ -76,7 +76,8 @@ function getOrderInfo() {
                 let shipping_Details = '<strong>' + data[0].s_first_name + ' ' + data[0].s_last_name + '</strong><br>';
                 shipping_Details += (data[0].s_company.length > 0 ? data[0].s_company + '<br>' : '') + (data[0].s_address_1.length > 0 ? data[0].s_address_1.trim() + '<br>' : '')
                     + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ' ' : '')
-                    + (data[0].s_postcode.length > 0 ? data[0].s_postcode + ' ' : '') + (data[0].s_country.length > 0 ? data[0].s_country : '');
+                    + (data[0].s_postcode.length > 0 ? data[0].s_postcode + ' ' : '') + (data[0].s_country.length > 0 ? data[0].s_country : '')
+                    + (data[0].post_excerpt.length > 0 ? '<br><strong>Note:</strong><br>' + data[0].post_excerpt : '');
                 $('.shipping-address').empty().append(shipping_Details);
                 $('.shipping-address').data('shipcountry', data[0].s_country.trim());
                 $('.shipping-address').data('shipstate', data[0].s_state.trim());
@@ -96,7 +97,7 @@ function getOrderItemList(oid) {
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardrefundAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
-        let tax_rate = 0.00; 
+        let tax_rate = 0.00;
         $.each(data, function (i, row) {
             let orderitemid = parseInt(row.order_item_id) || 0;
             if (row.product_type == 'line_item') {
@@ -215,7 +216,7 @@ function getOrderItemList(oid) {
                 $("#salesTaxTotal").data("orderitemid", orderitemid);
                 $("#hfTaxRate").data('freighttax', row.shipping_tax_amount);
             }
-            else if (row.product_type == 'refund_items') {                
+            else if (row.product_type == 'refund_items') {
                 if (row.product_name == "line_item") {
                     let _total = (row.total - row.tax_amount), _totaltax = row.tax_amount;
                     let max_return = parseInt($("#tritemId_" + orderitemid).data("qty")) + parseInt(row.quantity);
@@ -240,7 +241,7 @@ function getOrderItemList(oid) {
             }
         });
 
-        $("#hfTaxRate").val(tax_rate); $(".lbl-saletax").text(tax_rate > 0 ? 'Sale Tax (' + tax_rate * 100 + '%)' : 'Sale Tax');
+        $("#hfTaxRate").val(tax_rate); $(".lbl-saletax").text(tax_rate > 0 ? 'Sale Tax (' + (tax_rate * 100).toFixed(2) + '%)' : 'Sale Tax');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         //$('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
         $('#billCoupon').append(couponHtml); $('#billGiftCard').append(giftcardHtml);
@@ -459,7 +460,7 @@ function createItemsList() {
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         let srfee = parseFloat($(tr).data("srfee")) || 0.00; mattotalCount += srfee > 0 ? qty : 0;
-        if (refundqty > 0 && refundamt == 0) {           
+        if (refundqty > 0 && refundamt == 0) {
             matreturnCount += srfee > 0 ? refundqty : 0;
             /// calculate tax Rate
             if (taxAmount > 0 && tax_rate == 0) { tax_rate = parseFloat(((taxAmount / ((grossAmount - discountAmount) * 0.01)) / 100).toFixed(4)); }
@@ -547,7 +548,7 @@ function saveCO() {
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
-    //console.log(postMeta, postStatus, itemsDetails);
+    console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
     //return;
     if (totalPay > net_total) {

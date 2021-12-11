@@ -1909,7 +1909,7 @@ function createPostStatus() {
         tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
         shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
         net_total: (parseFloat($('#orderTotal').text()) || 0.00),
-        status: $('#ddlStatus').val(), Search: $('#txtCustomerNotes').val()
+        status: $('#ddlStatus').val(), customer_notes: $('#txtCustomerNotes').val()
     };
     if (postStatus.net_total == 0) postStatus.status = 'wc-processing';
     return postStatus;

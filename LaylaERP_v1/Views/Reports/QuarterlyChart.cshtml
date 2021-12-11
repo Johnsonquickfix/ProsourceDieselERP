@@ -55,6 +55,13 @@
         $(document).ready(function () {
             $("#loader").hide();
             Search();
+            $(function () {
+                Highcharts.setOptions({
+                    lang: {
+                        thousandsSep: ','
+                    }
+                });
+            })
         });
         function Search() {
             $("#loader").show();
@@ -106,7 +113,7 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Quarterly sales order details'
+                    text: 'Year wise quarterly sales order chart'
                 },
                 //subtitle: {
                 //    text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
@@ -133,13 +140,13 @@
                         borderWidth: 0,
                         dataLabels: {
                             enabled: true,
-                            format: '{point.y:.2f}'
+                            format: '{point.y:,.2f}'
                         }
                     }
                 },
 
                 tooltip: {
-                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b><br/>'
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:,.2f}</b><br/>'
                 },
 
                 series:

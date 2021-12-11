@@ -657,7 +657,7 @@ function sendInvoice(paymode, id) {
         NetTotal: NetTotal,OrderProducts: _item
     }
     $.ajax({
-        type: "POST", url: '/Giftcard/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
+        type: "POST", url: '/Giftcard/SendPaypalInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
         success: function (result) { console.log(result); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
         complete: function () { }, async: false

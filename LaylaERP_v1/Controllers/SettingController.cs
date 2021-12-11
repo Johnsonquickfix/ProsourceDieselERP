@@ -49,6 +49,8 @@ namespace LaylaERP.Controllers
                 ViewBag.podiumSecretKey = DT.Tables[0].Rows[0]["podiumSecretKey"].ToString();
                 ViewBag.podium_code = DT.Tables[0].Rows[0]["podium_code"].ToString();
                 ViewBag.podium_refresh_code = DT.Tables[0].Rows[0]["podium_refresh_code"].ToString();
+                ViewBag.podium_locationuid = DT.Tables[0].Rows[0]["podium_locationuid"].ToString();
+
                 //ds.Tables[1].Rows[0]["podiumSecretKey"].ToString();
                 ViewBag.CompanyName = DT.Tables[1].Rows[0]["CompanyName"].ToString();
                 ViewBag.lastname = DT.Tables[1].Rows[0]["lastname"].ToString();
@@ -185,6 +187,7 @@ namespace LaylaERP.Controllers
             string podiumSecretKey = model.podiumSecretKey;
             string podium_code = model.podium_code;
             string podium_refresh_code = model.podium_refresh_code;
+            string podium_locationuid = model.podium_locationuid;
             SettingRepository.Updatesetting(model, id,email);
 
         }

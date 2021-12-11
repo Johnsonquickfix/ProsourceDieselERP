@@ -602,7 +602,7 @@ function AddBuyingt() {
     Remark = $("#txtRemarks").val();   
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vender', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
         swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
@@ -688,13 +688,13 @@ function btncopybuying() {
     Remark = $("#txtRemarks").val();
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vender', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
         swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (oldvender == vender) {
-        swal('Alert', 'Can not coppy with same vender', 'error').then(function () { swal.close(); $('#ddlvendercopy').focus(); });
+        swal('Alert', 'Can not coppy with same vendor', 'error').then(function () { swal.close(); $('#ddlvendercopy').focus(); });
     }
     else {
         var obj = {
@@ -725,7 +725,7 @@ function btncopybuying() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         bindbuyingprice();
-                        swal('Success!', 'vender details has been copied', 'success');
+                        swal('Success!', 'vendor details copied', 'success');
                     }
                     else {
                         // $('#fetch_results > input:text').val('');

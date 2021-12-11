@@ -36,7 +36,7 @@ namespace LaylaERP.BAL
                 string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, SSL=@SSL, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
-                    " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code where ID=@user_id";
+                    " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code,podium_locationuid=@podium_locationuid where ID=@user_id";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
@@ -65,6 +65,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@podiumSecretKey",model.podiumSecretKey),
                     new SqlParameter("@podium_code",model.podium_code),
                     new SqlParameter("@podium_refresh_code",model.podium_refresh_code),
+                    new SqlParameter("@podium_locationuid",model.podium_locationuid),
 
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);

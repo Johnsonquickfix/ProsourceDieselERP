@@ -130,7 +130,7 @@ function dataGridLoad(order_type) {
             $('.dataTables_filter input').unbind();
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table.search(this.value).draw(); }
+                if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
         sAjaxSource: "/Orders/GetOrderList",
@@ -167,8 +167,9 @@ function dataGridLoad(order_type) {
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
+                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
+                    amt += refund_gc_amt != 0 ? '<br>Refunded By Gift Card : $' + refund_gc_amt.toFixed(2): '';
                     return amt;
                 }
             },
@@ -204,7 +205,8 @@ function dataGridLoad(order_type) {
             },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    let refund_amt = parseFloat(row.refund_total) || 0.00;
+                    let refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;;
+                    refund_amt = refund_amt + refund_gc_amt;
                     if (_editable == 1) {
                         if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
                         else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';

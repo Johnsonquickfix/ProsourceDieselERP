@@ -265,6 +265,7 @@
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AppLog\ExpectionLog2021128.txt" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\bootstrap-datepicker\dist\css\bootstrap-datepicker.min.css" />
@@ -714,9 +715,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
-    <Content Include="js\Report\OrderTypeList.js" />
-    <Content Include="js\Report\PartialRefund.js" />
-    <Content Include="js\Report\SalesRepresentative.js" />
+    <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1028,9 +1027,10 @@
     <Content Include="Views\Reception\SalesPO.cshtml" />
     <Content Include="Views\Reports\OrderTotalChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
+    <Content Include="Views\Reports\PartialRefund.cshtml" />
+    <Content Include="Views\Reports\SalesRepresentative.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Files\" />
   </ItemGroup>

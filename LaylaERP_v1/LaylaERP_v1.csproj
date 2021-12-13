@@ -1029,6 +1029,7 @@
     <Content Include="Views\Reports\OrderTotalChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Views\Reports\QuarterlyChart.cshtml" />
+    <Content Include="Views\Reports\MonthlyChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

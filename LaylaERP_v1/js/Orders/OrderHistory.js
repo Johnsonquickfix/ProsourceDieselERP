@@ -375,7 +375,7 @@ function podiumPaymentStatus(oid, podium_id, email) {
             $.get('/Setting/GetPodiumToken', option).then(response => {
                 let access_token = response.message;
                 $.ajax({
-                    type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" },
+                    type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: { locationUid: _locationUid },
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     let status = response.data.status.toUpperCase();
@@ -498,7 +498,7 @@ function cancelpayment(data) {
                     swal.showLoading();
                     $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
                         let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.payid + '/cancel';
-                        let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
+                        let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
                         $.ajax({
                             type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
@@ -516,7 +516,7 @@ function cancelpayment(data) {
                 onOpen: () => {
                     swal.showLoading();
                     $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
-                        let opt_refund = { reason: 'requested_by_customer', locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", amount: invoice_amt * 100, paymentUid: data.payment_uid, note: '' };
+                        let opt_refund = { reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, paymentUid: data.payment_uid, note: '' };
                         $.ajax({
                             type: 'post', url: podium_baseurl + '/v4/invoices/' + data.payid + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
                             beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + response.message); }

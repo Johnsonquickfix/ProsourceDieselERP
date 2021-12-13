@@ -67,7 +67,7 @@
             }
         });
     });
-    $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
+    $.when(CategoryWiseProducts()).done(function () { getOrderInfo();});
     $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
         let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
@@ -735,6 +735,7 @@ function getOrderInfo() {
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
+        CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
 }
 function getOrderItemList(oid) {

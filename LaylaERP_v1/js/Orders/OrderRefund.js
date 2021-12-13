@@ -607,7 +607,7 @@ function saveCO() {
         });
     }
     else { swal('Error!', 'Refund amount can not be greater than total order amount', "error"); return false; }
-    return false;
+    return false; 
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Podium Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,7 +630,7 @@ function PodiumPaymentRefunds() {
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     console.log(response);
-                    let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                    let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt.toFixed(2) + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
                     $.post('/Orders/OrderNoteAdd', option).then(response => {
                         if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
                     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });

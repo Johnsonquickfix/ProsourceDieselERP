@@ -28,7 +28,7 @@ var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", typ
 ];
 var recycling_item = [118, 20861, 611172];
 var podium_baseurl = 'https://api.podium.com', paypal_baseurl = 'https://api-m.sandbox.paypal.com', paypal_baseurl_pay = 'https://www.sandbox.paypal.com';
-
+var _locationUid = '6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7';
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
     var res = wc_states.filter(element => element.abbreviation == obj.id);

@@ -615,7 +615,7 @@ function PodiumPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), payment_uid = $('#lblOrderNo').data('payment_uid').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
 
-    let opt_refund = { reason: 'requested_by_customer', locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
+    let opt_refund = { reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
     //console.log(opt_inv);
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };

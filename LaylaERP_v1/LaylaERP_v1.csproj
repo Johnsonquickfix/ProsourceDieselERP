@@ -265,7 +265,6 @@
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AppLog\ExpectionLog2021128.txt" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\adminlte.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\bootstrap-datepicker\dist\css\bootstrap-datepicker.min.css" />
@@ -702,6 +701,7 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
@@ -716,6 +716,9 @@
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
+    <Content Include="js\Report\OrderTypeList.js" />
+    <Content Include="js\Report\PartialRefund.js" />
+    <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1029,8 +1032,11 @@
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Views\Reports\PartialRefund.cshtml" />
     <Content Include="Views\Reports\SalesRepresentative.cshtml" />
+    <Content Include="Views\Reports\MonthlyChart.cshtml" />
+    <Content Include="Views\Reports\QuarterlyChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Files\" />
   </ItemGroup>

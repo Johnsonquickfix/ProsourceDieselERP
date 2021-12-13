@@ -1355,6 +1355,32 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
             return dt;
         }
+
+        public static DataTable GetMonthly(string year, string to_date, string Empid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (year != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@year",year ),
+                    new SqlParameter("@qflag","MD" ),
+
+                };
+                    dt = SQLHelper.ExecuteDataTable("erp_quartertotaldetails_List", parameters);
+
+                    
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return dt;
+        }
         public static DataTable GetGrafixDetail(string from_date, string to_date, string Empid)
         {
             DataTable dt = new DataTable();

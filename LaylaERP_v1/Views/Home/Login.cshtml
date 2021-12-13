@@ -402,38 +402,7 @@
                 }
             });
 
-            $('#sendquery').click(function () {
-                debugger;
-                var name = $('#name').val();
-                var email = $('#email').val();
-                var subject = $('#subject').val();
-                var content = $('#content').val();
-
-                var obj = { name: name, email: email, subject: subject, content: content }
-                $.ajax({
-                    url: '/AccountAPI/ContactUs', dataType: 'json', type: "Post",
-
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    success: function (data) {
-
-                        console.log(data);
-                        //$("#loading-div-background").hide();
-
-                        swal('success!', "Message send Successfully", "success");
-                        $('#name').val('');
-                        $('#email').val('');
-                        $('#subject').val('');
-                        $('#content').val(0);
-
-                    },
-                    error: function (errormessage) {
-                        //$("#loading-div-background").hide();
-                        swal('Error!', "Something went wrong .", "error");
-                    }
-                });
-
-            });
+        
 
         });
     </script>

@@ -12,7 +12,7 @@
         },
         startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
-    }, function (start, end, label) {
+    }, function (start, end, label) { 
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
         PurchaseOrderGrid();
     });

@@ -605,6 +605,7 @@ function EmployeeLinkedFiles() {
     });
 }
 function DeleteEmployeeLinkedFiles(id) {
+    ActivityLog('Delete employee linked file', '/Hrms/Employee/' + id + '');
     RowID = $("#hfid").val();
     var result = confirm("Are you sure to delete this Linked File?");
     if (result) {

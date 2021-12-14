@@ -361,7 +361,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@undertaking_emp", model.undertaking_emp),
                     new SqlParameter("@joining_date", model.joining_date ?? (object)DBNull.Value),
                     new SqlParameter("@leaving_date", model.leaving_date ?? (object)DBNull.Value),
-                    new SqlParameter("@bloodgroup", model.bloodgroup),
+                    new SqlParameter("@bloodgroup", model.bloodgroup ?? (object)DBNull.Value),
                     new SqlParameter("@education", model.education ?? (object)DBNull.Value),
                     new SqlParameter("@professionalqualification", model.professionalqualification ?? (object)DBNull.Value),
                     new SqlParameter("@otherdetails", model.otherdetails ?? (object)DBNull.Value),

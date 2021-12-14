@@ -702,6 +702,7 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
@@ -715,6 +716,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
@@ -725,6 +727,7 @@
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
+    <Content Include="js\UserActivity.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
@@ -1029,6 +1032,9 @@
     <Content Include="Views\Reception\SalesPO.cshtml" />
     <Content Include="Views\Reports\OrderTotalChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
+    <Content Include="Views\Reports\PartialRefund.cshtml" />
+    <Content Include="Views\Reports\SalesRepresentative.cshtml" />
+    <Content Include="Views\Reports\MonthlyChart.cshtml" />
     <Content Include="Views\Reports\QuarterlyChart.cshtml" />
   </ItemGroup>
   <ItemGroup>

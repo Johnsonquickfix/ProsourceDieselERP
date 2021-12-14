@@ -1,22 +1,39 @@
 ﻿$(document).ready(function () {
     $("#loader").hide(); $('.select2').select2();
+    $('#txtDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'This Year': [moment().startOf('year'), moment().endOf('year')]
+        },
+        startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
+    }, function (start, end, label) {
+        $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
+        PurchaseOrderGrid();
+    });
+    $('#txtDate').val('');
+    $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); PurchaseOrderGrid(); });
     PurchaseOrderGrid();
     $('#btnSearch').click(function () { PurchaseOrderGrid(); });
     $(document).on('click', '#btnChange', function () { orderStatus(); });
 });
 function PurchaseOrderGrid() {
     let urid = parseInt($("#ddlSearchStatus").val());
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
             $('.dataTables_filter input').unbind();
@@ -27,7 +44,8 @@ function PurchaseOrderGrid() {
         },
         sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid }, { name: "strValue2", value: "PO" });
+            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
+            aoData.push({ name: "strValue3", value: urid }, { name: "strValue4", value: "PO" });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
             oSettings.jqXHR = $.ajax({

@@ -81,6 +81,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult MonthlyChart()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -417,6 +421,15 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             DataTable dt = ReportsRepository.GetQuarerly(Month, Year, Type);
     
+            //return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+            result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            return Json(result, 0);
+        }
+        public JsonResult GetMonthly(string Month, string Year, string Type)
+        {
+            string result = string.Empty;
+            DataTable dt = ReportsRepository.GetMonthly(Month, Year, Type);
+
             //return Json(list.ToList(), JsonRequestBehavior.AllowGet);
             result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             return Json(result, 0);

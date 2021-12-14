@@ -67,7 +67,7 @@
             }
         });
     });
-    $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
+    $.when(CategoryWiseProducts()).done(function () { getOrderInfo();});
     $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
         let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
@@ -735,6 +735,7 @@ function getOrderInfo() {
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
+        CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
 }
 function getOrderItemList(oid) {
@@ -2164,7 +2165,7 @@ function PodiumPayment() {
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
     if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
-    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
+    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: _locationUid };
     //console.log(opt_inv); return;
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
@@ -2177,7 +2178,7 @@ function PodiumPayment() {
                 let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 if (inv_id.length > 0 && pay_by.includes('podium')) {
                     let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
-                    let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
+                    let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
                     $.ajax({
                         type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                         beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }

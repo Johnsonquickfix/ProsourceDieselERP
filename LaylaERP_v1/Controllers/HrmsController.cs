@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
@@ -183,6 +184,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddEmployeeBasicInfo(HrmsModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save Employee Profile", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             byte[] image =  System.IO.File.ReadAllBytes(Server.MapPath("~/Content/EmployeeProfileImage/default.png"));
             if (model.rowid > 0)
             {
@@ -215,6 +217,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddEmployeeAdditionalInfo(HrmsModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save Employee Info", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditEmployeeAdditionalInfo(model, model.rowid);
@@ -227,6 +230,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddSalaryInfo(HrmsModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save Salary Info", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditSalaryInfo(model, model.rowid);
@@ -239,6 +243,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddBankInfo(HrmsModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save Bank Info", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditBankInfo(model, model.rowid);
@@ -310,6 +315,7 @@ namespace LaylaERP.Controllers
         }
         public ActionResult EmployeeFileUpload(int fk_emp, HttpPostedFileBase ImageFile)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Linked File Upload", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             try
             {
                 HrmsModel model = new HrmsModel();
@@ -364,6 +370,7 @@ namespace LaylaERP.Controllers
         }
         public ActionResult EmployeeProfileUpload(HrmsModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Employee profile upload", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             try
             {
 

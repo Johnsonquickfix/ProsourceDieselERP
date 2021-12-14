@@ -1036,6 +1036,9 @@
     <Content Include="Views\Reports\SalesRepresentative.cshtml" />
     <Content Include="Views\Reports\MonthlyChart.cshtml" />
     <Content Include="Views\Reports\QuarterlyChart.cshtml" />
+    <Content Include="Views\Reports\QuarterlyComparChart.cshtml" />
+    <Content Include="Views\Reports\SalesBarChart.cshtml" />
+    <Content Include="Views\Reports\YearMonthlyChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

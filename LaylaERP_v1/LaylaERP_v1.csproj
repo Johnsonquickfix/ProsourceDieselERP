@@ -726,6 +726,7 @@
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
+    <Content Include="js\UserActivity.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />

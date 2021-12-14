@@ -425,5 +425,20 @@ namespace LaylaERP.Controllers
             }
             return Json(vendorlist, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult ActivityDbLog(ActivityLogModel model)
+        {
+            string strmsg = "Log done";
+            try
+            {
+                UserActivityLog.WriteDbLog(LogType.Visit, model.ModuleName, model.ModuleURL + ", " + Net.BrowserInfo);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message }, 0);
+            }
+            return Json(new { message = strmsg }, 0);
+        }
     }
 }

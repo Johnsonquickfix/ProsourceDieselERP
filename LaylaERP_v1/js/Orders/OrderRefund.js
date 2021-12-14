@@ -237,7 +237,7 @@ function getOrderItemList(oid) {
                 else if (row.product_name == "shipping") {
                     $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.shipping_amount + '</span>');
                 }
-                else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardrefundAmt += row.total; }
+                else if (row.product_name == "gift_card") { zGiftCardrefundAmt += row.total; }
             }
         });
 
@@ -255,7 +255,7 @@ function getOrderItemList(oid) {
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
-        $("#refundedTotal").text(zRefundAmt.toFixed(2));
+        $("#refundedTotal").text(zRefundAmt.toFixed(2)); $("#refundedByGiftCard").text(zGiftCardrefundAmt.toFixed(2)); 
         let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
         $("#netPaymentTotal").text(netpay.toFixed(2));
         if (netpay <= 0 && zGiftCardAmt <= zGiftCardrefundAmt)
@@ -615,7 +615,7 @@ function PodiumPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), payment_uid = $('#lblOrderNo').data('payment_uid').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
 
-    let opt_refund = { reason: 'requested_by_customer', locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
+    let opt_refund = { reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
     //console.log(opt_inv);
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
@@ -719,7 +719,7 @@ function GiftCardPaymentRefunds() {
             $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
                 console.log('Gift Card ', response);
                 if (response.status) {
-                    swal('Success!', 'Refund Amount Added in gift card successfully.', "success");
+                    swal('Success!', 'Refund amount added in gift card successfully.', "success");
                     getOrderNotesList(oid); getOrderInfo();
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });

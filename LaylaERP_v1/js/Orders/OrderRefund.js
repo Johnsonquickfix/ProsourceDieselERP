@@ -237,7 +237,7 @@ function getOrderItemList(oid) {
                 else if (row.product_name == "shipping") {
                     $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.shipping_amount + '</span>');
                 }
-                else if (row.product_name == "gift_card") { $("#refundedByGiftCard").text(row.total); zGiftCardrefundAmt += row.total; }
+                else if (row.product_name == "gift_card") { zGiftCardrefundAmt += row.total; }
             }
         });
 
@@ -255,7 +255,7 @@ function getOrderItemList(oid) {
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
         $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
-        $("#refundedTotal").text(zRefundAmt.toFixed(2));
+        $("#refundedTotal").text(zRefundAmt.toFixed(2)); $("#refundedByGiftCard").text(zGiftCardrefundAmt.toFixed(2)); 
         let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
         $("#netPaymentTotal").text(netpay.toFixed(2));
         if (netpay <= 0 && zGiftCardAmt <= zGiftCardrefundAmt)

@@ -40,7 +40,7 @@ function GetActivityList(id) {
 
     let table = $('#GiftCardActivityList').DataTable({
         oSearch: { "sSearch": searchText },
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[4, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],

@@ -662,6 +662,7 @@
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\Giftcard\GiftCardActivity.js" />
     <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />

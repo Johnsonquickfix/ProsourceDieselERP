@@ -1295,6 +1295,8 @@ namespace LaylaERP.BAL
                         uobj.billing_state = ds1.Tables[0].Rows[i]["Fee"].ToString();
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
                         uobj.fee = ds1.Tables[0].Rows[i]["shipping"].ToString();
+
+                        uobj.Discount = ds1.Tables[0].Rows[i]["refund_total"].ToString();
                         //else
                         //    uobj.fee = "";
                         //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
@@ -1312,6 +1314,103 @@ namespace LaylaERP.BAL
                         //    uobj.billing_postcode = "";
                         exportorderlist.Add(uobj);
                     }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+
+        public static void GetMonthlyYear(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "MD"),
+                    new SqlParameter("@yearfrom", from_date), 
+                     new SqlParameter("@yearto", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_yearmonthtotaldetails_List", parameters);
+                    if (ds1.Tables[0].Rows.Count > 0 && ds1.Tables[1].Rows.Count > 0)
+                    {
+                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                        {
+                            Export_Details uobj = new Export_Details();
+                            int b = 0;
+                            if (i == 0)
+                                b = 1;
+                            else
+                                b = i + 1;
+                            for (int j = 0; j < b; j++)
+                            {
+                                uobj.total = ds1.Tables[0].Rows[i]["TOTAL"].ToString();
+                                uobj.tax = ds1.Tables[1].Rows[j]["TOTAL"].ToString();
+                            }
+                            exportorderlist.Add(uobj);
+                        }
+                    }
+                    //for (int i = 0; i < ds1.Tables[1].Rows.Count; i++)
+                    //{
+                    //    Export_Details uobj = new Export_Details();                     
+                            
+                    //      uobj.tax = ds1.Tables[1].Rows[i]["TOTAL"].ToString();
+                  
+                    //    exportorderlist.Add(uobj);
+                    //}
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetQuarterlyYear(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "QD"),
+                    new SqlParameter("@yearfrom", from_date),
+                     new SqlParameter("@yearto", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_yearmonthtotaldetails_List", parameters);
+                    if (ds1.Tables[0].Rows.Count > 0 && ds1.Tables[1].Rows.Count > 0)
+                    {
+                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                        {
+                            Export_Details uobj = new Export_Details();
+                            int b = 0;
+                            if (i == 0)
+                                b = 1;
+                            else
+                                b = i + 1;
+                            for (int j = 0; j < b; j++)
+                            {
+                                uobj.total = ds1.Tables[0].Rows[i]["TOTAL"].ToString();
+                                uobj.tax = ds1.Tables[1].Rows[j]["TOTAL"].ToString();
+                            }
+                            exportorderlist.Add(uobj);
+                        }
+                    }
+                    //for (int i = 0; i < ds1.Tables[1].Rows.Count; i++)
+                    //{
+                    //    Export_Details uobj = new Export_Details();                     
+
+                    //      uobj.tax = ds1.Tables[1].Rows[i]["TOTAL"].ToString();
+
+                    //    exportorderlist.Add(uobj);
+                    //}
                 }
             }
             catch (Exception ex) { throw ex; }
@@ -1381,6 +1480,8 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
             return dt;
         }
+
+        
         public static DataTable GetGrafixDetail(string from_date, string to_date, string Empid)
         {
             DataTable dt = new DataTable();

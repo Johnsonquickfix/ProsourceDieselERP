@@ -1029,6 +1029,9 @@
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Views\Reports\PartialRefund.cshtml" />
     <Content Include="Views\Reports\SalesRepresentative.cshtml" />
+    <Content Include="Views\Reports\YearMonthlyChart.cshtml" />
+    <Content Include="Views\Reports\QuarterlyComparChart.cshtml" />
+    <Content Include="Views\Reports\SalesBarChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

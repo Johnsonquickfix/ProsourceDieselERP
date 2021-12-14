@@ -98,14 +98,16 @@
                         console.log(result);
                         _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
                         _list = [
-                            { name: 'SubTotal', data: $.map(result, function (v) { return parseFloat(v.address); }) },
-                            { name: 'Discount', visible: false, data: $.map(result, function (v) { return parseFloat(v.total); }) },
-                            { name: 'Shipping', visible: false, data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                            { name: 'SaleTax', visible: false, data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
-                            { name: 'StateRecyclingFee', visible: false, data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
-                            { name: 'Fee', visible: false, data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
-                            { name: 'Gift Card', visible: false, data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
-                            { name: 'Total', visible: false, data: $.map(result, function (v) { return parseFloat(v.tax); }) }
+                            { name: 'Gross Total', data: $.map(result, function (v) { return parseFloat(v.address); }) },
+                            { name: 'Discount',  data: $.map(result, function (v) { return parseFloat(v.total); }) },
+                            { name: 'Shipping',  data: $.map(result, function (v) { return parseFloat(v.fee); }) },
+                            { name: 'SaleTax',  data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                            { name: 'State Recycling Fee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                            { name: 'Fee',  data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                            { name: 'Gift Card',  data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                            { name: 'Refund',  data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
+                            { name: 'Orders Total',  data: $.map(result, function (v) { return parseFloat(v.tax); }) }
+                            
                         ];
 
                         bindChart();
@@ -120,7 +122,7 @@
         }
         function bindChart() {
             Highcharts.chart('container_chart', {
-                chart: { type: 'spline' },
+                chart: { type: 'column' },
                 title: {
                     text: 'Date wise sales order chart'
                 },
@@ -159,8 +161,17 @@
                 },
 
                 tooltip: { crosshairs: true, shared: true },
-                plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
-                colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA'],
+              //  plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:,.2f}'
+                        }
+                    }
+                },
+                colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA','#0EA9F6'],
                 series: _list
 
 

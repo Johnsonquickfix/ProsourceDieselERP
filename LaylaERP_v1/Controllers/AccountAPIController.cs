@@ -239,6 +239,11 @@
                                 op.additional_notes = ds.Tables[2].Rows[0]["additional_notes"].ToString();
                             else
                                 op.additional_notes = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["po_email"] != DBNull.Value)
+                                op.po_email = ds.Tables[2].Rows[0]["po_email"].ToString();
+                            else
+                                op.po_email = string.Empty;
                         }
                             op.LoginIPAddress = Net.Ip;
                         op.LoginMacAddress = string.Empty;

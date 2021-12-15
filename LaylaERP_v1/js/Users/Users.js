@@ -173,7 +173,7 @@ function Datagrid(role_type, type) {
                     'data': 'ID', sWidth: "8%", "bSearchable": false,
                     'render': function (ID, type, full, meta) {
                         if ($("#hfEdit").val() == "1") {
-                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')" data-toggle="tooltip" title="View/Edit User"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
                         else { return "No Permission"; }
                     }
@@ -256,7 +256,7 @@ function Datagrid(role_type, type) {
                     'data': 'ID', sWidth: "8%",
                     'render': function (ID, type, full, meta) {
                         if ($("#hfEdit").val() == "1") {
-                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')" data-toggle="tooltip" title="View/Edit User"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
                         else { return "No Permission"; }
                     }
@@ -356,7 +356,7 @@ function DatagridLoade() {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    return '<a href="../Users/UserDetails?id=' + ID + '" data-toggle="tooltip" title="View/Edit User"><i class="glyphicon glyphicon-pencil"></i></a>'
                 }
             }
         ],

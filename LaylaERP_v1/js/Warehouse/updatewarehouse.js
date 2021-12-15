@@ -101,7 +101,7 @@ function reset() {
 */
 //------------Warehouse additional info-------------------------------
 function AddWarehouseinfo() {
-    debugger
+    //debugger
     //Additional info
     rowid = $("#hfid").val();
     corphone = $("#txtCorContact").val();
@@ -1202,7 +1202,7 @@ function BankLinkedFiles() {
 
 function DeleteBankLinkedFiles(id) {
     RowID = $("#hfid").val();
-    var result = confirm("Are you sure to delete this Linked File?");
+    var result = confirm("Are you sure to delete this linked file?");
     if (result) {
         var obj = { rowid: RowID, WarehouseID: id, }
         $.ajax({
@@ -1567,7 +1567,7 @@ function WarehouseAddressInfoList() {
                 'searchable': false,
                 sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<span title="Click Here To Edit Address Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    return '<span title="Click here To edit address details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                 }
             },
         ],

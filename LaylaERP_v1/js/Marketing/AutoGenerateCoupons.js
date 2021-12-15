@@ -64,7 +64,7 @@ function dataGridLoad(order_type) {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="NewAutoGenerate/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                        return '<a href="NewAutoGenerate/' + id + '" data-toggle="tooltip" title="View/Edit Coupon"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     }
                     else { return "No Permission"; }
                 }

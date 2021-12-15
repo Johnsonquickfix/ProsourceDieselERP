@@ -562,5 +562,11 @@
                 throw ex;
             }
         }
+        public JsonResult GetSalesOrderChart(string from_date, string to_date)
+        {
+           DashboardRepository.GetSalesOrderChart(from_date, to_date);
+            var list = DashboardRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
     }
 }

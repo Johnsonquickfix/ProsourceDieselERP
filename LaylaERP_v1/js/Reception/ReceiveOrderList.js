@@ -133,7 +133,7 @@ function PurchaseOrderGrid() {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                        return '<a title="Click here to receive order" data-toggle="tooltip" href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     }
                     else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }
@@ -342,7 +342,7 @@ function PoClosureGridColleps() {
             {
                 data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                    return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>' ;
+                    return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" title="Click here to view order preview" data-toggle="tooltip" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>' ;
                 
                   
                 }        
@@ -410,7 +410,7 @@ function format(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" title="Click here to view bill preview" data-toggle="tooltip"  onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">' + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.Quenty + '</td>'
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
@@ -448,7 +448,7 @@ function PoPartiallyColleps() {
             {
                 data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                    
                 }
             },
@@ -495,7 +495,7 @@ function formatPartially(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a title="Click here to view bill preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">'  + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">'  + row.Quenty + '</td>'
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';

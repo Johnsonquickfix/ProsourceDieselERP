@@ -202,6 +202,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Save global settings", "/Setting/Setting/"+ model.ID + "" + ", " + Net.BrowserInfo);
                     Update_Setting(model, model.ID);
                     Update_EntityInfo(model, model.ID);
                     return Json(new { status = true, message = "Setting saved successfully, Please login again!!", url = "" }, 0);

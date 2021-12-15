@@ -160,6 +160,7 @@ $('#btnSaveProductAccount').click(function () {
 
 function saveProductAccount(ProductID, optType, ProductAccountNumberID) {
     var ID = $("#hfid").val();
+    //ActivityLog('Save products account', '/Accounting/productsaccount/' + ProductID + '');
     var obj = {
         ID: ID, strValue1: ProductID, option_mode: optType, strValue2: ProductAccountNumberID,
     }

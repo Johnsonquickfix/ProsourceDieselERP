@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddJournal(AccountingJournalModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save accounting journal", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 new AccountingRepository().EditJournal(model);
@@ -112,6 +114,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult UpdateJournalStatus(AccountingJournalModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Update accounting journal", "/Accounting/AccountingJournal/"+ model.rowid + "" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 new AccountingRepository().UpdateJournalStatus(model);
@@ -195,6 +198,7 @@ namespace LaylaERP.Controllers
                 if (model.rowid > 0 )
                 {
                     AccountingRepository.UpdateAccount(model);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update add account", "/Accounting/AddAccount/"+ model.rowid + "" + ", " + Net.BrowserInfo);
                     return Json(new { status = true, message = "Chart of account updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -203,6 +207,7 @@ namespace LaylaERP.Controllers
                     int ID = AccountingRepository.AddAccount(model);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Save add account", "/Accounting/AddAccount" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Chart of account saved successfully!!", url = "" }, 0);
                     }
                     else
@@ -252,6 +257,7 @@ namespace LaylaERP.Controllers
                     int ID = new AccountingRepository().AddProductAccount(ProductID, option_mode, ProductAccountNumberID);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Save products account", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
@@ -266,6 +272,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddPcgTypeDetails(PcgtypeModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save general accounts", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
             int ID = AccountingRepository.AddPcgTypeDetails(model);
             if (ID > 0)
             {

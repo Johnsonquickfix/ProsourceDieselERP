@@ -374,7 +374,7 @@ function BankLinkedFiles() {
             {
                 'data': 'FileName', sWidth: "25%",
                 'render': function (FileName, type, full, meta) {
-                    return '<a target="popup" href="../../Content/BankLinkedFiles/' + FileName + '">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
+                    return '<a target="popup" href="../../Content/BankLinkedFiles/' + FileName + '" onclick="ActivityLog(\'View/download bank linked file ' + FileName + '\',\'/Bank/financialaccount/' + ID + '\');">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'FileSize', title: 'FileSize', sWidth: "25%" },

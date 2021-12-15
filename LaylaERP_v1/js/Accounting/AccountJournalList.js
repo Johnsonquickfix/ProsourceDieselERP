@@ -177,7 +177,6 @@ function getVendor() {
 
 
 function getGrandTotal(is_date) {
-    debugger
     let urid = $("#ddlVendor").val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');

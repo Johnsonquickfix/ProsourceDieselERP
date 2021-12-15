@@ -72,7 +72,7 @@ function VendorGrid() {
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
                         
-                        return '<a href="../ThirdParty/NewVendor/' + id + '" onclick="ActivityLog(\'Edit Vendor\',\'ThirdParty/VendorList\');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../ThirdParty/NewVendor/' + id + '" onclick="ActivityLog(\'Edit Vendor\',\'ThirdParty/VendorList\');" data-toggle="tooltip" title="View/Edit Vendor"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

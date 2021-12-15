@@ -531,7 +531,7 @@ namespace LaylaERP.BAL
                 }
                 else
                 {
-                    datebetween = " and convert(date,p.post_date) >= convert(date,dateadd(DAY,-20,getdate()))";
+                    datebetween = " and convert(date,p.post_date) >= convert(date,dateadd(DAY,-7,getdate()))";
                 }
                 if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
                 {

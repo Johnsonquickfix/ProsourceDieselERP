@@ -8,6 +8,7 @@ using LaylaERP.BAL;
 using Newtonsoft.Json;
 using LaylaERP.Models;
 using System.Dynamic;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.Controllers
 {
@@ -71,6 +72,7 @@ namespace LaylaERP.Controllers
         {
             if (model.menu_id > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Menu Update", "/Appearance/AddMenu?menu_id="+ model.menu_id + "" + ", " + Net.BrowserInfo);
                 AppearanceRepository.UpdateMenus(model);
                 ModelState.Clear();
                 return Json(new { status = true, message = "Menu updated successfully!!", url = "" }, 0);
@@ -93,24 +95,25 @@ namespace LaylaERP.Controllers
         {
             //if (ModelState.IsValid)
             //{
-                //if (model.menu_id > 0)
-                //{
+            //if (model.menu_id > 0)
+            //{
 
-                //}
-                //else
-                //{
+            //}
+            //else
+            //{
 
-                    int ID = AppearanceRepository.AddNewMenu(model);
-                    if (ID > 0)
-                    {
-                        AppearanceRepository.AddAdminRole(ID);
-                        return Json(new { status = true, message = "Menu saved successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                //}
+            int ID = AppearanceRepository.AddNewMenu(model);
+            if (ID > 0)
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save new menu", "/Appearance/AddMenuDetails" + ", " + Net.BrowserInfo);
+                AppearanceRepository.AddAdminRole(ID);
+                return Json(new { status = true, message = "Menu saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+            //}
             //}
             //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
@@ -127,7 +130,7 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult SelectMenus(int menu_id )
+        public JsonResult SelectMenus(int menu_id)
         {
 
             string JSONresult = string.Empty;

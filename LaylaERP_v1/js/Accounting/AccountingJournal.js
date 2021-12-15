@@ -6,7 +6,7 @@ function getNatureofJournal() {
         url: "/Accounting/GetNatureofJournal",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Nature of Journal</option>';
+            var opt = '<option value="-1">Please select nature of journal</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -21,9 +21,9 @@ $('#btnSaveJournal').click(function (e) {
     Code = $("#txtCode").val();
     Label = $("#txtLabel").val();
     NatureofJournal = $("#ddlNatureofJournal").val();
-    if (Code == "") { swal('alert', 'Please Enter Code', 'error').then(function () { swal.close(); $('#txtCode').focus(); }) }
-    else if (Label == "") { swal('alert', 'Please Enter Label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); }) }
-    else if (NatureofJournal == "-1") { swal('alert', 'Please Select Nature of Journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
+    if (Code == "") { swal('alert', 'Please enter code', 'error').then(function () { swal.close(); $('#txtCode').focus(); }) }
+    else if (Label == "") { swal('alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); }) }
+    else if (NatureofJournal == "-1") { swal('alert', 'Please select nature of journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
 
     else {
         var obj = { rowid: ID, code: Code, label: Label, nature: NatureofJournal, }
@@ -39,7 +39,7 @@ $('#btnSaveJournal').click(function (e) {
                 if (data.status == true) {
                     $("#btnSaveJournal").attr('value', 'Add');
                     NatureofJournalList();
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     $("#tblAddJournal").find(":input").each(function () {
                         switch (this.type) {
                             case "text": case "email": case "textarea": case "tel": $(this).val(''); break;

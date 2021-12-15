@@ -64,13 +64,13 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a>' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a>' + id + '</a> <a href="#" title="Click here to view order preview" data-toggle="tooltip" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
-                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     return str_inv;
                 }
             },

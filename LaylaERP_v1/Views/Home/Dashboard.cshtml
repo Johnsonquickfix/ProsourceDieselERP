@@ -612,7 +612,7 @@
                     console.log(result);
                     _list_cat = $.map(result, function (v) { return v.first_name; });// Enumerable.from(result).select("$.billing_city").toArray();
                     _list = [
-                        { name: 'Total', data: $.map(result, function (v) { return parseFloat(v.billing_city); }) }
+                        { name: 'Order Total', data: $.map(result, function (v) { return parseFloat(v.billing_city); }) }
 
                     ];
 
@@ -644,7 +644,7 @@
 
 
             }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
-                title: { text: 'Total' },
+                title: { text: 'Order Total' },
                 labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
                 showFirstLabel: false
             }],

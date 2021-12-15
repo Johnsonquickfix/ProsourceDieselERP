@@ -304,6 +304,7 @@ function takepayment() {
         //var name = $("#txtName").val();
         var account = $("#ddlbankaccount").val();
         /*var url = "Page2.htm?status=" + encodeURIComponent(name) + "&technology=" + encodeURIComponent(tech);*/
+        ActivityLog('Check deposit list', '/CheckDeposit/CheckDepositList/?status=' + account + '&id=' + id+'');
         var url = "/CheckDeposit/CheckDepositPayment?status=" + account + "&id=" + id;
         window.location.href = url;
     }

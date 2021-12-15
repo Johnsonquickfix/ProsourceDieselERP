@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace LaylaERP.Controllers
                     resultOne = EmailNotificationsRepository.updateEmailNotification(model);
                 else
                     resultOne = EmailNotificationsRepository.AddEmailNotification(model);
-
+                UserActivityLog.WriteDbLog(LogType.Submit, "Email notification setting", "/EmailSetting/ManageEmailNotifications/"+ model.filename + "" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
             }
             else
@@ -95,6 +96,8 @@ namespace LaylaERP.Controllers
 
         public JsonResult Updatewoocommerce(EmailSettingModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Save email sender options", "/EmailSetting/EmailNotifications" + ", " + Net.BrowserInfo);
+
             string[] varQueryArr1 = new string[4];
             string[] varFieldsName = new string[4] { "woocommerce_email_from_name", "woocommerce_email_from_address", "woocommerce_email_header_image", "woocommerce_email_footer_text" };
             string[] varFieldsValue = new string[4] { model.option_name, model.email_type, model.additional_content, model.email_heading };
@@ -111,9 +114,10 @@ namespace LaylaERP.Controllers
         public ActionResult createfile(string text,string filename)
         {
             //string path = Server.MapPath("~/EmailNotifications/test.txt");
-           // string path = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
+            // string path = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
 
             //var filename = "NewOrderTest.cshtml";
+            UserActivityLog.WriteDbLog(LogType.Submit, "Update Template", "/EmailSetting/ManageEmailNotifications/"+ filename + "" + ", " + Net.BrowserInfo);
             string path = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
             path = path + "\\" + filename;
 

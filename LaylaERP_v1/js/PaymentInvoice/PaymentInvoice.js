@@ -244,6 +244,7 @@ function takepayment() {
         swal('alert', 'Please select a PO', 'error');
     }
     else {
+        ActivityLog('Go for payment process', '/PaymentInvoice/PaymentInvoice?status=' + status + '&id=' + id+'');
         var name = $("#txtName").val();
         var tech = $("#ddlTechnolgy").val();
         /*var url = "Page2.htm?status=" + encodeURIComponent(name) + "&technology=" + encodeURIComponent(tech);*/

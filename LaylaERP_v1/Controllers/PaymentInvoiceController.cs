@@ -94,6 +94,7 @@ namespace LaylaERP.Controllers
             {
                 long id = 0, u_id = 0;
                 if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Payment", "/PaymentInvoice/PaymentInvoice/" + id + "" + ", " + Net.BrowserInfo);
                 u_id = CommanUtilities.Provider.GetCurrent().UserID;
                 System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
                 System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");

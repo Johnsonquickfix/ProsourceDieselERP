@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
@@ -95,11 +96,11 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddProductWarehouseRule(SetupModel model)
         {
-           
+
             int ID = SetupRepostiory.AddProductWarehouseRule(model);
             if (ID > 0)
             {
-                
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add Sufix logic", "/Setup/productrule" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Product Data has been saved successfully!!", url = "" }, 0);
             }
             else
@@ -110,6 +111,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddProductWarehouseRuleDetails(SetupModel model)
         {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Add Sufix logic", "/Setup/productrule" + ", " + Net.BrowserInfo);
             DataTable dt1 = SetupRepostiory.CountRuleForState(model);
             if (dt1.Rows.Count > 0)
             {
@@ -171,9 +173,11 @@ namespace LaylaERP.Controllers
 
         [HttpPost]
         public JsonResult UpdateProductWarehouseRule(SetupModel model)
-        { 
+        {
             if (model.searchid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update product warehouse rule", "Editproductrule/" + ", " + Net.BrowserInfo);
+
                 DataTable dt1 = SetupRepostiory.CountRuleForUpdateState(model);
                 if (dt1.Rows.Count > 0)
                 {
@@ -309,7 +313,7 @@ namespace LaylaERP.Controllers
                 DataTable dt = SetupRepostiory.SelectProductToReUse(id);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
-            catch(Exception ex) { throw ex; }
+            catch (Exception ex) { throw ex; }
             return Json(JSONresult, 0);
         }
 

@@ -241,7 +241,7 @@ function ProductWarehouseRuleGrid() {
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
                                 //return '<a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
-                                return '<a href="../Setup/Editproductrule/' + id + '" data-toggle="tooltip" title="View/Edit Product"><i class="glyphicon glyphicon-pencil"></i></a>';
+                                return '<a href="../Setup/Editproductrule/' + id + '" onclick="ActivityLog(\'Edit Suffix Split Logic\',\'/Setup/productrule/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                             }
                             else {
                                 return "No permission";

@@ -11,171 +11,160 @@
 <div class="page-title">
     <h2>Sales Order Chart</h2>
 </div>
-    <figure class="highcharts-figure">
-        <div class="row">
-            <input type="hidden" id="hfType" value="" />
-            <div class="col-md-12">
-                <div class="user-top-section">
-                    <div class="tablenav top tablenav-top2">
-                        <div class="alignleft actions">
-                            <div class="input-group">
-                                <input type="hidden" id="hfhref" />
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
-                            </div>
+<figure class="highcharts-figure">
+    <div class="row">
+        <input type="hidden" id="hfType" value="" />
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions">
+                        <div class="input-group">
+                            <input type="hidden" id="hfhref" />
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
                         </div>
-                        <div class="alignleft actions">
-                            @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                            <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
-                        </div>
+                    </div>
+                    <div class="alignleft actions">
+                        @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
+                        <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="container_chart"></div>
-    </figure>
-    <script src="~/js/linq.js"></script>
-    <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
-    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
-    <script src="~/Content/highcharts/highcharts.js"></script>
-    <script src="~/Content/highcharts/series-label.js"></script>
-    <script src="~/Content/highcharts/data.js"></script>
-    <script src="~/Content/highcharts/exporting.js"></script>
-    <script src="~/Content/highcharts/export-data.js"></script>
-    <script src="~/Content/highcharts/accessibility.js"></script>
+    </div>
+    <div id="container_chart"></div>
+</figure>
+<script src="~/js/linq.js"></script>
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+<script src="~/Content/highcharts/highcharts.js"></script>
+<script src="~/Content/highcharts/series-label.js"></script>
+<script src="~/Content/highcharts/data.js"></script>
+<script src="~/Content/highcharts/exporting.js"></script>
+<script src="~/Content/highcharts/export-data.js"></script>
+<script src="~/Content/highcharts/accessibility.js"></script>
 
-    <script type="text/javascript">
-        var _list_cat = ['1', '2']
-        var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
-        $(document).ready(function () {
-            $("#loader").hide();
-            $('#txtOrderDate').daterangepicker({
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
-                locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+<script type="text/javascript">
+    var _list_cat = ['1', '2']
+    var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
+    $(document).ready(function () {
+        $("#loader").hide();
+        $('#txtOrderDate').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             },
-            );
-            Search();
-            $(function () {
-                Highcharts.setOptions({
-                    lang: {
-                        thousandsSep: ','
-                    }
-                });
-            })
-            //Highcharts.setOptions({
-            //    lang: {
-            //        thousandsSep: ','
-            //    }
-            //});
+            startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
+            locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+        },
+        );
+        Search();
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+        })
+        //Highcharts.setOptions({
+        //    lang: {
+        //        thousandsSep: ','
+        //    }
+        //});
+
+    });
+    function Search() {
+        $("#loader").show();
+        let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var account = "1";
+        // var type = $('#ddltype').val();
+        if (account == "0") { swal('alert', 'Please Select Sales', 'error'); }
+        //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '/Reports/GetText',
+                data: { Month: sd, Year: ed, Type: account },
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (result) {
+                    console.log(result);
+                    _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list = [
+                        { name: 'SubTotal', data: $.map(result, function (v) { return parseFloat(v.address); }) },
+                        { name: 'Discount', visible: false, data: $.map(result, function (v) { return parseFloat(v.total); }) },
+                        { name: 'Shipping', visible: false, data: $.map(result, function (v) { return parseFloat(v.fee); }) },
+                        { name: 'SaleTax', visible: false, data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                        { name: 'StateRecyclingFee', visible: false, data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Fee', visible: false, data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
+                        { name: 'Gift Card', visible: false, data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                        { name: 'Total', visible: false, data: $.map(result, function (v) { return parseFloat(v.tax); }) }
+                    ];
+
+                    bindChart();
+                },
+                error: function (Result) { alert("Error"); },
+                complete: function () { $("#loader").hide(); }
+            });
+        }
+
+
+
+    }
+    function bindChart() {
+        Highcharts.chart('container_chart', {
+            chart: { type: 'spline' },
+            title: {
+                text: 'Date wise sales order chart'
+            },
+            //subtitle: { text: 'Irregular time data in Highcharts JS' },
+            xAxis: { categories: _list_cat },
+            //yAxis: {
+            //    title: { text: 'Amount' },
+            //    labels: { formatter: function () { return this.value; } }
+            //},
+            yAxis: [{ // left y axis
+                title: { text: null },
+                labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
+
+
+            }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
+                title: { text: 'Amount' },
+                labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
+            }],
+
+
+            legend: {
+                align: 'left',
+                verticalAlign: 'top',
+                borderWidth: 0
+
+                //labelFormatter: function () {
+                //    if (this.name != 'Discount') {
+                //        return this.name;
+                //    }
+                //    else {
+                //        return this.enabled = false ;
+                //    }
+                //}
+            },
+
+            tooltip: { crosshairs: true, shared: true },
+            plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+            colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA'],
+            series: _list
+
 
         });
-        function Search() {
-            $("#loader").show();
-            let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-            let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-            var account = "1";
-            // var type = $('#ddltype').val();
-            if (account == "0") { swal('alert', 'Please Select Sales', 'error'); }
-            //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
-            else {
-                $.ajax({
-                    type: 'POST',
-                    url: '/Reports/GetText',
-                    data: { Month: sd, Year: ed, Type: account },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $("#loader").show();
-                    },
-                    success: function (result) {
-                        console.log(result);
-                        _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
-                        _list = [
-                            { name: 'Gross Total', data: $.map(result, function (v) { return parseFloat(v.address); }) },
-                            { name: 'Discount',  data: $.map(result, function (v) { return parseFloat(v.total); }) },
-                            { name: 'Shipping',  data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                            { name: 'SaleTax',  data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
-                            { name: 'State Recycling Fee', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
-                            { name: 'Fee',  data: $.map(result, function (v) { return parseFloat(v.billing_state); }) },
-                            { name: 'Gift Card',  data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
-                            { name: 'Refund',  data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
-                            { name: 'Orders Total',  data: $.map(result, function (v) { return parseFloat(v.tax); }) }
-                            
-                        ];
-
-                        bindChart();
-                    },
-                    error: function (Result) { alert("Error"); },
-                    complete: function () { $("#loader").hide(); }
-                });
-            }
-
-
-
-        }
-        function bindChart() {
-            Highcharts.chart('container_chart', {
-                chart: { type: 'column' },
-                title: {
-                    text: 'Date wise sales order chart'
-                },
-                //subtitle: { text: 'Irregular time data in Highcharts JS' },
-                xAxis: { categories: _list_cat },
-                //yAxis: {
-                //    title: { text: 'Amount' },
-                //    labels: { formatter: function () { return this.value; } }
-                //},
-                yAxis: [{ // left y axis
-                    title: { text: null },
-                    labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
-                    showFirstLabel: false
-
-
-                }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
-                    title: { text: 'Amount' },
-                    labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
-                    showFirstLabel: false
-                }],
-
-
-                legend: {
-                    align: 'left',
-                    verticalAlign: 'top',
-                    borderWidth: 0
-
-                    //labelFormatter: function () {
-                    //    if (this.name != 'Discount') {
-                    //        return this.name;
-                    //    }
-                    //    else {
-                    //        return this.enabled = false ;
-                    //    }
-                    //}
-                },
-
-                tooltip: { crosshairs: true, shared: true },
-              //  plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
-                plotOptions: {
-                    series: {
-                        borderWidth: 0,
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.y:,.2f}'
-                        }
-                    }
-                },
-                colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA','#0EA9F6'],
-                series: _list
-
-
-            });
-            $('.highcharts-credits').remove();
-        }
-    </script>
+        $('.highcharts-credits').remove();
+    }
+</script>

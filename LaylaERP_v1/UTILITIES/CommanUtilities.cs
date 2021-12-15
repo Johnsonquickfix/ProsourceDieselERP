@@ -69,6 +69,7 @@
         public string website { get; set; }
         public string logo_url { get; set; }
         public string additional_notes { get; set; }
+        public string po_email { get; set; }
     }
     [Serializable]
     public class CommanUtilities

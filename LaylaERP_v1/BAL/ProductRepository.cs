@@ -981,6 +981,45 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+
+        public static DataTable Getcalculatemargins(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty; 
+               
+                string strSql = "Select *,convert(numeric(18,2),sale_price) - convert(numeric(18,2),cost_price) Margins from ("
+              + " select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+              + " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then coalesce (s.meta_value,'0') else '0' end) sale_price,"
+              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,Cast(CONVERT(DECIMAL(10,2),coalesce(min(cost_price),0)) as nvarchar) cost_price, (select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = p.id) ))  vname"
+              + " FROM wp_posts p "
+              + " left join wp_postmeta as s on p.id = s.post_id"
+              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1"
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " 
+              + " GROUP BY  p.ID,guid,post_status,post_parent) tt"
+               + " order by p_id,post_type,id";
+
+                strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
+               + " left join wp_postmeta as s on p.id = s.post_id" 
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " ;
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
+
         public static DataTable GetShippinfclassList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

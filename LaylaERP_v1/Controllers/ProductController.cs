@@ -83,7 +83,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult CalculateMargins()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
         {
@@ -129,6 +132,22 @@ namespace LaylaERP.Controllers
             //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
+        [HttpGet]
+        public JsonResult Getcalculatemargins(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+
+                DataTable dt = ProductRepository.Getcalculatemargins(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+
+            }
+            catch { }
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
 
         [HttpPost]
         public JsonResult Changestatus(OrderPostStatusModel model)

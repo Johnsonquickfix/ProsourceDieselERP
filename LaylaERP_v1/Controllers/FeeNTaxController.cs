@@ -7,6 +7,7 @@ using LaylaERP.Models;
 using LaylaERP.BAL;
 using System.Data;
 using Newtonsoft.Json;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.Controllers
 {
@@ -39,13 +40,14 @@ namespace LaylaERP.Controllers
             //{
             if (model.id > 0)
             {
-
+                UserActivityLog.WriteDbLog(LogType.Submit, "Edit state recycle tax", "/FeeNTax/CreateNew/"+ model.id + "" + ", " + Net.BrowserInfo);
                 FNT.EditFeeNTaxStatus(model);
                 return Json(new { status = true, message = "State recycle fee updated successfully!!", url = "" }, 0);
             }
             else
             {
                 // int ID = Repo.AddNewCustomer(model);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save state recycle tax", "/FeeNTax/CreateNew" + ", " + Net.BrowserInfo);
 
                 FNT.AddFeeNTax(model);
                 ModelState.Clear();

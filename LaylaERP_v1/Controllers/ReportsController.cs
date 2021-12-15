@@ -85,6 +85,18 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult YearMonthlyChart()
+        {
+            return View();
+        }
+        public ActionResult QuarterlyComparChart()
+        {
+            return View();
+        }
+        public ActionResult SalesBarChart()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -433,6 +445,19 @@ namespace LaylaERP.Controllers
             //return Json(list.ToList(), JsonRequestBehavior.AllowGet);
             result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             return Json(result, 0);
+        }
+        public JsonResult GetMonthlyYear(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetMonthlyYear(Month, Year, Type);
+            var list = ReportsRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetQuarterlyYear(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetQuarterlyYear(Month, Year, Type);
+            var list = ReportsRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetGrafixDetailData(string Month, string Year)
         {

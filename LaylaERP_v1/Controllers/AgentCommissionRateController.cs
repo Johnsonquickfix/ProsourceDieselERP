@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.Models;
 using System.Dynamic;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.Controllers
 {
@@ -51,7 +52,7 @@ namespace LaylaERP.Controllers
                     int ID = AgentCommissionRateRepository.AddNewMenu(model);
                     if (ID > 0)
                     {
-
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Add Commission Rate", "/AgentCommissionRate/AddCommissionRate" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Commission rate saved successfully!!", url = "" }, 0);
                     }
                     else
@@ -87,6 +88,7 @@ namespace LaylaERP.Controllers
             //AppearanceRepository.UpdateUsers(model);
             if (model.id > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add Commission Rate", "/AgentCommissionRate/UpdateCommission/"+model.id+"" + ", " + Net.BrowserInfo);
                 AgentCommissionRateRepository.UpdateCommission(model);
                 ModelState.Clear();
                 return Json(new { status = true, message = "Commission rate updated successfully!!", url = "" }, 0);

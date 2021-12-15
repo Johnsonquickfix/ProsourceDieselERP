@@ -1,5 +1,8 @@
-﻿
-ChartOfAccountGrid();
+﻿$(document).ready(function () {
+    var loc = window.location.pathname;
+    $.when(CheckPermissions("#AddChartOfAccount", "#hfEdit", "", loc)).then(ChartOfAccountGrid());
+})
+
 function ChartOfAccountGrid() {
     $.ajax({
         url: '/Accounting/GetChartOfAccounts',
@@ -42,7 +45,7 @@ function ChartOfAccountGrid() {
                         'data': 'ID', sWidth: "8%",
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
-                                return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                                return '<a href="../Accounting/EditAccount/' + id + '" onclick="ActivityLog(\'Edit chart of accounts\',\'/Accounting/chartofaccounts/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
                             }
                             else {
                                 return "No Permission";
@@ -69,6 +72,9 @@ $('#btnSearch').click(function () {
 })
 
 function ChangeStatus(id, status) {
+    console.log(status);
+    let cofStatus = status == "0" ? "Inactive" : "Active";
+    ActivityLog('change status as ' + cofStatus + '', '/Accounting/chartofaccounts/' + id + '');
     var obj = { rowid: id, active: status, }
     $.ajax({
         url: '/Accounting/UpdateChartOfAccountStatus/', dataType: 'json', type: 'Post',

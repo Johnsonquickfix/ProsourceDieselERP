@@ -14,8 +14,7 @@
         opens: 'left',
         orientation: "left auto",
     });
-    getProducts();
-    ProductStockGrid();
+    $.when(getProducts()).done(function () { ProductStockGrid()});
     $(".select2").select2();
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); ProductStockGrid();
@@ -143,9 +142,9 @@ function ProductStockGrid() {
 function format(d) {
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
-    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
-    //console.log(d);
+    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();    
     let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:48.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
+    console.log(d,option);
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {

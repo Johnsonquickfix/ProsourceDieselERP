@@ -72,7 +72,7 @@
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
         let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
         if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
-        else if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span></span>')
+        else if (price >= regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span></span>')
     });
     $(document).on("click", ".agentaddtocart", function (t) {
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');

@@ -123,7 +123,7 @@ function WarehouseGrid() {
                 'data': 'id', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="javascript:void(0);" onClick="EditUser(' + id + ')"><span title="Click Here To Edit Warehouse Details" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></span></a>'
+                        return '<a href="javascript:void(0);" onClick="EditUser(' + id + ')"><span title="Click here to edit warehouse details" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></span></a>'
                     }
                     else { return "No Permission"; }
                 }

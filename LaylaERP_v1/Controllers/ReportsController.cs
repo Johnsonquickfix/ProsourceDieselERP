@@ -97,6 +97,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult CancelRefund()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -407,6 +411,13 @@ namespace LaylaERP.Controllers
         public ActionResult GetPartialRefund(string Month, string Year, string Type)
         {
             ReportsRepository.GetPartialRefund(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public ActionResult GetStatusOrder(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetStatusOrder(Month, Year, Type);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;

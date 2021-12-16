@@ -72,18 +72,28 @@
         $("#loader").hide();
     });
     $(document).on("click", "#btnClonePO", function (t) {
-        t.preventDefault(); $("#loader").show(); isEdit(true);
-        $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
-        $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
-        $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
-        $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
-        $('#line_items > tr').each(function (index, row) { $(row).data('rowid', 0) });
-        $("#product_line_items > tr.other_item").each(function (index, row) { $(row).data('rowid', 0) });
-        calculateFinal(); $("#loader").hide();
+        t.preventDefault();
+        let _text = 'Are you sure you want to clone this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: 'Clone', text: _text, type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $("#loader").show(); isEdit(true);
+                    $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
+                    $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
+                    $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
+                    $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
+                    $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
+                    $('#line_items > tr').each(function (index, row) { $(row).data('rowid', 0) });
+                    $("#product_line_items > tr.other_item").each(function (index, row) { $(row).data('rowid', 0) });
+                    calculateFinal(); $("#loader").hide();
+                }
+            });
     });
-    $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
+    $(document).on("click", ".btnUndoRecord", function (t) {
+        t.preventDefault(); let _text = 'Are you sure you want to undo changes this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getPurchaseOrderInfo(); } });
+    });
     $(document).on("click", "#btnOtherProduct", function (t) { t.preventDefault(); AddProductModal(0, 0); });
     $(document).on("click", "#btnService", function (t) { t.preventDefault(); AddProductModal(1, 0); });
     $("#POModal").on("click", "#btnAddProc", function (t) {
@@ -511,7 +521,6 @@ function getPurchaseOrderInfo() {
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-
     }
     else {
         $('.billinfo,.orderfiles').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -630,7 +639,7 @@ function saveVendorPO() {
                     $.post('/PurchaseOrder/NewPurchase', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            $('#lblPoNo').data('id', result[0].id);;
+                            $('#lblPoNo').data('id', result[0].id); SendPO_POApproval(result[0].id);
                             swal('Success', 'Purchase order saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -641,10 +650,10 @@ function saveVendorPO() {
     }
 }
 function orderStatusUpdate(oid) {
-    let option = { Search: oid, Status: '3' }
+    let option = { Search: oid, Status: '3' };
+    let _text = 'Do you want to approve this Purchase Order #' + $('#lblPoNo').text() + '?';
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to update your order status?",
-        showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
@@ -726,10 +735,15 @@ function Deletefileupload(id) {
     }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Purchase Order Send Mail for Approval ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function sendPO_mail(id, result, is_mail, is_inv) {
+function SendPO_POApproval(id) {
+    if (id > 0) {
+        var option = { strValue1: id };
+        $.get("/PurchaseOrder/GetPurchaseOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
+    }
+}
+function send_mail(id, result) {
     let data = JSON.parse(result.data); console.log(result);
     let inv_title = 'Purchase Order';
-    let so_no = 0, va_cp = 66.3;
 
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
@@ -744,7 +758,7 @@ function sendPO_mail(id, result, is_mail, is_inv) {
     myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;width:100%;border-bottom: 1px solid #ddd;">';
     myHtml += '                        <tr>';
     myHtml += '                            <td style="padding:0; vertical-align: top;width:66.9%">';
-    myHtml += '                                <img src="//laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                                    ' + result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
@@ -758,7 +772,7 @@ function sendPO_mail(id, result, is_mail, is_inv) {
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref) + '</td>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_creation + '</td>';
@@ -779,13 +793,13 @@ function sendPO_mail(id, result, is_mail, is_inv) {
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
     myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">';
     myHtml += '    <tr>';
-    myHtml += '        <td style="vertical-align: text-top;padding:0;width: ' + va_cp + '%">';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 66.9%">';
     myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
     myHtml += '            </p>';
     myHtml += '        </td>';
-    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33.1" align="left">';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33%" align="left">';
     myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].warehouse + '<br>' + data['po'][0].wrh_add + '<br>' + data['po'][0].wrh_city + ', ' + data['po'][0].wrh_town + ' ' + data['po'][0].wrh_zip + ', ' + (data['po'][0].wrh_country == "CA" ? "Canada" : data['po'][0].fk_cowrh_countryuntry == "US" ? "United States" : data['po'][0].wrh_country) + '<br>Phone: ' + data['po'][0].wrh_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
@@ -927,11 +941,10 @@ function sendPO_mail(id, result, is_mail, is_inv) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    $('#PrintModal .modal-body').empty().append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
-    if (opt.strValue1.length > 5 && is_mail) {
+    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    if (opt.strValue1.length > 5) {
         $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            type: "POST", url: '/PurchaseOrder/SendMailPOApproval', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
             complete: function () { }, async: false

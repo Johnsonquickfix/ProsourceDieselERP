@@ -1246,6 +1246,75 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+        public static void GetStatusOrder(string from_date, string to_date, string type)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", type),
+                    new SqlParameter("@fromdate", from_date), 
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_orderreportstatus_List", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["refund_total"].ToString()))
+                            uobj.first_name = ds1.Tables[0].Rows[i]["refund_total"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["post_date"].ToString();
+
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        uobj.billing_state = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.Discount = "";
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                            uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        else
+                            uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
 
         public static void GetGrafixDetails(string from_date, string to_date, string Empid)
         {

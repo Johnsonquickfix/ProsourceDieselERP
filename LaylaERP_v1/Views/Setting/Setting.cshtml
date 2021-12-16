@@ -326,15 +326,19 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Website</label>
-                                    <input type="text" id="txtwebsite" class="form-control" value="@ViewBag.website"/>
+                                    <input type="text" id="txtwebsite" class="form-control" value="@ViewBag.website" />
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Logo Url</label>
-                                    <input type="text" id="txtlogourl" class="form-control" value="@ViewBag.logo_url"/>
+                                    <input type="text" id="txtlogourl" class="form-control" value="@ViewBag.logo_url" />
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Additional Notes</label>
-                                    <input type="text" id="txtAdditionalNotes" class="form-control" value="@ViewBag.additional_notes"/>
+                                    <input type="text" id="txtAdditionalNotes" class="form-control" value="@ViewBag.additional_notes" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">PO Email</label>
+                                    <input type="text" id="txtpoemail" class="form-control" value="@ViewBag.po_email" />
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
@@ -460,6 +464,8 @@
         Website = $("#txtwebsite").val();
         LogoUrl = $("#txtlogourl").val();
         AdditionalNotes = $("#txtAdditionalNotes").val();
+        po_emailval = $("#txtpoemail").val();
+
 
         if ($(authorizenet).prop("checked")) {
             authorizenet = 1;
@@ -540,8 +546,7 @@
             website: Website,
             logo_url: LogoUrl,
             additional_notes: AdditionalNotes,
-
-
+            po_email: po_emailval
 
         }
 

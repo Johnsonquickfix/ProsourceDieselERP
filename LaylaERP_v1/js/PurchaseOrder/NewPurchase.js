@@ -72,18 +72,28 @@
         $("#loader").hide();
     });
     $(document).on("click", "#btnClonePO", function (t) {
-        t.preventDefault(); $("#loader").show(); isEdit(true);
-        $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
-        $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
-        $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
-        $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
-        $('#line_items > tr').each(function (index, row) { $(row).data('rowid', 0) });
-        $("#product_line_items > tr.other_item").each(function (index, row) { $(row).data('rowid', 0) });
-        calculateFinal(); $("#loader").hide();
+        t.preventDefault();
+        let _text = 'Are you sure you want to clone this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: 'Clone', text: _text, type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $("#loader").show(); isEdit(true);
+                    $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
+                    $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
+                    $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
+                    $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
+                    $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
+                    $('#line_items > tr').each(function (index, row) { $(row).data('rowid', 0) });
+                    $("#product_line_items > tr.other_item").each(function (index, row) { $(row).data('rowid', 0) });
+                    calculateFinal(); $("#loader").hide();
+                }
+            });
     });
-    $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
+    $(document).on("click", ".btnUndoRecord", function (t) {
+        t.preventDefault(); let _text = 'Are you sure you want to undo changes this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getPurchaseOrderInfo(); } });
+    });
     $(document).on("click", "#btnOtherProduct", function (t) { t.preventDefault(); AddProductModal(0, 0); });
     $(document).on("click", "#btnService", function (t) { t.preventDefault(); AddProductModal(1, 0); });
     $("#POModal").on("click", "#btnAddProc", function (t) {

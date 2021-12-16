@@ -119,14 +119,14 @@ function NatureofJournalList() {
                         toggleStyle = "color: #25a580!important;font-size: 24px;";
                         toggleStatus = 1;
                     }
-                    return ' <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
+                    return '<span title="Click here to change the status of account" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
                 }
             },
             {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
                     /*  if ($("#hfEdit").val() == "1") {*/
-                    return '<a href="#" onclick="GetVendorByID(' + id + ');"><i class="fas fa-pencil-alt"></i></a>';
+                    return '<span title="Click here to edit the account" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="GetVendorByID(' + id + ');"><i class="fas fa-pencil-alt"></i></a></span>';
                     //}//else { return "No Permission"; }
                 }
             },

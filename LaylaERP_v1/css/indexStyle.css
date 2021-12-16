@@ -664,3 +664,16 @@ width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6
 .sidebar-menu  li  a  [class^="fa"]{width:20px;}
 .sidebar .user-panel > .info {width: calc(100% - 55px);}
 .sidebar .user-panel > .info > p{white-space: nowrap;text-overflow: ellipsis;overflow: hidden;width: 100%;line-height: 1.4; margin-bottom: 3px;}
+form.sidebar-form #search-btn {
+    position: absolute;
+    right: 1px;
+    top: 0px;
+}
+form.sidebar-form #btnsearch {
+    width: 100%;
+    z-index: 9;
+    background: transparent;
+}
+form.sidebar-form .input-group,
+form.sidebar-form .input-group-btn {display:block;width:100%;}
+form.sidebar-form {overflow:visible;}

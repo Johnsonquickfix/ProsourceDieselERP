@@ -478,6 +478,7 @@ namespace LaylaERP.Controllers
                     int ID = UsersRepositry.AddNewCustomer(model);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Save New User", "/Users/CreateUser" + ", " + Net.BrowserInfo);
                         Adduser_MetaData(model, ID);
                         Adduser_MetaData_More(model, ID);
                         ModelState.Clear();
@@ -570,6 +571,7 @@ namespace LaylaERP.Controllers
             int ID = UsersRepositry.UpdateUsers(model);
             if (ID > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update User Details", "/Users/UserDetails?id=" + model.ID + "" + ", " + Net.BrowserInfo);
                 Updateuser_MetaData(model, model.ID);
                 Updateuser_MetaData_More(model, model.ID);
                 ModelState.Clear();
@@ -647,6 +649,7 @@ namespace LaylaERP.Controllers
                 int RoleID = new UsersRepositry().CheckDuplicateUserRole(model);
                 if (RoleID == 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "New user role "+model.User_Type + " created", "/Users/AssignRole" + ", " + Net.BrowserInfo);
                     int ID = new UsersRepositry().AddNewRole(model);
                     if (ID > 0)
                     {
@@ -682,6 +685,7 @@ namespace LaylaERP.Controllers
             }
             else if (strID != "")
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Role Approve", "/Users/AssignRole/"+role_id+"" + ", " + Net.BrowserInfo);
                 new UsersRepositry().ChangePermission(strID, role_id,flag);
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);

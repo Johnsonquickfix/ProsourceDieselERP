@@ -66,12 +66,34 @@
         t.preventDefault(); $("#loader").show(); isEdit(true);
         $('#ddlVendor').prop("disabled", true); $('.billinfo,.orderfiles').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell" data-toggle="tooltip" title="Add Service"></i> Add Service</button>');
+        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
-        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
-        $("#loader").hide();
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel" data-placement="left"><i class="fa fa-undo"></i> Cancel</button> <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update" data-placement="bottom"><i class="far fa-save"></i> Update</button>');
+        $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide();
     });
-    $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
+    $(document).on("click", "#btnClonePO", function (t) {
+        t.preventDefault();
+        let _text = 'Are you sure you want to clone this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: 'Clone', text: _text, type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $("#loader").show(); isEdit(true);
+                    $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
+                    $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
+                    $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
+                    $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
+                    $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
+                    $('#line_items > tr').each(function (index, row) { $(row).data('rowid', 0) });
+                    $("#product_line_items > tr.other_item").each(function (index, row) { $(row).data('rowid', 0) });
+                    calculateFinal(); $("#loader").hide();
+                }
+            });
+    });
+    $(document).on("click", ".btnUndoRecord", function (t) {
+        t.preventDefault(); let _text = 'Are you sure you want to undo changes this PO ' + $('#lblPoNo').text() + '?';
+        swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getPurchaseOrderInfo(); } });
+    });
     $(document).on("click", "#btnOtherProduct", function (t) { t.preventDefault(); AddProductModal(0, 0); });
     $(document).on("click", "#btnService", function (t) { t.preventDefault(); AddProductModal(1, 0); });
     $("#POModal").on("click", "#btnAddProc", function (t) {
@@ -142,7 +164,7 @@ function getVendorWarehouse(VendorID) {
     $.ajax({
         url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let dt = JSON.parse(data); console.log(dt);
+            let dt = JSON.parse(data);
             $("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table'][i].id + '" data-ad="' + dt['Table'][i].address + '">' + dt['Table'][i].text + '</option>'); }
         },
@@ -208,7 +230,7 @@ function bindItems(data) {
             if (data[i].fk_product > 0) {
                 if ($('#tritemid_' + data[i].fk_product).length <= 0) {
                     itemHtml += '<tr id="tritemid_' + data[i].fk_product + '" class="paid_item" data-pid="' + data[i].fk_product + '" data-pname="' + data[i].description + '" data-psku="' + data[i].product_sku + '" data-rowid="' + data[i].rowid + '">';
-                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data[i].fk_product + '" value="' + data[i].qty + '" name="txt_itemqty" placeholder="Qty."></td>';
@@ -279,6 +301,7 @@ function calculateFinal() {
     $("#orderTotal").html(tNetAmt.toFixed(2));
     let paid_amt = parseFloat($('#paidTotal').text()) || 0.00;
     $('#unpaidTotal').text((tNetAmt - paid_amt).toFixed(2))
+    $('[data-toggle="tooltip"]').tooltip();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -371,8 +394,8 @@ function bindOtherItems(proc_type, row_num) {
     if ($('#tritemid_' + row_num).length <= 0) {
         itemHtml += '<tr id="tritemid_' + row_num + '" class="other_item" data-rowid="0" data-rang="' + row_num + '" data-proc_type="' + proc_type + '" data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
         itemHtml += '<td class="text-center">';
-        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
+        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
         itemHtml += '</td > ';
         itemHtml += '<td class="item-desc">' + rDesc + '</td><td class="item-sku">' + rSku + '</td>';
         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row_num + '" value="' + rPrice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
@@ -402,92 +425,93 @@ function getPurchaseOrderInfo() {
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
         $('#ddlVendor,.billinfo,.orderfiles').prop("disabled", true); $(".order-files").removeClass('hidden');
-        $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
+        $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         $('#line_items,#product_line_items').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnClonePO" data-toggle="tooltip" title="Create duplicate purchase order" data-placement="left"><i class="fas fa-copy"></i> Clone</button> ');
         var option = { strValue1: oid };
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                    let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
-                    $.each(data['po'], function (key, row) {
-                        VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
-                        $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
-                        $('#ddlVendor').val(row.fk_supplier).trigger('change');
-                        $('#ddlPaymentTerms').val(row.fk_payment_term).trigger('change');
-                        $('#ddlBalancedays').val(row.fk_balance_days).trigger('change');
-                        $('#ddlIncoTerms').val(row.fk_incoterms).trigger('change');
-                        $('#ddlPaymentType').val(row.fk_payment_type).trigger('change');
-                        $('#txtNotePublic').val(row.note_public); $('#txtNotePrivate').val(row.note_private);
-                        $('#txtIncoTerms').val(row.location_incoterms); getVendorWarehouse(VendorID);
-                        $('#ddlWarehouse').val(row.fk_warehouse).trigger('change');
-                        $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
-                        if (!row.date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(row.date_livraison);
-                        let date1 = new Date(row.date_creation), date2 = new Date(row.date_livraison);
-                        var Difference_In_Time = date2.getTime() - date1.getTime();
-                        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-                        $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
+                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
+                $.each(data['po'], function (key, row) {
+                    VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
+                    $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
+                    $('#ddlVendor').val(row.fk_supplier).trigger('change');
+                    $('#ddlPaymentTerms').val(row.fk_payment_term).trigger('change');
+                    $('#ddlBalancedays').val(row.fk_balance_days).trigger('change');
+                    $('#ddlIncoTerms').val(row.fk_incoterms).trigger('change');
+                    $('#ddlPaymentType').val(row.fk_payment_type).trigger('change');
+                    $('#txtNotePublic').val(row.note_public); $('#txtNotePrivate').val(row.note_private);
+                    $('#txtIncoTerms').val(row.location_incoterms); getVendorWarehouse(VendorID);
+                    $('#ddlWarehouse').val(row.fk_warehouse).trigger('change');
+                    $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
+                    if (!row.date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(row.date_livraison);
+                    let date1 = new Date(row.date_creation), date2 = new Date(row.date_livraison);
+                    var Difference_In_Time = date2.getTime() - date1.getTime();
+                    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                    $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
 
-                        if (fk_projet > 0) {
-                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button>');
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
-                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Purchase Order (Sales) is not editable.</div>');
+                    if (fk_projet > 0) {
+                        $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button>');
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                        $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Purchase Order (Sales) is not editable.</div>');
+                    }
+                    else {
+                        if (status_id == 1) {
+                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice." data-placement="left"><i class="fas fa-check-double"></i> Approved</button>');
+                            else
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                            $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                        }
+                        else if (status_id == 3) {
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                            $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else {
-                            if (status_id == 1) {
-                                if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
-                                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
-                                else
-                                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                            }
-                            else if (status_id == 3) {
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                            }
-                            else {
-                                $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button>');
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
-                                $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
-                            }
+                            $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
                         }
-                    });
-                    getVendorProducts(VendorID);
-                    $.each(data['pod'], function (key, row) {
-                        let itemHtml = '';
-                        if (row.fk_product > 0) {
-                            itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
-                            itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                            itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.fk_product + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                            itemHtml += '<td class="text-right tax-amount" data-tax1="' + row.localtax1_tx + '" data-tax2="' + row.localtax2_tx + '">' + row.total_localtax1.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
-                            itemHtml += '</tr>';
-                            $('#line_items').append(itemHtml);
-                        }
-                        else {
-                            let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
-                            itemHtml = '<tr id="tritemid_' + row.rowid + '" class="other_item" data-rowid="' + row.rowid + '" data-rang="' + row.rowid + '" data-proc_type="' + row.product_type + '"  data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
-                            itemHtml += '<td class="text-center">';
-                            itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-                            itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
-                            itemHtml += '</td > ';
-                            itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
-                            itemHtml += '<td class="text-right tax-amount">' + row.total_localtax1.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
-                            itemHtml += '</tr>';
-                            $('#product_line_items').append(itemHtml);
-                        }
-                    });
-                    getPurchaseOrderPayments(oid);
+                    }
+                });
+                getVendorProducts(VendorID);
+                $.each(data['pod'], function (key, row) {
+                    let itemHtml = '';
+                    if (row.fk_product > 0) {
+                        itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
+                        itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                        itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.fk_product + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                        itemHtml += '<td class="text-right tax-amount" data-tax1="' + row.localtax1_tx + '" data-tax2="' + row.localtax2_tx + '">' + row.total_localtax1.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
+                        itemHtml += '</tr>';
+                        $('#line_items').append(itemHtml);
+                    }
+                    else {
+                        let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
+                        itemHtml = '<tr id="tritemid_' + row.rowid + '" class="other_item" data-rowid="' + row.rowid + '" data-rang="' + row.rowid + '" data-proc_type="' + row.product_type + '"  data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
+                        itemHtml += '<td class="text-center">';
+                        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+                        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
+                        itemHtml += '</td > ';
+                        itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
+                        itemHtml += '<td class="text-right tax-amount">' + row.total_localtax1.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
+                        itemHtml += '</tr>';
+                        $('#product_line_items').append(itemHtml);
+                    }
+                });
+                getPurchaseOrderPayments(oid);
                 //}
                 //catch (error) {
                 //    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -498,7 +522,6 @@ function getPurchaseOrderInfo() {
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-
     }
     else {
         $('.billinfo,.orderfiles').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -608,7 +631,7 @@ function saveVendorPO() {
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text())
         }
         let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
-        //console.log(option);
+        //console.log(option, _order, _list); return;
         swal.queue([{
             title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to save your order?",
             showLoaderOnConfirm: true, showCancelButton: true,
@@ -617,8 +640,8 @@ function saveVendorPO() {
                     $.post('/PurchaseOrder/NewPurchase', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            $('#lblPoNo').data('id', result[0].id); getPurchaseOrderInfo();
-                            swal('Success', 'Purchase order saved successfully.', "success"); //getOrderInfo();
+                            $('#lblPoNo').data('id', result[0].id); SendPO_POApproval(result[0].id);
+                            swal('Success', 'Purchase order saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
@@ -628,10 +651,10 @@ function saveVendorPO() {
     }
 }
 function orderStatusUpdate(oid) {
-    let option = { Search: oid, Status: '3' }
+    let option = { Search: oid, Status: '3' };
+    let _text = 'Do you want to approve this Purchase Order #' + $('#lblPoNo').text() + '?';
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to update your order status?",
-        showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
@@ -682,7 +705,7 @@ function bindfileuploade() {
         type: "POST", url: '/Reception/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let itemHtml = ''; console.log(data);
+            let itemHtml = '';
             $.each(data, function (key, row) {
                 itemHtml += '<tr id="tritemId_' + row.ID + '" data-id="' + row.ID + '">';
                 itemHtml += '<td><a target="popup" href="../../Content/PurchaseFiles/' + row.product_name + '">' + row.product_name + '</i></a ></td>';
@@ -711,4 +734,221 @@ function Deletefileupload(id) {
         }
         else swal('Alert!', response.message, 'error')
     }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Purchase Order Send Mail for Approval ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function SendPO_POApproval(id) {
+    if (id > 0) {
+        var option = { strValue1: id };
+        $.get("/PurchaseOrder/GetPurchaseOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
+    }
+}
+function send_mail(id, result) {
+    let data = JSON.parse(result.data); console.log(result);
+    let inv_title = 'Purchase Order';
+
+    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
+
+    let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+
+    let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
+    myHtml += '<tr>';
+    myHtml += '    <td align="center" style="padding:0;">';
+    myHtml += '        <table class="container_table" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #e6e6e6; width:995px">';
+    myHtml += '            <tr>';
+    myHtml += '                <td style="padding:15px;">';
+    myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;width:100%;border-bottom: 1px solid #ddd;">';
+    myHtml += '                        <tr>';
+    myHtml += '                            <td style="padding:0; vertical-align: top;width:66.9%">';
+    myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
+    myHtml += '                                    ' + result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
+    myHtml += '                                </p>';
+    myHtml += '                            </td>';
+    myHtml += '                            <td style="padding:0; vertical-align: top; width:33.1%" align="left">';
+    myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td colspan="2" style="padding:0px 2.5px 0px 0px">';
+    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_title.toUpperCase() + '</h2>';
+    myHtml += '                                        </td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_creation + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref_supplier + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                </table>';
+    myHtml += '                            </td>';
+    myHtml += '                        </tr >';
+    myHtml += '                    </table >';
+    myHtml += '                </td >';
+    myHtml += '            </tr >';
+    myHtml += '<tr>';
+    myHtml += '<td style="padding:0px 15px 0px 15px;">';
+    myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">';
+    myHtml += '    <tr>';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 66.9%">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
+    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
+    myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
+    myHtml += '            </p>';
+    myHtml += '        </td>';
+    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33%" align="left">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
+    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
+    myHtml += '               ' + data['po'][0].warehouse + '<br>' + data['po'][0].wrh_add + '<br>' + data['po'][0].wrh_city + ', ' + data['po'][0].wrh_town + ' ' + data['po'][0].wrh_zip + ', ' + (data['po'][0].wrh_country == "CA" ? "Canada" : data['po'][0].fk_cowrh_countryuntry == "US" ? "United States" : data['po'][0].wrh_country) + '<br>Phone: ' + data['po'][0].wrh_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+    myHtml += '            </p>';
+    myHtml += '        </td>';
+    myHtml += '     </tr>';
+    myHtml += '     </table>';
+    myHtml += '</td >';
+    myHtml += '</tr >';
+    myHtml += '<tr>';
+    myHtml += '<td style="padding:0px 15px 0px 15px;">';
+    myHtml += '    <table class="product-tables" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
+    myHtml += '        <thead class="itemdetailsheader" style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    myHtml += '            <tr>';
+    myHtml += '                <th style="width:12%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">Item#</th>';
+    myHtml += '                <th style="width:48%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Description</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">Quantity</th>';
+    myHtml += '                <th style="width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">Price</th>';
+    myHtml += '                <th style="width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Amount</th>';
+    myHtml += '            </tr>';
+    myHtml += '        </thead>';
+    myHtml += '        <tbody class="itemdetailsbody">';
+    $(data['pod']).each(function (index, tr) {
+        if (tr.product_type == 0) {
+            myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+            myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">' + tr.product_sku + '</td>';
+            myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">' + tr.description + '</td>';
+            myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">' + number_format(tr.qty, 0, '.', ',') + '</td>';
+            myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">$' + number_format(tr.subprice, 2, '.', ',') + '</td>';
+            myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + number_format(tr.total_ht, 2, '.', ',') + '</td>';
+            myHtml += '</tr>';
+            total_qty += tr.qty, total_gm += tr.total_ht, total_tax += tr.total_localtax1, total_shamt += tr.total_localtax2, total_discamt += tr.discount, total_net += tr.total_ttc;
+        }
+        else if (tr.product_type == 1) { total_shamt += tr.total_ttc, total_net += tr.total_ttc; }
+        else if (tr.product_type == 2) { total_tax += tr.total_ttc, total_net += tr.total_ttc; }
+        else if (tr.product_type == 3) { total_other += tr.total_ttc, total_net += tr.total_ttc; }
+    });
+    myHtml += '        </tbody>';
+    myHtml += '    </table>';
+    myHtml += '</td>';
+    myHtml += '</tr >';
+    myHtml += '<tr>';
+    myHtml += '<td style="padding:0px 15px 15px 15px;">';
+    myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
+    myHtml += '        <tr>';
+    myHtml += '            <td style="vertical-align: top; width:50%;padding:0px;">';
+    myHtml += '                <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;">Comments or Special Instructions</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">1.Payment term:' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">2.' + data['po'][0].location_incoterms + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="border-top: 1px solid #ddd;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
+    myHtml += '                            <h4 class="headline" style="text-align:left;font-family:sans-serif;color: #555;font-size: 16px;line-height: 18px;margin-bottom: 5px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 600;">Notes</h4>';
+    myHtml += '                            <p class="notes" style="text-align:left;font-family:sans-serif;color: #4f4f4f;font-size: 12px;line-height: 18px;margin-bottom: 0px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 400;">' + data['po'][0].note_public + '</p>';
+    myHtml += '                        </td>';
+    myHtml += '                    </tr>';
+
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
+    myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
+    myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    myHtml += '                                <tr>';
+    myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
+    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+    myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
+    myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
+    myHtml += '                                </tr>';
+    myHtml += '                            </thead>';
+    myHtml += '                            <tbody style="border:1px solid #ddd;">';
+    $(data['popd']).each(function (index, trpd) {
+        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
+        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
+        myHtml += '</tr>';
+        paid_amt += trpd.amount
+    });
+    myHtml += '                            </tbody>';
+    myHtml += '                        </table>';
+    myHtml += '                        </td>';
+    myHtml += '                    </tr>';
+
+    myHtml += '                </table>';
+    myHtml += '            </td>';
+    myHtml += '            <td style="vertical-align: top; width:50%; padding:0px;">';
+    myHtml += '                <table cellpadding="0" cellspacing="0" style="border:1px solid #ddd;border-top:0px;border-collapse: collapse;width: 100%; table-layout: fixed;">';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td class="text-right" style="width: 40%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + number_format(total_qty, 0, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="border-right: 1px solid #ddd; width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Subtotal</td>';
+    myHtml += '                        <td class="text-right" style="width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_gm, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Item discounts</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">-$' + number_format(total_discamt, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Amount tax</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_tax, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Shipping</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_shamt, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr>';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Other Fee</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_other, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Total</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                </table>';
+    myHtml += '            </td>';
+    myHtml += '        </tr>';
+    myHtml += '    </table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table > ';
+    myHtml += '</td > ';
+    myHtml += '</tr > ';
+    myHtml += '</table >';
+
+    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    if (opt.strValue1.length > 5) {
+        $.ajax({
+            type: "POST", url: '/PurchaseOrder/SendMailPOApproval', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) { console.log(result); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { }, async: false
+        });
+    }
 }

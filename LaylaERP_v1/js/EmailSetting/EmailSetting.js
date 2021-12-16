@@ -132,7 +132,7 @@ function dataGridLoad() {
                 'data': 'email_notify_key', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a class="btn btn-danger" title="Click here to view details" data-toggle="tooltip" onClick="ManageEmailNotifications(' + id + ')" href="ManageEmailNotifications/' + id + '">Manage</a>'
+                        return '<a class="btn btn-danger" title="Click here to view details" data-toggle="tooltip" onClick="ActivityLog(\'Manage email notification\',\'/EmailSetting/EmailNotifications/' + id +'\'); ManageEmailNotifications(' + id + '); " href="ManageEmailNotifications/' + id + '">Manage</a>'
                     }
                     else {
                         return "No Permission";

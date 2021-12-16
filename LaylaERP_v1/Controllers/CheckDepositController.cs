@@ -114,6 +114,7 @@ namespace LaylaERP_v1.Controllers
                 long id = 0, u_id = 0;
                 if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
                 u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                UserActivityLog.WriteDbLog(LogType.Submit, "Bank Settlement Process", "/CheckDeposit/CheckDepositPayment/" + id + "" + ", " + Net.BrowserInfo);
                 System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
                 System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
                 JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.Paymenttobank(id, "PYV", u_id, orderXML, orderdetailsXML));

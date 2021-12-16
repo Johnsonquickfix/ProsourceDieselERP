@@ -79,14 +79,14 @@ function EmployeeList() {
                         toggleStyle = "color: #25a580!important;font-size: 24px;";
                         toggleStatus = 1;
                     }
-                    return ' <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
+                    return ' <a href="#" data-toggle="tooltip" title="Click here to change status." onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
                 }
             },
             {
                 'data': 'ID', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../../Hrms/Employee/' + id + '"  onclick="ActivityLog(\'View/Edit Employee\',\'Hrms/Employee/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../../Hrms/Employee/' + id + '" data-toggle="tooltip" title="View/Edit Employee" onclick="ActivityLog(\'View/Edit Employee\',\'Hrms/Employee/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

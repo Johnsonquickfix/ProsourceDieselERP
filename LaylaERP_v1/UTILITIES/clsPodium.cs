@@ -12,8 +12,15 @@ namespace LaylaERP.UTILITIES
         private static string base_url = "https://accounts.podium.com";
         public static string GetToken()
         {
-            //string client_id = "2f936404-dabc-4cf7-a61b-80e6bef42f66", client_secret = "fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df", refresh_token = "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f";
-            string client_id = CommanUtilities.Provider.GetCurrent().podiumAPIKey, client_secret = CommanUtilities.Provider.GetCurrent().podiumSecretKey, refresh_token = CommanUtilities.Provider.GetCurrent().podium_refresh_code;
+            // string client_id = "2f936404-dabc-4cf7-a61b-80e6bef42f66", client_secret = "fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df", refresh_token = "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f";
+            string client_id = string.Empty, client_secret = string.Empty, refresh_token = string.Empty;
+            System.Data.DataTable dt = BAL.Users.AppSystemSetting();
+            if (dt.Rows.Count > 0) {
+                client_id = (dt.Rows[0]["podiumAPIKey"] != Convert.DBNull) ? dt.Rows[0]["podiumAPIKey"].ToString().Trim() : string.Empty;
+                client_secret = (dt.Rows[0]["podiumSecretKey"] != Convert.DBNull) ? dt.Rows[0]["podiumSecretKey"].ToString().Trim() : string.Empty;
+                refresh_token = (dt.Rows[0]["podium_refresh_code"] != Convert.DBNull) ? dt.Rows[0]["podium_refresh_code"].ToString().Trim() : string.Empty;
+            }
+            
             List<KeyValuePair<string, string>> tokenServerPairs = new List<KeyValuePair<string, string>>();
             tokenServerPairs.Add(new KeyValuePair<string, string>("client_id", client_id));
             tokenServerPairs.Add(new KeyValuePair<string, string>("client_secret", client_secret));

@@ -269,7 +269,7 @@ function dataGridLoad(order_type) {
             {
                 'data': 'rowid', title: 'Action', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="#" title="Click here to edit shipping rule." onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
         ]

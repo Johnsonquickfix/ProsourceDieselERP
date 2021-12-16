@@ -14,7 +14,7 @@
 
 <input type="hidden" id="hfEdit" value="" />
 <div class="page-title">
-    <h2 class="page-heading">List Bank Accounts</h2><a class="btn btn-danger" href="../bank/newfinaccount" id="btnAddAccount"><span title="Click Here To Add New Bank Account" data-placement="bottom" data-toggle="tooltip">Add Account</span></a>
+    <h2 class="page-heading">List Bank Accounts</h2><a class="btn btn-danger" href="../bank/newfinaccount" id="btnAddAccount" onclick="return ActivityLog('Add bank accounts','/Bank/BankAccountList');"><span title="Click Here To Add New Bank Account" data-placement="bottom" data-toggle="tooltip">Add Account</span></a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="nav-tabs-custom">
@@ -90,7 +90,7 @@
                             'data': 'ID', sWidth: "8%",
                             'render': function (id, type, full, meta) {
                                 if ($("#hfEdit").val() == "1") {
-                                    return '<a href="../Bank/financialaccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                                    return '<span title="Click here to edit bank details" data-placement="bottom" data-toggle="tooltip"><a href="../Bank/financialaccount/' + id + '" onclick="ActivityLog(\'Edit bank account\',\'Bank/financialaccount/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                                 }
                                else { return "No Permission"; }
                             }

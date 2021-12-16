@@ -14,6 +14,7 @@ namespace LaylaERP.BAL
 {
     public class DashboardRepository
     {
+        public static List<Export_Details> exportorderlist = new List<Export_Details>();
         public static int Total_Orders(string from_date, string to_date)
         {
             int totalorders = 0;
@@ -511,6 +512,62 @@ namespace LaylaERP.BAL
                 }
             }
 
+        }
+        public static void GetSalesOrderChart(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                DataSet ds1 = new DataSet();
+                string strWhr = string.Empty;
+                string datebetween = string.Empty;
+                string query = string.Empty;
+                CultureInfo us = new CultureInfo("en-US");
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,p.post_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,post_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                else
+                {
+                    datebetween = " and convert(date,p.post_date) >= convert(date,dateadd(DAY,-7,getdate()))";
+                }
+                if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
+                {
+                    long user = CommanUtilities.Provider.GetCurrent().UserID;
+                    strWhr = " and pm_uc.meta_value = '" + user + "'";
+                    query = "select convert(varchar(6), Sales_date_val, 107) Sales_date,*from(select convert(date, p.post_date) as Sales_date_val, pm_uc.meta_value as Employee,"
+                           + " sum(convert(float, pm_st.meta_value)) as Total from wp_posts p"
+                           + " left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id'"
+                           + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
+                           + " where convert(date, p.post_date) <= convert(date, getdate()) " + datebetween.ToString()
+                           + " and p.post_type = 'shop_order' and p.post_status in ('wc-completed', 'wc-pending', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString()
+                           + " group by  convert(date, p.post_date), pm_uc.meta_value) tt order by Sales_date_val desc";
+                }
+                else
+                {
+                    query = "select convert(varchar(6), Sales_date_val, 107) Sales_date,*from(select convert(date, p.post_date) as Sales_date_val,"
+                           + " sum(convert(float, pm_st.meta_value)) as Total from wp_posts p"
+                           + " left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id'"
+                           + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
+                           + " where convert(date, p.post_date) <= convert(date, getdate()) " + datebetween.ToString()
+                           + " and p.post_type = 'shop_order' and p.post_status in ('wc-completed', 'wc-pending', 'wc-processing', 'wc-on-hold', 'wc-refunded', 'wc-pendingpodiuminv')"
+                           + " group by  convert(date, p.post_date)) tt order by Sales_date_val desc";
+                }
+                ds1 = SQLHelper.ExecuteDataSet(query);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Sales_date"].ToString()))
+                        uobj.first_name = ds1.Tables[0].Rows[i]["Sales_date"].ToString();
+
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                        uobj.billing_city = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
         }
     }
 }

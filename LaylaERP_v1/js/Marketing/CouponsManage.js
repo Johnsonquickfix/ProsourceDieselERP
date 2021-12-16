@@ -110,7 +110,7 @@ function dataGridLoad(order_type) {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="Index/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                        return '<a href="Index/' + id + '" data-toggle="tooltip" title="View/Edit Coupon" ><i class="glyphicon glyphicon-eye-open"></i></a>';
                     }
                     else { return "No Permission"; }
                 }
@@ -174,8 +174,8 @@ function Status() {
 $('#btnmontholyautoGenerate').click(function () {
     var month = $('#month').val();
     var year = $('#ddlyear').val();
-    if (month == "") { swal('alert', 'Please Select Month', 'error'); }
-    else if (year == "") { swal('alert', 'Please Select Year', 'error'); }
+    if (month == "") { swal('alert', 'Please select month', 'error'); }
+    else if (year == "") { swal('alert', 'Please select year', 'error'); }
     else {
         var obj = { strVal: month, status: year }
         swal({ title: "Are you sure?", text: 'Would you like to process auto generate monthly coupon?', type: "question", showCancelButton: true })

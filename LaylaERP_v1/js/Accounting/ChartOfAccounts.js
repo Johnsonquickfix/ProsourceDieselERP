@@ -1,5 +1,8 @@
-﻿
-ChartOfAccountGrid();
+﻿$(document).ready(function () {
+    var loc = window.location.pathname;
+    $.when(CheckPermissions("#AddChartOfAccount", "#hfEdit", "", loc)).then(ChartOfAccountGrid());
+})
+
 function ChartOfAccountGrid() {
     $.ajax({
         url: '/Accounting/GetChartOfAccounts',
@@ -34,7 +37,7 @@ function ChartOfAccountGrid() {
                                 toggleStyle = "color: #25a580!important;font-size: 24px;";
                                 toggleStatus = 1;
                             }
-                            return ' <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
+                            return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
                         }
                     },
 
@@ -42,7 +45,7 @@ function ChartOfAccountGrid() {
                         'data': 'ID', sWidth: "8%",
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
-                                return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                                return ' <span title="Click here to edit chart of accounts" data-placement="bottom" data-toggle="tooltip"><a href="../Accounting/EditAccount/' + id + '" onclick="ActivityLog(\'Edit chart of accounts\',\'/Accounting/chartofaccounts/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a></span>';
                             }
                             else {
                                 return "No Permission";
@@ -69,6 +72,9 @@ $('#btnSearch').click(function () {
 })
 
 function ChangeStatus(id, status) {
+    console.log(status);
+    let cofStatus = status == "0" ? "Inactive" : "Active";
+    ActivityLog('change status as ' + cofStatus + '', '/Accounting/chartofaccounts/' + id + '');
     var obj = { rowid: id, active: status, }
     $.ajax({
         url: '/Accounting/UpdateChartOfAccountStatus/', dataType: 'json', type: 'Post',

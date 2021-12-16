@@ -12,6 +12,7 @@ using System.Collections;
 using LaylaERP.DAL;
 using System.Security.Cryptography;
 using System.Text;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -34,16 +35,16 @@ namespace LaylaERP.BAL
                     new SqlParameter("@rolee", rolee)
                 };
                 userslist.Clear();
-                DataSet ds1 = new DataSet();               
+                DataSet ds1 = new DataSet();
                 ds1 = DAL.SQLHelper.ExecuteDataSet("wp_userslist", parameters);
                 string result = string.Empty;
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
-                    clsUserDetails uobj = new clsUserDetails();                   
+                    clsUserDetails uobj = new clsUserDetails();
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
                     result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
-                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();                    
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }
@@ -68,9 +69,9 @@ namespace LaylaERP.BAL
 
             try
             {
-               
+
                 userslist.Clear();
-                DataSet ds1 = new DataSet();           
+                DataSet ds1 = new DataSet();
 
                 string sqlquery = "select ID, user_login,user_status,user_email,user_pass,max(case when um.meta_key = 'wp_capabilities' then um.meta_value else '' end) meta_value,max(case when um.meta_key = 'billing_phone' then um.meta_value else '' end) Phone,"
                                   + "max(case when um.meta_key = 'billing_address_1' then um.meta_value else '' end) billing_address_1,max(case when um.meta_key = 'billing_address_2' then um.meta_value else '' end) billing_address_2,"
@@ -90,11 +91,11 @@ namespace LaylaERP.BAL
 
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
-                    clsUserDetails uobj = new clsUserDetails();   
+                    clsUserDetails uobj = new clsUserDetails();
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
                     result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
-                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();    
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }
@@ -415,7 +416,7 @@ namespace LaylaERP.BAL
         public static int GetRoleID(string UserValue)
         {
             int count = 0;
-            string strQuery = "select ID from wp_user_classification  where User_value = '"+ UserValue + "' ";
+            string strQuery = "select ID from wp_user_classification  where User_value = '" + UserValue + "' ";
             count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             //select COUNT(meta_value)as meta_value from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' where meta_value like '%Mod Squad%' OR meta_value like '%modsquad%'
             return count;
@@ -458,12 +459,12 @@ namespace LaylaERP.BAL
                 string strquery = "";
                 if (model.country == "CA")
                     strquery = "select count(StateFullName) from erp_statelist where (statefullname = '" + model.billing_state + "' Or state='" + model.billing_state + "') ";
-                
+
                 else
                     strquery = "select count(ZipCode) from ZIPCodes1 where ZipCode = '" + model.billing_postcode + "' And (statefullname = '" + model.billing_state + "' Or state='" + model.billing_state + "') ";
 
 
-                SqlParameter[] para = 
+                SqlParameter[] para =
                 {
 
                 };
@@ -515,7 +516,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                if(!string.IsNullOrEmpty(model.password))
+                if (!string.IsNullOrEmpty(model.password))
                     model.password = EncryptedPwd(model.password);
                 string strsql = "erp_user_iud";
                 SqlParameter[] para =
@@ -545,7 +546,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "erp_user_iud";
                 SqlParameter[] para =
-                { 
+                {
                      new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
@@ -734,7 +735,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-     
+
         //Add role
         public int AddNewRole(UserClassification model)
         {
@@ -762,7 +763,7 @@ namespace LaylaERP.BAL
                 DeletePermission(role_id);
                 int result = 0;
                 string[] values = ID.Split(',');
-                string[] strflag =  flag.Split(',');
+                string[] strflag = flag.Split(',');
 
 
 
@@ -794,10 +795,10 @@ namespace LaylaERP.BAL
             {
                 DeletePermission(roleto);
                 int result = 0;
-                  
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_,flag) Select " + roleto + ",erpmenu_id,add_,edit_,delete_,'C' from wp_erprole_rest where role_id=" + role_id + ";";
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
-                
+                UserActivityLog.WriteDbLog(LogType.Submit, "Copy permission from " + role_id + " to " + roleto + "", "/Users/AssignRole" + ", " + Net.BrowserInfo);
+                string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_,flag) Select " + roleto + ",erpmenu_id,add_,edit_,delete_,'C' from wp_erprole_rest where role_id=" + role_id + ";";
+                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+
                 return result;
             }
             catch (Exception Ex)

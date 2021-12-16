@@ -374,7 +374,7 @@ function BankLinkedFiles() {
             {
                 'data': 'FileName', sWidth: "25%",
                 'render': function (FileName, type, full, meta) {
-                    return '<a target="popup" href="../../Content/BankLinkedFiles/' + FileName + '">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
+                    return '<span title="Click here to download/view document" data-placement="bottom" data-toggle="tooltip"><a target="popup" href="../../Content/BankLinkedFiles/' + FileName + '" onclick="ActivityLog(\'View/download bank linked file ' + FileName + '\',\'/Bank/financialaccount/' + ID + '\');">' + FileName + ' <i class="fas fa-search-plus"></i></a></span>';
                 }
             },
             { data: 'FileSize', title: 'FileSize', sWidth: "25%" },
@@ -382,7 +382,7 @@ function BankLinkedFiles() {
             {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" onclick="DeleteBankLinkedFiles(' + id + ');"><i class="fas fa-trash-alt"></i></a>';
+                    return '<span title="Click here to delete document" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="DeleteBankLinkedFiles(' + id + ');"><i class="fas fa-trash-alt"></i></a></span>';
                 }
             }
         ]

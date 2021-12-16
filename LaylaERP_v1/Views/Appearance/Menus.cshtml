@@ -11,7 +11,8 @@
 
 <input type="hidden" id="hfEdit" />
 <div class="page-title">
-    <h2 class="page-heading">Menus</h2><span title="Click here to add menu" data-placement="bottom" data-toggle="tooltip"><a class="btn btn-danger" href="AddMenuDetails" id="btnAddMenu">Add Menu</a></span>
+    <h2 class="page-heading">Menus</h2><span title="Click here to add menu" data-placement="bottom" data-toggle="tooltip">
+    <a class="btn btn-danger" href="AddMenuDetails" id="btnAddMenu" onclick="return ActivityLog('Add new menu','/Appearance/Index');">Add Menu</a></span>
 </div>
 <div class="userrole_section section_wrapper appearance-menu-section">
     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
@@ -72,7 +73,7 @@
                             'data': 'menu_id', sWidth: "15%",
                             'render': function (menu_id, type, full, meta) {
                                 if ($("#hfEdit").val() == "1") {
-                                    return '<a href="javascript:void(0);" onClick="EditUser(' + menu_id + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="View/Edit Menu" onClick="EditUser(' + menu_id + '); ActivityLog(\'Edit menu\',\'/Appearance/Index/' + menu_id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
                                 }
                                 else { return "No Permission"; }
                             }

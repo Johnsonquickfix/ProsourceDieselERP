@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
@@ -52,7 +53,7 @@ namespace LaylaERP.Controllers
 
                 }
                 else
-                {                  
+                {
                     int ID = BankRepository.AddBankAccount(model);
                     if (ID > 0)
                     {
@@ -66,7 +67,7 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
-        
+
         public JsonResult GetAccountingAccount(SearchModel model)
         {
             DataSet ds = BankRepository.GetAccountingAccount();
@@ -116,8 +117,9 @@ namespace LaylaERP.Controllers
 
         public JsonResult UpdateBankAccount(BankModel model)
         {
-            if (model.rowid> 0)
+            if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update bank accounts", "Bank/financialaccount/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 BankRepository.UpdateBankAccount(model);
                 return Json(new { status = true, message = "Bank data updated successfully!!", url = "" }, 0);
             }
@@ -158,6 +160,7 @@ namespace LaylaERP.Controllers
                             int resultOne = BankRepository.FileUpload(BankID, FileName, ImagePath, FileExtension, size);
                             if (resultOne > 0)
                             {
+                                UserActivityLog.WriteDbLog(LogType.Submit, "Upload bank linked files", "/Bank/financialaccount/" + BankID + "" + ", " + Net.BrowserInfo);
                                 return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
                             }
                             else
@@ -206,6 +209,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Delete bank linked files", "/Bank/financialaccount/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 int ID = BankRepository.DeleteBankLinkedFiles(model);
                 if (ID > 0)
                     return Json(new { status = true, message = "Bank linked files deleted successfully!!", url = "", id = ID }, 0);
@@ -236,7 +240,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = BankRepository.BankEntriesList(model.strValue2,model.strValue1, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = BankRepository.BankEntriesList(model.strValue2, model.strValue1, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

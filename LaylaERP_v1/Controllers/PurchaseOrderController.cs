@@ -237,14 +237,14 @@ namespace LaylaERP.Controllers
 
                 if (!string.IsNullOrEmpty(model.strValue4))
                 {
-                    strBody = "Hello,<br /> Purchase order number <b>#" + model.strValue2 + "</b> has been approved.<br />Please see below attached file.<br /><br /><br /><br />"
+                    strBody = "Hello,<br /> Purchase order number <b>#" + model.strValue2 + "</b> approved.<br />Please see below attached file.<br /><br /><br /><br />"
                         + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
                         + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                         + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
                         + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
                         + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
 
-                    result = SendEmail.SendEmails(model.strValue4, "Your Purchase order #" + model.strValue2 + " has been approved.", strBody, model.strValue3);
+                    result = SendEmail.SendEmails(model.strValue4, "Your Purchase order #" + model.strValue2 + " approved.", strBody, model.strValue3);
                 }
             }
             catch { status = false; result = ""; }
@@ -258,7 +258,8 @@ namespace LaylaERP.Controllers
             try
             {
                 status = true;
-                string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
                     + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
                     + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                     + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"

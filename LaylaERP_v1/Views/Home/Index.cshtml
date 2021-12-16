@@ -172,15 +172,19 @@
                     <div class="input-group">
                         <!--<input type="text" name="q" class="form-control" readonly placeholder="Search...">-->
 
-                        <span class="input-group-btn">
+                        
+                        <span class="input-group-btn" title="Click here to view search bar." data-placement="bottom" data-toggle="tooltip">
+                            
+                                <button type="button" id="btnsearch" name="search" class="btn btn-flat" style="width:100%;">
 
-                            <button type="button" id="btnsearch" name="search" class="btn btn-flat" style="width:100%;">
-                                <span style="float:left;">Search...</span>
-                                <i class="fa fa-search" style="float:right;"></i>
-                            </button>
+                                    <span style="float:left;">Click here to search...</span>
+                                </button>
+                          
+                            <i class="fa fa-search" style="float:right;"></i>
+
                             @*<button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                                    <i class="fa fa-search"></i>
-                                </button>*@
+            <i class="fa fa-search"></i>
+        </button>*@
                         </span>
                     </div>
                 </form>
@@ -562,8 +566,8 @@
             myHtml += '<div class="box-header with-border">';
             myHtml += '<div class="col-sm-12">';
             myHtml += '<div class="input-group">';
-            myHtml += '<input type="text" id="txtsearch" name="q" class="form-control" placeholder="Search...">';
-            myHtml += '<span class="input-group-btn"><button type="button" id="btnsearchbar" name="search" class="btn btn-flat"><i class="fa fa-search"></i></button></span>';
+            myHtml += '<span title="Your search parameters." data-placement="bottom" data-toggle="tooltip"><input type="text" id="txtsearch" name="q" class="form-control" placeholder="Search..."></span>';
+            myHtml += '<span class="input-group-btn" title="Click here to search." data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnsearchbar" name="search" class="btn btn-flat"><i class="fa fa-search"></i></button></span>';
             myHtml += '</div>';
             myHtml += '</div>';
             myHtml += '</div>';
@@ -618,7 +622,7 @@
                         for (var i = 0; i < result['Table'].length; i++) {
                             myHtml += '<tr>';
                             myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><span title="Click here to view user." data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
                             myHtml += '</tr>';
                         }
                         $("#tblUsers tbody").empty().append(myHtml);
@@ -627,7 +631,7 @@
                         for (var i = 0; i < result['Table1'].length; i++) {
                             myHtml += '<tr>';
                             myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table1'][i].user_login + '</h5>' + result['Table1'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'16\',title: \'Manage Customer\',close: true,url: \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(16).attr(\'src\', \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                            myHtml += '<td><h5>' + result['Table1'][i].user_login + '</h5>' + result['Table1'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'16\',title: \'Manage Customer\',close: true,url: \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(16).attr(\'src\', \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\');refreshTab();"><span title="Click here to view customer." data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
                             myHtml += '</tr>';
                         }
                         $("#tblCustomer tbody").empty().append(myHtml);
@@ -636,7 +640,7 @@
                         for (var i = 0; i < result['Table2'].length; i++) {
                             myHtml += '<tr>';
                             myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table2'][i].id + '</h5>' + result['Table2'][i].post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(8).attr(\'src\', \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                            myHtml += '<td><h5>' + result['Table2'][i].id + '</h5>' + result['Table2'][i].post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(8).attr(\'src\', \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\');refreshTab();"><span title="Click here to view order." data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
                             myHtml += '</tr>';
                         }
                         $("#tblorder tbody").empty().append(myHtml);

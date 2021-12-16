@@ -498,13 +498,13 @@
 
         let isVal = 1;
         if (emails == "") {
-            swal('Alert', 'Please Enter Email Address.', 'error').then(function () { swal.close(); $('#emailto').focus(); });
+            swal('Alert', 'Please enter email address.', 'error').then(function () { swal.close(); $('#emailto').focus(); });
         }
         else if (subject == "") {
-            swal('Alert', 'Please Enter Subject.', 'error').then(function () { swal.close(); $('#subject').focus(); });
+            swal('Alert', 'Please enter subject.', 'error').then(function () { swal.close(); $('#subject').focus(); });
         }
         else if (content == "") {
-            swal('Alert', 'Please Enter Message.', 'error').then(function () { swal.close(); $('#content1').focus(); });
+            swal('Alert', 'Please enter message.', 'error').then(function () { swal.close(); $('#content1').focus(); });
         }
         else {
             var obj = { emails: emails, subject: subject, content: content }

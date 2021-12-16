@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaylaERP", "LaylaERP\LaylaE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaylaERP_v1", "LaylaERP_v1\LaylaERP_v1.csproj", "{4D9A02E1-827B-46A1-85F6-947A950CFBD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaylaERP_API", "LaylaERP_API\LaylaERP_API.csproj", "{0FF7FA00-D39E-4AE3-B970-D4D1CFC2D727}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4D9A02E1-827B-46A1-85F6-947A950CFBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D9A02E1-827B-46A1-85F6-947A950CFBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D9A02E1-827B-46A1-85F6-947A950CFBD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FF7FA00-D39E-4AE3-B970-D4D1CFC2D727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FF7FA00-D39E-4AE3-B970-D4D1CFC2D727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FF7FA00-D39E-4AE3-B970-D4D1CFC2D727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FF7FA00-D39E-4AE3-B970-D4D1CFC2D727}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

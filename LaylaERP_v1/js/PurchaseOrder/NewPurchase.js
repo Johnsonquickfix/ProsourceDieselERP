@@ -66,10 +66,10 @@
         t.preventDefault(); $("#loader").show(); isEdit(true);
         $('#ddlVendor').prop("disabled", true); $('.billinfo,.orderfiles').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell" data-toggle="tooltip" title="Add Service"></i> Add Service</button>');
+        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
-        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
-        $("#loader").hide();
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel" data-placement="left"><i class="fa fa-undo"></i> Cancel</button> <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update" data-placement="bottom"><i class="far fa-save"></i> Update</button>');
+        $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide();
     });
     $(document).on("click", "#btnClonePO", function (t) {
         t.preventDefault();
@@ -230,7 +230,7 @@ function bindItems(data) {
             if (data[i].fk_product > 0) {
                 if ($('#tritemid_' + data[i].fk_product).length <= 0) {
                     itemHtml += '<tr id="tritemid_' + data[i].fk_product + '" class="paid_item" data-pid="' + data[i].fk_product + '" data-pname="' + data[i].description + '" data-psku="' + data[i].product_sku + '" data-rowid="' + data[i].rowid + '">';
-                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data[i].fk_product + '" value="' + data[i].qty + '" name="txt_itemqty" placeholder="Qty."></td>';
@@ -301,6 +301,7 @@ function calculateFinal() {
     $("#orderTotal").html(tNetAmt.toFixed(2));
     let paid_amt = parseFloat($('#paidTotal').text()) || 0.00;
     $('#unpaidTotal').text((tNetAmt - paid_amt).toFixed(2))
+    $('[data-toggle="tooltip"]').tooltip();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -393,8 +394,8 @@ function bindOtherItems(proc_type, row_num) {
     if ($('#tritemid_' + row_num).length <= 0) {
         itemHtml += '<tr id="tritemid_' + row_num + '" class="other_item" data-rowid="0" data-rang="' + row_num + '" data-proc_type="' + proc_type + '" data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
         itemHtml += '<td class="text-center">';
-        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
+        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
         itemHtml += '</td > ';
         itemHtml += '<td class="item-desc">' + rDesc + '</td><td class="item-sku">' + rSku + '</td>';
         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row_num + '" value="' + rPrice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
@@ -481,7 +482,7 @@ function getPurchaseOrderInfo() {
                     let itemHtml = '';
                     if (row.fk_product > 0) {
                         itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
-                        itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                        itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                         itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
@@ -496,8 +497,8 @@ function getPurchaseOrderInfo() {
                         let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
                         itemHtml = '<tr id="tritemid_' + row.rowid + '" class="other_item" data-rowid="' + row.rowid + '" data-rang="' + row.rowid + '" data-proc_type="' + row.product_type + '"  data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
                         itemHtml += '<td class="text-center">';
-                        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-                        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
+                        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+                        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
                         itemHtml += '</td > ';
                         itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';

@@ -247,7 +247,7 @@ function dataGridLoad() {
                 'render': function (id, type, full, meta) {
                    // debugger
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" title="View/Edit Customer" onclick="ActivityLog(\'Edit Customer\',\'/Customer/NewUser/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="bottom" title="View/Edit Customer" onclick="ActivityLog(\'Edit Customer\',\'/Customer/NewUser/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

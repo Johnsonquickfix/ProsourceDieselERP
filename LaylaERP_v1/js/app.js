@@ -707,7 +707,7 @@ var App = function () {
 
         // wrApper function to scroll(focus) to an element
         scrollTo: function (el, offeset) {
-            var pos = (el && el.size() > 0) ? el.offset().top : 0;
+            var pos = (el && el.length > 0) ? el.offset().top : 0;
 
             if (el) {
                 if ($('body').hasClass('page-header-fixed')) {
@@ -907,12 +907,12 @@ var App = function () {
             }
 
             if (!options.container) {
-                if ($('.page-fixed-main-content').size() === 1) {
+                if ($('.page-fixed-main-content').length === 1) {
                     $('.page-fixed-main-content').prepend(html);
-                } else if (($('body').hasClass("page-container-bg-solid") || $('body').hasClass("page-content-white")) && $('.page-head').size() === 0) {
+                } else if (($('body').hasClass("page-container-bg-solid") || $('body').hasClass("page-content-white")) && $('.page-head').length === 0) {
                     $('.page-title').after(html);
                 } else {
-                    if ($('.page-bar').size() > 0) {
+                    if ($('.page-bar').length > 0) {
                         $('.page-bar').after(html);
                     } else {
                         $('.page-breadcrumb, .breadcrumbs').after(html);
@@ -2174,11 +2174,16 @@ function activeTabByPageId(pageId) {
 function isLeavePage() {
     let isedit = localStorage.getItem('isEdit');
     if (isedit == 'yes') {
-        swal({ title: "Are you sure you want to leave?", text: 'All unsaved changes will be lost.', type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) { localStorage.setItem('isEdit', 'no'); }
-                return result.value;
-            });
+        if (confirm('Are you sure you want to leave?')) {
+            localStorage.setItem('isEdit', 'no'); return true;
+        } else {
+            return false;
+        }
+        //return swal({ title: "Are you sure you want to leave?", text: 'All unsaved changes will be lost.', type: "question", showCancelButton: true })
+        //    .then((result) => {
+        //        if (result.value) { localStorage.setItem('isEdit', 'no'); }
+        //        return result.value;
+        //    });
     }
     else
         return true;

@@ -650,10 +650,10 @@ function saveVendorPO() {
     }
 }
 function orderStatusUpdate(oid) {
-    let option = { Search: oid, Status: '3' }
+    let option = { Search: oid, Status: '3' };
+    let _text = 'Do you want to approve this Purchase Order #' + $('#lblPoNo').text() + '?';
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to update your order status?",
-        showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {

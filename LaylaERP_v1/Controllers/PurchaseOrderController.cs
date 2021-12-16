@@ -200,7 +200,7 @@ namespace LaylaERP.Controllers
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(new { com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+            return Json(new { com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, po_email = om.po_email, website = om.website, data = JSONresult }, 0);
         }
         [HttpGet]
         public JsonResult GetPurchaseOrderPayments(SearchModel model)
@@ -231,9 +231,29 @@ namespace LaylaERP.Controllers
                     + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                     + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
                     + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
-                    + CommanUtilities.Provider.GetCurrent().EmailID + "<br />" + CommanUtilities.Provider.GetCurrent().website;
+                    + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
 
                 result = SendEmail.SendEmails(model.strValue1, "Your Purchase order #" + model.strValue2 + " has been received", strBody, model.strValue3);
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult SendMailPOApproval(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attachment file.<br /><br /><br /><br />"
+                    + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
+                    + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
+                    + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
+                    + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
+                    + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
+
+                result = SendEmail.SendEmails(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

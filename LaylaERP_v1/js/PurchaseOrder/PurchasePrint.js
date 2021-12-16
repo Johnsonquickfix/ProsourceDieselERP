@@ -258,8 +258,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    //let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: data['po'][0].user_email }
-    let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: 'johnson.quickfix@gmail.com' }
+    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: data['po'][0].user_email }
     if (opt.strValue1.length > 5 && is_mail) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),

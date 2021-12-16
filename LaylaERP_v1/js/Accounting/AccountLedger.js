@@ -142,9 +142,9 @@ function formatPartially(d) {
                 wrHTML += '<td style="width:5%; text-align:left;">' + row.code_journal + '</td>';
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.doc_date + '</td>';
                 if (row.code_journal == "AC")
-                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                    wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
                 else
-                    wrHTML += '<td style="width:10%; text-align:left;"> <a href="#"  onclick="PurchaseSalesPrint(' + row.inv_num + ',\'' + datect + '\');"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td>';
+                    wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#"  onclick="PurchaseSalesPrint(' + row.inv_num + ',\'' + datect + '\');"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td></span>';
                 //console.log(row.datecrt);
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')

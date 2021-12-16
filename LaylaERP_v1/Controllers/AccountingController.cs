@@ -72,7 +72,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 new AccountingRepository().EditJournal(model);
-                return Json(new { status = true, message = "Journal has been updated successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Journal updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -80,7 +80,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
                     ModelState.Clear();
-                    return Json(new { status = true, message = "Journal has been saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Journal saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 new AccountingRepository().UpdateJournalStatus(model);
-                return Json(new { status = true, message = "Journal status has been changed successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Journal status changed successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -131,7 +131,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 new AccountingRepository().UpdateChartOfAccountStatus(model);
-                return Json(new { status = true, message = "Status has been changed successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Status changed successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -258,7 +258,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         UserActivityLog.WriteDbLog(LogType.Submit, "Save products account", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
-                        return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Product account saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -276,7 +276,7 @@ namespace LaylaERP.Controllers
             int ID = AccountingRepository.AddPcgTypeDetails(model);
             if (ID > 0)
             {
-                return Json(new { status = true, message = "Pcg Type has been saved successfully!!", url = "", id = ID }, 0);
+                return Json(new { status = true, message = "Pcg type saved successfully!!", url = "", id = ID }, 0);
             }
             else
             {
@@ -313,7 +313,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 AccountingRepository.UpdatePcgType(model);
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+                return Json(new { status = true, message = "Data updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {

@@ -37,7 +37,7 @@ function ChartOfAccountGrid() {
                                 toggleStyle = "color: #25a580!important;font-size: 24px;";
                                 toggleStatus = 1;
                             }
-                            return ' <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
+                            return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
                         }
                     },
 
@@ -45,7 +45,7 @@ function ChartOfAccountGrid() {
                         'data': 'ID', sWidth: "8%",
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
-                                return '<a href="../Accounting/EditAccount/' + id + '" onclick="ActivityLog(\'Edit chart of accounts\',\'/Accounting/chartofaccounts/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
+                                return ' <span title="Click here to edit chart of accounts" data-placement="bottom" data-toggle="tooltip"><a href="../Accounting/EditAccount/' + id + '" onclick="ActivityLog(\'Edit chart of accounts\',\'/Accounting/chartofaccounts/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a></span>';
                             }
                             else {
                                 return "No Permission";

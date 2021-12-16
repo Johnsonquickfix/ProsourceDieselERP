@@ -67,7 +67,7 @@ function PurchaseOrderGrid() {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                        return '<a title="Click here to purchase order" data-toggle="tooltip" href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     }
                     else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }
@@ -75,7 +75,7 @@ function PurchaseOrderGrid() {
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
-                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    let str_inv = (id.substr(7) > 0 ? ' <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     return str_inv;
                 }
             },

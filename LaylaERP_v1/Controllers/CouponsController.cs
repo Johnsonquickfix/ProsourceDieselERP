@@ -28,7 +28,7 @@ namespace LaylaERP.Controllers
         }
 
         public ActionResult AutoGenerate()
-        {             
+        {
             return View();
         }
         public ActionResult NewAutoGenerate()
@@ -61,7 +61,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Edit New Coupons", "/Coupons/Index" + ", " + Net.BrowserInfo);
                     CouponsRepository.EditCoupons(model, model.ID);
                     Update_MetaData(model, model.ID);
                     return Json(new { status = true, message = "Coupons record updated successfully!!", url = "Manage" }, 0);
@@ -71,6 +71,7 @@ namespace LaylaERP.Controllers
                     int ID = CouponsRepository.AddCoupons(model);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Save New Coupons", "/Coupons/Index" + ", " + Net.BrowserInfo);
                         Adduser_MetaData(model, ID);
                         ModelState.Clear();
                         return Json(new { status = true, message = "Coupons saved successfully!!", url = "" }, 0);
@@ -96,7 +97,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Assign Coupon Update", "/Coupons/NewAutoGenerate/" + model.ID + "" + ", " + Net.BrowserInfo);
                     CouponsRepository.EditAutoCoupons(model, model.ID);
                     UpdateAuto_MetaData(model, model.ID);
                     return Json(new { status = true, message = "Coupons record updated successfully!!", url = "Manage" }, 0);
@@ -106,6 +107,7 @@ namespace LaylaERP.Controllers
                     int ID = CouponsRepository.AddAutoCoupons(model);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Assign Coupon", "/Coupons/NewAutoGenerate/" + ", " + Net.BrowserInfo);
                         AdduserAuto_MetaData(model, ID);
                         ModelState.Clear();
                         return Json(new { status = true, message = "Coupons saved successfully!!", url = "" }, 0);
@@ -139,15 +141,15 @@ namespace LaylaERP.Controllers
         {
 
             string[] varQueryArr1 = new string[20];
-            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping",  "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
             string[] varFieldsValue = new string[20] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
             for (int n = 0; n < 20; n++)
             {
                 CouponsRepository.AddCouponMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
-               if(!string.IsNullOrEmpty(model.date_expires))
-               CouponsRepository.AddexpiresMeta(model, id, "date_expires", model.date_expires.ToString());
-               else
+            if (!string.IsNullOrEmpty(model.date_expires))
+                CouponsRepository.AddexpiresMeta(model, id, "date_expires", model.date_expires.ToString());
+            else
                 CouponsRepository.AddexpiresMeta(model, id, "date_expires", null);
 
         }
@@ -160,7 +162,7 @@ namespace LaylaERP.Controllers
 
             string[] varQueryArr1 = new string[21];
             string[] varFieldsName = new string[21] { "discount_type", "coupon_amount", "free_shipping", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email", "_employee_id" };
-            string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email,model._employee_id };
+            string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email, model._employee_id };
             for (int n = 0; n < 21; n++)
             {
                 CouponsRepository.AddAutoCouponMeta(model, id, varFieldsName[n], varFieldsValue[n]);
@@ -178,7 +180,7 @@ namespace LaylaERP.Controllers
             //string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
 
             string[] varQueryArr1 = new string[20];
-            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping",  "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
             string[] varFieldsValue = new string[20] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
             for (int n = 0; n < 20; n++)
             {
@@ -203,7 +205,7 @@ namespace LaylaERP.Controllers
             {
                 CouponsRepository.UpdateAutoMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
-           // CouponsRepository.UpdateAutoExpiresData(model, id, "date_expires", model.date_expires.ToString());
+            // CouponsRepository.UpdateAutoExpiresData(model, id, "date_expires", model.date_expires.ToString());
         }
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
@@ -240,7 +242,7 @@ namespace LaylaERP.Controllers
                     // var now = DateTime.Now;
                     //var first = new DateTime(now.Year, now.Month+1, 1);
                     var Expiredate = firstDayNextMonth.Date.ToString("MM/dd/yyyy");
-                    dt = CouponsRepository.GetListUserType(Expiredate, userid,model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    dt = CouponsRepository.GetListUserType(Expiredate, userid, model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                     result = JsonConvert.SerializeObject(dt, Formatting.Indented);
                 }
             }
@@ -256,8 +258,8 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = new DataTable();
-                    dt = CouponsRepository.AutoGenerateGetList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                    result = JsonConvert.SerializeObject(dt, Formatting.Indented);    
+                dt = CouponsRepository.AutoGenerateGetList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
@@ -270,6 +272,8 @@ namespace LaylaERP.Controllers
             {
                 CouponsRepository or = new CouponsRepository();
                 or.ChangeTrash(model, strID);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Coupon Bulk action (" + model.status + ")", "/Coupons/ManageCoupons/" + strID + "" + ", " + Net.BrowserInfo);
+
                 return Json(new { status = true, message = "Coupons move to trash successfully!!", url = "" }, 0);
             }
             else
@@ -357,11 +361,11 @@ namespace LaylaERP.Controllers
         {
             string month = model.strVal;
             string year = model.status;
-            var date = Convert.ToDateTime( ""+ month + "/01/20"+ year + "");
-           // var monthval = new DateTime(date.Year, date.Month, 1);
-          //  var first = monthval.AddMonths(1);
-           // var last = monthval.AddMonths(1).AddDays(-1);
-           // var Expiredate = last.Date.ToString("MM/dd/yyyy");
+            var date = Convert.ToDateTime("" + month + "/01/20" + year + "");
+            // var monthval = new DateTime(date.Year, date.Month, 1);
+            //  var first = monthval.AddMonths(1);
+            // var last = monthval.AddMonths(1).AddDays(-1);
+            // var Expiredate = last.Date.ToString("MM/dd/yyyy");
             // var Expiredated = last.Date.ToString("MM/dd/yyyy");
 
             var monthval = new DateTime(date.Year, date.Month, 1);
@@ -377,7 +381,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Save auto generate monthly coupon", "/Coupons/ManageCoupons" + ", " + Net.BrowserInfo);
                     CouponsRepository or = new CouponsRepository();
                     or.CoupanAutogenrate(month + year, Expiredate);
                     return Json(new { status = true, message = "Auto generate coupon prepared!!", url = "" }, 0);
@@ -387,7 +391,7 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
-    
+
 
         }
     }

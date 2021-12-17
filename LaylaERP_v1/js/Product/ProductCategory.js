@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("#loader").hide();
 
     var urlpath = window.location.pathname;
-    CheckPermissions("#btnAddNewCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
+    CheckPermissions("#btnAddCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
    // alert(pathid);
     $("#btnbackproduct").hide();
@@ -15,12 +15,22 @@ $(document).ready(function () {
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct/" + pathid);
       
     }
-
+    
     $(".select2").select2();
     getParentCategory();
     CategoryList();
+    
+    //isEdit(true);
+}) 
+
+$('#btnAddCategory').click(function () {
+    $("#ProdCatAdd *").children().prop('disabled', false);
+    //$('[data-toggle="tooltip"]').tooltip();
+    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Create a new category');
+    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
+    //title = "" data-toggle="tooltip"
     isEdit(true);
-})
+});
 
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -60,7 +70,8 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
             }
             $('#ddlParentCategory').html(opt);
-            isEdit(true);
+           // isEdit(true);
+            $("#ProdCatAdd *").children().prop('disabled', true);
         }
     });
 }
@@ -341,6 +352,9 @@ function GetCategoryByID(id) {
                 if (d.length > 0) {
                     $("#ddlParentCategory").val(d[0].parent).trigger("change");
                     $("#btnAddNewCategory").text('Update category');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', '');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Update category');
+                    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
                     $("#lblNewCategory").text('Update category');
                     $("#txtCategoryName").val(d[0].name);
                     $("#txtCategorySlug").val(d[0].slug);
@@ -353,6 +367,7 @@ function GetCategoryByID(id) {
                     $("#txtDescription").val(d[0].description);
                     
                 }
+                $("#ProdCatAdd *").children().prop('disabled', false);
             },
             complete: function () { $("#loader").hide(); },
             error: function (msg) {

@@ -57,43 +57,32 @@ function PurchaseOrderGrid() {
             });
         },
         aoColumns: [
+            { data: 'id', sWidth: "5%", render: function (data, type, full, meta) { return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>'; } },
             {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-                }
-            },
-            {
-                'data': 'ref', sWidth: "10%", title: 'PO No',
-                'render': function (id, type, full, meta) {
+                data: 'ref', sWidth: "10%", title: 'PO No',
+                render: function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
                         return '<a title="Click here to purchase order" data-toggle="tooltip" href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     }
                     else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }
             },
-            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'date_creation_s', title: 'Order Date', sWidth: "10%", render: function (id, type, full, meta) { return full.date_creation; } },
             {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
                     let str_inv = (id.substr(7) > 0 ? ' <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     return str_inv;
                 }
             },
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
-            },
+            //{ data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) { if (data > 0) return '#' + data; else return ''; } },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'address', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
-            { data: 'Status', title: 'Status', sWidth: "8%" }
+            { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { return full.date_livraison; } },
+            { data: 'past_due', title: 'Past Due', sWidth: "8%" },
+            { data: 'Status', title: 'Status', sWidth: "8%" },
+            { data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
         ]
     });
 }

@@ -1,10 +1,39 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide(); $('.select2').select2();
-    PurchaseOrderGrid();
+    $("#loader").hide(); //$('.select2').select2();
+    $('#txtDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'This Year': [moment().startOf('year'), moment().endOf('year')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
+    }, function (start, end, label) {
+        $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
+       // PurchaseOrderGrid();
+            PurchaseOrderGrid();
+            PoPartiallyColleps();
+            PoClosureGridColleps();
+
+        //$.when(PurchaseOrderGrid()).done(function () {
+        //    when(PoPartiallyColleps()).done(function () { PoClosureGridColleps(); }) });
+    });
+    $('#txtDate').val('');
+    $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); PurchaseOrderGrid(); });   
     //PartiallyGrid();
     //PoClosureGrid();
+
+    PurchaseOrderGrid();
     PoPartiallyColleps();
     PoClosureGridColleps();
+
+    //$.when(PurchaseOrderGrid()).done(function () {
+    //    when(PoPartiallyColleps()).done(function () { PoClosureGridColleps(); })
+    //});
 
     if ($("#ROPOrder").val() == "PO2") {
         $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
@@ -86,6 +115,9 @@
 });
 function PurchaseOrderGrid() {
     let urid = parseInt($("#ddlSearchStatus").val());
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
@@ -107,7 +139,8 @@ function PurchaseOrderGrid() {
         },
         sAjaxSource: "/Reception/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
+            aoData.push({ name: "strValue3", value: urid });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "refordervendor" : oSettings.aaSorting[0][0] == 3 ? "request_author" : oSettings.aaSorting[0][0] == 4 ? "vendor_name" : oSettings.aaSorting[0][0] == 5 ? "city" : oSettings.aaSorting[0][0] == 6 ? "zip" : oSettings.aaSorting[0][0] == 6 ? "date_livraison" : oSettings.aaSorting[0][0] == 7 ? "Status" : "ref";
@@ -140,13 +173,16 @@ function PurchaseOrderGrid() {
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
-                'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"                
-            },
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
+                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
+                    let str_inv = (id.substr(7) > 0 ? ' <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    return str_inv;
                 }
             },
+            //{
+            //    data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+            //        if (data > 0) return '#' + data; else return '';
+            //    }
+            //},
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -320,8 +356,11 @@ function PoClosureGrid() {
 
 
 function PoClosureGridColleps() {   
-    let obj = { strValue1: $("#ddlSearchStatus").val() };// console.log(obj);
-    console.log(obj);
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
+    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
+    //console.log(obj);
     $('#dtdataPoClosure').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,   
         language: {
@@ -350,11 +389,7 @@ function PoClosureGridColleps() {
 
             
            
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
-            },
+            { data: 'date_creation', title: 'Modified Date', sWidth: "10%" },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -426,7 +461,11 @@ function format(d) {
 
 
 function PoPartiallyColleps() {
-    let obj = { strValue1: $("#ddlSearchStatus").val() };// console.log(obj);
+   
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
+    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
     console.log(obj);
     $('#dtdataPartially').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
@@ -437,6 +476,13 @@ function PoPartiallyColleps() {
             infoFiltered: "",
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table.search(this.value).draw(); }
+            });
         },
         destroy: true, ajax: {
             url: '/Reception/GetPartiallyDetailsList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
@@ -453,11 +499,8 @@ function PoPartiallyColleps() {
                 }
             },
 
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
-            },
+            { data: 'date_creation', title: 'Modified Date', sWidth: "10%"  },
+            
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -474,7 +517,7 @@ function PoPartiallyColleps() {
                 'data': 'ref', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
                     if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"  onclick="ActivityLog(\'Edit POs reception received orders list\',\'/Reception/ReceiveOrder/' + row.id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
                     }
                     else { return "No Permission"; }
                 }

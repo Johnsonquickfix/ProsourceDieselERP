@@ -719,6 +719,7 @@
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
+    <Content Include="js\Report\CancelRefund.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
@@ -1042,6 +1043,7 @@
     <Content Include="Views\Reports\SalesBarChart.cshtml" />
     <Content Include="Views\Reports\YearMonthlyChart.cshtml" />
     <Content Include="Views\Product\CalculateMargins.cshtml" />
+    <Content Include="Views\Reports\CancelRefund.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

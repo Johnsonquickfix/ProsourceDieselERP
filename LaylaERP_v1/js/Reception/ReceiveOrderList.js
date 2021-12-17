@@ -173,13 +173,16 @@ function PurchaseOrderGrid() {
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
-                'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"                
-            },
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
+                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
+                    let str_inv = (id.substr(7) > 0 ? ' <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    return str_inv;
                 }
             },
+            //{
+            //    data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+            //        if (data > 0) return '#' + data; else return '';
+            //    }
+            //},
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -386,11 +389,7 @@ function PoClosureGridColleps() {
 
             
            
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
-            },
+            { data: 'date_creation', title: 'Modified Date', sWidth: "10%" },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -500,11 +499,8 @@ function PoPartiallyColleps() {
                 }
             },
 
-            {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
-            },
+            { data: 'date_creation', title: 'Modified Date', sWidth: "10%"  },
+            
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {

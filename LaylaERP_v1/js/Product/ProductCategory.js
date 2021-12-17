@@ -21,7 +21,7 @@ $(document).ready(function () {
     CategoryList();
     
     //isEdit(true);
-})
+}) 
 
 $('#btnAddCategory').click(function () {
     $("#ProdCatAdd *").children().prop('disabled', false);

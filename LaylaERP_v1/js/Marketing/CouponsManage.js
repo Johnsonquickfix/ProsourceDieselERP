@@ -110,7 +110,7 @@ function dataGridLoad(order_type) {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="Index/' + id + '" data-toggle="tooltip" title="View/Edit Coupon" ><i class="glyphicon glyphicon-eye-open"></i></a>';
+                        return '<a href="Index/' + id + '" data-toggle="tooltip" title="View/Edit Coupon" onclick="ActivityLog(\'View/Edit Coupon\',\'/Coupons/ManageCoupons/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

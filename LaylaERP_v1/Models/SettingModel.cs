@@ -192,7 +192,7 @@ namespace LaylaERP.Models
         }
         public bool IsPayment { get; set; }
 
-
+         
         public string CompanyName { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
@@ -209,6 +209,7 @@ namespace LaylaERP.Models
         public string website { get; set; }
         public string logo_url { get; set; }
         public string additional_notes { get; set; }
+        public string po_email { get; set; }
 
         public string rule_name { get; set; }
         public string description { get; set; }

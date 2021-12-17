@@ -81,7 +81,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "Update erp_entityinfo set CompanyName=@CompanyName,lastname=@lastname,firstname=@firstname,address=@address,address1=@address1, zip=@zip, town=@town, fk_state=@fk_state," +
                     "fk_country=@fk_country, country_code_phone=@country_code_phone, user_mobile=@user_mobile,email=@email,website=@website, " +
-                    " logo_url=@logo_url,additional_notes=@additional_notes " +
+                    " logo_url=@logo_url,additional_notes=@additional_notes,po_email=@po_email " +
                     " where entity=@id";
                 SqlParameter[] para =
                 {
@@ -100,7 +100,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@email",model.email),
                     new SqlParameter("@website", model.website),
                     new SqlParameter("@logo_url", model.logo_url),
-                    new SqlParameter("@additional_notes", model.additional_notes)       
+                    new SqlParameter("@additional_notes", model.additional_notes),
+                    new SqlParameter("@po_email", model.po_email)
 
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);

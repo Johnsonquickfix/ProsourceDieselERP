@@ -951,7 +951,7 @@ function bindbindfileuploadeDetails(data) {
                 layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
                 layoutHtml += '<td>' + data[i].CreateDate + '</td>';
                 /*  layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';*/
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" data-toggle="tooltip" title="Click here to delete." class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }

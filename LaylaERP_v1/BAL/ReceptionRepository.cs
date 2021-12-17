@@ -336,7 +336,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };              
                 ds = SQLHelper.ExecuteDataSet("erp_receiveorderdatabyid", para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "pods";
             }
             catch (Exception ex)
             {
@@ -352,7 +352,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
                 string strSql = "select fk_purchase from commerce_purchase_receive_order"
                                 + " where fk_purchase = @po_id;"
-                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
+                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount  from commerce_purchase_receive_order_detail  cprod"
                                 + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
                                 + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);

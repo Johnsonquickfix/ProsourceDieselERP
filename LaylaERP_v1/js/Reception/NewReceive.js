@@ -529,6 +529,9 @@ function AddProductModal(proc_type, row_num) {
 function getPurchaseOrderInfo() {
     $('#divAlert').empty();
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
+    let totalexc = 0.00;
+    let totalincl = 0.00;
+    let totaldisc = 0.00;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
         $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
@@ -619,6 +622,14 @@ function getPurchaseOrderInfo() {
                             $('#product_line_items').append(itemHtml);
                         }
                     }
+
+                    if (data['pods'].length > 0) {
+                        for (let i = 0; i < data['pods'].length; i++) {
+                            $("#SubTotal").text(data['pods'][i].texcl.toFixed(2));
+                            $("#discountTotal").text(data['pods'][i].icl.toFixed(2));
+                            $("#orderTotal").html(data['pods'][i].dis.toFixed(2));
+                        }
+                    }
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -627,6 +638,11 @@ function getPurchaseOrderInfo() {
             complete: function () { $("#loader").hide(); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
+        totalexc = $("#SubTotal").text();
+        totaldisc  = $("#discountTotal").text();
+        totalincl = $("#orderTotal").html();
+        console.log($("#SubTotal").text());
+        console.log($("#discountTotal").text());
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
@@ -640,6 +656,12 @@ function getPurchaseOrderInfo() {
             $(".btnpoclosed").show();
         else
             $(".btnpoclosed").hide();
+
+
+          $("#SubTotal").text(totalexc);
+         $("#discountTotal").text(totalincl);
+          $("#orderTotal").html(totaldisc);
+
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -848,6 +870,7 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].description + '</td>';
                             itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].amount + '</td>';
                             itemHtml += '</tr>';
 
                         }

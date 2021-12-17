@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("#loader").hide();
 
     var urlpath = window.location.pathname;
-    CheckPermissions("#btnAddNewCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
+    CheckPermissions("#btnAddCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
    // alert(pathid);
     $("#btnbackproduct").hide();
@@ -15,12 +15,18 @@ $(document).ready(function () {
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct/" + pathid);
       
     }
-
+    
     $(".select2").select2();
     getParentCategory();
     CategoryList();
-    isEdit(true);
+    
+    //isEdit(true);
 })
+
+$('#btnAddCategory').click(function () {
+    $("#ProdCatAdd *").children().prop('disabled', false);
+    isEdit(true);
+});
 
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -60,7 +66,8 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
             }
             $('#ddlParentCategory').html(opt);
-            isEdit(true);
+           // isEdit(true);
+            $("#ProdCatAdd *").children().prop('disabled', true);
         }
     });
 }
@@ -353,6 +360,7 @@ function GetCategoryByID(id) {
                     $("#txtDescription").val(d[0].description);
                     
                 }
+                $("#ProdCatAdd *").children().prop('disabled', false);
             },
             complete: function () { $("#loader").hide(); },
             error: function (msg) {

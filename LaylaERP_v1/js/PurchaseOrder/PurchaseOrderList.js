@@ -127,6 +127,7 @@ function orderStatus() {
         title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your status?",
         showLoaderOnConfirm: true, showCancelButton: true, icon: "question",
         preConfirm: function () {
+            ActivityLog('List Purchases', '/PurchaseOrder/PurchaseOrderList/' + id + '');
             return new Promise(function (resolve) {
                 let obj = { Search: id, Status: status };
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', obj)

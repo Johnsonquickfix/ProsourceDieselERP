@@ -3024,3 +3024,4 @@ i.fa.fa-calendar {
 .accountbalance .form-group.group-test span{width:25%;padding-left:10px; padding-right:20px;}
 .role.permissions .form-user-role {display: inline-flex;}
 #on-hand-inventory .table-blue th, #on-hand-inventory .table-blue td {padding-right:21px !important;}
+.order.modal-open #billModal {z-index:9999;}

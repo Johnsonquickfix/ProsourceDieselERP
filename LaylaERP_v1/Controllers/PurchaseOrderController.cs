@@ -226,7 +226,7 @@ namespace LaylaERP.Controllers
             try
             {
                 status = true;
-                string strBody = "Dear User,<br /> Atteched please find your PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />"
+                string strBody = "Dear User,<br /> Please find your attached PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />"
                     + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
                     + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                     + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
@@ -237,7 +237,7 @@ namespace LaylaERP.Controllers
 
                 if (!string.IsNullOrEmpty(model.strValue4))
                 {
-                    strBody = "Hello,<br /> Purchase order number <b>#" + model.strValue2 + "</b> approved.<br />Please see below attached file.<br /><br /><br /><br />"
+                    strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> approved.<br />Please see below attached file.<br /><br /><br /><br />"
                         + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
                         + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                         + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
@@ -259,7 +259,7 @@ namespace LaylaERP.Controllers
             {
                 status = true;
                 //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
-                string strBody = "<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
                     + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
                     + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
                     + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"

@@ -206,6 +206,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
                 {
+                    model.LoginID > 0 ? new SqlParameter("@userid", model.LoginID) : new SqlParameter("@userid", DBNull.Value),
                     new SqlParameter("@pkeys", model.Search),
                     new SqlParameter("@qflag", "POA"),
                     new SqlParameter("@status", model.Status),

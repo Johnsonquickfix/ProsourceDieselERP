@@ -79,7 +79,7 @@ function PurchaseOrderGrid() {
             { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
             { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" aria-hidden="true"></i>'; else return full.date_livraison; } },
+            { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
             //{ data: 'past_due', title: 'Past Due', sWidth: "8%"},
             { data: 'Status', title: 'Status', sWidth: "8%" },
             { data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },

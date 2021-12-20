@@ -80,7 +80,7 @@ function PurchaseOrderGrid() {
             { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { return full.date_livraison; } },
-            { data: 'past_due', title: 'Past Due', sWidth: "8%" },
+            { data: 'past_due', title: 'Past Due', sWidth: "8%", render: function (id, type, full, meta) { if (id == "Past Due") return '<i class="fa fa-exclamation text-danger" aria-hidden="true"></i> ' + id; else return id; } },
             { data: 'Status', title: 'Status', sWidth: "8%" },
             { data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
         ]

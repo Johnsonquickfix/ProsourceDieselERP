@@ -40,6 +40,11 @@
             </div>
         </div>
         <div class="col-md-3">
+            <div class="form-group">
+                <select class="form-control select2" id="ddlWarehouse" placeholder="Select warehouse" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
@@ -75,6 +80,9 @@
                                         <th>Available Units</th>
                                     </tr>
                                 </thead>
+                                <tfoot align="right">
+                                    <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -92,7 +100,7 @@
 </section>
 <script>
     $(document).ready(function () {
-        //ForeCastreport();
+       
     })
 </script>
 <script src="@Url.Content("~/js/Inventory/NewInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

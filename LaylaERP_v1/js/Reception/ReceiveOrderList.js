@@ -185,8 +185,8 @@ function PurchaseOrderGrid() {
             //    }
             //},
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             //{
             //    data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
             //        let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
@@ -202,8 +202,10 @@ function PurchaseOrderGrid() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/past_due.svg";
-                        return id + '<img class="pastdue" src=' + url + ' />';
+                        //url = "../../Content/img/past_due.svg";
+                        //url = '<i class="pastdue fas fa-exclamation"></i>';
+                        //return id + '<img src=' + url + ' />';
+                        return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
                     }
                 }
             },
@@ -407,8 +409,8 @@ function PoClosureGridColleps() {
             { data: 'date_order', title: 'Order Date', sWidth: "10%" },
 
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
            
         
         
@@ -609,8 +611,8 @@ function PoPartiallyColleps() {
             { data: 'date_order', title: 'Order Date', sWidth: "10%" },
             
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             //{
             //    data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
             //        /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/
@@ -628,8 +630,9 @@ function PoPartiallyColleps() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/Pastdue.png";
-                        return id + '<img src=' + url + ' />';
+                        //url = "../../Content/img/Pastdue.png";
+                        //return id + '<img src=' + url + ' />';
+                        return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
                     }
                 }
             },

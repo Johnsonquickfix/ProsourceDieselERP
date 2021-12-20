@@ -604,10 +604,10 @@ function AddBuyingt() {
     Remark = $("#txtRemarks").val();   
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Please enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (parseInt(currency) == 0) {
         swal('Alert', 'Price can not be zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
@@ -690,10 +690,10 @@ function btncopybuying() {
     Remark = $("#txtRemarks").val();
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Please enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (oldvender == vender) {
         swal('Alert', 'Can not coppy with same vendor', 'error').then(function () { swal.close(); $('#ddlvendercopy').focus(); });
@@ -1183,10 +1183,13 @@ function AddNotes() {
     Public = $("#txtPublic").val();
 
     if (fk_productval == "") {
-        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+        swal('Alert', 'Please enter product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
     }
     else if (Private == "") {
-        swal('Alert', 'Please select Private', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+        swal('Alert', 'Please select private', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else if (Public == "") {
+        swal('Alert', 'Please enter notes', 'error').then(function () { swal.close(); $('#txtPublic').focus(); });
     }
     else {
         var obj = {
@@ -1512,14 +1515,27 @@ function getNotesList(oid) {
 function AddNotes() {
     let oid = parseInt($('#ddlproductchild').val()) || 0;
     let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
-    ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
-        if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
-        else swal('Alert!', result.message, "error");
-    }, completeFun, errorFun);
+
+    if (oid == 0) {
+        swal('Alert', 'Please enter product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+    }
+    else if ($('#add_order_note').val() == "") {
+        swal('Alert', 'Please enter notes', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else if ($('#order_note_type').val() == "") {
+        swal('Alert', 'Please select note type', 'error').then(function () { swal.close(); $('#txtPublic').focus(); });
+    }
+    else {
+
+        ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
+            if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
+            else swal('Alert!', result.message, "error");
+        }, completeFun, errorFun);
+    }
 }
 function DeleteNotes(id) {
     let option = { comment_ID: id }; let oid = parseInt($('#ddlproductchild').val()) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+    swal({ title: "Are you sure?", text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 ajaxFunc('/Product/NoteDelete', option, beforeSendFun, function (result) {

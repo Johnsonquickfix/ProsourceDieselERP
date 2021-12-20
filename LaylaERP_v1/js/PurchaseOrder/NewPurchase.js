@@ -785,7 +785,7 @@ function send_mail(id, result) {
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
-    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?id=' + result.en_id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approved</a>';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?id=' + result.en_id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a>';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';

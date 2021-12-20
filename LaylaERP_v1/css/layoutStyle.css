@@ -3025,4 +3025,10 @@ i.fa.fa-calendar {
 .role.permissions .form-user-role {display: inline-flex;}
 #on-hand-inventory .table-blue th, #on-hand-inventory .table-blue td {padding-right:21px !important;}
 .order.modal-open #billModal {z-index:9999;}
-.pastdue {font-size: 15px; color: #ff0000;}
+.pastdue {
+    font-size: 15px;
+    color: #ff0000;
+    vertical-align: middle;
+    margin-left: 1px;
+    cursor: pointer;
+}

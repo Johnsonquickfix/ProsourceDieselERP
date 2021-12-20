@@ -202,8 +202,8 @@ function PurchaseOrderGrid() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/Pastdue.png";
-                        return id + '<img src=' + url + ' />';
+                        url = "../../Content/img/pastdue.svg";
+                        return id + '<img class="pastdue" src=' + url + ' />';
                     }
                 }
             },

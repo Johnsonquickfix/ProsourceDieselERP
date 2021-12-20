@@ -749,6 +749,8 @@ function send_mail(id, result) {
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+    let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    _com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
 
     let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
@@ -760,10 +762,7 @@ function send_mail(id, result) {
     myHtml += '                        <tr>';
     myHtml += '                            <td style="padding:0; vertical-align: top;width:66.9%">';
     myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
-    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
-    myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
-    myHtml += '                                </p>';
+    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + _com_add + '</p>';
     myHtml += '                            </td>';
     myHtml += '                            <td style="padding:0; vertical-align: top; width:33.1%" align="left">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
@@ -783,6 +782,11 @@ function send_mail(id, result) {
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?id=' + result.en_id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approved</a>';
+    myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';
@@ -942,7 +946,8 @@ function send_mail(id, result) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    //let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailPOApproval', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),

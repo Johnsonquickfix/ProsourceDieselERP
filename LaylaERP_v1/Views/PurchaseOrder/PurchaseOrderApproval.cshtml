@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "PurchaseOrderApproval";
+}
+
+<h2 class="lbl-tilte" data-status="@ViewBag.status" data-id="@ViewBag.id">Purchase Order Approval</h2>
+
+<script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
+        if (_status == "Success") {
+            getPurchaseOrderPrint(_id, true);
+        }
+        //'Your Purchase order #PO2112-00164 successfully approved.'
+    });
+</script>

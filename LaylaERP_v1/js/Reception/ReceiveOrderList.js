@@ -202,8 +202,10 @@ function PurchaseOrderGrid() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/past_due.svg";
-                        return id + '<img class="pastdue" src=' + url + ' />';
+                        //url = "../../Content/img/past_due.svg";
+                        //url = '<i class="pastdue fas fa-exclamation"></i>';
+                        //return id + '<img src=' + url + ' />';
+                        return id + '<i class="pastdue fas fa-exclamation" title="Past Due" data-placement="top" data-toggle="tooltip"></i>';
                     }
                 }
             },
@@ -628,8 +630,9 @@ function PoPartiallyColleps() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/Pastdue.png";
-                        return id + '<img src=' + url + ' />';
+                        //url = "../../Content/img/Pastdue.png";
+                        //return id + '<img src=' + url + ' />';
+                        return id + '<i class="pastdue fas fa-exclamation" title="Past Due" data-placement="top" data-toggle="tooltip"></i>';
                     }
                 }
             },

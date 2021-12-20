@@ -210,6 +210,7 @@ namespace LaylaERP.Models
         public string logo_url { get; set; }
         public string additional_notes { get; set; }
         public string po_email { get; set; }
+        public string base_url { get; set; }
 
         public string rule_name { get; set; }
         public string description { get; set; }

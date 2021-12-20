@@ -255,6 +255,17 @@ namespace LaylaERP.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetNewWareHouseList(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.GetNewWareHouseList();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetNewInventory(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -265,7 +276,7 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue4);
                 if (!string.IsNullOrEmpty(model.strValue5))
                     todate = Convert.ToDateTime(model.strValue5);
-                DataTable dt = InventoryRepository.GetNewProductStock(model.strValue3, fromdate, todate);
+                DataTable dt = InventoryRepository.GetNewProductStock(model.strValue3, model.strValue2, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

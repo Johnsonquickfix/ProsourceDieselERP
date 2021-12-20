@@ -317,7 +317,7 @@ namespace LaylaERP.BAL
         }
 
         //-----------------------------Get new inventory--------------------------------
-        public static DataTable GetNewProductStock(string productid, DateTime fromdate, DateTime todate)
+        public static DataTable GetNewProductStock(string productid, string warehouse, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -326,7 +326,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@flag","PRSTK"),
                     //new SqlParameter("@sku", strSKU),
-                    //new SqlParameter("@categoryid", categoryid),
+                    new SqlParameter("@warehouseid", warehouse),
                     new SqlParameter("@productid", productid),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate)
@@ -340,12 +340,12 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataSet GetNewWareHouseList(string vendorID)
+        public static DataSet GetNewWareHouseList()
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select w.rowid ID, ref Warehouse from wp_VendorWarehouse vw left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + vendorID + "' ";
+                string strSQl = "SELECT rowid, ref from wp_warehouse WHERE is_system = 0 and status = 1 order by rowid";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -365,5 +365,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
     }
 }

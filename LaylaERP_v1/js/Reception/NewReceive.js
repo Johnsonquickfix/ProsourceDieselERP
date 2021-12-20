@@ -330,7 +330,7 @@ function bindItems(data) {
 }
 function removeItems(id) {
     //------------- Remove data in Temp AddItemList-----
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
+    swal({ title: "Are you sure?", text: 'Would you like to remove this item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 $('#tritemid_' + id).remove();
@@ -753,11 +753,11 @@ function saveVendorPO() {
 
     let _list = createItemsList();
     //console.log(_list);
-    if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
-    else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (warehouse_ID <= 0) { swal('alert', 'Please Select Warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
-    else if (date_livraison == "") { swal('alert', 'Please Select Planned Date of Delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
-    else if (_list.length <= 0) { swal('alert', 'To Receive Quantity Should Not be Zero', 'error').then(function () { swal.close(); }) }
+    if (vendorid <= 0) { swal('alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
+    else if (payment_type <= 0) { swal('alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (warehouse_ID <= 0) { swal('alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
+    else if (date_livraison == "") { swal('alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
+    else if (_list.length <= 0) { swal('alert', 'To receive quantity should not be Zero', 'error').then(function () { swal.close(); }) }
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
@@ -870,7 +870,8 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].description + '</td>';
                             itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].amount + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].amount.toFixed(2) + '</td>';                            
                             itemHtml += '</tr>';
 
                         }

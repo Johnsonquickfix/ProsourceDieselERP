@@ -955,7 +955,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid as id, ref,entity,description,lieu,concat(address,',',' ',town,',',' ',country,' ',zip)as address,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,fax,iif(status=0,'Inactive','Active')as status,warehouse_type,concat(cor_address,' ',cor_city,' ',cor_country,' ',cor_zip)as addressinfo FROM wp_warehouse where 1=1 and is_system=0 ";
+                string strSql = "SELECT rowid as id, ref,entity,description,lieu,concat(address,', ', city,', ',town,', ',zip,', ',country)as address,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,fax,iif(status=0,'Inactive','Active')as status,warehouse_type,concat(cor_address,' ',cor_city,' ',cor_country,' ',cor_zip)as addressinfo FROM wp_warehouse where 1=1 and is_system=0 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (rowid like '%" + searchid + "%' OR ref like '%" + searchid + "%')";

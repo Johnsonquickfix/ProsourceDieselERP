@@ -202,7 +202,7 @@ function PurchaseOrderGrid() {
                         return full.date_livraison;
                     }
                     else {
-                        url = "../../Content/img/pastdue.svg";
+                        url = "../../Content/img/past_due.svg";
                         return id + '<img class="pastdue" src=' + url + ' />';
                     }
                 }

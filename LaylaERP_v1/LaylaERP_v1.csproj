@@ -595,7 +595,7 @@
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\img\Pastdue.png" />
-    <Content Include="Content\img\pastdue.svg" />
+    <Content Include="Content\img\past_due.svg" />
     <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />

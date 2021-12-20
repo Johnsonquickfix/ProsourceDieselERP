@@ -340,6 +340,10 @@
                                     <label for="exampleInputEmail1">PO Email</label>
                                     <input type="text" id="txtpoemail" class="form-control" value="@ViewBag.po_email" />
                                 </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Base URL</label>
+                                    <input type="text" id="txtbaseurl" class="form-control" value="@ViewBag.base_url" />
+                                </div>
                             </div>
                             <!-- /.tab-pane -->
                         </div>
@@ -465,6 +469,7 @@
         LogoUrl = $("#txtlogourl").val();
         AdditionalNotes = $("#txtAdditionalNotes").val();
         po_emailval = $("#txtpoemail").val();
+        base_url = $("#txtbaseurl").val();
 
 
         if ($(authorizenet).prop("checked")) {
@@ -546,7 +551,8 @@
             website: Website,
             logo_url: LogoUrl,
             additional_notes: AdditionalNotes,
-            po_email: po_emailval
+            po_email: po_emailval,
+            base_url: base_url
 
         }
 

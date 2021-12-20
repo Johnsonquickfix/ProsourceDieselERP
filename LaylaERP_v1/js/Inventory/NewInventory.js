@@ -14,10 +14,20 @@
 
     });
     $(".select2").select2();
-    $.when(getProducts()).done(function () { ForeCastreport() });
-    //getProducts();
-    //ForeCastreport();
-    $("#btnSearch").click(function () { ForeCastreport(); })
+    $.when(getProducts()).done(function () { NewInventoryReport() });
+    getWerehouse();
+
+    $("#btnSearch").click(function () {
+        if ($("#ddlProduct").val() == '-1') {
+            swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        }
+        else if ($("#ddlWarehouse").val() == '-1') {
+            swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlWarehouse').focus(); });
+        }
+        else {
+            NewInventoryReport();
+        }
+    })
 });
 
 function getProducts() {
@@ -25,7 +35,7 @@ function getProducts() {
         url: "/Inventory/GetNewProductList",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please select product</option>';
+            var opt = '<option value="-1">Please select product</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -35,12 +45,28 @@ function getProducts() {
     });
 }
 
-function ForeCastreport(is_date) {
+function getWerehouse() {
+    $.ajax({
+        url: "/Inventory/GetNewWareHouseList",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please select warehouse</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlWarehouse').html(opt);
+        }
+
+    });
+}
+
+function NewInventoryReport() {
     let sd = $('#txtDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     let pid = parseInt($("#ddlProduct").val());
-    var obj = { strValue3: (pid > 0 ? pid : '-1'), strValue4: sd, strValue5: ed }
+    let wid = parseInt($("#ddlWarehouse").val());
+    var obj = { strValue2: (wid > 0 ? wid : '-1'), strValue3: (pid > 0 ? pid : '-1'), strValue4: sd, strValue5: ed }
     $.ajax({
         url: '/Inventory/GetNewInventory',
         method: 'post',
@@ -54,6 +80,48 @@ function ForeCastreport(is_date) {
                 scrollX: false,
                 data: JSON.parse(data),
                 columnDefs: [{ targets: [0], visible: false, searchable: false }],
+                footerCallback: function (row, data, start, end, display) {
+                    var api = this.api(), data;
+                    console.log(data);
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+
+                    var OpenStock = api.column(5).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                    var StockReceive = api.column(6).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                    var StockIssue = api.column(7).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                    var UnitInPO = api.column(8).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                    var SaleUnit = api.column(9).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                    var DamageUnit = api.column(10).data().reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                    $(api.column(1).footer()).html('Total');
+                    $(api.column(5).footer()).html(parseFloat(OpenStock).toFixed(0));
+                    $(api.column(6).footer()).html(parseFloat(StockReceive).toFixed(0));
+                    $(api.column(7).footer()).html(parseFloat(StockIssue).toFixed(0));
+                    $(api.column(8).footer()).html(parseFloat(UnitInPO).toFixed(0));
+                    $(api.column(9).footer()).html(parseFloat(SaleUnit).toFixed(0));
+                    $(api.column(10).footer()).html(parseFloat(DamageUnit).toFixed(0));
+                    //console.log(DebitTotal);
+                },
                 "columns": [
                     { data: 'sr', title: 'Sl', sWidth: "5%", },
                     { data: 'tran_date', title: 'Date', sWidth: "10%" },

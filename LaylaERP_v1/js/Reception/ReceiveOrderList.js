@@ -185,8 +185,8 @@ function PurchaseOrderGrid() {
             //    }
             //},
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             //{
             //    data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
             //        let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
@@ -409,8 +409,8 @@ function PoClosureGridColleps() {
             { data: 'date_order', title: 'Order Date', sWidth: "10%" },
 
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
            
         
         
@@ -611,8 +611,8 @@ function PoPartiallyColleps() {
             { data: 'date_order', title: 'Order Date', sWidth: "10%" },
             
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-            { data: 'destination', title: 'Destination', sWidth: "15%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "15%" },
             //{
             //    data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
             //        /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/

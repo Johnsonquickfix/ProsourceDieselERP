@@ -98,7 +98,7 @@ function ForeCastreport(is_date) {
 
 //Forecast report for all products
 function ForecastReportAll(is_date) {
-    debugger
+    
     let sd = $('#txtForecastDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtForecastDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';

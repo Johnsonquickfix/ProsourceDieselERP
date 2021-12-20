@@ -315,5 +315,56 @@ namespace LaylaERP.BAL
             }
             return dtr;
         }
+
+        //-----------------------------Get new inventory--------------------------------
+        public static DataTable GetNewProductStock(string productid, string warehouse, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag","PRSTK"),
+                    //new SqlParameter("@sku", strSKU),
+                    new SqlParameter("@warehouseid", warehouse),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_stock_register", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetNewWareHouseList()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT rowid, ref from wp_warehouse WHERE is_system = 0 and status = 1 order by rowid";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetNewProductList()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "wp_ddl_productlist";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
     }
 }

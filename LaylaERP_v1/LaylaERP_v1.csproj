@@ -685,6 +685,7 @@
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\Inventory\NewInventory.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
     <Content Include="js\linq.js" />
@@ -1044,6 +1045,8 @@
     <Content Include="Views\Reports\YearMonthlyChart.cshtml" />
     <Content Include="Views\Product\CalculateMargins.cshtml" />
     <Content Include="Views\Reports\CancelRefund.cshtml" />
+    <Content Include="Views\Inventory\NewInventory.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

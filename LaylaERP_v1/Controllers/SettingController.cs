@@ -68,6 +68,7 @@ namespace LaylaERP.Controllers
                 ViewBag.logo_url = DT.Tables[1].Rows[0]["logo_url"].ToString();
                 ViewBag.additional_notes = DT.Tables[1].Rows[0]["additional_notes"].ToString();
                 ViewBag.po_email = DT.Tables[1].Rows[0]["po_email"].ToString();
+                ViewBag.base_url = DT.Tables[1].Rows[0]["base_url"].ToString();
 
             }
             catch { }

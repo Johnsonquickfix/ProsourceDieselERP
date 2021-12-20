@@ -29,6 +29,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult NewInventory()
+        {
+            return View();
+        }
         public JsonResult GetVarientList(InventoryModel model)
         {
             string result = string.Empty;
@@ -238,6 +242,45 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        //------------------------Get new inventory------------------------------
+        public JsonResult GetNewProductList(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.GetNewProductList();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["text"].ToString(), Value = dr["id"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetNewWareHouseList(SearchModel model)
+        {
+            DataSet ds = BAL.InventoryRepository.GetNewWareHouseList();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetNewInventory(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    fromdate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    todate = Convert.ToDateTime(model.strValue5);
+                DataTable dt = InventoryRepository.GetNewProductStock(model.strValue3, model.strValue2, fromdate, todate);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
     }
 }

@@ -25,6 +25,10 @@ $(document).ready(function () {
 
 $('#btnAddCategory').click(function () {
     $("#ProdCatAdd *").children().prop('disabled', false);
+    //$('[data-toggle="tooltip"]').tooltip();
+    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Create a new category');
+    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
+    //title = "" data-toggle="tooltip"
     isEdit(true);
 });
 
@@ -348,6 +352,9 @@ function GetCategoryByID(id) {
                 if (d.length > 0) {
                     $("#ddlParentCategory").val(d[0].parent).trigger("change");
                     $("#btnAddNewCategory").text('Update category');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', '');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Update category');
+                    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
                     $("#lblNewCategory").text('Update category');
                     $("#txtCategoryName").val(d[0].name);
                     $("#txtCategorySlug").val(d[0].slug);

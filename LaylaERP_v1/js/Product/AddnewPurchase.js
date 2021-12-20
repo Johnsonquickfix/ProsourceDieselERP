@@ -203,6 +203,7 @@ $("#btnaddupdatechild").click(function (e) {
     }
 
     if (_ItemProduct != '') {
+        ActivityLog('Search product to add', '/Product/AddNewProduct/');
         //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -250,6 +251,7 @@ $("#btnservicessave").click(function (e) {
     //var layoutHtml = '';
     //$('#Product_services').empty().append(layoutHtml);
     if (_ItemProductServices != '') {
+        ActivityLog('Update  list of products/services that are component(s) of this kit', '/Product/AddNewProduct/');
           //NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -800,11 +802,11 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
                 layoutHtml += '<td>' + data[i].StatusActive + '</td>';              
-                layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + '); ActivityLog(\'Edit Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-pencil"></i></a></td>';
                 if (data[i].StatusActive == "InActive")
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + '); ActivityLog(\'active Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + '); ActivityLog(\'delete Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                     
                 layoutHtml += '</tr>';
             }
@@ -1050,9 +1052,9 @@ function bindwarehouseDetails(data) {
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].StatusActive + '</td>';
                 if (data[i].StatusActive == "InActive")
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + '); ActivityLog(\'Edit product warehouse\',\'/Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + '); ActivityLog(\'delete product warehouse\',\'/Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -1316,7 +1318,7 @@ function Adduploade() {
         swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); });
     }
     else {
-
+        ActivityLog('Attach file in Product list Kits & Buying Prices ', '/Product/AddNewProduct/');
         $.ajax({
             type: "POST",
             url: '/Product/FileUploade/',
@@ -1386,8 +1388,8 @@ function bindbindfileuploadeDetails(data) {
                 layoutHtml += '<td class="text-left"><a target="popup" href="../../Files/' + data[i].product_name + '">' + data[i].product_name + '</i></a ></td>';                
                 layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
                 layoutHtml += '<td>' + data[i].CreateDate + '</td>';
-                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + '); ActivityLog(\'View product data linked files\',\'Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + '); ActivityLog(\'Delete linked product data files\',\'Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -1500,7 +1502,7 @@ function getNotesList(oid) {
             noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
-            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + ');" class="delete_note billinfo" role="button">Delete note</a>';
+            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + '); ActivityLog(\'Delete product notes\',\'/AddNewProduct/' + data[i].comment_ID +'\');" class="delete_note billinfo" role="button">Delete note</a>';
             noteHtml += '</p>';
             noteHtml += '</li>';
         }

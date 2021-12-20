@@ -348,7 +348,7 @@ namespace LaylaERP.Controllers
 
             if (model.ID > 0)
             {
-
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update buying price", "/Product/AddNewProduct/"+ model.ID + "" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             }
             else
@@ -359,6 +359,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Add buying price", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                     DataTable dtware = ProductRepository.Getwarehouse(model);
                     if (dtware.Rows.Count > 0)
                     {
@@ -398,6 +399,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add new product add warehouse", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.AddProductwarehouse(model);
                 if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
@@ -626,6 +628,7 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
                 model.post_status = "publish";
                 if (model.ID == 0)
@@ -644,6 +647,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";

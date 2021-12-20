@@ -374,7 +374,7 @@ function dataGridLoad(order_type) {
                         return ' <b></b>';
                     else {
                         if ($("#hfEdit").val() == "1") {
-                            return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                            return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '" onclick="ActivityLog(\'Edit product from product list\',\'AddNewProduct/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                         }
                         else { return "No Permission"; }
                     }
@@ -421,7 +421,10 @@ function Status() {
     if (id == "") { swal('alert', 'Please select product from list', 'error'); }
     else if (status == "0") { swal('alert', 'Please select bulk action', 'error'); }
     else {
+
         var obj = { strVal: id, status: status }
+        const updatestatus = status == 'publish' ? 'Active' : 'Inactive';
+        ActivityLog('Change product status as ' + updatestatus+'', '/Product/ListProduct');
         //var checkstr = confirm('are you sure want to update this?');
         //if (checkstr == true) {
         swal({ title: "", text: 'Would you like to ' + statusval +' this product?', type: "question", showCancelButton: true })

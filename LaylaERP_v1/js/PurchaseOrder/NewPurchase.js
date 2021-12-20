@@ -946,7 +946,7 @@ function send_mail(id, result) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add}
     //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({

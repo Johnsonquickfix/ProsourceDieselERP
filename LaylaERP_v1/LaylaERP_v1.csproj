@@ -1045,6 +1045,7 @@
     <Content Include="Views\Product\CalculateMargins.cshtml" />
     <Content Include="Views\Reports\CancelRefund.cshtml" />
     <Content Include="Views\Inventory\NewInventory.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

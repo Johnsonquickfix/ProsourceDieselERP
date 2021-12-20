@@ -90,6 +90,7 @@ $('#btnAddNewCategory').click(function () {
     if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     else {
+        ActivityLog('Add new category', '/Product/ProductCategories');
         var obj = new FormData();
         obj.append("ImageFile", file);
         obj.append("term_id", ID);
@@ -222,7 +223,7 @@ function CategoryList() {
                             return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
                         }
                         else {
-                            return '<a href="#" onclick="GetCategoryByID(' + id + ');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="#" onclick="GetCategoryByID(' + id + ');ActivityLog(\'Edit category\',\'/Product/ProductCategories/' + id +'\');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
                     }
                     else { return "No Permission"; }
@@ -277,6 +278,7 @@ function DeleteCategory(id) {
                 btnClass: 'btn-default',
                 keys: ['enter', 'shift'],
                 action: function () {
+                    ActivityLog('Delete category with product', '/Product/ProductCategories/' + id + '');
                     $.ajax({
                         url: '/Product/DeleteCategorywithProduct/', dataType: 'json', type: 'Post',
                         contentType: "application/json; charset=utf-8",
@@ -304,6 +306,7 @@ function DeleteCategory(id) {
                 text: 'No',
                 btnClass: 'btn-blue',
                 action: function () {
+                    ActivityLog('Delete category', '/Product/ProductCategories/' + id + '');
                     $.ajax({
                         url: '/Product/DeleteProductCategory/', dataType: 'json', type: 'Post',
                         contentType: "application/json; charset=utf-8",

@@ -594,6 +594,8 @@
     <Content Include="Content\highcharts\series-label.js" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\img\Pastdue.png" />
+    <Content Include="Content\img\past_due.svg" />
     <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
@@ -1045,6 +1047,7 @@
     <Content Include="Views\Product\CalculateMargins.cshtml" />
     <Content Include="Views\Reports\CancelRefund.cshtml" />
     <Content Include="Views\Inventory\NewInventory.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

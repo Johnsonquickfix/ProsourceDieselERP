@@ -28,6 +28,31 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PurchaseOrderApproval(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                obj.LoginID = 0;
+                obj.Search = UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+"));
+                obj.Status = 3;
+                DataTable dt = PurchaseOrderRepository.UpdatePurchaseStatus(obj);
+                if (dt.Rows.Count > 0)
+                {
+                    if (dt.Rows[0]["Response"].ToString() == "Success")
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.Search;
+                    }
+                }
+                else
+                { 
+                    ViewBag.status = "Error";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
 
         [HttpPost]
         public JsonResult SearchProducts(SearchModel model)
@@ -200,7 +225,7 @@ namespace LaylaERP.Controllers
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(new { com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, po_email = om.po_email, website = om.website, data = JSONresult }, 0);
+            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, po_email = om.po_email, website = om.website, data = JSONresult }, 0);
         }
         [HttpGet]
         public JsonResult GetPurchaseOrderPayments(SearchModel model)
@@ -226,25 +251,13 @@ namespace LaylaERP.Controllers
             try
             {
                 status = true;
-                string strBody = "Dear User,<br /> Please find your attached PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />"
-                    + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
-                    + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
-                    + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
-                    + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
-                    + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
-
-                result = SendEmail.SendEmails(model.strValue1, "Your Purchase order #" + model.strValue2 + " has been received", strBody, model.strValue3);
+                string strBody = "Dear User,<br /> Please find your attached PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />" + model.strValue5;
+                result = SendEmail.SendEmails_outer(model.strValue1, "Your Purchase order #" + model.strValue2 + " has been received", strBody, model.strValue3);
 
                 if (!string.IsNullOrEmpty(model.strValue4))
                 {
-                    strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> approved.<br />Please see below attached file.<br /><br /><br /><br />"
-                        + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
-                        + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
-                        + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
-                        + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
-                        + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
-
-                    result = SendEmail.SendEmails(model.strValue4, "Your Purchase order #" + model.strValue2 + " approved.", strBody, model.strValue3);
+                    strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> approved.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                    result = SendEmail.SendEmails_outer(model.strValue4, "Your Purchase order #" + model.strValue2 + " approved.", strBody, model.strValue3);
                 }
             }
             catch { status = false; result = ""; }
@@ -259,14 +272,8 @@ namespace LaylaERP.Controllers
             {
                 status = true;
                 //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
-                string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
-                    + CommanUtilities.Provider.GetCurrent().CompanyName + "<br />" + CommanUtilities.Provider.GetCurrent().address
-                    + (CommanUtilities.Provider.GetCurrent().address1.Length > 0 ? "<br />" + CommanUtilities.Provider.GetCurrent().address1 + "<br />" : "")
-                    + CommanUtilities.Provider.GetCurrent().City + ", " + CommanUtilities.Provider.GetCurrent().State + " " + CommanUtilities.Provider.GetCurrent().postal_code + "<br />"
-                    + "Phone : " + CommanUtilities.Provider.GetCurrent().country_code_phone + " " + CommanUtilities.Provider.GetCurrent().user_mobile + "<br />"
-                    + CommanUtilities.Provider.GetCurrent().email + "<br />" + CommanUtilities.Provider.GetCurrent().website;
-
-                result = SendEmail.SendEmails(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
+                string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

@@ -440,7 +440,7 @@
        @*var url = window.location.pathname;*@
         @*<a id="btnbackcategory" title="Click here to go category" href="javascript:;" onclick="addTabs({id:'41',title: 'Categories',close: true,url: '/Product/ProductCategories',urlType: 'none'});App.fixIframeCotent();" data-toggle="tooltip" style="float: right; margin-right:10px;" data-placement="bottom" class="btn btn-primary btn-flat button">Add New Category</a>*@
     <div class="col-md-3" style="margin-top:5px;border-radius:5px">
-        <a id="btnbackcategory" title="Click here to go category" data-toggle="tooltip"   data-placement="bottom" class="btn btn-danger">Add New Category</a>
+        <a id="btnbackcategory" title="Click here to go category" data-toggle="tooltip" onclick="return ActivityLog('Add new category for product','/Product/AddNewProduct');" data-placement="bottom" class="btn btn-danger">Add New Category</a>
     </div>
         </div>
     <div class="row">

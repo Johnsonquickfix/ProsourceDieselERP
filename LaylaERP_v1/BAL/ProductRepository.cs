@@ -989,19 +989,32 @@ namespace LaylaERP.BAL
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty; 
-               
-                string strSql = "Select *,convert(numeric(18,2),sale_price) - convert(numeric(18,2),cost_price) Margins from ("
-              + " select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+                string strWhr = string.Empty;
+
+                //  string strSql = "Select *,convert(numeric(18,2),sale_price) - convert(numeric(18,2),cost_price) Margins from ("
+                //+ " select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+                //+ " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+                //+ " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then coalesce (s.meta_value,'0') else '0' end) sale_price,"
+                //+ " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,Cast(CONVERT(DECIMAL(10,2),coalesce(min(cost_price),0)) as nvarchar) cost_price, (select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and  is_setprise = 1 ))  vname"
+                //+ " FROM wp_posts p "
+                //+ " left join wp_postmeta as s on p.id = s.post_id"
+                //+ " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1 and is_setprise = 1"
+                //+ " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " 
+                //+ " GROUP BY  p.ID,guid,post_status,post_parent) tt"
+                // + " order by p_id,post_type,id";
+
+                string strSql = "Select *, cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2)) Margin,coalesce(convert(numeric(18,2),( ((cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2))) * 100) / NULLIF(cast(sale_price as numeric(18,2)),0))),0) marginpersantage"
+              + " from ( select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
               + " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then coalesce (s.meta_value,'0') else '0' end) sale_price,"
-              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,Cast(CONVERT(DECIMAL(10,2),coalesce(min(cost_price),0)) as nvarchar) cost_price, (select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = p.id) ))  vname"
+              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '0' end) sale_price, "
+              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,coalesce(convert(numeric(18,2),max(cost_price)),0) cast_prise,(select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and is_setprise = 1)) vname"
               + " FROM wp_posts p "
-              + " left join wp_postmeta as s on p.id = s.post_id"
-              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1"
-              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " 
+              + " left join wp_postmeta as s on p.id = s.post_id "
+              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1 and is_setprise = 1"
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' "
               + " GROUP BY  p.ID,guid,post_status,post_parent) tt"
                + " order by p_id,post_type,id";
+
 
                 strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
                + " left join wp_postmeta as s on p.id = s.post_id" 

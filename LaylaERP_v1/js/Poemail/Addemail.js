@@ -82,13 +82,16 @@ function EmailList() {
             {
                 'data': 'id', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    return '<span title="Click here to edit" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                 }
             }
         ]
     });
 }
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function AddEmail() {
     userid = $("#ddlUserid").val();
     useremail = $("#txtemail").val();
@@ -113,7 +116,7 @@ function AddEmail() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     EmailList();
                     reset();
                 }
@@ -147,6 +150,7 @@ function EditSelectAddress(id) {
 
             $("#btnUpdate").show();
             $("#btnSave").hide();
+            isEdit(true);
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
@@ -179,9 +183,10 @@ function UpdateEmail() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     EmailList();
                     reset();
+                    isEdit(false);
                 }
                 else {
                     swal('Alert!', data.message, 'error');

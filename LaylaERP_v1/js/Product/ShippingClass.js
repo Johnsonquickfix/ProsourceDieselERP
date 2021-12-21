@@ -50,7 +50,7 @@
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
     });
-     isEdit(true);
+     //isEdit(true);
  });
 
 function isEdit(val) {

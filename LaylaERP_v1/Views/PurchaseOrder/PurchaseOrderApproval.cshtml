@@ -14,6 +14,7 @@
             $('.lbl-tilte').empty().append('Your purchase order approved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
             getPurchaseOrderPrint(_id);
         }
+        else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>');}
     });
 
     function getPurchaseOrderPrint(id) {

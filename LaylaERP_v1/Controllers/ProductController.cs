@@ -617,7 +617,7 @@ namespace LaylaERP.Controllers
                 resultOne = ProductRepository.SetBuyingPrice(model);
             if (resultOne > 0)
             {
-                return Json(new { status = true, message = "Set price successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "Set default successfully!!", url = "Manage" }, 0);
             }
             else
             {

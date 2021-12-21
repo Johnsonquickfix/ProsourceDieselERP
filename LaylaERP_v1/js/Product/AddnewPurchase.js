@@ -857,11 +857,11 @@ $("#setprice").click(function () {
     const areThereAnyCommas = ID.includes(',');
    // console.log(areThereAnyCommas);
     if (ID == "") { swal('alert', 'Please select Vendor from list', 'error'); }
-    else if (areThereAnyCommas == true) { swal('alert', 'Please select only one Vendor from list to set price', 'error'); }
+    else if (areThereAnyCommas == true) { swal('alert', 'Please select only one Vendor from list to set default', 'error'); }
     else {
          
             swal({
-                title: '', text: "Do you want to set price ?", type: 'warning', showCancelButton: true,
+                title: '', text: "Do you want to set default ?", type: 'warning', showCancelButton: true,
                 confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.value) {

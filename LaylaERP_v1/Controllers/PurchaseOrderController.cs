@@ -28,7 +28,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        public ActionResult PurchaseOrderApproval(string id, string uid)
+        public ActionResult PurchaseOrderApproval(string id, string uid, string key)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -37,17 +37,29 @@ namespace LaylaERP.Controllers
                 {
                     obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
                 }
-                obj.Search = UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+"));
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
                 obj.Status = 3;
-                DataTable dt = PurchaseOrderRepository.UpdatePurchaseStatus(obj);
-                if (dt.Rows.Count > 0 && obj.LoginID > 0)
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
                 {
-                    ViewBag.status = dt.Rows[0]["Response"].ToString();
-                    ViewBag.id = obj.Search;
+                    DataTable dt = PurchaseOrderRepository.PurchaseApproval(obj);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.Search;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
                 }
                 else
                 {
-                    ViewBag.status = "You don't have permission to access please contact administrator";
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
                     ViewBag.id = "0";
                 }
             }

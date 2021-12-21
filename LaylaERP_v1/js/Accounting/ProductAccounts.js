@@ -18,6 +18,11 @@ $('#btnRefresh').click(function () {
    
 });
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
+
+
 $("input[name = accounting_product_mode]:radio").change(function () {
     ProductAccountingGrid();
     getAccounttoAssign();
@@ -110,6 +115,7 @@ $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
     $("#btnSaveProductAccount").prop("disabled", isChecked == true ? false : true);
+    isEdit(true);
 });
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
@@ -133,7 +139,7 @@ function Singlecheck() {
         $("#checkAll").prop('checked', isChecked);
        
     }
-
+    isEdit(true);
 }
 
 

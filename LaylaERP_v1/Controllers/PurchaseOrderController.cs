@@ -279,9 +279,10 @@ namespace LaylaERP.Controllers
                     string _mail = o.user_email, _uid = o.user_id;
                     if (!string.IsNullOrEmpty(o.user_email.Value))
                     {
-                        string _html = model.strValue3.Replace("{_para}", "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid));
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
 
-                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, _html);
                     }
                 }
                 string[] strMails = model.strValue1.Split(',');

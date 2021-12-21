@@ -21,11 +21,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        
+
         public ActionResult AddNewWarehouse()
         {
             WarehouseModel model = new WarehouseModel();
-           
+
             return View(model);
         }
         public ActionResult Warehouse()
@@ -36,7 +36,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetWarehouse(SearchModel model)
         {
-            
+
             string JSONresult = string.Empty;
             try
             {
@@ -55,13 +55,14 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    
+
                 }
                 else
                 {
                     int ID = WarehouseRepository.AddWarehouse(model);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "New warehouse " + model.reff + " created in manage warehouses.", "/Warehouse/AddNewWarehouse" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Warehouse data saved successfully!!", url = "" }, 0);
                     }
                     else
@@ -75,9 +76,9 @@ namespace LaylaERP.Controllers
 
         public ActionResult UpdateWarehouse(int rowid)
         {
-          
-        dynamic myModel = new ExpandoObject();
-    
+
+            dynamic myModel = new ExpandoObject();
+
             myModel.rowid = null;
             myModel.reff = null;
             myModel.description = null;
@@ -94,15 +95,15 @@ namespace LaylaERP.Controllers
             myModel.status = null;
             myModel.warehouse_type = null;
             //Additional Info
-            myModel.cor_phone=null;
-            myModel.cor_address=null;
-            myModel.cor_address1=null;
-            myModel.cor_city=null;
-            myModel.cor_state=null;
-            myModel.cor_zip=null;
-            myModel.cor_country=null;
-            myModel.note_public=null;
-            myModel.note_private=null;
+            myModel.cor_phone = null;
+            myModel.cor_address = null;
+            myModel.cor_address1 = null;
+            myModel.cor_city = null;
+            myModel.cor_state = null;
+            myModel.cor_zip = null;
+            myModel.cor_country = null;
+            myModel.note_public = null;
+            myModel.note_private = null;
             myModel.email = null;
             DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
             myModel.rowid = rowid;
@@ -141,6 +142,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 WarehouseRepository.Updatewarehouses(model);
+                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse id ("+ model.rowid + ") updated in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid="+ model.rowid + "" + ", " + Net.BrowserInfo);
                 ModelState.Clear();
                 return Json(new { status = true, message = "Warehouse data updated successfully!!", url = "" }, 0);
             }
@@ -153,7 +155,7 @@ namespace LaylaERP.Controllers
 
         public ActionResult MasStockTransfer()
         {
-            
+
             return View();
         }
 
@@ -194,19 +196,19 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddMouvment(WarehouseModel model)
         {
-                    int ID = WarehouseRepository.AddMouvement(model);
-                    if (ID > 0)
-                    {
-                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                
+            int ID = WarehouseRepository.AddMouvement(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
         }
         [HttpPost]
-        public JsonResult GetProductInfo(WarehouseModel model,int id)
+        public JsonResult GetProductInfo(WarehouseModel model, int id)
         {
             string JSONresult = string.Empty;
             try
@@ -259,7 +261,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        public JsonResult GetWarehouseByVendor( WarehouseModel model)
+        public JsonResult GetWarehouseByVendor(WarehouseModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
@@ -547,6 +549,7 @@ namespace LaylaERP.Controllers
                             int resultOne = WarehouseRepository.FileUpload(WarehouseID, FileName, ImagePath, FileExtension, size);
                             if (resultOne > 0)
                             {
+                                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse id (" + model.rowid + ") attached a file in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid=" + model.rowid + "" + ", " + Net.BrowserInfo);
                                 return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
                             }
                             else
@@ -628,7 +631,7 @@ namespace LaylaERP.Controllers
             int ID = WarehouseRepository.AddDamagestock(model);
             if (ID > 0)
             {
-                
+
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else
@@ -654,7 +657,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult SelectDamageStock(SearchModel model)
         {
-            
+
             string JSONresult = string.Empty;
             try
             {
@@ -712,6 +715,7 @@ namespace LaylaERP.Controllers
             int ID = WarehouseRepository.Addwarehousesinfo(model);
             if (ID > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse additional info id ("+ model.warehouse_id + ") updated in manage warehouses.", "/Setup/productrule" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Warehouse additional info saved successfully!!", url = "" }, 0);
             }
             else

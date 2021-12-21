@@ -119,7 +119,7 @@ function PurchaseOrderGrid() {
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -195,20 +195,21 @@ function PurchaseOrderGrid() {
             //},
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
-            {
-                'data': 'date_livraison', sWidth: "10%", title: 'Planned date of delivery',
-                'render': function (id, type, full, meta) {
-                    if (full.past_due == '') {
-                        return full.date_livraison;
-                    }
-                    else {
-                        //url = "../../Content/img/past_due.svg";
-                        //url = '<i class="pastdue fas fa-exclamation"></i>';
-                        //return id + '<img src=' + url + ' />';
-                        return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
-                    }
-                }
-            },
+            //{
+            //    'data': 'date_livraison', sWidth: "10%", title: 'Planned date of delivery',
+            //    'render': function (id, type, full, meta) {
+            //        if (full.past_due == '') {
+            //            return full.date_livraison;
+            //        }
+            //        else {
+            //            //url = "../../Content/img/past_due.svg";
+            //            //url = '<i class="pastdue fas fa-exclamation"></i>';
+            //            //return id + '<img src=' + url + ' />';
+            //            return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
+            //        }
+            //    }
+            //},
+            { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
             //{ data: 'past_due', title: 'Past Due', sWidth: "8%" },
             { data: 'Status', title: 'Status', sWidth: "10%" },
             { data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
@@ -422,7 +423,13 @@ function PoClosureGridColleps() {
             //    }
             //},
  
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            /* { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },*/
+            {
+                data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.date_livraison_s + '</span>' + full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<span style="display: none;">' + full.date_livraison_s + '</span>' + full.date_livraison;
+                }
+            },
             { data: 'Status', title: 'Status', sWidth: "10%" },
             { data: 'date_creation', title: 'Modified Date', sWidth: "10%" },
             {
@@ -623,19 +630,26 @@ function PoPartiallyColleps() {
 
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
 
+           // { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
             {
-                'data': 'date_livraison', sWidth: "10%", title: 'Planned date of delivery',
-                'render': function (id, type, full, meta) {
-                    if (full.past_due == '') {
-                        return full.date_livraison;
-                    }
-                    else {
-                        //url = "../../Content/img/Pastdue.png";
-                        //return id + '<img src=' + url + ' />';
-                        return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
-                    }
+                data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.date_livraison_s + '</span>' + full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<span style="display: none;">' + full.date_livraison_s + '</span>' +full.date_livraison;
                 }
             },
+            //{
+            //    'data': 'date_livraison', sWidth: "10%", title: 'Planned date of delivery',
+            //    'render': function (id, type, full, meta) {
+            //        if (full.past_due == '') {
+            //            return full.date_livraison;
+            //        }
+            //        else {
+            //            //url = "../../Content/img/Pastdue.png";
+            //            //return id + '<img src=' + url + ' />';
+            //            return id + '<a><span title="Past Due" data-placement="top" data-toggle="tooltip"><i class="pastdue fas fa-exclamation"></i></span></a>';
+            //        }
+            //    }
+            //},
 
             { data: 'Status', title: 'Status', sWidth: "10%" },
             { data: 'date_creation', title: 'Modified Date', sWidth: "10%" },
@@ -653,6 +667,7 @@ function PoPartiallyColleps() {
                 }
             }
         ],
+      //  columnDefs: [{ targets: [0], visible: false,"orderable": false }], order: [[0, "desc"]],
         columnDefs: [{ targets: [0], visible: false, searchable: false }],order: [[0, "desc"]]
     });
 }

@@ -744,7 +744,7 @@ function SendPO_POApproval(id) {
 }
 function send_mail(id, result) {
     let data = JSON.parse(result.data); console.log(result);
-    let inv_title = 'Purchase Order';
+    let inv_title = 'Purchase Order', po_authmail = data['po'][0].po_authmail;
 
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
@@ -785,7 +785,7 @@ function send_mail(id, result) {
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
-    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?id=' + result.en_id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a>';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a>';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';
@@ -946,7 +946,8 @@ function send_mail(id, result) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add}
+    let opt = { strValue1: po_authmail, strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
+    console.log(opt);
     //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({

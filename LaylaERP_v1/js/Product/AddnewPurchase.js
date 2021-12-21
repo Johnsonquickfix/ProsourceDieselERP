@@ -771,7 +771,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs , StatusActive: data[i].Status
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise
                 });
 
             }
@@ -785,12 +785,16 @@ function bindbuyingprice() {
 }
 
 function bindbuying(data) {
-  
+   // console.log(data);
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                if (data[i].is_setprise == "1")
+                layoutHtml += '<td><input style="opacity:1" name="CheckSingle"  type="checkbox" checked="true" class="chkprise" value="' + data[i].PKey + '" id="chkprise_' + data[i].PKey + '"></td>';
+                else
+                    layoutHtml += '<td><input style="opacity:1" name="CheckSingle"  type="checkbox"   class="chkprise" value="' + data[i].PKey + '" id="chkprise_' + data[i].PKey + '"></td>';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].taglotserialno + '</td>';
                 layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';               
@@ -818,7 +822,8 @@ function bindbuying(data) {
     else {
         layoutHtml += '<table id="dtdataVendor" class="table-blue table table-bordered table-striped dataTable">';
         layoutHtml += '<thead>';
-        layoutHtml += '<tr>'; 
+        layoutHtml += '<tr>';
+        layoutHtml += '<th>#</th>';
         layoutHtml += '<th>Vendors</th>';
         layoutHtml += '<th>Tag/Lot/Serial No.</th>';
         layoutHtml += '<th>Purchase quantity</th>';
@@ -840,6 +845,71 @@ function bindbuying(data) {
 
 }
 
+$("#setprice").click(function () {
+    var ID = "";
+   // var new_role = $("#revoke_role").val();
+
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        ID += $(this).val() + ",";
+
+    });
+    ID = ID.replace(/,(?=\s*$)/, '');
+    const areThereAnyCommas = ID.includes(',');
+   // console.log(areThereAnyCommas);
+    if (ID == "") { swal('alert', 'Please select Vendor from list', 'error'); }
+    else if (areThereAnyCommas == true) { swal('alert', 'Please select only one Vendor from list to set default', 'error'); }
+    else {
+         
+            swal({
+                title: '', text: "Do you want to set default ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    setprice(ID);
+                }
+            })
+      
+    }
+})
+
+
+function setprice(ID) {
+    
+    var ids = ID;
+    fk_productval = $('#ddlproductchild').val();
+    var obj = { ID: ids, fk_product: fk_productval }
+
+    $.ajax({
+        url: '/Product/SetBuyingPrice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader1").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindbuyingprice();
+                    swal('Success!', data.message, 'success');
+                }
+                else {
+                    swal('success!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader1").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
 function EditUser(id) {
     $('#dvbuysing').show();
     $("#hfbuyingid").val(id);

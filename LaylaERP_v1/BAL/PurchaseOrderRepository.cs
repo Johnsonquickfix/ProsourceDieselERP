@@ -219,6 +219,27 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable PurchaseApproval(PurchaseOrderModel model)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    model.LoginID > 0 ? new SqlParameter("@userid", model.LoginID) : new SqlParameter("@userid", DBNull.Value),
+                    new SqlParameter("@pkeys", model.RowID),
+                    new SqlParameter("@row_key", model.Search),
+                    new SqlParameter("@qflag", "POBMA"),
+                    new SqlParameter("@status", model.Status),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return dt;
+        }
         //Get Purchase order
         public static DataSet GetPurchaseOrderByID(long id)
         {

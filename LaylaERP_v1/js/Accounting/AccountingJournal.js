@@ -16,6 +16,10 @@ function getNatureofJournal() {
     });
 }
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
+
 $('#btnSaveJournal').click(function (e) {
     ID = $("#hfid").val();
     Code = $("#txtCode").val();
@@ -126,7 +130,7 @@ function NatureofJournalList() {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
                     /*  if ($("#hfEdit").val() == "1") {*/
-                    return '<span title="Click here to edit the account" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="GetVendorByID(' + id + ');"><i class="fas fa-pencil-alt"></i></a></span>';
+                    return '<span title="Click here to edit the account" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="GetJournalByID(' + id + ');"><i class="fas fa-pencil-alt"></i></a></span>';
                     //}//else { return "No Permission"; }
                 }
             },
@@ -158,7 +162,7 @@ function ChangeStatus(id, status) {
     })
 }
 
-function GetVendorByID(id) {
+function GetJournalByID(id) {
     var obj =
         $.ajax({
             url: "/Accounting/GetJournalByID/" + id,
@@ -176,6 +180,7 @@ function GetVendorByID(id) {
                     $("#hfid").val(d[0].rowid);
                     $("#btnSaveJournal").attr('value', 'Update');
                 }
+                isEdit(true);
             },
             complete: function () { $("#loader").hide(); },
             error: function (msg) {
@@ -188,6 +193,7 @@ function GetVendorByID(id) {
 $('#btnReset').click(function () {
     $("#hfid").val('');
     $("#btnSaveJournal").attr('value', 'Add');
+    isEdit(true);
     $("#tblAddJournal").find(":input").each(function () {
         switch (this.type) {
             case "text": case "email": case "textarea": case "tel": $(this).val(''); break;

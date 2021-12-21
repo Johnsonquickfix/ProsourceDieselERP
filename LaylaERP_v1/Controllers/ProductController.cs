@@ -606,6 +606,25 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult SetBuyingPrice(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.SetBuyingPrice(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "Set default successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+        }
+
         public JsonResult ActiveuyingPrice(ProductModel model)
         {
             JsonResult result = new JsonResult();

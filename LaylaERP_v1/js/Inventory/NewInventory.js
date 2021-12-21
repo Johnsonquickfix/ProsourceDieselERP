@@ -74,15 +74,17 @@ function NewInventoryReport() {
         contentType: "application/json; charset=utf-8",
         processing: true,
         data: JSON.stringify(obj),
-        success: function (data) {
+        success: function (data) { 
             $('#dtdata').dataTable({
                 destroy: true,
                 scrollX: false,
                 data: JSON.parse(data),
                 columnDefs: [{ targets: [0], visible: false, searchable: false }],
+                dom: 'lBfrtip',
                 footerCallback: function (row, data, start, end, display) {
                     var api = this.api(), data;
-                    console.log(data);
+                    console.log(row, data, start, end, display);
+                    //console.log(data[0].op_stock, data[data.length-1].op_stock);
                     var intVal = function (i) {
                         return typeof i === 'string' ?
                             i.replace(/[\$,]/g, '') * 1 :
@@ -90,10 +92,8 @@ function NewInventoryReport() {
                                 i : 0;
                     };
 
-                    var OpenStock = api.column(5).data().reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
+                    let opstock = data.length > 0 ? data[0].op_stock : 0;
+                    
                     var StockReceive = api.column(6).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
@@ -113,13 +113,18 @@ function NewInventoryReport() {
                     var DamageUnit = api.column(10).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
-                    $(api.column(1).footer()).html('Total');
-                    $(api.column(5).footer()).html(parseFloat(OpenStock).toFixed(0));
-                    $(api.column(6).footer()).html(parseFloat(StockReceive).toFixed(0));
-                    $(api.column(7).footer()).html(parseFloat(StockIssue).toFixed(0));
-                    $(api.column(8).footer()).html(parseFloat(UnitInPO).toFixed(0));
-                    $(api.column(9).footer()).html(parseFloat(SaleUnit).toFixed(0));
-                    $(api.column(10).footer()).html(parseFloat(DamageUnit).toFixed(0));
+
+                    if (data.length > 0) {
+                        //$(api.column(1).footer()).html('Total');
+                        $(api.column(5).footer()).html(parseFloat(opstock).toFixed(0));
+                        $(api.column(6).footer()).html(parseFloat(StockReceive).toFixed(0));
+                        $(api.column(7).footer()).html(parseFloat(StockIssue).toFixed(0));
+                        $(api.column(8).footer()).html(parseFloat(UnitInPO).toFixed(0));
+                        $(api.column(9).footer()).html(parseFloat(SaleUnit).toFixed(0));
+                        $(api.column(10).footer()).html(parseFloat(DamageUnit).toFixed(0));
+                        $(api.column(11).footer()).html(parseFloat(opstock + StockReceive - StockIssue - SaleUnit - DamageUnit).toFixed(0));
+                    }
+
                     //console.log(DebitTotal);
                 },
                 "columns": [
@@ -149,6 +154,25 @@ function NewInventoryReport() {
                     },
                 ],
                 "order": [[0, 'asc']],
+                "buttons": [
+                    {
+                        extend: 'csvHtml5',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        filename: 'Inventory',
+                        footer: true,
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> Excel',
+                        filename: 'Inventory',
+                        footer: true,
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+                ]
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {

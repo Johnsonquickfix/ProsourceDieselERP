@@ -51,7 +51,7 @@ namespace LaylaERP.Controllers
         {
 
             ViewBag.user_role = Convert.ToInt32(UsersRepositry.GetRoleID(CommanUtilities.Provider.GetCurrent().UserType).ToString());
-           
+
             return View();
         }
 
@@ -478,7 +478,7 @@ namespace LaylaERP.Controllers
                     int ID = UsersRepositry.AddNewCustomer(model);
                     if (ID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Save New User", "/Users/CreateUser" + ", " + Net.BrowserInfo);
+                        UserActivityLog.WriteDbLog(LogType.Submit, "New " + model.user_role + " created in user management.", "/Users/CreateUser" + ", " + Net.BrowserInfo);
                         Adduser_MetaData(model, ID);
                         Adduser_MetaData_More(model, ID);
                         ModelState.Clear();
@@ -495,7 +495,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult CreatePassword(clsUserDetails model)
         {
- 
+
             int length = 16;
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890*$-+?_&=!%{}/";
             StringBuilder res = new StringBuilder();
@@ -503,7 +503,7 @@ namespace LaylaERP.Controllers
             while (0 < length--)
             {
                 res.Append(valid[rnd.Next(valid.Length)]);
-            }             
+            }
             if (!(string.IsNullOrEmpty(res.ToString())))
             {
                 return Json(new { status = true, message = res.ToString(), url = "" }, 0);
@@ -518,17 +518,17 @@ namespace LaylaERP.Controllers
 
         public JsonResult CityStateZip(clsUserDetails model)
         {
-           // model.country
-                    int ID = UsersRepositry.ZipcodeByCity(model);
-                    if (ID > 0)
-                    {
-                        
-                        return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
+            // model.country
+            int ID = UsersRepositry.ZipcodeByCity(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "User record saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
 
         }
 
@@ -549,7 +549,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult GetEmailName(clsUserDetails model)
         {
-           
+
             int ID = UsersRepositry.GetEmailName(model);
             if (ID > 0)
             {
@@ -561,7 +561,7 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
 
-           
+
         }
 
         [HttpPost]
@@ -571,7 +571,7 @@ namespace LaylaERP.Controllers
             int ID = UsersRepositry.UpdateUsers(model);
             if (ID > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update User Details", "/Users/UserDetails?id=" + model.ID + "" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "user id (" + model.ID + ") updated in user management.", "/Users/UserDetails?id=" + model.ID + "" + ", " + Net.BrowserInfo);
                 Updateuser_MetaData(model, model.ID);
                 Updateuser_MetaData_More(model, model.ID);
                 ModelState.Clear();
@@ -649,7 +649,7 @@ namespace LaylaERP.Controllers
                 int RoleID = new UsersRepositry().CheckDuplicateUserRole(model);
                 if (RoleID == 0)
                 {
-                    UserActivityLog.WriteDbLog(LogType.Submit, "New user role "+model.User_Type + " created", "/Users/AssignRole" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "New user role " + model.User_Type + " created", "/Users/AssignRole" + ", " + Net.BrowserInfo);
                     int ID = new UsersRepositry().AddNewRole(model);
                     if (ID > 0)
                     {
@@ -685,8 +685,8 @@ namespace LaylaERP.Controllers
             }
             else if (strID != "")
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Role Approve", "/Users/AssignRole/"+role_id+"" + ", " + Net.BrowserInfo);
-                new UsersRepositry().ChangePermission(strID, role_id,flag);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Role Approve", "/Users/AssignRole/" + role_id + "" + ", " + Net.BrowserInfo);
+                new UsersRepositry().ChangePermission(strID, role_id, flag);
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);
                 new UsersRepositry().UpdateDeletePermission(role_id, strDel);
@@ -701,7 +701,7 @@ namespace LaylaERP.Controllers
         {
             int role_id = model.role_id;
             int roletoid = model.roleto;
-         
+
             if (roletoid > 0)
             {
                 new UsersRepositry().CopyPermission(roletoid, role_id);
@@ -743,12 +743,12 @@ namespace LaylaERP.Controllers
                     {
                         row.Add("text", myhtmltext);
                     }
-                    row.Add("level", dr["level"]);                  
-                    if (dr["parent_id"] != DBNull.Value)                    
+                    row.Add("level", dr["level"]);
+                    if (dr["parent_id"] != DBNull.Value)
                         row.Add("parent", dr["parent_id"]);
                     if (dr["checked"] != DBNull.Value)
                         row.Add("checked", dr["checked"]);
-                  
+
 
                     List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
                     row.Add("children", list2);
@@ -784,7 +784,7 @@ namespace LaylaERP.Controllers
                     row.Add("parent", dr["parent_id"]);
                 if (dr["checked"] != DBNull.Value)
                     row.Add("checked", dr["checked"]);
-                 row.Add("text", myhtml);
+                row.Add("text", myhtml);
                 List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
                 row.Add("children", list2);
                 list.Add(row);

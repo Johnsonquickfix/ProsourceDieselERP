@@ -68,7 +68,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-                    UserActivityLog.WriteDbLog(LogType.Submit, "Update Customer", "/Customer/NewUser/" + model.ID + "" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "customer id ("+ model.ID + ") updated in manage customer.", "/Customer/NewUser/" + model.ID + "" + ", " + Net.BrowserInfo);
                     Repo.EditCustomer(model, model.ID);
                     Updateuser_MetaData(model, model.ID);
                     Updateuser_MetaData_BillingAddress(model, model.ID);
@@ -80,7 +80,7 @@ namespace LaylaERP.Controllers
                     int ID = Repo.AddNewCustomer(model);
                     if (ID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Add Customer", "/Customer/NewUser" + ", " + Net.BrowserInfo);
+                        UserActivityLog.WriteDbLog(LogType.Submit, "New customer "+ model.billing_email+" created in manage customer.", "/Customer/NewUser" + ", " + Net.BrowserInfo);
                         Adduser_MetaData(model, ID);
                         Adduser_MetaData_BillingAddress(model, ID);
                         Adduser_MetaData_ShippingAddress(model, ID);

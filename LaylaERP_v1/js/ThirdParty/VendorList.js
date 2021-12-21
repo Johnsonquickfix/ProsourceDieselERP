@@ -3,7 +3,7 @@
     var loc = window.location.pathname;
     CheckPermissions("#btnAddVendor", "#hfEdit", "", loc);
     VendorGrid();
-    isEdit(true);
+    //isEdit(true);
 })
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');

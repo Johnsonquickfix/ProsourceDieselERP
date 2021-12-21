@@ -381,7 +381,7 @@ function DatagridLoade() {
 };
 
 function EditUser(id) {
-    ActivityLog('Edit User', '/Users/Users/' + id+'');
+    ActivityLog('edit user id ' + id +' in user management.', '/Users/Users/' + id+'');
     window.location.href = 'UserDetails?id=' + id;
 }
 

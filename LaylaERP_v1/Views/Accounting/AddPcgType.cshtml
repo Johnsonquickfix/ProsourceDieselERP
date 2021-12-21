@@ -83,7 +83,7 @@
         var loc = window.location.pathname;
         CheckPermissions("#Addpgctype", "#hfEdit", "", loc);
 
-        isEdit(true);
+        //isEdit(true);
     });
 
     function isEdit(val) {
@@ -195,7 +195,7 @@
 
                 $("#btnAdd").hide();
                 $("#btnUpdate").show();
-
+                isEdit(true);
             },
             complete: function () { $("#loader").hide();},
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },

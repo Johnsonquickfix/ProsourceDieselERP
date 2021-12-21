@@ -28,26 +28,38 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        public ActionResult PurchaseOrderApproval(string id)
+        public ActionResult PurchaseOrderApproval(string id, string uid, string key)
         {
             if (!string.IsNullOrEmpty(id))
             {
                 PurchaseOrderModel obj = new PurchaseOrderModel();
-                obj.LoginID = 0;
-                obj.Search = UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+"));
-                obj.Status = 3;
-                DataTable dt = PurchaseOrderRepository.UpdatePurchaseStatus(obj);
-                if (dt.Rows.Count > 0)
+                if (!string.IsNullOrEmpty(uid))
                 {
-                    if (dt.Rows[0]["Response"].ToString() == "Success")
+                    obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
+                obj.Status = 3;
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
+                {
+                    DataTable dt = PurchaseOrderRepository.PurchaseApproval(obj);
+                    if (dt.Rows.Count > 0)
                     {
                         ViewBag.status = dt.Rows[0]["Response"].ToString();
                         ViewBag.id = obj.Search;
                     }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
                 }
                 else
-                { 
-                    ViewBag.status = "Error";
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
                     ViewBag.id = "0";
                 }
             }
@@ -225,7 +237,7 @@ namespace LaylaERP.Controllers
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, po_email = om.po_email, website = om.website, data = JSONresult }, 0);
+            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
         [HttpGet]
         public JsonResult GetPurchaseOrderPayments(SearchModel model)
@@ -273,7 +285,23 @@ namespace LaylaERP.Controllers
                 status = true;
                 //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
                 string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
-                result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, _html);
+                    }
+                }
+                string[] strMails = model.strValue1.Split(',');
+                foreach (string mailid in strMails)
+                {
+                    //result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
+                }
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

@@ -2,7 +2,7 @@
     var loc = window.location.pathname;
     CheckPermissions("#btnAddEmployee", "#hfEdit", "", loc);
     EmployeeList();
-    isEdit(true);
+    //isEdit(true);
 })
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');

@@ -66,7 +66,7 @@ namespace LaylaERP_v1.Controllers
             DataTable dt1 = PoemailRepository.Getusercount(model);
             if (dt1.Rows.Count > 0)
             {
-                return Json(new { status = false, message = "User email already exist.", url = "" }, 0);
+                return Json(new { status = false, message = "User email already exists.", url = "" }, 0);
             }
             else
             {   //int ID = 1;

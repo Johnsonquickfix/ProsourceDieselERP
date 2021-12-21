@@ -120,7 +120,7 @@ function PurchaseOrderGrid() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: false,  scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -382,7 +382,7 @@ function PoClosureGridColleps() {
     let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
     //console.log(obj);
     $('#dtdataPoClosure').DataTable({
-        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,   
+        oSearch: { "sSearch": '' }, bAutoWidth: false, searching: false, scrollX: false,
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -584,7 +584,7 @@ function PoPartiallyColleps() {
 
     //});
     let tablepar =  $('#dtdataPartially').DataTable({
-        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
+        oSearch: { "sSearch": '' }, bAutoWidth: false, searching: false,  scrollX: false,
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

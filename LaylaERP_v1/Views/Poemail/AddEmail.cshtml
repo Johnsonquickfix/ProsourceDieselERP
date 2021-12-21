@@ -62,10 +62,10 @@
             <div class="form-group">
                 <br />
                 <br />
-                <button type="button" id="btnSave" class="btn btn-danger">Save</button>
-                <button type="button" id="btnUpdate" class="btn btn-danger">Update</button>
-                <button type="button" id="btnReset" class="btn btn-danger">Reset</button>
-            </div>
+                <button type="button" id="btnSave" class="btn btn-danger"><span title="Click here to save." data-placement="bottom" data-toggle="tooltip">Save</span></button>
+                <button type="button" id="btnUpdate" class="btn btn-danger"><span title="Click here to update." data-placement="bottom" data-toggle="tooltip">Update</span></button>
+                <button type="button" id="btnReset" class="btn btn-danger"><span title="Click here to reset." data-placement="bottom" data-toggle="tooltip">Reset</span></button>
+</div>
         </div>
     </div>
     <!-- end top-->
@@ -103,6 +103,7 @@
     $(document).ready(function () {
         $("#loader").hide();
         $("#btnUpdate").hide();
+
         getUserid();
         EmailList();
         $("#btnSave").click(function () {

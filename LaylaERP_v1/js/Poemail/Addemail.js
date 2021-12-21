@@ -82,7 +82,7 @@ function EmailList() {
             {
                 'data': 'id', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    return '<span title="Click here to edit" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                 }
             }
         ]
@@ -116,7 +116,7 @@ function AddEmail() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     EmailList();
                     reset();
                 }
@@ -183,7 +183,7 @@ function UpdateEmail() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     EmailList();
                     reset();
                     isEdit(false);

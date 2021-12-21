@@ -89,6 +89,9 @@ function EmailList() {
     });
 }
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function AddEmail() {
     userid = $("#ddlUserid").val();
     useremail = $("#txtemail").val();
@@ -147,6 +150,7 @@ function EditSelectAddress(id) {
 
             $("#btnUpdate").show();
             $("#btnSave").hide();
+            isEdit(true);
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
@@ -182,6 +186,7 @@ function UpdateEmail() {
                     swal('Success!', data.message, 'success');
                     EmailList();
                     reset();
+                    isEdit(false);
                 }
                 else {
                     swal('Alert!', data.message, 'error');

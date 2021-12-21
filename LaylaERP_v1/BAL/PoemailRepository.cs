@@ -17,7 +17,7 @@ namespace LaylaERP_v1.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "SELECT ID, user_login, user_status, iif(user_status = '0','Active','InActive') as status,user_email, user_registered as created_date, " +
+                string strSQl = "SELECT ID, concat(ID,' ( ',user_login,' )') user_login, user_status, iif(user_status = '0','Active','InActive') as status,user_email, user_registered as created_date, " +
                                 "um.meta_value as meta_value FROM wp_users u INNER JOIN wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%' WHERE um.meta_value like '%administrator%' and u.user_status = '0' ORDER BY ID DESC";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
@@ -49,7 +49,7 @@ namespace LaylaERP_v1.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "select rowid id, user_id, user_email, status from erp_po_admin_email WHERE 1=1";
+                string strSql = "select rowid id, user_id, user_email, iif(status = '1','Active','InActive') status from erp_po_admin_email WHERE 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (user_id like '%" + searchid + "%' OR user_email like '%" + searchid + "%')";

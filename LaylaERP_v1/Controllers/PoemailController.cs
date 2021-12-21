@@ -28,7 +28,7 @@ namespace LaylaERP_v1.Controllers
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                productlist.Add(new SelectListItem { Text = dr["ID"].ToString(), Value = dr["ID"].ToString() });
+                productlist.Add(new SelectListItem { Text = dr["user_login"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
@@ -66,7 +66,7 @@ namespace LaylaERP_v1.Controllers
             DataTable dt1 = PoemailRepository.Getusercount(model);
             if (dt1.Rows.Count > 0)
             {
-                return Json(new { status = false, message = "User email already exist in table", url = "" }, 0);
+                return Json(new { status = false, message = "User email already exist!!", url = "" }, 0);
             }
             else
             {   //int ID = 1;

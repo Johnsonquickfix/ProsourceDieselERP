@@ -90,7 +90,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        public static DataTable GetProductStock(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -102,7 +102,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@categoryid", categoryid),
                     new SqlParameter("@productid", productid),
                     new SqlParameter("@fromdate", fromdate),
-                    new SqlParameter("@todate", todate)
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@supplierid", supplierid)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_stock_register", parameters);
             }
@@ -135,7 +136,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetWarehouseStock(string product_id, DateTime fromdate, DateTime todate)
+        public static DataTable GetWarehouseStock(string product_id, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -144,6 +145,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@flag","PROWS"),
                     new SqlParameter("@productid", product_id),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate)
                 };

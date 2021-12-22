@@ -319,7 +319,7 @@ namespace LaylaERP.BAL
         }
 
         //-----------------------------Get new inventory--------------------------------
-        public static DataTable GetNewProductStock(string productid, string warehouse, DateTime fromdate, DateTime todate)
+        public static DataTable GetNewProductStock(string productid, string warehouse, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -327,7 +327,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag","PRSTK"),
-                    //new SqlParameter("@sku", strSKU),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@warehouseid", warehouse),
                     new SqlParameter("@productid", productid),
                     new SqlParameter("@fromdate", fromdate),

@@ -131,7 +131,7 @@
 
     let fk_projetval = 0;
     fk_projetval = parseInt($("#hfsaleno").val()) || 0
-    console.log(fk_projetval);
+    //console.log(fk_projetval);
     if (fk_projetval == "0" && $("#hfstatus").val() == "3") {
         $(".btnEdit").show();
     }
@@ -256,7 +256,7 @@ function getwarehaouseid() {
     $.ajax({
         url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let dt = JSON.parse(data); console.log(dt);
+            let dt = JSON.parse(data); //console.log(dt);
             $("#ddlwarehouse").html('<option value="0">Select Warehouse</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table'][i].id + '" data-ad="' + dt['Table'][i].address + '">' + dt['Table'][i].text + '</option>'); }
         },
@@ -542,9 +542,12 @@ function getPurchaseOrderInfo() {
             url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0, fk_projet = 0;
-                    //console.log(data);
+                    let data = JSON.parse(result); let VendorID = 0, fk_projet = 0 ,fk_user_approve = 0;
+                   
                     for (let i = 0; i < data['po'].length; i++) {
+                        fk_user_approve = parseInt(data['po'][i].fk_user_approve) || 0;
+                        if (fk_user_approve > 0)                  
+                        $('.page-heading').text('Receive Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0; fk_projet = parseInt(data['po'][i].fk_projet) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
@@ -641,8 +644,8 @@ function getPurchaseOrderInfo() {
         totalexc = $("#SubTotal").text();
         totaldisc  = $("#discountTotal").text();
         totalincl = $("#orderTotal").html();
-        console.log($("#SubTotal").text());
-        console.log($("#discountTotal").text());
+       // console.log($("#SubTotal").text());
+       // console.log($("#discountTotal").text());
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');

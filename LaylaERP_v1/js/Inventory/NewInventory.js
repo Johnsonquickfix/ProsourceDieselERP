@@ -14,15 +14,13 @@
 
     });
     $(".select2").select2();
-    $.when(getProducts()).done(function () { NewInventoryReport() });
-    getWerehouse();
+    $.when(getProducts()).done(function () { NewInventoryReport() }); //product dropdown
+    getWerehouse(); // warehouse dropdown
+    getVendor(); // vendor dropdown
 
     $("#btnSearch").click(function () {
-        if ($("#ddlProduct").val() == '-1') {
+        if ($("#ddlProduct").val() == '0') {
             swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
-        }
-        else if ($("#ddlWarehouse").val() == '-1') {
-            swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlWarehouse').focus(); });
         }
         else {
             NewInventoryReport();
@@ -35,11 +33,26 @@ function getProducts() {
         url: "/Inventory/GetNewProductList",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please select product</option>';
+            var opt = '<option value="0">Please select product</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlProduct').html(opt);
+        }
+
+    });
+}
+
+function getVendor() {
+    $.ajax({
+        url: "/Inventory/GetNewVendorList",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please select vendor</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlVendor').html(opt);
         }
 
     });
@@ -64,9 +77,10 @@ function NewInventoryReport() {
     let sd = $('#txtDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-    let pid = parseInt($("#ddlProduct").val());
-    let wid = parseInt($("#ddlWarehouse").val());
-    var obj = { strValue2: (wid > 0 ? wid : '-1'), strValue3: (pid > 0 ? pid : '-1'), strValue4: sd, strValue5: ed }
+    let pid = parseInt($("#ddlProduct").val()) || 0;
+    let wid = parseInt($("#ddlWarehouse").val()) || 0;
+    let vid = parseInt($("#ddlVendor").val()) || 0;
+    var obj = { strValue2: (wid > 0 ? wid : ''), strValue3: (pid > 0 ? pid : '-1'), strValue4: sd, strValue5: ed, strValue1: (vid > 0 ? vid : '') }
     $.ajax({
         url: '/Inventory/GetNewInventory',
         method: 'post',
@@ -116,13 +130,22 @@ function NewInventoryReport() {
 
                     if (data.length > 0) {
                         //$(api.column(1).footer()).html('Total');
-                        $(api.column(5).footer()).html(parseFloat(opstock).toFixed(0));
+                        //$(api.column(5).footer()).html(parseFloat(opstock).toFixed(0));
+                        $(api.column(5).footer()).html('Total');
                         $(api.column(6).footer()).html(parseFloat(StockReceive).toFixed(0));
                         $(api.column(7).footer()).html(parseFloat(StockIssue).toFixed(0));
                         $(api.column(8).footer()).html(parseFloat(UnitInPO).toFixed(0));
                         $(api.column(9).footer()).html(parseFloat(SaleUnit).toFixed(0));
                         $(api.column(10).footer()).html(parseFloat(DamageUnit).toFixed(0));
-                        $(api.column(11).footer()).html(parseFloat(opstock + StockReceive - StockIssue - SaleUnit - DamageUnit).toFixed(0));
+                        //$(api.column(11).footer()).html(parseFloat(opstock + StockReceive - StockIssue - SaleUnit - DamageUnit).toFixed(0));
+                    }
+                    else {
+                        $(api.column(5).footer()).html('');
+                        $(api.column(6).footer()).html('');
+                        $(api.column(7).footer()).html('');
+                        $(api.column(8).footer()).html('');
+                        $(api.column(9).footer()).html('');
+                        $(api.column(10).footer()).html('');
                     }
 
                     //console.log(DebitTotal);
@@ -140,13 +163,14 @@ function NewInventoryReport() {
                             else return '-';
                         }},
                     { data: 'tran_id', title: 'Transcation id', sWidth: "10%" },
+                    { data: 'name', title: 'Vendor', sWidth: "10%" },
                     { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-                    { data: 'op_stock', title: 'Open stock', sWidth: "10%", className: "text-right", },
-                    { data: 'stock_r', title: 'Stock receive', sWidth: "10%", className: "text-right", },
-                    { data: 'stock_i', title: 'Stock issue', sWidth: "10%", className: "text-right", },
-                    { data: 'UnitsinPO', title: 'Unit in POs', sWidth: "10%", className: "text-right", },
-                    { data: 'SaleUnits', title: 'Sale unit', sWidth: "10%", className: "text-right", },
-                    { data: 'Damage', title: 'Damage unit', sWidth: "10%", className: "text-right", },
+                    { data: 'op_stock', title: 'Open stock', sWidth: "5%", className: "text-right", },
+                    { data: 'stock_r', title: 'Stock receive', sWidth: "5%", className: "text-right", },
+                    { data: 'stock_i', title: 'Stock issue', sWidth: "5%", className: "text-right", },
+                    { data: 'UnitsinPO', title: 'Unit in POs', sWidth: "5%", className: "text-right", },
+                    { data: 'SaleUnits', title: 'Sale unit', sWidth: "5%", className: "text-right", },
+                    { data: 'Damage', title: 'Damage unit', sWidth: "5%", className: "text-right", },
                     {
                         data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                         return (row.op_stock + row.stock_r - row.stock_i + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0);

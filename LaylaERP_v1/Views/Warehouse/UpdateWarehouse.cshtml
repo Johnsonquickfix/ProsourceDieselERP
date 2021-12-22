@@ -984,7 +984,7 @@
                     var jobj = JSON.parse(data);
                     return {
                         results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.State }
                         })
                     };
                 },
@@ -1005,7 +1005,7 @@
                     var jobj = JSON.parse(data);
                     return {
                         results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.State }
                         })
                     };
                 },

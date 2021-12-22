@@ -36,22 +36,30 @@
         </div>*@
         <div class="col-md-3">
             <div class="form-group">
+                <label>Product</label><span style="color:red">*</span>
                 <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <select class="form-control select2" id="ddlWarehouse" placeholder="Select warehouse" style="width: 100%;"></select>
+                <label>Vendor</label>
+                <select class="form-control select2" id="ddlVendor" placeholder="Select warehouse" style="width: 100%;"></select>
             </div>
         </div>
         <div class="col-md-3">
+            <div class="form-group">
+                <label>Warehouse</label>
+                <select class="form-control select2" id="ddlWarehouse" placeholder="Select warehouse" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3"><label></label>
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
             </div>
         </div>
         <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group"><br />
                 <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
             </div>
         </div>
@@ -70,6 +78,7 @@
                                         <th>Date</th>
                                         <th>Transcation type</th>
                                         <th>Transcation Id</th>
+                                        <th>Vendor</th>
                                         <th>Warehouse</th>
                                         <th>Open stock</th>
                                         <th>Stock receive</th>

@@ -14,9 +14,9 @@
 
     });
     $(".select2").select2();
-    $.when(getProducts()).done(function () { NewInventoryReport() }); //product dropdown
-    getWerehouse(); // warehouse dropdown
-    getVendor(); // vendor dropdown
+    $.when(getProducts(), getWerehouse(), getVendor()).done(function () { NewInventoryReport() }); //product dropdown
+     // warehouse dropdown
+     // vendor dropdown
 
     $("#btnSearch").click(function () {
         if ($("#ddlProduct").val() == '0') {
@@ -45,16 +45,14 @@ function getProducts() {
 
 function getVendor() {
     $.ajax({
-        url: "/Inventory/GetNewVendorList",
+        url: "/PurchaseOrder/GetVendor",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please select vendor</option>';
+            $('#ddlVendor').append('<option value="-1">Please Select Vendor</option>');
             for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
             }
-            $('#ddlVendor').html(opt);
-        }
-
+        }, async: false
     });
 }
 
@@ -108,46 +106,36 @@ function NewInventoryReport() {
 
                     let opstock = data.length > 0 ? data[0].op_stock : 0;
                     
-                    var StockReceive = api.column(6).data().reduce(function (a, b) {
+                    var StockReceive = api.column(7).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                    var StockIssue = api.column(7).data().reduce(function (a, b) {
+                    var StockIssue = api.column(8).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                    var UnitInPO = api.column(8).data().reduce(function (a, b) {
+                    var UnitInPO = api.column(9).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                    var SaleUnit = api.column(9).data().reduce(function (a, b) {
+                    var SaleUnit = api.column(10).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                    var DamageUnit = api.column(10).data().reduce(function (a, b) {
+                    var DamageUnit = api.column(11).data().reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                    if (data.length > 0) {
+                    
                         //$(api.column(1).footer()).html('Total');
                         //$(api.column(5).footer()).html(parseFloat(opstock).toFixed(0));
-                        $(api.column(5).footer()).html('Total');
-                        $(api.column(6).footer()).html(parseFloat(StockReceive).toFixed(0));
-                        $(api.column(7).footer()).html(parseFloat(StockIssue).toFixed(0));
-                        $(api.column(8).footer()).html(parseFloat(UnitInPO).toFixed(0));
-                        $(api.column(9).footer()).html(parseFloat(SaleUnit).toFixed(0));
-                        $(api.column(10).footer()).html(parseFloat(DamageUnit).toFixed(0));
+                        $(api.column(6).footer()).html('Total');
+                        $(api.column(7).footer()).html(parseFloat(StockReceive).toFixed(0));
+                        $(api.column(8).footer()).html(parseFloat(StockIssue).toFixed(0));
+                        $(api.column(9).footer()).html(parseFloat(UnitInPO).toFixed(0));
+                        $(api.column(10).footer()).html(parseFloat(SaleUnit).toFixed(0));
+                        $(api.column(11).footer()).html(parseFloat(DamageUnit).toFixed(0));
                         //$(api.column(11).footer()).html(parseFloat(opstock + StockReceive - StockIssue - SaleUnit - DamageUnit).toFixed(0));
-                    }
-                    else {
-                        $(api.column(5).footer()).html('');
-                        $(api.column(6).footer()).html('');
-                        $(api.column(7).footer()).html('');
-                        $(api.column(8).footer()).html('');
-                        $(api.column(9).footer()).html('');
-                        $(api.column(10).footer()).html('');
-                    }
-
                     //console.log(DebitTotal);
                 },
                 "columns": [
@@ -165,7 +153,7 @@ function NewInventoryReport() {
                     { data: 'tran_id', title: 'Transcation id', sWidth: "10%" },
                     { data: 'name', title: 'Vendor', sWidth: "10%" },
                     { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-                    { data: 'op_stock', title: 'Open stock', sWidth: "5%", className: "text-right", },
+                    { data: 'op_stock', title: 'In stock', sWidth: "5%", className: "text-right", },
                     { data: 'stock_r', title: 'Stock receive', sWidth: "5%", className: "text-right", },
                     { data: 'stock_i', title: 'Stock issue', sWidth: "5%", className: "text-right", },
                     { data: 'UnitsinPO', title: 'Unit in POs', sWidth: "5%", className: "text-right", },

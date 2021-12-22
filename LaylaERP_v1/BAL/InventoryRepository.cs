@@ -113,7 +113,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataSet exportProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        public static DataSet exportProductStock(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataSet ds = new DataSet();
             try
@@ -124,6 +124,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@sku", strSKU),
                     new SqlParameter("@categoryid", categoryid),
                     new SqlParameter("@productid", productid),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate)
                 };
@@ -319,7 +320,7 @@ namespace LaylaERP.BAL
         }
 
         //-----------------------------Get new inventory--------------------------------
-        public static DataTable GetNewProductStock(string productid, string warehouse, DateTime fromdate, DateTime todate)
+        public static DataTable GetNewProductStock(string productid, string warehouse, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -327,7 +328,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag","PRSTK"),
-                    //new SqlParameter("@sku", strSKU),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@warehouseid", warehouse),
                     new SqlParameter("@productid", productid),
                     new SqlParameter("@fromdate", fromdate),

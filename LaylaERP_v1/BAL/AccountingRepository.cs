@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -314,10 +315,14 @@ namespace LaylaERP.BAL
                         string Product = GetAccountNumber(ProductID, option_mode).ToString();
                         if (Product == ProductID)
                         {
+                            UserActivityLog.WriteDbLog(LogType.Submit, "set account Product id (" + ProductID + ") and account number (" + ProductAccountNumberID + ") to  " + option_mode + " in Products Account.", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
+
                             strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id and option_mode=@option_mode";
                         }
                         else
                         {
+                            UserActivityLog.WriteDbLog(LogType.Submit, "New account Product id (" + ProductID + ") and account number (" + ProductAccountNumberID + ") to  " + option_mode + " in Products Account.", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
+
                             strsql = "insert into product_accounting(fk_product_id,option_mode,fk_account_number) values(@fk_product_id,@option_mode,@fk_account_number); SELECT SCOPE_IDENTITY();";
                         }
                         SqlParameter[] para =
@@ -402,7 +407,7 @@ namespace LaylaERP.BAL
             {
 
                 string strSql = "SELECT id as ID, account_parent, pcg_type from erp_pcg_type ";
-                
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 
@@ -418,7 +423,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT id as ID, account_parent, pcg_type from erp_pcg_type where id='"+ strValue1 + "'";
+                string strSql = "SELECT id as ID, account_parent, pcg_type from erp_pcg_type where id='" + strValue1 + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
@@ -490,8 +495,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit," 
-                               +" (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
+                string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit,"
+                               + " (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
                                + " ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
@@ -614,7 +619,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
-    
+
         public static DataTable GetAccountLedgerDetailsList(string sMonths, string searchid, string productid)
         {
             DataTable dt = new DataTable();

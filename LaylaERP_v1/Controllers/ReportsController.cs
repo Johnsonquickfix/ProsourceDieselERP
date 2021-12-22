@@ -101,6 +101,12 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        public ActionResult Searchcouponorders()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -384,6 +390,16 @@ namespace LaylaERP.Controllers
 
 
             ReportsRepository.GetStatusDetails(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        public ActionResult Getcouponcodesearch(string Month, string Year, string Type)
+        {
+
+
+            ReportsRepository.Getcouponcodesearch(Month, Year, Type);
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;

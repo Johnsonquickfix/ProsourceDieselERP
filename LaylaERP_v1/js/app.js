@@ -1875,10 +1875,11 @@ var addTabs = function (options) {
             $iframe.on('load', function () {
                 App.unblockUI('#tab-content');//Unlock interface
                 App.fixIframeCotent();//Corrected height
-                var obj = { ModuleURL: options.url, ModuleName: options.title };
-                setTimeout(function () { addActivityLog(obj); }, 50);
+                //var obj = { ModuleURL: options.url, ModuleName: options.title };
+                //setTimeout(function () { addActivityLog(obj); }, 50);
             });
-
+            var obj = { ModuleURL: options.url, ModuleName: options.title };
+            setTimeout(function () { addActivityLog(obj); }, 50);
             $tabPanel.append($iframe);
 
         }

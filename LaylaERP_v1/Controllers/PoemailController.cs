@@ -61,19 +61,17 @@ namespace LaylaERP_v1.Controllers
         [HttpPost]
         public JsonResult AddPoemail(PoemailModel model)
         {
-            
-            //int ID = PoemailRepository.AddPoemail(model);
             DataTable dt1 = PoemailRepository.Getusercount(model);
             if (dt1.Rows.Count > 0)
             {
-                return Json(new { status = false, message = "User email already exist!!", url = "" }, 0);
+                return Json(new { status = false, message = "User email already exists.", url = "" }, 0);
             }
             else
-            {   //int ID = 1;
+            {   
                 int ID = PoemailRepository.AddPoemail(model);
                 if (ID > 0)
                 {
-                    return Json(new { status = true, message = "Email saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Email saved successfully.", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -100,7 +98,7 @@ namespace LaylaERP_v1.Controllers
             if (model.rowid > 0)
             {
                 PoemailRepository.UpdateEmail(model);
-                return Json(new { status = true, message = "Email updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Email updated successfully.", url = "" }, 0);
             }
             else
             {

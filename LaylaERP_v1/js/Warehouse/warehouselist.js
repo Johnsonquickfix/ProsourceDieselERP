@@ -54,7 +54,8 @@
     } */
 
 
-    function EditUser(rowid) {
+function EditUser(rowid) {
+    ActivityLog('Edit warehouse id ' + rowid + ' in manage warehouses.', '/Warehouse/Warehouse');
         window.location.href = 'UpdateWarehouse?rowid=' + rowid;
     }
 

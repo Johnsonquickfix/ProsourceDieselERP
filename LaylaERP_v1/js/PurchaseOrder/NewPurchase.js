@@ -434,8 +434,11 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
+                console.log(result);let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0; 
                 $.each(data['po'], function (key, row) {
+                    fk_user_approve = parseInt(row.fk_user_approve) || 0;
+                    if (fk_user_approve > 0)
+                        $('.page-heading').text('Edit Purchase Order (Approved by ' + row.user_approve + ')').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
                     $('#ddlVendor').val(row.fk_supplier).trigger('change');

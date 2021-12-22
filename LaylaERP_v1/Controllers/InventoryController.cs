@@ -154,11 +154,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                if (!string.IsNullOrEmpty(model.strValue4))
-                    fromdate = Convert.ToDateTime(model.strValue4);
                 if (!string.IsNullOrEmpty(model.strValue5))
-                    todate = Convert.ToDateTime(model.strValue5);
-                DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
+                    fromdate = Convert.ToDateTime(model.strValue5);
+                if (!string.IsNullOrEmpty(model.strValue6))
+                    todate = Convert.ToDateTime(model.strValue6);
+                DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate);
                 result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }

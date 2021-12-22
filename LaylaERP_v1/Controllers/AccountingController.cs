@@ -70,7 +70,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "journal id ("+ model.rowid + ") updated in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "journal id (" + model.rowid + ") updated in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
                 new AccountingRepository().EditJournal(model);
                 return Json(new { status = true, message = "Journal updated successfully!!", url = "", id = model.rowid }, 0);
             }
@@ -79,7 +79,7 @@ namespace LaylaERP.Controllers
                 int ID = new AccountingRepository().AddJournal(model);
                 if (ID > 0)
                 {
-                    UserActivityLog.WriteDbLog(LogType.Submit, "create new journal "+ model.label + " in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "create new journal " + model.label + " in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
                     ModelState.Clear();
                     return Json(new { status = true, message = "Journal saved successfully!!", url = "", id = ID }, 0);
                 }
@@ -115,7 +115,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult UpdateJournalStatus(AccountingJournalModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Update accounting journal", "/Accounting/AccountingJournal/"+ model.rowid + "" + ", " + Net.BrowserInfo);
+            UserActivityLog.WriteDbLog(LogType.Submit, "Update accounting journal", "/Accounting/AccountingJournal/" + model.rowid + "" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 new AccountingRepository().UpdateJournalStatus(model);
@@ -196,10 +196,10 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.rowid > 0 )
+                if (model.rowid > 0)
                 {
                     AccountingRepository.UpdateAccount(model);
-                    UserActivityLog.WriteDbLog(LogType.Submit, "Update add account", "/Accounting/AddAccount/"+ model.rowid + "" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "account id (" + model.rowid + ") updated in Chart of Accounts.", "/Accounting/AddAccount/" + model.rowid + "" + ", " + Net.BrowserInfo);
                     return Json(new { status = true, message = "Chart of account updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -208,7 +208,7 @@ namespace LaylaERP.Controllers
                     int ID = AccountingRepository.AddAccount(model);
                     if (ID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Save add account", "/Accounting/AddAccount" + ", " + Net.BrowserInfo);
+                        UserActivityLog.WriteDbLog(LogType.Submit, "New account " + model.pcg_type + " created in Chart of Accounts.", "/Accounting/AddAccount" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Chart of account saved successfully!!", url = "" }, 0);
                     }
                     else
@@ -258,7 +258,6 @@ namespace LaylaERP.Controllers
                     int ID = new AccountingRepository().AddProductAccount(ProductID, option_mode, ProductAccountNumberID);
                     if (ID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Save products account", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
                         return Json(new { status = true, message = "Product account saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
@@ -273,10 +272,10 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddPcgTypeDetails(PcgtypeModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Save general accounts", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
             int ID = AccountingRepository.AddPcgTypeDetails(model);
             if (ID > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "create new General Account " + model.pcg_type + " in General Accounts.", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Pcg type saved successfully!!", url = "", id = ID }, 0);
             }
             else
@@ -313,6 +312,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Account id (" + model.rowid + ") updated in General Accounts.", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
                 AccountingRepository.UpdatePcgType(model);
                 return Json(new { status = true, message = "Data updated successfully!!", url = "", id = model.rowid }, 0);
             }

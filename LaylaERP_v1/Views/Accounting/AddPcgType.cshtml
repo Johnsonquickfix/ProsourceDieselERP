@@ -159,7 +159,7 @@
                             'data': 'ID', sWidth: "8%",
                             'render': function (id, type, full, meta) {
                                 if ($("#hfEdit").val() == "1") {
-                                    return '<span title="Click Here To Edit Damage Stock Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + '); ActivityLog(\'Edit general accounts\',\'/Accounting/AddPcgType/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                                    return '<span title="Click Here To Edit Damage Stock Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + '); ActivityLog(\'edit account id ' + id + ' in General Accounts.\',\'/Accounting/AddPcgType/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                                 }
                                 else { return "No permission" }
                             }

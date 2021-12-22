@@ -276,7 +276,7 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue4);
                 if (!string.IsNullOrEmpty(model.strValue5))
                     todate = Convert.ToDateTime(model.strValue5);
-                DataTable dt = InventoryRepository.GetNewProductStock(model.strValue3, model.strValue2, fromdate, todate);
+                DataTable dt = InventoryRepository.GetNewProductStock(model.strValue3, model.strValue2, model.strValue1, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

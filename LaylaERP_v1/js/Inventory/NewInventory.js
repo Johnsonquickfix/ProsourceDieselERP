@@ -153,7 +153,7 @@ function NewInventoryReport() {
                     { data: 'tran_id', title: 'Transcation id', sWidth: "10%" },
                     { data: 'name', title: 'Vendor', sWidth: "10%" },
                     { data: 'warehouse_name', title: 'Warehouse', sWidth: "10%" },
-                    { data: 'op_stock', title: 'Open stock', sWidth: "5%", className: "text-right", },
+                    { data: 'op_stock', title: 'In stock', sWidth: "5%", className: "text-right", },
                     { data: 'stock_r', title: 'Stock receive', sWidth: "5%", className: "text-right", },
                     { data: 'stock_i', title: 'Stock issue', sWidth: "5%", className: "text-right", },
                     { data: 'UnitsinPO', title: 'Unit in POs', sWidth: "5%", className: "text-right", },

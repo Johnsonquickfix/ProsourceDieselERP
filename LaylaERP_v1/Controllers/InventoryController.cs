@@ -83,10 +83,10 @@ namespace LaylaERP.Controllers
             {
                 string meta_id = model.meta_id;
                 string meta_value = model.meta_value;
-                    
+
                 if (meta_id != "")
                 {
-                    new InventoryRepository().EditInventoryStock(meta_id,meta_value);
+                    new InventoryRepository().EditInventoryStock(meta_id, meta_value);
                     return Json(new { status = true, message = "Inventory Stock has been updated successfully!!", url = "" }, 0);
                 }
                 else
@@ -103,11 +103,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                if (!string.IsNullOrEmpty(model.strValue4))
-                    fromdate = Convert.ToDateTime(model.strValue4);
                 if (!string.IsNullOrEmpty(model.strValue5))
-                    todate = Convert.ToDateTime(model.strValue5);
-                DataTable dt = InventoryRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
+                    fromdate = Convert.ToDateTime(model.strValue5);
+                if (!string.IsNullOrEmpty(model.strValue6))
+                    todate = Convert.ToDateTime(model.strValue6);
+                DataTable dt = InventoryRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -120,11 +120,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                if (!string.IsNullOrEmpty(model.strValue2))
-                    fromdate = Convert.ToDateTime(model.strValue2);
                 if (!string.IsNullOrEmpty(model.strValue3))
-                    todate = Convert.ToDateTime(model.strValue3);
-                DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1, fromdate, todate);
+                    fromdate = Convert.ToDateTime(model.strValue3);
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    todate = Convert.ToDateTime(model.strValue4);
+                DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1, model.strValue2, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -220,7 +220,7 @@ namespace LaylaERP.Controllers
                 Year = Convert.ToDateTime(stockfromdate).Year.ToString();
                 var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
                 var to_date = from_date.AddMonths(1).AddDays(-1);
-                DataTable dt = InventoryRepository.GetForecastReport(from_date.ToString(), to_date.ToString(),vendorid, stockfromdate, stocktodate);
+                DataTable dt = InventoryRepository.GetForecastReport(from_date.ToString(), to_date.ToString(), vendorid, stockfromdate, stocktodate);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

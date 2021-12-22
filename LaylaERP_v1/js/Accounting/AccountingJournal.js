@@ -163,6 +163,7 @@ function ChangeStatus(id, status) {
 }
 
 function GetJournalByID(id) {
+    ActivityLog('edit journal id ' + id +' in Accounting Journal.', '/Product/AddNewProduct/');
     var obj =
         $.ajax({
             url: "/Accounting/GetJournalByID/" + id,

@@ -68,9 +68,9 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddJournal(AccountingJournalModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Save accounting journal", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "journal id ("+ model.rowid + ") updated in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
                 new AccountingRepository().EditJournal(model);
                 return Json(new { status = true, message = "Journal updated successfully!!", url = "", id = model.rowid }, 0);
             }
@@ -79,6 +79,7 @@ namespace LaylaERP.Controllers
                 int ID = new AccountingRepository().AddJournal(model);
                 if (ID > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "create new journal "+ model.label + " in Accounting Journal.", "/Accounting/AccountingJournal" + ", " + Net.BrowserInfo);
                     ModelState.Clear();
                     return Json(new { status = true, message = "Journal saved successfully!!", url = "", id = ID }, 0);
                 }

@@ -156,6 +156,20 @@ namespace LaylaERP.Controllers
             return k;
         }
 
+
+        [HttpPost]   
+        public JsonResult GetCouponList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = ReportsRepository.GetProductList(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
         [HttpPost]
         public ActionResult GetPodiumOrderDetails(string Month, string Year)
         {

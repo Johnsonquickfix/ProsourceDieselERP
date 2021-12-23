@@ -1700,6 +1700,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
+     
+        public static DataTable GetProductList(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT post_title FROM wp_posts P where p.post_type = 'shop_coupon'  and p.post_status != 'auto-draft' and P.post_status != 'trash' and post_title  like '" + strSearch + "%' order by post_title;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
 
     }
 }

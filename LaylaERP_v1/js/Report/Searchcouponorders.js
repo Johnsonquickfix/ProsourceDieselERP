@@ -14,12 +14,30 @@
     },
 
     );
+
+
+    $('#ddlcouponcode').select2({
+        //dropdownParent: $('#userprofile'),
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Coupon",
+        ajax: {
+            url: '/Reports/GetCouponList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.post_title } }) }; },
+            error: function (xhr, status, err) { }, cache: true
+        }
+
+    });
+
+    getAllCoupons();
+    $(".select2").select2();
 });
+
+ 
 
 function Search() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    var account = $('#txtcouponcode').val();
+    var account = $('#ddlcouponcode').val();
     // var type = $('#ddltype').val();
     if (account == "0") { swal('alert', 'Please enter coupon code', 'error'); }
     //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }

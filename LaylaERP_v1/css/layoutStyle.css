@@ -3032,3 +3032,10 @@ i.fa.fa-calendar {
     margin-left: 1px;
     cursor: pointer;
 }
+.searchcouponorders .select2-container {min-width:200px; margin-left:10px;}
+.group_inpt {
+    display: flex;
+    align-items: center;
+}
+    .group_inpt .control-label {white-space:nowrap;
+    display:flex; align-items:center;margin-right:10px;}

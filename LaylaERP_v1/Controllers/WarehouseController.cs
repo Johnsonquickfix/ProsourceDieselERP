@@ -142,7 +142,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 WarehouseRepository.Updatewarehouses(model);
-                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse id ("+ model.rowid + ") updated in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid="+ model.rowid + "" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Warehouse id ("+ model.rowid + ") updated in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid="+ model.rowid + "" + ", " + Net.BrowserInfo);
                 ModelState.Clear();
                 return Json(new { status = true, message = "Warehouse data updated successfully!!", url = "" }, 0);
             }
@@ -549,7 +549,7 @@ namespace LaylaERP.Controllers
                             int resultOne = WarehouseRepository.FileUpload(WarehouseID, FileName, ImagePath, FileExtension, size);
                             if (resultOne > 0)
                             {
-                                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse id (" + model.rowid + ") attached a file in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid=" + model.rowid + "" + ", " + Net.BrowserInfo);
+                                UserActivityLog.WriteDbLog(LogType.Submit, "Warehouse id (" + model.rowid + ") attached a file in manage warehouses.", "/Warehouse/UpdateWarehouse?rowid=" + model.rowid + "" + ", " + Net.BrowserInfo);
                                 return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
                             }
                             else
@@ -715,7 +715,7 @@ namespace LaylaERP.Controllers
             int ID = WarehouseRepository.Addwarehousesinfo(model);
             if (ID > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "warehouse additional info id ("+ model.warehouse_id + ") updated in manage warehouses.", "/Setup/productrule" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Warehouse additional info id ("+ model.warehouse_id + ") updated in manage warehouses.", "/Setup/productrule" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Warehouse additional info saved successfully!!", url = "" }, 0);
             }
             else

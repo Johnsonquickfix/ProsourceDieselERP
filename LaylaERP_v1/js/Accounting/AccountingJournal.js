@@ -143,6 +143,8 @@ function NatureofJournalList() {
 }
 
 function ChangeStatus(id, status) {
+    let jStatus = status == 0 ? "Inactive" : "Active";
+    ActivityLog('Change account status as ' + jStatus + ' in Accounting Journal.', '/Accounting/AccountingJournal/');
     var obj = { rowid: id, active: status, }
     $.ajax({
         url: '/Accounting/UpdateJournalStatus/', dataType: 'json', type: 'Post',
@@ -163,7 +165,7 @@ function ChangeStatus(id, status) {
 }
 
 function GetJournalByID(id) {
-    ActivityLog('edit journal id ' + id +' in Accounting Journal.', '/Product/AddNewProduct/');
+    ActivityLog('Edit journal id ' + id +' in Accounting Journal.', '/Product/AddNewProduct/');
     var obj =
         $.ajax({
             url: "/Accounting/GetJournalByID/" + id,

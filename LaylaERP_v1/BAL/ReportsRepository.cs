@@ -1713,5 +1713,52 @@ namespace LaylaERP.BAL
             return DT;
         }
 
+        public static DataTable GetWalmartDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "wal"),
+                    new SqlParameter("@searchcriteria", searchid),
+
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Walmart_search", parameters);
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetWalmartdetailsdata(string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;       
+                SqlParameter[] parameters =
+                   {
+            
+                    new SqlParameter("@flag", "sh"),
+                    new SqlParameter("@searchcriteria", searchid),
+
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Walmart_search", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

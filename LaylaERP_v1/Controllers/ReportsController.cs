@@ -107,6 +107,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult WalmartReport()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -525,7 +530,39 @@ namespace LaylaERP.Controllers
             return Json(obj, 0);
         }
 
-        
+        [HttpGet]
+
+        public JsonResult GetWalmartDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReportsRepository.GetWalmartDetailsList(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetWalmartdetailsdata(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetWalmartdetailsdata(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+
     }
 
          

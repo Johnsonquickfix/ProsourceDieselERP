@@ -295,7 +295,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate,int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -308,6 +308,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@flag", "SERCH"),
                     !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                     new SqlParameter("@isactive", userstatus),
+                    new SqlParameter("@status", statusid),
                     new SqlParameter("@searchcriteria", searchid),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),

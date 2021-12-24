@@ -1675,8 +1675,9 @@ namespace LaylaERP.Controllers
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
-                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
-                {
+               // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+               if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
                     FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;                   
 

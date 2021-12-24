@@ -726,10 +726,12 @@
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\CancelRefund.js" />
+    <Content Include="js\Report\IDMeOrderReport.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Report\Searchcouponorders.js" />
+    <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1056,6 +1058,9 @@
     <Content Include="Views\Poemail\AddEmail.cshtml" />
     <Content Include="Views\Reports\Searchcouponorders.cshtml" />
     <Content Include="Views\PurchaseOrder\PurchaseOrderDisapprove.cshtml" />
+    <Content Include="Views\Reports\WalmartReport.cshtml" />
+    <Content Include="Views\Reports\IDMeOrderReport.cshtml" />
+    <Content Include="Views\Reports\WisconsinReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

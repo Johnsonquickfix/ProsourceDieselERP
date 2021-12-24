@@ -23,7 +23,7 @@
     $(document).on('click', '#btnChange', function () { orderStatus(); });
 });
 function PurchaseOrderGrid() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+    let status_id = parseInt($("#ddlOrderStatus").val()) || 0, is_active = parseInt($("#ddlSearchStatus").val()) || 0;
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
@@ -45,7 +45,7 @@ function PurchaseOrderGrid() {
         sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
-            aoData.push({ name: "strValue3", value: urid }, { name: "strValue4", value: "PO" });
+            aoData.push({ name: "strValue3", value: status_id }, { name: "strValue4", value: (is_active > 0 ? is_active : '') }, { name: "strValue5", value: "PO" });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
             oSettings.jqXHR = $.ajax({

@@ -117,9 +117,10 @@
         getPurchaseOrderPrint(id, false);
     });
     $(document).on("click", ".btnApproved", function (t) {
-        t.preventDefault();
-        let id = parseInt($('#lblPoNo').data('id')) || 0;
-        orderStatusUpdate(id);
+        t.preventDefault(); let id = parseInt($('#lblPoNo').data('id')) || 0; orderApprove(id, 'approve', 3);
+    });
+    $(document).on("click", ".btnReject", function (t) {
+        t.preventDefault(); let id = parseInt($('#lblPoNo').data('id')) || 0; orderApprove(id, 'disapprove', 8);
     });
     $(document).on('click', "#btnuploade", function (t) {
         t.preventDefault(); Adduploade();
@@ -434,11 +435,8 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                console.log(result);let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0; 
+                console.log(result); let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
                 $.each(data['po'], function (key, row) {
-                    fk_user_approve = parseInt(row.fk_user_approve) || 0;
-                    if (fk_user_approve > 0)
-                        $('.page-heading').text('Edit Purchase Order (Approved by ' + row.user_approve + ')').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
                     $('#ddlVendor').val(row.fk_supplier).trigger('change');
@@ -463,17 +461,28 @@ function getPurchaseOrderInfo() {
                     }
                     else {
                         if (status_id == 1) {
-                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice." data-placement="left"><i class="fas fa-check-double"></i> Approved</button>');
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-yellow">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting')) {
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="top"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approve and create invoice." data-placement="top"><i class="fas fa-check-double"></i> Approve</button>');
+                                $('.footer-finalbutton').append(' <button type="button" class="btn btn-danger btnReject" data-toggle="tooltip" title="Disapprove/Reject" data-placement="top"><i class="fas fa-ban"></i> Disapprove</button>');
+                            }
                             else
                                 $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else if (status_id == 3) {
+                            fk_user_approve = parseInt(row.fk_user_approve) || 0;
+                            if (fk_user_approve > 0) $('.page-heading').empty().append('Edit Purchase Order <span class="text-green">(Approved by ' + row.user_approve + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                            $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                        }
+                        else if (status_id == 8) {
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else {
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-aqua">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
@@ -653,9 +662,9 @@ function saveVendorPO() {
         }]);
     }
 }
-function orderStatusUpdate(oid) {
-    let option = { Search: oid, Status: '3' };
-    let _text = 'Do you want to approve this Purchase Order #' + $('#lblPoNo').text() + '?';
+function orderApprove(oid, status_title, status) {
+    let option = { Search: oid, Status: status };
+    let _text = 'Do you want to ' + status_title + ' this Purchase Order #' + $('#lblPoNo').text() + '?';
     swal.queue([{
         title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
@@ -788,7 +797,8 @@ function send_mail(id, result) {
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
-    myHtml += '                                            <a href="' + data['po'][0].base_url + '/PurchaseOrder/PurchaseOrderApproval?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a>';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-accept?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a> ';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-reject?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#ff4100;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Disapprove</a>';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';

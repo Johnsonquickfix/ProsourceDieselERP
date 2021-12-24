@@ -28,6 +28,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        [Route("purchaseorder/po-accept")]
         public ActionResult PurchaseOrderApproval(string id, string uid, string key)
         {
             if (!string.IsNullOrEmpty(id))
@@ -42,6 +43,44 @@ namespace LaylaERP.Controllers
                 else
                     obj.RowID = 0;
                 obj.Status = 3;
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
+                {
+                    DataTable dt = PurchaseOrderRepository.PurchaseApproval(obj);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.Search;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
+        [Route("purchaseorder/po-reject")]
+        public ActionResult PurchaseOrderDisapprove(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
+                obj.Status = 8;
                 obj.Search = key;
                 if (obj.LoginID > 0 && obj.RowID > 0)
                 {
@@ -197,12 +236,15 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
+                int statusid = 0;
                 DateTime? fromdate = null, todate = null;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
-                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(fromdate, todate, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    statusid = Convert.ToInt32(model.strValue3);
+                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(fromdate, todate, statusid, model.strValue4, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -297,10 +339,33 @@ namespace LaylaERP.Controllers
                         result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, _html);
                     }
                 }
-                string[] strMails = model.strValue1.Split(',');
-                foreach (string mailid in strMails)
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult SendMailPOReject(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true; 
+                string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> disapproved.<br /><br /><br /><br />" + model.strValue5;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
                 {
-                    //result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(model.strValue4))
+                {
+                    strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> disapproved.<br /><br /><br /><br />" + model.strValue5;
+                    result = SendEmail.SendEmails_outer(model.strValue4, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
                 }
             }
             catch { status = false; result = ""; }

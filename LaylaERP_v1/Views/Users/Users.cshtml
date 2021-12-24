@@ -278,6 +278,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Applied bulk action "inactive" for user id (' + id + ')', '/Users/Users');
                         DeleteUsers(id);
                     }
                     //dataGridLoad();
@@ -291,6 +292,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Applied bulk action "active" for user id (' + id + ')', '/Users/Users');
                         ActiveUsers(id);
                     }
                 })
@@ -317,6 +319,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Changed role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         changeRole(ID);
                     }
                 })
@@ -344,6 +347,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Grant role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         Grantrole(ID);
                     }
                 })
@@ -369,6 +373,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         Revokerole(ID);
                     }
                 })

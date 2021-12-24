@@ -304,8 +304,6 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult ChangeGiftCardStatus(SearchModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Save Gift card order Info", "/GiftCard/GiftCard/GiftcardList" + ", " + Net.BrowserInfo);
-
             string strID = model.strValue1;
             if (strID != "")
             {

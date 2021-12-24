@@ -1913,7 +1913,7 @@ namespace LaylaERP.Controllers
                     {
                         thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                     }
-                    UserActivityLog.WriteDbLog(LogType.Submit, "update product category (" + name + ")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update product category (" + name + ")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
 
                     ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
                     new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);

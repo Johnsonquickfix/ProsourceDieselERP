@@ -456,7 +456,8 @@
             if (model.ID > 0)
             {
                 UserProfileRepository.Update_Password(model, model.ID);
-                UserActivityLog.WriteDbLog(LogType.Submit, "Password updated by " + model.user_nicename + "", "/Home/Index" + ", " + Net.BrowserInfo);
+                
+                UserActivityLog.WriteDbLog(LogType.Submit, "Password updated by " + CommanUtilities.Provider.GetCurrent().UserName + "", "/Home/Index" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Password updated successfully!!", url = "" }, 0);
             }
             else

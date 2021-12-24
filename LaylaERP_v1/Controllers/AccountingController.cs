@@ -115,7 +115,6 @@ namespace LaylaERP.Controllers
         }
         public JsonResult UpdateJournalStatus(AccountingJournalModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Update accounting journal", "/Accounting/AccountingJournal/" + model.rowid + "" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 new AccountingRepository().UpdateJournalStatus(model);

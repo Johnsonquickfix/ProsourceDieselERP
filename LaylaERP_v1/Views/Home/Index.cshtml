@@ -172,16 +172,16 @@
                     <div class="input-group">
                         <!--<input type="text" name="q" class="form-control" readonly placeholder="Search...">-->
 
-                        
-                        <span class="input-group-btn" title="Click here to view search bar" data-placement="bottom" data-toggle="tooltip">
-                            
-                                <button type="button" id="btnsearch" name="search" class="btn btn-flat" style="width:100%;">
 
-                                    <span style="float:left;">Click here to search...</span>
-                                </button>
-                          <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-            <i class="fa fa-search"></i>
-        </button>
+                        <span class="input-group-btn" title="Click here to view search bar" data-placement="bottom" data-toggle="tooltip">
+
+                            <button type="button" id="btnsearch" name="search" class="btn btn-flat" style="width:100%;">
+
+                                <span style="float:left;">Click here to search...</span>
+                            </button>
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </span>
                     </div>
                 </form>
@@ -254,7 +254,7 @@
     <script src="~/Content/dx/dx.all.js"></script>
     <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
     <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
-
+    <script src="~/js/UserActivity.js"></script>
     <script>
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
@@ -268,7 +268,10 @@
 
            // GetUsers();
 
-            $(document).on('click', '#btnExit', function () {top.window.location.href = top.window.location.origin + '/Home/Login';});
+            $(document).on('click', '#btnExit', function () {
+                ActivityLog('Logout user @user.UserName', '/Home/Index');
+                top.window.location.href = top.window.location.origin + '/Home/Login';
+            });
             $(document).on("click", "#btnuserprofile", function (t) {
                 t.preventDefault();
                 ProfileModal();
@@ -917,7 +920,7 @@
 
 
             else {
-               // $("#userprofile").on("change", "#txtPostCode", function (t) 
+               // $("#userprofile").on("change", "#txtPostCode", function (t)
                 $("#txtPostCode").change();
                 if ($("#hfzipstatus").val() == "true") {
                     var obj = {

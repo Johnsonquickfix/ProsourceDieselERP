@@ -187,7 +187,7 @@ namespace LaylaERP.Controllers
             byte[] image = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/EmployeeProfileImage/default.png"));
             if (model.rowid > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "employee id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Employee id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
                 int ID = HrmsRepository.EditEmployeeBasicInfo(model, model.rowid);
                 HrmsRepository.EditEmployeeBasicDetails(model, model.rowid);
                 HrmsRepository.UpdateNewEmployeeasUser(model);
@@ -220,7 +220,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "employee info tab id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Employee info tab id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
                 int ID = HrmsRepository.EditEmployeeAdditionalInfo(model, model.rowid);
                 return Json(new { status = true, message = "Employee Info Updated successfully!!", url = "" }, 0);
             }
@@ -231,7 +231,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddSalaryInfo(HrmsModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "employee salary info tab id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
+            UserActivityLog.WriteDbLog(LogType.Submit, "Employee salary info tab id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
             if (model.rowid > 0)
             {
                 int ID = HrmsRepository.EditSalaryInfo(model, model.rowid);
@@ -345,7 +345,7 @@ namespace LaylaERP.Controllers
                             int resultOne = HrmsRepository.EmployeeFileUpload(fk_emp, FileName, ImagePath, FileExtension, size);
                             if (resultOne > 0)
                             {
-                                UserActivityLog.WriteDbLog(LogType.Submit, "employee attached a file in id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
+                                UserActivityLog.WriteDbLog(LogType.Submit, "Employee attached a file in id (" + model.rowid + ") updated in Employee.", "/Hrms/Employee" + ", " + Net.BrowserInfo);
                                 return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
                             }
                             else

@@ -236,7 +236,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult SaveGiftCardOrder(OrderModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Proceed for order payment invoice", "/GiftCard/Ordermeta/" + model.order_id + "" + ", " + Net.BrowserInfo);
+            UserActivityLog.WriteDbLog(LogType.Submit, "Gift card proceed for order payment invoice", "/GiftCard/Ordermeta/" + model.order_id + "" + ", " + Net.BrowserInfo);
             string JSONresult = string.Empty;
             try
             {

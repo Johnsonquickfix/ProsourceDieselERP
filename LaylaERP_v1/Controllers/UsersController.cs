@@ -685,7 +685,6 @@ namespace LaylaERP.Controllers
             }
             else if (strID != "")
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "User id (" + role_id + ") approved user role for role id (" + strID+")", "/Users/AssignRole/" + role_id + "" + ", " + Net.BrowserInfo);
                 new UsersRepositry().ChangePermission(strID, role_id, flag);
                 new UsersRepositry().UpdateAddPermission(role_id, strAdd);
                 new UsersRepositry().UpdateEditPermission(role_id, strEdit);

@@ -1055,6 +1055,7 @@
     <Content Include="Views\PurchaseOrder\PurchaseOrderApproval.cshtml" />
     <Content Include="Views\Poemail\AddEmail.cshtml" />
     <Content Include="Views\Reports\Searchcouponorders.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderDisapprove.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

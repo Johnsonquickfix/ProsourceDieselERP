@@ -1,18 +1,17 @@
 ﻿
 @{
-    ViewBag.Title = "PurchaseOrderApproval";
-    Layout = null;
+    ViewBag.Title = "Purchase Order Disapprove";
 }
-<h2 class="lbl-tilte" data-status="@ViewBag.status" data-id="@ViewBag.id">Purchase Order Approval</h2>
 
+<h2 class="lbl-tilte" data-status="@ViewBag.status" data-id="@ViewBag.id">Purchase Order Disapprove.</h2>
 <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
         let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
         if (_status == "Success") {
-            $('.lbl-tilte').empty().append('Your purchase order approved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
-            getPurchaseOrderPrint(_id);
+            $('.lbl-tilte').empty().append('Your purchase order Disapproved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+            //getPurchaseOrderPrint(_id);
         }
         else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>');}
     });

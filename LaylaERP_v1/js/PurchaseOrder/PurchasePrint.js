@@ -90,6 +90,11 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
     myHtml += '                                    </tr>';
+    if (!is_inv) {
+        myHtml += '                                    <tr>';
+        myHtml += '                                        <td style = "font-family:sans-serif;font-size:20px;color:#4f4f4f;line-height:1.4;padding:20px 2.5px;text-align: center;" colspan = "2">' + data['po'][0].po_status + '</td>';
+        myHtml += '                                    </tr>';
+    }
     myHtml += '                                </table>';
     myHtml += '                            </td>';
     myHtml += '                        </tr >';

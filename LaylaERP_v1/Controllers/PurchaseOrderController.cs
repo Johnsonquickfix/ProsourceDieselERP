@@ -28,6 +28,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        [Route("purchaseorder/po-accept")]
         public ActionResult PurchaseOrderApproval(string id, string uid, string key)
         {
             if (!string.IsNullOrEmpty(id))
@@ -42,6 +43,44 @@ namespace LaylaERP.Controllers
                 else
                     obj.RowID = 0;
                 obj.Status = 3;
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
+                {
+                    DataTable dt = PurchaseOrderRepository.PurchaseApproval(obj);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.Search;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
+        [Route("purchaseorder/po-reject")]
+        public ActionResult PurchaseOrderDisapprove(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
+                obj.Status = 8;
                 obj.Search = key;
                 if (obj.LoginID > 0 && obj.RowID > 0)
                 {
@@ -302,6 +341,20 @@ namespace LaylaERP.Controllers
                 {
                     //result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
                 }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult SendMailPOReject(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                string strBody = "Dear User,<br /> Please find your attached PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />" + model.strValue5;
+                result = SendEmail.SendEmails_outer(model.strValue1, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

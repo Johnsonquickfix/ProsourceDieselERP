@@ -28,8 +28,8 @@
             changeStatus();
         }
     });
-    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); ActivityLog('Proceed to payment from invoice', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val())+''); AcceptPayment(); });
-    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Order complete waiting for payment status', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) +''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
+    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); ActivityLog('Gift card proceed to payment from invoice', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val())+''); AcceptPayment(); });
+    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Gift card order complete waiting for payment status', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) +''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
     $("#GiftModal").on("change", "#ddlPaymentMethod", function (t) {
         t.preventDefault();
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }

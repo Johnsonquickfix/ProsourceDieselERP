@@ -142,7 +142,6 @@
                 title: '', text: "Do you want to change the status ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes',
             }).then((result) => {
                 if (result.value) {
-                    ActivityLog('Change customer status', '/Customer/Customer/' + id + '');
                     ChangeStatus(id);
                     dataGridLoad();
                 }

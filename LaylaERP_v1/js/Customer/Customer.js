@@ -160,6 +160,7 @@ function DeleteCustomer(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
+                ActivityLog('Applied bulk action delete for customer id (' + id + ')', '/Customer/Customer/' + id + '');
                 swal('Success!', data.message, 'success');
             }
             else {
@@ -175,7 +176,9 @@ function DeleteCustomer(id) {
 function ChangeStatus(id) {
    // debugger
     var status = $("#ddlUserStatus").val();
+    let custStatus = status == "0" ? "active" : "inactive"
     var obj = { strVal: id, user_status: status }
+    
     $.ajax({
         url: '/Customer/ChangeCustomerStatus/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -183,6 +186,7 @@ function ChangeStatus(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
+                ActivityLog('Change customer status ' + custStatus + '', '/Customer/Customer/' + id + '');
                 swal('Success!', data.message, 'success');
             }
             else {

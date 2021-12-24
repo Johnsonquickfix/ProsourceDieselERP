@@ -336,11 +336,6 @@ namespace LaylaERP.Controllers
                         result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, _html);
                     }
                 }
-                string[] strMails = model.strValue1.Split(',');
-                foreach (string mailid in strMails)
-                {
-                    //result = SendEmail.SendEmails_outer(model.strValue1, "Approval for Purchase Order #" + model.strValue2 + ".", strBody, model.strValue3);
-                }
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
@@ -352,9 +347,23 @@ namespace LaylaERP.Controllers
             bool status = false;
             try
             {
-                status = true;
-                string strBody = "Dear User,<br /> Please find your attached PO number #" + model.strValue2 + ". If you have any questions please feel free to contact us.<br /><br /><br /><br />" + model.strValue5;
-                result = SendEmail.SendEmails_outer(model.strValue1, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
+                status = true; 
+                string strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> disapproved.<br /><br /><br /><br />" + model.strValue5;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(model.strValue4))
+                {
+                    strBody = "Hi,<br /> Purchase order number <b>#" + model.strValue2 + "</b> disapproved.<br /><br /><br /><br />" + model.strValue5;
+                    result = SendEmail.SendEmails_outer(model.strValue4, "Your Purchase order #" + model.strValue2 + " disapproved.", strBody, model.strValue3);
+                }
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

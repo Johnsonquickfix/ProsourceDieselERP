@@ -29,7 +29,7 @@
         }
     }
     function printinvoice(id, result) {
-        let data = JSON.parse(result.data); console.log(result);
+        let data = JSON.parse(result.data); //console.log(result);
         let inv_title = 'Purchase Order';
         let so_no = parseInt(data['po'][0].fk_projet) || 0;
         let va_cp = so_no > 0 ? 33.3 : 66.3;

@@ -37,16 +37,14 @@
 
         //$('#PrintModal .modal-body').empty().append(myHtml);
         let opt = { strValue1: po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
-        if (opt.strValue1.length > 5) {
-            $.ajax({
-                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-                success: function (result) {
-                    console.log(result);
-                    setTimeout(function () { window.location = window.location.origin; }, 10000);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                complete: function () { setTimeout(function () { window.location = window.location.origin; }, 10000); }, async: false
-            });
-        }
+        $.ajax({
+            type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) {
+                console.log(result);
+                setTimeout(function () { window.location = window.location.origin; }, 10000);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { setTimeout(function () { window.location = window.location.origin; }, 10000); }, async: false
+        });
     }
 </script>

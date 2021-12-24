@@ -891,6 +891,7 @@ function setprice(ID) {
             if (data.status == true) {
                 if (data.url == "Manage") {
                     bindbuyingprice();
+                   GetProductvariationID($("#hfid").val());
                     swal('Success!', data.message, 'success');
                 }
                 else {

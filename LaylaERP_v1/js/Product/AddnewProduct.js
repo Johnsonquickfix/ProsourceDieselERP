@@ -1397,8 +1397,9 @@ function GetShippingClass() {
     return _shipping_class;
 }
 function GetProductvariationID(ProductID) {
-    let _shipping_class = GetShippingClass();
     $("#product_variations").empty();
+    let _shipping_class = GetShippingClass();
+   
     var obj = { strVal: ProductID }
     $.ajax({
         url: '/Product/GetDataVariationByID', type: 'post', contentType: "application/json; charset=utf-8", dataType: 'JSON',

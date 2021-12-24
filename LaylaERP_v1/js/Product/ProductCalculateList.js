@@ -98,16 +98,6 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'Margin', title: 'Sale Margin (Default)', sWidth: "8%", render: function (data, type, row) {
-                    var tprice = 'toFormat';
-                    if (data.toString() == "")
-                        tprice = "";
-                    else
-                        tprice = '$' + parseFloat(data).toFixed(2);
-                    return tprice
-                }
-            },
-            {
                 data: 'regularmarginpersantage', title: 'Retail Margin (%)', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
@@ -117,6 +107,17 @@ function dataGridLoad(order_type) {
                     return tprice
                 }
             },
+            {
+                data: 'Margin', title: 'Sale Margin (Default)', sWidth: "8%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    if (data.toString() == "")
+                        tprice = "";
+                    else
+                        tprice = '$' + parseFloat(data).toFixed(2);
+                    return tprice
+                }
+            },
+            
             {
                 data: 'marginpersantage', title: 'Sale Margin (%)', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';

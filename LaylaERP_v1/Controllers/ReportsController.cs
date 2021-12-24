@@ -111,7 +111,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult WisconsinReport()
+        {
+            return View();
+        }
+        public ActionResult IDMeOrderReport()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -560,6 +567,27 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+
+        [HttpPost]
+        public ActionResult GetWisconsinSalesOrder(string Year)
+        {
+            DateTime from_date = new DateTime(Convert.ToInt32(Year), 1, 1);
+            DateTime to_date = new DateTime(Convert.ToInt32(Year), 12, 31);
+
+            ReportsRepository.GetWisconsinSalesOrder(from_date.ToString(), to_date.ToString());
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        [HttpPost]
+        public ActionResult GetIDMeOrderReport(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetIDMeOrderReport(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
         }
 
 

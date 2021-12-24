@@ -1760,5 +1760,126 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void GetWisconsinSalesOrder(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                DataSet ds1 = new DataSet();
+                string ssql;
+
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+                    SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date)
+                    };
+                    ds1 = DAL.SQLHelper.ExecuteDataSet("erp_wisconsin", param);
+                }
+                else
+                {
+                    ssql = "";
+                }
+                //DataSet ds1 = new DataSet();
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
+                    uobj.tax = ds1.Tables[0].Rows[i]["Tax"].ToString();
+                    uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shiptostreet"].ToString();
+                    uobj.shipping_city = ds1.Tables[0].Rows[i]["shiptocity"].ToString();
+                    uobj.shipping_state = ds1.Tables[0].Rows[i]["shiptostate"].ToString();
+                    uobj.shipping_postcode = ds1.Tables[0].Rows[i]["shiptozip"].ToString();
+                    uobj.shipping_country = ds1.Tables[0].Rows[i]["shiptocountrycode"].ToString();
+                    uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingstreet"].ToString();
+                    uobj.billing_city = ds1.Tables[0].Rows[i]["billingcity"].ToString();
+                    uobj.billing_country = ds1.Tables[0].Rows[i]["billingcountry"].ToString();
+                    uobj.billing_state = ds1.Tables[0].Rows[i]["billingstate"].ToString();
+                    uobj.billing_postcode = ds1.Tables[0].Rows[i]["billingzip"].ToString();
+                    uobj.provider = ds1.Tables[0].Rows[i]["provider"].ToString();
+                    uobj.transaction_type = ds1.Tables[0].Rows[i]["transaction_type"].ToString();
+                    uobj.transaction_reference_id = ds1.Tables[0].Rows[i]["transaction_reference_id"].ToString();
+                    uobj.shipping_amount = ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
+                    uobj.handling_amount = ds1.Tables[0].Rows[i]["handling_amount"].ToString();
+                    uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
+                    uobj.Discount = ds1.Tables[0].Rows[i]["Discount"].ToString();
+                    uobj.total = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetIDMeOrderReport(string from_date, string to_date, string Type)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                    new SqlParameter("@type", Type),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_idmeorderreport", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["post_date"].ToString();
+
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["name"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.Discount = "";
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                            uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        else
+                            uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
     }
 }

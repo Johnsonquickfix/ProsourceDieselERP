@@ -13,7 +13,6 @@ $(document).ready(function () {
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct");
         else
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct/" + pathid);
-      
     }
     
     $(".select2").select2();

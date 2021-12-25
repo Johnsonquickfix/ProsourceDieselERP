@@ -419,7 +419,51 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
-         
+
+        [HttpGet]
+        public JsonResult GetReceveOrderPrint(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.GetReceiveOrder(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SendMailReceve(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Receive order number <b>#" + model.strValue2 + "</b>.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Receive Order #" + model.strValue2 + ".", strBody, _html);
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+
 
     }
 }

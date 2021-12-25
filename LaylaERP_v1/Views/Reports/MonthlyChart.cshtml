@@ -26,12 +26,14 @@
                     <div class="alignleft actions">
                         <div class="input-group group_inpt">
                             <label class="control-label">Year<span style="color:red;"> *</span></label>
-                            <select class="form-control" id="year">
-                                <option value="">Year</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option selected value="2021">2021</option>
-                                <option value="2022">2022</option>
+                            @*<select class="form-control" id="year">
+            <option value="">Year</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option selected value="2021">2021</option>
+            <option value="2022">2022</option>
+        </select>*@
+                            <select name="select" class="form-control" id="year">
                             </select>
                         </div>
                     </div>
@@ -50,7 +52,7 @@
 
         $(document).ready(function () {
             $("#loader").hide();
-            Search();
+         
             $(function () {
                 Highcharts.setOptions({
                     lang: {
@@ -58,6 +60,13 @@
                     }
                 });
             })
+            var currentYear = new Date().getFullYear();
+            var yearSelect = document.getElementById('year');
+            for (var i = -2; i < 5; i++) {
+                var isSelected = currentYear === currentYear - i
+                yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+            }
+            Search();
         });
         function Search() {
             $("#loader").show();

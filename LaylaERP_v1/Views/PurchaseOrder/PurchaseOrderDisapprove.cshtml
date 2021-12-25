@@ -10,9 +10,9 @@
 <script type="text/javascript">
     $(document).ready(function () {
         let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
-        if (_status == "Success") {
+        if (_status == "Success") {            
             $('.lbl-tilte').empty().append('Your purchase order Disapproved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
-            //getPurchaseOrderPrint(_id);
+            getPurchaseOrderPrint(_id);
         }
         else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>');}
     });
@@ -29,7 +29,7 @@
         }
     }
     function printinvoice(id, result) {
-        let data = JSON.parse(result.data); 
+        let data = JSON.parse(result.data);
         let po_authmail = data['po'][0].po_authmail;
         
         //let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';

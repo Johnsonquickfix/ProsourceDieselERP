@@ -14,11 +14,9 @@
         opens: 'left',
         orientation: "left auto",
     });
-    $.when(getProducts()).done(function () { ProductStockGrid()});
+    $.when(getProducts(), getVendor()).done(function () { ProductStockGrid() });
     $(".select2").select2();
-    $(document).on("click", "#btnSearch", function (t) {
-        t.preventDefault(); ProductStockGrid();
-    });
+    $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); ProductStockGrid(); });
     $("#ddlProduct,#ddlCategory").change(function () {
         //ProductStockGrid();
     });
@@ -62,17 +60,29 @@ function getProducts() {
         error: function (xhr, status, err) { $("#loader").hide(); }
     });
 }
+function getVendor() {
+    $.ajax({
+        url: "/PurchaseOrder/GetVendor",
+        type: "Get",
+        success: function (data) {
+            $('#ddlVendor').append('<option value="-1">Please Select Vendor</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+}
 
 function ProductStockGrid() {
     var dfa = $('#txtDate').val().split('-');
     //let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
     //let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
     let sd = dfa[0], ed = dfa[1];
-    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
-    let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
+    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0, vnid = parseInt($("#ddlVendor").val()) || 0;
+    let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed };// console.log(obj);
     console.log(obj);
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
+        oSearch: { "sSearch": '' }, bProcessing: true, bAutoWidth: false,
         dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
         {
             extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
@@ -81,12 +91,8 @@ function ProductStockGrid() {
         }
         ],
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         destroy: true, ajax: {
             url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
@@ -104,11 +110,6 @@ function ProductStockGrid() {
             { data: 'category', title: 'Category', sWidth: "8%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
             { data: 'post_title', title: 'Product Name', sWidth: "28%" },
-            //{
-            //    data: 'op_stock', title: 'Opening Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-            //        if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
-            //    }
-            //},
             {
                 data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
@@ -142,9 +143,10 @@ function ProductStockGrid() {
 function format(d) {
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
-    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();    
-    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:48.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
-    console.log(d,option);
+    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
+    let vnid = parseInt($("#ddlVendor").val()) || 0;
+    let option = { strValue1: d.id, strValue2: (vnid > 0 ? vnid : ''), strValue3: sd, strValue4: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:48.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
+    console.log(d, option);
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -175,6 +177,17 @@ function getPurchaseOrder(pid, wid, title) {
     searchOrderModal(title);
     $('#tblOrderList').dataTable({
         destroy: true, bServerSide: false, order: [[0, "desc"]],
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+
+            let qty = api.column(4).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            var r_qty = api.column(5).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            var bal = qty - r_qty;
+            $(api.column(4).footer()).html(parseFloat(qty).toFixed(0));
+            $(api.column(5).footer()).html(parseFloat(r_qty).toFixed(0));
+            $(api.column(6).footer()).html(parseFloat(bal).toFixed(0));
+        },
         columns: [
             { data: 'ref', title: 'PO No', sWidth: "15%" },
             { data: 'po_date', title: 'Created Date', sWidth: "15%" },
@@ -182,11 +195,7 @@ function getPurchaseOrder(pid, wid, title) {
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "25%" },
             { data: 'quantity', title: 'Quantity', sWidth: "10%", class: 'text-right' },
             { data: 'recqty', title: 'Received Quantity', sWidth: "10%", class: 'text-right' },
-            {
-                data: 'balance', title: 'Balance', sWidth: "10%", class: 'text-right', render: function (data, type, row) {
-                    return (row.quantity - row.recqty).toFixed(0);
-                }
-            }
+            { data: 'balance', title: 'Balance', sWidth: "10%", class: 'text-right', render: function (data, type, row) { return (row.quantity - row.recqty).toFixed(0); } }
         ],
         sAjaxSource: "/Inventory/GetPOByWarehouse",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -218,6 +227,7 @@ function searchOrderModal(title) {
     modalHtml += '<div class="table-responsive">';
     modalHtml += '<table id="tblOrderList" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
     modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 25%">Vendor Name</th><th style="width: 25%">Planned date of delivery</th><th class="text-right" style="width: 10%">Quantity</th><th class="text-right" style="width: 10%">Received Quantity</th><th class="text-right" style="width: 10%">Balance</th></tr></thead>';
+    modalHtml += '<tfoot><tr><th style="width: 15%"></th><th style="width: 15%"></th><th style="width: 25%"></th><th style="width: 25%">Total</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th></tr></tfoot>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';
@@ -240,8 +250,8 @@ function exportTableToCSV(filename) {
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
     let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
-    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
-    let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };
+    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0, vnid = parseInt($("#ddlVendor").val()) || 0;;
+    let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed };
     //console.log(dfa);
     $.ajax({
         url: "/Inventory/ExportProductStock", data: obj,

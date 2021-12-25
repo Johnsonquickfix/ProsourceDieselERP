@@ -180,7 +180,7 @@ function giftcardStatus() {
                 $.post('/GiftCard/ChangeGiftCardStatus', obj)
                     .done(function (data) {
                         if (data.status) {
-                            console.log(data);
+                          
                             swal.insertQueueStep(data.message);
                             //GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
                             dataGCGridLoad();

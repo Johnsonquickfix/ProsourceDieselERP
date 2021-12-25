@@ -50,7 +50,7 @@
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
     });
-     isEdit(true);
+     //isEdit(true);
  });
 
 function isEdit(val) {
@@ -63,6 +63,7 @@ $('#btnSave').click(function () {
         swal("alert", "Please enter shipping name", "error").then(function () { swal.close(); $('#txtShippingName').focus(); })
     }
     else {
+        ActivityLog('Add New Shipping', '/Product/ShippingClass');
         var obj = { Shippingclass_Name: Shipping }
         $.ajax({
             url: '/Product/NewShipping/', dataType: 'json', type: 'Post',
@@ -101,6 +102,7 @@ $('#btndelete').click(function () {
         swal("alert", "Please selectcCountry", "error").then(function () { swal.close(); $('#ddlCountrydel').focus(); })
     }
     else {
+        ActivityLog('delete shipping price', '/Product/ShippingClass');
         var obj = { fk_ShippingID: Shipping, countrycode: country }
         $.ajax({
             url: '/Product/deleteShippingprice/', dataType: 'json', type: 'Post',
@@ -154,6 +156,7 @@ function Adddetails() {
         swal('Alert', 'Please select state', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
     }
     else {
+        ActivityLog('Add/Update shipping class', '/Product/ShippingClass');
         var obj = {
             ID: ID,
             fk_ShippingID: fk_ShippingID,
@@ -424,7 +427,7 @@ function dataGridLoad(order_type) {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                    return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                        return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + '); ActivityLog(\'Edit shipping class\',\'/Product/ShippingClass/' + id +'\');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     }
                     else { return "No Permission"; }
                     
@@ -454,9 +457,9 @@ function EditData(id) {
             
             $('#txtShippingClass').focus();
             $("#txtShippingClass").val(i[0].ShipName);
-        //    $("#txttaxprice").val(i[0].Shipping_taxrate);
+            //$("#txttaxprice").val(i[0].Shipping_taxrate);
         
-          $('#ddlCountry').val(i[0].countrycode).trigger('change');            
+            $('#ddlCountry').val(i[0].countrycode).trigger('change');            
             $('#txtShippingClass').val(i[0].fk_ShippingID).trigger('change');
            // $('#ddlCountry').trigger('change');
             $('#ddlMethod').val(i[0].Method).trigger('change');

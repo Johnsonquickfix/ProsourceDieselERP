@@ -90,7 +90,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        public static DataTable GetProductStock(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -102,7 +102,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@categoryid", categoryid),
                     new SqlParameter("@productid", productid),
                     new SqlParameter("@fromdate", fromdate),
-                    new SqlParameter("@todate", todate)
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@supplierid", supplierid)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_stock_register", parameters);
             }
@@ -112,7 +113,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataSet exportProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        public static DataSet exportProductStock(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataSet ds = new DataSet();
             try
@@ -123,6 +124,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@sku", strSKU),
                     new SqlParameter("@categoryid", categoryid),
                     new SqlParameter("@productid", productid),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate)
                 };
@@ -135,7 +137,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetWarehouseStock(string product_id, DateTime fromdate, DateTime todate)
+        public static DataTable GetWarehouseStock(string product_id, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -144,6 +146,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@flag","PROWS"),
                     new SqlParameter("@productid", product_id),
+                    new SqlParameter("@supplierid", supplierid),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate)
                 };
@@ -315,5 +318,56 @@ namespace LaylaERP.BAL
             }
             return dtr;
         }
+
+        //-----------------------------Get new inventory--------------------------------
+        public static DataTable GetNewProductStock(string productid, string warehouse, string supplierid, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag","PRSTK"),
+                    new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@warehouseid", warehouse),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_stock_register", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetNewWareHouseList()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT rowid, ref from wp_warehouse WHERE is_system = 0 and status = 1 order by rowid";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetNewProductList()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "wp_ddl_productlist";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
     }
 }

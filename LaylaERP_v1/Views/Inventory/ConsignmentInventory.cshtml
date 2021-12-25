@@ -31,12 +31,12 @@
                 <h2 class="page-heading">
                     On-Hand Inventory
                 </h2>
-            <div class="active" style="margin-left:auto;min-width:280px;">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                <div class="active" style="margin-left:auto;min-width:280px;">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
@@ -59,6 +59,14 @@
                 <select class="form-control select2" id="ddlCategory" placeholder="Select Category" style="width: 100%;"></select>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Vendor</label>
+                <div class="">
+                    <select class="form-control select2" id="ddlVendor" placeholder="Select Vendor" style="width: 100%;"></select>
+                </div>
+            </div>
+        </div>
         <div class="col-md-3 text-center mt-25 d-flex">
             <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
         </div>
@@ -78,7 +86,6 @@
                                         <th>Category</th>
                                         <th>SKU</th>
                                         <th>Product Name</th>
-                                        @*<th class="text-right">Opening Stock</th>*@
                                         <th class="text-right">Units in Stock</th>
                                         <th class="text-right">Units in POs</th>
                                         <th class="text-right">Sale Units</th>

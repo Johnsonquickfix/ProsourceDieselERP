@@ -26,6 +26,7 @@ namespace LaylaERP_API
                 defaults: new { id = RouteParameter.Optional }
             );
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.UseXmlSerializer = true;
         }
     }
 }

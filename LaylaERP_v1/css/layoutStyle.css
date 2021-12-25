@@ -1008,7 +1008,7 @@ body .swal2-container .swal2-popup .swal2-icon {
 body .swal2-popup .swal2-title {
     color: #4f4f4f;
     font-weight: 400;
-    text-transform: capitalize;
+   /* text-transform: capitalize;*/
     font-size: 24px;
 }
 
@@ -3024,3 +3024,18 @@ i.fa.fa-calendar {
 .accountbalance .form-group.group-test span{width:25%;padding-left:10px; padding-right:20px;}
 .role.permissions .form-user-role {display: inline-flex;}
 #on-hand-inventory .table-blue th, #on-hand-inventory .table-blue td {padding-right:21px !important;}
+.order.modal-open #billModal {z-index:9999;}
+.pastdue {
+    font-size: 15px;
+    color: #ff0000;
+    vertical-align: middle;
+    margin-left: 1px;
+    cursor: pointer;
+}
+.searchcouponorders .select2-container {min-width:200px; margin-left:10px;}
+.group_inpt {
+    display: flex;
+    align-items: center;
+}
+    .group_inpt .control-label {white-space:nowrap;
+    display:flex; align-items:center;margin-right:10px;}

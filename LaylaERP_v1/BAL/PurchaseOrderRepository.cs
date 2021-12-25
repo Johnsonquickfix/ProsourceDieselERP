@@ -61,7 +61,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@product_id", product_id),new SqlParameter("@vendor_id", vendor_id)
                 };
-                string strSQl = "SELECT top 1 p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price,0 salestax,0 shipping_price,discount"
+                string strSQl = "SELECT top 1 p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,cost_price purchase_price,0 salestax,0 shipping_price,discount"
                             + " FROM wp_posts as p"
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
@@ -206,8 +206,30 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
                 {
+                    model.LoginID > 0 ? new SqlParameter("@userid", model.LoginID) : new SqlParameter("@userid", DBNull.Value),
                     new SqlParameter("@pkeys", model.Search),
                     new SqlParameter("@qflag", "POA"),
+                    new SqlParameter("@status", model.Status),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return dt;
+        }
+        public static DataTable PurchaseApproval(PurchaseOrderModel model)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    model.LoginID > 0 ? new SqlParameter("@userid", model.LoginID) : new SqlParameter("@userid", DBNull.Value),
+                    new SqlParameter("@pkeys", model.RowID),
+                    new SqlParameter("@row_key", model.Search),
+                    new SqlParameter("@qflag", "POBMA"),
                     new SqlParameter("@status", model.Status),
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
@@ -224,13 +246,8 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] para = { new SqlParameter("@po_id", id), };
-                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,convert(varchar,date_livraison,101) date_livraison,"
-                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,convert(varchar,date_creation,101) date_creation,fk_projet from commerce_purchase_order where rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,convert(varchar,date_start,101) date_start,convert(varchar,date_end,101) date_end,rang"
-                                + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
-                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                SqlParameter[] para = { new SqlParameter("@id", id), new SqlParameter("@Flag", "POBID") };
+                ds = SQLHelper.ExecuteDataSet("erp_purchase_order_search", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
             catch (Exception ex)
@@ -278,7 +295,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate,int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -291,6 +308,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@flag", "SERCH"),
                     !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                     new SqlParameter("@isactive", userstatus),
+                    new SqlParameter("@status", statusid),
                     new SqlParameter("@searchcriteria", searchid),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),

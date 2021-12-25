@@ -160,7 +160,8 @@
                     //}
                 },
 
-                tooltip: { crosshairs: true, shared: true },
+              //  tooltip: { crosshairs: true, shared: true },
+                
               //  plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
                 plotOptions: {
                     series: {
@@ -170,6 +171,15 @@
                             format: '{point.y:,.2f}'
                         }
                     }
+                },
+                tooltip: {
+                    //crosshairs: true, shared: true,
+
+                    crosshairs: true,
+                    shared: true,
+                    // labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
+
+                    pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.2f}</b><br/>'
                 },
                 colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA','#0EA9F6'],
                 series: _list

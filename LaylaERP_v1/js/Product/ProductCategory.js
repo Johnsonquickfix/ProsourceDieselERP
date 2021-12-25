@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("#loader").hide();
 
     var urlpath = window.location.pathname;
-    CheckPermissions("#btnAddNewCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
+    CheckPermissions("#btnAddCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
    // alert(pathid);
     $("#btnbackproduct").hide();
@@ -13,14 +13,23 @@ $(document).ready(function () {
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct");
         else
             $("#btnbackproduct").prop("href", "/Product/AddNewProduct/" + pathid);
-      
     }
-
+    
     $(".select2").select2();
     getParentCategory();
     CategoryList();
+    
+    //isEdit(true);
+}) 
+
+$('#btnAddCategory').click(function () {
+    $("#ProdCatAdd *").children().prop('disabled', false);
+    //$('[data-toggle="tooltip"]').tooltip();
+    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Create a new category');
+    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
+    //title = "" data-toggle="tooltip"
     isEdit(true);
-})
+});
 
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -60,7 +69,8 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
             }
             $('#ddlParentCategory').html(opt);
-            isEdit(true);
+           // isEdit(true);
+            $("#ProdCatAdd *").children().prop('disabled', true);
         }
     });
 }
@@ -211,7 +221,7 @@ function CategoryList() {
                             return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
                         }
                         else {
-                            return '<a href="#" onclick="GetCategoryByID(' + id + ');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="#" onclick="GetCategoryByID(' + id + ');ActivityLog(\'Edit category\',\'/Product/ProductCategories/' + id +'\');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
                     }
                     else { return "No Permission"; }
@@ -266,6 +276,7 @@ function DeleteCategory(id) {
                 btnClass: 'btn-default',
                 keys: ['enter', 'shift'],
                 action: function () {
+                    ActivityLog('Category (' + id + ') deleted with related product', '/Product/ProductCategories/' + id + '');
                     $.ajax({
                         url: '/Product/DeleteCategorywithProduct/', dataType: 'json', type: 'Post',
                         contentType: "application/json; charset=utf-8",
@@ -293,6 +304,7 @@ function DeleteCategory(id) {
                 text: 'No',
                 btnClass: 'btn-blue',
                 action: function () {
+                    ActivityLog('Category (' + id + ') deleted', '/Product/ProductCategories/' + id + '');
                     $.ajax({
                         url: '/Product/DeleteProductCategory/', dataType: 'json', type: 'Post',
                         contentType: "application/json; charset=utf-8",
@@ -341,6 +353,9 @@ function GetCategoryByID(id) {
                 if (d.length > 0) {
                     $("#ddlParentCategory").val(d[0].parent).trigger("change");
                     $("#btnAddNewCategory").text('Update category');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', '');
+                    $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Update category');
+                    //$("#btnAddNewCategory").css('cursor', 'pointer').attr('data-toggle', 'tooltip');
                     $("#lblNewCategory").text('Update category');
                     $("#txtCategoryName").val(d[0].name);
                     $("#txtCategorySlug").val(d[0].slug);
@@ -353,6 +368,7 @@ function GetCategoryByID(id) {
                     $("#txtDescription").val(d[0].description);
                     
                 }
+                $("#ProdCatAdd *").children().prop('disabled', false);
             },
             complete: function () { $("#loader").hide(); },
             error: function (msg) {

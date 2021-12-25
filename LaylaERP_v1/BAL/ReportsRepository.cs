@@ -591,7 +591,8 @@ namespace LaylaERP.BAL
                         uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["PaidDAte"].ToString());
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["MRF"].ToString()))
                         uobj.orderstatus = "$" + ds1.Tables[0].Rows[i]["MRF"].ToString();
-                    uobj.orderstatus = "$0";
+                    else
+                         uobj.orderstatus = "$0";
                     uobj.address = ds1.Tables[0].Rows[i]["address"].ToString();
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["refunded"].ToString()))
                         uobj.first_name = "No";
@@ -809,7 +810,7 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                        + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
+                        + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
                     }
                     else
                     {
@@ -851,7 +852,7 @@ namespace LaylaERP.BAL
                          + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                          + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
                          + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                         + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' )  order by post_status";
+                         + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
                     }
 
 
@@ -929,7 +930,7 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                        + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
+                        + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00   order by post_status";
                     }
                     else
                     {
@@ -957,7 +958,7 @@ namespace LaylaERP.BAL
                         + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                        + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "'   order by post_status";
+                        + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00  order by post_status";
                     }
                 }
                 else
@@ -1093,6 +1094,72 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+        public static void Getcouponcodesearch(string from_date, string to_date, string Type)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                    new SqlParameter("@type", Type),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_couponcodesearch_list", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["post_date"].ToString();
+
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["gift_card"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.Discount = "";
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                            uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        else
+                            uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
         public static DataSet GetEmployee()
         {
             DataSet DS = new DataSet();
@@ -1632,6 +1699,186 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return _list;
+        }
+     
+        public static DataTable GetProductList(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT post_title FROM wp_posts P where p.post_type = 'shop_coupon'  and p.post_status != 'auto-draft' and P.post_status != 'trash' and post_title  like '" + strSearch + "%' order by post_title;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetWalmartDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "wal"),
+                    new SqlParameter("@searchcriteria", searchid),
+
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Walmart_search", parameters);
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetWalmartdetailsdata(string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;       
+                SqlParameter[] parameters =
+                   {
+            
+                    new SqlParameter("@flag", "sh"),
+                    new SqlParameter("@searchcriteria", searchid),
+
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Walmart_search", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static void GetWisconsinSalesOrder(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                DataSet ds1 = new DataSet();
+                string ssql;
+
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+                    SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date)
+                    };
+                    ds1 = DAL.SQLHelper.ExecuteDataSet("erp_wisconsin", param);
+                }
+                else
+                {
+                    ssql = "";
+                }
+                //DataSet ds1 = new DataSet();
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
+                    uobj.tax = ds1.Tables[0].Rows[i]["Tax"].ToString();
+                    uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shiptostreet"].ToString();
+                    uobj.shipping_city = ds1.Tables[0].Rows[i]["shiptocity"].ToString();
+                    uobj.shipping_state = ds1.Tables[0].Rows[i]["shiptostate"].ToString();
+                    uobj.shipping_postcode = ds1.Tables[0].Rows[i]["shiptozip"].ToString();
+                    uobj.shipping_country = ds1.Tables[0].Rows[i]["shiptocountrycode"].ToString();
+                    uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingstreet"].ToString();
+                    uobj.billing_city = ds1.Tables[0].Rows[i]["billingcity"].ToString();
+                    uobj.billing_country = ds1.Tables[0].Rows[i]["billingcountry"].ToString();
+                    uobj.billing_state = ds1.Tables[0].Rows[i]["billingstate"].ToString();
+                    uobj.billing_postcode = ds1.Tables[0].Rows[i]["billingzip"].ToString();
+                    uobj.provider = ds1.Tables[0].Rows[i]["provider"].ToString();
+                    uobj.transaction_type = ds1.Tables[0].Rows[i]["transaction_type"].ToString();
+                    uobj.transaction_reference_id = ds1.Tables[0].Rows[i]["transaction_reference_id"].ToString();
+                    uobj.shipping_amount = ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
+                    uobj.handling_amount = ds1.Tables[0].Rows[i]["handling_amount"].ToString();
+                    uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
+                    uobj.Discount = ds1.Tables[0].Rows[i]["Discount"].ToString();
+                    uobj.total = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetIDMeOrderReport(string from_date, string to_date, string Type)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                    new SqlParameter("@type", Type),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_idmeorderreport", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["post_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["post_date"].ToString();
+
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.address = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["name"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["State_Recycling_Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.Discount = "";
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["shipping"].ToString()))
+                            uobj.billing_postcode = "$" + ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        else
+                            uobj.billing_postcode = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
         }
 
     }

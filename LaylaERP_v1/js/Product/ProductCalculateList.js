@@ -55,6 +55,16 @@ function dataGridLoad(order_type) {
            
             { data: 'post_title', title: 'Name', sWidth: "12%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
+            {
+                data: 'regula_price', title: 'Retail Price', sWidth: "8%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    if (data.toString() == "")
+                        tprice = "";
+                    else
+                        tprice = '$' + parseFloat(data).toFixed(2);
+                    return tprice
+                }
+            },
           
             {
                 data: 'sale_price', title: 'Sale Price', sWidth: "8%", render: function (data, type, row) {
@@ -67,7 +77,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'cost_price', title: 'Cost Price (Purchase)', sWidth: "8%", render: function (data, type, row) {
+                data: 'cast_prise', title: 'Cost Price (Purchase)', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -78,7 +88,7 @@ function dataGridLoad(order_type) {
             },
             { data: 'vname', title: 'Vendor', sWidth: "10%" },
             {
-                data: 'Margins', title: 'Margins', sWidth: "8%", render: function (data, type, row) {
+                data: 'regulaMargin', title: 'Retail Margin (Default)', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -87,7 +97,38 @@ function dataGridLoad(order_type) {
                     return tprice
                 }
             },
- 
+            {
+                data: 'regularmarginpersantage', title: 'Retail Margin (%)', sWidth: "8%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    if (data.toString() == "")
+                        tprice = "";
+                    else
+                        tprice = parseFloat(data).toFixed(2) + '%';
+                    return tprice
+                }
+            },
+            {
+                data: 'Margin', title: 'Sale Margin (Default)', sWidth: "8%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    if (data.toString() == "")
+                        tprice = "";
+                    else
+                        tprice = '$' + parseFloat(data).toFixed(2);
+                    return tprice
+                }
+            },
+            
+            {
+                data: 'marginpersantage', title: 'Sale Margin (%)', sWidth: "8%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    if (data.toString() == "")
+                        tprice = "";
+                    else
+                        tprice =   parseFloat(data).toFixed(2) + '%';
+                    return tprice
+                }
+            },
+
                         
         ],
         columnDefs: [

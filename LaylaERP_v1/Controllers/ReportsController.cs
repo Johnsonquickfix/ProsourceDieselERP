@@ -101,6 +101,24 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        public ActionResult Searchcouponorders()
+        {
+            return View();
+        }
+
+        public ActionResult WalmartReport()
+        {
+            return View();
+        }
+        public ActionResult WisconsinReport()
+        {
+            return View();
+        }
+        public ActionResult IDMeOrderReport()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -148,6 +166,20 @@ namespace LaylaERP.Controllers
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;
+        }
+
+
+        [HttpPost]   
+        public JsonResult GetCouponList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = ReportsRepository.GetProductList(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
         [HttpPost]
@@ -389,6 +421,16 @@ namespace LaylaERP.Controllers
             return k;
         }
 
+        public ActionResult Getcouponcodesearch(string Month, string Year, string Type)
+        {
+
+
+            ReportsRepository.Getcouponcodesearch(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
         public JsonResult GetEmployee(SearchModel model)
         {
             DataSet ds = ReportsRepository.GetEmployee();
@@ -495,7 +537,60 @@ namespace LaylaERP.Controllers
             return Json(obj, 0);
         }
 
-        
+        [HttpGet]
+
+        public JsonResult GetWalmartDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReportsRepository.GetWalmartDetailsList(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetWalmartdetailsdata(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetWalmartdetailsdata(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+
+        [HttpPost]
+        public ActionResult GetWisconsinSalesOrder(string Year)
+        {
+            DateTime from_date = new DateTime(Convert.ToInt32(Year), 1, 1);
+            DateTime to_date = new DateTime(Convert.ToInt32(Year), 12, 31);
+
+            ReportsRepository.GetWisconsinSalesOrder(from_date.ToString(), to_date.ToString());
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        [HttpPost]
+        public ActionResult GetIDMeOrderReport(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetIDMeOrderReport(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+
     }
 
          

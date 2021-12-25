@@ -83,7 +83,9 @@ $('#btnApprove').click(function () {
 
 function ChangePermission(id, addid, editid, deleteid,flag) {
     var role_id = $("#userrole").val();
-    var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id, flag:flag }
+    var rolename = $("#userrole :selected").text(); 
+    var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id, flag: flag }
+    ActivityLog('Approved Permission for role ' + rolename + '', '/Users/AssignRole/' + role_id + '');
     $.ajax({
         url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -94,6 +96,8 @@ function ChangePermission(id, addid, editid, deleteid,flag) {
         },
         success: function (data) {
             if (data.status == true) {
+              
+              
                 swal('Success!', data.message, 'success');
             }
             else {

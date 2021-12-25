@@ -12,13 +12,13 @@ namespace LaylaERP.BAL
 {
     public class ReceptionRepository
     {
-        public static DataTable GetPurchaseOrder(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder_old(DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty;
+                string strWhr = string.Empty;          
 
                 string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                                 + " CONVERT(VARCHAR(12), p.date_creation, 107)  date_creation,CONVERT(VARCHAR(12), p.date_livraison, 107)  date_livraison, s.Status,total_ttc,fk_projet from commerce_purchase_order p"
@@ -47,6 +47,41 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        // public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH"),
+                   // !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
+                   // new SqlParameter("@isactive", userstatus),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                     //new SqlParameter("@salestatus", salestatus)
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_purchase_receiveorder_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
         public static DataTable GetPartiallyOrderList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -113,7 +148,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetPoClosureOrderDetailsList(string searchid, string categoryid, string productid)
+        public static DataTable GetPoClosureOrderDetailsList_Old(string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
             try
@@ -143,7 +178,27 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetPoClosureOrderDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+                try
+                {
+                    SqlParameter[] parameters =
+                        {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "ARecev"),
+                    new SqlParameter("@searchcriteria", searchid),
 
+                };
+                    dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetPoClosureOrderDataList(string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
@@ -179,7 +234,7 @@ namespace LaylaERP.BAL
 
 
 
-        public static DataTable GetPartiallyDetailsList(string searchid, string categoryid, string productid)
+        public static DataTable GetPartiallyDetailsList_Old(string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
             try
@@ -213,6 +268,63 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetPartiallyDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        {           
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "Recev"),
+                    new SqlParameter("@searchcriteria", searchid),
+            
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);                
+            
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        //public static DataTable GetPartiallyDetailsList(DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        //{
+        //    DataTable dt = new DataTable();
+        //    totalrows = 0;
+        //    try
+        //    {
+        //        SqlParameter[] parameters =
+        //        {
+        //            fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+        //            todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+        //            new SqlParameter("@flag", "Recev"),
+        //           // !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
+        //           // new SqlParameter("@isactive", userstatus),
+        //            new SqlParameter("@searchcriteria", searchid),
+        //            new SqlParameter("@pageno", pageno),
+        //            new SqlParameter("@pagesize", pagesize),
+        //            new SqlParameter("@sortcol", SortCol),
+        //            new SqlParameter("@sortdir", SortDir),
+        //             //new SqlParameter("@salestatus", salestatus)
+        //        };
+        //        DataSet ds = SQLHelper.ExecuteDataSet("erp_purchase_receiveorder_search", parameters);
+        //        dt = ds.Tables[0];
+        //        if (ds.Tables[1].Rows.Count > 0)
+        //            totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return dt;
+        //}
+
 
 
         public static DataTable GetPartiallyOrderDataList(string searchid, string categoryid, string productid)
@@ -257,7 +369,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };              
                 ds = SQLHelper.ExecuteDataSet("erp_receiveorderdatabyid", para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "pods";
             }
             catch (Exception ex)
             {
@@ -273,7 +385,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
                 string strSql = "select fk_purchase from commerce_purchase_receive_order"
                                 + " where fk_purchase = @po_id;"
-                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
+                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount,convert(numeric(18,2), cprod.discount) discount  from commerce_purchase_receive_order_detail  cprod"
                                 + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
                                 + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);

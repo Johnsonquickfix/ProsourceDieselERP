@@ -348,7 +348,7 @@ namespace LaylaERP.Controllers
 
             if (model.ID > 0)
             {
-
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update buying price", "/Product/AddNewProduct/"+ model.ID + "" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             }
             else
@@ -359,6 +359,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Add buying price", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                     DataTable dtware = ProductRepository.Getwarehouse(model);
                     if (dtware.Rows.Count > 0)
                     {
@@ -398,6 +399,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add new product add warehouse", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.AddProductwarehouse(model);
                 if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
@@ -604,6 +606,25 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult SetBuyingPrice(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.SetBuyingPrice(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "Set default successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+        }
+
         public JsonResult ActiveuyingPrice(ProductModel model)
         {
             JsonResult result = new JsonResult();
@@ -626,6 +647,7 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
                 model.post_status = "publish";
                 if (model.ID == 0)
@@ -644,6 +666,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Save new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";
@@ -1652,8 +1675,9 @@ namespace LaylaERP.Controllers
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
-                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
-                {
+               // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+               if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
                     FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;                   
 
@@ -1850,7 +1874,7 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     string size = (ImageFile.ContentLength / 1024).ToString();
                     FileExtension = Path.GetExtension(ImageFile.FileName);
-                    if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                    if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
                     {
                         FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
 
@@ -1889,6 +1913,7 @@ namespace LaylaERP.Controllers
                     {
                         thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                     }
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update product category (" + name + ")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
 
                     ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
                     new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
@@ -1900,6 +1925,7 @@ namespace LaylaERP.Controllers
                     int ID = new ProductRepository().AddProductCategory(model, name, slug);
                     if (ID > 0)
                     {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Add new product category ("+name+")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
                         int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                         ProductRepository.postmeta(thumbnailID, ImagePath);
                         new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);

@@ -1397,8 +1397,9 @@ function GetShippingClass() {
     return _shipping_class;
 }
 function GetProductvariationID(ProductID) {
-    let _shipping_class = GetShippingClass();
     $("#product_variations").empty();
+    let _shipping_class = GetShippingClass();
+   
     var obj = { strVal: ProductID }
     $.ajax({
         url: '/Product/GetDataVariationByID', type: 'post', contentType: "application/json; charset=utf-8", dataType: 'JSON',
@@ -1562,9 +1563,12 @@ function GetProductvariationID(ProductID) {
                 varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control rowCalulate" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control rowCalulate" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
+                varHTML += '<div id="divmargin">';
+                varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-4"><label class="control-label">Retail Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].regularMargin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].regularmarginpersantage.toFixed(2) + '"></div><div class="col-md-4"><label class="control-label">Sale Margin (Default)</label><input readonly type="text" name="txtmargine" class="form-control " value="' + data[i].Margin.toFixed(2) + '"></div><div class="col-md-2"><label class="control-label">Margin (%)</label><input readonly type="text" name="txtmarginepersantage" class="form-control " value="' + data[i].marginpersantage.toFixed(2) + '"></div>';
+                varHTML += '</div>';
                 varHTML += '<div id="divstock">';
-                varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
-                varHTML += '</div> <div id="divaria">';
+                varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                varHTML += '</div>    <div id="divaria">';
                 varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + height + '"></div></div></div></div>';
                 varHTML += '</div>';
                 varHTML += '    <div class="form-group d-flex">';

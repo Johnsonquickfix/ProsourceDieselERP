@@ -27,7 +27,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">User Management</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser" onclick="return ActivityLog('Add new user','/Users/Users');"><span title="Click here to create new user" data-placement="bottom" data-toggle="tooltip">Create User</span></a>
+    <h2 class="page-heading">User Management</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser" onclick="return ActivityLog('Create new user in user management.','/Users/Users');"><span title="Click here to create new user" data-placement="bottom" data-toggle="tooltip">Create User</span></a>
 </div>
 <div class="user_subCrumbs">
     <ul class="subsubsub" id="role-ul">
@@ -278,6 +278,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Applied bulk action "inactive" for user id (' + id + ')', '/Users/Users');
                         DeleteUsers(id);
                     }
                     //dataGridLoad();
@@ -291,6 +292,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Applied bulk action "active" for user id (' + id + ')', '/Users/Users');
                         ActiveUsers(id);
                     }
                 })
@@ -317,6 +319,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Changed role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         changeRole(ID);
                     }
                 })
@@ -344,6 +347,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Grant role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         Grantrole(ID);
                     }
                 })
@@ -369,6 +373,7 @@
                     confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
                 }).then((result) => {
                     if (result.value) {
+                        ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
                         Revokerole(ID);
                     }
                 })

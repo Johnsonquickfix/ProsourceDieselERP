@@ -117,9 +117,10 @@
         getPurchaseOrderPrint(id, false);
     });
     $(document).on("click", ".btnApproved", function (t) {
-        t.preventDefault();
-        let id = parseInt($('#lblPoNo').data('id')) || 0;
-        orderStatusUpdate(id);
+        t.preventDefault(); let id = parseInt($('#lblPoNo').data('id')) || 0; orderApprove(id, 'approve', 3);
+    });
+    $(document).on("click", ".btnReject", function (t) {
+        t.preventDefault(); let id = parseInt($('#lblPoNo').data('id')) || 0; orderApprove(id, 'disapprove', 8);
     });
     $(document).on('click', "#btnuploade", function (t) {
         t.preventDefault(); Adduploade();
@@ -434,7 +435,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0;
+                console.log(result); let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
                 $.each(data['po'], function (key, row) {
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
@@ -460,17 +461,28 @@ function getPurchaseOrderInfo() {
                     }
                     else {
                         if (status_id == 1) {
-                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting'))
-                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice." data-placement="left"><i class="fas fa-check-double"></i> Approved</button>');
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-yellow">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            if ($('#lblPoNo').data('ut').includes('administrator') || $('#lblPoNo').data('ut').includes('accounting')) {
+                                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="top"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approve and create invoice." data-placement="top"><i class="fas fa-check-double"></i> Approve</button>');
+                                $('.footer-finalbutton').append(' <button type="button" class="btn btn-danger btnReject" data-toggle="tooltip" title="Disapprove/Reject" data-placement="top"><i class="fas fa-ban"></i> Disapprove</button>');
+                            }
                             else
                                 $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else if (status_id == 3) {
+                            fk_user_approve = parseInt(row.fk_user_approve) || 0;
+                            if (fk_user_approve > 0) $('.page-heading').empty().append('Edit Purchase Order <span class="text-green">(Approved by ' + row.user_approve + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                            $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
+                        }
+                        else if (status_id == 8) {
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else {
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-aqua">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Purchase Order is not editable because it has been received.</div>');
@@ -650,9 +662,9 @@ function saveVendorPO() {
         }]);
     }
 }
-function orderStatusUpdate(oid) {
-    let option = { Search: oid, Status: '3' };
-    let _text = 'Do you want to approve this Purchase Order #' + $('#lblPoNo').text() + '?';
+function orderApprove(oid, status_title, status) {
+    let option = { Search: oid, Status: status };
+    let _text = 'Do you want to ' + status_title + ' this Purchase Order #' + $('#lblPoNo').text() + '?';
     swal.queue([{
         title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
@@ -744,11 +756,13 @@ function SendPO_POApproval(id) {
 }
 function send_mail(id, result) {
     let data = JSON.parse(result.data); console.log(result);
-    let inv_title = 'Purchase Order';
+    let inv_title = 'Purchase Order', po_authmail = data['po'][0].po_authmail;
 
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+    let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    _com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
 
     let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
@@ -760,10 +774,7 @@ function send_mail(id, result) {
     myHtml += '                        <tr>';
     myHtml += '                            <td style="padding:0; vertical-align: top;width:66.9%">';
     myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
-    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
-    myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
-    myHtml += '                                </p>';
+    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + _com_add + '</p>';
     myHtml += '                            </td>';
     myHtml += '                            <td style="padding:0; vertical-align: top; width:33.1%" align="left">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
@@ -783,6 +794,12 @@ function send_mail(id, result) {
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-accept?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a> ';
+    myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-reject?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#ff4100;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Disapprove</a>';
+    myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';
@@ -942,7 +959,9 @@ function send_mail(id, result) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    let opt = { strValue1: result.po_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    let opt = { strValue1: po_authmail, strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
+    console.log(opt);
+    //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailPOApproval', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),

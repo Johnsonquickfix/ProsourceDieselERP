@@ -75,6 +75,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update Reception PO, sReceive Order", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 ID = new ReceptionRepository().ReceptionPurchase(model);
 
                 if (ID > 0)
@@ -99,6 +100,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Open po Closed Purchase Orders List", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 ID = new ReceptionRepository().UpdateStatusReceptionPurchase(model);
 
                 if (ID > 0)
@@ -169,7 +171,12 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = ReceptionRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReceptionRepository.GetPurchaseOrder(fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -239,7 +246,12 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                DataTable dt = ReceptionRepository.GetPoClosureOrderDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReceptionRepository.GetPoClosureOrderDetailsList(fromdate, todate,model.sSearch, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -259,17 +271,41 @@ namespace LaylaERP.Controllers
         }
 
         [HttpGet]
+
         public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
         {
             string result = string.Empty;
             try
             {
-                DataTable dt = ReceptionRepository.GetPartiallyDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReceptionRepository.GetPartiallyDetailsList(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
         }
+        //public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
+        //{
+        //    string result = string.Empty;
+        //    int TotalRecord = 0;
+        //    try
+        //    {
+        //        DateTime? fromdate = null, todate = null;
+        //        if (!string.IsNullOrEmpty(model.strValue1))
+        //            fromdate = Convert.ToDateTime(model.strValue1);
+        //        if (!string.IsNullOrEmpty(model.strValue2))
+        //            todate = Convert.ToDateTime(model.strValue2);
+        //        DataTable dt = ReceptionRepository.GetPartiallyDetailsList(fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+        //        result = JsonConvert.SerializeObject(dt);
+        //    }
+        //    catch (Exception ex) { throw ex; }
+        //    return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+
+        //}
         [HttpPost]
         public JsonResult GetPartiallyOrderDataList(JqDataTableModel model)
         {

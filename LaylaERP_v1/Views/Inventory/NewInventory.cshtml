@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "On hand Inventory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<section class="content section-content neworder-section">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-title">
+                <h2 class="page-heading">
+                    Product Inventory Details
+                </h2>
+                @*<div class="active" style="margin-left:auto;min-width:280px;">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+    <div class="row index_col_row">
+        @*<div class="col-md-3">
+            <div class="form-group">
+                <label>SKU</label>
+                <input type="text" class="form-control" id="txtsku" placeholder="SKU" maxlength="100">
+            </div>
+        </div>*@
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Product</label><span style="color:red">*</span>
+                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Vendor</label>
+                <select class="form-control select2" id="ddlVendor" placeholder="Select warehouse" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Warehouse</label>
+                <select class="form-control select2" id="ddlWarehouse" placeholder="Select warehouse" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3"><label></label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group"><br />
+                <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
+            </div>
+        </div>
+    </div>
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header" id="on-hand-inventory">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th>Date</th>
+                                        <th>Transcation type</th>
+                                        <th>Transcation Id</th>
+                                        <th>Vendor</th>
+                                        <th>Warehouse</th>
+                                        <th>In stock</th>
+                                        <th>Stock receive</th>
+                                        <th>Stock issue</th>
+                                        <th>Units in POs</th>
+                                        <th>Sale Units</th>
+                                        <th>Damage Units</th>
+                                        <th>Available Units</th>
+                                    </tr>
+                                </thead>
+                                <tfoot align="right">
+                                    <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-12 inventory-btn">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+    })
+</script>
+<script src="@Url.Content("~/js/Inventory/NewInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

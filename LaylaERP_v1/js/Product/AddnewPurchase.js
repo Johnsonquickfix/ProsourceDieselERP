@@ -203,6 +203,7 @@ $("#btnaddupdatechild").click(function (e) {
     }
 
     if (_ItemProduct != '') {
+        ActivityLog('Search product to add', '/Product/AddNewProduct/');
         //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -250,6 +251,7 @@ $("#btnservicessave").click(function (e) {
     //var layoutHtml = '';
     //$('#Product_services').empty().append(layoutHtml);
     if (_ItemProductServices != '') {
+        ActivityLog('Update  list of products/services that are component(s) of this kit', '/Product/AddNewProduct/');
           //NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -602,10 +604,10 @@ function AddBuyingt() {
     Remark = $("#txtRemarks").val();   
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Please enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (parseInt(currency) == 0) {
         swal('Alert', 'Price can not be zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
@@ -688,10 +690,10 @@ function btncopybuying() {
     Remark = $("#txtRemarks").val();
 
     if (vender == "") {
-        swal('Alert', 'Please Enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please enter vendor', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Please enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (oldvender == vender) {
         swal('Alert', 'Can not coppy with same vendor', 'error').then(function () { swal.close(); $('#ddlvendercopy').focus(); });
@@ -769,7 +771,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs , StatusActive: data[i].Status
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise
                 });
 
             }
@@ -783,12 +785,16 @@ function bindbuyingprice() {
 }
 
 function bindbuying(data) {
-  
+   // console.log(data);
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                if (data[i].is_setprise == "1")
+                layoutHtml += '<td><input style="opacity:1" name="CheckSingle"  type="checkbox" checked="true" class="chkprise" value="' + data[i].PKey + '" id="chkprise_' + data[i].PKey + '"></td>';
+                else
+                    layoutHtml += '<td><input style="opacity:1" name="CheckSingle"  type="checkbox"   class="chkprise" value="' + data[i].PKey + '" id="chkprise_' + data[i].PKey + '"></td>';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].taglotserialno + '</td>';
                 layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';               
@@ -800,11 +806,11 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
                 layoutHtml += '<td>' + data[i].StatusActive + '</td>';              
-                layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + '); ActivityLog(\'Edit Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-pencil"></i></a></td>';
                 if (data[i].StatusActive == "InActive")
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + '); ActivityLog(\'active Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + '); ActivityLog(\'delete Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                     
                 layoutHtml += '</tr>';
             }
@@ -816,7 +822,8 @@ function bindbuying(data) {
     else {
         layoutHtml += '<table id="dtdataVendor" class="table-blue table table-bordered table-striped dataTable">';
         layoutHtml += '<thead>';
-        layoutHtml += '<tr>'; 
+        layoutHtml += '<tr>';
+        layoutHtml += '<th>#</th>';
         layoutHtml += '<th>Vendors</th>';
         layoutHtml += '<th>Tag/Lot/Serial No.</th>';
         layoutHtml += '<th>Purchase quantity</th>';
@@ -838,6 +845,72 @@ function bindbuying(data) {
 
 }
 
+$("#setprice").click(function () {
+    var ID = "";
+   // var new_role = $("#revoke_role").val();
+
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        ID += $(this).val() + ",";
+
+    });
+    ID = ID.replace(/,(?=\s*$)/, '');
+    const areThereAnyCommas = ID.includes(',');
+   // console.log(areThereAnyCommas);
+    if (ID == "") { swal('alert', 'Please select Vendor from list', 'error'); }
+    else if (areThereAnyCommas == true) { swal('alert', 'Please select only one Vendor from list to set default', 'error'); }
+    else {
+         
+            swal({
+                title: '', text: "Do you want to set default ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    setprice(ID);
+                }
+            })
+      
+    }
+})
+
+
+function setprice(ID) {
+    
+    var ids = ID;
+    fk_productval = $('#ddlproductchild').val();
+    var obj = { ID: ids, fk_product: fk_productval }
+
+    $.ajax({
+        url: '/Product/SetBuyingPrice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader1").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindbuyingprice();
+                   GetProductvariationID($("#hfid").val());
+                    swal('Success!', data.message, 'success');
+                }
+                else {
+                    swal('success!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader1").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
 function EditUser(id) {
     $('#dvbuysing').show();
     $("#hfbuyingid").val(id);
@@ -1050,9 +1123,9 @@ function bindwarehouseDetails(data) {
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].StatusActive + '</td>';
                 if (data[i].StatusActive == "InActive")
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + '); ActivityLog(\'Edit product warehouse\',\'/Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + '); ActivityLog(\'delete product warehouse\',\'/Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -1181,10 +1254,13 @@ function AddNotes() {
     Public = $("#txtPublic").val();
 
     if (fk_productval == "") {
-        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+        swal('Alert', 'Please enter product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
     }
     else if (Private == "") {
-        swal('Alert', 'Please select Private', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+        swal('Alert', 'Please select private', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else if (Public == "") {
+        swal('Alert', 'Please enter notes', 'error').then(function () { swal.close(); $('#txtPublic').focus(); });
     }
     else {
         var obj = {
@@ -1316,7 +1392,7 @@ function Adduploade() {
         swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); });
     }
     else {
-
+        ActivityLog('Attach file in Product list Kits & Buying Prices ', '/Product/AddNewProduct/');
         $.ajax({
             type: "POST",
             url: '/Product/FileUploade/',
@@ -1386,8 +1462,8 @@ function bindbindfileuploadeDetails(data) {
                 layoutHtml += '<td class="text-left"><a target="popup" href="../../Files/' + data[i].product_name + '">' + data[i].product_name + '</i></a ></td>';                
                 layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
                 layoutHtml += '<td>' + data[i].CreateDate + '</td>';
-                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + '); ActivityLog(\'View product data linked files\',\'Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + '); ActivityLog(\'Delete linked product data files\',\'Product/AddNewProduct/' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -1500,7 +1576,7 @@ function getNotesList(oid) {
             noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
-            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + ');" class="delete_note billinfo" role="button">Delete note</a>';
+            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + '); ActivityLog(\'Delete product notes\',\'/AddNewProduct/' + data[i].comment_ID +'\');" class="delete_note billinfo" role="button">Delete note</a>';
             noteHtml += '</p>';
             noteHtml += '</li>';
         }
@@ -1510,14 +1586,27 @@ function getNotesList(oid) {
 function AddNotes() {
     let oid = parseInt($('#ddlproductchild').val()) || 0;
     let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
-    ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
-        if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
-        else swal('Alert!', result.message, "error");
-    }, completeFun, errorFun);
+
+    if (oid == 0) {
+        swal('Alert', 'Please enter product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+    }
+    else if ($('#add_order_note').val() == "") {
+        swal('Alert', 'Please enter notes', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else if ($('#order_note_type').val() == "") {
+        swal('Alert', 'Please select note type', 'error').then(function () { swal.close(); $('#txtPublic').focus(); });
+    }
+    else {
+
+        ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
+            if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
+            else swal('Alert!', result.message, "error");
+        }, completeFun, errorFun);
+    }
 }
 function DeleteNotes(id) {
     let option = { comment_ID: id }; let oid = parseInt($('#ddlproductchild').val()) || 0;
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+    swal({ title: "Are you sure?", text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 ajaxFunc('/Product/NoteDelete', option, beforeSendFun, function (result) {

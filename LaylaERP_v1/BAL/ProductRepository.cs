@@ -418,7 +418,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy') date_inc,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status"
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy') date_inc,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status,is_setprise"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE" + strWhr;
@@ -447,6 +447,7 @@ namespace LaylaERP.BAL
                         productsModel.date_inc = sdr["date_inc"].ToString();
                         productsModel.discount = sdr["discount"].ToString();
                         productsModel.Status = sdr["Status"].ToString();
+                        productsModel.is_setprise = sdr["is_setprise"].ToString();
                         _list.Add(productsModel);
                     }
                 }
@@ -988,19 +989,32 @@ namespace LaylaERP.BAL
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty; 
-               
-                string strSql = "Select *,convert(numeric(18,2),sale_price) - convert(numeric(18,2),cost_price) Margins from ("
-              + " select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+                string strWhr = string.Empty;
+
+                //  string strSql = "Select *,convert(numeric(18,2),sale_price) - convert(numeric(18,2),cost_price) Margins from ("
+                //+ " select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+                //+ " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+                //+ " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then coalesce (s.meta_value,'0') else '0' end) sale_price,"
+                //+ " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,Cast(CONVERT(DECIMAL(10,2),coalesce(min(cost_price),0)) as nvarchar) cost_price, (select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and  is_setprise = 1 ))  vname"
+                //+ " FROM wp_posts p "
+                //+ " left join wp_postmeta as s on p.id = s.post_id"
+                //+ " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1 and is_setprise = 1"
+                //+ " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " 
+                //+ " GROUP BY  p.ID,guid,post_status,post_parent) tt"
+                // + " order by p_id,post_type,id";
+
+                string strSql = "Select *, cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2)) Margin,cast(regula_price as numeric(18,2)) - cast(cast_prise as numeric(18,2)) regulaMargin,coalesce(convert(numeric(18,2),( ((cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2))) * 100) / NULLIF(cast(sale_price as numeric(18,2)),0))),0) marginpersantage,coalesce(convert(numeric(18,2),( ((cast(regula_price as numeric(18,2)) - cast(cast_prise as numeric(18,2))) * 100) / NULLIF(cast(regula_price as numeric(18,2)),0))),0) regularmarginpersantage "
+              + " from ( select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
               + " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then coalesce (s.meta_value,'0') else '0' end) sale_price,"
-              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,Cast(CONVERT(DECIMAL(10,2),coalesce(min(cost_price),0)) as nvarchar) cost_price, (select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = p.id) ))  vname"
+              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '0' end) sale_price,max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '0' end) regula_price, "
+              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,coalesce(convert(numeric(18,2),max(cost_price)),0) cast_prise,(select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and is_setprise = 1)) vname"
               + " FROM wp_posts p "
-              + " left join wp_postmeta as s on p.id = s.post_id"
-              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1"
-              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " 
+              + " left join wp_postmeta as s on p.id = s.post_id "
+              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = p.id and is_active=1 and is_setprise = 1"
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' "
               + " GROUP BY  p.ID,guid,post_status,post_parent) tt"
                + " order by p_id,post_type,id";
+
 
                 strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
                + " left join wp_postmeta as s on p.id = s.post_id" 
@@ -1355,7 +1369,21 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
-
+        public static int SetBuyingPrice(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+              StringBuilder strSql = new StringBuilder(string.Format("update Product_Purchase_Items set is_setprise = 0 where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("update Product_Purchase_Items set is_setprise = 1 where rowid = {0};", model.ID));
+            
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public static int ActiveuyingPrice(ProductModel model)
         {
             int result = 0;

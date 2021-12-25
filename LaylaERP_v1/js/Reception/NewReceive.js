@@ -131,7 +131,7 @@
 
     let fk_projetval = 0;
     fk_projetval = parseInt($("#hfsaleno").val()) || 0
-    console.log(fk_projetval);
+    //console.log(fk_projetval);
     if (fk_projetval == "0" && $("#hfstatus").val() == "3") {
         $(".btnEdit").show();
     }
@@ -256,7 +256,7 @@ function getwarehaouseid() {
     $.ajax({
         url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let dt = JSON.parse(data); console.log(dt);
+            let dt = JSON.parse(data); //console.log(dt);
             $("#ddlwarehouse").html('<option value="0">Select Warehouse</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table'][i].id + '" data-ad="' + dt['Table'][i].address + '">' + dt['Table'][i].text + '</option>'); }
         },
@@ -330,7 +330,7 @@ function bindItems(data) {
 }
 function removeItems(id) {
     //------------- Remove data in Temp AddItemList-----
-    swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
+    swal({ title: "Are you sure?", text: 'Would you like to remove this item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 $('#tritemid_' + id).remove();
@@ -529,6 +529,9 @@ function AddProductModal(proc_type, row_num) {
 function getPurchaseOrderInfo() {
     $('#divAlert').empty();
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
+    let totalexc = 0.00;
+    let totalincl = 0.00;
+    let totaldisc = 0.00;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
         $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
@@ -539,9 +542,12 @@ function getPurchaseOrderInfo() {
             url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0, fk_projet = 0;
-                    //console.log(data);
+                    let data = JSON.parse(result); let VendorID = 0, fk_projet = 0 ,fk_user_approve = 0;
+                   
                     for (let i = 0; i < data['po'].length; i++) {
+                        fk_user_approve = parseInt(data['po'][i].fk_user_approve) || 0;
+                        if (fk_user_approve > 0)                  
+                        $('.page-heading').text('Receive Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0; fk_projet = parseInt(data['po'][i].fk_projet) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
@@ -619,6 +625,14 @@ function getPurchaseOrderInfo() {
                             $('#product_line_items').append(itemHtml);
                         }
                     }
+
+                    if (data['pods'].length > 0) {
+                        for (let i = 0; i < data['pods'].length; i++) {
+                            $("#SubTotal").text(data['pods'][i].texcl.toFixed(2));
+                            $("#discountTotal").text(data['pods'][i].icl.toFixed(2));
+                            $("#orderTotal").html(data['pods'][i].dis.toFixed(2));
+                        }
+                    }
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -627,6 +641,11 @@ function getPurchaseOrderInfo() {
             complete: function () { $("#loader").hide(); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
+        totalexc = $("#SubTotal").text();
+        totaldisc  = $("#discountTotal").text();
+        totalincl = $("#orderTotal").html();
+       // console.log($("#SubTotal").text());
+       // console.log($("#discountTotal").text());
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
@@ -640,6 +659,12 @@ function getPurchaseOrderInfo() {
             $(".btnpoclosed").show();
         else
             $(".btnpoclosed").hide();
+
+
+          $("#SubTotal").text(totalexc);
+         $("#discountTotal").text(totalincl);
+          $("#orderTotal").html(totaldisc);
+
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -731,11 +756,11 @@ function saveVendorPO() {
 
     let _list = createItemsList();
     //console.log(_list);
-    if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
-    else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (warehouse_ID <= 0) { swal('alert', 'Please Select Warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
-    else if (date_livraison == "") { swal('alert', 'Please Select Planned Date of Delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
-    else if (_list.length <= 0) { swal('alert', 'To Receive Quantity Should Not be Zero', 'error').then(function () { swal.close(); }) }
+    if (vendorid <= 0) { swal('alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
+    else if (payment_type <= 0) { swal('alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (warehouse_ID <= 0) { swal('alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
+    else if (date_livraison == "") { swal('alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
+    else if (_list.length <= 0) { swal('alert', 'To receive quantity should not be Zero', 'error').then(function () { swal.close(); }) }
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
@@ -848,6 +873,8 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].description + '</td>';
                             itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].amount.toFixed(2) + '</td>';                            
                             itemHtml += '</tr>';
 
                         }
@@ -951,7 +978,7 @@ function bindbindfileuploadeDetails(data) {
                 layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
                 layoutHtml += '<td>' + data[i].CreateDate + '</td>';
                 /*  layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';*/
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" data-toggle="tooltip" title="Click here to delete." class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }

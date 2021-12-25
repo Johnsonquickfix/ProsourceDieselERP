@@ -17,7 +17,7 @@
 
 
 <div class="page-title">
-    <h2 class="page-heading">Manage Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser" onclick="return ActivityLog('Add new customer','/Customer/Customer');">
+    <h2 class="page-heading">Manage Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser" onclick="return ActivityLog('Create new customer in manage customer','/Customer/Customer');">
     <span title="Click Here To Add New Customer" data-placement="bottom" data-toggle="tooltip">Add New Customer</span></a>
 </div>
 <section class="content section-content table-design customer-section">
@@ -142,7 +142,6 @@
                 title: '', text: "Do you want to change the status ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes',
             }).then((result) => {
                 if (result.value) {
-                    ActivityLog('Change customer status', '/Customer/Customer/' + id + '');
                     ChangeStatus(id);
                     dataGridLoad();
                 }

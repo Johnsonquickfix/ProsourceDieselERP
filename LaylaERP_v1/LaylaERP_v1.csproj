@@ -165,6 +165,7 @@
     <Compile Include="BAL\LeaveRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\PaymentInvoiceRepository.cs" />
+    <Compile Include="BAL\PoemailRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
+    <Compile Include="Controllers\PoemailController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
@@ -239,6 +241,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\PaymentInvoice.cs" />
+    <Compile Include="Models\PoemailModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
@@ -594,6 +597,8 @@
     <Content Include="Content\highcharts\series-label.js" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\img\Pastdue.png" />
+    <Content Include="Content\img\past_due.svg" />
     <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
@@ -685,6 +690,7 @@
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\Inventory\NewInventory.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
     <Content Include="js\linq.js" />
@@ -705,6 +711,7 @@
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
+    <Content Include="js\Poemail\Addemail.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
@@ -720,9 +727,12 @@
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\CancelRefund.js" />
+    <Content Include="js\Report\IDMeOrderReport.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
+    <Content Include="js\Report\Searchcouponorders.js" />
+    <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1044,6 +1054,14 @@
     <Content Include="Views\Reports\YearMonthlyChart.cshtml" />
     <Content Include="Views\Product\CalculateMargins.cshtml" />
     <Content Include="Views\Reports\CancelRefund.cshtml" />
+    <Content Include="Views\Inventory\NewInventory.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderApproval.cshtml" />
+    <Content Include="Views\Poemail\AddEmail.cshtml" />
+    <Content Include="Views\Reports\Searchcouponorders.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderDisapprove.cshtml" />
+    <Content Include="Views\Reports\WalmartReport.cshtml" />
+    <Content Include="Views\Reports\IDMeOrderReport.cshtml" />
+    <Content Include="Views\Reports\WisconsinReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

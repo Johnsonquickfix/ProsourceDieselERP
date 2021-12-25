@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-title">
-                <h2 class="page-heading">List Purchases</h2><a data-toggle="tooltip" title="Click here to new purchase order." data-placement="bottom" href="../../PurchaseOrder/NewPurchaseOrder" class="btn btn-danger" id="btnAddVendor">New Purchase Order</a>
+                <h2 class="page-heading">List Purchases</h2><a data-toggle="tooltip" title="Click here to new purchase order." data-placement="bottom" href="../../PurchaseOrder/NewPurchaseOrder" class="btn btn-danger" id="btnAddVendor" onclick="return ActivityLog('New Purchase Order','/PurchaseOrder/PurchaseOrderList');">New Purchase Order</a>
                 <div style="margin-left:auto;min-width:280px;">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -39,10 +39,12 @@
                             <option value="0">Select Status</option>
                             <option value="1">Draft</option>
                             <option value="3">Approved</option>
-                            <option value="7">Canceled</option>
-                            <option value="8">Refused</option>
+                            <option value="5">Received Partial</option>
+                            <option value="6">Received All</option>
+                            @*<option value="7">Canceled</option>*@
+                            <option value="8">Reject/Disapprove</option>
                         </select>
-                        <button type="button" id="btnChange" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Click here to change status.">Change</button>
+                        @*<button type="button" id="btnChange" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Click here to change status.">Change</button>*@
                     </div>
                     <div class="alignleft actions">
                         <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
@@ -69,13 +71,14 @@
                                         <th>PO No.</th>
                                         <th>Date</th>
                                         <th>Invoice No</th>
-                                        <th>SO No</th>
                                         <th>Vendor Name</th>
-                                        <th>Address</th>
-                                        <th>Zip Code</th>
+                                        <th>Destination</th>
+                                        <th>Destination Address</th>
+                                        <th>Amount</th>
                                         <th>Planned date of delivery</th>
+                                        @*<th>Past Due</th>*@
                                         <th>Status</th>
-
+                                        <th>Modified Date</th>
                                     </tr>
                                 </thead>
                             </table>

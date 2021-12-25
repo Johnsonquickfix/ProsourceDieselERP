@@ -34,9 +34,6 @@
                 </select>
                 <select class="form-control" id="year">
                     <option value="">Year</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
                 </select>
                 <select class="form-control" id="txtState">
                     <option value="">State</option>
@@ -102,6 +99,8 @@
 
                 }
             });
+
+            globalyear('year');
         });
 
         function DatagridOrder() {
@@ -172,3 +171,4 @@
 
     </script>
 </section>
+<script src="@Url.Content("~/js/globalyear.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

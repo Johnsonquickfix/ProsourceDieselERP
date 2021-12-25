@@ -269,7 +269,8 @@ namespace LaylaERP.Controllers
         public JsonResult GetPurchaseOrderPrint(SearchModel model)
         {
             string JSONresult = string.Empty;
-            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            OperatorModel om = new OperatorModel();
             try
             {
                 long id = 0;

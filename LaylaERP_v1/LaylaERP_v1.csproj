@@ -1062,7 +1062,6 @@
     <Content Include="Views\Reports\WalmartReport.cshtml" />
     <Content Include="Views\Reports\IDMeOrderReport.cshtml" />
     <Content Include="Views\Reports\WisconsinReport.cshtml" />
-    <Content Include="Views\Error\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

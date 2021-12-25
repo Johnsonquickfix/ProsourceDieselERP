@@ -435,7 +435,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                console.log(result); let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
+                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
                 $.each(data['po'], function (key, row) {
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
@@ -477,7 +477,7 @@ function getPurchaseOrderInfo() {
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else if (status_id == 8) {
-                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(Rejected by ' + row.user_approve + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
@@ -755,7 +755,7 @@ function SendPO_POApproval(id) {
     }
 }
 function send_mail(id, result) {
-    let data = JSON.parse(result.data); console.log(result);
+    let data = JSON.parse(result.data); //console.log(result);
     let inv_title = 'Purchase Order', po_authmail = data['po'][0].po_authmail;
 
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
@@ -962,7 +962,7 @@ function send_mail(id, result) {
     myHtml += '</table >';
 
     let opt = { strValue1: po_authmail, strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
-    console.log(opt);
+    //console.log(opt);
     //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({

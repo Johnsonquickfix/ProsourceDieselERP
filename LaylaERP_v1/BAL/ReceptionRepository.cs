@@ -737,6 +737,22 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        public static DataSet GetReceiveOrder(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", "GETPO"), new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_purchasereceive_order_search", para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
 
     }
 

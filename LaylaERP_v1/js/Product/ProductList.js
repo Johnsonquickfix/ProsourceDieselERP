@@ -374,7 +374,7 @@ function dataGridLoad(order_type) {
                         return ' <b></b>';
                     else {
                         if ($("#hfEdit").val() == "1") {
-                            return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '" onclick="ActivityLog(\'Edit product from product list\',\'AddNewProduct/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                            return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '" onclick="ActivityLog(\'Edit product id ('+id+') in product list\',\'AddNewProduct/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                         }
                         else { return "No Permission"; }
                     }

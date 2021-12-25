@@ -647,7 +647,8 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                long PID = model.ID > 0 ? model.ID : model.updatedID;
+                UserActivityLog.WriteDbLog(LogType.Submit, "product id ("+PID+") update in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
                 model.post_status = "publish";
                 if (model.ID == 0)
@@ -666,7 +667,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Save new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "New product ("+ model.post_title + ") created in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";

@@ -304,8 +304,6 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult ChangeGiftCardStatus(SearchModel model)
         {
-            UserActivityLog.WriteDbLog(LogType.Submit, "Save Gift card order Info", "/GiftCard/GiftCard/GiftcardList" + ", " + Net.BrowserInfo);
-
             string strID = model.strValue1;
             if (strID != "")
             {
@@ -321,7 +319,7 @@ namespace LaylaERP.Controllers
         public JsonResult ChangeGiftCardOrderStatus(SearchModel model)
         {
             string strID = model.strValue1;
-            UserActivityLog.WriteDbLog(LogType.Submit, "Disable Gift card status", "/GiftCard/GiftCard/ordermeta/"+ strID + "" + ", " + Net.BrowserInfo);
+            UserActivityLog.WriteDbLog(LogType.Submit, "Disable gift card status", "/GiftCard/GiftCard/ordermeta/"+ strID + "" + ", " + Net.BrowserInfo);
             if (strID != "")
             {
                 DataTable dt = new GiftCardRepository().ChangeGiftCardOrderStatus(strID);

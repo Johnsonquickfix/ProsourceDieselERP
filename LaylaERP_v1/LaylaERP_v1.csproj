@@ -670,6 +670,7 @@
     <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
+    <Content Include="js\globalyear.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\AttendenceReport.js" />

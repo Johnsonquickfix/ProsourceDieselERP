@@ -119,6 +119,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastSalesMonthly()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -590,7 +594,14 @@ namespace LaylaERP.Controllers
             return k;
         }
 
-
+        [HttpPost]
+        public ActionResult GetForecastSalesMonthly(string Year)
+        {
+            ReportsRepository.GetForecastSalesMonthly(Year);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
     }
 
          

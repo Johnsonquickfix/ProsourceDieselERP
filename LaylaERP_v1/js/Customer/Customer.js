@@ -8,7 +8,7 @@ function getUrlVars() {
     return sURLVariables
 }
 function AddCustomer() {
-    //debugger
+    debugger
 
     ID = $("#hfid").val();
     Email = $("#txtUserEmail").val();

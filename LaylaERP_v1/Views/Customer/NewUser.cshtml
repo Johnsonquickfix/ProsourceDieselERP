@@ -235,7 +235,7 @@
                     // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                     // $('#hfzipstatus').val(data.status);
                     $('#hfzipstatus').val(data.status);
-                   // console.log('eree', data.status);
+                  // console.log('eree', data.status);
 
                 }
                 else {
@@ -244,12 +244,16 @@
                         $('#hfzipstatus').val(data.status);
                         swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
                     }
+                    if ($('#txtBillingCountry').val() == "CA") {
+                        $('#hfzipstatus').val("true");
+                    }
                 }
             },
 
             error: function (error) {
                 swal('Error!', 'Something went wrong', 'error');
             },
+            async: false
         })
     });
 
@@ -280,6 +284,9 @@
                             $("#txtBillingPostCode").val("");
                             $('#hfzipstatus').val(data.status);
                             swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
+                        }
+                        if ($('#txtBillingCountry').val() == "CA") {
+                            $('#hfzipstatus').val("true");
                         }
                     }
                 },

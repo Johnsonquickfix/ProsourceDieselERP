@@ -274,7 +274,7 @@ namespace LaylaERP.Controllers
                 or.ChangeTrash(model, strID);
                 UserActivityLog.WriteDbLog(LogType.Submit, "Coupon Bulk action (" + model.status + ")", "/Coupons/ManageCoupons/" + strID + "" + ", " + Net.BrowserInfo);
 
-                return Json(new { status = true, message = "Coupons move to trash successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Coupons status changed successfully!!", url = "" }, 0);
             }
             else
             {

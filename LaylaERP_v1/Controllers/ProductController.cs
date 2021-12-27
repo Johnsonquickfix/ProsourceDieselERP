@@ -917,10 +917,9 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     //To Get File Extension  
                     long filesize = ImageFileproductlink.ContentLength / 1024;
-                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);
-
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
-                    {
+                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);                    
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG"  || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" ||  FileExtension == ".bmp" || FileExtension == ".BMP")
+                        {
                         //Add Current Date To Attached File Name  
                         //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 

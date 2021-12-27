@@ -335,6 +335,9 @@
                             $('#hfzipstatus').val(data.status);
                             swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                         }
+                        if ($('#txtCountry').val() == "CA") {
+                            $('#hfzipstatus').val("true");
+                        }
                     }
                 },
 
@@ -373,6 +376,9 @@
                                 $("#txtPostCode").val("");
                                 $('#hfzipstatus').val(data.status);
                                 swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            }
+                            if ($('#txtCountry').val() == "CA") {
+                                $('#hfzipstatus').val("true");
                             }
                         }
                     },

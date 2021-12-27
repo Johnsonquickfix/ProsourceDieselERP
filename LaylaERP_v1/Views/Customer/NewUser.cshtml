@@ -130,7 +130,8 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
-        if (id != "") {
+        if (id != "" && id != "NewUser") {
+           // console.log(id);
             //debugger
             //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
@@ -361,7 +362,7 @@
             else
                 $("#txtBillingCountry").empty();
 
-
+            $("#txtBillingPostCode").change();
         }
 
         function renderAddress(place) {

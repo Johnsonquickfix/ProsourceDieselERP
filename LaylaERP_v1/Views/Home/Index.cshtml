@@ -738,7 +738,8 @@
                 else
                     $("#strValue3").prop('checked', true);
 
-            }
+        }
+     
        // $("#txtPostCode").change();        
     });
 
@@ -788,7 +789,7 @@
                     success: function (data) {
                         if (data.status == true) {
                             $('#hfzipstatus').val(data.status);
-                            console.log('cu',data.status);
+                             
                         }
                         else {
                             $("#txtPostCode").val("");
@@ -800,6 +801,7 @@
                     error: function (error) {
                         swal('Error!', 'something went wrong', 'error');
                     },
+                    async: false
                 })
             }
         });
@@ -923,6 +925,7 @@
             else {
                // $("#userprofile").on("change", "#txtPostCode", function (t)
                 $("#txtPostCode").change();
+               // console.log(statusofsave);
                 if ($("#hfzipstatus").val() == "true") {
                     var obj = {
                         ID: ID,

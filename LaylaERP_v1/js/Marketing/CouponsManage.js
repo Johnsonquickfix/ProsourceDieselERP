@@ -24,7 +24,7 @@
     $('#draft').click(function () { var order_type = "draft"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#pending').click(function () { var order_type = "pending"; $('#hfType').val(order_type); dataGridLoad(order_type); });    
     $('#private').click(function () { var order_type = "private"; $('#hfType').val(order_type); dataGridLoad(order_type); });
-    $('#trash').click(function () { var order_type = "trash"; $('#hfType').val(order_type); dataGridLoad(order_type); });
+    //$('#trash').click(function () { var order_type = "trash"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfType').val(); dataGridLoad(order_type); });
     
 });
@@ -41,7 +41,7 @@ function GetDetails() {
                 $('#draft').find(".count").text(number_format(data[0].Drafts));
                 $('#pending').find(".count").text(number_format(data[0].Pending));               
                 $('#private').find(".count").text(number_format(data[0].Private));
-                $('#trash').find(".count").text(number_format(data[0].Trash));
+                //$('#trash').find(".count").text(number_format(data[0].Trash));
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },

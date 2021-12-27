@@ -336,7 +336,7 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].saleprice == null)
                 $("#txtsalepricekit").text('$0.00');
             else
-                $("#txtsalepricekit").text('$' + i[0].saleprice);
+                $("#txtsalepricekit").text('$' + i[0].saleprice.toFixed(2));
 
             if ($("#txtsalepricekit").text() == "$0.00") {
                 $("#lblRegularPrice").hide();
@@ -349,14 +349,14 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].cost_price == null)
                 $("#txtCostprice").text('$0.00');
             else
-                $("#txtCostprice").text('$' + i[0].cost_price);
+                $("#txtCostprice").text('$' + i[0].cost_price.toFixed(2));
 
            
 
             if (i[0].purchase_price == null)
                 $("#txtbestbying").text('$0.00');
             else
-                $("#txtbestbying").text('$' + i[0].purchase_price);
+                $("#txtbestbying").text('$' + i[0].purchase_price.toFixed(2));
             $("#txtnumattached").text(i[0].filecount);            
             $("#txtVendor").text(i[0].vname);
             $("#txtPrivate").val(i[0].Private_Notes);
@@ -928,10 +928,10 @@ function EditUser(id) {
           //  console.log(i);
             $("#txtminpurchasequantity").val(i[0].minpurchasequantity);
             $("#txttaglotno").val(i[0].taglotserialno);
-            $("#txtSaletax").val(i[0].salestax);
+            $("#txtSaletax").val(i[0].salestax.toFixed(2));
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
-            $("#txtcostprice").val(i[0].cost_price);
-            $("#txtshippingprice").val(i[0].shipping_price);
+            $("#txtcostprice").val(i[0].cost_price.toFixed(2));
+            $("#txtshippingprice").val(i[0].shipping_price.toFixed(2));
             $("#txtMisccosts").val(i[0].Misc_Costs);
             $("#txtDiscountqty").val(i[0].discount);
             $("#txtRemarks").val(i[0].remark);
@@ -1536,7 +1536,7 @@ function addshippingprice() {
     let sal = parseFloat($("#txtSaletax").val()) || 0.00;
    // console.log(con);
     let castprice = con + ship + mis + sal;
-    $("#txtcostprice").val(castprice);
+    $("#txtcostprice").val(castprice.toFixed(2));
 }
 function ClearControl() {
     $("#txtminpurchasequantity").val('1');

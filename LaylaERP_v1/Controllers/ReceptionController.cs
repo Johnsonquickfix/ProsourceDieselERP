@@ -446,7 +446,7 @@ namespace LaylaERP.Controllers
             {
                 status = true;
                 //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
-                string strBody = "Hi,<br /> Receive order number <b>#" + model.strValue2 + "</b>.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                string strBody = "Hi,<br /> Received purchase order number <b>#" + model.strValue2 + "</b>.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
                 foreach (var o in obj)
                 {
@@ -456,7 +456,7 @@ namespace LaylaERP.Controllers
                         _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
                         string _html = model.strValue3.Replace("{_para}", _uid);
 
-                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Receive Order #" + model.strValue2 + ".", strBody, _html);
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Received Purchase Order #" + model.strValue2 + ".", strBody, _html);
                     }
                 }
             }

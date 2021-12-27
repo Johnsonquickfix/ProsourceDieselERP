@@ -1094,7 +1094,7 @@ function send_mail(id, result) {
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference Po No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].poref + '</td>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference PO No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].poref + '</td>';
     myHtml += '                                    </tr>';
     //myHtml += '                                    <tr>';
     //myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';

@@ -672,10 +672,11 @@ function orderApprove(oid, status_title, status) {
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].Response == "Success") {
-                        $('#lblPoNo').data('id', result[0].id);
+                        $('#lblPoNo').data('id', result[0].id); 
                         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        swal('Success', 'Purchase order updated successfully.', "success"); getPurchaseOrderPrint(oid, true);
+                        swal('Success', 'Purchase order updated successfully.', "success");
+                        $.when(getPurchaseOrderInfo()).done(function () { getPurchaseOrderPrint(oid, true); });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     resolve();

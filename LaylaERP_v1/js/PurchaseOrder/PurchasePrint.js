@@ -47,7 +47,11 @@ function printinvoice(id, result, is_mail, is_inv) {
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
     let so_no = parseInt(data['po'][0].fk_projet) || 0;
     let va_cp = so_no > 0 ? 33.3 : 66.3;
-
+    let oth_email = data['po'][0].user_email, po_authmail = data['po'][0].po_authmail;
+    if (po_authmail != '') {
+        po_authmail = JSON.parse(po_authmail);
+        $(po_authmail).each(function (index, tr) { oth_email += ',' + tr.user_email });
+    }
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
@@ -264,7 +268,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: data['po'][0].user_email, strValue5: _com_add }
+    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
     if (opt.strValue1.length > 5 && is_mail) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),

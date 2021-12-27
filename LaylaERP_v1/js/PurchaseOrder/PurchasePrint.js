@@ -28,18 +28,10 @@ function printmodal(is_inv) {
 function getPurchaseOrderPrint(id, is_mail) {
     if (id > 0) {
         printmodal(false);
-        var option = { strValue1: id };
-        $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
-            success: function (result) {
-                try {
-                    printinvoice(id, result, is_mail, false);
-                }
-                catch (error) { swal('Alert!', "something went wrong.", "error"); }
-            },
-            complete: function () { },
-            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
-        });
+        $.ajaxSetup({ async: false });
+        $.get('/PurchaseOrder/GetPurchaseOrderPrint', { strValue1: id }).done(function (result) {
+            printinvoice(id, result, is_mail, false);
+        }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
     }
 }
 function printinvoice(id, result, is_mail, is_inv) {
@@ -268,18 +260,18 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    if (data['po'][0].fk_status = 3 && is_mail) {
-        let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
-        if (opt.strValue1.length > 5 && is_mail) {
+    if (data['po'][0].fk_status == 3 && is_mail) {
+        let opt_app = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
+        if (opt_app.strValue1.length > 5 && is_mail) {
             $.ajax({
-                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_app),
                 success: function (result) { console.log(result); },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
                 complete: function () { }, async: false
             });
         }
     }
-    else if (data['po'][0].fk_status = 8 && is_mail) {
+    else if (data['po'][0].fk_status == 8 && is_mail) {
         let opt_rej = { strValue1: data['po'][0].po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_rej),

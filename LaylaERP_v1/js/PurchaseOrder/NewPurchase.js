@@ -430,12 +430,12 @@ function getPurchaseOrderInfo() {
         $('#line_items,#product_line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnClonePO" data-toggle="tooltip" title="Create duplicate purchase order" data-placement="left"><i class="fas fa-copy"></i> Clone</button> ');
-        var option = { strValue1: oid };
+        var option = { strValue1: oid }; 
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
+                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;                
                 $.each(data['po'], function (key, row) {
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
@@ -669,17 +669,24 @@ function orderApprove(oid, status_title, status) {
         title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
+                $.ajaxSetup({ async: false});
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
-                    result = JSON.parse(result);
+                    result = JSON.parse(result); console.log(result);
                     if (result[0].Response == "Success") {
-                        $('#lblPoNo').data('id', result[0].id); 
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                        swal('Success', 'Purchase order updated successfully.', "success");
-                        $.when(getPurchaseOrderInfo()).done(function () { getPurchaseOrderPrint(oid, true); });
+                        $('#lblPoNo').data('id', result[0].id);
+                        //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        //$(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        //swal('Success', 'Purchase order updated successfully.', "success");
+                        //swal('Success', 'Purchase order saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; });
+                        //getPurchaseOrderPrint(oid, true);
+                        //getPurchaseOrderInfo();
+                        swal('Success', 'Purchase order saved successfully.', "success");
+                        $.when(getPurchaseOrderInfo()).done(function () {
+                            getPurchaseOrderPrint(oid, true);
+                        });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
-                    resolve();
+                    //resolve();
                 }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
             });
         }

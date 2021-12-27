@@ -43,7 +43,8 @@ function PurchaseOrderGrid() {
         sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
-            aoData.push({ name: "strValue3", value: urid }, { name: "strValue4", value: "SPO" });
+            aoData.push({ name: "strValue3", value: '' }, { name: "strValue4", value: '' }, { name: "strValue5", value: "SPO" });
+
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
             oSettings.jqXHR = $.ajax({

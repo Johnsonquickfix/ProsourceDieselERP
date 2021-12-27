@@ -268,10 +268,21 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
-    if (opt.strValue1.length > 5 && is_mail) {
+    if (data['po'][0].fk_status = 3 && is_mail) {
+        let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
+        if (opt.strValue1.length > 5 && is_mail) {
+            $.ajax({
+                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+                success: function (result) { console.log(result); },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                complete: function () { }, async: false
+            });
+        }
+    }
+    else if (data['po'][0].fk_status = 8 && is_mail) {
+        let opt_rej = { strValue1: data['po'][0].po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
         $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_rej),
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
             complete: function () { }, async: false

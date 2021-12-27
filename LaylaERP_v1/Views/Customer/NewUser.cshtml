@@ -130,7 +130,8 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
-        if (id != "") {
+        if (id != "" && id != "NewUser") {
+           // console.log(id);
             //debugger
             //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
@@ -154,7 +155,7 @@
                 },
                 processResults: function (data) {
                     var jobj = JSON.parse(data);
-                    console.log(jobj);
+                  //  console.log(jobj);
                     return {
                         results: $.map(jobj, function (item) {
                             return { text: item.StateFullName, name: item.StateFullName, id: item.State }
@@ -168,6 +169,8 @@
         $('.select1').select2();
 
         isEdit(true);
+        
+       
     });
 
     function isEdit(val) {
@@ -215,6 +218,7 @@
         City = $("#txtBillingCity").val();
         State = $("#txtBillingState").val();
         PostalCode = $("#txtBillingPostCode").val();
+       // console.log(City, State, PostalCode);
         var obj = {
             billing_state: State,
             billing_city: City,
@@ -226,11 +230,12 @@
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
-                console.log(data);
+              //  console.log(data);
                 if (data.status == true) {
                     // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                     // $('#hfzipstatus').val(data.status);
                     $('#hfzipstatus').val(data.status);
+                   // console.log('eree', data.status);
 
                 }
                 else {
@@ -268,7 +273,7 @@
                         // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                         // $('#hfzipstatus').val(data.status);
                         $('#hfzipstatus').val(data.status);
-
+                        console.log('state', data.status);
                     }
                     else {
                         if ($('#txtBillingCountry').val() == "US") {
@@ -357,7 +362,7 @@
             else
                 $("#txtBillingCountry").empty();
 
-
+            $("#txtBillingPostCode").change();
         }
 
         function renderAddress(place) {

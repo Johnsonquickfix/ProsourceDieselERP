@@ -738,8 +738,9 @@
                 else
                     $("#strValue3").prop('checked', true);
 
-            }
-
+        }
+     
+       // $("#txtPostCode").change();        
     });
 
         function loadData() {
@@ -770,8 +771,8 @@
 
         $("#userprofile").on("change", "#txtPostCode", function (t) {
 
-            console.log($("#txtCountry").val());
-            if ($("#txtCountry").val() == "US" ) {
+           // console.log($("#txtCountry").val());
+            if ($("#txtPostCode").val() != '') {
                 City = $("#txtCity").val();
                 State = $("#txtState").val();
                 PostalCode = $("#txtPostCode").val();
@@ -788,17 +789,24 @@
                     success: function (data) {
                         if (data.status == true) {
                             $('#hfzipstatus').val(data.status);
+                             
                         }
                         else {
+                            if ($('#txtCountry').val() == "US") {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
                             swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
+                        if ($('#txtCountry').val() == "CA") {
+                            $('#hfzipstatus').val("true");
+                        }
                         }
                     },
 
                     error: function (error) {
                         swal('Error!', 'something went wrong', 'error');
                     },
+                    async: false
                 })
             }
         });
@@ -807,7 +815,7 @@
         $("#userprofile").on("change", "#txtState", function (t) {
 
             console.log($("#txtCountry").val());
-            if ($("#txtCountry").val() == "US" && $("#txtPostCode").val() != '') {
+            if ($("#txtPostCode").val() != '') {
                 City = $("#txtCity").val();
                 State = $("#txtState").val();
                 PostalCode = $("#txtPostCode").val();
@@ -826,9 +834,14 @@
                             $('#hfzipstatus').val(data.status);
                         }
                         else {
+                            if ($('#txtCountry').val() == "US") {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                                swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            }
+                            if ($('#txtCountry').val() == "CA") {
+                                $('#hfzipstatus').val("true");
+                            }
                         }
                     },
 
@@ -922,6 +935,7 @@
             else {
                // $("#userprofile").on("change", "#txtPostCode", function (t)
                 $("#txtPostCode").change();
+               // console.log(statusofsave);
                 if ($("#hfzipstatus").val() == "true") {
                     var obj = {
                         ID: ID,
@@ -1082,6 +1096,7 @@
                 })
             });
             passwordcheck();
+            $("#txtPostCode").change();
         });
 
 

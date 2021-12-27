@@ -34,9 +34,6 @@
                 </select>
                 <select class="form-control" id="year">
                     <option value="">Year</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
                 </select>
                 <input type="button" id="filtersrchexp" value="Search" class="button" />
                 @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
@@ -65,7 +62,8 @@
 
     <script>
         $(document).ready(function () {
-            //setTimeout(function () { DatagridOrder(); }, 50);
+            globalyear('year');
+
             $("#filtersrchexp").click(function () {
                 if ($("#month").val() == "") {
                     swal('Alert', 'Please Select Month', 'error').then(function () { swal.close(); $('#month').focus(); });
@@ -74,12 +72,8 @@
                     swal('Alert', 'Please Select Year', 'error').then(function () { swal.close(); $('#year').focus(); });
                 }
                 else {
-
                     DatagridOrder();
-                    // $("#month").val("");
-                    // $("#year").val("");
                     return false;
-
                 }
             });
         });
@@ -147,4 +141,4 @@
 
     </script>
 </section>
-
+<script src="~/js/globalyear.js"></script>

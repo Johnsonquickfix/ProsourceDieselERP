@@ -50,7 +50,7 @@ namespace LaylaERP.Controllers
                     if (dt.Rows.Count > 0)
                     {
                         ViewBag.status = dt.Rows[0]["Response"].ToString();
-                        ViewBag.id = obj.Search;
+                        ViewBag.id = obj.RowID;
                     }
                     else
                     {
@@ -84,11 +84,13 @@ namespace LaylaERP.Controllers
                 obj.Search = key;
                 if (obj.LoginID > 0 && obj.RowID > 0)
                 {
+                    //ViewBag.status = "Success";
+                    //ViewBag.id = obj.RowID;
                     DataTable dt = PurchaseOrderRepository.PurchaseApproval(obj);
                     if (dt.Rows.Count > 0)
                     {
                         ViewBag.status = dt.Rows[0]["Response"].ToString();
-                        ViewBag.id = obj.Search;
+                        ViewBag.id = obj.RowID;
                     }
                     else
                     {
@@ -269,7 +271,8 @@ namespace LaylaERP.Controllers
         public JsonResult GetPurchaseOrderPrint(SearchModel model)
         {
             string JSONresult = string.Empty;
-            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            OperatorModel om = new OperatorModel();
             try
             {
                 long id = 0;

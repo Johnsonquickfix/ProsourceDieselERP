@@ -1789,7 +1789,7 @@ namespace LaylaERP.BAL
                     Export_Details uobj = new Export_Details();
                     uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
-                    uobj.tax = ds1.Tables[0].Rows[i]["Tax"].ToString();
+                    uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
                     uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shiptostreet"].ToString();
                     uobj.shipping_city = ds1.Tables[0].Rows[i]["shiptocity"].ToString();
                     uobj.shipping_state = ds1.Tables[0].Rows[i]["shiptostate"].ToString();
@@ -1803,11 +1803,11 @@ namespace LaylaERP.BAL
                     uobj.provider = ds1.Tables[0].Rows[i]["provider"].ToString();
                     uobj.transaction_type = ds1.Tables[0].Rows[i]["transaction_type"].ToString();
                     uobj.transaction_reference_id = ds1.Tables[0].Rows[i]["transaction_reference_id"].ToString();
-                    uobj.shipping_amount = ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
-                    uobj.handling_amount = ds1.Tables[0].Rows[i]["handling_amount"].ToString();
+                    uobj.shipping_amount = "$" + ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
+                    uobj.handling_amount = "$" + ds1.Tables[0].Rows[i]["handling_amount"].ToString();
                     uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
-                    uobj.Discount = ds1.Tables[0].Rows[i]["Discount"].ToString();
-                    uobj.total = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                    uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
                     exportorderlist.Add(uobj);
                 }
             }

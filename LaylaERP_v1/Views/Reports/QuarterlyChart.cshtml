@@ -30,10 +30,6 @@
                                 <label class="control-label">Year<span style="color:red;"> *</span></label>
                                 <select class="form-control" id="year">
                                     <option value="">Year</option>
-                                    <option value="2019">2019</option>
-                                    <option value="2020">2020</option>
-                                    <option selected value="2021">2021</option>
-                                    <option value="2022">2022</option>
                                 </select>
                             </div>
                         </div>
@@ -52,6 +48,7 @@
 
         $(document).ready(function () {
             $("#loader").hide();
+            globalyear('year');
             Search();
             $(function () {
                 Highcharts.setOptions({
@@ -184,3 +181,4 @@
             $('.highcharts-credits').remove();
         }
     </script>
+    <script src="~/js/globalyear.js"></script>

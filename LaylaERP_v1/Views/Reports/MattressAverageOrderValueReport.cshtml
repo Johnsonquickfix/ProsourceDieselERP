@@ -33,9 +33,6 @@
                 </select>
                 <select class="form-control" id="year">
                     <option value="">Year</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
                 </select>
                 <select class="form-control" id="txtStatus">
                     <option value="">Status</option>
@@ -91,7 +88,7 @@
             //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtStatus");
             //    })
             //})
-
+            globalyear('year');
 
             $("#filtersrchexp").click(function () {
                 if ($("#month").val() == "") {
@@ -187,7 +184,6 @@
 
             });
         }
-
-
     </script>
 </section>
+<script src="~/js/globalyear.js"></script>

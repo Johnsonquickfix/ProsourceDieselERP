@@ -43,16 +43,22 @@ function getPurchaseOrderPrint(id, is_mail) {
     }
 }
 function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); console.log(result);
+    let data = JSON.parse(result.data); //console.log(data);
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
     let so_no = parseInt(data['po'][0].fk_projet) || 0;
     let va_cp = so_no > 0 ? 33.3 : 66.3;
-
+    let oth_email = data['po'][0].user_email, po_authmail = data['po'][0].po_authmail;
+    if (po_authmail != '') {
+        po_authmail = JSON.parse(po_authmail);
+        $(po_authmail).each(function (index, tr) { oth_email += ',' + tr.user_email });
+    }
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
-    _com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
+    //let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    //_com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
+    let _com_add = data['Table4'][0].com_name + ', <br>' + data['Table4'][0].add + ', <br>' + data['Table4'][0].city + ', ' + data['Table4'][0].state + ' ' + data['Table4'][0].zip + ', <br>' + (data['Table4'][0].country == "CA" ? "Canada" : data['Table4'][0].country == "US" ? "United States" : data['Table4'][0].country) + '.<br>';
+    _com_add += 'Phone: ' + data['Table4'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + data['Table4'][0].email + ' <br> ' + data['Table4'][0].website;
 
     let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
@@ -262,10 +268,21 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: data['po'][0].user_email, strValue5: _com_add }
-    if (opt.strValue1.length > 5 && is_mail) {
+    if (data['po'][0].fk_status = 3 && is_mail) {
+        let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
+        if (opt.strValue1.length > 5 && is_mail) {
+            $.ajax({
+                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+                success: function (result) { console.log(result); },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                complete: function () { }, async: false
+            });
+        }
+    }
+    else if (data['po'][0].fk_status = 8 && is_mail) {
+        let opt_rej = { strValue1: data['po'][0].po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
         $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_rej),
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
             complete: function () { }, async: false

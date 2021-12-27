@@ -16,37 +16,58 @@
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        public static LoginModel VerifyUser(string UserName, string UserPassword)
+        public static ResultModel UserVerify(string UserName, string UserPassword)
+        {
+            ResultModel obj = new ResultModel();
+            try
+            {
+                UserPassword = EncryptedPwd(UserPassword);SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "AUTH"),
+                    new SqlParameter("@user_login", UserName),
+                    new SqlParameter("@user_pass", UserPassword)
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                while (sdr.Read())
+                {
+                    obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
+                    obj.error_msg = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
+                    obj.user_data = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.success = false;
+                obj.error_msg = ex.Message;
+                obj.user_data = "{}";
+            }
+            return obj;
+        }
+
+        public static LoginModel UserInfo(long id)
         {
             LoginModel obj = new LoginModel();
             try
             {
-                UserPassword = EncryptedPwd(UserPassword);
-                string strSql = "Select top 1 id,user_login,user_nicename,user_email,user_registered,display_name,user_status,user_pass,'' [role],"
-                                + "    max(case when um.meta_key = 'first_name' then um.meta_value else '' end) first_name,max(case when um.meta_key = 'last_name' then um.meta_value else '' end) last_name,"
-                                + "    max(case when um.meta_key = 'billing_phone' then um.meta_value else '' end) billing_phone,max(case when um.meta_key = 'nickname' then um.meta_value else '' end) nickname"
-                                + "from wp_users ur"
-                                + "Left outer join wp_usermeta um on um.user_id = ur.id and meta_key in ('first_name', 'last_name', 'billing_phone', 'nickname', 'wp_capabilities')"
-                                + "where user_status = 0 and(user_login = @UserName Or user_email = @UserName) And user_pass = @UserPassword"
-                                + "group by id,user_login,user_nicename,user_email,user_registered,display_name,user_status,user_pass";
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@UserName", UserName),
-                    new SqlParameter("@UserPassword", UserPassword)
+                    new SqlParameter("@flag", "UINFO"),
+                    new SqlParameter("@id", id),
                 };
-                SqlDataReader sdr = SQLHelper.ExecuteReader(strSql, parameters);
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
                 while (sdr.Read())
                 {
                     obj.id = (sdr["id"] != Convert.DBNull) ? Convert.ToInt64(sdr["id"]) : 0;
                     obj.user_login = (sdr["user_login"] != Convert.DBNull) ? sdr["user_login"].ToString() : string.Empty;
                     obj.user_nicename = (sdr["user_nicename"] != Convert.DBNull) ? sdr["user_nicename"].ToString() : string.Empty;
                     obj.user_email = (sdr["user_email"] != Convert.DBNull) ? sdr["user_email"].ToString() : string.Empty;
-                    obj.user_registered = (sdr["user_registered"] != Convert.DBNull) ? Convert.ToDateTime( sdr["user_registered"]) : DateTime.UtcNow;
+                    obj.user_registered = (sdr["user_registered"] != Convert.DBNull) ? sdr["user_registered"].ToString() : string.Empty;
                     obj.display_name = (sdr["display_name"] != Convert.DBNull) ? sdr["display_name"].ToString() : string.Empty;
                     obj.first_name = (sdr["first_name"] != Convert.DBNull) ? sdr["first_name"].ToString() : string.Empty;
                     obj.last_name = (sdr["last_name"] != Convert.DBNull) ? sdr["last_name"].ToString() : string.Empty;
                     obj.billing_phone = (sdr["billing_phone"] != Convert.DBNull) ? sdr["billing_phone"].ToString() : string.Empty;
                     obj.nickname = (sdr["nickname"] != Convert.DBNull) ? sdr["nickname"].ToString() : string.Empty;
+                    obj.role = (sdr["role"] != Convert.DBNull) ? sdr["role"].ToString() : string.Empty;
                     if (sdr["user_status"].ToString().ToString().Trim() == "0")
                         obj.is_active = true;
                     else

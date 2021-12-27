@@ -10,25 +10,50 @@
     using System.Web.Http;
     using Microsoft.AspNet.Identity;
 
-    [RoutePrefix("api/Account")]
+    [RoutePrefix("api/account")]
     public class AccountController : BaseApiController
     {
         // GET api/Account/Login
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
       
-        [HttpPost]
-        [Route("Login")]
+        [HttpGet]
+        [Route("login")]
         public IHttpActionResult Login(LoginModel model)
         {
-         
+            ResultModel result = new ResultModel();
             if (string.IsNullOrWhiteSpace(model.user_login) || string.IsNullOrWhiteSpace(model.user_pass))
             {
                 return BadRequest();
             }
             try
             {
-                var balResult = UsersRepositry.VerifyUser(model.user_login, model.user_pass);
+                string msg = string.Empty;
+                var balResult = UsersRepositry.UserVerify(model.user_login, model.user_pass);
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
+        [HttpGet]
+        [Route("userdetails")]
+        public IHttpActionResult Userdetails(LoginModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (!model.id.HasValue)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                string msg = string.Empty;
+                var balResult = UsersRepositry.UserInfo(model.id.Value);
                 if (balResult == null)
                 {
                     return BadRequest();

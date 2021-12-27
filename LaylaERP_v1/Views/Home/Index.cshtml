@@ -739,7 +739,7 @@
                     $("#strValue3").prop('checked', true);
 
             }
-
+       // $("#txtPostCode").change();        
     });
 
         function loadData() {
@@ -788,6 +788,7 @@
                     success: function (data) {
                         if (data.status == true) {
                             $('#hfzipstatus').val(data.status);
+                            console.log('cu',data.status);
                         }
                         else {
                             $("#txtPostCode").val("");
@@ -1082,6 +1083,7 @@
                 })
             });
             passwordcheck();
+            $("#txtPostCode").change();
         });
 
 

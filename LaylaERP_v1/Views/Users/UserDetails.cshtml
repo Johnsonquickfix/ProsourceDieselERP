@@ -241,6 +241,7 @@
     $(document).ready(function () {
         $("#loader").hide();
         $('.select1').select2();
+    
        // isEdit(true);
         //Code to remove repetation of words
         @*var string = '@Model.user_role';
@@ -434,6 +435,7 @@
                             //swal('Alert!', 'Post zip code is valid for City and State', 'success')
                             // $('#hfzipstatus').val(data.status);
                             $('#hfzipstatus').val(data.status);
+                           // console.log("stTE", data.status);
 
                         }
                         else {
@@ -474,7 +476,7 @@
                         // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                         // $('#hfzipstatus').val(data.status);
                         $('#hfzipstatus').val(data.status);
-
+                       // console.log("CIty", data.status);
                     }
                     else {
                         if ($('#txtCountry').val() == "US") {
@@ -561,6 +563,8 @@
 
         passwordcheck();
         isEdit(true);
+
+        $("#txtPostCode").change();
     });
 
     function isEdit(val) {

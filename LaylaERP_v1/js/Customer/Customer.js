@@ -301,7 +301,8 @@ function GetCustomerByID(id) {
 
             }
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
-
+    $("#txtBillingPostCode").change();
 }

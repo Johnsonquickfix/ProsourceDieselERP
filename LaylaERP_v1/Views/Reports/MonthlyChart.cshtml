@@ -33,8 +33,9 @@
             <option selected value="2021">2021</option>
             <option value="2022">2022</option>
         </select>*@
-                            <select name="select" class="form-control" id="year">
-                            </select>
+                        <select class="form-control" id="year">
+                            <option value="">Year</option>
+                        </select>
                         </div>
                     </div>
                     <div class="alignleft actions">
@@ -52,7 +53,7 @@
 
         $(document).ready(function () {
             $("#loader").hide();
-         
+            globalyear('year');
             $(function () {
                 Highcharts.setOptions({
                     lang: {
@@ -60,12 +61,12 @@
                     }
                 });
             })
-            var currentYear = new Date().getFullYear();
-            var yearSelect = document.getElementById('year');
-            for (var i = -2; i < 5; i++) {
-                var isSelected = currentYear === currentYear - i
-                yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
-            }
+            //var currentYear = new Date().getFullYear();
+            //var yearSelect = document.getElementById('year');
+            //for (var i = -2; i < 5; i++) {
+            //    var isSelected = currentYear === currentYear - i
+            //    yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+            //}
             Search();
         });
         function Search() {
@@ -212,3 +213,4 @@
 
 </script>
 
+<script src="~/js/globalyear.js"></script>

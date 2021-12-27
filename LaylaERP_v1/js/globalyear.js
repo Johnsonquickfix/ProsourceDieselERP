@@ -7,3 +7,12 @@ function globalyear(yearcount) {
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
 }
+
+function globallastyear(yearcount) {
+    var currentYear = new Date().getFullYear()-1;
+    var yearSelect = document.getElementById(yearcount);
+    for (var i = -2; i < 5; i++) {
+        var isSelected = currentYear === currentYear - i
+        yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+    }
+}

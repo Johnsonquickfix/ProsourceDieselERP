@@ -1049,43 +1049,61 @@ function viewfileupload(id) {
 function SendPO_POApproval(id) {
     if (id > 0) {
         var option = { strValue1: id };
-        $.get("/Reception/GetReceveOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
+       // $.get("/Reception/GetReceveOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
+        $.get("/Reception/GetPurchaseOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
     }
 }
 function send_mail(id, result) {
-    let data = JSON.parse(result.data); console.log(result);
-    let inv_title = 'Received Order', po_authmail = data['po'][0].po_authmail;
-
+    let data = JSON.parse(result.data);
+    //console.log('jsondata', result);
+    let pono = "";
+    try {
+        pono = data['podvadd'][0].pono;
+    }
+    catch (e) {
+        pono = '';
+    }
+    
+    let inv_title = 'Bill' ; // is_inv ? 'Bill' : 'Receive Order';
+    let inv_titleNew = 'Commercial Invoice', po_authmail = data['po'][0].po_authmail;
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
-
-    let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+  //  console.log('Printss', pono);
+    let _com_add = result.name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     _com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
 
+    //let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+    //console.log('Print',pono);
     let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
     myHtml += '    <td align="center" style="padding:0;">';
     myHtml += '        <table class="container_table" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #e6e6e6; width:995px">';
     myHtml += '            <tr>';
     myHtml += '                <td style="padding:15px;">';
-    myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;width:100%;border-bottom: 1px solid #ddd;">';
+    myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom: 1px solid #ddd;">';
     myHtml += '                        <tr>';
-    myHtml += '                            <td style="padding:0; vertical-align: top;width:66.9%">';
-    myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
-    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + _com_add + '</p>';
+    myHtml += '                            <td style="padding:; vertical-align: top;">';
+
+    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
+    myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "CN" ? "China" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
+    myHtml += '            </p>';
+
+
     myHtml += '                            </td>';
-    myHtml += '                            <td style="padding:0; vertical-align: top; width:33.1%" align="left">';
+    myHtml += '                            <td style="padding:0px 0px 15px 0px; vertical-align: top;" align="right">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
-    myHtml += '                                        <td colspan="2" style="padding:0px 2.5px 0px 0px">';
-    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_title.toUpperCase() + '</h2>';
+    myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
+    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_titleNew + '</h2>';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_creation + '</td>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_creation + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Client PO#:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + pono + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref_supplier + '</td>';
@@ -1094,14 +1112,8 @@ function send_mail(id, result) {
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected Delivery Date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference PO No #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].poref + '</td>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Country of Origin:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "CN" ? "China" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '</td>';
     myHtml += '                                    </tr>';
-    //myHtml += '                                    <tr>';
-    //myHtml += '                                        <td style = "font-family:sans-serif;font-size:15px;color:#4f4f4f;line-height:1.4;padding:15px 2.5px;text-align: right;" colspan = "2">';
-    //myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-accept?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Approve</a> ';
-    //myHtml += '                                            <a href="' + data['po'][0].base_url + '/purchaseorder/po-reject?key=' + data['po'][0].row_key + '&id=' + result.en_id + '{_para}" target="_blank" style="margin:12px;min-width:110px;background-color:#ff4100;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Disapprove</a>';
-    //myHtml += '                                        </td>';
-    //myHtml += '                                    </tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';
     myHtml += '                        </tr >';
@@ -1110,19 +1122,38 @@ function send_mail(id, result) {
     myHtml += '            </tr >';
     myHtml += '<tr>';
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
-    myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">';
-    myHtml += '    <tr>';
-    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 66.9%">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
-    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
-    myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
-    myHtml += '            </p>';
+    myHtml += '    <table cellpadding="0" width="100%" cellspacing="0" border="0">';
+    myHtml += '    <tr width="100%">';
+    myHtml += '        <td  width="69.9%" style="padding:0;">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Sold to:</h3>';
+    myHtml += '                                <img src="//laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    // myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:5px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' '</h3>';
+    myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
+    myHtml += '                                    ' + result.name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "CN" ? "China" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
+    myHtml += '                                </p>';
     myHtml += '        </td>';
-    myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33%" align="left">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Receiving Address:</h3>';
-    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
-    myHtml += '               ' + data['po'][0].warehouse + '<br>' + data['po'][0].wrh_add + '<br>' + data['po'][0].wrh_city + ', ' + data['po'][0].wrh_town + ' ' + data['po'][0].wrh_zip + ', ' + (data['po'][0].wrh_country == "CA" ? "Canada" : data['po'][0].fk_cowrh_countryuntry == "US" ? "United States" : data['po'][0].wrh_country) + '<br>Phone: ' + data['po'][0].wrh_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
-    myHtml += '            </p>';
+
+    myHtml += '        <td width="30.1%" style="padding:0px 0px ; vertical-align: top;" align="left">';
+    myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
+    //myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
+    myHtml += '                                        </td>';
+    myHtml += '                                    </tr>';
+    if (pono == '') {
+
+    }
+    else {
+        myHtml += '                                    <tr>';
+        myHtml += '                               <td <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
+        myHtml += '                                    ' + data['podvadd'][0].ref + ',<br>' + data['podvadd'][0].address + ',<br>' + data['podvadd'][0].address1 + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + '<br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China" : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
+        myHtml += '                                    Phone: ' + data['podvadd'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + data['podvadd'][0].email + '<br />';
+        myHtml += '                                </p> </td>';
+        myHtml += '                                    </tr>';
+    }
+    myHtml += '                                </table>';
     myHtml += '        </td>';
     myHtml += '     </tr>';
     myHtml += '     </table>';
@@ -1182,31 +1213,31 @@ function send_mail(id, result) {
     myHtml += '                        </td>';
     myHtml += '                    </tr>';
 
-    myHtml += '                    <tr>';
-    myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
-    myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
-    myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
-    myHtml += '                                <tr>';
-    myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
-    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
-    myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
-    myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
-    myHtml += '                                </tr>';
-    myHtml += '                            </thead>';
-    myHtml += '                            <tbody style="border:1px solid #ddd;">';
-    $(data['popd']).each(function (index, trpd) {
-        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
-        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
-        myHtml += '</tr>';
-        paid_amt += trpd.amount
-    });
-    myHtml += '                            </tbody>';
-    myHtml += '                        </table>';
-    myHtml += '                        </td>';
-    myHtml += '                    </tr>';
+    //myHtml += '                    <tr>';
+    //myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
+    //myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
+    //myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    //myHtml += '                                <tr>';
+    //myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
+    //myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+    //myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
+    //myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
+    //myHtml += '                                </tr>';
+    //myHtml += '                            </thead>';
+    //myHtml += '                            <tbody style="border:1px solid #ddd;">';
+    //$(data['popd']).each(function (index, trpd) {
+    //    myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
+    //    myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
+    //    myHtml += '</tr>';
+    //    paid_amt += trpd.amount
+    //});
+    //myHtml += '                            </tbody>';
+    //myHtml += '                        </table>';
+    //myHtml += '                        </td>';
+    //myHtml += '                    </tr>';
 
     myHtml += '                </table>';
     myHtml += '            </td>';
@@ -1237,18 +1268,18 @@ function send_mail(id, result) {
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Total</td>';
     myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
     myHtml += '                </table>';
     myHtml += '            </td>';
     myHtml += '        </tr>';
@@ -1260,8 +1291,11 @@ function send_mail(id, result) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    let opt = { strValue1: po_authmail, strValue2: data['po'][0].poref, strValue3: myHtml, strValue5: _com_add }
-    console.log(opt);
+
+    //console.log(myHtml);
+
+    let opt = { strValue1: po_authmail, strValue2: pono, strValue3: myHtml, strValue5: _com_add }
+    //console.log(opt);
     //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 5) {
         $.ajax({

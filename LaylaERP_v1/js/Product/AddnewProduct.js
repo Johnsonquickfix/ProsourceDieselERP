@@ -609,6 +609,7 @@
                         success: function (data) {
                             if (data.status == true) {
                                 swal('Success!', data.message, 'success');
+                                ActivityLog('save variation for product id(' + id + ')', '/Product/AddNewProduct/' + id + '');
                                 //GetProductvariationID(id);
                             }
                             // EMPTY THE ARRAY.
@@ -685,6 +686,7 @@
                             //alert('d');
                             GetProductvariationID(id);
                             swal('Success!', data.message, 'success');
+                            ActivityLog('save attribute for product id(' + id + ')', '/Product/AddNewProduct/' + id + '');
                         }
                         else {
                             $("#hfUpdatedID").val(data.ID);

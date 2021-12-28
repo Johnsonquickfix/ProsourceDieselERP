@@ -30,10 +30,10 @@
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
-    $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
-    $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
-    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; });
+    $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment();  });
+    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') order complete waiting for payment status.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     /*Start New order Popup function*/
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); $("#loader").show();
@@ -51,10 +51,11 @@
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
-        $('[data-toggle="tooltip"]').tooltip();$("#loader").hide(); isEdit(true);
+        $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
+        ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/Orders/OrdersHistory');
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
-    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
+    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/Orders/OrdersHistory');});
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -1050,6 +1051,7 @@ function DeleteNotes(id) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Fee ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddFeeModal(orderitemid, feevalue) {
+    ActivityLog('Edit fee (' + feevalue + ') in order id (' + $('#hfOrderNo').val() + ')', '/Product/AddNewProduct/');
     var feeHtml = '<div class="modal-dialog">';
     feeHtml += '<div class="modal-content">';
     feeHtml += '<div class="modal-header">';
@@ -1082,6 +1084,7 @@ function ApplyFee(orderitemid, feevalue) {
             feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             $('#trfeeid_' + orderitemid).empty().append(feeHtml);
+            ActivityLog('Fee updated (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/OrdersHistory');
         }
         else {
             let feeHtml = '';
@@ -1091,8 +1094,10 @@ function ApplyFee(orderitemid, feevalue) {
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             feeHtml += '</tr>';
             $('#order_fee_line_items').append(feeHtml);
+            ActivityLog('Fee added (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/OrdersHistory');
         }
         $("#billModal").modal('hide'); calcFinalTotals();
+        
     }, completeFun, errorFun, false);
 }
 function RemoveFee(orderitemid) {
@@ -1101,7 +1106,8 @@ function RemoveFee(orderitemid) {
             if (result.value) {
                 let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
                 ajaxFunction('/Orders/RemoveFee', option, beforeSendFun, function (result) {
-                    if (result.status) { $('#trfeeid_' + orderitemid).remove(); calcFinalTotals(); }
+                    let feamount = $('#trfeeid_' + orderitemid).data('feeamt');
+                    if (result.status) { $('#trfeeid_' + orderitemid).remove(); calcFinalTotals(); ActivityLog('Fee id (' + orderitemid + ') with amount (' + feamount + ') Deleted in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
                     else { swal('Alert!', result.message, "error"); }
                 }, completeFun, errorFun, false);
             }
@@ -1535,6 +1541,9 @@ function ApplyCoupon() {
             bindCouponList(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        complete: function () {
+            ActivityLog('Coupon applied (' + $("#txt_Coupon").val().toLowerCase().trim() + ') in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + '');
+        },
         async: false
     });
     //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
@@ -2134,8 +2143,8 @@ function PaymentModal() {
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); }
-    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for podium payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 

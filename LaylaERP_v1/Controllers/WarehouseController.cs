@@ -600,7 +600,7 @@ namespace LaylaERP.Controllers
             {
                 int ID = WarehouseRepository.DeleteBankLinkedFiles(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Warehouse Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Warehouse linked files deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }

@@ -23,6 +23,7 @@
         }
         else if (gc_status == "Send_to_recipient") {
             ReSendGiftCard();
+          
         }
         else if (gc_status == "Disable") {
             changeStatus();
@@ -732,6 +733,7 @@ function ReSendGiftCard() {
         success: function (result) {
             if (result.status == true) {
                 swal('Success', 'Email send successfully.', "success");
+                location.href = "../../Giftcard/GiftCardList";
             }
             else {
                 swal('Error', result.message, "error").then((result) => { return false; }); }
@@ -752,6 +754,7 @@ function changeStatus() {
                     .done(function (data) {
                         if (data.status) {
                             swal.insertQueueStep(data.message);
+                            location.href = "../../Giftcard/GiftCardList";
                         }
                         else { swal.insertQueueStep('something went wrong!'); }
                         resolve();

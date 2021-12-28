@@ -12,6 +12,7 @@ namespace LaylaERP.BAL
     public class ReportsRepository
     {
         public static List<Export_Details> exportorderlist = new List<Export_Details>();
+        public static List<Export_Details> exportorderlistchart = new List<Export_Details>();
         public static void GetAjBaseData(string from_date, string to_date)
         {
             try
@@ -1901,11 +1902,42 @@ namespace LaylaERP.BAL
                         Export_Details uobj = new Export_Details();
                         uobj.tax = ds1.Tables[0].Rows[i]["month"].ToString();
                         uobj.shipping_amount = ds1.Tables[0].Rows[i]["month_name"].ToString();
-                        uobj.handling_amount = "$" + ds1.Tables[0].Rows[i]["sales"].ToString();
-                        uobj.first_name = "$" + ds1.Tables[0].Rows[i]["forcastSales"].ToString();
-                        uobj.Discount = "$" + ds1.Tables[0].Rows[i]["lowerconfidence"].ToString();
-                        uobj.total = "$" + ds1.Tables[0].Rows[i]["upperconfidence"].ToString();
+                        uobj.handling_amount = '$' + ds1.Tables[0].Rows[i]["sales"].ToString();
+                        uobj.first_name = '$' + ds1.Tables[0].Rows[i]["forcastSales"].ToString();
+                        uobj.Discount = '$' + ds1.Tables[0].Rows[i]["lowerconfidence"].ToString();
+                        uobj.total = '$' + ds1.Tables[0].Rows[i]["upperconfidence"].ToString();
                         exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetForecastSalesMonthlyChart(string year)
+        {
+            try
+            {
+                exportorderlistchart.Clear();
+                DataSet ds1 = new DataSet();
+                if (year != "")
+                {
+                    SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "FCM"),
+                    new SqlParameter("@year", year),
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_forcastsalemonthly", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.tax = ds1.Tables[0].Rows[i]["month"].ToString();
+                        uobj.shipping_amount = ds1.Tables[0].Rows[i]["month_name"].ToString();
+                        uobj.handling_amount = ds1.Tables[0].Rows[i]["sales"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["forcastSales"].ToString();
+                        uobj.Discount = ds1.Tables[0].Rows[i]["lowerconfidence"].ToString();
+                        uobj.total = ds1.Tables[0].Rows[i]["upperconfidence"].ToString();
+                        exportorderlistchart.Add(uobj);
                     }
                 }
             }

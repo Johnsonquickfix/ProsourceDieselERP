@@ -61,7 +61,7 @@
                         <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th style="display:none">Month</th>
+                                    <th>Month</th>
                                     <th>Month name</th>
                                     <th>Sales</th>
                                     <th>Forecast sales (Sales + 10% of sales)</th>
@@ -69,6 +69,9 @@
                                     <th>Upper confidence bound (Forecast sales + 10% of forecast sales)</th>
                                 </tr>
                             </thead>
+                            <tfoot align="right">
+                                <tr><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -136,6 +139,41 @@
             destroy: true,
             searching: false,
             lengthMenu: [[12, 20, 50], [12, 20, 50]],
+            dom: 'lBfrtip',
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api(), data;
+                console.log(data);
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                var sales = api.column(2).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                var forecastales = api.column(3).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                var lowerbound = api.column(4).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                var upperbound = api.column(4).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                $(api.column(1).footer()).html('Grand total');
+                $(api.column(2).footer()).html('$' + parseFloat(sales).toFixed(2));
+                $(api.column(3).footer()).html('$' + parseFloat(forecastales).toFixed(2));
+                $(api.column(4).footer()).html('$' + parseFloat(lowerbound).toFixed(2));
+                $(api.column(5).footer()).html('$' + parseFloat(upperbound).toFixed(2));
+                //console.log(CreditTotal);
+            },
+
             "ajax": {
                 "url": '/Reports/GetForecastSalesMonthly',
                 "type": 'POST',
@@ -145,7 +183,7 @@
             },
             "columns": [
                 { 'data': 'tax', 'sWidth': "5%", 'class': 'text-right' },
-                { 'data': 'shipping_amount', 'sWidth': "15%", 'class': 'text-right', 'title': 'Month' },
+                { 'data': 'shipping_amount', 'sWidth': "10%", 'class': 'text-left', 'title': 'Month' },
                 { 'data': 'handling_amount', 'sWidth': "10%", 'class': 'text-right', 'title': 'Sales' },
                 { 'data': 'first_name', 'sWidth': "15%", 'class': 'text-right', 'title': 'Forecast sales (Sales + 10% of sales)' },
                 { 'data': 'Discount', 'sWidth': "15%", 'class': 'text-right', 'title': 'Lower confidence bound (Sales - 10% of sales)' },
@@ -161,6 +199,16 @@
             ],
 
             "order": [0, 'asc'],
+            "buttons": [
+                {
+                    extend: 'csvHtml5',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> Export',
+                    filename: 'Inventory',
+                    footer: true,
+                    exportOptions: { modifier: { page: 'all' } }
+                },
+            ]
         });
     }
 </script>

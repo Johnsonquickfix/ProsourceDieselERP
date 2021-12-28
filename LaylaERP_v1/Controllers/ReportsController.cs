@@ -602,6 +602,13 @@ namespace LaylaERP.Controllers
             k.MaxJsonLength = int.MaxValue;
             return k;
         }
+
+        public JsonResult GetForecastSalesMonthlyChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesMonthlyChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
     }
 
          

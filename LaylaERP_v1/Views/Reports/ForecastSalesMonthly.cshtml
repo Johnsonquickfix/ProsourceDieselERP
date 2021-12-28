@@ -16,6 +16,14 @@
 <!-- datatables js -->
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+<script src="~/Content/highcharts/highcharts.js"></script>
+<script src="~/Content/highcharts/series-label.js"></script>
+<script src="~/Content/highcharts/data.js"></script>
+<script src="~/Content/highcharts/exporting.js"></script>
+<script src="~/Content/highcharts/export-data.js"></script>
+<script src="~/Content/highcharts/accessibility.js"></script>
+
 <div class="page-title">
     <h2>Forecast sales (Monthly)</h2>
 </div>
@@ -23,7 +31,7 @@
     <div class="row index_col_row">
         <div class="col-md-3">
             <div class="form-group">
-                <label>Current year</label><span style="color:red">*</span>
+                <label>Year</label><span style="color:red">*</span>
                 <select class="form-control" id="year">
                     <option value="">Year</option>
                 </select>
@@ -44,96 +52,215 @@
         </div>
     </div>
 
-    <div class="row">
+    
+    <div id="divpodata" class="row">
         <div class="col-md-12">
-            <div class="box box-primary">
+            <div class="box box-primary table-design not-fixed">
                 <div class="box-header">
-                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                        <thead>
-                            <tr>
-                                <th style="display:none">Month</th>
-                                <th>Month name</th>
-                                <th>Sales</th>
-                                <th>Forecast sales (Sales + 10% of sales)</th>
-                                <th>Lower confidence bound (Sales - 10% of sales)</th>
-                                <th>Upper confidence bound (Forecast sales + 10% of forecast sales)</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">Month</th>
+                                    <th>Month name</th>
+                                    <th>Sales</th>
+                                    <th>Forecast sales (Sales + 10% of sales)</th>
+                                    <th>Lower confidence bound (Sales - 10% of sales)</th>
+                                    <th>Upper confidence bound (Forecast sales + 10% of forecast sales)</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            $("#filtersrchexp").click(function () {
-                if ($("#year").val() == "") {
-                    swal('Alert', 'Please select current year', 'error').then(function () { swal.close(); $('#year').focus(); });
-                }
-                else {
-
-                    DatagridOrder();
-                    return false;
-                }
-            });
-            globalcurrentyear('year');
-            globalnextyear('nextyear');
-        });
-
-        function globalcurrentyear(yearcount) {
-            var currentYear = new Date().getFullYear();
-            var yearSelect = document.getElementById(yearcount);
-            for (var i = 0; i < 1; i++) {
-                var isSelected = currentYear === currentYear - i
-                yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
-            }
-        }
-
-        function globalnextyear(yearcount) {
-            var currentYear = new Date().getFullYear() + 1;
-            var yearSelect = document.getElementById(yearcount);
-            for (var i = 0; i < 1; i++) {
-                var isSelected = currentYear === currentYear - i
-                yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
-            }
-        }
-
-        function DatagridOrder() {
-            var Year = $("#year").val();
-            $('#dtdata').DataTable({
-                destroy: true,
-                "scrollX": true,
-                searching: false,
-                "ajax": {
-                    "url": '/Reports/GetForecastSalesMonthly',
-                    "type": 'POST',
-                    "dataType": 'json',
-                    "data": { Year: Year }
-                    //"data": JSON.stringify(obj)
-                },
-                "columns": [
-                    { 'data': 'tax', 'sWidth': "15%", 'class': 'text-right' },
-                    { 'data': 'shipping_amount', 'sWidth': "15%", 'class': 'text-right'},
-                    { 'data': 'handling_amount', 'sWidth': "10%", 'class': 'text-right' },
-                    { 'data': 'first_name', 'sWidth': "10%", 'class': 'text-right' },
-                    { 'data': 'Discount', 'sWidth': "10%", 'class': 'text-right' },
-                    { 'data': 'total', 'sWidth': "10%", 'class': 'text-right' }
-
-                ],
-
-                columnDefs: [
-                    {
-                        targets: [0],
-                        visible: false
-                    }
-                ],
-
-                "order": [0, 'asc'],
-            });
-        }
-    </script>
+    <!--High chart start-->
+    <figure class="highcharts-figure">
+        <div id="container_chart"></div>
+    </figure>
+    <!--High chart end-->
 </section>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $.when(globalcurrentyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder(); Search(); });
+
+        $("#filtersrchexp").click(function () {
+            if ($("#year").val() == "") {
+                swal('Alert', 'Please select current year', 'error').then(function () { swal.close(); $('#year').focus(); });
+            }
+            else {
+
+                DatagridOrder();
+                Search();
+                return false;
+            }
+        });
+
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+        })
+
+    });
+
+    //Years start
+    function globalcurrentyear(yearcount) {
+        var currentYear = new Date().getFullYear();
+        var yearSelect = document.getElementById(yearcount);
+        for (var i = 0; i < 3; i++) {
+            var isSelected = currentYear === currentYear - i
+            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+        }
+    }
+
+    function globalnextyear(yearcount) {
+        var currentYear = new Date().getFullYear() + 1;
+        var yearSelect = document.getElementById(yearcount);
+        for (var i = 0; i < 1; i++) {
+            var isSelected = currentYear === currentYear - i
+            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+        }
+    }
+    //Years end
+
+    function DatagridOrder() {
+        var Year = $("#year").val();
+        $('#dtdata').DataTable({
+            destroy: true,
+            searching: false,
+            lengthMenu: [[12, 20, 50], [12, 20, 50]],
+            "ajax": {
+                "url": '/Reports/GetForecastSalesMonthly',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { Year: Year }
+                //"data": JSON.stringify(obj)
+            },
+            "columns": [
+                { 'data': 'tax', 'sWidth': "5%", 'class': 'text-right' },
+                { 'data': 'shipping_amount', 'sWidth': "15%", 'class': 'text-right', 'title': 'Month' },
+                { 'data': 'handling_amount', 'sWidth': "10%", 'class': 'text-right', 'title': 'Sales' },
+                { 'data': 'first_name', 'sWidth': "15%", 'class': 'text-right', 'title': 'Forecast sales (Sales + 10% of sales)' },
+                { 'data': 'Discount', 'sWidth': "15%", 'class': 'text-right', 'title': 'Lower confidence bound (Sales - 10% of sales)' },
+                { 'data': 'total', 'sWidth': "15%", 'class': 'text-right', 'title': 'Upper confidence bound (Forecast sales + 10% of forecast sales)' }
+
+            ],
+
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false
+                }
+            ],
+
+            "order": [0, 'asc'],
+        });
+    }
+</script>
+<!--High chart forecast sales start-->
+<script type="text/javascript">
+    var _list_cat = ['1', '2']
+    var _list = [{ name: 'Total', data: [0, 0, 0, 0] }];
+    function Search() {
+        let sd = $("#year").val();
+        $("#loader").show();
+        var account = "1";
+        if (account == "0") { }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '/Reports/GetForecastSalesMonthlyChart',
+                data: { Year: sd },
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (result) {
+                    console.log(result);
+                    _list_cat = $.map(result, function (v) { return v.shipping_amount; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list = [
+                        { name: 'Sales ($)', data: $.map(result, function (v) { return parseFloat(v.handling_amount); }) },
+                        { name: 'Forecast sales ($)', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Lower confidence bound ($)', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
+                        { name: 'Upper confidence bound ($)', data: $.map(result, function (v) { return parseFloat(v.total); }) },
+                    ];
+
+                    bindChart();
+                },
+                error: function (Result) { alert("Error"); },
+                complete: function () { $("#loader").hide(); }
+            });
+        }
+
+    }
+
+    function bindChart() {
+        Highcharts.chart('container_chart', {
+            chart: { type: 'column' },
+            title: {
+                text: ''
+            },
+            //subtitle: { text: 'Irregular time data in Highcharts JS' },
+            xAxis: { categories: _list_cat },
+            //yAxis: {
+            //    title: { text: 'Amount' },
+            //    labels: { formatter: function () { return this.value; } }
+            //},
+            yAxis: [{ // left y axis
+                title: { text: null },
+                labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
 
 
+            }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
+                title: { text: 'Sales' },
+                labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
+            }],
+
+
+            legend: {
+                align: 'left',
+                verticalAlign: 'top',
+                borderWidth: 0
+
+                //labelFormatter: function () {
+                //    if (this.name != 'Discount') {
+                //        return this.name;
+                //    }
+                //    else {
+                //        return this.enabled = false ;
+                //    }
+                //}
+            },
+
+            tooltip: {
+                crosshairs: true, shared: true,
+                pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.2f}</b><br/>'
+            },
+            //  plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: false,
+                        format: '{point.y:,.2f}'
+                    }
+                }
+            },
+            colors: ['#F74D17', '#3498DB', '#FFBF00', '#1E8449', '#464E4E', '#BABB98', '#33FFEC', '#079AFA', '#0EA9F6'],
+            series: _list
+
+
+        });
+        $('.highcharts-credits').remove();
+    }
+</script>
+<!--High chart forecast sales end-->

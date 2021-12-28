@@ -530,7 +530,7 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     string size = (ImageFile.ContentLength / 1024).ToString();
                     string FileExtension = Path.GetExtension(ImageFile.FileName);
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    if (FileExtension == ".xlsx" || FileExtension == ".XLSX" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".DOC" || FileExtension == ".docx" || FileExtension == ".DOCX" || FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG")
                     {
                         FileName = FileName.Trim() + FileExtension;
                         string FileNameForsave = FileName;
@@ -600,7 +600,7 @@ namespace LaylaERP.Controllers
             {
                 int ID = WarehouseRepository.DeleteBankLinkedFiles(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Warehouse Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Warehouse linked files deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }

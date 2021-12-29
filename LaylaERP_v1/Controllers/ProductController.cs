@@ -399,7 +399,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Add new product add warehouse", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add warehouse to product " + model.fk_product + "", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.AddProductwarehouse(model);
                 if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
@@ -459,6 +459,7 @@ namespace LaylaERP.Controllers
             resultOne = ProductRepository.updateNotesProduct(model);
             if (resultOne > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add note in add/edit product id(" + model.ID.ToString() + ")", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
             }
             else

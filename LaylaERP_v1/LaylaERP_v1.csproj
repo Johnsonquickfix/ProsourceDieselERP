@@ -1063,6 +1063,7 @@
     <Content Include="Views\Reports\IDMeOrderReport.cshtml" />
     <Content Include="Views\Reports\WisconsinReport.cshtml" />
     <Content Include="Views\Reports\ForecastSalesMonthly.cshtml" />
+    <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

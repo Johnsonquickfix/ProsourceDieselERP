@@ -1457,6 +1457,56 @@ namespace LaylaERP.BAL
         }
 
 
+        public static void GetPeriodChart(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@id", Empid),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_GetPeriodChart_List", parameters);
+
+                    
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["grosssale"].ToString()))
+                            uobj.fee = ds1.Tables[0].Rows[i]["grosssale"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["netsale"].ToString()))
+                            uobj.Discount = ds1.Tables[0].Rows[i]["netsale"].ToString();
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["shipping"].ToString();
+                        uobj.address = ds1.Tables[0].Rows[i]["coupon_count"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["total_Items"].ToString()))
+                            uobj.tax = ds1.Tables[0].Rows[i]["total_Items"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["total_order"].ToString()))
+                            uobj.total = ds1.Tables[0].Rows[i]["total_order"].ToString();
+                        else
+                            uobj.total = "";
+                        uobj.customer_id = ds1.Tables[0].Rows[i]["refunded_count"].ToString();
+                      
+ 
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+
         public static void GetMonthlyYear(string from_date, string to_date, string Empid)
         {
             try

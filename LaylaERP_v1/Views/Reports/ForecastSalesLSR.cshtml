@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewBag.Title = "ForecastSalesLSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- datatables CSS -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+<script src="~/Content/highcharts/highcharts.js"></script>
+<script src="~/Content/highcharts/series-label.js"></script>
+<script src="~/Content/highcharts/data.js"></script>
+<script src="~/Content/highcharts/exporting.js"></script>
+<script src="~/Content/highcharts/export-data.js"></script>
+<script src="~/Content/highcharts/accessibility.js"></script>
+
+<div class="page-title">
+    <h2>Forecast sales (LSR)</h2>
+</div>
+<section class="content content-section p-0 reports-section arizona-box not-fixed">
+    <div class="row index_col_row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Year</label><span style="color:red">*</span>
+                <select class="form-control" id="year">
+                    <option value="">Year</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Next year</label>
+                <select class="form-control" id="nextyear">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <br /><br />
+                <button id="filtersrchexp" class="button">Filter</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="divpodata" class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-header">
+                    <div class="table-responsive">
+                        <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Month name</th>
+                                    <th>Sales</th>
+                                    <th>Forecast</th>
+                                </tr>
+                            </thead>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--High chart start-->
+    <figure class="highcharts-figure">
+        <div id="container_chart"></div>
+    </figure>
+    <!--High chart end-->
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $.when(globalcurrentyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder();  });
+
+        $("#filtersrchexp").click(function () {
+            if ($("#year").val() == "") {
+                swal('Alert', 'Please select current year', 'error').then(function () { swal.close(); $('#year').focus(); });
+            }
+            else {
+
+                DatagridOrder();
+                //Search();
+                return false;
+            }
+        });
+
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+        })
+
+    });
+
+    //Years start
+    function globalcurrentyear(yearcount) {
+        var currentYear = new Date().getFullYear();
+        var yearSelect = document.getElementById(yearcount);
+        for (var i = 0; i < 3; i++) {
+            var isSelected = currentYear === currentYear - i
+            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+        }
+    }
+
+    function globalnextyear(yearcount) {
+        var currentYear = new Date().getFullYear() + 1;
+        var yearSelect = document.getElementById(yearcount);
+        for (var i = 0; i < 1; i++) {
+            var isSelected = currentYear === currentYear - i
+            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+        }
+    }
+    //Years end
+
+    function DatagridOrder() {
+        var Year = $("#year").val();
+        var obj = { year: Year }
+        $.ajax({
+            url: '/Reports/GetForecastSalesLSR',
+            method: 'post',
+            datatype: 'json',
+            contentType: "application/json; charset=utf-8",
+            processing: true,
+            data: JSON.stringify(obj),
+            success: function (data) {
+                $('#dtdata').dataTable({
+                    destroy: true,
+                    scrollX: false,
+                    data: JSON.parse(data),
+                    columnDefs: [{ targets: [0], visible: false, searchable: false }],
+                    footerCallback: function (row, data, start, end, display) {
+                        var api = this.api(), data;
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+                        console.log(data[0].sales, data[data.length - 1].sales);
+                    },
+                    
+                    "columns": [
+                        { data: 'month', title: 'Month', sWidth: "5%", },
+                        { data: 'month_name', title: 'Month name', sWidth: "10%" },    
+                        { data: 'sales', title: 'Sales', sWidth: "10%" },                       
+                        {
+                            data: 'sales', title: 'Forecast', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                                //var opstock = data[0].sales;
+                                //console.log(opstock);
+                                return (row.month).toFixed(2);
+                            }
+                        },
+                    ],
+                    "order": [[0, 'asc']],
+                    
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
+
+    }
+</script>
+

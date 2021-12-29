@@ -100,6 +100,7 @@
         t.preventDefault();
         let rang = parseInt($(this).data('rang')) || 0, proc_type = parseInt($('#ddl_service_type').val()) || 0;
         bindOtherItems(proc_type, rang);
+        ActivityLog('Add/Edit other product in new purchase order ' + $("#txt_proc_desc").val()+'', '/PurchaseOrder/NewPurchaseOrder');
     });
     $("#POModal").on("change", ".addCalulate", function (t) {
         t.preventDefault();
@@ -255,6 +256,7 @@ function removeItems(id) {
             if (result.value) {
                 $('#tritemid_' + id).remove();
                 calculateFinal();
+                ActivityLog('delete other product id (' + id + ') in new purchase order', '/PurchaseOrder/NewPurchaseOrder');
             }
         });
 }
@@ -653,7 +655,7 @@ function saveVendorPO() {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             $('#lblPoNo').data('id', result[0].id); SendPO_POApproval(result[0].id);
-                            swal('Success', 'Purchase order saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; });
+                            swal('Success', 'Purchase order saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });

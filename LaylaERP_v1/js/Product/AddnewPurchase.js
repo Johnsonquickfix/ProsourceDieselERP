@@ -1281,6 +1281,7 @@ function AddNotes() {
                 if (data.status == true) {
                     if (data.url == "Manage") {                       
                         swal('Success!', data.message, 'success');
+                       
                     }
                     else {
                         // $('#fetch_results > input:text').val('');

@@ -315,6 +315,7 @@ function PaymentStatus(oid, pp_id, email) {
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
+                                     
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -328,7 +329,7 @@ function PaymentStatus(oid, pp_id, email) {
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-            complete: function () { $("#loader").hide(); }, async: false
+            complete: function () { $("#loader").hide(); ActivityLog('Check payment status for order id (' + oid + ') in order history', '/Orders/OrdersHistory');}, async: false
         });
     }).fail(function (jqXHR, textStatus, errorThrown) {
         swal('Alert!', 'Something went wrong, please try again.', "error");

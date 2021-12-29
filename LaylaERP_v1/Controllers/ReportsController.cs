@@ -131,6 +131,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PeriodCalculateChart()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -485,7 +489,12 @@ namespace LaylaERP.Controllers
             k.MaxJsonLength = int.MaxValue;
             return k;
         }
-
+        public JsonResult GetPeriodChart(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetPeriodChart(Month, Year, Type);
+            var list = ReportsRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetText(string Month, string Year, string Type)
         {
             ReportsRepository.GetGrafixDetails(Month, Year, Type);

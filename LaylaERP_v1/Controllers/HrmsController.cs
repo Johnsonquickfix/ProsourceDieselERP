@@ -326,7 +326,7 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     string size = (ImageFile.ContentLength / 1024).ToString();
                     string FileExtension = Path.GetExtension(ImageFile.FileName);
-                    if (FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    if (FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".PDF" || FileExtension == ".DOC" || FileExtension == ".DOCX" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".JPEG")
                     {
                         FileName = FileName.Trim() + FileExtension;
                         string FileNameForsave = FileName;

@@ -685,6 +685,7 @@ function orderApprove(oid, status_title, status) {
                         swal('Success', 'Purchase order saved successfully.', "success");
                         $.when(getPurchaseOrderInfo()).done(function () {
                             getPurchaseOrderPrint(oid, true);
+                           /* ActivityLog('Purchase order ' + status_title + ' for purchase order id (' + oid + ')', '/PurchaseOrder/NewPurchaseOrder/' + oid + '');*/
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

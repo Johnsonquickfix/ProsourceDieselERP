@@ -167,7 +167,7 @@ function PurchaseOrderGrid() {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a title="Click here to receive order" data-toggle="tooltip" href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                        return '<a title="Click here to receive order" data-toggle="tooltip" href="NewReceiveOrder/' + full.id + '" onclick="ActivityLog(\'View/Edit purchase po no (' + id + ') in POs Reception \',\'/Reception/ReceiveOrder\');">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     }
                     else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }

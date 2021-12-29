@@ -1,11 +1,6 @@
 ﻿
 @{
     ViewBag.Title = "ForecastSalesMonthly";
-}
-
-
-@{
-    ViewBag.Title = "WisconsinReport";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -135,6 +130,7 @@
 
     function DatagridOrder() {
         var Year = $("#year").val();
+        var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
         $('#dtdata').DataTable({
             destroy: true,
             searching: false,
@@ -167,10 +163,10 @@
                 }, 0);
 
                 $(api.column(1).footer()).html('Grand total');
-                $(api.column(2).footer()).html('$' + parseFloat(sales).toFixed(2));
-                $(api.column(3).footer()).html('$' + parseFloat(forecastales).toFixed(2));
-                $(api.column(4).footer()).html('$' + parseFloat(lowerbound).toFixed(2));
-                $(api.column(5).footer()).html('$' + parseFloat(upperbound).toFixed(2));
+                $(api.column(2).footer()).html('$' + numberRenderer(sales));
+                $(api.column(3).footer()).html('$' + numberRenderer(forecastales));
+                $(api.column(4).footer()).html('$' + numberRenderer(lowerbound));
+                $(api.column(5).footer()).html('$' + numberRenderer(upperbound));
                 //console.log(CreditTotal);
             },
 

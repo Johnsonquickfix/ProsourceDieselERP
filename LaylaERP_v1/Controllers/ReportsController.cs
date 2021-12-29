@@ -123,6 +123,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastSalesQuarterly()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -627,6 +631,21 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        [HttpPost]
+        public ActionResult GetForecastSalesQuarterly(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterly(Year);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public JsonResult GetForecastSalesQuarterlyChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterlyChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 

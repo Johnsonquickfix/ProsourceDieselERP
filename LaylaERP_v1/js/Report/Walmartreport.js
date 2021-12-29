@@ -47,6 +47,13 @@ function PoPartiallyColleps() {
  
     let tablepar = $('#dtdataPartially').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, searching: false, scrollX: false,
+        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Walmart Report', action: function (e, dt, button, config) { exportTableToCSV('Walmart Report.xls'); } },
+        {
+            extend: 'csvHtml5', title: 'Walmart Report', titleAttr: 'CSV',
+            exportOptions: { columns: ':visible' },
+            action: function (e, dt, button, config) { exportTableToCSV('Walmart Report.csv'); }
+        }
+        ],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -129,4 +136,59 @@ function formatPartially(d) {
     wrHTML += '</table>';
     return wrHTML;
 }
- 
+function exportTableToCSV(filename) {
+    let tmpColDelim = String.fromCharCode(11); // vertical tab character
+    let tmpRowDelim = String.fromCharCode(0); // null character
+    // Solo Dios Sabe por que puse esta linea
+    let colDelim = (filename.indexOf("xls") != -1) ? '\t' : ',';
+    let rowDelim = '\r\n';
+
+    let csv = 'Customer Order ID' + colDelim + 'Purchase Order ID' + colDelim + 'Customer Email' + colDelim + 'Order Date' + colDelim + 'Customer Name' + colDelim + 'Customer Address' + colDelim + 'Customer Phone' + colDelim + 'Estimated Delivery Date' + colDelim + 'Estimated Ship Date' + rowDelim;
+
+    let urid = parseInt($("#ddlSearchStatus").val());
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
+    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
+    $.ajax({
+        url: "/Reports/exportwalmartlist", data: obj,
+        type: "Get", beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            result = JSON.parse(result);
+            $(result['item']).each(function (index, data) {
+                //Parent Row
+                //if (data.post_parent > 0)
+                csv += '-  #' + data.CustomerOrderID + colDelim + data.OrderID + colDelim + data.CustomerEmail + colDelim + data.OrderDate + colDelim + data.CustomerName.replace(/\,/g, '') + colDelim + data.CustomerAddress.replace(/\,/g, '') + colDelim + data.CustomerPhone + colDelim + data.EstimatedDeliveryDate + colDelim + data.EstimatedShipDate  + rowDelim;
+               // else
+                  //  csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                //Child Row                
+                let res = result['details'].filter(element => element.OrderID == data.OrderID);
+                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Product Name' + colDelim + 'Quantity' + colDelim + 'SKU' + colDelim + 'Price' + colDelim + 'Tax' +  rowDelim;
+                $(res).each(function (index, wrhRow) {
+                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.Product + colDelim + wrhRow.Quantity + colDelim + wrhRow.SKU + colDelim + wrhRow.Price.toFixed(2) + colDelim + wrhRow.Tax.toFixed(2)   + rowDelim;
+                });
+            });
+            download_csv(csv, filename);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }
+    });
+}
+function download_csv(csv, filename) {
+    var csvFile;
+    var downloadLink;
+    // CSV FILE
+    csvFile = new Blob([csv], { type: "text/csv" });
+    // Download link
+    downloadLink = document.createElement("a");
+    // File name
+    downloadLink.download = filename;
+    // We have to create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    // Make sure that the link is not displayed
+    downloadLink.style.display = "none";
+    // Add the link to your DOM
+    document.body.appendChild(downloadLink);
+    // Lanzamos
+    downloadLink.click();
+}

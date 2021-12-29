@@ -649,7 +649,7 @@ namespace LaylaERP.Controllers
             if (model.ID > 0 || model.updatedID > 0)
             {
                 long PID = model.ID > 0 ? model.ID : model.updatedID;
-                UserActivityLog.WriteDbLog(LogType.Submit, "product id ("+PID+") update in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "product id ("+PID+ ") updated in list product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
                 model.post_status = "publish";
                 if (model.ID == 0)

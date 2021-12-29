@@ -127,6 +127,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastSalesLSR()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -647,7 +651,18 @@ namespace LaylaERP.Controllers
             var list = ReportsRepository.exportorderlistchart;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
-    }
 
+        public JsonResult GetForecastSalesLSR(string year)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetForecastSalesLSR(year);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+    }
          
 }

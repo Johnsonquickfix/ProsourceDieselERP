@@ -2030,6 +2030,24 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+        public static DataTable GetForecastSalesLSR(string year)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "FCM"),
+                    new SqlParameter("@year", year),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_forcastsalemonthly", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

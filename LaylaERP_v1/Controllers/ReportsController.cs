@@ -123,7 +123,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        public ActionResult PeriodCalculateChart()
+        public ActionResult ForecastSalesQuarterly()
+        {
+            return View();
+        }
+        public ActionResult ForecastSalesLSR()
         {
             return View();
         }
@@ -489,12 +493,6 @@ namespace LaylaERP.Controllers
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetPeriodChart(string Month, string Year, string Type)
-        {
-            ReportsRepository.GetPeriodChart(Month, Year, Type);
-            var list = ReportsRepository.exportorderlist;
-            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
-        }
         public JsonResult GetQuarerly(string Month, string Year, string Type)
         {
             string result = string.Empty;
@@ -638,7 +636,33 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
-    }
 
+        [HttpPost]
+        public ActionResult GetForecastSalesQuarterly(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterly(Year);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public JsonResult GetForecastSalesQuarterlyChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterlyChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetForecastSalesLSR(string year)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetForecastSalesLSR(year);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+    }
          
 }

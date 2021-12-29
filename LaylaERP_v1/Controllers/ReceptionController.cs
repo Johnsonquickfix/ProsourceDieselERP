@@ -75,12 +75,12 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update Reception PO, sReceive Order", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
+                long rid = model.RowID;
                 ID = new ReceptionRepository().ReceptionPurchase(model);
-
                 if (ID > 0)
                 {
                     b_status = true; JSONstring = "Purchase record  updated successfully!!";
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update Reception PO,s Receive Order id(" + rid + ")", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 }
                 else
                 {
@@ -100,7 +100,6 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Open po Closed Purchase Orders List", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 ID = new ReceptionRepository().UpdateStatusReceptionPurchase(model);
 
                 if (ID > 0)
@@ -110,11 +109,15 @@ namespace LaylaERP.Controllers
                     {
                         Session["ROPO"] = "PO3";
                         JSONstring = "Purchase record closed successfully!!";
+                        UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ")  closed in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
+
                     }
                     else if (model.fk_status == 5)
                     {
                         Session["ROPO"] = "PO2";
                         JSONstring = "Purchase record opened successfully!!";
+                        UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ") opened in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
+
                     }
                     else
                     {

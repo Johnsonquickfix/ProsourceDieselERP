@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "ForecastSalesMonthly";
+    ViewBag.Title = "ForecastSalesQuarterly";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 <!-- datatables CSS -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -20,7 +19,7 @@
 <script src="~/Content/highcharts/accessibility.js"></script>
 
 <div class="page-title">
-    <h2>Forecast sales (Monthly)</h2>
+    <h2>Forecast sales (Quarterly)</h2>
 </div>
 <section class="content content-section p-0 reports-section arizona-box not-fixed">
     <div class="row index_col_row">
@@ -47,7 +46,7 @@
         </div>
     </div>
 
-    
+
     <div id="divpodata" class="row">
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
@@ -56,8 +55,8 @@
                         <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th>Month</th>
-                                    <th>Month name</th>
+                                    <th>Quarter</th>
+                                    <th>Quarterly</th>
                                     <th>Sales</th>
                                     <th>Forecast sales (Sales + 10% of sales)</th>
                                     <th>Lower confidence bound (Sales - 10% of sales)</th>
@@ -171,7 +170,7 @@
             },
 
             "ajax": {
-                "url": '/Reports/GetForecastSalesMonthly',
+                "url": '/Reports/GetForecastSalesQuarterly',
                 "type": 'POST',
                 "dataType": 'json',
                 "data": { Year: Year }
@@ -179,9 +178,9 @@
             },
             "columns": [
                 { 'data': 'tax', 'sWidth': "5%", 'class': 'text-right' },
-                { 'data': 'shipping_amount', 'sWidth': "10%", 'class': 'text-left', 'title': 'Month' },
+                { 'data': 'first_name', 'sWidth': "10%", 'class': 'text-left', 'title': 'Quarterly' },
                 { 'data': 'handling_amount', 'sWidth': "10%", 'class': 'text-right', 'title': 'Sales' },
-                { 'data': 'first_name', 'sWidth': "15%", 'class': 'text-right', 'title': 'Forecast sales (Sales + 10% of sales)' },
+                { 'data': 'fee', 'sWidth': "15%", 'class': 'text-right', 'title': 'Forecast sales (Sales + 10% of sales)' },
                 { 'data': 'Discount', 'sWidth': "15%", 'class': 'text-right', 'title': 'Lower confidence bound (Sales - 10% of sales)' },
                 { 'data': 'total', 'sWidth': "15%", 'class': 'text-right', 'title': 'Upper confidence bound (Forecast sales + 10% of forecast sales)' }
 
@@ -200,7 +199,7 @@
                     extend: 'csvHtml5',
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> Export',
-                    filename: 'Forecast_monthly',
+                    filename: 'Forecast_quarterly',
                     footer: true,
                     exportOptions: { modifier: { page: 'all' } }
                 },
@@ -208,6 +207,7 @@
         });
     }
 </script>
+
 <!--High chart forecast sales start-->
 <script type="text/javascript">
     var _list_cat = ['1', '2']
@@ -220,7 +220,7 @@
         else {
             $.ajax({
                 type: 'POST',
-                url: '/Reports/GetForecastSalesMonthlyChart',
+                url: '/Reports/GetForecastSalesQuarterlyChart',
                 data: { Year: sd },
                 dataType: 'json',
                 beforeSend: function () {
@@ -228,10 +228,10 @@
                 },
                 success: function (result) {
                     console.log(result);
-                    _list_cat = $.map(result, function (v) { return v.shipping_amount; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list_cat = $.map(result, function (v) { return v.first_name; });// Enumerable.from(result).select("$.billing_city").toArray();
                     _list = [
                         { name: 'Sales ($)', data: $.map(result, function (v) { return parseFloat(v.handling_amount); }) },
-                        { name: 'Forecast sales ($)', data: $.map(result, function (v) { return parseFloat(v.first_name); }) },
+                        { name: 'Forecast sales ($)', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
                         { name: 'Lower confidence bound ($)', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
                         { name: 'Upper confidence bound ($)', data: $.map(result, function (v) { return parseFloat(v.total); }) },
                     ];

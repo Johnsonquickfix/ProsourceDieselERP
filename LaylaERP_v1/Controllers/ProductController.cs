@@ -399,7 +399,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Add new product add warehouse", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add warehouse to product " + model.fk_product + "", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.AddProductwarehouse(model);
                 if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
@@ -459,6 +459,7 @@ namespace LaylaERP.Controllers
             resultOne = ProductRepository.updateNotesProduct(model);
             if (resultOne > 0)
             {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add note in add/edit product id(" + model.ID.ToString() + ")", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
             }
             else
@@ -647,7 +648,8 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                long PID = model.ID > 0 ? model.ID : model.updatedID;
+                UserActivityLog.WriteDbLog(LogType.Submit, "product id ("+PID+ ") updated in list product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
                 model.post_status = "publish";
                 if (model.ID == 0)
@@ -666,7 +668,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Save new product data", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "New product ("+ model.post_title + ") created in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";
@@ -916,10 +918,9 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     //To Get File Extension  
                     long filesize = ImageFileproductlink.ContentLength / 1024;
-                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);
-
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
-                    {
+                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);                    
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG"  || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" ||  FileExtension == ".bmp" || FileExtension == ".BMP")
+                        {
                         //Add Current Date To Attached File Name  
                         //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 

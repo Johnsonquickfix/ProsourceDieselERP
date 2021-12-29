@@ -671,6 +671,7 @@
     <Content Include="js\Giftcard\GiftCardList.js" />
     <Content Include="js\Giftcard\GiftcardOrder.js" />
     <Content Include="js\Giftcard\Giftcard.js" />
+    <Content Include="js\globalyear.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\AttendenceReport.js" />
@@ -1062,6 +1063,8 @@
     <Content Include="Views\Reports\WalmartReport.cshtml" />
     <Content Include="Views\Reports\IDMeOrderReport.cshtml" />
     <Content Include="Views\Reports\WisconsinReport.cshtml" />
+    <Content Include="Views\Reports\ForecastSalesMonthly.cshtml" />
+    <Content Include="Views\Reports\ForecastSalesQuarterly.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -119,6 +119,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastSalesMonthly()
+        {
+            return View();
+        }
+        public ActionResult ForecastSalesQuarterly()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -590,7 +598,55 @@ namespace LaylaERP.Controllers
             return k;
         }
 
+        [HttpPost]
+        public ActionResult GetForecastSalesMonthly(string Year)
+        {
+            ReportsRepository.GetForecastSalesMonthly(Year);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
 
+        public JsonResult GetForecastSalesMonthlyChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesMonthlyChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult exportwalmartlist(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    fromdate = Convert.ToDateTime(model.strValue5);
+                if (!string.IsNullOrEmpty(model.strValue6))
+                    todate = Convert.ToDateTime(model.strValue6);
+                DataSet ds = ReportsRepository.exportwalmartlist(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+               // DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate);
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public ActionResult GetForecastSalesQuarterly(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterly(Year);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public JsonResult GetForecastSalesQuarterlyChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesQuarterlyChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
     }
 
          

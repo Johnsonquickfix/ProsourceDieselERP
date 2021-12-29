@@ -8,7 +8,7 @@ function getUrlVars() {
     return sURLVariables
 }
 function AddCustomer() {
-    //debugger
+    debugger
 
     ID = $("#hfid").val();
     Email = $("#txtUserEmail").val();
@@ -301,7 +301,8 @@ function GetCustomerByID(id) {
 
             }
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
-
+    $("#txtBillingPostCode").change();
 }

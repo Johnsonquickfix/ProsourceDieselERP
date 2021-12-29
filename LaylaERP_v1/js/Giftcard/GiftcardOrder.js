@@ -23,6 +23,7 @@
         }
         else if (gc_status == "Send_to_recipient") {
             ReSendGiftCard();
+          
         }
         else if (gc_status == "Disable") {
             changeStatus();
@@ -569,7 +570,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + todaydate + '</strong></td>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + $('#orderTotal').text() + '</strong></td>';
     if (paymode == 'PayPal')
-        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="https://www.sandbox.paypal.com/invoice/p/#' + id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Pay $' + $('#orderTotal').text() + '</a></td>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="https://www.sandbox.paypal.com/invoice/p/#' + id + '" target="_blank" style="margin: 0px;min-width: initial;background-color: #0070BA; color: #fff; font-size: 12px; padding: 8px; border-radius: 5px; font-weight: 600; display: inline-block;">Pay $' + $('#orderTotal').text() + '</a></td>';
     else if (paymode == 'authorize_net_cim_credit_card')
         myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Credit Card</strong></td>';
     else
@@ -732,6 +733,7 @@ function ReSendGiftCard() {
         success: function (result) {
             if (result.status == true) {
                 swal('Success', 'Email send successfully.', "success");
+                location.href = "../../Giftcard/GiftCardList";
             }
             else {
                 swal('Error', result.message, "error").then((result) => { return false; }); }
@@ -752,6 +754,7 @@ function changeStatus() {
                     .done(function (data) {
                         if (data.status) {
                             swal.insertQueueStep(data.message);
+                            location.href = "../../Giftcard/GiftCardList";
                         }
                         else { swal.insertQueueStep('something went wrong!'); }
                         resolve();

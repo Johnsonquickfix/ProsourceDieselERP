@@ -75,12 +75,12 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update Reception PO, sReceive Order", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
+                long rid = model.RowID;
                 ID = new ReceptionRepository().ReceptionPurchase(model);
-
                 if (ID > 0)
                 {
                     b_status = true; JSONstring = "Purchase record  updated successfully!!";
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update Reception PO,s Receive Order id(" + rid + ")", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 }
                 else
                 {
@@ -100,7 +100,6 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Open po Closed Purchase Orders List", "/Reception/NewReceiveOrder/" + model.RowID + "" + ", " + Net.BrowserInfo);
                 ID = new ReceptionRepository().UpdateStatusReceptionPurchase(model);
 
                 if (ID > 0)
@@ -110,11 +109,15 @@ namespace LaylaERP.Controllers
                     {
                         Session["ROPO"] = "PO3";
                         JSONstring = "Purchase record closed successfully!!";
+                        UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ")  closed in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
+
                     }
                     else if (model.fk_status == 5)
                     {
                         Session["ROPO"] = "PO2";
                         JSONstring = "Purchase record opened successfully!!";
+                        UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ") opened in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
+
                     }
                     else
                     {
@@ -347,7 +350,7 @@ namespace LaylaERP.Controllers
                     long filesize = ImageFile.ContentLength / 1024;
                     string FileExtension = Path.GetExtension(ImageFile.FileName);
 
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
                     {
                         //Add Current Date To Attached File Name  
                         //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
@@ -419,7 +422,51 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
         }
-         
+
+        [HttpGet]
+        public JsonResult GetReceveOrderPrint(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.GetReceiveOrder(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SendMailReceve(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Received purchase order number <b>#" + model.strValue2 + "</b>.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Received Purchase Order #" + model.strValue2 + ".", strBody, _html);
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+
 
     }
 }

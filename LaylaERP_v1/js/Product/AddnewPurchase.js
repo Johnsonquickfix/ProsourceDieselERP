@@ -197,13 +197,15 @@ $("#btnaddupdatechild").click(function (e) {
             );
         }
     });
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
    // console.log(_ItemProduct);
     var obj = {
         ProductChildMeta: _ItemProduct
     }
 
     if (_ItemProduct != '') {
-        ActivityLog('Search product to add', '/Product/AddNewProduct/');
+       
         //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -220,6 +222,7 @@ $("#btnaddupdatechild").click(function (e) {
                     $('#order_line_items').empty().append(layoutHtml);
                     bindChildproductsservices();
                     swal('Success!', data.message, 'success');
+                    ActivityLog('Add/Update product to add product/services of this kits for product id (' + urlid + ')', '/Product/AddNewProduct/' + urlid + '');
                 }
             },
             complete: function () {
@@ -234,6 +237,8 @@ $("#btnaddupdatechild").click(function (e) {
 });
 
 $("#btnservicessave").click(function (e) {
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
     let _ItemProductServices = [];
     $("#Product_services > tr").each(function (index, tr) {
       //  console.log(tr);
@@ -251,7 +256,7 @@ $("#btnservicessave").click(function (e) {
     //var layoutHtml = '';
     //$('#Product_services').empty().append(layoutHtml);
     if (_ItemProductServices != '') {
-        ActivityLog('Update  list of products/services that are component(s) of this kit', '/Product/AddNewProduct/');
+     
           //NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
         $.ajax({
             type: 'POST',
@@ -269,6 +274,7 @@ $("#btnservicessave").click(function (e) {
                     //$('#Product_services').empty();
                    bindChildproductsservices();
                     swal('Success!', data.message, 'success');
+                    ActivityLog('Update list of products/services that are component(s) of this kit for product id (' + urlid + ')', '/Product/AddNewProduct/' + urlid + '');
                 }
             },
             complete: function () {
@@ -336,7 +342,7 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].saleprice == null)
                 $("#txtsalepricekit").text('$0.00');
             else
-                $("#txtsalepricekit").text('$' + i[0].saleprice);
+                $("#txtsalepricekit").text('$' + i[0].saleprice.toFixed(2));
 
             if ($("#txtsalepricekit").text() == "$0.00") {
                 $("#lblRegularPrice").hide();
@@ -349,14 +355,14 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].cost_price == null)
                 $("#txtCostprice").text('$0.00');
             else
-                $("#txtCostprice").text('$' + i[0].cost_price);
+                $("#txtCostprice").text('$' + i[0].cost_price.toFixed(2));
 
            
 
             if (i[0].purchase_price == null)
                 $("#txtbestbying").text('$0.00');
             else
-                $("#txtbestbying").text('$' + i[0].purchase_price);
+                $("#txtbestbying").text('$' + i[0].purchase_price.toFixed(2));
             $("#txtnumattached").text(i[0].filecount);            
             $("#txtVendor").text(i[0].vname);
             $("#txtPrivate").val(i[0].Private_Notes);
@@ -874,7 +880,8 @@ $("#setprice").click(function () {
 
 
 function setprice(ID) {
-    
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
     var ids = ID;
     fk_productval = $('#ddlproductchild').val();
     var obj = { ID: ids, fk_product: fk_productval }
@@ -897,7 +904,7 @@ function setprice(ID) {
                 else {
                     swal('success!', data.message, 'success');
                 }
-
+                ActivityLog('Set default vendor price id (' + ID + ') for product id(' + urlid + ')', '/Product/AddNewProduct/' + urlid + '');
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -928,10 +935,10 @@ function EditUser(id) {
           //  console.log(i);
             $("#txtminpurchasequantity").val(i[0].minpurchasequantity);
             $("#txttaglotno").val(i[0].taglotserialno);
-            $("#txtSaletax").val(i[0].salestax);
+            $("#txtSaletax").val(i[0].salestax.toFixed(2));
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
-            $("#txtcostprice").val(i[0].cost_price);
-            $("#txtshippingprice").val(i[0].shipping_price);
+            $("#txtcostprice").val(i[0].cost_price.toFixed(2));
+            $("#txtshippingprice").val(i[0].shipping_price.toFixed(2));
             $("#txtMisccosts").val(i[0].Misc_Costs);
             $("#txtDiscountqty").val(i[0].discount);
             $("#txtRemarks").val(i[0].remark);
@@ -1248,7 +1255,7 @@ $(document).on('click', "#btnNotes", function () {
     AddNotes();
 })
 function AddNotes() {
-    debugger
+  
     Private = $("#txtPrivate").val();
     fk_productval = $('#ddlproductchild').val();
     Public = $("#txtPublic").val();
@@ -1281,6 +1288,7 @@ function AddNotes() {
                 if (data.status == true) {
                     if (data.url == "Manage") {                       
                         swal('Success!', data.message, 'success');
+                       
                     }
                     else {
                         // $('#fetch_results > input:text').val('');
@@ -1288,7 +1296,6 @@ function AddNotes() {
                     }
                     //$('#ddlProduct').val(null).trigger('change');
                     //clear_fetch();
-
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -1298,6 +1305,8 @@ function AddNotes() {
                 $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
+               
+
 
             },
             error: function (error) {
@@ -1536,7 +1545,7 @@ function addshippingprice() {
     let sal = parseFloat($("#txtSaletax").val()) || 0.00;
    // console.log(con);
     let castprice = con + ship + mis + sal;
-    $("#txtcostprice").val(castprice);
+    $("#txtcostprice").val(castprice.toFixed(2));
 }
 function ClearControl() {
     $("#txtminpurchasequantity").val('1');
@@ -1566,6 +1575,8 @@ function completeFun() { $("#loader").hide(); }
 function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
 
 function getNotesList(oid) {
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
     oid = parseInt($('#ddlproductchild').val()) || 0;
     var option = { strValue1: oid };
     ajaxFunc('/Product/GetNotesList', option, beforeSendFun, function (result) {
@@ -1576,7 +1587,7 @@ function getNotesList(oid) {
             noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
-            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + '); ActivityLog(\'Delete product notes\',\'/AddNewProduct/' + data[i].comment_ID +'\');" class="delete_note billinfo" role="button">Delete note</a>';
+            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + '); ActivityLog(\'Delete product notes for product id (' + urlid + ')\',\'/AddNewProduct/' + urlid +'\');" class="delete_note billinfo" role="button">Delete note</a>';
             noteHtml += '</p>';
             noteHtml += '</li>';
         }
@@ -1584,6 +1595,8 @@ function getNotesList(oid) {
     }, completeFun, errorFun);
 }
 function AddNotes() {
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
     let oid = parseInt($('#ddlproductchild').val()) || 0;
     let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
 
@@ -1599,7 +1612,10 @@ function AddNotes() {
     else {
 
         ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
-            if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
+            if (result.status) {
+                getNotesList(oid); $('#add_order_note').val('');
+                ActivityLog('Add notes for product id(' + urlid + ')', '/Product/AddNewProduct/' + urlid + '');
+            }
             else swal('Alert!', result.message, "error");
         }, completeFun, errorFun);
     }

@@ -154,7 +154,9 @@ $('#btnSaveRole').click(function () {
 //add new role
 $('#btnCopyRole').click(function () {
     var rolefrom = $('#userrole').val();
+    let rolefromname = $("#userrole :selected").text();
     var roleto = $('#ddlCopyRole').val();
+    let roletoname = $("#ddlCopyRole :selected").text();
     if (rolefrom == "") { swal("alert", "Please select user role first.", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
     else if (roleto == "") { swal("alert", "Please select copy to user role.", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
     else {
@@ -170,6 +172,7 @@ $('#btnCopyRole').click(function () {
             success: function (data) {
                 swal("Success!", data.message, "success");
                 fillCheckMenu();
+                ActivityLog('Copy role permission from (' + rolefromname + ') to (' + roletoname + ')', '/Users/AssignRole');
             },
             complete: function () {
                 $("#loader").hide();

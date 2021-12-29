@@ -61,7 +61,7 @@
                                     <th>Forecast</th>
                                 </tr>
                             </thead>
-                            
+
                         </table>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $.when(globalcurrentyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder();  });
+        $.when(globalcurrentyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder(); });
 
         $("#filtersrchexp").click(function () {
             if ($("#year").val() == "") {
@@ -134,36 +134,38 @@
             processing: true,
             data: JSON.stringify(obj),
             success: function (data) {
+                data = JSON.parse(data);
+                let _avg = 0.00;
+                $.each(data, function (i, r) {
+                    if (r.month >= 10) _avg = _avg + parseFloat(r.sales) || 0.00;
+                });
+                _avg = _avg > 0 ? _avg / 3 : 0;
+                console.log(_avg);
+
                 $('#dtdata').dataTable({
                     destroy: true,
                     scrollX: false,
-                    data: JSON.parse(data),
+                    data: data,
                     columnDefs: [{ targets: [0], visible: false, searchable: false }],
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api(), data;
-                        var intVal = function (i) {
-                            return typeof i === 'string' ?
-                                i.replace(/[\$,]/g, '') * 1 :
-                                typeof i === 'number' ?
-                                    i : 0;
-                        };
-                        console.log(data[0].sales, data[data.length - 1].sales);
+                        var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
                     },
-                    
+
                     "columns": [
                         { data: 'month', title: 'Month', sWidth: "5%", },
-                        { data: 'month_name', title: 'Month name', sWidth: "10%" },    
-                        { data: 'sales', title: 'Sales', sWidth: "10%" },                       
+                        { data: 'month_name', title: 'Month name', sWidth: "10%" },
+                        { data: 'sales', title: 'Sales', sWidth: "10%" },
                         {
                             data: 'sales', title: 'Forecast', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                                //var opstock = data[0].sales;
+                                var opstock = row.sales + _avg;
                                 //console.log(opstock);
-                                return (row.month).toFixed(2);
+                                return opstock.toFixed(2);
                             }
                         },
                     ],
                     "order": [[0, 'asc']],
-                    
+
                 });
             },
             error: function (xhr, ajaxOptions, thrownError) {

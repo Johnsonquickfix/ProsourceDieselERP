@@ -672,6 +672,14 @@
             localStorage.setItem('_search', _value); $('#searchbar').modal('hide');
             addTabs({ id: _tabid, title: _title, close: true, url: _url, urlType: 'none' }); App.fixIframeCotent(); refreshTab();
         }
+        function openOrderPage(order_type) {
+            addTabs({ id: '8', title: 'Orders History', close: true, url: '/Orders/OrdersHistory' + (order_type.length > 0 ? '?type=' + order_type : '?v=1.0.0'), urlType: 'none' });
+            App.fixIframeCotent();
+        }
+        function openCustomerPage(customer_type) {
+            addTabs({ id: '16', title: 'Manage Customers', close: true, url: '/Customer/Customer', urlType: 'none' });
+            App.fixIframeCotent();
+        }
         
         $(document).on('click', "#btnsearchbar", function () {
             var checkid = $("input[name='strValue1']:checked").val();

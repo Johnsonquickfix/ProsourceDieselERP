@@ -1,11 +1,13 @@
 ﻿let myvalue = 1;
-searchText = getUrlVars();
+//var searchText = getUrlVars();
 ///Get User Counts
 
 function getUrlVars() {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1));
-    sPageURL = sPageURL.split('name=');
-    var sURLVariables = sPageURL.toString().replace(',', '');
+    //var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    //sPageURL = sPageURL.split('name=');
+    //var sURLVariables = localStorage.getItem('_search');
+    let sURLVariables = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     return sURLVariables
 }
 function GetUsersCount() {
@@ -135,6 +137,8 @@ function Datagrid(role_type, type) {
             }
         ]
     }
+    searchText = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     //console.log(role_type, type);
     var id;
     if (searchText == '') {

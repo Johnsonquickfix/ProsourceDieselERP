@@ -145,8 +145,8 @@ function Status() {
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
     var status = $('#ddlbulkaction').val();
-    if (id == "") { swal('alert', 'Please select a Coupon', 'error'); }
-    else if (status == "0") { swal('alert', 'Please select Action', 'error'); }
+    if (id == "") { swal('Alert', 'Please select a Coupon', 'error'); }
+    else if (status == "0") { swal('Alert', 'Please select Action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
         $.ajax({
@@ -159,7 +159,7 @@ function Status() {
                     swal('Success', data.message, 'success').then((result) => { GetDetails(); var order_type = $('#hfType').val(); dataGridLoad(order_type); });
                 }
                 else {
-                    swal('alert', 'something went wrong!', 'success');
+                    swal('Alert', 'something went wrong!', 'success');
                 }
             },
             complete: function () { $("#loader").hide(); },

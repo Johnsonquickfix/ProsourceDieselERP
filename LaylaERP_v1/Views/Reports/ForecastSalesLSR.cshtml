@@ -11,13 +11,6 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 
-<script src="~/Content/highcharts/highcharts.js"></script>
-<script src="~/Content/highcharts/series-label.js"></script>
-<script src="~/Content/highcharts/data.js"></script>
-<script src="~/Content/highcharts/exporting.js"></script>
-<script src="~/Content/highcharts/export-data.js"></script>
-<script src="~/Content/highcharts/accessibility.js"></script>
-
 <div class="page-title">
     <h2>Forecast sales (LSR)</h2>
 </div>
@@ -45,8 +38,6 @@
             </div>
         </div>
     </div>
-
-
     <div id="divpodata" class="row">
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
@@ -55,13 +46,15 @@
                         <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th>Month</th>
+                                    <th style="display:none">Month</th>
                                     <th>Month name</th>
                                     <th>Sales</th>
-                                    <th>Forecast</th>
+                                    <th>Forecast sales</th>
                                 </tr>
                             </thead>
-
+                            <tfoot align="right">
+                                <tr><th style="display:none"></th><th></th><th></th><th></th></tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -69,6 +62,37 @@
         </div>
     </div>
 
+    <figure class="highcharts-figure">
+        <div>
+            <p>
+                <b>Formula:</b><br />
+                Average = Average of the previous year last three months sales.<br />
+                Summary = Summary of the previous year last three months sales with weight considered.<br />
+                Difference = Summary -  Average * (Sum of base months weight) <br />
+                Ratio = (Sumation of square of previous year last months weight) - (Sumation of previous year last three months weight / 3)^2<br />
+                Value1 = Difference / Ratio<br />
+                Value2 = Average - value1 * Ratio<br />
+                Forecast = (Numeric value of month + n)  * Value1 + Value2<br />
+                Base months are October, November, and December.<br />
+                Weight of October, November, and December are 1, 2, 3 respectively.
+            </p>
+            <!--<p>
+        <b>Example: Forcast for january 2022</b><br />
+        Let October, November and December 2021 are base month of the sales. <br />
+        Sales of October =	$11625.77, November = $76119.48, December = $115793.50 <br />
+        Weight of October = 1, November = 2, December = 3 and n = 3<br />
+        Now,<br />
+        Average = ($11625.77 + $76119.48 + $115793.50)/3 = 67846.25<br />
+        Summary = ($11625.77 * 1 + $76119.48 * 2 + $115793.50 * 3) = 511245.23<br />
+        Diffrence = [511245.23 - (67846.25 * (1 + 2 + 3))] = 104167.73<br />
+        Ratio = [( 1^2 + 2^2 + 3^2) - ((1 + 2 + 3)/3) ^ 2] = 2 <br />
+        Value1 = Difference / Ratio = 104167.73 / 2 = 52083.86<br />
+        Value2 = Average - (Value1 * ratio) = (52083.86 - 104167.72) = -36321.47<br />
+        Forecast = (1 + 3) * Value1 + Value2 =  (4* 52083.86) + (-36321.47) = 172013.97
+    </p> -->
+
+        </div>
+    </figure>
     <!--High chart start-->
     <figure class="highcharts-figure">
         <div id="container_chart"></div>
@@ -88,18 +112,9 @@
             else {
 
                 DatagridOrder();
-                //Search();
                 return false;
             }
         });
-
-        $(function () {
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
-                }
-            });
-        })
 
     });
 
@@ -125,7 +140,9 @@
 
     function DatagridOrder() {
         var Year = $("#year").val();
+        var Nextyear = $("#nextyear").val();
         var obj = { year: Year }
+        var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
         $.ajax({
             url: '/Reports/GetForecastSalesLSR',
             method: 'post',
@@ -135,36 +152,60 @@
             data: JSON.stringify(obj),
             success: function (data) {
                 data = JSON.parse(data);
-                let _avg = 0.00, _v1 = 0.00, _v2 = 0.00, _v3 = 0.00;
+                let _avg = 0.00, _v1 = 0.00, _v2 = 0.00, _v3 = 0.00, _diff = 0.00, _summary = 0.00, _value1 = 0.00, _vlaue2 = 0.00, _ratio = 0, n = 0, _forcast = 0.00;
                 $.each(data, function (i, r) {
                     if (r.month == 10) { _avg += parseFloat(r.sales) || 0.00; _v1 = (parseFloat(r.sales) || 0.00) * 1; }
                     else if (r.month == 11) { _avg += parseFloat(r.sales) || 0.00; _v2 = (parseFloat(r.sales) || 0.00) * 2; }
                     else if (r.month == 12) { _avg += parseFloat(r.sales) || 0.00; _v3 = (parseFloat(r.sales) || 0.00) * 3; }
                 });
                 _avg = _avg > 0 ? _avg / 3 : 0;
-                console.log(_avg, _v1, _v2, _v3);
+                _summary = _v1 + _v2 + _v3;
+                _diff = (_summary) - _avg * 6;
+                _ratio = 2;
+                _n = 3;
+                _value1 = _diff > 0 ? _diff / _ratio : 0;
+                _value2 = _avg - (_value1 * _ratio);
+                let _list = $.map(data, function (v) { return { 'month': v.month, 'month_name': v.month_name, 'sales': v.sales, 'forecast': ((v.month + 3) * _value1) + _value2 } });
+
+                console.log(_avg, _v1, _v2, _v3, _summary, _diff, _ratio, _n, _value1, _value2);
 
                 $('#dtdata').dataTable({
                     destroy: true,
                     scrollX: false,
-                    data: data,
+                    data: _list,
                     columnDefs: [{ targets: [0], visible: false, searchable: false }],
+                    searching: false,
+                    lengthMenu: [[12, 20, 50], [12, 20, 50]],
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api(), data;
-                        var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+                        console.log(data);
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+
+                        var sales = api.column(2).data().reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        var forecastales = api.column(3).data().reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        $(api.column(1).footer()).html('Grand total');
+                        $(api.column(2).footer()).html('$' + numberRenderer(sales));
+                        $(api.column(3).footer()).html('$' + numberRenderer(forecastales));
                     },
 
                     "columns": [
-                        { data: 'month', title: 'Month', sWidth: "5%", },
-                        { data: 'month_name', title: 'Month name', sWidth: "10%" },
-                        { data: 'sales', title: 'Sales', sWidth: "10%" },
+                        { data: 'month', title: 'Month', sWidth: "5%", className:'text-right' },
+                        { data: 'month_name', title: 'Month name', sWidth: "25%", className: 'text-right'  },
+                        { data: 'sales', title: 'Sales (' + Year + ')', sWidth: "25%", className: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         {
-                            data: 'sales', title: 'Forecast', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                                var opstock = (1 * parseInt(row.month)) * _avg + 0;
-                                //console.log(opstock);
-                                return opstock.toFixed(2);
-                            }
-                        },
+                            data: 'forecast', title: 'Forecast sales (' + Nextyear + ')', sWidth: "25%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$')
+                        }
                     ],
                     "order": [[0, 'asc']],
 
@@ -177,4 +218,3 @@
 
     }
 </script>
-

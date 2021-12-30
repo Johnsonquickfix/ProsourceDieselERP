@@ -83,7 +83,7 @@ function PurchaseOrderGrid() {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'address', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
+                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip +  ' ' + dtrow.fk_country;
                     return val;
                 }
             },

@@ -11,13 +11,6 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 
-<script src="~/Content/highcharts/highcharts.js"></script>
-<script src="~/Content/highcharts/series-label.js"></script>
-<script src="~/Content/highcharts/data.js"></script>
-<script src="~/Content/highcharts/exporting.js"></script>
-<script src="~/Content/highcharts/export-data.js"></script>
-<script src="~/Content/highcharts/accessibility.js"></script>
-
 <div class="page-title">
     <h2>Forecast sales (LSR)</h2>
 </div>
@@ -45,8 +38,6 @@
             </div>
         </div>
     </div>
-
-
     <div id="divpodata" class="row">
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
@@ -55,10 +46,10 @@
                         <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th>Month</th>
+                                    <th style="display:none">Month</th>
                                     <th>Month name</th>
                                     <th>Sales</th>
-                                    <th>Forecast</th>
+                                    <th>Forecast sales</th>
                                 </tr>
                             </thead>
 
@@ -88,18 +79,9 @@
             else {
 
                 DatagridOrder();
-                //Search();
                 return false;
             }
         });
-
-        $(function () {
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
-                }
-            });
-        })
 
     });
 
@@ -135,20 +117,28 @@
             data: JSON.stringify(obj),
             success: function (data) {
                 data = JSON.parse(data);
-                let _avg = 0.00, _v1 = 0.00, _v2 = 0.00, _v3 = 0.00;
+                let _avg = 0.00, _v1 = 0.00, _v2 = 0.00, _v3 = 0.00, _diff = 0.00, _summary = 0.00, _value1 = 0.00, _vlaue2 = 0.00, _ratio = 0, n = 0, _forcast = 0.00;
                 $.each(data, function (i, r) {
                     if (r.month == 10) { _avg += parseFloat(r.sales) || 0.00; _v1 = (parseFloat(r.sales) || 0.00) * 1; }
                     else if (r.month == 11) { _avg += parseFloat(r.sales) || 0.00; _v2 = (parseFloat(r.sales) || 0.00) * 2; }
                     else if (r.month == 12) { _avg += parseFloat(r.sales) || 0.00; _v3 = (parseFloat(r.sales) || 0.00) * 3; }
                 });
                 _avg = _avg > 0 ? _avg / 3 : 0;
-                console.log(_avg, _v1, _v2, _v3);
+                _summary = _v1 + _v2 + _v3;
+                _diff = (_summary) - _avg * 6;
+                _ratio = 2;
+                _n = 3;
+                _value1 = _diff > 0 ? _diff / _ratio : 0;
+                _value2 = _avg - _value1;
+                console.log(_avg, _v1, _v2, _v3, _summary, _diff, _ratio, _n, _value1, _value2);
 
                 $('#dtdata').dataTable({
                     destroy: true,
                     scrollX: false,
                     data: data,
                     columnDefs: [{ targets: [0], visible: false, searchable: false }],
+                    searching: false,
+                    lengthMenu: [[12, 20, 50], [12, 20, 50]],
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api(), data;
                         var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
@@ -157,12 +147,11 @@
                     "columns": [
                         { data: 'month', title: 'Month', sWidth: "5%", },
                         { data: 'month_name', title: 'Month name', sWidth: "10%" },
-                        { data: 'sales', title: 'Sales', sWidth: "10%" },
+                        { data: 'sales', title: 'Sales (' + Year + ')', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         {
-                            data: 'sales', title: 'Forecast', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                                var opstock = (1 * parseInt(row.month)) * _avg + 0;
-                                //console.log(opstock);
-                                return opstock.toFixed(2);
+                            data: 'sales', title: 'Forecast sales', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                                var opstock = ((row.month + 3) * _value1) + _value2;
+                                return '$'+opstock.toFixed(2);
                             }
                         },
                     ],
@@ -177,4 +166,3 @@
 
     }
 </script>
-

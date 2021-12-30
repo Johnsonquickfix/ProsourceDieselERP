@@ -52,7 +52,9 @@
                                     <th>Forecast sales</th>
                                 </tr>
                             </thead>
-
+                            <tfoot align="right">
+                                <tr><th style="display:none"></th><th></th><th></th><th></th></tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -140,6 +142,7 @@
         var Year = $("#year").val();
         var Nextyear = $("#nextyear").val();
         var obj = { year: Year }
+        var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
         $.ajax({
             url: '/Reports/GetForecastSalesLSR',
             method: 'post',
@@ -173,7 +176,31 @@
                     lengthMenu: [[12, 20, 50], [12, 20, 50]],
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api(), data;
-                        var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+                        console.log(data);
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+
+                        var sales = api.column(2).data().reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        var forecastales = api.column(3).data().reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        
+                        
+
+                        $(api.column(1).footer()).html('Grand total');
+                        $(api.column(2).footer()).html('$' + numberRenderer(sales));
+                        $(api.column(3).footer()).html('$' + numberRenderer(forecastales));
+                        //$(api.column(4).footer()).html('$' + numberRenderer(lowerbound));
+                        //$(api.column(5).footer()).html('$' + numberRenderer(upperbound));
+                        //console.log(CreditTotal);
                     },
 
                     "columns": [
@@ -183,7 +210,7 @@
                         {
                             data: 'sales', title: 'Forecast sales ('+ Nextyear+')', sWidth: "10%", className: "text-right", render: function (data, type, row) {
                                 var opstock = ((row.month + 3) * _value1) + _value2;
-                                return '$'+opstock.toFixed(2);
+                                return opstock.toFixed(2);
                             }
                         },
                     ],

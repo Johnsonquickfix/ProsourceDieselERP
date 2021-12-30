@@ -29,8 +29,8 @@
             changeStatus();
         }
     });
-    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); ActivityLog('Gift card proceed to payment from invoice', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val())+''); AcceptPayment(); });
-    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Gift card order complete waiting for payment status', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) +''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
+    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault();  AcceptPayment(); });
+    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Gift card order processed, waiting for payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) +''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
     $("#GiftModal").on("change", "#ddlPaymentMethod", function (t) {
         t.preventDefault();
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
@@ -344,8 +344,8 @@ function GiftCardPaymentModal() {
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtSenderEmail").val()); }
-    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtSenderEmail").val()); ActivityLog('Gift card proceed for paypal payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + '');}
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Gift card proceed for podium payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + ''); }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 

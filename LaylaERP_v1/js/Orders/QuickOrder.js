@@ -33,7 +33,7 @@
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment();  });
-    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') order complete waiting for payment status.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
+    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') order processed, waiting for payment.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     /*Start New order Popup function*/
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); $("#loader").show();

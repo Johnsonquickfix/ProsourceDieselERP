@@ -60,6 +60,35 @@
         </div>
     </div>
 
+    <figure class="highcharts-figure">
+        <div>
+            <p>
+                <b>Formula:</b><br />
+                Average = Average of the previous year last three months sales.<br />
+                Summary = Summary of the previous year last three months sales with weight considered.<br />
+                Difference = Summary -  Average * (Sum of base months weight) <br />
+                Ratio = (Sumation of square of previous year last months weight) - (Sumation of previous year last three months weight / 3)^2<br />
+                Value1 = Difference / Ratio<br />
+                Value2 = Average - value1 * Ratio<br />
+                Forecast = (Numeric value of month + n)  * Value1 + Value2<br />
+            </p>
+            <!--<p>
+        <b>Example: Forcast for january 2022</b><br />
+        Let October, November and December 2021 are base month of the sales. <br />
+        Sales of October =	$11625.77, November = $76119.48, December = $115793.50 <br />
+        Weight of October = 1, November = 2, December = 3 and n = 3<br />
+        Now,<br />
+        Average = ($11625.77 + $76119.48 + $115793.50)/3 = 67846.25<br />
+        Summary = ($11625.77 * 1 + $76119.48 * 2 + $115793.50 * 3) = 511245.23<br />
+        Diffrence = [511245.23 - (67846.25 * (1 + 2 + 3))] = 104167.73<br />
+        Ratio = [( 1^2 + 2^2 + 3^2) - ((1 + 2 + 3)/3) ^ 2] = 2 <br />
+        Value1 = Difference / Ratio = 104167.73 / 2 = 52083.86<br />
+        Value2 = Average - (Value1 * ratio) = (52083.86 - 104167.72) = -36321.47<br />
+        Forecast = (1 + 3) * Value1 + Value2 =  (4* 52083.86) + (-36321.47) = 172013.97
+    </p> -->
+
+        </div>
+    </figure>
     <!--High chart start-->
     <figure class="highcharts-figure">
         <div id="container_chart"></div>

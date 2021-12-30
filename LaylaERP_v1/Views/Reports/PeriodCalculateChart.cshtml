@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "PeriodCalculateChart"; 
+    ViewBag.Title = "PeriodCalculateChart";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
@@ -11,17 +11,20 @@
 <div class="page-title">
     <h2>Orders Calculation Chart</h2>
 </div>
-<figure class="highcharts-figure"> 
+<figure class="highcharts-figure">
     <div class="row">
         <input type="hidden" id="hfType" value="" />
         <div class="col-md-12">
             <div class="user-top-section">
-                <div style="display:none" class="tablenav top tablenav-top2">
+                <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions">
                         <div class="input-group">
-                            <input type="hidden" id="hfhref" />
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                            @*<input type="hidden" id="hfhref" />
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
+                            <select class="form-control" id="toyear">
+                                <option value="">Year</option>
+                            </select>
                         </div>
                     </div>
                     <div class="alignleft actions">
@@ -45,102 +48,105 @@
 <script src="~/Content/highcharts/accessibility.js"></script>
 
 <script type="text/javascript">
-        var _list_cat = ['1', '2']
-        var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
-        $(document).ready(function () {
-            $("#loader").hide();
-            $('#txtOrderDate').daterangepicker({
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    var _list_cat = ['1', '2']
+    var _list = [{ name: 'Total', data: [0, 0, 0, 0, 0] }];
+    $(document).ready(function () {
+        $("#loader").hide();
+        globalyear('toyear');
+        //$('#txtOrderDate').daterangepicker({
+        //    ranges: {
+        //        'Today': [moment(), moment()],
+        //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        //    },
+        //    startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
+        //    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+        //},
+        //);
+        Search();
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+        })
+        //Highcharts.setOptions({
+        //    lang: {
+        //        thousandsSep: ','
+        //    }
+        //});
+
+    });
+    function Search() {
+        $("#loader").show();
+        let sd = $('#toyear').val(); //$('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        let ed = 0; //$('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var account = "1";
+        // var type = $('#ddltype').val();
+        if (account == "0") { swal('alert', 'Please Select Sales', 'error'); }
+        //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '/Reports/GetPeriodChart',
+                data: { Month: sd, Year: ed, Type: account },
+                dataType: 'json',
+                beforeSend: function () {
+                    $("#loader").show();
                 },
-                startDate: moment().subtract(6, 'days'), autoUpdateInput: true, alwaysShowCalendars: true,
-                locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-            },
-            );
-            Search();
-            $(function () {
-                Highcharts.setOptions({
-                    lang: {
-                        thousandsSep: ','
-                    }
-                });
-            })
-            //Highcharts.setOptions({
-            //    lang: {
-            //        thousandsSep: ','
-            //    }
-            //});
+                success: function (result) {
+                    _list_sum = Enumerable.from(result).select("$.fee").toArray();
+                    _list_sumsa = Enumerable.from(result).select("$.Discount").toArray();
+                    _list_shipping = Enumerable.from(result).select("$.orderstatus").toArray();
+                    _list_orderTotal = Enumerable.from(result).select("$.total").toArray();
+                    _list_itemTotal = Enumerable.from(result).select("$.tax").toArray();
+                    _list_refundtotal = Enumerable.from(result).select("$.customer_id").toArray();
+                    _list_coupontotal = Enumerable.from(result).select("$.address").toArray();
 
-        });
-        function Search() {
-            $("#loader").show();
-            let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-            let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-            var account = "1";
-            // var type = $('#ddltype').val();
-            if (account == "0") { swal('alert', 'Please Select Sales', 'error'); }
-            //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
-            else {
-                $.ajax({
-                    type: 'POST',
-                    url: '/Reports/GetPeriodChart',
-                    data: { Month: sd, Year: ed, Type: account },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $("#loader").show();
-                    },
-                    success: function (result) {                      
-                        _list_sum = Enumerable.from(result).select("$.fee").toArray();
-                        _list_sumsa = Enumerable.from(result).select("$.Discount").toArray();
-                        _list_shipping = Enumerable.from(result).select("$.orderstatus").toArray();
-                        _list_orderTotal = Enumerable.from(result).select("$.total").toArray();
-                        _list_itemTotal = Enumerable.from(result).select("$.tax").toArray();
-                        _list_refundtotal = Enumerable.from(result).select("$.customer_id").toArray();
-                        _list_coupontotal = Enumerable.from(result).select("$.address").toArray();
+                    countsal = parseFloat(sum(_list_sumsa).toFixed(2));
+                    countgrass = parseFloat(sum(_list_sum).toFixed(2));
+                    countsalavg = parseFloat((sum(_list_sumsa) / 12).toFixed(2));  
+                    countgrassavg = parseFloat((sum(_list_sum) / 12).toFixed(2));
+                    countshipping = parseFloat(sum(_list_shipping).toFixed(2)).toLocaleString('en');
+                    countorderTotal = parseFloat(sum(_list_orderTotal).toFixed(2)).toLocaleString('en');
+                    countitemTotal = parseFloat(sum(_list_itemTotal).toFixed(2)).toLocaleString('en');
+                    countrefundtotal = parseFloat(sum(_list_refundtotal).toFixed(2)).toLocaleString('en');
+                    countcoupontotal = parseFloat(sum(_list_coupontotal).toFixed(2)).toLocaleString('en');
 
-                        countsal = parseFloat(sum(_list_sumsa).toFixed(2));
-                        countgrass = parseFloat(sum(_list_sum).toFixed(2));
-                        countsalavg = parseFloat(countsal / 12).toFixed(2);
-                        countgrassavg = parseFloat(countgrass / 12).toFixed(2);
-                        countshipping = parseFloat(sum(_list_shipping).toFixed(2));
-                        countorderTotal = parseFloat(sum(_list_orderTotal).toFixed(2));
-                        countitemTotal = parseFloat(sum(_list_itemTotal).toFixed(2));
-                        countrefundtotal = parseFloat(sum(_list_refundtotal).toFixed(2));
-                        countcoupontotal = parseFloat(sum(_list_coupontotal).toFixed(2));
-                        //var res = result.map(bill => bill.fee).reduce((acc, bill) => bill + acc);
-                       // console.log(sum(_list_sum).toFixed(2));
-                       // const sum = _list_sum.reduce(add, 0);
-                       // console.log(_list_sum);
-                        //  _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
-                        _list = [
-                            { type: 'column', name: 'Gross sales in this period (' + countgrass + ')', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                            { type: 'spline', name: 'Average gross monthly sales (' + countgrassavg + ')', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
-                            { type: 'column', name: 'Net sales in this period (' + countsal +')', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
-                            { type: 'spline', name: 'Average net monthly sales (' + countgrassavg + ')', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
-                            { type: 'column', name: 'Charged for shipping (' + countshipping + ')', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
-                            { type: 'spline', name: 'Orders placed (' + countorderTotal + ')', data: $.map(result, function (v) { return parseFloat(v.total); }) },
-                            { type: 'spline', name: 'Items purchased (' + countitemTotal + ')', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
-                            { type: 'spline', name: 'Refunded orders (' + countrefundtotal + ')', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
-                            { type: 'spline', name: 'Worth of coupons used (' + countcoupontotal + ')', data: $.map(result, function (v) { return parseFloat(v.address); }) },
-                            { type: 'pie', name: 'Total Average', data: [{ name: 'Gross Sale', y: parseFloat(countgrassavg), color: Highcharts.getOptions().colors[0] }, { name: 'Net Sale', y: parseFloat(countsalavg), color: Highcharts.getOptions().colors[2] }], center: [200, 0], size: 100, showInLegend: false, dataLabels: { enabled: false } }
+                    console.log(countgrass, countgrassavg);
+                    //var res = result.map(bill => bill.fee).reduce((acc, bill) => bill + acc);
+                    // console.log(sum(_list_sum).toFixed(2));
+                    // const sum = _list_sum.reduce(add, 0);
+                    // console.log(_list_sum);
+                    //  _list_cat = $.map(result, function (v) { return v.billing_city; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list = [
+                        { type: 'column', visible: false, name: 'Gross sales in this period $(' + countgrass.toLocaleString('en') + ')', data: $.map(result, function (v) { return  parseFloat(v.fee); }) },
+                        { type: 'spline', visible: false, name: 'Average gross monthly sales $(' + countgrassavg.toLocaleString('en') + ')', data: $.map(result, function (v) { return parseFloat(v.fee); }) },
+                        { type: 'column', visible: false, name: 'Net sales in this period $(' + countsal.toLocaleString('en') + ')', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
+                        { type: 'spline', visible: false, name: 'Average net monthly sales $(' + countsalavg.toLocaleString('en') + ')', data: $.map(result, function (v) { return parseFloat(v.Discount); }) },
+                        { type: 'column', name: 'Charged for shipping $(' + countshipping + ')', data: $.map(result, function (v) { return parseFloat(v.orderstatus); }) },
+                        { type: 'spline', name: 'Orders placed (' + countorderTotal + ')', data: $.map(result, function (v) { return parseFloat(v.total); }) },
+                        { type: 'spline', name: 'Items purchased (' + countitemTotal + ')', data: $.map(result, function (v) { return parseFloat(v.tax); }) },
+                        { type: 'spline', name: 'Refunded orders (' + countrefundtotal + ')', data: $.map(result, function (v) { return parseFloat(v.customer_id); }) },
+                        { type: 'spline', name: 'Worth of coupons used (' + countcoupontotal + ')', data: $.map(result, function (v) { return parseFloat(v.address); }) },
+                        { type: 'pie', name: 'Total Average', data: [{ name: 'Gross Sale', y: parseFloat(countgrassavg), color: Highcharts.getOptions().colors[0] }, { name: 'Net Sale', y: parseFloat(countsalavg), color: Highcharts.getOptions().colors[2] }], center: [200, 0], size: 100, showInLegend: false, dataLabels: { enabled: false } }
 
-                        ];
+                    ];
 
-                        bindChart();
-                    },
-                    error: function (Result) { alert("Error"); },
-                    complete: function () { $("#loader").hide(); }
-                });
-            }
-
-
-
+                    bindChart();
+                },
+                error: function (Result) { alert("Error"); },
+                complete: function () { $("#loader").hide(); }
+            });
         }
+
+
+
+    }
     function bindChart() {
         console.log(_list);
         Highcharts.chart('container_chart', {
@@ -148,19 +154,24 @@
                 text: 'Orders Calculation Chart'
             },
             xAxis: {
-                categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November','December']
+                categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             },
-             yAxis: [{ // left y axis
-                    title: { text: null },
-                    //labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
-                    showFirstLabel: false
+            yAxis: [{ // left y axis
+                title: { text: null },
+                //labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false,
+                //labels: {
+                //    format: '${value}'
+                //}
 
-
-                }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
-                    title: { text: 'Amount' },
-                    //labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
-                    showFirstLabel: false
-                }],
+            }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
+                title: { text: 'Amount' },
+                //labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false,
+                //labels: {
+                //    format: '${value}'
+                //}
+            }],
             labels: {
                 items: [{
                     html: 'Total Average Calculate',
@@ -174,6 +185,71 @@
                     }
                 }]
             },
+            tooltip: {
+                //crosshairs: true, shared: true,
+                crosshairs: true,
+                shared: false,
+               // labels: { align: 'left', x: 3, y: 16, format: '${value}' },
+                //pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.2f}</b><br/>',
+
+
+                formatter: function () {
+                    var variance = this.series.type; 
+                    var variancedata = this.series.options.variance;
+                    if (variance == 'spline') {
+
+                        return '' + this.x + '<br/><span style="color:{point.color}">' + this.series.name + '</span>: <b>' + Highcharts.numberFormat(this.y, 0) + '</b><br/>';
+                    }
+                    else if (variance == 'column') {
+                        return '' + this.x + '<br/><span style="color:{point.color}">' + this.series.name + '</span>: <b>$' + Highcharts.numberFormat(this.y, 2) + '</b><br/>';
+                    }
+
+                    else if (variance == 'pie') {
+                       // var data = this.series.chart.series[3].data;
+                      //  console.log(data);
+                        return '' + this.point.name + '<br/><span style="color:{point.color}">' + this.series.name + '</span>: <b>$' + Highcharts.numberFormat(this.y, 2) + '</b><br/>';
+                        }
+                }
+
+                //formatter: 
+                //                function (prev, cur) {
+                //                    if ('{series.name}' == 'spline') {
+                //        return '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.2f}</b><br/>';
+                //    }
+                //    else
+                //    {
+                //        return '<span style="color:{point.color}">{series.name}</span>: <b>${point.y:,.2f}</b><br/>';
+                //   }
+                //                }, 
+                 
+                   // return '<span style="color:{point.color}">{series.name}</span>: <b>${point.y:,.2f}</b><br/>';
+         
+               
+                //pointFormat: function () {
+                //    console.log(series.type);
+                //    if (series.name == 'spline') {
+                //        return '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.2f}</b><br/>';
+                //    }
+                //    else
+                //    {
+                //        return '<span style="color:{point.color}">{series.name}</span>: <b>${point.y:,.2f}</b><br/>';
+                //    }
+                //}
+            },
+
+            //plotOptions: {
+            //    pie: {
+            //     //   allowPointSelect: true,
+            //        cursor: 'pointer',
+            //        dataLabels: {
+            //            enabled: false,
+
+            //        },
+            //        borderColor: '#A0A0A0',
+            //        innerSize: '40%',
+
+            //    },
+            //},
             //series: [{
             //    type: 'column',
             //    name: 'Jane',
@@ -220,7 +296,7 @@
             //}]
             series: _list
         });
-            $('.highcharts-credits').remove();
+        $('.highcharts-credits').remove();
     }
 
 
@@ -229,3 +305,5 @@
     }
 </script>
 
+
+<script src="~/js/globalyear.js"></script>

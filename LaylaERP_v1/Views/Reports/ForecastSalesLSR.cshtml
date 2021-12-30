@@ -129,7 +129,7 @@
                 _ratio = 2;
                 _n = 3;
                 _value1 = _diff > 0 ? _diff / _ratio : 0;
-                _value2 = _avg - _value1;
+                _value2 = _avg - (_value1 * _ratio);
                 console.log(_avg, _v1, _v2, _v3, _summary, _diff, _ratio, _n, _value1, _value2);
 
                 $('#dtdata').dataTable({

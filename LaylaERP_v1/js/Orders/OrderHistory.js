@@ -110,8 +110,9 @@ function GetOrderDetails() {
 }
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function dataGridLoad(order_type) {
-    var urlParams = new URLSearchParams(window.location.search);
-    let searchText = urlParams.get('name') ? urlParams.get('name') : '';
+    //var urlParams = new URLSearchParams(window.location.search);
+    //let searchText = urlParams.get('name') ? urlParams.get('name') : '';
+    let searchText = localStorage.getItem('_search');
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
@@ -142,6 +143,7 @@ function dataGridLoad(order_type) {
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    localStorage.setItem('_search','');
                     return fnCallback(dtOption);
                 }
             });

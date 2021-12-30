@@ -2,9 +2,11 @@
 
 function getUrlVars() {
    // debugger
-    var sPageURL = decodeURIComponent(window.location.search.substring(1));
-    sPageURL = sPageURL.split('name=');
-    var sURLVariables = sPageURL.toString().replace(',', '');
+    //var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    //sPageURL = sPageURL.split('name=');
+    //var sURLVariables = sPageURL.toString().replace(',', '');
+    let sURLVariables = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     return sURLVariables
 }
 function AddCustomer() {

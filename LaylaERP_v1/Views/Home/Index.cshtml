@@ -260,7 +260,6 @@
         $(document).ready(function () {
             localStorage.setItem('isEdit', 'no');
             setTimeout(function () {
-                //addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
             }, 100);
@@ -342,11 +341,6 @@
                 }
                 return input;
             }
-
-
-                //$("#State").append("<option>" + $("#hfState").val()+ "</option>");
-
-
         });
         function filluserMenu() {
             var obj = { userId: GetUserID };
@@ -548,6 +542,7 @@
                 });
 
         }
+
         function SearchbarModal() {
             var myHtml = '';
             //header
@@ -576,21 +571,21 @@
             myHtml += '<div class="col-sm-4">';
             myHtml += '<div class="form-group">';
             myHtml += '<input type="hidden" value="@ViewBag.Type"  id="hfrbtvalue" />';
-            myHtml += '<input id="strValue1" checked="checked" name="strValue1" type="radio" value="users" /><label for="strValue1">USRES</label>';
+            myHtml += '<input id="strValue1" checked="checked" name="strValue1" type="radio" value="SRUSR" /><label for="strValue1">USRES</label>';
             myHtml += '</div>';
             myHtml += '<div class="form-group"><div id="contentuser"><table id="tblUsers" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
             myHtml += '</div>';
 
             myHtml += '<div class="col-sm-4">';
             myHtml += '<div class="form-group">';
-            myHtml += '<input id="strValue2" name="strValue1" type="radio" value="customers" /><label for="strValue2">CUSTOMERS</label>';
+            myHtml += '<input id="strValue2" name="strValue1" type="radio" value="SRCUS" /><label for="strValue2">CUSTOMERS</label>';
             myHtml += '</div>';
             myHtml += '<div class="form-group"><div id="contentcus"><table id="tblCustomer" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
             myHtml += '</div>';
 
             myHtml += '<div class="col-sm-4">';
             myHtml += '<div class="form-group">';
-            myHtml += '<input id="strValue3" name="strValue1" type="radio" value="orders" /><label for="strValue3">ORDERS</label>';
+            myHtml += '<input id="strValue3" name="strValue1" type="radio" value="SRORD" /><label for="strValue3">ORDERS</label>';
             myHtml += '</div>';
             myHtml += '<div class="form-group"><div id="contentorder"><table id="tblorder" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
             myHtml += '</div>';
@@ -607,87 +602,82 @@
             myHtml += '</div>';
             $("#searchbar").empty().html(myHtml);
             $("#searchbar").modal({ backdrop: 'static' }); $("#btnsearchbar").focus();
-            SearchbarBinding('all', '');
+            SearchbarBinding('SRALL', '');
         }
         function SearchbarBinding(serchOn,seachValue) {
             var myHtml = '';
             var obj = { strValue1: serchOn, strValue2: seachValue };
-            $.ajax({
-                url: '/Home/GetUsersDetails', type: 'POST', contentType: "application/json; charset=utf-8",dataType: 'JSON',
-                data: JSON.stringify(obj),
-                success: function (result) {
-                    result = JSON.parse(result);
-                    if (serchOn == 'all') {
-                        myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><span title="Click here to view user" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblUsers tbody").empty().append(myHtml);
-
-                        myHtml = result['Table1'].length > 0 ? '' : '<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table1'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table1'][i].user_login + '</h5>' + result['Table1'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'16\',title: \'Manage Customer\',close: true,url: \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(16).attr(\'src\', \'/Customer/Customer?name=' + result['Table1'][i].user_email + '\');refreshTab();"><span title="Click here to view customer" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblCustomer tbody").empty().append(myHtml);
-
-                        myHtml = result['Table2'].length > 0 ? '' : '<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table2'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table2'][i].id + '</h5>' + result['Table2'][i].post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(8).attr(\'src\', \'/Orders/OrdersHistory?name=' + result['Table2'][i].id + '\');refreshTab();"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblorder tbody").empty().append(myHtml);
-                    }
-                    else if (serchOn == 'users') {
-                        myHtml = result['Table'].length > 0 ? '' :'<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'3\',title:\'User Management\',close: true,url: \'/Users/Users?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(3).attr(\'src\', \'/Users/Users?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblUsers tbody").empty().append(myHtml);
-                    }
-                    else if (serchOn == 'customers') {
-                        myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].user_login + '</h5>' + result['Table'][i].user_email + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'16\',title: \'Manage Customer\',close: true,url: \'/Customer/Customer?name=' + result['Table'][i].user_email + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(16).attr(\'src\', \'/Customer/Customer?name=' + result['Table'][i].user_email + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblCustomer tbody").empty().append(myHtml);
-                    }
-                    else if (serchOn == 'orders') {
-                        myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
-                        for (var i = 0; i < result['Table'].length; i++) {
-                            myHtml += '<tr>';
-                            myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
-                            myHtml += '<td><h5>' + result['Table'][i].id + '</h5>' + result['Table'][i].post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=?name=' + result['Table'][i].id + '\',urlType:\'none\'});App.fixIframeCotent();findIframeById(8).attr(\'src\', \'/Orders/OrdersHistory?name=' + result['Table'][i].id + '\');refreshTab();"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
-                            myHtml += '</tr>';
-                        }
-                        $("#tblorder tbody").empty().append(myHtml);
-                    }
-                },
-                error: function (msg) { console.log(msg); }
-            });
+            $.get('/Home/GetUsersDetails', obj).then(result => {
+                result = JSON.parse(result); console.log(result);
+                if (serchOn == 'SRALL') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(3,\'User Management\',\'/Users/Users\',\'' + r.id + '\');"><span title="Click here to view user" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblUsers tbody").empty().append(myHtml);
+                    myHtml = result['Table1'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table1'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(16,\'Manage Customer\',\'/Customer/Customer\',\'' + r.user_email + '\');"><span title="Click here to view customer" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblCustomer tbody").empty().append(myHtml);
+                    myHtml = result['Table2'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table2'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="setTab(8,\'Orders History\',\'/Orders/OrdersHistory\',\'' + r.id + '\');"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblorder tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRUSR') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(3,\'User Management\',\'/Users/Users\',\'' + r.id + '\');"><span title="Click here to view user" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblUsers tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRCUS') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(16,\'Manage Customer\',\'/Customer/Customer\',\'' + r.user_email + '\');"><span title="Click here to view customer" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblCustomer tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRORD') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="setTab(8,\'Orders History\',\'/Orders/OrdersHistory\',\'' + r.id + '\');"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        //myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=' + r.id + '\',urlType:\'none\'});App.fixIframeCotent();refreshTab();"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblorder tbody").empty().append(myHtml);
+                }
+            }).catch(err => { console.log(err); });
         }
-        function openOrderPage(order_type) {
-            addTabs({ id: '8', title: 'Orders History', close: true, url: '/Orders/OrdersHistory' + (order_type.length > 0 ? '?type=' + order_type : '?v=1.0.0'), urlType: 'none' });
-            App.fixIframeCotent();
+        function setTab(_tabid, _title, _url, _value) {
+            localStorage.setItem('_search', _value); $('#searchbar').modal('hide');
+            addTabs({ id: _tabid, title: _title, close: true, url: _url, urlType: 'none' }); App.fixIframeCotent(); refreshTab();
         }
-
-        function openCustomerPage(customer_type) {
-            addTabs({ id: '16', title: 'Manage Customers', close: true, url: '/Customer/Customer', urlType: 'none' });
-            App.fixIframeCotent();
-        }
+        
+        $(document).on('click', "#btnsearchbar", function () {
+            var checkid = $("input[name='strValue1']:checked").val();
+            var search = $("#txtsearch").val();
+            SearchbarBinding(checkid, search);
+        });
     </script>
     <script>
     $(document).ready(function () {
@@ -704,53 +694,13 @@
                 //$("#userprofile").modal("hide");
                 t.preventDefault(); ResetPasswordModal();
             });
-
-            $(document).on('click', "#auser", function () {
-                $('#searchbar').modal('hide');
-            });
-            $(document).on('click', "#acustomer", function () {
-                    $('#searchbar').modal('hide');
-            });
-            $(document).on('click', "#aorder", function () {
-                $('#searchbar').modal('hide');
-            });
-            $(document).on('click', "#btnsearchbar", function () {
-                var checkid = $("input[name='strValue1']:checked").val();
-                var search = $("#txtsearch").val();
-                SearchbarBinding(checkid, search);
-            });
-
-            const urlParams = new URLSearchParams(window.location.search);
-            //let str = urlParams;
-            //var find = str.includes("strValue1");
-            //alert(find); alert(@ViewBag.Type);
-            //var incStr = urlParams.includes("strValue1", 0);
-            //alert(incStr);
-            if (urlParams != "") {
-               // $("input[name='strValue1']:checked").val("@ViewBag.Type");
-
-
-                $("#btnsearch").click();
-                if ("@ViewBag.Type" == "users" )
-                $("#strValue1").prop('checked', true);
-               else if ("@ViewBag.Type" == "customers" )
-                    $("#strValue2").prop('checked', true);
-                else
-                    $("#strValue3").prop('checked', true);
-
-        }
-     
-       // $("#txtPostCode").change();        
+       // $("#txtPostCode").change();
     });
 
         function loadData() {
             $("#tblCustomer tbody").empty();
-             var checkid = $("input[name='strValue1']:checked").val();
-             var search = $("#txtsearch").val();
-             var obj = {
-                 strValue1: checkid,
-                 strValue2: search
-             };
+             let checkid = $("input[name='strValue1']:checked").val(),search = $("#txtsearch").val();
+             var obj = { strValue1: checkid, strValue2: search };
              $.ajax({
                  url: '/Home/Index',
                  type: 'post',
@@ -789,7 +739,7 @@
                     success: function (data) {
                         if (data.status == true) {
                             $('#hfzipstatus').val(data.status);
-                             
+
                         }
                         else {
                             if ($('#txtCountry').val() == "US") {

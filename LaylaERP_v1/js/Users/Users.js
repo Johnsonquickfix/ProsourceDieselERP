@@ -1,5 +1,5 @@
 ﻿let myvalue = 1;
-var searchText = getUrlVars();
+//var searchText = getUrlVars();
 ///Get User Counts
 
 function getUrlVars() {
@@ -137,6 +137,8 @@ function Datagrid(role_type, type) {
             }
         ]
     }
+    searchText = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     //console.log(role_type, type);
     var id;
     if (searchText == '') {

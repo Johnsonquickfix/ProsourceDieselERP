@@ -574,7 +574,7 @@ function successModal(paymode, id, is_mail) {
     else if (paymode == 'authorize_net_cim_credit_card')
         myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Credit Card</strong></td>';
     else
-        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + paymode + '</strong></td>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: capitalize;">' + paymode + '</strong></td>';
     myHtml += '</tr>';
     myHtml += '</table>';
     myHtml += '</td>';

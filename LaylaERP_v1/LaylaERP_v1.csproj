@@ -872,6 +872,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
+    <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1064,7 +1065,6 @@
     <Content Include="Views\Reports\WisconsinReport.cshtml" />
     <Content Include="Views\Reports\ForecastSalesMonthly.cshtml" />
     <Content Include="Views\Reports\ForecastSalesQuarterly.cshtml" />
-    <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Reports\ForecastSalesLSR.cshtml" />
   </ItemGroup>
   <ItemGroup>

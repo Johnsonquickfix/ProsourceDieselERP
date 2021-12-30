@@ -15,12 +15,11 @@
     {
         // GET api/Account/Login
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-      
+
         [HttpGet]
         [Route("login")]
         public IHttpActionResult Login(LoginModel model)
         {
-            ResultModel result = new ResultModel();
             if (string.IsNullOrWhiteSpace(model.user_login) || string.IsNullOrWhiteSpace(model.user_pass))
             {
                 return BadRequest();
@@ -66,36 +65,29 @@
             }
         }
 
-        [HttpPost]
-        [Route("UserLogin")]
-        public IHttpActionResult UserLogin([FromBody] LoginModel model, int id)
+        [HttpGet]
+        [Route("getorders")]
+        public object GetOrders(SearchModel model)
         {
-            //LoginModel obj = UsersRepositry.VerifyUser(model.user_login, model.user_pass);
-            //return obj;
-            //if (string.IsNullOrWhiteSpace(model.user_login) || string.IsNullOrWhiteSpace(model.user_pass))
-            //{
-            //    return BadRequest();
-            //}
-            //try
-            //{
-                //var balResult = UsersRepositry.VerifyUser(model.user_login, model.user_pass);
-               // string username = "", Password = "";
-                if (model.user_login=="admin" && model.user_pass == "admin")
-                {
-                    return Ok("Success "+id+"");
-                   
-                }
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
                 return BadRequest();
-            //}
-            //catch (Exception ex)
-            //{
-            //    return InternalServerError(ex);
-            //}
-        }
-        [Route("getar")]
-        public IHttpActionResult Get()
-        {
-            return Ok("This is a iActionResult");
+            }
+            try
+            {
+                string msg = string.Empty;
+                var balResult = CommonRepositry.GetOrders(model.user_id, model.offset);
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

@@ -266,7 +266,7 @@
             mymodel.order = dtorder.AsEnumerable();
             return View(mymodel);
         }
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetUsersDetails(SearchModel model)
         {
             string result = string.Empty;

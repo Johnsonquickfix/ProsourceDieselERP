@@ -165,12 +165,14 @@
                 _n = 3;
                 _value1 = _diff > 0 ? _diff / _ratio : 0;
                 _value2 = _avg - (_value1 * _ratio);
+                let _list = $.map(data, function (v) { return { 'month': v.month, 'month_name': v.month_name, 'sales': v.sales, 'forecast': ((v.month + 3) * _value1) + _value2 } });
+
                 console.log(_avg, _v1, _v2, _v3, _summary, _diff, _ratio, _n, _value1, _value2);
 
                 $('#dtdata').dataTable({
                     destroy: true,
                     scrollX: false,
-                    data: data,
+                    data: _list,
                     columnDefs: [{ targets: [0], visible: false, searchable: false }],
                     searching: false,
                     lengthMenu: [[12, 20, 50], [12, 20, 50]],
@@ -192,27 +194,18 @@
                             return intVal(a) + intVal(b);
                         }, 0);
 
-                        
-                        
-
                         $(api.column(1).footer()).html('Grand total');
                         $(api.column(2).footer()).html('$' + numberRenderer(sales));
                         $(api.column(3).footer()).html('$' + numberRenderer(forecastales));
-                        //$(api.column(4).footer()).html('$' + numberRenderer(lowerbound));
-                        //$(api.column(5).footer()).html('$' + numberRenderer(upperbound));
-                        //console.log(CreditTotal);
                     },
 
                     "columns": [
-                        { data: 'month', title: 'Month', sWidth: "5%", },
-                        { data: 'month_name', title: 'Month name', sWidth: "10%" },
-                        { data: 'sales', title: 'Sales (' + Year + ')', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                        { data: 'month', title: 'Month', sWidth: "5%", className:'text-right' },
+                        { data: 'month_name', title: 'Month name', sWidth: "25%", className: 'text-right'  },
+                        { data: 'sales', title: 'Sales (' + Year + ')', sWidth: "25%", className: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
                         {
-                            data: 'sales', title: 'Forecast sales ('+ Nextyear+')', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                                var opstock = ((row.month + 3) * _value1) + _value2;
-                                return opstock.toFixed(2);
-                            }
-                        },
+                            data: 'forecast', title: 'Forecast sales (' + Nextyear + ')', sWidth: "25%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$')
+                        }
                     ],
                     "order": [[0, 'asc']],
 

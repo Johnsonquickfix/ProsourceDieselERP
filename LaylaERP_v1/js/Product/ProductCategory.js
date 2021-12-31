@@ -86,8 +86,8 @@ $('#btnAddNewCategory').click(function () {
     DisplayType = $("#ddlDisplayType").val();
     var file = document.getElementById("ImageFile").files[0];
   
-    if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
-    else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
+    if (CategoryName == "") { swal('Alert', 'Please enter category name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
+    else if (CategorySlug == "") { swal('Alert', 'Please enter category slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     else {
         var obj = new FormData();
         obj.append("ImageFile", file);

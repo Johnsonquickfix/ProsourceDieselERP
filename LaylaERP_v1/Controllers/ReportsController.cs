@@ -135,6 +135,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastHistoricalData()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {

@@ -84,7 +84,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $.when(globalcurrentyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder(); Search(); });
+        $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder(); Search(); });
 
         $("#filtersrchexp").click(function () {
             if ($("#year").val() == "") {
@@ -109,15 +109,6 @@
     });
 
     //Years start
-    function globalcurrentyear(yearcount) {
-        var currentYear = new Date().getFullYear();
-        var yearSelect = document.getElementById(yearcount);
-        for (var i = 0; i < 3; i++) {
-            var isSelected = currentYear === currentYear - i
-            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
-        }
-    }
-
     function globalnextyear(yearcount) {
         var currentYear = new Date().getFullYear() + 1;
         var yearSelect = document.getElementById(yearcount);
@@ -308,3 +299,4 @@
     }
 </script>
 <!--High chart forecast sales end-->
+<script src="~/js/globalyear.js"></script>

@@ -1066,6 +1066,7 @@
     <Content Include="Views\Reports\ForecastSalesMonthly.cshtml" />
     <Content Include="Views\Reports\ForecastSalesQuarterly.cshtml" />
     <Content Include="Views\Reports\ForecastSalesLSR.cshtml" />
+    <Content Include="Views\Reports\ForecastHistoricalData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

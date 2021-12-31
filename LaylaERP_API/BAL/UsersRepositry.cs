@@ -21,12 +21,9 @@
             ResultModel obj = new ResultModel();
             try
             {
-                using (MD5 md5Hash = MD5.Create())
+                UserPassword = EncryptedPwd(UserPassword);
+                SqlParameter[] parameters =
                 {
-                    string hashPassword = GetMd5Hash(md5Hash, UserPassword);
-                }
-                UserPassword = EncryptedPwd(UserPassword); SqlParameter[] parameters =
-                 {
                     new SqlParameter("@flag", "AUTH"),
                     new SqlParameter("@user_login", UserName),
                     new SqlParameter("@user_pass", UserPassword)
@@ -85,15 +82,29 @@
             return obj;
         }
 
-        static string GetMd5Hash(MD5 md5Hash, string input)
+        public static DataTable CreateUser(LoginModel model)
         {
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-            StringBuilder sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
+            DataTable dt = new DataTable();
+            try
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                string user_pass = EncryptedPwd(model.user_pass);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "URADD"),
+                    new SqlParameter("@user_login", model.user_login),
+                    new SqlParameter("@user_pass", user_pass),
+                    new SqlParameter("@user_nicename", model.user_nicename),
+                    new SqlParameter("@display_name", model.display_name),
+                    new SqlParameter("@first_name", model.first_name),
+                    new SqlParameter("@last_name", model.last_name),
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_auth", parameters);
             }
-            return sBuilder.ToString();
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
 
         public static string EncryptedPwd(string varPassword)

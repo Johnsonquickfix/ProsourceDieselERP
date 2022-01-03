@@ -18,59 +18,87 @@
     <h2>Forecast (Linear Smooth)</h2>
 </div>
 <section class="content section-content neworder-section table-design payment-boxes">
-   
 
-        <input type="hidden" id="hfType" value="" />
-        <div class="row index_col_row">
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Year</label><span style="color:red">*</span>
-                        <select class="form-control" id="year">
-                            <option value="">Year</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Forecast year</label>
-                        <select class="form-control" id="nextyear">
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group">
-                        @*<label>Filter</label>*@
-                        <br /><br />
-                        @*<button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button"></button>*@
-                        <button id="btnsearch" onclick="Search();" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
-                    </div>
-                </div>
+    <input type="hidden" id="hfType" value="" />
+    <div class="row index_col_row">
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Year</label><span style="color:red">*</span>
+                <select class="form-control" id="year">
+                    <option value="">Year</option>
+                </select>
+            </div>
         </div>
-  
-   
-            <div id="divpodata" class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary table-design not-fixed">
-                        <div class="box-header">
-                            <div class="table-responsive">
-                                <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>ID</th>
-                                            <th>Create Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Forecast year</label>
+                <select class="form-control" id="nextyear">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                @*<label>Filter</label>*@
+                <br /><br />
+                @*<button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button"></button>*@
+                <button id="btnsearch" onclick="Search();" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="divpodata" class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-header">
+                    <div class="table-responsive">
+                        <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID</th>
+                                    <th>Create Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
- 
+    <figure class="highcharts-figure">
+        <div>
+            <p>
+                <b>Formula:</b><br />
+                Number of periods to include in smoothing average (processing option 10a) = 3 in this example.<br />
+                Ratio for one period prior = 3/(n^2 + n)/2 = 3/(3^2 + 3)/2 = 3/6 = 0.5.<br />
+                Ratio for two periods prior = 2/(n^2 + n)/2 = 2/(3^2 + 3)/2 = 2/6 = 0.3333. <br />
+                Ratio for three periods prior = 1/(n^2 + n)/2 = 1/(3^2 + 3)/2 = 1/6 = 0.1666.<br />
+                January forecast: 137  0.5 + 119  1/3 + 114 * 1/6 = 127.16 or 127<br />
+                February forecast: 127  0.5 + 137  1/3  119  1/6 = 129.<br />
+                March forecast: 129  0.5 + 127  1/3  137  1/6 = 129.666 or 130.<br />             
+            </p>
+            <!--<p>
+                <b>Example: Forcast for january 2022</b><br />
+                Let October, November and December 2021 are base month of the sales. <br />
+                Sales of October =	$11625.77, November = $76119.48, December = $115793.50 <br />
+                Weight of October = 1, November = 2, December = 3 and n = 3<br />
+                Now,<br />
+                Average = ($11625.77 + $76119.48 + $115793.50)/3 = 67846.25<br />
+                Summary = ($11625.77 * 1 + $76119.48 * 2 + $115793.50 * 3) = 511245.23<br />
+                Diffrence = [511245.23 - (67846.25 * (1 + 2 + 3))] = 104167.73<br />
+                Ratio = [( 1^2 + 2^2 + 3^2) - ((1 + 2 + 3)/3) ^ 2] = 2 <br />
+                Value1 = Difference / Ratio = 104167.73 / 2 = 52083.86<br />
+                Value2 = Average - (Value1 * ratio) = (52083.86 - 104167.72) = -36321.47<br />
+                Forecast = (1 + 3) * Value1 + Value2 =  (4* 52083.86) + (-36321.47) = 172013.97
+            </p> -->
+
+        </div>
+    </figure>
 
 </section> 
 <script src="~/js/common.js"></script>

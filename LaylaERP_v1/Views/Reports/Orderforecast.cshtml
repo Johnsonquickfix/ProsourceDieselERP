@@ -18,56 +18,60 @@
     <h2>Forecast (Linear Smooth)</h2>
 </div>
 <section class="content section-content neworder-section table-design payment-boxes">
-    <div class="nav-tabs-custom">
-        <div class="row">
-            <input type="hidden" id="hfType" value="" />
-            <div class="col-md-12">
-                <div class="user-top-section">
-                    <div class="tablenav top tablenav-top2">                     
-                        <div class="alignleft actions">
-                            @*<select class="form-control" id="ddltype">
-            <option value="0" selected="selected">Select</option>
-            <option value="1">Coupon Orders</option>
-            <option value="2">Gift Card Orders</option>
-            <option value="3">Both</option>
-        </select>*@
-                            @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                            <select class="form-control" id="year">
-                                <option value="">Year</option>
-                            </select>
-                            <button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
-                        </div>
+   
+
+        <input type="hidden" id="hfType" value="" />
+        <div class="row index_col_row">
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Year</label><span style="color:red">*</span>
+                        <select class="form-control" id="year">
+                            <option value="">Year</option>
+                        </select>
                     </div>
                 </div>
-            </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Forecast year</label>
+                        <select class="form-control" id="nextyear">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        @*<label>Filter</label>*@
+                        <br /><br />
+                        @*<button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button"></button>*@
+                        <button id="btnsearch" onclick="Search();" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
+                    </div>
+                </div>
         </div>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab_21">
-                <div id="divpodata" class="row">
-                    <div class="col-md-12">
-                        <div class="box box-primary table-design not-fixed">
-                            <div class="box-header">
-                                <div class="table-responsive">
-                                    <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>ID</th>
-                                                <th>Create Date</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+  
+   
+            <div id="divpodata" class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary table-design not-fixed">
+                        <div class="box-header">
+                            <div class="table-responsive">
+                                <table id="dtdata" class="inventory-table paymentblue_table table-blue table check-table table-bordered table-striped dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>ID</th>
+                                            <th>Create Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
-  
             </div>
-        </div>
-    </div>
+
+ 
+
 </section> 
 <script src="~/js/common.js"></script>
 

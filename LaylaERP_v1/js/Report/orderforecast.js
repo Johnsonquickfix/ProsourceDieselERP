@@ -1,25 +1,31 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { Search(); });
 
- 
-        var currentYear = new Date().getFullYear();
-        var yearSelect = document.getElementById('year');
-        for (var i = -0; i < 5; i++) {
-            var isSelected = currentYear === currentYear - i
-            yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
-        }
-   
-
-
-    //globalcurrentyear('year');
-    Search();
 });
 
+
+function globalnextyear(yearcount) {
+    var currentYear = new Date().getFullYear() + 1;
+    var yearSelect = document.getElementById(yearcount);
+    for (var i = 0; i < 2; i++) {
+        var isSelected = currentYear === currentYear
+        yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+    }
+}
+function globallastyear(yearcount) {
+    var currentYear = new Date().getFullYear() - 1;
+    var yearSelect = document.getElementById(yearcount);
+    for (var i = -1; i < 5; i++) {
+        var isSelected = currentYear === currentYear - i
+        yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+    }
+}
 function Search() {
     let sd = 'sd'; //$('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = 'ed';//$('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let Year = $("#year").val();
-    var NextYear = parseInt(Year) + 1;
+    var NextYear = $("#nextyear").val();
     var account = '1';
     // var type = $('#ddltype').val();
     if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }

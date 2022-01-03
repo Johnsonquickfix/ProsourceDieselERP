@@ -24,4 +24,4 @@ function globalcurrentyear(yearcount) {
         var isSelected = currentYear === currentYear - i
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
-}
+} 

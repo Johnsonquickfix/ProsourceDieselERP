@@ -1,12 +1,14 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
     globalcurrentyear('year');
+    Search();
 });
 
 function Search() {
     let sd = 'sd'; //$('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = 'ed';//$('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let Year = $("#year").val();
+    var NextYear = parseInt(Year) + 1;
     var account = '1';
     // var type = $('#ddltype').val();
     if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }
@@ -30,7 +32,7 @@ function Search() {
                 { data: 'tax', title: '#', 'sWidth': "5%" },
 
                 {
-                    data: 'tax', title: 'Month', sWidth: "10%", render: function (data, type, row) {
+                    data: 'tax', title: 'Month Name', sWidth: "10%", render: function (data, type, row) {
                         if (data == '1') return 'January';
                         else if (data == '2') return 'February';
                         else if (data == '3') return 'March';
@@ -47,8 +49,8 @@ function Search() {
                     }
                 },
               
-                { data: 'Discount', title: 'Order Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                { data: 'fee', title: 'ForcasteValue', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Discount', title: 'Order Total (' + Year + ')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'fee', title: 'Forecast Order (' + NextYear +')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
 
 
             ],

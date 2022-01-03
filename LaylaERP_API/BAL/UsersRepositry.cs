@@ -21,7 +21,8 @@
             ResultModel obj = new ResultModel();
             try
             {
-                UserPassword = EncryptedPwd(UserPassword);SqlParameter[] parameters =
+                UserPassword = EncryptedPwd(UserPassword);
+                SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "AUTH"),
                     new SqlParameter("@user_login", UserName),
@@ -81,6 +82,31 @@
             return obj;
         }
 
+        public static DataTable CreateUser(LoginModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string user_pass = EncryptedPwd(model.user_pass);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "URADD"),
+                    new SqlParameter("@user_login", model.user_login),
+                    new SqlParameter("@user_pass", user_pass),
+                    new SqlParameter("@user_nicename", model.user_nicename),
+                    new SqlParameter("@display_name", model.display_name),
+                    new SqlParameter("@first_name", model.first_name),
+                    new SqlParameter("@last_name", model.last_name),
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_auth", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static string EncryptedPwd(string varPassword)
         {
             string expected = "$P$BPGbwPLs6N6VlZ7OqRUvIY1Uvo/Bh9/";
@@ -89,7 +115,11 @@
         static string MD5Encode(string password, string hash)
         {
             string output = "*0";
-            if (hash == null) return output;
+            if (hash == null)
+            {
+                return output;
+            }
+
             if (hash.StartsWith(output)) output = "*1";
 
             string id = hash.Substring(0, 3);
@@ -98,14 +128,12 @@
 
             // get who many times will generate the hash
             int count_log2 = itoa64.IndexOf(hash[3]);
-            if (count_log2 < 7 || count_log2 > 30)
-                return output;
+            if (count_log2 < 7 || count_log2 > 30) return output;
 
             int count = 1 << count_log2;
 
             string salt = hash.Substring(4, 8);
-            if (salt.Length != 8)
-                return output;
+            if (salt.Length != 8) return output;
 
             byte[] hashBytes = { };
             using (MD5 md5Hash = MD5.Create())
@@ -131,16 +159,12 @@
             {
                 int value = (int)input[i++];
                 sb.Append(itoa64[value & 0x3f]); // to uppercase
-                if (i < count)
-                    value = value | ((int)input[i] << 8);
+                if (i < count) value = value | ((int)input[i] << 8);
                 sb.Append(itoa64[(value >> 6) & 0x3f]);
-                if (i++ >= count)
-                    break;
-                if (i < count)
-                    value = value | ((int)input[i] << 16);
+                if (i++ >= count) break;
+                if (i < count) value = value | ((int)input[i] << 16);
                 sb.Append(itoa64[(value >> 12) & 0x3f]);
-                if (i++ >= count)
-                    break;
+                if (i++ >= count) break;
                 sb.Append(itoa64[(value >> 18) & 0x3f]);
             } while (i < count);
 

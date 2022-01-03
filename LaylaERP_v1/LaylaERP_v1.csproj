@@ -728,7 +728,6 @@
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\CancelRefund.js" />
     <Content Include="js\Report\IDMeOrderReport.js" />
-    <Content Include="js\Report\orderforecast.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
@@ -1067,8 +1066,7 @@
     <Content Include="Views\Reports\ForecastSalesMonthly.cshtml" />
     <Content Include="Views\Reports\ForecastSalesQuarterly.cshtml" />
     <Content Include="Views\Reports\ForecastSalesLSR.cshtml" />
-    <Content Include="Views\Reports\Getorderforecast.cshtml" />
-    <Content Include="Views\Reports\Orderforecast.cshtml" />
+    <Content Include="Views\Reports\ForecastHistoricalData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

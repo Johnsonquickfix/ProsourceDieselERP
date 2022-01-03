@@ -2239,5 +2239,32 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void GetForecastSalesHistoricalChart(string year)
+        {
+            try
+            {
+                exportorderlistchart.Clear();
+                DataSet ds1 = new DataSet();
+                if (year != "")
+                {
+                    SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "FCM"),
+                    new SqlParameter("@year", year),
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_forcastsalemonthly", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.tax = ds1.Tables[0].Rows[i]["month"].ToString();
+                        uobj.shipping_amount = ds1.Tables[0].Rows[i]["month_name"].ToString();
+                        uobj.handling_amount = ds1.Tables[0].Rows[i]["sales"].ToString();
+                        exportorderlistchart.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

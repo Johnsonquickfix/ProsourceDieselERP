@@ -6,9 +6,8 @@
     Layout = null;
 }
 
-<script src="~/Scripts/jquery.js" type="text/javascript"></script>
-<script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
-<link href="~/Content/css/Style.css" rel="stylesheet" />
+@*<script src="~/Scripts/jquery.js" type="text/javascript"></script>
+*@
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +28,7 @@
     <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
     <link href="~/Content/css/tabcss.css" rel="stylesheet" />
     <link href="~/Content/AdminLTE-3.1.0/_all-skins.min.css" rel="stylesheet" />
-    <link href="~/Content/dx/dx.light.css" rel="stylesheet" />
+    @*<link href="~/Content/dx/dx.light.css" rel="stylesheet" />*@
     <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
     <link href="~/Content/css/Style.css" rel="stylesheet" />
     <!-- Main Style -->
@@ -37,6 +36,9 @@
     <!-- jQuery -->
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
     <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+
+    <script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
+    <link href="~/Content/css/Style.css" rel="stylesheet" />
     <script type="text/javascript">
         jQuery.browser = {};
         (function () {
@@ -81,7 +83,7 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-user"></i>
-                                <span class="hidden-xs">@(user.UserName)</span>
+                                <span class="hidden-xs lbluser-name" data-uid="@user.UserID">@(user.UserName)</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -251,19 +253,23 @@
     <!-- AdminLTE App -->
     <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
     <script src="~/js/app.js?v=2"></script>
-    <script src="~/Content/dx/dx.all.js"></script>
+    @*<script src="~/Content/dx/dx.all.js"></script>*@
     <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
     <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
     <script src="~/js/UserActivity.js"></script>
     <script>
-        var GetUserID = parseInt('@(user.UserID)') || 0;
+        var GetUserID = 0;
         $(document).ready(function () {
             localStorage.setItem('isEdit', 'no');
-            setTimeout(function () {
+            $.when(filluserMenu()).done(function () {
                 addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
-            }, 100);
-            setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
+            });
+            //setTimeout(function () {
+            //    addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
+            //    App.fixIframeCotent();
+            //}, 100);
+            //setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
 
            // GetUsers();
 
@@ -343,17 +349,10 @@
             }
         });
         function filluserMenu() {
-            var obj = { userId: GetUserID };
-            jQuery.ajax({
-                url: '/AccountAPI/getMenus', dataType: 'json', type: "Post",
-                beforeSend: function () {
-                    //$("#loading-div-background").show();
-                },
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                success: function (data) {$('.sidebar-menu').sidebarMenu({ data: data });},
-                error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
-            });
+            let option = { userId: parseInt($('.lbluser-name').data('uid') || 0) };
+            $.post('/AccountAPI/getMenus', option).then(response => {
+                $('.sidebar-menu').sidebarMenu({ data: response });
+            }).catch(err => { swal('Error!', err, 'error'); });
         }
         ///Add Modal Profile
         function ProfileModal() {

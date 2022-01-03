@@ -33,7 +33,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label>Next year</label>
+                <label>Forecast year</label>
                 <select class="form-control" id="nextyear">
                 </select>
             </div>
@@ -87,7 +87,7 @@
 
         $("#filtersrchexp").click(function () {
             if ($("#year").val() == "") {
-                swal('Alert', 'Please select current year', 'error').then(function () { swal.close(); $('#year').focus(); });
+                swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
             }
             else {
 
@@ -112,8 +112,8 @@
     function globalnextyear(yearcount) {
         var currentYear = new Date().getFullYear() + 1;
         var yearSelect = document.getElementById(yearcount);
-        for (var i = 0; i < 1; i++) {
-            var isSelected = currentYear === currentYear - i
+        for (var i = 0; i < 2; i++) {
+            var isSelected = currentYear === currentYear
             yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
         }
     }

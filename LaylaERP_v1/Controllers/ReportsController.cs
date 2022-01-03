@@ -133,6 +133,12 @@ namespace LaylaERP.Controllers
         }
         public ActionResult PeriodCalculateChart()
         {
+           
+            return View();
+        }
+        public ActionResult Orderforecast()
+        {
+ 
             return View();
         }
         [HttpPost]
@@ -671,6 +677,14 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public ActionResult Getorderforecast(string Month, string Year, string Type)
+        {
+            ReportsRepository.Getorderforecast(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
         }
     }
          

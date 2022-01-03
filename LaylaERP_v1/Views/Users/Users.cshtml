@@ -266,8 +266,8 @@
         var status = $("#ddlStatus").val();
         $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
 
-        if (id == "") { swal('alert', 'Please select user from list', 'error'); }
-        else if (status == "1") { swal('alert', 'Please select bulk action', 'error'); }
+        if (id == "") { swal('Alert', 'Please select user from list', 'error'); }
+        else if (status == "1") { swal('Alert', 'Please select bulk action', 'error'); }
         else {
 
             if (status == "1") { UpdateCustomerStatus(); }
@@ -308,8 +308,8 @@
         var new_role = $("#new_role").val();
         $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
         ID = ID.replace(/,(?=\s*$)/, '');
-        if (ID == "") { swal('alert', 'Please select user from list', 'error'); }
-        else if (new_role == "") { swal('alert', 'Please select change role', 'error'); }
+        if (ID == "") { swal('Alert', 'Please select user from list', 'error'); }
+        else if (new_role == "") { swal('Alert', 'Please select change role', 'error'); }
         else {
 
 
@@ -337,8 +337,8 @@
         });
         ID = ID.replace(/,(?=\s*$)/, '');
  
-        if (ID == "") { swal('alert', 'Please select user from list', 'error'); }
-        else if (new_role == "") { swal('alert', 'Please select grant role', 'error'); }
+        if (ID == "") { swal('Alert', 'Please select user from list', 'error'); }
+        else if (new_role == "") { swal('Alert', 'Please select grant role', 'error'); }
         else {
 
             if (new_role != "") {
@@ -364,8 +364,8 @@
 
         });
         ID = ID.replace(/,(?=\s*$)/, '');
-        if (ID == "") { swal('alert', 'Please select user from list', 'error'); }
-        else if (new_role == "") { swal('alert', 'Please select revoke role', 'error'); }
+        if (ID == "") { swal('Alert', 'Please select user from list', 'error'); }
+        else if (new_role == "") { swal('Alert', 'Please select revoke role', 'error'); }
         else {
             if (new_role != "") {
                 swal({

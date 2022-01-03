@@ -14,8 +14,8 @@
         $("input:checkbox[name=CheckSingle]:checked").each(function () {
             id += $(this).val() + ",";
         });
-        if (id == "") { swal('alert', 'Please select customers from list', 'error'); }
-        else if (status == "1") { swal('alert', 'Please select bulk action', 'error'); }
+        if (id == "") { swal('Alert', 'Please select customers from list', 'error'); }
+        else if (status == "1") { swal('Alert', 'Please select bulk action', 'error'); }
         else {
             swal({ title: '', text: "Do you want to do bulk action ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes' }).
                 then((result) => {
@@ -34,7 +34,7 @@
             id += $(this).val() + ",";
         });
         id = id.replace(/,(?=\s*$)/, '');
-        if (id == "") { swal('alert', 'Please select customers from list', 'error'); }
+        if (id == "") { swal('Alert', 'Please select customers from list', 'error'); }
         else {
             swal({
                 title: '', text: "Do you want to change the status ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes',
@@ -87,38 +87,38 @@ function AddCustomer() {
     BillingCity = $("#txtBillingCity").val();
     BillingPhone = $("#txtBillingPhone").val();
     //if (NickName == "") {
-    //    swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
+    //    swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     //}
     if (Email == "") {
-        swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+        swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
     }
 
     else if (FirstName == "") {
-        swal('alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
+        swal('Alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
     }
 
     else if (LastName == "") {
-        swal('alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
+        swal('Alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
     }
     else if (BillingPhone == "") {
-        swal('alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+        swal('Alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
     }
     else if (BillingAddress1 == "") {
-        swal('alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
+        swal('Alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
     }
-    /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
+    /* else if (BillingAddress2 == "") { swal('Alert', 'Please Enter Address 2', 'error') }*/
     else if (BillingCity == "") {
-        swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
     }
     else if (BillingState == null) {
-        swal('alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
     }
     else if (BillingPostcode == "") {
-        swal('alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+        swal('Alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
     }
 
     else if (BillingCountry == "") {
-        swal('alert', 'Please enter country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+        swal('Alert', 'Please enter country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
     }
 
     else {

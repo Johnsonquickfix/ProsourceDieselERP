@@ -1508,6 +1508,146 @@ namespace LaylaERP.BAL
         }
 
 
+        public static void Getorderforecast(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                         new SqlParameter("@id", Empid),
+                     new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_Getorderforecast_List", parameters);
+                    if (ds1.Tables[0].Rows.Count > 0)
+                    {
+                        ds1.Tables[0].DefaultView.RowFilter = "sr = '10'";
+                        decimal oct = (decimal)ds1.Tables[0].DefaultView[0]["Total"];
+
+                        ds1.Tables[0].DefaultView.RowFilter = "sr = '11'";
+                        decimal nov = (decimal)ds1.Tables[0].DefaultView[0]["Total"];
+
+                        ds1.Tables[0].DefaultView.RowFilter = "sr = '12'";
+                        decimal dec = (decimal)ds1.Tables[0].DefaultView[0]["Total"];
+
+                        string r1 = "0.5", r2 = "0.33333333333", r3 = "0.16666666666";
+                        // string r1 = "0.5", r2 = "1/3", r3 = "1/6";
+
+                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                        {
+                            Export_Details uobj = new Export_Details();
+                            if (i == 0)
+                                uobj.fee = (oct * Convert.ToDecimal(r1) + nov * Convert.ToDecimal(r2) + dec * Convert.ToDecimal(r3)).ToString();
+                            if (i == 1)
+                            {
+                                var lastItem = exportorderlist.Last();
+                                // var firstItem = exportorderlist.ElementAt(0);
+                                uobj.fee = (Convert.ToDecimal(lastItem.fee) * Convert.ToDecimal(r1) + nov * Convert.ToDecimal(r2) + dec * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 2)
+                            {
+                                var lastItem = exportorderlist.Last();
+                                var firstItem = exportorderlist.ElementAt(0);
+                                uobj.fee = (Convert.ToDecimal(lastItem.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + dec * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 3)
+                            {
+                                var start = exportorderlist.ElementAt(0);
+                                var firstItem = exportorderlist.ElementAt(1);
+                                var second = exportorderlist.ElementAt(2);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 4)
+                            {
+                                var start = exportorderlist.ElementAt(1);
+                                var firstItem = exportorderlist.ElementAt(2);
+                                var second = exportorderlist.ElementAt(3);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 5)
+                            {
+                                var start = exportorderlist.ElementAt(2);
+                                var firstItem = exportorderlist.ElementAt(3);
+                                var second = exportorderlist.ElementAt(4);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 6)
+                            {
+                                var start = exportorderlist.ElementAt(3);
+                                var firstItem = exportorderlist.ElementAt(4);
+                                var second = exportorderlist.ElementAt(5);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 7)
+                            {
+                                var start = exportorderlist.ElementAt(4);
+                                var firstItem = exportorderlist.ElementAt(5);
+                                var second = exportorderlist.ElementAt(6);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 8)
+                            {
+                                var start = exportorderlist.ElementAt(5);
+                                var firstItem = exportorderlist.ElementAt(6);
+                                var second = exportorderlist.ElementAt(7);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 9)
+                            {
+                                var start = exportorderlist.ElementAt(6);
+                                var firstItem = exportorderlist.ElementAt(7);
+                                var second = exportorderlist.ElementAt(8);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 10)
+                            {
+                                var start = exportorderlist.ElementAt(7);
+                                var firstItem = exportorderlist.ElementAt(8);
+                                var second = exportorderlist.ElementAt(9);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            if (i == 11)
+                            {
+                                var start = exportorderlist.ElementAt(8);
+                                var firstItem = exportorderlist.ElementAt(9);
+                                var second = exportorderlist.ElementAt(10);
+                                uobj.fee = (Convert.ToDecimal(second.fee) * Convert.ToDecimal(r1) + Convert.ToDecimal(firstItem.fee) * Convert.ToDecimal(r2) + Convert.ToDecimal(start.fee) * Convert.ToDecimal(r3)).ToString();
+
+                            }
+                            //else
+                            //{                          
+                            //    uobj.fee = "0.0";
+                            //}
+                            //  exportorderlist.Last<>   .OrderBy(x => x.Key).Last();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["sr"].ToString()))
+                                uobj.tax = ds1.Tables[0].Rows[i]["sr"].ToString();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                                uobj.Discount = ds1.Tables[0].Rows[i]["Total"].ToString();
+                            exportorderlist.Add(uobj);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public static void GetMonthlyYear(string from_date, string to_date, string Empid)
         {
             try
@@ -2099,5 +2239,32 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void GetForecastSalesHistoricalChart(string year)
+        {
+            try
+            {
+                exportorderlistchart.Clear();
+                DataSet ds1 = new DataSet();
+                if (year != "")
+                {
+                    SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "FCM"),
+                    new SqlParameter("@year", year),
+                };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_forcastsalemonthly", parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.tax = ds1.Tables[0].Rows[i]["month"].ToString();
+                        uobj.shipping_amount = ds1.Tables[0].Rows[i]["month_name"].ToString();
+                        uobj.handling_amount = ds1.Tables[0].Rows[i]["sales"].ToString();
+                        exportorderlistchart.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

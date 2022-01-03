@@ -418,8 +418,8 @@ function Status() {
     var status = $('#ddlbulkaction').val();
     var statusval = $("#ddlbulkaction :selected").text();  
     console.log(statusval);
-    if (id == "") { swal('alert', 'Please select product from list', 'error'); }
-    else if (status == "0") { swal('alert', 'Please select bulk action', 'error'); }
+    if (id == "") { swal('Alert', 'Please select product from list', 'error'); }
+    else if (status == "0") { swal('Alert', 'Please select bulk action', 'error'); }
     else {
 
         var obj = { strVal: id, status: status }
@@ -437,10 +437,10 @@ function Status() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('alert', data.message, 'success').then((result) => { GetDetails(); var order_type = $('#hfType').val(); dataGridLoad(order_type); });
+                    swal('Alert', data.message, 'success').then((result) => { GetDetails(); var order_type = $('#hfType').val(); dataGridLoad(order_type); });
                 }
                 else {
-                    swal('alert', 'something went wrong!', 'success');
+                    swal('Alert', 'something went wrong!', 'success');
                 }
             },
             complete: function () { $("#loader").hide(); },

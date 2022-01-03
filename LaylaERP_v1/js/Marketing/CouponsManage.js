@@ -174,8 +174,8 @@ function Status() {
 $('#btnmontholyautoGenerate').click(function () {
     var month = $('#month').val();
     var year = $('#ddlyear').val();
-    if (month == "") { swal('alert', 'Please select month', 'error'); }
-    else if (year == "") { swal('alert', 'Please select year', 'error'); }
+    if (month == "") { swal('Alert', 'Please select month', 'error'); }
+    else if (year == "") { swal('Alert', 'Please select year', 'error'); }
     else {
         var obj = { strVal: month, status: year }
         swal({ title: "Are you sure?", text: 'Would you like to process auto generate monthly coupon?', type: "question", showCancelButton: true })

@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label>Next year</label>
+                <label>Forecast year</label>
                 <select class="form-control" id="nextyear">
                 </select>
             </div>
@@ -42,7 +42,7 @@
         <div class="col-md-3">
             <div class="form-group">
                 <br /><br />
-                <button id="filtersrchexp" class="button">Filter</button>
+                <button id="filtersrchexp" class="button"><span title="Click here for forecast sales monthly report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
             </div>
         </div>
     </div>
@@ -88,7 +88,7 @@
 
         $("#filtersrchexp").click(function () {
             if ($("#year").val() == "") {
-                swal('Alert', 'Please select current year', 'error').then(function () { swal.close(); $('#year').focus(); });
+                swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
             }
             else {
 
@@ -112,8 +112,8 @@
     function globalnextyear(yearcount) {
         var currentYear = new Date().getFullYear() + 1;
         var yearSelect = document.getElementById(yearcount);
-        for (var i = 0; i < 1; i++) {
-            var isSelected = currentYear === currentYear - i
+        for (var i = 0; i < 2; i++) {
+            var isSelected = currentYear === currentYear
             yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
         }
     }
@@ -292,8 +292,6 @@
             },
             colors: ['#F74D17', '#3498DB', '#FFBF00', '#1E8449', '#464E4E', '#BABB98', '#33FFEC', '#079AFA', '#0EA9F6'],
             series: _list
-
-
         });
         $('.highcharts-credits').remove();
     }

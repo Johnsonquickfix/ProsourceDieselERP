@@ -2,6 +2,7 @@
 {
     using DAL;
     using Models;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -82,9 +83,9 @@
             return obj;
         }
 
-        public static DataTable CreateUser(LoginModel model)
+        public static ResultModel CreateUser(LoginModel model)
         {
-            DataTable dt = new DataTable();
+            ResultModel obj = new ResultModel();
             try
             {
                 string user_pass = EncryptedPwd(model.user_pass);
@@ -93,18 +94,71 @@
                     new SqlParameter("@flag", "URADD"),
                     new SqlParameter("@user_login", model.user_login),
                     new SqlParameter("@user_pass", user_pass),
+                    new SqlParameter("@user_email", model.user_login),
                     new SqlParameter("@user_nicename", model.user_nicename),
                     new SqlParameter("@display_name", model.display_name),
                     new SqlParameter("@first_name", model.first_name),
                     new SqlParameter("@last_name", model.last_name),
                 };
-                dt = SQLHelper.ExecuteDataTable("api_user_auth", parameters);
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                while (sdr.Read())
+                {
+                    obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
+                    obj.error_msg = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
+                    if (sdr["user_id"] != DBNull.Value)
+                    {
+                        dynamic json_obj = JsonConvert.DeserializeObject<dynamic>(sdr["user_id"].ToString());
+                        obj.user_data = json_obj;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                obj.success = false;
+                obj.error_msg = ex.Message;
+                obj.user_data = 0;
             }
-            return dt;
+            return obj;
+        }
+
+        public static ResultModel UserUpdate(LoginModel model)
+        {
+            ResultModel obj = new ResultModel();
+            try
+            {
+                string user_pass = string.Empty, user_new_pass = string.Empty;
+                if (!string.IsNullOrEmpty(model.user_pass) && !string.IsNullOrEmpty(model.user_new_pass))
+                { user_pass = EncryptedPwd(model.user_pass); user_new_pass = EncryptedPwd(model.user_pass); }
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "URUPD"),
+                    new SqlParameter("@id", model.id),
+                    new SqlParameter("@user_pass", user_pass),
+                    new SqlParameter("@user_new_pass", user_new_pass),
+                    new SqlParameter("@user_email", model.user_email),
+                    new SqlParameter("@display_name", model.display_name),
+                    new SqlParameter("@first_name", model.first_name),
+                    new SqlParameter("@last_name", model.last_name),
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                while (sdr.Read())
+                {
+                    obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
+                    obj.error_msg = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
+                    if (sdr["user_data"] != DBNull.Value)
+                    {
+                        dynamic json_obj = JsonConvert.DeserializeObject<dynamic>(sdr["user_data"].ToString());
+                        obj.user_data = json_obj;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.success = false;
+                obj.error_msg = ex.Message;
+                obj.user_data = "{}";
+            }
+            return obj;
         }
 
         public static string EncryptedPwd(string varPassword)

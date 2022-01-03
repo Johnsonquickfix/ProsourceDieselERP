@@ -10,7 +10,7 @@ namespace LaylaERP_API.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Layla ERP";
+            ViewBag.Title = "Layla ERP - API";
 
             return View();
         }

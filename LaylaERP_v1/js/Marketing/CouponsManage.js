@@ -110,7 +110,7 @@ function dataGridLoad(order_type) {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="Index/' + id + '" data-toggle="tooltip" title="View/Edit Coupon" onclick="ActivityLog(\'View/Edit Coupon\',\'/Coupons/ManageCoupons/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                        return '<a href="Index/' + id + '" data-toggle="tooltip" title="View/Edit coupon" onclick="ActivityLog(\'View/Edit Coupon\',\'/Coupons/ManageCoupons/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a>';
                     }
                     else { return "No Permission"; }
                 }
@@ -145,8 +145,8 @@ function Status() {
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
     var status = $('#ddlbulkaction').val();
-    if (id == "") { swal('alert', 'Please select a Coupon', 'error'); }
-    else if (status == "0") { swal('alert', 'Please select Action', 'error'); }
+    if (id == "") { swal('Alert', 'Please select a Coupon', 'error'); }
+    else if (status == "0") { swal('Alert', 'Please select Action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
         $.ajax({
@@ -159,7 +159,7 @@ function Status() {
                     swal('Success', data.message, 'success').then((result) => { GetDetails(); var order_type = $('#hfType').val(); dataGridLoad(order_type); });
                 }
                 else {
-                    swal('alert', 'something went wrong!', 'success');
+                    swal('Alert', 'something went wrong!', 'success');
                 }
             },
             complete: function () { $("#loader").hide(); },
@@ -174,8 +174,8 @@ function Status() {
 $('#btnmontholyautoGenerate').click(function () {
     var month = $('#month').val();
     var year = $('#ddlyear').val();
-    if (month == "") { swal('alert', 'Please select month', 'error'); }
-    else if (year == "") { swal('alert', 'Please select year', 'error'); }
+    if (month == "") { swal('Alert', 'Please select month', 'error'); }
+    else if (year == "") { swal('Alert', 'Please select year', 'error'); }
     else {
         var obj = { strVal: month, status: year }
         swal({ title: "Are you sure?", text: 'Would you like to process auto generate monthly coupon?', type: "question", showCancelButton: true })

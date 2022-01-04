@@ -1100,7 +1100,7 @@ button#btnGeneratePassword {
 }
 
 .swal2-container {
-    z-index: 99999;
+    z-index: 99999 !important;
 }
 
 .table-row div {
@@ -3039,3 +3039,11 @@ i.fa.fa-calendar {
 }
     .group_inpt .control-label {white-space:nowrap;
     display:flex; align-items:center;margin-right:10px;}
+.gift.card.list .table-blue.table th:first-child:before,
+.gift.card.list .table-blue.table th:first-child:after {content:none !important;}
+.gift.card.list .dataTables_scrollBody .table-blue.table th:first-child label {display: none !important;}
+#deletepriceModal .modal-footer {background:#fff;}
+body.createnew #parent .col-md-6 .col-md-2 {width:auto; padding-left:0px;} 
+body.createnew #parent .col-md-6 .col-md-2 [type="checkbox"]{margin-top:0px; margin-right:5px;position:relative; top:2px;}
+body.order .email_settings_in h3 {padding-left:15px;}
+.accountledgerlist .inventory-table th {padding-right:20px !important;}

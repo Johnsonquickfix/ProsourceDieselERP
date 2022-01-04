@@ -117,8 +117,8 @@ function AddEmail() {
             success: function (data) {
                 if (data.status == true) {
                     swal('Success', data.message, 'success');
-                    EmailList();
-                    reset();
+                    EmailList(); reset();
+                    ActivityLog('Save email (' + useremail+') in PO Admin Email', '/Poemail/AddEmail/');
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -187,6 +187,7 @@ function UpdateEmail() {
                     EmailList();
                     reset();
                     isEdit(false);
+                    ActivityLog('Update (' + userid + ') email in PO Admin Email', '/Poemail/AddEmail/');
                 }
                 else {
                     swal('Alert!', data.message, 'error');

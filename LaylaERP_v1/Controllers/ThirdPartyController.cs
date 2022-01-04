@@ -42,7 +42,7 @@ namespace LaylaERP.Controllers
                     UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") updated in vendors basic info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                     new ThirdPartyRepository().EditVendorBasicInfo(model);
                     //new ThirdPartyRepository().EditJournal(model);
-                    return Json(new { status = true, message = "Vendor basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    return Json(new { status = true, message = "Vendor basic info updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace LaylaERP.Controllers
                     {
                         UserActivityLog.WriteDbLog(LogType.Submit, "New vendor " + model.vendor_type + ", " + model.Name + " created in manage vendors.", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                         //new ThirdPartyRepository().AddJournal(model,ID);
-                        return Json(new { status = true, message = "Vendor basic info has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor basic info saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -73,7 +73,7 @@ namespace LaylaERP.Controllers
                     {
                         UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") updated in vendors Additional info", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
 
-                        return Json(new { status = true, message = "Vendor Additional info has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor Additional info saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -106,7 +106,7 @@ namespace LaylaERP.Controllers
                         {
                             new ThirdPartyRepository().EditPaymentMethods(model);
                         }
-                        return Json(new { status = true, message = "Vendor payment terms has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor payment terms saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -133,7 +133,7 @@ namespace LaylaERP.Controllers
                     int ID = new ThirdPartyRepository().AddVendorShipping(model);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Vendor shipping has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor shipping saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -144,7 +144,7 @@ namespace LaylaERP.Controllers
                 {
                     new ThirdPartyRepository().UpdateVendorShipping(model);
                     int ID = new ThirdPartyRepository().EditVendorShipping(model);
-                    return Json(new { status = true, message = "Vendor shipping has been updated successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Vendor shipping updated successfully!!", url = "", id = ID }, 0);
                 }
             }
             else
@@ -160,7 +160,7 @@ namespace LaylaERP.Controllers
                 int ID = new ThirdPartyRepository().AddVendorTaxes(model);
                 if (ID > 0)
                 {
-                    return Json(new { status = true, message = "Vendor Taxes has been saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Vendor Taxes saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -181,7 +181,7 @@ namespace LaylaERP.Controllers
                 int ID = new ThirdPartyRepository().AddVendorDiscount(model);
                 if (ID > 0)
                 {
-                    return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Vendor Discount saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -232,14 +232,14 @@ namespace LaylaERP.Controllers
                 if (model.ContactID > 0)
                 {
                     new ThirdPartyRepository().EditVendorContacts(model);
-                    return Json(new { status = true, message = "Contact has been updated successfully!!", url = "", id = model.ContactID }, 0);
+                    return Json(new { status = true, message = "Contact updated successfully!!", url = "", id = model.ContactID }, 0);
 
                 }
                 else
                 {
                     int ID = new ThirdPartyRepository().AddContacts(model);
                     if (ID > 0)
-                        return Json(new { status = true, message = "Contacts has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Contacts saved successfully!!", url = "", id = ID }, 0);
                     else
                         return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 }
@@ -266,7 +266,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
                     UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") Link warehouse id("+model.WarehouseID+") in vendor", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
-                    return Json(new { status = true, message = "Warehouse has been Linked successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Warehouse Linked successfully!!", url = "", id = ID }, 0);
                 }
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -284,7 +284,7 @@ namespace LaylaERP.Controllers
                 UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") delete vendor warehouse", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 int ID = new ThirdPartyRepository().DeleteWarehouse(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Warehouse has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Warehouse deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }
@@ -300,7 +300,7 @@ namespace LaylaERP.Controllers
                 UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") delete vendor linked files", "/ThirdParty/NewVendor/" + model.rowid + "" + ", " + Net.BrowserInfo);
                 int ID = new ThirdPartyRepository().DeleteVendorLinkedFiles(model);
                 if (ID > 0)
-                    return Json(new { status = true, message = "Vendor Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Vendor linked files deleted successfully!!", url = "", id = ID }, 0);
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }
@@ -545,7 +545,7 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     string size = (ImageFile.ContentLength / 1024).ToString();
                     string FileExtension = Path.GetExtension(ImageFile.FileName);
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    if (FileExtension.ToLower() == ".xlsx" || FileExtension.ToLower() == ".xls" || FileExtension.ToLower() == ".pdf" || FileExtension.ToLower() == ".doc" || FileExtension.ToLower() == ".docx" || FileExtension.ToLower() == ".png" || FileExtension.ToLower() == ".jpg" || FileExtension.ToLower() == ".jpeg")
                     {
                         FileName = FileName.Trim() + FileExtension;
                         string FileNameForsave = FileName;

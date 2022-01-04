@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "AddNewEvents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+<div class="page-title">
+    <h2>Events</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
+    <div class="col-md-12">
+        <div class="box box-primary create-user-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="label">Label</label><span style="color:red"></span> 
+                            <input type="text" class="form-control" id="txtlabel" />
+                        </div>
+                        <div class="form-group">
+                            <label for="eventalldays">Event On All Day(s)</label><span style="color:red"></span>
+                            <input type="checkbox" />
+                        </div>
+                        <div class="form-group">
+                            <label for="startdate">Start Date</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txtstartdate" /><span class="even-space"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="enddate">End Date</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txtenddate" /><span class="even-space"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status / Percentage</label><span style="color:red"></span>
+                            <select class="form-control" id="ddlstatus">
+                                <option value="">Please select status</option>
+                            </select><br />
+                            <input type="text" class="form-control" id="txtpercentage" placeholder="%" />
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label><span style="color:red"></span>
+                            <input class="form-control" type="text" id="txtlocation" />
+                        </div>
+                        <div class="form-group">
+                            <label for="eventassign">Event Assigned To </label><span style="color:red"></span>
+                            <input class="form-control" type="text" id="txteventassign" /><br />
+                            <input type="checkbox"/> <span>Busy</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="tag">Tag / Categories</label><span style="color:red"></span>
+                            <input class="form-control" type="text" id="txttag" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Related Vendor</label><span style="color:red"></span>
+                            <select class="form-control" id="ddlcompany">
+                                <option value=""> Please select vendor</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact">Related Contact</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txtcontact" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="project">Project</label><span style="color:red"></span>
+                            <select class="form-control" id="ddlproject">
+                                <option value="">Please select project</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task">Task</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txttask" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txtdescription" />
+                        </div>
+                        <button class="btn btn-danger" id="btnSave">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $("#txtstartdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+        $("#txtenddate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+    });
+</script>

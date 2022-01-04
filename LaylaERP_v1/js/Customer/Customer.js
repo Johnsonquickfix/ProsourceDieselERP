@@ -1,15 +1,79 @@
-﻿var searchText = getUrlVars();
+﻿$(document).ready(function () {
+    var loc = window.location.pathname;
+    
+    CheckPermissions("#btnAddUser", "#hfEdit", "", loc);
+    //CheckPermissions("#customer-section-top", "#hfEdit", "", loc);
+    CheckPermissions("#role-ul", "#hfEdit", "", loc);
+    $("#btnSearch").click(function () { dataGridLoad(); return false; });
+    $('#checkAll').click(function () {
+        var isChecked = $(this).prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    });
+    $('#btnApply').click(function () {
+        var id = "", status = $("#ddlStatus").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            id += $(this).val() + ",";
+        });
+        if (id == "") { swal('Alert', 'Please select customers from list', 'error'); }
+        else if (status == "1") { swal('Alert', 'Please select bulk action', 'error'); }
+        else {
+            swal({ title: '', text: "Do you want to do bulk action ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes' }).
+                then((result) => {
+                    if (result.value) {
+                        id = id.replace(/,(?=\s*$)/, '');
+                        DeleteCustomer(id);
+                        dataGridLoad();
+                    }
+                })
+        }
+    })
+
+    $('#btnChange').click(function () {
+        var id = "";
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            id += $(this).val() + ",";
+        });
+        id = id.replace(/,(?=\s*$)/, '');
+        if (id == "") { swal('Alert', 'Please select customers from list', 'error'); }
+        else {
+            swal({
+                title: '', text: "Do you want to change the status ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes',
+            }).then((result) => {
+                if (result.value) {
+                    ChangeStatus(id);
+                    dataGridLoad();
+                }
+            })
+        }
+        $("#checkAll").prop('checked', false);
+    })
+    dataGridLoad();
+});
+
+function Singlecheck() {
+    var isChecked = $('#CheckSingle').prop("checked");
+    var isHeaderChecked = $("#checkAll").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkAll").prop('checked', isChecked);
+    else {
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkAll").prop('checked', isChecked);
+    }
+}
 
 function getUrlVars() {
-   // debugger
-    var sPageURL = decodeURIComponent(window.location.search.substring(1));
-    sPageURL = sPageURL.split('name=');
-    var sURLVariables = sPageURL.toString().replace(',', '');
+    // debugger
+    //var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    //sPageURL = sPageURL.split('name=');
+    //var sURLVariables = sPageURL.toString().replace(',', '');
+    let sURLVariables = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     return sURLVariables
 }
 function AddCustomer() {
-    debugger
-
     ID = $("#hfid").val();
     Email = $("#txtUserEmail").val();
     NickName = $("#txtUserEmail").val();
@@ -23,38 +87,38 @@ function AddCustomer() {
     BillingCity = $("#txtBillingCity").val();
     BillingPhone = $("#txtBillingPhone").val();
     //if (NickName == "") {
-    //    swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
+    //    swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     //}
     if (Email == "") {
-       swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+        swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
     }
 
     else if (FirstName == "") {
-        swal('alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
+        swal('Alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
     }
 
     else if (LastName == "") {
-        swal('alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
+        swal('Alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
     }
     else if (BillingPhone == "") {
-        swal('alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+        swal('Alert', 'Please enter contact number', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
     }
     else if (BillingAddress1 == "") {
-        swal('alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
+        swal('Alert', 'Please enter address', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
     }
-    /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
+    /* else if (BillingAddress2 == "") { swal('Alert', 'Please Enter Address 2', 'error') }*/
     else if (BillingCity == "") {
-        swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+        swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
     }
     else if (BillingState == null) {
-        swal('alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+        swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
     }
     else if (BillingPostcode == "") {
-        swal('alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+        swal('Alert', 'Please enter zip code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
     }
 
     else if (BillingCountry == "") {
-        swal('alert', 'Please enter country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+        swal('Alert', 'Please enter country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
     }
 
     else {
@@ -174,11 +238,11 @@ function DeleteCustomer(id) {
 }
 
 function ChangeStatus(id) {
-   // debugger
+    // debugger
     var status = $("#ddlUserStatus").val();
     let custStatus = status == "0" ? "active" : "inactive"
     var obj = { strVal: id, user_status: status }
-    
+
     $.ajax({
         url: '/Customer/ChangeCustomerStatus/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -204,16 +268,20 @@ function ChangeStatus(id) {
 //-------------------------------------------------------------------
 
 function dataGridLoad() {
+    let _searchText = localStorage.getItem('_search');
+    localStorage.setItem('_search', '')
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = ""//$('#txtSearch').val() ;
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": searchText },
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+        oSearch: { "sSearch": _searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
         sAjaxSource: "/Customer/GetCustomerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             obj.Search = aoData[45].value;
@@ -249,9 +317,8 @@ function dataGridLoad() {
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
-                   // debugger
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="bottom" title="View/Edit Customer" onclick="ActivityLog(\' edit customer id '+ id +' in manage customer\',\'/Customer/NewUser/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit customer" onclick="ActivityLog(\' edit customer id ' + id + ' in manage customer\',\'/Customer/NewUser/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }
@@ -261,48 +328,48 @@ function dataGridLoad() {
 }
 
 function GetCustomerByID(id) {
-    
+
     var ID = id;
     if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer"); }
-    var obj =  
-    $.ajax({
-        url: "/Customer/GetCustomerByID/" + ID,
-        type: "GET",
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            
-            var d = JSON.parse(data);
-            console.log(d);
-            //debugger
-            if (d.length > 0) {
-                $("#txtUserEmail").val(d[0].user_email);
-                $("#txtUserNickName").val(d[0].user_nicename);
-                $("#txtFirstName").val(d[0].first_name);
-                $("#txtLastName").val(d[0].last_name);
-                $("#txtBillingAddress1").val(d[0].billing_address_1);
-                $("#txtBillingAddress2").val(d[0].billing_address_2);
-                $("#txtBillingPostCode").val(d[0].billing_postcode);
-                $("#txtBillingCountry").val(d[0].billing_country);
-                $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].StateFullName, id: d[0].billing_state, text: d[0].StateFullName }] })
-                //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
-                $("#txtBillingCity").val(d[0].billing_city);
-                $("#txtBillingPhone").val(d[0].billing_phone);
-                $("#txtBillingState").select2({
-                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                    ajax: {
-                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });
+    var obj =
+        $.ajax({
+            url: "/Customer/GetCustomerByID/" + ID,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
 
-            }
-        },
-        error: function (msg) { alert(msg); },
-        async: false
-    });
+                var d = JSON.parse(data);
+                console.log(d);
+                //debugger
+                if (d.length > 0) {
+                    $("#txtUserEmail").val(d[0].user_email);
+                    $("#txtUserNickName").val(d[0].user_nicename);
+                    $("#txtFirstName").val(d[0].first_name);
+                    $("#txtLastName").val(d[0].last_name);
+                    $("#txtBillingAddress1").val(d[0].billing_address_1);
+                    $("#txtBillingAddress2").val(d[0].billing_address_2);
+                    $("#txtBillingPostCode").val(d[0].billing_postcode);
+                    $("#txtBillingCountry").val(d[0].billing_country);
+                    $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].StateFullName, id: d[0].billing_state, text: d[0].StateFullName }] })
+                    //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
+                    $("#txtBillingCity").val(d[0].billing_city);
+                    $("#txtBillingPhone").val(d[0].billing_phone);
+                    $("#txtBillingState").select2({
+                        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                        ajax: {
+                            url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                            error: function (xhr, status, err) { }, cache: true
+                        }
+                    });
+
+                }
+            },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
     $("#txtBillingPostCode").change();
 }

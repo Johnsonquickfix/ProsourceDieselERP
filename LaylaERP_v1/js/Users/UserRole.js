@@ -47,7 +47,7 @@ function isEdit(val) {
 $('#btnApprove').click(function () {
     var status = $("#userrole").val();
     var copystatus = $("#ddlCopyRole").val();
-    if (status == "") { swal('alert', 'Please select user role', 'error'); }
+    if (status == "") { swal('Alert', 'Please select user role', 'error'); }
     //else if (copystatus == "") { swal('alert', 'Please select copyroles', 'error'); }
     else {
 
@@ -157,8 +157,8 @@ $('#btnCopyRole').click(function () {
     let rolefromname = $("#userrole :selected").text();
     var roleto = $('#ddlCopyRole').val();
     let roletoname = $("#ddlCopyRole :selected").text();
-    if (rolefrom == "") { swal("alert", "Please select user role first.", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
-    else if (roleto == "") { swal("alert", "Please select copy to user role.", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
+    if (rolefrom == "") { swal("Alert", "Please select user role first.", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
+    else if (roleto == "") { swal("Alert", "Please select copy to user role.", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
     else {
         var obj = { role_id: rolefrom, roleto: roleto }
         $.ajax({
@@ -178,7 +178,7 @@ $('#btnCopyRole').click(function () {
                 $("#loader").hide();
             },
             error: function () {
-                swal("alert", "something went wrong", "error");
+                swal("Alert", "something went wrong", "error");
             }
         })
     }
@@ -282,7 +282,7 @@ function collapseAll() {
 }
 
 $('#checkAdd').click(function () {
-    alert('hhh');
+    //alert('hhh');
     //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkAdd').prop("checked");

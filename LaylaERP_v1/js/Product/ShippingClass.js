@@ -427,7 +427,7 @@ function dataGridLoad(order_type) {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + '); ActivityLog(\'Edit shipping class\',\'/Product/ShippingClass/' + id +'\');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                        return '<a href="#" title="Click here to edit" onClick="EditData(' + id + '); ActivityLog(\'Edit shipping class\',\'/Product/ShippingClass/' + id +'\');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     }
                     else { return "No Permission"; }
                     

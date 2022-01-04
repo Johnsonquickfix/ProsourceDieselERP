@@ -64,7 +64,7 @@ function dataGridLoad(order_type) {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="NewAutoGenerate/' + id + '" data-toggle="tooltip" title="View/Edit Coupon" onclick="ActivityLog(\'View/Edit Coupon\',\'/Coupons/AutoGenerate/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                        return '<a href="NewAutoGenerate/' + id + '" data-toggle="tooltip" title="View/Edit coupon" onclick="ActivityLog(\'View/Edit Coupon\',\'/Coupons/AutoGenerate/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     }
                     else { return "No Permission"; }
                 }

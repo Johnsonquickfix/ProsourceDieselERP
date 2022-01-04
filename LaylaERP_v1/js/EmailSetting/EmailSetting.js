@@ -118,7 +118,7 @@ function dataGridLoad() {
                 'data': 'email_text', sWidth: "10%", title: 'Email',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="ManageEmailNotifications/' + full.email_notify_key + '">' + id + '</a>';
+                        return '<a title="Click here to view details" data-toggle="tooltip" href="ManageEmailNotifications/' + full.email_notify_key + '">' + id + '</a>';
                     }
                     else {
                         return "No permission";

@@ -24,7 +24,7 @@
                     <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
                     <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>
                     <li class="draft"><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
-                    <li class="pending"><a href="javascript:void(0);" id="pending">Pending(<span class="count">0</span>)</a> |</li>
+                    <li class="pending"><a href="javascript:void(0);" id="pending">Pending (<span class="count">0</span>)</a> |</li>
                     <li class="private"><a href="javascript:void(0);" id="private">Private (<span class="count">0</span>)</a> </li>
                     @*<li class="trash"><a href="javascript:void(0);" id="trash">Trash (<span class="count">0</span>)</a> </li>*@
                 </ul>
@@ -44,7 +44,7 @@
                             <option value="private">Private</option>
                             <option value="trash">Move to Trash</option>
                         </select>
-                        <button type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
+                        <button title="Click here for bulk action" data-placement="bottom" data-toggle="tooltip" type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
                     </div>
 
                     <div class="alignleft actions">
@@ -54,7 +54,7 @@
                             <option value="fixed_cart">Fixed cart discount</option>
                             <option value="fixed_product">Fixed product discount</option>
                         </select>
-                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
+                        <input type="submit" title="Click here for filter" data-placement="bottom" data-toggle="tooltip" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
                     </div>
 
                     <div>

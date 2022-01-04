@@ -86,7 +86,7 @@ function EmployeeList() {
                 'data': 'ID', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../../Hrms/Employee/' + id + '" data-toggle="tooltip" title="View/Edit Employee" onclick="ActivityLog(\' Edit employee id ' + id +' in Employee.\',\'Hrms/Employee/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../../Hrms/Employee/' + id + '" data-toggle="tooltip" title="View/Edit employee" onclick="ActivityLog(\' Edit employee id ' + id +' in Employee.\',\'Hrms/Employee/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

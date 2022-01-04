@@ -127,6 +127,24 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastSalesLSR()
+        {
+            return View();
+        }
+        public ActionResult PeriodCalculateChart()
+        {
+           
+            return View();
+        }
+        public ActionResult Orderforecast()
+        {
+ 
+            return View();
+        }
+        public ActionResult ForecastHistoricalData()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -481,7 +499,12 @@ namespace LaylaERP.Controllers
             k.MaxJsonLength = int.MaxValue;
             return k;
         }
-
+        public JsonResult GetPeriodChart(string Month, string Year, string Type)
+        {
+            ReportsRepository.GetPeriodChart(Month, Year, Type);
+            var list = ReportsRepository.exportorderlist;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetText(string Month, string Year, string Type)
         {
             ReportsRepository.GetGrafixDetails(Month, Year, Type);
@@ -647,7 +670,33 @@ namespace LaylaERP.Controllers
             var list = ReportsRepository.exportorderlistchart;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
-    }
 
+        public JsonResult GetForecastSalesLSR(string year)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetForecastSalesLSR(year);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        public ActionResult Getorderforecast(string Month, string Year, string Type)
+        {
+            ReportsRepository.Getorderforecast(Month, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        public JsonResult GetForecastSalesHistoricalChart(string Year)
+        {
+            ReportsRepository.GetForecastSalesHistoricalChart(Year);
+            var list = ReportsRepository.exportorderlistchart;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+    }
          
 }

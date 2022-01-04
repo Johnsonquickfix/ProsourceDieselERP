@@ -32,7 +32,7 @@
  
 <div class="page-title">
     <h2>List Products</h2>
-    <a class="btn btn-danger" id="btnAdd" href="AddNewProduct" onclick="return ActivityLog('Create new user in list products','/Product/ListProduct/');">Add New</a>
+    <a class="btn btn-danger" id="btnAdd" title="Click here to add products" data-placement="bottom" data-toggle="tooltip" href="AddNewProduct" onclick="return ActivityLog('Create new user in list products','/Product/ListProduct/');">Add New</a>
 </div>
 
 <section class="content section-content neworder-section table-design">
@@ -60,14 +60,14 @@
                             <option value="publish">Active</option>
                             <option value="trash">InActive</option>
                         </select>
-                        <button type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
+                        <button type="button" title="Click here for bulk action" data-placement="bottom" data-toggle="tooltip" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
                     </div>
 
                     <div class="alignleft actions">
                         <select class="form-control select2" id="ddltype">
                             @*<option value="0">Select a category</option>*@
                         </select>
-                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
+                        <input type="submit" title="Click here for filter" data-placement="bottom" data-toggle="tooltip" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
                     </div>
                     <div style="display:none" class="alignleft actions">
                         <select class="form-control" id="ddlproducttype">

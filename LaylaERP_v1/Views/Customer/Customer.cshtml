@@ -18,7 +18,7 @@
 
 <div class="page-title">
     <h2 class="page-heading">Manage Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser" onclick="return ActivityLog('Create new customer in manage customer','/Customer/Customer');">
-    <span title="Click Here To Add New Customer" data-placement="bottom" data-toggle="tooltip">Add New Customer</span></a>
+    <span title="Click here to add new customer" data-placement="bottom" data-toggle="tooltip">Add New Customer</span></a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="user-top-section" id="customer-section-top">
@@ -35,21 +35,21 @@
                     <option value="0">Active</option>
                     <option value="1">InActive</option>
                 </select>
-                <span title="Click Here To Search (Active/Inactive) Customer" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button></span>
+                <span title="Click here to search (Active/Inactive) customer" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button></span>
             </div>
             <div class="alignleft actions bulkactions">
                 <select class="form-control" id="ddlStatus">
                     <option value="1">Bulk Action</option>
                     <option value="2">Delete</option>
                 </select>
-                <span title="Click Here To Change Customer's Status Inactive" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button></span>
+                <span title="Click here to change customer's status inactive" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button></span>
             </div>
             <div class="alignleft actions bulkactions">
                 <select class="form-control" id="ddlUserStatus">
                     <option value="0">Active</option>
                     <option value="1">InActive</option>
                 </select>
-                <span title="Click Here To Change Customer's Status(Active/Inactive)" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
+                <span title="Click here to change customer's status(Active/Inactive)" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
             </div>
         </div>
     </div>
@@ -81,72 +81,5 @@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
-    $(document).ready(function () {
-        var loc = window.location.pathname;
-
-        CheckPermissions("#btnAddUser", "#hfEdit", "", loc);
-        //CheckPermissions("#customer-section-top", "#hfEdit", "", loc);
-        CheckPermissions("#role-ul", "#hfEdit", "", loc);
-        $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        dataGridLoad();
-    });
-
-    $('#checkAll').click(function () {
-        var isChecked = $(this).prop("checked");
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-    });
-
-    function Singlecheck() {
-        var isChecked = $('#CheckSingle').prop("checked");
-        var isHeaderChecked = $("#checkAll").prop("checked");
-        if (isChecked == false && isHeaderChecked)
-            $("#checkAll").prop('checked', isChecked);
-        else {
-            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                if ($(this).prop("checked") == false)
-                    isChecked = false;
-            });
-            $("#checkAll").prop('checked', isChecked);
-        }
-    }
-
-    $('#btnApply').click(function () {
-        var id = "";
-        var status = $("#ddlStatus").val();
-        $("input:checkbox[name=CheckSingle]:checked").each(function () {
-            id += $(this).val() + ",";
-        });
-        if (id == "") { swal('alert', 'Please select customers from list', 'error'); }
-        else if (status == "1") { swal('alert', 'Please select bulk action', 'error'); }
-        else {
-            swal({ title: '', text: "Do you want to do bulk action ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes' }).
-                then((result) => {
-                    if (result.value) {
-                        id = id.replace(/,(?=\s*$)/, '');
-                        DeleteCustomer(id);
-                        dataGridLoad();
-                    }
-                })
-        }
-    })
-
-    $('#btnChange').click(function () {
-        var id = "";
-        $("input:checkbox[name=CheckSingle]:checked").each(function () {
-            id += $(this).val() + ",";
-        });
-        id = id.replace(/,(?=\s*$)/, '');
-        if (id == "") { swal('alert', 'Please select customers from list', 'error'); }
-        else {
-            swal({
-                title: '', text: "Do you want to change the status ?", type: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes',
-            }).then((result) => {
-                if (result.value) {
-                    ChangeStatus(id);
-                    dataGridLoad();
-                }
-            })
-        }
-        $("#checkAll").prop('checked', false);
-    })
+   
 </script>

@@ -862,8 +862,8 @@ $("#setprice").click(function () {
     ID = ID.replace(/,(?=\s*$)/, '');
     const areThereAnyCommas = ID.includes(',');
    // console.log(areThereAnyCommas);
-    if (ID == "") { swal('alert', 'Please select Vendor from list', 'error'); }
-    else if (areThereAnyCommas == true) { swal('alert', 'Please select only one Vendor from list to set default', 'error'); }
+    if (ID == "") { swal('Alert', 'Please select Vendor from list', 'error'); }
+    else if (areThereAnyCommas == true) { swal('Alert', 'Please select only one Vendor from list to set default', 'error'); }
     else {
          
             swal({

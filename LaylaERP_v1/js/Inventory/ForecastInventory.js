@@ -13,8 +13,9 @@
     }, function (start, end, label) {
        
     });
-    getVendorList();
-    $("#btnSearch").click(function () { ForeCastreport(true); })
+    $('.select2').select2();
+    $.when(getVendorList()).done(function () { ForeCastreport() });
+    $("#btnSearch").click(function () { ForeCastreport(); })
     ForecastReportAll(true);
     $("#btnSearch1").click(function () { ForecastReportAll(true); })
 });
@@ -34,8 +35,8 @@ function getVendorList() {
     });
 }
 
-$('#ddlVendorList').change(function () {
-    getProductList();
+/*$('#ddlVendorList').change(function () {
+   getProductList();
 })
 
 function getProductList() {
@@ -55,14 +56,14 @@ function getProductList() {
         }
 
     });
-}
+} */
 
-function ForeCastreport(is_date) {
+function ForeCastreport() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
-    var obj = { vendorid: $('#ddlVendorList').val(), stockfromdate: sd, stocktodate: ed }
+    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    v = parseInt($("#ddlVendorList").val()) || 0;
+    var obj = { vendorid: (v > 0 ? v : '0'), stockfromdate: sd, stocktodate: ed }
     $.ajax({
         url: '/Inventory/GetForecastReport',
         method: 'post',
@@ -70,38 +71,40 @@ function ForeCastreport(is_date) {
         contentType: "application/json; charset=utf-8",
         processing: true,
         data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             $('#dtForecastReportList').dataTable({
                 destroy: true,
                 scrollX: false,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'id', title: 'ID', sWidth: "5%" },
+                    { data: 'id', title: 'Id', sWidth: "5%" },
                     { data: 'post_title', title: 'Product', sWidth: "25%" },
-                    { data: 'op_stock', title: 'In Stock', sWidth: "10%" },
-                    { data: 'prev_sale', title: 'Previous Month Sale', sWidth: "10%" },
-                    { data: 'daily_velocity', title: 'Projected Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
-                    { data: 'remain_days', title: 'Remaining Days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
-                    { data: 'run_out_date', title: 'Run Out Date', sWidth: "10%" },
-                    { data: 'week_velocity', title: 'Projected Weekly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
-                    { data: 'month_velocity', title: 'Projected Monthly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+                    { data: 'op_stock', title: 'In stock', sWidth: "10%" },
+                    { data: 'prev_sale', title: 'Previous month sale', sWidth: "10%" },
+                    { data: 'daily_velocity', title: 'Projected daily velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
+                    { data: 'remain_days', title: 'Remaining days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
+                    { data: 'run_out_date', title: 'Run out date', sWidth: "10%" },
+                    { data: 'week_velocity', title: 'Projected weekly velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '')},
+                    { data: 'month_velocity', title: 'Projected monthly velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
                 ],
                 "order": [[0, 'asc']],
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.responseText);
-        }
+        },
+        complete: function () { $("#loader").hide(); }
     });
 
 }
 
 //Forecast report for all products
-function ForecastReportAll(is_date) {
+function ForecastReportAll() {
     
     let sd = $('#txtForecastDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtForecastDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
     var obj = { stockfromdate: sd, stocktodate: ed }
     $.ajax({
@@ -111,28 +114,30 @@ function ForecastReportAll(is_date) {
         contentType: "application/json; charset=utf-8",
         processing: true,
         data: JSON.stringify(obj),
+        beforeSend: function () {$("#loader").show();},
         success: function (data) {
             $('#dtForecastReportAllList').dataTable({
                 destroy: true,
                 scrollX: false,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'id', title: 'ID', sWidth: "5%" },
+                    { data: 'id', title: 'Id', sWidth: "5%" },
                     { data: 'post_title', title: 'Product', sWidth: "25%" },
-                    { data: 'op_stock', title: 'In Stock', sWidth: "10%" },
-                    { data: 'prev_sale', title: 'Previous Month Sale', sWidth: "10%" },
-                    { data: 'daily_velocity', title: 'Projected Daily Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
-                    { data: 'remain_days', title: 'Remaining Days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
-                    { data: 'run_out_date', title: 'Run Out Date', sWidth: "10%" },
-                    { data: 'week_velocity', title: 'Projected Weekly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
-                    { data: 'month_velocity', title: 'Projected Monthly Velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+                    { data: 'op_stock', title: 'In stock', sWidth: "10%" },
+                    { data: 'prev_sale', title: 'Previous month sale', sWidth: "10%" },
+                    { data: 'daily_velocity', title: 'Projected daily velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+                    { data: 'remain_days', title: 'Remaining days', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '') },
+                    { data: 'run_out_date', title: 'Run out date', sWidth: "10%" },
+                    { data: 'week_velocity', title: 'Projected weekly velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
+                    { data: 'month_velocity', title: 'Projected monthly velocity', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '') },
                 ],
                 "order": [[0, 'asc']],
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.responseText);
-        }
+        },
+        complete: function () { $("#loader").hide();}
     });
 
 }

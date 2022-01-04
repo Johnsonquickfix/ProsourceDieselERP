@@ -70,10 +70,44 @@
         }
 
         [HttpGet]
+        [Route("editaccountdetails")]
+        public IHttpActionResult UserdetailsUpdate(LoginModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.id == 0)
+            {
+                result.success = false; result.error_msg = "Please provide valid details.";
+                return Ok(result);
+            }
+            if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
+            {
+                if (model.user_new_pass != model.user_conf_pass)
+                {
+                    result.success = false; result.error_msg = "Error! confirm password field should be match with the password field.";
+                    return Ok(result);
+                }
+            }
+            try
+            {
+                string msg = string.Empty;
+                var balResult = UsersRepositry.UserUpdate(model);
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
         [Route("createuser")]
         public IHttpActionResult CreateUser(LoginModel model)
         {
-            if (string.IsNullOrEmpty( model.user_login) || string.IsNullOrEmpty(model.user_pass))
+            if (string.IsNullOrEmpty(model.user_login) || string.IsNullOrEmpty(model.user_pass))
             {
                 return BadRequest("Please enter Email address and password.");
             }

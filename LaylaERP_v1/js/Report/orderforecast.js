@@ -1,12 +1,31 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    globalcurrentyear('year');
+    $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { Search(); });
+
 });
 
+
+function globalnextyear(yearcount) {
+    var currentYear = new Date().getFullYear() + 1;
+    var yearSelect = document.getElementById(yearcount);
+    for (var i = 0; i < 2; i++) {
+        var isSelected = currentYear === currentYear
+        yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+    }
+}
+function globallastyear(yearcount) {
+    var currentYear = new Date().getFullYear() - 1;
+    var yearSelect = document.getElementById(yearcount);
+    for (var i = -0; i < 5; i++) {
+        var isSelected = currentYear === currentYear - i
+        yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
+    }
+}
 function Search() {
     let sd = 'sd'; //$('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = 'ed';//$('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let Year = $("#year").val();
+    var NextYear = $("#nextyear").val();
     var account = '1';
     // var type = $('#ddltype').val();
     if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }
@@ -30,7 +49,7 @@ function Search() {
                 { data: 'tax', title: '#', 'sWidth': "5%" },
 
                 {
-                    data: 'tax', title: 'Month', sWidth: "10%", render: function (data, type, row) {
+                    data: 'tax', title: 'Month Name', sWidth: "10%", render: function (data, type, row) {
                         if (data == '1') return 'January';
                         else if (data == '2') return 'February';
                         else if (data == '3') return 'March';
@@ -47,8 +66,8 @@ function Search() {
                     }
                 },
               
-                { data: 'Discount', title: 'Order Total', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                { data: 'fee', title: 'ForcasteValue', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Discount', title: 'Sales Total (' + Year + ')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'fee', title: 'Forecast Sales (' + NextYear +')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
 
 
             ],

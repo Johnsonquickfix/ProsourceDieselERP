@@ -318,7 +318,7 @@ function dataGridLoad() {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit Customer" onclick="ActivityLog(\' edit customer id ' + id + ' in manage customer\',\'/Customer/NewUser/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit customer" onclick="ActivityLog(\' edit customer id ' + id + ' in manage customer\',\'/Customer/NewUser/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }

@@ -98,7 +98,7 @@ function dataGCGridLoad() {
                 'data': 'code', title: 'Code', sWidth: "22%",
                 'render': function (id, type, row, meta) {
 
-                    return '<a href="GiftCardActivity/' + row.id + '" onclick="ActivityLog(\'View gift card activity log\',\'GiftCard/GiftCardList/' + row.id +'\');" data-toggle="tooltip" title="View Activity">' + id + '</a> '
+                    return '<a href="GiftCardActivity/' + row.id + '" onclick="ActivityLog(\'View gift card activity log\',\'GiftCard/GiftCardList/' + row.id +'\');" data-toggle="tooltip" title="View activity">' + id + '</a> '
                 }
             },
 
@@ -119,7 +119,7 @@ function dataGCGridLoad() {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "5%", render: function (id, type, row) {
                     let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
                     if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="ActivityLog(\'Check PayPal Payment Status.\',\'GiftCard/GiftCardList/' + row.order_id.replace('#', '') +'\'); PaymentStatus(' + row.order_id.replace('#', '') + ',\'' + row.paypal_id + '\',\'' + row.sender_email + '\');">' + pm_title + '</a>';
+                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check paypal payment status." onclick="ActivityLog(\'Check PayPal Payment Status.\',\'GiftCard/GiftCardList/' + row.order_id.replace('#', '') +'\'); PaymentStatus(' + row.order_id.replace('#', '') + ',\'' + row.paypal_id + '\',\'' + row.sender_email + '\');">' + pm_title + '</a>';
                         // else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
                         else return pm_title;
                     }
@@ -131,7 +131,7 @@ function dataGCGridLoad() {
                 'data': 'id', title: 'Action', sWidth: "6%",
                 'render': function (id, type, row, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit Gift Card Order" onclick="ActivityLog(\'View/Edit Gift Card Order\',\'GiftCard/GiftCardList/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a> '
+                        return '<a href="ordermeta/' + id + '" data-toggle="tooltip" title="View/Edit gift card order" onclick="ActivityLog(\'View/Edit Gift Card Order\',\'GiftCard/GiftCardList/' + id +'\');"><i class="glyphicon glyphicon-eye-open"></i></a> '
                     }
                     else { return "No Permission"; }
                 }

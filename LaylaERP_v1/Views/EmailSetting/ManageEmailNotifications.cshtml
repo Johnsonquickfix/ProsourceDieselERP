@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="box-footer text-right">
-                <button id="btnsave" class="btn btn-danger">Save Changes</button>
+                <button id="btnsave" title="Click here to update template" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Save Changes</button>
             </div>
 
         </div>
@@ -96,8 +96,8 @@
     <b>
         This template has been overridden by your theme and can be found in Views/EmailNotifications/@ViewBag.filename   . </b>
 
-            <button id="btnshow" style="float:right" class="btn btn-danger">View Template</button>
-            <button id="btnhide" style="float:right" class="btn btn-danger">Hide Template</button>
+            <button id="btnshow" title="Click here to view template" data-toggle="tooltip" data-placement="bottom" style="float:right" class="btn btn-danger">View Template</button>
+            <button id="btnhide" title="Click here to hide template" data-toggle="tooltip" data-placement="bottom" style="float:right" class="btn btn-danger">Hide Template</button>
 
             <div id="divhtml" class="editor" style="">
                 @*@ViewBag.filename*@
@@ -123,7 +123,7 @@
                 {
                     <textarea name="text" class="form-control" id="txtText" rows="30" cols="50">@str</textarea>
                     <input type="text" value="@ViewBag.filename" style="display:none" rows="30" cols="50" name="filename" id="txtfileText" />
-                    <input type="submit" class="btn btn-danger" style="float:right" value="Update Template" />
+                    <input type="submit" title="Click here to update template" data-toggle="tooltip" data-placement="top" class="btn btn-danger" style="float:right" value="Update Template" />
                 }
 
 

@@ -13,7 +13,7 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 <div class="page-title">
-    <h2 class="page-heading">Employee</h2><a href="../../Hrms/Employee" onclick="return ActivityLog('Create new employee in Employee.','/Hrms/EmployeeList');" class="btn btn-danger" id="btnAddEmployee">Add Employee</a>
+    <h2 class="page-heading">Employee</h2><a href="../../Hrms/Employee" title="Click here for the add new employee" data-placement="bottom" data-toggle="tooltip" onclick="return ActivityLog('Create new employee in Employee.','/Hrms/EmployeeList');" class="btn btn-danger" id="btnAddEmployee">Add Employee</a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="user-top-section">
@@ -24,7 +24,7 @@
                     <option value="1">Active</option>
                     <option value="0">InActive</option>
                 </select>
-                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                <button type="button" id="btnSearch" title="Click here for search " data-placement="bottom" data-toggle="tooltip" class="btn btn-primary btn-flat button">Search</button>
             </div>
         </div>
     </div>

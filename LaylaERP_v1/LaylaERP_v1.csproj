@@ -190,6 +190,7 @@
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\GiftcardController.cs" />
@@ -1071,6 +1072,7 @@
     <Content Include="Views\Reports\ForecastHistoricalData.cshtml" />
     <Content Include="Views\Reports\Orderforecast.cshtml" />
     <Content Include="Views\PurchaseOrder\POAmendment.cshtml" />
+    <Content Include="Views\Events\AddNewEvents.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

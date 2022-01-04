@@ -25,9 +25,9 @@ $('#btnSaveJournal').click(function (e) {
     Code = $("#txtCode").val();
     Label = $("#txtLabel").val();
     NatureofJournal = $("#ddlNatureofJournal").val();
-    if (Code == "") { swal('alert', 'Please enter code', 'error').then(function () { swal.close(); $('#txtCode').focus(); }) }
-    else if (Label == "") { swal('alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); }) }
-    else if (NatureofJournal == "-1") { swal('alert', 'Please select nature of journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
+    if (Code == "") { swal('Alert', 'Please enter code', 'error').then(function () { swal.close(); $('#txtCode').focus(); }) }
+    else if (Label == "") { swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); }) }
+    else if (NatureofJournal == "-1") { swal('Alert', 'Please select nature of journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
 
     else {
         var obj = { rowid: ID, code: Code, label: Label, nature: NatureofJournal, }

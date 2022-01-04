@@ -734,7 +734,7 @@ function bindfileuploade() {
                 itemHtml += '<td><a target="popup" href="../../Content/PurchaseFiles/' + row.product_name + '">' + row.product_name + '</i></a ></td>';
                 itemHtml += '<td>' + row.product_label + 'KB' + '</td>';
                 itemHtml += '<td>' + row.sellingpric + '</td>';
-                itemHtml += '<td class="text-right"><button class="btn menu-icon-gr text-red btnDeleteItem editbutton orderfiles" onClick="Deletefileupload(' + row.ID + ')"><i class="glyphicon glyphicon-trash"></i></button></td>';
+                itemHtml += '<td class="text-right"><button class="btn menu-icon-gr text-red btnDeleteItem editbutton orderfiles" disabled onClick="Deletefileupload(' + row.ID + ')" data-toggle="tooltip" title="Delete Document" data-placement="right"><i class="glyphicon glyphicon-trash"></i></button></td>';
                 itemHtml += '</tr>';
             });
             $('#divfileupload_services').empty().append(itemHtml);

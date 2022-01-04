@@ -720,6 +720,7 @@
     <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
+    <Content Include="js\PurchaseOrder\POAmendment.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\PurchaseOrder\PurchasePrint.js" />
     <Content Include="js\Reception\NewReceive.js" />
@@ -1069,6 +1070,7 @@
     <Content Include="Views\Reports\ForecastSalesLSR.cshtml" />
     <Content Include="Views\Reports\ForecastHistoricalData.cshtml" />
     <Content Include="Views\Reports\Orderforecast.cshtml" />
+    <Content Include="Views\PurchaseOrder\POAmendment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

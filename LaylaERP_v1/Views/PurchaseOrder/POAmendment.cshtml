@@ -1,8 +1,9 @@
 ﻿@{
-    ViewBag.Title = "New Purchase Order";
+    ViewBag.Title = "PO Amendment";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
+
 <!-- Content Header (Page header) -->
 <style>
     .swal2-container .swal2-popup {
@@ -20,18 +21,17 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">New Purchase Order</h2>
-    <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
-    </div>
+    <h2 class="page-heading" id="lbltitle">PO Amendment</h2>
+    <a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>
+    <div class="top-action text-right" style="margin-left:auto;min-width:280px;"></div>
+</div>
+<div id="divAlert"></div>
 
-</div>
-<div id="divAlert">
-</div>
 <!-- Main content -->
 <section class="content content-section p-0">
     <div class="box box-primary">
         <div class="box-body">
-            <div class="form-horizontal create-new-customer" id="parent" data-com="@user.CompanyName" data-ad1="@user.address" data-ad2="@user.address1" data-city="@user.City" data-state="@user.State" data-country="@user.Country" data-zip="@user.postal_code" data-email="@user.email" data-website="@user.website">
+            <div class="form-horizontal create-new-customer" id="parent">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Ref. vendor" data-toggle="tooltip" title="vendor Bill/Ref. No">Ref. vendor</label>
                             <div class="">
-                                <input type="text" id="txtRefvendor" class="form-control billinfo" placeholder="Ref. vendor" />
+                                <input type="text" id="txtRefvendor" class="form-control" placeholder="Ref. vendor" disabled />
                             </div>
                         </div>
 
@@ -65,26 +65,26 @@
                         <div class="form-group">
                             <label class="control-label " for="Payment Terms">Payment Terms</label>
                             <div class="">
-                                <select class="form-control select2 billinfo" id="ddlPaymentTerms"></select>
+                                <select class="form-control select2" id="ddlPaymentTerms" disabled></select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="Balance">Balance days</label>
-                            <select class="form-control select2 billinfo" id="ddlBalancedays"></select>
+                            <select class="form-control select2" id="ddlBalancedays" disabled></select>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="Incoterms">Incoterms</label>
                             <div class="input-group">
-                                <select class="form-control select2 billinfo" id="ddlIncoTerms" placeholder="Incoterms" style="width: 100%;"></select>
+                                <select class="form-control select2" id="ddlIncoTerms" placeholder="Incoterms" style="width: 100%;" disabled></select>
                                 <div class="input-group-btn" style="width:45%">
-                                    <input type="text" id="txtIncoTerms" class="form-control input-group-text billinfo" placeholder="IncoTerms" />
+                                    <input type="text" id="txtIncoTerms" class="form-control input-group-text" placeholder="IncoTerms" disabled />
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Payment Type<span class="text-red">*</span></label>
                             <div class="">
-                                <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
+                                <select class="form-control select2" id="ddlPaymentType" disabled></select>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                         <div class="form-group">
                             <label class="control-label" for="ddlWarehouse" data-toggle="tooltip" title="Select Warehouse">Destination Warehouse<span class="text-red">*</span></label>
                             <div class="">
-                                <select class="form-control select2 billinfo" id="ddlWarehouse"></select>
+                                <select class="form-control select2" id="ddlWarehouse" disabled></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -106,7 +106,7 @@
                             <div class="">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control billinfo" placeholder="Planned date of delivery (MM/DD/YYYY)" autocomplete="off" />
+                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control" placeholder="Planned date of delivery (MM/DD/YYYY)" autocomplete="off" disabled />
                                 </div>
                             </div>
                         </div>
@@ -137,8 +137,8 @@
                         <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 8%">Actions</th>
-                                    <th style="width: 26%">Description</th>
+                                    @*<th class="text-center" style="width: 8%">Actions</th>*@
+                                    <th style="width: 34%">Description</th>
                                     <th style="width: 10%">Vendor SKU</th>
                                     <th class="text-right" style="width: 10%">Price</th>
                                     <th class="text-right" style="width: 10%">Quantity</th>
@@ -153,7 +153,6 @@
                             <tfoot class="thead-dark">
                                 <tr>
                                     <th colspan="3" class="text-left" style="width: 58%">
-                                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
                                     </th>
                                     <th class="text-right" style="width: 8%"></th>
                                     <th class="text-right" style="width: 8%"></th>
@@ -292,4 +291,4 @@
 
 <div class="modal in printable autoprint table-design not-fixed popuptable" id="POModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/PurchaseOrder/NewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PurchaseOrder/POAmendment.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

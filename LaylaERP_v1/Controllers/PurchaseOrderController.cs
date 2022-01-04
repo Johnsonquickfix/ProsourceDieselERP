@@ -28,6 +28,12 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        [Route("purchaseorder/po-amendment")]
+        public ActionResult POAmendment(long id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
         [Route("purchaseorder/po-accept")]
         public ActionResult PurchaseOrderApproval(string id, string uid, string key)
         {
@@ -216,6 +222,22 @@ namespace LaylaERP.Controllers
                 System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
                 JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.AddNewPurchase(id, "I", u_id, orderXML, orderdetailsXML));
 
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult POAmendment(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.AddNewPurchase(id, "POAMD", u_id, orderXML, orderdetailsXML));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

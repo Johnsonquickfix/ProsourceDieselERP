@@ -66,8 +66,8 @@ function Search() {
                     }
                 },
               
-                { data: 'Discount', title: 'Order Total (' + Year + ')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                { data: 'fee', title: 'Forecast Order (' + NextYear +')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'Discount', title: 'Sales Total (' + Year + ')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                { data: 'fee', title: 'Forecast Sales (' + NextYear +')', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
 
 
             ],

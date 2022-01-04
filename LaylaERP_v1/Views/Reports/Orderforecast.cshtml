@@ -78,9 +78,19 @@
                 Ratio for one period prior = 3/(n^2 + n)/2 = 3/(3^2 + 3)/2 = 3/6 = 0.5.<br />
                 Ratio for two periods prior = 2/(n^2 + n)/2 = 2/(3^2 + 3)/2 = 2/6 = 0.3333. <br />
                 Ratio for three periods prior = 1/(n^2 + n)/2 = 1/(3^2 + 3)/2 = 1/6 = 0.1666.<br />
-                January forecast: 137  0.5 + 119  1/3 + 114 * 1/6 = 127.16 or 127<br />
-                February forecast: 127  0.5 + 137  1/3  119  1/6 = 129.<br />
-                March forecast: 129  0.5 + 127  1/3  137  1/6 = 129.666 or 130.<br />             
+                Base months are October, November, and December.<br />
+                January forecast: Sales (October) * 0.5 + Sales (November) *  1/3 + Sales (December) * 1/6 <br />
+                February forecast: January forecast * 0.5 + Sales (November) *  1/3 + Sales (December) * 1/6 <br />
+                March forecast: February forecast * 0.5 + January forecast *  1/3 + Sales (December) * 1/6 <br />
+                April forecast: March forecast * 0.5 + February forecast *  1/3 + January forecast * 1/6 <br />
+                May forecast: April forecast * 0.5 + March forecast *  1/3 + February forecast * 1/6 <br />
+                June forecast: May forecast * 0.5 + April forecast *  1/3 + March forecast * 1/6 <br />
+                July forecast: June forecast * 0.5 + May forecast *  1/3 + April forecast * 1/6 <br />
+                August forecast: July forecast * 0.5 + June forecast *  1/3 + May forecast * 1/6 <br />
+                September forecast: August forecast * 0.5 + July forecast *  1/3 + June forecast * 1/6 <br />
+                October forecast: September forecast * 0.5 + August forecast *  1/3 + July forecast * 1/6 <br />
+                November forecast: October forecast * 0.5 + September forecast *  1/3 + August forecast * 1/6 <br />
+                December forecast: November forecast * 0.5 + October forecast *  1/3 + September forecast * 1/6 <br />
             </p>
             <!--<p>
                 <b>Example: Forcast for january 2022</b><br />

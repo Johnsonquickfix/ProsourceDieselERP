@@ -24,9 +24,9 @@
 
 function getInfo() {
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val();
-    $('.page-heading').text('Bank Settlement Process').append('<a class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
+    $('.page-heading').text('Bank Settlement Process').append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
     $('#line_items').empty();
-    $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
+    $('.footer-finalbutton').empty().append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
     var option = { strValue1: status, strValue2: id };
     $.ajax({
         url: "/CheckDeposit/GetDataByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
@@ -62,9 +62,9 @@ function getInfo() {
         error: function (xhr, status, err) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }, async: false
     });
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); }); calculateFinal();
-    $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a><button type="button" class="btn btn-danger btnvalidate"><i class="far fa-edit"></i> Validate</button>');
+    $('.footer-finalbutton').empty().append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a><button data-toggle="tooltip" title="Click for validate" type="button" class="btn btn-danger btnvalidate"><i class="far fa-edit"></i> Validate</button>');
     // $(".top-action").empty().append('<button type="button" class="btn btn-danger btnvalidate" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-    $(".top-action").empty().append('<button type="button" class="btn btn-danger btnvalidate" data-toggle="tooltip" title="Validate"><i class="far fa-edit"></i> Validate</button>');
+    $(".top-action").empty().append('<button type="button" data-toggle="tooltip" title="Click for validate" class="btn btn-danger btnvalidate" ><i class="far fa-edit"></i> Validate</button>');
     $('.billinfo').prop("disabled", true);
 }
 //$(document).on("click", ".btnvalidate", function (t) {

@@ -78,13 +78,23 @@ function PurchaseOrderGrid() {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
             { data: 'destination', title: 'Destination Address', sWidth: "15%" },
-            { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            {
+                data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
+                    let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
+                    if (full.fk_user_amendment > 0) return num + ' <i class="fas fa-exclamation-triangle" title="' + full.user_amendment + '" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return num;
+                }
+            },
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
-            //{ data: 'past_due', title: 'Past Due', sWidth: "8%"},
-            { data: 'Status', title: 'Status', sWidth: "8%" },
+            {
+                data: 'Status', title: 'Status', sWidth: "8%", render: function (id, type, full, meta) {
+                    if (full.fk_status == 5 || full.fk_status == 6) return full.Status + ' <a title="Click here to update purchase order quantity" data-toggle="tooltip" href="po-amendment?id=' + full.id + '"><i class="fas fa-edit"></i></a>';
+                    else return full.Status;
+                }
+            },
             { data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
         ]
     });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 function CheckAll() {
     var isChecked = $('#checkall').prop("checked");

@@ -167,8 +167,8 @@ function giftcardStatus() {
     $("#checkall").prop('checked', false);
     let status = $('#ddlOrderStatus').val();
 
-    if (id == '') { swal('alert', 'Please select a gift card', 'error'); return; }
-    if (status == '') { swal('alert', 'Please select status', 'error'); }
+    if (id == '') { swal('Alert', 'Please select a gift card', 'error'); return; }
+    if (status == '') { swal('Alert', 'Please select status', 'error'); }
     let gcstatus = status == "on" ? "Active" : "Inactive";
     ActivityLog('change gift card status as ' + gcstatus + '', '/Giftcard/GiftCardList/' + id + '');
     swal.queue([{

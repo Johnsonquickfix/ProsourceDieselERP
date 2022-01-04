@@ -1533,7 +1533,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '</div>';
                 varHTML += '<div class="col">';
                 // varHTML += '<button type="button" id="btnproductVariation_' + data[i].id + '" onchange="UpdateImagevarition(this,' + data[i].id +');" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="control-label">Upload</button>';
-                varHTML += '<a href="javascript:void(0);" title="Click here to Upload" data-toggle="tooltip" class="editbutton btn btn-danger" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
+                varHTML += '<a href="javascript:void(0);" title="Click here to upload" data-toggle="tooltip" class="editbutton btn btn-danger" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
                 varHTML += '</div>';
                 varHTML += '</div>';
 

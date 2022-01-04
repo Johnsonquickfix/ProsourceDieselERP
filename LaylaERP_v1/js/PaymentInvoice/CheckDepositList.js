@@ -69,7 +69,7 @@ function Search() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlbankaccount').val();
-    if (account == "0") { swal('alert', 'Please select Account', 'error'); }
+    if (account == "0") { swal('Alert', 'Please select account', 'error'); }
     else {
         //$.when(Uncleared()).done(function () {
         //    Rejected();
@@ -298,7 +298,7 @@ function takepayment() {
     console.log(id);
 
     if (id == "") {
-        swal('alert', 'Please select a check deposit list', 'error');
+        swal('Alert', 'Please select a check deposit list', 'error');
     }
     else {
         //var name = $("#txtName").val();

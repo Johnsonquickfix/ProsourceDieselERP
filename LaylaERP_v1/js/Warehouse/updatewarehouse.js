@@ -1567,7 +1567,7 @@ function WarehouseAddressInfoList() {
                 'searchable': false,
                 sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<span title="Click here To edit address details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    return '<span title="Click here to edit address details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                 }
             },
         ],

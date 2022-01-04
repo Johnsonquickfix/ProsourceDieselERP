@@ -14,18 +14,18 @@
 
 <div class="page-title">
     <h2>Bank Accounts</h2>
-    <span title="Click Here To Back To Bank List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })</span>
+    <span title="Click here to back to bank list" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })</span>
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1" id="bank_account_section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Bank account</span></a></li>
-            <li><a href="#tab_2" data-toggle="tab"><span title="Bank Entries" data-placement="bottom" data-toggle="tooltip">Bank Entries</span></a></li>
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank account" data-placement="bottom" data-toggle="tooltip">Bank account</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab"><span title="Bank entries" data-placement="bottom" data-toggle="tooltip">Bank Entries</span></a></li>
             @* <li><a href="#tab_3" data-toggle="tab"><span title="Entries" data-placement="bottom" data-toggle="tooltip">Entries</span></a></li>
         <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
             <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
-            <li><a href="#tab_4" data-toggle="tab"><span title="Pending Entries" data-placement="bottom" data-toggle="tooltip">Pending Entries</span></a></li>
-            <li><a href="#tab_7" data-toggle="tab"><span title="Linked Files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
+            <li><a href="#tab_4" data-toggle="tab"><span title="Pending entries" data-placement="bottom" data-toggle="tooltip">Pending Entries</span></a></li>
+            <li><a href="#tab_7" data-toggle="tab"><span title="Linked files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
@@ -182,7 +182,7 @@
                             </select>
                         </div>
 
-                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Update" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
                     </div>
 
 
@@ -387,7 +387,7 @@
                                             <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
                                         </div>
                                         <div class="col-md-6 left">
-                                            <input type="button" id="btnupload" class="btn btn-danger" value="Upload" />
+                                            <input type="button" id="btnupload" title="Click here for the file upload" data-placement="bottom" data-toggle="tooltip" class="btn btn-danger" value="Upload" />
                                         </div>
 
                                     </div>

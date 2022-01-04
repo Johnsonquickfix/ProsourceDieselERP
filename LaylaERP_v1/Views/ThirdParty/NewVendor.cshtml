@@ -20,7 +20,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Vendor</h2>@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+    <h2 class="page-heading" id="lbltitle">Vendor</h2><span title="Back to vendor list" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })</span>
 </div>
 
 <!-- Main content -->
@@ -28,18 +28,18 @@
     <div class="contennt setting-section">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs" id="mytabs" role="tablist">
-                <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Vendor Basic Info" data-toggle="tooltip">Vendor Info</span></a></li>
-                <li><a href="#tab_2" data-toggle="tab"><span title="Vendor Contacts/Addresses" data-placement="bottom" data-toggle="tooltip">Contacts</span></a></li>
-                <li><a href="#tab_3" data-toggle="tab"><span title="Vendor Payment Terms" data-toggle="tooltip">Payment Terms</span></a></li>
-                <li><a href="#tab_4" data-toggle="tab"><span title="Vendor Shipping Method" data-placement="bottom" data-toggle="tooltip">Shipping</span></a></li>
-                <li><a href="#tab_5" data-toggle="tab"><span title="Vendor Taxes" data-toggle="tooltip">Taxes</span></a></li>
-                <li><a href="#tab_6" data-toggle="tab"><span title="Vendor Discounts" data-placement="bottom" data-toggle="tooltip">Discounts</span></a></li>
+                <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Vendor basic info" data-toggle="tooltip">Vendor Info</span></a></li>
+                <li><a href="#tab_2" data-toggle="tab"><span title="Vendor contacts / addresses" data-placement="bottom" data-toggle="tooltip">Contacts</span></a></li>
+                <li><a href="#tab_3" data-toggle="tab"><span title="Vendor payment terms" data-toggle="tooltip">Payment Terms</span></a></li>
+                <li><a href="#tab_4" data-toggle="tab"><span title="Vendor shipping method" data-placement="bottom" data-toggle="tooltip">Shipping</span></a></li>
+                <li><a href="#tab_5" data-toggle="tab"><span title="Vendor taxes" data-toggle="tooltip">Taxes</span></a></li>
+                <li><a href="#tab_6" data-toggle="tab"><span title="Vendor discounts" data-placement="bottom" data-toggle="tooltip">Discounts</span></a></li>
                 @*<li><a href="#tab_7" data-toggle="tab"><span title="Vendor Payment method" data-toggle="tooltip">Payment Methods</span></a></li>*@
-                <li><a href="#tab_7" data-toggle="tab"><span title="Vendor Products & Services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
-                <li><a href="#tab_8" data-toggle="tab"><span title="Vendor Payments" data-toggle="tooltip">Payments</span></a></li>
+                <li><a href="#tab_7" data-toggle="tab"><span title="Vendor products & services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
+                <li><a href="#tab_8" data-toggle="tab"><span title="Vendor payments" data-toggle="tooltip">Payments</span></a></li>
                 @*<li><a href="#tab_12" data-toggle="tab"><span title="Vendor Purchase Information" data-toggle="tooltip">Purchase Information</span></a></li>*@
-                <li><a href="#tab_9" data-toggle="tab"><span title="Vendor Linked Warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
-                <li><a href="#tab_10" data-toggle="tab"><span title="Vendor Linked Files" data-toggle="tooltip">Linked Files</span></a></li>
+                <li><a href="#tab_9" data-toggle="tab"><span title="Vendor linked warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
+                <li><a href="#tab_10" data-toggle="tab"><span title="Vendor linked files" data-toggle="tooltip">Linked Files</span></a></li>
 
             </ul>
             <div class="tab-content">
@@ -153,7 +153,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab1" class="btn btn-danger ">Save & Next</button>
+                                <button type="button" id="btnNextTab1" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                         <div class="box-header">
                             <h2 class="box-title">Contacts/Addresses</h2>
                             <button type="button" id="btnAddContact" class="btn btn-danger" style="float: right;">
-                                <i class="fa fa-plus"></i> Add Contact
+                                <i class="fa fa-plus"></i> <span title="Click here to add contact / address details" data-placement="bottom" data-toggle="tooltip">Add Contact</span>
                             </button>
                         </div>
                         <div class="row">
@@ -194,7 +194,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab2" class="btn btn-danger ">Next</button>
+                                <button type="button" id="btnNextTab2" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -482,7 +482,7 @@
                        
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab3" class="btn btn-danger ">Save & Next</button>
+                                <button type="button" id="btnNextTab3" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -807,7 +807,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab4" class="btn btn-danger ">Save & Next</button>
+                                <button type="button" id="btnNextTab4" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -880,7 +880,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab5" class="btn btn-danger ">Save & Next</button>
+                                <button type="button" id="btnNextTab5" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -951,7 +951,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab6" class="btn btn-danger ">Save & Next</button>
+                                <button type="button" id="btnNextTab6" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -996,7 +996,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
+                                <button type="button" id="btnNextTab7" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -1068,7 +1068,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab8" class="btn btn-danger ">Next</button>
+                                <button type="button" id="btnNextTab8" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -1085,7 +1085,7 @@
                                         <select class="form-control select2" id="ddlWarehouseList" style="width:100%"></select>
                                     </div>
 
-                                    <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+                                    <button type="button" id="btnLinkWarehouse" class="btn btn-danger "><span title="Click here to add warehouse" data-placement="top" data-toggle="tooltip">Add</span></button>
 
                                 </div>
                             </div>
@@ -1114,7 +1114,7 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab9" class="btn btn-danger ">Next</button>
+                                <button type="button" id="btnNextTab9" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -1144,7 +1144,7 @@
                                                 <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
                                             </div>
                                             <div class="col-md-6 left">
-                                                <input type="button" id="btnupload" class="btn btn-danger" value="Upload" />
+                                                <span title="Click here to upload file" data-placement="top" data-toggle="tooltip"><input type="button" id="btnupload" class="btn btn-danger" value="Upload" /></span>
                                             </div>
                                         </div>
                                     </div>

@@ -84,7 +84,7 @@ function GetOrderDetails() {
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
     let opt = { strValue1: sd, strValue2: ed };
     $.ajax({
-        type: "POST", url: '/Orders/GetOrdersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        type: "POST", url: '/order/order-counts', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
@@ -134,7 +134,7 @@ function dataGridLoad(order_type) {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Orders/GetOrderList",
+        sAjaxSource: "/order/order-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type });

@@ -450,6 +450,7 @@
         }
 
         [HttpPost]
+        [Route("order/order-counts")]
         public JsonResult GetOrdersCount(SearchModel model)
         {
             string result = string.Empty;
@@ -466,6 +467,7 @@
             return Json(result, 0);
         }
         [HttpGet]
+        [Route("order/order-list")]
         public JsonResult GetOrderList(JqDataTableModel model)
         {
             string result = string.Empty;

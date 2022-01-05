@@ -254,6 +254,8 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        [Route("purchaseorder/po-list")]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;

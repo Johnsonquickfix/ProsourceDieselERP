@@ -155,6 +155,7 @@
     <Compile Include="BAL\DaRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
+    <Compile Include="BAL\EventsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\ForgotPasswordRepository.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\GiftcardController.cs" />
@@ -230,6 +232,7 @@
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\DaModel.cs" />
     <Compile Include="Models\EmailSettingModel.cs" />
+    <Compile Include="Models\EventsModel.cs" />
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
@@ -665,6 +668,8 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
+    <Content Include="js\Events\Events.js" />
+    <Content Include="js\Events\EventsList.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Giftcard\GiftCardActivity.js" />
     <Content Include="js\Giftcard\GiftCardList.js" />
@@ -1071,6 +1076,8 @@
     <Content Include="Views\Reports\ForecastHistoricalData.cshtml" />
     <Content Include="Views\Reports\Orderforecast.cshtml" />
     <Content Include="Views\PurchaseOrder\POAmendment.cshtml" />
+    <Content Include="Views\Events\AddNewEvents.cshtml" />
+    <Content Include="Views\Events\EventsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

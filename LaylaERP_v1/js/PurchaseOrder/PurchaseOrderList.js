@@ -42,7 +42,7 @@ function PurchaseOrderGrid() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
+        sAjaxSource: "/purchaseorder/po-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: status_id }, { name: "strValue4", value: (is_active > 0 ? is_active : '') }, { name: "strValue5", value: "PO" });
@@ -87,7 +87,7 @@ function PurchaseOrderGrid() {
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
             {
                 data: 'Status', title: 'Status', sWidth: "8%", render: function (id, type, full, meta) {
-                    if (full.fk_status == 5 || full.fk_status == 6) return full.Status + ' <a title="Click here to update purchase order quantity" data-toggle="tooltip" href="po-amendment?id=' + full.id + '"><i class="fas fa-edit"></i></a>';
+                    if ((full.fk_status == 5 || full.fk_status == 6) && $('.lbltitle').data('ut').includes('administrator') || $('.lbltitle').data('ut').includes('accounting')) return full.Status + ' <a title="Click here to update purchase order quantity" data-toggle="tooltip" href="po-amendment?id=' + full.id + '"><i class="fas fa-edit"></i></a>';
                     else return full.Status;
                 }
             },

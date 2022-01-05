@@ -40,7 +40,7 @@ function PurchaseOrderGrid() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
+        sAjaxSource: "/purchaseorder/po-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: '' }, { name: "strValue4", value: '' }, { name: "strValue5", value: "SPO" });

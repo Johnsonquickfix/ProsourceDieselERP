@@ -241,7 +241,7 @@ function takepayment() {
     console.log(id);
 
     if (id == "") {
-        swal('alert', 'Please select a PO', 'error');
+        swal('Alert', 'Please select a PO', 'error');
     }
     else {
         ActivityLog('Go for payment process', '/PaymentInvoice/PaymentInvoice?status=' + status + '&id=' + id+'');
@@ -285,7 +285,7 @@ function takepaymentpr() {
     console.log(id);
 
     if (id == "") {
-        swal('alert', 'Please select a PO', 'error');
+        swal('Alert', 'Please select a PO', 'error');
     }
     else {
         var name = $("#txtName").val();

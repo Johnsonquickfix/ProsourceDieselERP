@@ -756,11 +756,11 @@ function saveVendorPO() {
 
     let _list = createItemsList();
     //console.log(_list);
-    if (vendorid <= 0) { swal('alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
-    else if (payment_type <= 0) { swal('alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (warehouse_ID <= 0) { swal('alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
-    else if (date_livraison == "") { swal('alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
-    else if (_list.length <= 0) { swal('alert', 'To receive quantity should not be Zero', 'error').then(function () { swal.close(); }) }
+    if (vendorid <= 0) { swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
+    else if (payment_type <= 0) { swal('Alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (warehouse_ID <= 0) { swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
+    else if (date_livraison == "") { swal('Alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
+    else if (_list.length <= 0) { swal('Alert', 'To receive quantity should not be Zero', 'error').then(function () { swal.close(); }) }
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {

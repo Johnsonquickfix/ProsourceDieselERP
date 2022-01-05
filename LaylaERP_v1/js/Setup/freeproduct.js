@@ -112,7 +112,7 @@ function freeproductlist() {
                         'data': 'id', sWidth: "8%",
                         'render': function (id, type, full, meta) {
 
-                            return '<a href="../Setup/editfreeproduct/' + id + '" data-toggle="tooltip" title="View/Edit Product"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="../Setup/editfreeproduct/' + id + '" data-toggle="tooltip" title="View/Edit product"><i class="glyphicon glyphicon-pencil"></i></a>';
 
                         }
                     },

@@ -50,7 +50,7 @@ function Datagrid() {
                 'data': 'id', sWidth: "12%",
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a href="../FeeNTax/CreateNew/' + id + '" data-toggle="tooltip" title="View/Edit Tax" onclick="ActivityLog(\'Edit state recycle tax\',\'/FeeNTax/Index/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        return '<a href="../FeeNTax/CreateNew/' + id + '" data-toggle="tooltip" title="View/Edit tax" onclick="ActivityLog(\'Edit state recycle tax\',\'/FeeNTax/Index/' + id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
                     }
                     else { return "No Permission"; }
                 }

@@ -43,8 +43,8 @@ namespace LaylaERP_v1.Controllers
         [HttpPost]
         public JsonResult AddEvents(EventsModel model)
         {
-            int ID = 1;
-                //int ID = EventsRepository.AddEvents(model);
+           
+                int ID = EventsRepository.AddEvents(model);
                 if (ID > 0)
                 {
                     return Json(new { status = true, message = "Events saved successfully.", url = "", id = ID }, 0);

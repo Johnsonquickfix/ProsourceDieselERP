@@ -134,6 +134,7 @@
     /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
+        if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
         let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
         $($btn).attr('disabled', 'disabled');
         $.post('/Orders/OrderNoteAdd', option).then(response => {

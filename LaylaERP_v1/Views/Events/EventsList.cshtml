@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "EventsList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<div class="page-title">
+    <h2 class="page-heading">Events</h2><a class="btn btn-danger" href="../../Events/AddNewEvents">
+        <span title="Click here to add events" data-placement="bottom" data-toggle="tooltip">Add events</span>
+    </a>
+</div>
+<section class="content section-content table-design customer-section">
+    <div class="user-top-section">
+
+        <div class="tablenav top tablenav-top2">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button"><span title="Click here to search active/inactive events" data-placement="bottom" data-toggle="tooltip">Search</span></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="EmployeeListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Label</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Task</th>
+                                        <th>Assigned To</th>
+                                        <th>Vendor name</th>
+                                        <th>Contact Number</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+   
+    })
+</script>
+
+<script src="@Url.Content("~/js/Events/EventsList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

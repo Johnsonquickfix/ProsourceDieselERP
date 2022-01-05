@@ -85,30 +85,23 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div>
-            <!--<p>
-                <b>Example: Forcast for january 2022</b><br />
-                Let October, November and December 2021 are base month of the sales. <br />
-                Sales of October =	$11625.77, November = $76119.48, December = $115793.50 <br />
-                Weight of October = 1, November = 2, December = 3 and n = 3<br />
-                Now,<br />
-                Average = ($11625.77 + $76119.48 + $115793.50)/3 = 67846.25<br />
-                Summary = ($11625.77 * 1 + $76119.48 * 2 + $115793.50 * 3) = 511245.23<br />
-                Diffrence = [511245.23 - (67846.25 * (1 + 2 + 3))] = 104167.73<br />
-                Ratio = [( 1^2 + 2^2 + 3^2) - ((1 + 2 + 3)/3) ^ 2] = 2 <br />
-                Value1 = Difference / Ratio = 104167.73 / 2 = 52083.86<br />
-                Value2 = Average - (Value1 * ratio) = (52083.86 - 104167.72) = -36321.47<br />
-                Forecast = (1 + 3) * Value1 + Value2 =  (4* 52083.86) + (-36321.47) = 172013.97
-            </p> -->
-
-        </div>
-    </div>
     <!--High chart start-->
     <figure class="highcharts-figure">
         <div id="container_chart"></div>
     </figure>
+
+     <div class="row">
+        <div>
+            <p>
+                <b>Formula:</b><br />
+                Forecasting data, based on the historical data of previous year months.<br />
+                Expected growth rate (G%) = 5% (Assuming that) <br />
+                Expected churn rate (R%) = 1% (Assuming that)<br />
+                Forecast sales = (previous year sale monthly * (1+G%)) - (previous year sale monthly * R%)
+            </p> 
+
+        </div>
+    </div>
     <!--High chart end-->
 </section>
 

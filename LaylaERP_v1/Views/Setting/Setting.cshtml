@@ -14,14 +14,14 @@
         <div class="box-header with-border">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Payment Method</a></li>
-                    <li><a href="#tab_2" data-toggle="tab">Email Setting</a></li>
-                    <li><a href="#tab_3" data-toggle="tab">Paypal Setting</a></li>
+                    <li class="active" title="Click here to see payment method" data-toggle="tooltip"><a href="#tab_1" data-toggle="tab">Payment Method</a></li>
+                    <li title="Click here to see email setting" data-toggle="tooltip"><a href="#tab_2" data-toggle="tab">Email Setting</a></li>
+                    <li title="Click here to see paypal setting" data-toggle="tooltip"><a href="#tab_3" data-toggle="tab">Paypal Setting</a></li>
                     <!--<li><a href="#tab_4" data-toggle="tab">Authorize.Net Setting</a></li>-->
-                    <li><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
-                    <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
-                    <li><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
-                    <li><a href="#tab_8" data-toggle="tab">Entity info</a></li>
+                    <li title="Click here to see amazon pay setting" data-toggle="tooltip"><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
+                    <li title="Click here to see taxJar setting" data-toggle="tooltip"><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
+                    <li title="Click here to see podium setting" data-toggle="tooltip"><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
+                    <li title="Click here to see entity info" data-toggle="tooltip"><a href="#tab_8" data-toggle="tab">Entity info</a></li>
                 </ul>
                 <div class="tab-content">
                     <input type="hidden" id="hfid" value="@ViewBag.id" />
@@ -352,7 +352,7 @@
                 </div>
                 <div class="box-footer text-right">
                     <div class="col-sm-12">
-                        <a class="btn btn-danger" id="btnSave">
+                        <a class="btn btn-danger" title="Click here to save" data-toggle="tooltip" id="btnSave">
                             @*<input type="button" id="btnSave" value="Save" />*@
                             Save
                         </a>

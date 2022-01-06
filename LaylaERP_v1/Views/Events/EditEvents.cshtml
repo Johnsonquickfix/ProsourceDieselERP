@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "EditEvents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+<div class="page-title">
+    <h2>Update Events</h2> <a title="Click here to back to events list" data-placement="bottom" data-toggle="tooltip" href="../../Events/EventsList" class="btn btn-danger" data-original-title="Click here to back to list">Back to List</a>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
+    <div class="col-md-12">
+        <div class="box box-primary create-user-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="hidden" id="hfid" />
+                            <label for="label">Label</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtlabel" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startdate">Start Date</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtstartdate" /><span class="even-space"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="enddate">End Date</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtenddate" /><span class="even-space"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventassign">Event Assigned To </label><span style="color:red">*</span>
+                            <select class="form-control select2" id="ddluser" placeholder="Select user" multiple style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tag">Related Vendor</label><span style="color:red">*</span>
+                            <select class="form-control select2" id="ddlvendor">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="contact">Related Contact</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtcontact" />
+                        </div>
+                        <div class="form-group">
+                            <label for="task">Task</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txttask" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label><span style="color:red"></span>
+                            <input type="text" class="form-control" id="txtdescription" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Status</label><span style="color:red"></span><br />
+                            <input type="checkbox" id="chkstatus" /><span>Active</span>
+                        </div>
+                        <button class="btn btn-danger" id="btnEdit"><span title="Click here to save event details" data-placement="bottom" data-toggle="tooltip">Update</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $("#txtstartdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+        $("#txtenddate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        GetEventById(id);
+    });
+</script>
+
+<script>
+    function GetEventById(id) {
+        var rowid = id;
+        var obj =
+            $.ajax({
+                url: "/Events/GetEventsById/" + rowid,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        $("#hfid").val(d[0].rowid);
+                        $("#txtlabel").val(d[0].event_label);
+                        $("#txtstartdate").val(d[0].start_date);
+                        $("#txtenddate").val(d[0].end_date);
+                        $("#ddlvendor").val(d[0].related_company).trigger('change');
+                        $("#txtcontact").val(d[0].related_contacts);
+                        $("#txttask").val(d[0].task);
+                        $("#txtdescription").val(d[0].description);
+                        d[0].status == true ? $("#chkstatus").prop("checked", true) : $("#chkstatus").prop("checked", false);
+                        if (d[0].assigned_to !== null && d[0].assigned_to !== undefined) {
+                            setTimeout(function () { $("#ddluser").select2("val", [d[0].assigned_to.split(',')]);}, 2000);
+                        }
+                        
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+    }
+</script>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Events/Events.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

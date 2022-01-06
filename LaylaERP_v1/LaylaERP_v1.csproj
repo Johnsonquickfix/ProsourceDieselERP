@@ -1078,6 +1078,7 @@
     <Content Include="Views\PurchaseOrder\POAmendment.cshtml" />
     <Content Include="Views\Events\AddNewEvents.cshtml" />
     <Content Include="Views\Events\EventsList.cshtml" />
+    <Content Include="Views\Events\EditEvents.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -27,6 +27,11 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+
+        public ActionResult EditEvents()
+        {
+            return View();
+        }
         [HttpGet]
         public JsonResult GetUsersList()
         {
@@ -46,7 +51,7 @@ namespace LaylaERP_v1.Controllers
                 int ID = EventsRepository.AddEvents(model);
                 if (ID > 0)
                 {
-                    return Json(new { status = true, message = "Events saved successfully.", url = "", id = ID }, 0);
+                    return Json(new { status = true, message = "Event saved successfully.", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -66,5 +71,30 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+        public JsonResult GetEventsById(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = EventsRepository.GetEventById(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult UpdateEvents(EventsModel model)
+        {
+            if (model.rowid > 0)
+            {
+                EventsRepository.EditEvents(model);
+                return Json(new { status = true, message = "Event updated successfully", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
     }
 }

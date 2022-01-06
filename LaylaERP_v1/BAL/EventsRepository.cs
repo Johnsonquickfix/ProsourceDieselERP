@@ -57,7 +57,7 @@ namespace LaylaERP_v1.BAL
             }
         }
 
-        public static DataTable GetWarehouseDetailNew(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetEventsList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;

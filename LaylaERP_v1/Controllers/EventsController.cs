@@ -43,7 +43,6 @@ namespace LaylaERP_v1.Controllers
         [HttpPost]
         public JsonResult AddEvents(EventsModel model)
         {
-           
                 int ID = EventsRepository.AddEvents(model);
                 if (ID > 0)
                 {
@@ -55,13 +54,13 @@ namespace LaylaERP_v1.Controllers
                 }
         }
 
-        public JsonResult GetWarehouseDetailNew(JqDataTableModel model)
+        public JsonResult GetEventsList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                DataTable dt = EventsRepository.GetWarehouseDetailNew(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = EventsRepository.GetEventsList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

@@ -12,7 +12,7 @@
         startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
-            $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text('');
+        $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text('');
         AccountJournalList(true);
     });
     getGrandTotal(true);
@@ -42,7 +42,7 @@ function AccountJournalList(is_date) {
 
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }], order: [[2, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -72,12 +72,12 @@ function AccountJournalList(is_date) {
             };
 
             var DebitTotal = api.column(7).data().reduce(function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0);
+                return intVal(a) + intVal(b);
+            }, 0);
 
             var CreditTotal = api.column(8).data().reduce(function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0);
+                return intVal(a) + intVal(b);
+            }, 0);
 
             $(api.column(0).footer()).html('Page Total');
             $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
@@ -90,11 +90,12 @@ function AccountJournalList(is_date) {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             aoData.push({ name: "strValue2", value: dfa });
-            var col = 'id';
-            if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : oSettings.aaSorting[0][0] == 9 ? "datesort" : "id";
-                aoData.push({ name: "sSortColName", value: col });
-            }
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            //var col = 'id';
+            //if (oSettings.aaSorting.length >= 0) {
+            //    var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : oSettings.aaSorting[0][0] == 9 ? "datesort" : "id";
+            //    aoData.push({ name: "sSortColName", value: col });
+            //}
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
@@ -106,7 +107,9 @@ function AccountJournalList(is_date) {
         aoColumns: [
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
-            { data: 'datecreation', title: 'Date', sWidth: "10%" },
+            {
+                data: 'datesort', title: 'Date', sWidth: "10%", render: function (inv_num, type, full, meta) { return full.datecreation; }
+            },
             {
                 data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "11%",
                 'render': function (inv_num, type, full, meta) {
@@ -115,15 +118,14 @@ function AccountJournalList(is_date) {
                     else
                         return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
                     //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    
+
                 }
             },
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'debit', title: 'Debit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'datesort', title: 'date_sort', sWidth: "5%" },
         ],
         "dom": 'lBftipr',
         "buttons": [
@@ -143,24 +145,24 @@ function AccountJournalList(is_date) {
 
 
 function getGrandTotalFull() {
-        $.ajax({
-            url: "/Accounting/GrandTotal",
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: 'JSON',
-            success: function (data) {
-               
-                var d = JSON.parse(data);
-                if (d.length > 0) {
-                    $("#txtdebit").text('$'+ d[0].debit);
-                    $("#txtcredit").text('$' + d[0].credit);
-                    $("#txtbalance").text('$' + d[0].balance)
-                }
-            },
-            error: function (msg) {
+    $.ajax({
+        url: "/Accounting/GrandTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        success: function (data) {
 
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                $("#txtdebit").text('$' + d[0].debit);
+                $("#txtcredit").text('$' + d[0].credit);
+                $("#txtbalance").text('$' + d[0].balance)
             }
-        });
+        },
+        error: function (msg) {
+
+        }
+    });
 }
 
 function getVendor() {

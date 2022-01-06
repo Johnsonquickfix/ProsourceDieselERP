@@ -20,7 +20,7 @@
         // GET api/Account/Login
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
 
-        [HttpGet]
+        [HttpPost]
         [Route("login")]
         public IHttpActionResult Login(LoginModel model)
         {
@@ -44,7 +44,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("userdetails")]
         public IHttpActionResult Userdetails(LoginModel model)
         {

@@ -91,5 +91,50 @@ namespace LaylaERP_v1.BAL
             return dt;
         }
 
+        public static DataTable GetEventById(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] pram = { new SqlParameter("@id", id) };
+                string strSql = "SELECT rowid,event_label,event_label,convert(varchar, start_date, 110) start_date,convert(varchar, end_date, 110) end_date,assigned_to,related_user,related_contacts,related_company,status,task,description,assigned_user FROM erp_events where rowid='" + id + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int EditEvents(EventsModel model)
+        {
+            try
+            {
+                long user = CommanUtilities.Provider.GetCurrent().UserID;
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@rowid",model.rowid),
+                    new SqlParameter("@event_label", model.event_label),
+                    new SqlParameter("@start_date", model.start_date),
+                    new SqlParameter("@end_date", model.end_date),
+                    new SqlParameter("@assigned_to", model.assigned_to),
+                    new SqlParameter("@related_user",user),
+                    new SqlParameter("@related_contacts",model.related_contacts),
+                    new SqlParameter("@related_company",model.related_company),
+                    new SqlParameter("@status",model.status),
+                    new SqlParameter("@task",model.task),
+                    new SqlParameter("@description",model.description),
+                    new SqlParameter("@assigned_user",model.assigned_user),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_event", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

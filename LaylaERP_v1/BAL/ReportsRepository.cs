@@ -1665,8 +1665,9 @@ namespace LaylaERP.BAL
                      new SqlParameter("@yearto", to_date)
                 };
                     ds1 = SQLHelper.ExecuteDataSet("erp_yearmonthtotaldetails_List", parameters);
-                    if (ds1.Tables[0].Rows.Count > 0 && ds1.Tables[1].Rows.Count > 0)
+                    if (ds1.Tables[0].Rows.Count > 12 && ds1.Tables[1].Rows.Count > 12)
                     {
+
                         for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                         {
                             Export_Details uobj = new Export_Details();

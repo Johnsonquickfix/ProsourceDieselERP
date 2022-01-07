@@ -62,14 +62,13 @@ function EventGrid() {
                 }
             },
             { data: 'status', title: 'Status', sWidth: "10%" },
-            //{ data: 'warehouse_type', title: 'Type', sWidth: "10%" },
-            /*{
+            {
                 'data': 'id', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                        return '<a href="javascript:void(0);" onClick="EditUser(' + id + ')"><span title="Click here to edit events" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></span></a>'
+                    return '<span title="Click here to edit details" data-placement="bottom" data-toggle="tooltip"><a href="../Events/EditEvents/' + id + '" onclick="ActivityLog();"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                    
                 }
-            }*/
+            }
 
         ]
     });

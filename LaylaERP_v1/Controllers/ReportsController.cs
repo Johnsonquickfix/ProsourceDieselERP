@@ -145,6 +145,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Overviewv4clintreport()
+        {
+            return View();
+        }
+        public ActionResult SalesReoprtPowerBi()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {

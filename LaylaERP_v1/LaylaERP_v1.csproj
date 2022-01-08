@@ -1080,6 +1080,7 @@
     <Content Include="Views\Events\EventsList.cshtml" />
     <Content Include="Views\Events\EditEvents.cshtml" />
     <Content Include="Views\Reports\Overviewv4clintreport.cshtml" />
+    <Content Include="Views\Reports\SalesReoprtPowerBi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -16,6 +16,7 @@ function ChartOfAccountGrid() {
                 destroy: true,
                 scrollX: true,
                 data: JSON.parse(data),
+                columnDefs: [{ 'visible': false, 'targets': [0] }],
                 "columns": [
                     { data: 'ID', title: 'Account Code', sWidth: "10%" },
                     { data: 'account_number', title: 'Account Number', sWidth: "10%", sType: 'numeric' },

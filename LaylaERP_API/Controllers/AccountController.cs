@@ -127,7 +127,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getorders")]
         public object GetOrders(SearchModel model)
         {
@@ -151,7 +151,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getuserorderdetail")]
         public object GetUserOrderDetail(SearchModel model)
         {

@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <div title="Enter Short name location">
                                 <label for="exampleInputEmail1">Account Number<span style="color:red">*</span></label>
-                                <input type="email" class="form-control" id="txtAccountNumber" placeholder="Enter Account Number" readonly>
+                                <input type="email" class="form-control" id="txtAccountNumber" placeholder="Enter Account Number">
                             </div>
                         </div>
 
@@ -95,16 +95,17 @@
         var rowid = $("#hfid").val();
         var groupofaccount1 = $("#ddlParentAccount option:selected");
         var groupofaccount = groupofaccount1.text();
-        //alert(groupofaccount);
-        pcgversion = $("#txtChartOfAccounts").val();
-        label = $("#txtLabel").val();
-        parentaccount = $("#ddlParentAccount").val();
+        var accountnumber = $("#txtAccountNumber").val();
+        var pcgversion = $("#txtChartOfAccounts").val();
+        var label = $("#txtLabel").val();
+        var parentaccount = $("#ddlParentAccount").val();
         
-
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
-       
+        else if (accountnumber == "") {
+            swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
+        }
         else if (label == "") {
             swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
         }
@@ -118,6 +119,7 @@
             var obj = {
                 rowid: rowid,
                 fk_pcg_version: pcgversion,
+                account_number: accountnumber,
                 account_parent: parentaccount,
                 label: label,
                 pcg_type: groupofaccount,

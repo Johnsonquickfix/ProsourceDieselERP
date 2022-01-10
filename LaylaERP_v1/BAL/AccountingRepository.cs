@@ -347,7 +347,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -355,7 +355,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pcg_type", model.pcg_type),
                     new SqlParameter("@account_parent",model.account_parent),
                     new SqlParameter("@label", model.label),
-
+                    new SqlParameter("@account_number",model.account_number),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

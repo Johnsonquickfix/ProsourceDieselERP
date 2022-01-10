@@ -3047,3 +3047,51 @@ body.createnew #parent .col-md-6 .col-md-2 {width:auto; padding-left:0px;}
 body.createnew #parent .col-md-6 .col-md-2 [type="checkbox"]{margin-top:0px; margin-right:5px;position:relative; top:2px;}
 body.order .email_settings_in h3 {padding-left:15px;}
 .accountledgerlist .inventory-table th {padding-right:20px !important;}
+.autogenerate .dataTables_scrollHeadInner {
+width:100% !important;}
+@media(max-width:1000px) {
+    #btnResendEmail {
+        margin-right: 15px;
+        margin-top: 10px;
+    }
+}
+@media(max-width:992px) {
+    .gift.card.modal-open #GiftModal .modal-dialog {
+    overflow-x:auto;}
+        .gift.card.modal-open #GiftModal .modal-dialog .modal-content {
+        min-width:1000px;}
+        .employee-scrolls {
+            overflow: auto;
+        }
+    }
+@media(max-width:767px) {
+    #btnResendEmail {
+    margin-right:15px; margin-top:10px;}
+    .swal2-container, #roleModal {
+        z-index: 9999999 !important;
+    }
+
+    .loading-message, #loader {
+        left: 0px;
+    }
+
+    .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > td, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > thead > tr > th {
+        white-space: normal !important;
+    }
+
+    #billModal .modal-dialog {
+        overflow-x: auto;
+    }
+
+        #billModal .modal-dialog .modal-content {
+ width:700px;
+            }
+    .order .swal2-popup {
+        max-width: calc(100% - 20px) !important;
+    }
+    .order .quickorder-section .box-tools-header, .order.refund .box-tools.pull-right {
+        position: static;
+        float: none !important;
+    }
+
+}

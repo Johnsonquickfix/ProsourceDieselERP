@@ -10,7 +10,7 @@ function dataGridLoad(order_type) {
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {

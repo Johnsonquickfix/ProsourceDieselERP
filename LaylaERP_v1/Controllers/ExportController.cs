@@ -7,7 +7,7 @@ using System.Data;
 using LaylaERP.Models;
 using LaylaERP.BAL;
 using Newtonsoft.Json;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
 
 namespace LaylaERP.Controllers
 {

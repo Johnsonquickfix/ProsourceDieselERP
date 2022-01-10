@@ -180,6 +180,21 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
+        public ActionResult GetArizonaSalesOrderDetails(string Year, string Month)
+        {
+            // var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+            //var to_date = from_date.AddMonths(1).AddDays(-1);
+
+            var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+            var to_date = from_date.AddMonths(1).AddDays(-1);
+
+            ReportsRepository.GetArizonaSalesOrder(from_date.ToString(), to_date.ToString());
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
+        [HttpPost]
         public ActionResult GetZeroOrder(string Month, string Year)
         {
             var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);

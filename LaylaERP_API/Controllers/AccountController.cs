@@ -127,7 +127,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getorders")]
         public object GetOrders(SearchModel model)
         {
@@ -151,9 +151,36 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getuserorderdetail")]
         public object GetUserOrderDetail(SearchModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
+                return BadRequest("Please provide valid user detail.");
+            }
+            try
+            {
+                var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
+                balResult.Tables[0].TableName = "order_data";
+                if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
+                if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("redeemedgiftcards")]
+        public IHttpActionResult GetUserGiftCard(SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -162,10 +189,199 @@
             }
             try
             {
-                var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
-                balResult.Tables[0].TableName = "order_data";
-                if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
-                if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
+                var balResult = CommonRepositry.GetGiftCards(model.user_id);
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getaddress")]
+        public IHttpActionResult GetUserAddress(SearchModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
+                return BadRequest("Please provide valid details.");
+            }
+            try
+            {
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "URADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getbillingaddress")]
+        public IHttpActionResult GetUserBillingAddress(SearchModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
+                return BadRequest("Please provide valid details.");
+            }
+            try
+            {
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "UBADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getshippingaddress")]
+        public IHttpActionResult GetUsershippingAddress(SearchModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
+                return BadRequest("Please provide valid details.");
+            }
+            try
+            {
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "USADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("updateshippingaddress")]
+        public IHttpActionResult UpdateShippingAddress(UserShippingModel model)
+        {
+            ResultModel result = new ResultModel();
+            result.success = false; result.user_data = 0;
+            if (model.user_id == 0)
+            {
+                result.error_msg = "Please provide user id."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_first_name))
+            {
+                result.error_msg = "Please provide first_name."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_last_name))
+            {
+                result.error_msg = "Please provide last name."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_country))
+            {
+                result.error_msg = "Please provide country."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_address_1))
+            {
+                result.error_msg = "Please provide shipping address."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_city))
+            {
+                result.error_msg = "Please provide city."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_state))
+            {
+                result.error_msg = "Please provide state."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.shipping_postcode))
+            {
+                result.error_msg = "Please provide postcode."; return Ok(result);
+            }
+
+            try
+            {
+                var balResult = CommonRepositry.UpdateShippingAddress(model);
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("updatebillingaddress")]
+        public IHttpActionResult UpdateBillingAddress(UserBillingModel model)
+        {
+            ResultModel result = new ResultModel();
+            result.success = false; result.user_data = 0;
+            if (model.user_id == 0)
+            {
+                result.error_msg = "Please provide user id."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_first_name))
+            {
+                result.error_msg = "Please provide first_name."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_last_name))
+            {
+                result.error_msg = "Please provide last name."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_country))
+            {
+                result.error_msg = "Please provide country."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_address_1))
+            {
+                result.error_msg = "Please provide shipping address."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_city))
+            {
+                result.error_msg = "Please provide city."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_state))
+            {
+                result.error_msg = "Please provide state."; return Ok(result);
+            }
+            else if (string.IsNullOrEmpty(model.billing_postcode))
+            {
+                result.error_msg = "Please provide postcode."; return Ok(result);
+            }
+
+            try
+            {
+                var balResult = CommonRepositry.UpdateBillingAddress(model);
                 if (balResult == null)
                 {
                     return BadRequest();

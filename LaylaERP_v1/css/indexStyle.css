@@ -677,3 +677,28 @@ form.sidebar-form #btnsearch {
 form.sidebar-form .input-group,
 form.sidebar-form .input-group-btn {display:block;width:100%;}
 form.sidebar-form {overflow:visible;}
+
+@media(max-width:767px) {
+    .swal2-container {
+        z-index: 9999999 !important;
+    }
+    .loading-message, #loader {
+        left: 0px;
+    }
+    .reset-password-model .form-group {
+        position: relative;
+    }
+
+        .reset-password-model .form-group #PasswordShow {
+            position: absolute;
+            right: 0px;
+            top: 2px;
+        }
+}
+@media(max-width:575px) {
+    .table-indy td a {
+    top:20px;}
+    #content-wrapper {
+        height: calc(100% - 63px) !important;
+    }
+}

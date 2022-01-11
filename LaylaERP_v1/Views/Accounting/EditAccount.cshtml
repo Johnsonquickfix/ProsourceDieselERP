@@ -37,24 +37,29 @@
 
                         <div class="form-group">
                             <div title="Enter Description">
-                                <label for="exampleInputEmail1">Label<span style="color:red">*</span></label>
-                                <input type="text" class="form-control" id="txtLabel" placeholder="Enter Label">
+                                <label for="exampleInputEmail1">Name<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="txtLabel" placeholder="Enter Name">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div title="Enter E-mail">
-                                <label for="exampleInputEmail1">Parent Account<span style="color:red">*</span></label>
+                                <label for="exampleInputEmail1">Type<span style="color:red">*</span></label>
                                 <select class="form-control" id="ddlParentAccount">
-                                    <option value="0">--Select Parent Account--</option>
+                                    <option value="0">--Select type--</option>
                                 </select>
-
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="exampleInputEmail1">Detail Type<span style="color:red"></span></label>
+                                <input type="text" class="form-control" id="txtdetailtype" placeholder="Enter Detail Type">
                             </div>
                         </div>
 
                         <div class="box-footer">
                             <div class="text-right">
-                                <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                                <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="left" data-toggle="tooltip"><b>Update</b></span></a>
 
                             </div>
                         </div>
@@ -99,7 +104,8 @@
         var pcgversion = $("#txtChartOfAccounts").val();
         var label = $("#txtLabel").val();
         var parentaccount = $("#ddlParentAccount").val();
-        
+        var detailtype = $("#txtdetailtype").val();
+
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -123,6 +129,7 @@
                 account_parent: parentaccount,
                 label: label,
                 pcg_type: groupofaccount,
+                labelshort: detailtype,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -132,7 +139,6 @@
                 beforeSend: function () { $("#loader").show(); },
                 success: function (data) {
                     if (data.status == true) {
-                        //$('#parent > input:text').val('');
                         swal('Success', data.message, 'success').then((result) => { location.href = '../chartofaccounts'; });
                         reset();
                     }
@@ -152,6 +158,7 @@
         $("#txtAccountNumber").val('');
         $("#txtLabel").val('');
         $("#ddlParentAccount").val('0');
+        $("#txtdetailtype").val('');
     }
 
 </script>
@@ -174,7 +181,8 @@
                         $("#txtChartOfAccounts").val(d[0].fk_pcg_version);
                         $("#txtAccountNumber").val(d[0].account_number);
                         $("#txtLabel").val(d[0].label);
-                        $("#ddlParentAccount").val(d[0].account_parent);
+                        $("#ddlParentAccount").val(d[0].account_parent).trigger('change');
+                        $("#txtdetailtype").val(d[0].labelshort);
                         //console.log(d[0].rowid);
                     }
                 },

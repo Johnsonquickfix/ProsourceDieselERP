@@ -20,38 +20,40 @@ namespace LaylaERP.BAL
             {
                 exportorderlist.Clear();
                 string ssql;
-
+                DataSet ds1 = new DataSet();
                 if (from_date != "" && to_date != "")
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
-                    todate = DateTime.Parse(to_date);
-
-                    ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                    + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                    + " cast(umatotal.meta_value as decimal(10,2)) Total,"
-                    + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
-                    + " FROM wp_posts u"
-                    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                    + " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT order_id FROM wp_woocommerce_order_items WHERE order_item_id  IN (SELECT order_item_id FROM wp_woocommerce_order_itemmeta  WHERE meta_key = '_product_id' AND meta_value IN(612995, 611286))) order by post_status";
-
+                    todate = DateTime.Parse(to_date);              
+                    //ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    //+ " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //+ " cast(umatotal.meta_value as decimal(10,2)) Total,"
+                    //+ " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
+                    //+ " FROM wp_posts u"
+                    //+ " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //+ " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND ID IN (SELECT order_id FROM wp_woocommerce_order_items WHERE order_item_id  IN (SELECT order_item_id FROM wp_woocommerce_order_itemmeta  WHERE meta_key = '_product_id' AND meta_value IN(612995, 611286))) order by post_status";
+                    SqlParameter[] parameters =
+                       {
+                            new SqlParameter("@qflag", "PO"),
+                            new SqlParameter("@fromdate", from_date),
+                             new SqlParameter("@todate", to_date)
+                       };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_adjustablebasereport_List", parameters);
                 }
                 else
                 {
                     ssql = "";
-                }
-
-
-                DataSet ds1 = new DataSet();
-                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                }               
+                //ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
@@ -75,6 +77,7 @@ namespace LaylaERP.BAL
             {
                 exportorderlist.Clear();
                 string ssql;
+                DataSet ds1 = new DataSet();
 
                 if (from_date != "" && to_date != "")
                 {
@@ -82,46 +85,52 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                    // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                    + " umadd.meta_value shiptostreet,"
-                    + " umacity.meta_value shiptocity,"
-                    + " umastate.meta_value shiptostate,"
-                    + " umapostalcode.meta_value shiptozip,"
-                    + " umacountry.meta_value shiptocountrycode,"
+                    //ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    //// + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //+ " umadd.meta_value shiptostreet,"
+                    //+ " umacity.meta_value shiptocity,"
+                    //+ " umastate.meta_value shiptostate,"
+                    //+ " umapostalcode.meta_value shiptozip,"
+                    //+ " umacountry.meta_value shiptocountrycode,"
 
-                    + " umaddbilling.meta_value billingstreet,"
-                    + " umacitybilling.meta_value billingcity,"
-                    + " umastatebilling.meta_value billingstate,"
-                    + " umapostalcodebilling.meta_value billingzip,"
-                    + " umacountrybilling.meta_value billingcountry,"
-                    + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
-                    + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
-                    + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
-                    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                    + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
-                    + " FROM wp_posts u"
-                    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //+ " umaddbilling.meta_value billingstreet,"
+                    //+ " umacitybilling.meta_value billingcity,"
+                    //+ " umastatebilling.meta_value billingstate,"
+                    //+ " umapostalcodebilling.meta_value billingzip,"
+                    //+ " umacountrybilling.meta_value billingcountry,"
+                    //+ " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                    //+ " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                    //+ " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                    //+ " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                    //+ " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
+                    //+ " FROM wp_posts u"
+                    //+ " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
 
-                    + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
 
-                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                    + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) AND umastate.meta_value LIKE 'AZ' order by post_status";
-
+                    //+ " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
+                    //+ " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) AND umastate.meta_value LIKE 'AZ' order by post_status";
+                    SqlParameter[] parameters =
+                     {
+                            new SqlParameter("@qflag", "PO"),
+                            new SqlParameter("@fromdate", from_date),
+                             new SqlParameter("@todate", to_date)
+                       };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_arizonasales_List", parameters);
                 }
                 else
                 {
@@ -129,8 +138,8 @@ namespace LaylaERP.BAL
                 }
 
 
-                DataSet ds1 = new DataSet();
-                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+             
+               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
@@ -166,37 +175,45 @@ namespace LaylaERP.BAL
             {
                 exportorderlist.Clear();
                 string ssql;
-
+                DataSet ds1 = new DataSet();
                 if (from_date != "" && to_date != "")
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                    + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                    + " cast(umatotal.meta_value as decimal(10,2)) Total,"
-                    + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name,"
-                    // + " umitem.order_item_name orderItem,"
-                    //+ " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
-                    //+" stuff((select(ui.order_item_name + ' x ' + uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' for xml path('')),1,1,'')  itemname"
-                    + " CONCAT(ui.order_item_name,' x ',+uim.meta_value) as itemname"
-                    + " FROM wp_posts u"
-                    + " LEFT join wp_woocommerce_order_items ui on ui.order_id = u.ID"
-                    + " LEFT join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'"
+                    //ssql = "SELECT ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    //+ " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //+ " cast(umatotal.meta_value as decimal(10,2)) Total,"
+                    //+ " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name,"
+                    //// + " umitem.order_item_name orderItem,"
+                    ////+ " (select group_concat(ui.order_item_name,' x ',uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' )  itemname"
+                    ////+" stuff((select(ui.order_item_name + ' x ' + uim.meta_value) from wp_woocommerce_order_items ui inner join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'  where ui.order_id = u.ID and ui.order_item_type = 'line_item' for xml path('')),1,1,'')  itemname"
+                    //+ " CONCAT(ui.order_item_name,' x ',+uim.meta_value) as itemname"
+                    //+ " FROM wp_posts u"
+                    //+ " LEFT join wp_woocommerce_order_items ui on ui.order_id = u.ID"
+                    //+ " LEFT join wp_woocommerce_order_itemmeta uim on uim.order_item_id = ui.order_item_id and uim.meta_key = '_qty'"
 
-                    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                    //+ " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
-                    + " WHERE ui.order_item_type = 'line_item' AND post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
+                    //+ " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    ////+ " WHERE post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
+                    //+ " WHERE ui.order_item_type = 'line_item' AND post_type IN('shop_order') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' AND umatotal.meta_value IN ('0', '0.00') order by post_status";
 
+
+                    SqlParameter[] parameters =
+                       {
+                            new SqlParameter("@qflag", "PO"),
+                            new SqlParameter("@fromdate", from_date),
+                             new SqlParameter("@todate", to_date)
+                       };
+                    ds1 = SQLHelper.ExecuteDataSet("erp_ZeroOrder_List", parameters);
                 }
                 else
                 {
@@ -204,8 +221,8 @@ namespace LaylaERP.BAL
                 }
 
 
-                DataSet ds1 = new DataSet();
-                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                
+                //ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
@@ -772,96 +789,104 @@ namespace LaylaERP.BAL
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
-                    if (txtState == "ALL")
-                    {
-                        ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                        // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                        + " umadd.meta_value shiptostreet,"
-                        + " umacity.meta_value shiptocity,"
-                        + " umastate.meta_value shiptostate,"
-                        + " umapostalcode.meta_value shiptozip,"
-                        + " umacountry.meta_value shiptocountrycode,"
-
-                        + " umaddbilling.meta_value billingstreet,"
-                        + " umacitybilling.meta_value billingcity,"
-                        + " umastatebilling.meta_value billingstate,"
-                        + " umapostalcodebilling.meta_value billingzip,"
-                        + " umacountrybilling.meta_value billingcountry,"
-                        + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
-                        + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
-                        + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
-                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                        + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
-                        + " FROM wp_posts u"
-                        + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state'  AND umastate.meta_value IN ('CA', 'CO', 'CT', 'IL', 'IN', 'MI', 'MS', 'NC', 'NE', 'NJ', 'NM', 'PA', 'TN', 'TX', 'WA', 'AR', 'FL', 'GA', 'IA', 'MO', 'OH', 'SC', 'WI') And umastate.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-
-                        + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
-
-                        + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                        + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
-                    }
-                    else
-                    {
-                        ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                         // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
-                         + " umadd.meta_value shiptostreet,"
-                         + " umacity.meta_value shiptocity,"
-                         + " umastate.meta_value shiptostate,"
-                         + " umapostalcode.meta_value shiptozip,"
-                         + " umacountry.meta_value shiptocountrycode,"
-
-                         + " umaddbilling.meta_value billingstreet,"
-                         + " umacitybilling.meta_value billingcity,"
-                         + " umastatebilling.meta_value billingstate,"
-                         + " umapostalcodebilling.meta_value billingzip,"
-                         + " umacountrybilling.meta_value billingcountry,"
-                         + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
-                         + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
-                         + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
-                         + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                         + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
-                         + " FROM wp_posts u"
-                         + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state'  AND umastate.meta_value IN ('CA', 'CO', 'CT', 'IL', 'IN', 'MI', 'MS', 'NC', 'NE', 'NJ', 'NM', 'PA', 'TN', 'TX', 'WA', 'AR', 'FL', 'GA', 'IA', 'MO', 'OH', 'SC', 'WI') And umastate.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-
-                         + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
-
-                         + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                         + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
-                         + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
-                    }
-
-
-
-
                     DataSet ds1 = new DataSet();
-                    ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                    //if (txtState == "ALL")
+                    //{
+                    //    ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    //    // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //    + " umadd.meta_value shiptostreet,"
+                    //    + " umacity.meta_value shiptocity,"
+                    //    + " umastate.meta_value shiptostate,"
+                    //    + " umapostalcode.meta_value shiptozip,"
+                    //    + " umacountry.meta_value shiptocountrycode,"
+
+                    //    + " umaddbilling.meta_value billingstreet,"
+                    //    + " umacitybilling.meta_value billingcity,"
+                    //    + " umastatebilling.meta_value billingstate,"
+                    //    + " umapostalcodebilling.meta_value billingzip,"
+                    //    + " umacountrybilling.meta_value billingcountry,"
+                    //    + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                    //    + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                    //    + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                    //    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                    //    + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
+                    //    + " FROM wp_posts u"
+                    //    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state'  AND umastate.meta_value IN ('CA', 'CO', 'CT', 'IL', 'IN', 'MI', 'MS', 'NC', 'NE', 'NJ', 'NM', 'PA', 'TN', 'TX', 'WA', 'AR', 'FL', 'GA', 'IA', 'MO', 'OH', 'SC', 'WI') And umastate.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+
+                    //    + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+
+                    //    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
+                    //    + " WHERE umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
+                    //}
+                    //else
+                    //{
+                    //    ssql = "SELECT 'web' provider,'Order' transaction_type,'' transaction_reference_id, ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    //     // + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  address,"
+                    //     + " umadd.meta_value shiptostreet,"
+                    //     + " umacity.meta_value shiptocity,"
+                    //     + " umastate.meta_value shiptostate,"
+                    //     + " umapostalcode.meta_value shiptozip,"
+                    //     + " umacountry.meta_value shiptocountrycode,"
+
+                    //     + " umaddbilling.meta_value billingstreet,"
+                    //     + " umacitybilling.meta_value billingcity,"
+                    //     + " umastatebilling.meta_value billingstate,"
+                    //     + " umapostalcodebilling.meta_value billingzip,"
+                    //     + " umacountrybilling.meta_value billingcountry,"
+                    //     + " cast(umashipingamount.meta_value as decimal(10,2)) shipping_amount, 0 handling_amount,"
+                    //     + " cast(umatotal.meta_value as decimal(10,2)) - cast(umatax.meta_value as decimal(10,2)) Total,"
+                    //     + " cast(umadiscount.meta_value as decimal(10,2)) Discount,"
+                    //     + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                    //     + " CONCAT(umfname.meta_value, ' ', COALESCE(umlname.meta_value, '')) Name"
+                    //     + " FROM wp_posts u"
+                    //     + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state'  AND umastate.meta_value IN ('CA', 'CO', 'CT', 'IL', 'IN', 'MI', 'MS', 'NC', 'NE', 'NJ', 'NM', 'PA', 'TN', 'TX', 'WA', 'AR', 'FL', 'GA', 'IA', 'MO', 'OH', 'SC', 'WI') And umastate.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+
+                    //     + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+
+                    //     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
+                    //     + " LEFT OUTER JOIN wp_postmeta umashipingamount on umashipingamount.meta_key = '_order_shipping' And umashipingamount.post_id = u.ID"
+                    //     + " WHERE umastate.meta_value =  '" + txtState + "' and  umastate.post_id IN (SELECT ID FROM wp_posts WHERE post_status IN ('wc-completed','wc-processing') AND post_type='shop_order' AND  cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' ) and cast(umatax.meta_value as decimal(10,2)) <> 0.00 order by post_status";
+                    //}
+
+
+                    SqlParameter[] parameters =
+                       {
+                            new SqlParameter("@qflag", txtState),
+                            new SqlParameter("@fromdate", fromdate),
+                             new SqlParameter("@todate", todate)
+                        };
+
+                    ds1 = SQLHelper.ExecuteDataSet("erp_TaxJarOrder_List", parameters);
+
+
+                    //ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                     for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                     {
                         Export_Details uobj = new Export_Details();
@@ -900,68 +925,78 @@ namespace LaylaERP.BAL
             {
                 exportorderlist.Clear();
                 string ssql;
-
+                DataSet ds1 = new DataSet();
                 if (from_date != "" && to_date != "")
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
-                    if (txtState == "ALL")
+                    
+                    //if (txtState == "ALL")
+                    //{
+                    //    ssql = "SELECT distinct ID,post_date, post_status,"
+                    //    + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
+                    //    + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
+                    //    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                    //    + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
+                    //    + " FROM wp_posts u"
+                    //    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umshippingfirst on umshippingfirst.meta_key = '_shipping_first_name' And umshippingfirst.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umshippinglast on umshippinglast.meta_key = '_shipping_last_name' And umshippinglast.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.meta_value IN ('CA','CO','CT','IL','IN','MI','MS','NE','NJ','NM','NC','PA','TX','WA','TN') and umastate.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umaddbilling2 on umaddbilling2.meta_key = '_billing_address_2' And umaddbilling2.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
+                    //    + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00   order by post_status";
+                    //}
+                    //else
+                    //{
+                    //    ssql = "SELECT distinct ID,post_date, post_status,"
+                    //    + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
+                    //    + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
+                    //    + " cast(umatax.meta_value as decimal(10,2)) Tax,"
+                    //    + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
+                    //    + " FROM wp_posts u"
+                    //    + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umshippingfirst on umshippingfirst.meta_key = '_shipping_first_name' And umshippingfirst.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umshippinglast on umshippinglast.meta_key = '_shipping_last_name' And umshippinglast.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And  umastate.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umaddbilling2 on umaddbilling2.meta_key = '_billing_address_2' And umaddbilling2.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
+                    //    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
+                    //    + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00  order by post_status";
+                    //}
+
+                    SqlParameter[] parameters =
                     {
-                        ssql = "SELECT distinct ID,post_date, post_status,"
-                        + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
-                        + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
-                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
-                        + " FROM wp_posts u"
-                        + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umshippingfirst on umshippingfirst.meta_key = '_shipping_first_name' And umshippingfirst.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umshippinglast on umshippinglast.meta_key = '_shipping_last_name' And umshippinglast.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And umastate.meta_value IN ('CA','CO','CT','IL','IN','MI','MS','NE','NJ','NM','NC','PA','TX','WA','TN') and umastate.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umaddbilling2 on umaddbilling2.meta_key = '_billing_address_2' And umaddbilling2.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                        + " WHERE post_type IN ('shop_order_refund') AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00   order by post_status";
-                    }
-                    else
-                    {
-                        ssql = "SELECT distinct ID,post_date, post_status,"
-                        + " CONCAT(COALESCE(umfname.meta_value,''),' ',COALESCE(umlname.meta_value, ''),' ' , COALESCE(umadd.meta_value,''), ' ', COALESCE(umadd2.meta_value, ''), ' ',  COALESCE(umacity.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcode.meta_value,''), ' ',  COALESCE(umacountry.meta_value,''))  shippingaddress,"
-                        + " CONCAT(COALESCE(umshippingfirst.meta_value,''),' ',COALESCE(umshippinglast.meta_value, ''),' ' , COALESCE(umaddbilling.meta_value,''), ' ', COALESCE(umaddbilling2.meta_value, ''), ' ',  COALESCE(umacitybilling.meta_value,''), ' ',  COALESCE(umastate.meta_value,''), ' ',  COALESCE(umapostalcodebilling.meta_value,''), ' ',  COALESCE(umacountrybilling.meta_value,''))  billingaddress,"
-                        + " cast(umatax.meta_value as decimal(10,2)) Tax,"
-                        + " cast(umrefunfee.meta_value as decimal(10,2)) RefundFee"
-                        + " FROM wp_posts u"
-                        + " LEFT OUTER JOIN wp_postmeta umfname on umfname.meta_key = '_billing_first_name' And umfname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umlname on umlname.meta_key = '_billing_last_name' And umlname.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umshippingfirst on umshippingfirst.meta_key = '_shipping_first_name' And umshippingfirst.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umshippinglast on umshippinglast.meta_key = '_shipping_last_name' And umshippinglast.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umadd on umadd.meta_key = '_shipping_address_1' And umadd.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = '_shipping_address_2' And umadd2.user_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacity on umacity.meta_key = '_shipping_city' And umacity.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastate on umastate.meta_key = '_shipping_state' And  umastate.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcode on umapostalcode.meta_key = '_shipping_postcode' And umapostalcode.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountry on umacountry.meta_key = '_shipping_country' And umacountry.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umaddbilling on umaddbilling.meta_key = '_billing_address_1' And umaddbilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umaddbilling2 on umaddbilling2.meta_key = '_billing_address_2' And umaddbilling2.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacitybilling on umacitybilling.meta_key = '_shipping_city' And umacitybilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umastatebilling on umastatebilling.meta_key = '_shipping_state' And umastatebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umapostalcodebilling on umapostalcodebilling.meta_key = '_shipping_postcode' And umapostalcodebilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umacountrybilling on umacountrybilling.meta_key = '_shipping_country' And umacountrybilling.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umrefunfee on umrefunfee.meta_key = '_refund_amount' And umrefunfee.post_id = u.ID"
-                        + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                        + " WHERE post_type IN ('shop_order_refund') and umastate.meta_value =  '" + txtState + "' AND cast(post_date as date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and cast(post_date as date)<= '" + todate.ToString("yyyy-MM-dd") + "' and cast(umatax.meta_value as decimal(10,2)) <> 0.00  order by post_status";
-                    }
+                            new SqlParameter("@qflag", txtState),
+                            new SqlParameter("@fromdate", fromdate),
+                             new SqlParameter("@todate", todate)
+                        };
+
+                    ds1 = SQLHelper.ExecuteDataSet("erp_salestaxrefunded_List", parameters);
                 }
                 else
                 {
@@ -969,8 +1004,8 @@ namespace LaylaERP.BAL
                 }
 
 
-                DataSet ds1 = new DataSet();
-                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+           
+                //ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();

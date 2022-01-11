@@ -8,6 +8,7 @@
     using System.Data;
     using System.Data.SqlClient;
     using Newtonsoft.Json;
+    using LaylaERP_API.Models;
 
     public class CommonRepositry
     {
@@ -73,6 +74,104 @@
                 throw ex;
             }
             return ds;
+        }        
+
+        public static DataTable GetGiftCards(long user_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "URGCL"),
+                    new SqlParameter("@customer_id", user_id)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_details", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetUserAddress(long user_id, string flag)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@id", user_id)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_address", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable UpdateShippingAddress(UserShippingModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "USADU"),
+                    new SqlParameter("@id", model.user_id),
+                    new SqlParameter("@first_name", model.shipping_first_name),
+                    new SqlParameter("@last_name", model.shipping_last_name),
+                    new SqlParameter("@company", model.shipping_company),
+                    new SqlParameter("@address_1", model.shipping_address_1),
+                    new SqlParameter("@address_2", model.shipping_address_2),
+                    new SqlParameter("@phone", model.shipping_phone),
+                    new SqlParameter("@email", model.shipping_email),
+                    new SqlParameter("@city", model.shipping_city),
+                    new SqlParameter("@state", model.shipping_state),
+                    new SqlParameter("@country", model.shipping_country),
+                    new SqlParameter("@postcode", model.shipping_postcode)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_address", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable UpdateBillingAddress(UserBillingModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", "UBADU"),
+                    new SqlParameter("@id", model.user_id),
+                    new SqlParameter("@first_name", model.billing_first_name),
+                    new SqlParameter("@last_name", model.billing_last_name),
+                    new SqlParameter("@company", model.billing_company),
+                    new SqlParameter("@address_1", model.billing_address_1),
+                    new SqlParameter("@address_2", model.billing_address_2),
+                    new SqlParameter("@phone", model.billing_phone),
+                    new SqlParameter("@email", model.billing_email),
+                    new SqlParameter("@city", model.billing_city),
+                    new SqlParameter("@state", model.billing_state),
+                    new SqlParameter("@country", model.billing_country),
+                    new SqlParameter("@postcode", model.billing_postcode)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_user_address", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

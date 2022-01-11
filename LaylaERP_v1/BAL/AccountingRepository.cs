@@ -238,8 +238,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -252,6 +252,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@fk_accounting_category","0"),
                     new SqlParameter("@active","1"),
                     new SqlParameter("@reconcilable","0"),
+                    new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -347,7 +348,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -356,6 +357,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@account_parent",model.account_parent),
                     new SqlParameter("@label", model.label),
                     new SqlParameter("@account_number",model.account_number),
+                    new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

@@ -41,4 +41,15 @@ namespace LaylaERP.Models
         public string pcg_type { get; set; }
     }
 
+    public class ChartAccountEntryModel
+    {
+        public int rowid { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public string detail_type { get; set; }
+        public decimal balance { get; set; }
+        public decimal bank_balance { get; set; }
+        public DateTime entry_date { get; set; }
+    }
+
 }

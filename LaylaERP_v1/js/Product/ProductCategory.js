@@ -194,8 +194,11 @@ function CategoryList() {
                 "data": "ImagePath", sWidth: "10%",
                 "render": function (data) {
                     url = "../../Content/ProductCategory/" + data + "";
-                    var result = checkFileExist(url);
-                    if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+                    //var result = checkFileExist(url);
+                    //if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+                    //else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+                    //else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+                    if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
                     else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                     else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                 }

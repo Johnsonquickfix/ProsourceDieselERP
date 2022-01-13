@@ -22,7 +22,7 @@
             ResultModel obj = new ResultModel();
             try
             {
-                UserPassword = EncryptedPwd(UserPassword);
+                //UserPassword = EncryptedPwd(UserPassword);
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "AUTH"),
@@ -35,6 +35,15 @@
                     obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
                     obj.error_msg = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
                     obj.user_data = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
+                    if (obj.success)
+                    {
+                        string user_pass = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
+                        if (!CheckPassword(UserPassword, user_pass))
+                        {
+                            obj.success = false; obj.user_data = 0;
+                            obj.error_msg = "The password you entered for the username's is incorrect.";
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -166,13 +175,15 @@
             string expected = "$P$BPGbwPLs6N6VlZ7OqRUvIY1Uvo/Bh9/";
             return MD5Encode(varPassword, expected);
         }
+        public static bool CheckPassword(string password, string stored_hash)
+        {
+            string hash = MD5Encode(password, stored_hash);
+            return hash == password;
+        }
         static string MD5Encode(string password, string hash)
         {
             string output = "*0";
-            if (hash == null)
-            {
-                return output;
-            }
+            if (hash == null) { return output; }
 
             if (hash.StartsWith(output)) output = "*1";
 
@@ -189,23 +200,32 @@
             string salt = hash.Substring(4, 8);
             if (salt.Length != 8) return output;
 
-            byte[] hashBytes = { };
+            //byte[] hashBytes = { };
+            //using (MD5 md5Hash = MD5.Create())
+            //{
+            //    hashBytes = md5Hash.ComputeHash(Encoding.ASCII.GetBytes(salt + password));
+            //    byte[] passBytes = Encoding.ASCII.GetBytes(password);
+            //    do
+            //    {
+            //        hashBytes = md5Hash.ComputeHash(hashBytes.Concat(passBytes).ToArray());
+            //    } while (--count > 0);
+            //}
+            string _hash = string.Empty;
             using (MD5 md5Hash = MD5.Create())
             {
-                hashBytes = md5Hash.ComputeHash(Encoding.ASCII.GetBytes(salt + password));
-                byte[] passBytes = Encoding.ASCII.GetBytes(password);
+                _hash = BitConverter.ToString(md5Hash.ComputeHash(Encoding.UTF8.GetBytes(salt + password))).Replace("-", string.Empty).ToLower();
                 do
                 {
-                    hashBytes = md5Hash.ComputeHash(hashBytes.Concat(passBytes).ToArray());
+                    _hash = BitConverter.ToString(md5Hash.ComputeHash(Encoding.UTF8.GetBytes(_hash + password))).Replace("-", string.Empty).ToLower();
                 } while (--count > 0);
             }
 
             output = hash.Substring(0, 12);
-            string newHash = Encode64(hashBytes, 16);
+            string newHash = Encode64(_hash, 16);
 
             return output + newHash;
         }
-        static string Encode64(byte[] input, int count)
+        static string Encode64(string input, int count)
         {
             StringBuilder sb = new StringBuilder();
             int i = 0;

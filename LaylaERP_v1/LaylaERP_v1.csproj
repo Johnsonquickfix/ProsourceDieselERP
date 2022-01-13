@@ -657,6 +657,8 @@
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
     <Content Include="js\Accounting\AccountLedgerList.js" />
+    <Content Include="js\Accounting\ChartAccountEntry.js" />
+    <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
@@ -1081,7 +1083,9 @@
     <Content Include="Views\Events\EditEvents.cshtml" />
     <Content Include="Views\Reports\Overviewv4clintreport.cshtml" />
     <Content Include="Views\Reports\SalesReoprtPowerBi.cshtml" />
-    <Content Include="Views\Reports\SalesRepresentativePBI.cshtml" />
+    <Content Include="Views\Accounting\ChartOfAccountEntry.cshtml" />
+    <Content Include="Views\Accounting\ChartAccountEntryList.cshtml" />
+    <Content Include="Views\Accounting\EditChartAccountEntry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

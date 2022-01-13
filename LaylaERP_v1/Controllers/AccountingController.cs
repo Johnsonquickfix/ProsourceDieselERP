@@ -56,6 +56,19 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult ChartOfAccountEntry()
+        {
+            return View();
+        }
+
+        public ActionResult ChartAccountEntryList()
+        {
+            return View();
+        }
+        public ActionResult EditChartAccountEntry()
+        {
+            return View();
+        }
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -145,13 +158,30 @@ namespace LaylaERP.Controllers
             List<SelectListItem> accountsettinglist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-
                 accountsettinglist.Add(new SelectListItem { Text = dr["pcg_type"].ToString(), Value = dr["account_parent"].ToString() });
-
             }
             return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
         }
-
+        public JsonResult GetName()
+        {
+            DataSet ds = AccountingRepository.GetName();
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountsettinglist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDetailType()
+        {
+            DataSet ds = AccountingRepository.GetDetailType();
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountsettinglist.Add(new SelectListItem { Text = dr["labelshort"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetChartOfAccounts(SearchModel model)
         {
 
@@ -443,6 +473,58 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult AddChartOfAccountEntry(ChartAccountEntryModel model)
+        {
+            //int ID = 1;
+            int ID = AccountingRepository.AddChartOfAccountEntry(model);
+            if (ID > 0)
+            {
+                //UserActivityLog.WriteDbLog(LogType.Submit, "create new General Account " + model.pcg_type + " in General Accounts.", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
+                return Json(new { status = true, message = "Chart of account entry saved successfully", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetEventsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = AccountingRepository.GetEventsList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetChartAccountEntryById(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetChartAccountEntryById(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult UpdateChartOfAccountEntry(ChartAccountEntryModel model)
+        {
+            if (model.rowid > 0)
+            {
+                //UserActivityLog.WriteDbLog(LogType.Submit, "Account id (" + model.rowid + ") updated in General Accounts.", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
+                AccountingRepository.UpdateChartOfAccountEntry(model);
+                return Json(new { status = true, message = "Chart of account entry updated successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
         }
     }
 }

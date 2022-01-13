@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "EditChartAccountEntry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+<div class="page-title">
+    <h2>Update Chart of Account Entry</h2> <a title="Click here to back to chart account entry list" data-placement="bottom" data-toggle="tooltip" href="../../Accounting/ChartAccountEntryList" class="btn btn-danger" data-original-title="Click here to back to list">Back to List</a>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
+    <div class="col-md-12">
+        <div class="box box-primary create-user-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" id="hfid" />
+                            <label for="name">Name</label><span style="color:red">*</span>
+                            <select class="form-control select2" id="ddlname"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="startdate">Type</label><span style="color:red">*</span>
+                            <select class="form-control select2" id="ddltype"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="enddate">Detail Type</label><span style="color:red">*</span>
+                            <select class="form-control select2" id="ddldetailtype"></select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="eventassign">Balance</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtbalance" />
+                        </div>
+                        <div class="form-group">
+                            <label for="tag">Bank Balance</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtbankbalance" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Date</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtentrydate" /><span class="even-space"></span>
+                        </div>
+                        <button class="btn btn-danger" id="btnUpdate"><span title="Click here to update details" data-placement="bottom" data-toggle="tooltip">Update</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        //$.when(getType(),getName(), getDetailType()).done(function () { GetEventById(id);})
+        GetChartofaccountById(id);
+    })
+
+    $(function () {
+        $("#txtentrydate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+    });
+</script>
+
+<script>
+    function GetChartofaccountById(id) {
+        var rowid = id;
+        var obj =
+            $.ajax({
+                url: "/Accounting/GetChartAccountEntryById/" + rowid,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        $("#hfid").val(d[0].rowid);
+                        $("#ddlname").val(d[0].name).trigger('change');
+                        $("#ddltype").val(d[0].type).trigger('change');
+                        $("#ddldetailtype").val(d[0].detail_type).trigger('change');
+                        $("#txtbalance").val(parseFloat(d[0].balance).toFixed(2));
+                        $("#txtbankbalance").val(parseFloat(d[0].bank_balance).toFixed(2));
+                        $("#txtentrydate").val(d[0].entry_date);
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+    }
+</script>
+<script src="@Url.Content("~/js/Accounting/ChartAccountEntry.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

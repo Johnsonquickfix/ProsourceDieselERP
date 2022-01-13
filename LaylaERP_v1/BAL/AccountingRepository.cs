@@ -726,5 +726,128 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
+
+        public static DataSet GetName()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT label, rowid from erp_accounting_account");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetDetailType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where labelshort != 'NULL' ");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static int AddChartOfAccountEntry(ChartAccountEntryModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@name", model.name),
+                    new SqlParameter("@type", model.type),
+                    new SqlParameter("@detail_type", model.detail_type),
+                    new SqlParameter("@balance", model.balance),
+                    new SqlParameter("@bank_balance",model.bank_balance),
+                    new SqlParameter("@entry_date",model.entry_date),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_chartaccount_entry1", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetEventsList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.rowid = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (eaa.label like '%" + searchid + "%' OR ept.pcg_type like '%" + searchid + "%' OR eaafordetail.labelshort like '%" + searchid + "%' OR balance like '%" + searchid + "%' OR bank_balance like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (ee.status='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+
+                strSql += "; SELECT (Count(ece.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ece.rowid) TotalRecord FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.rowid = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type where 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetChartAccountEntryById(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] pram = { new SqlParameter("@id", id) };
+                string strSql = "SELECT rowid, name, type, detail_type, balance, bank_balance, convert(varchar(12), entry_date, 110 ) entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int UpdateChartOfAccountEntry(ChartAccountEntryModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@name", model.name),
+                    new SqlParameter("@type", model.type),
+                    new SqlParameter("@detail_type", model.detail_type),
+                    new SqlParameter("@balance", model.balance),
+                    new SqlParameter("@bank_balance",model.bank_balance),
+                    new SqlParameter("@entry_date",model.entry_date),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_chartaccount_entry1", para));
+                return result;
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

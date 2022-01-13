@@ -2,10 +2,13 @@
     getType();
     getName();
     getDetailType();
-
+    $(".select2").select2();
     $("#btnSave").click(function () {
         AddChartOfAccountEntry();
     });
+    $("#btnUpdate").click(function () {
+        UpdateChartOfAccountEntry();
+    })
 })
 function getType() {
     $.ajax({
@@ -92,6 +95,7 @@ function AddChartOfAccountEntry() {
             success: function (data) {
                 if (data.status == true) {
                     swal('Success', data.message, 'success').then((result) => { location.href = '../../Accounting/ChartAccountEntryList'; });
+                    reset();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -143,7 +147,7 @@ function UpdateChartOfAccountEntry() {
             entry_date: entrydate,
         }
         $.ajax({
-            url: '/Accounting//', dataType: 'json', type: 'Post',
+            url: '/Accounting/UpdateChartOfAccountEntry/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
@@ -151,7 +155,8 @@ function UpdateChartOfAccountEntry() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success', data.message, 'success');
+                    swal('Success', data.message, 'success').then((result) => { location.href = '../../Accounting/ChartAccountEntryList'; });
+                    reset();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -162,4 +167,13 @@ function UpdateChartOfAccountEntry() {
         })
 
     }
+}
+
+function reset() {
+    $("#ddlname").val("0");
+    $("#ddltype").val("0");
+    $("#ddldetailtype").val("0");
+    $("#txtbalance").val("");
+    $("#txtbankbalance").val("");
+    $("#txtentrydate").val("");
 }

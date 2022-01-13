@@ -87,7 +87,7 @@ function PurchaseOrderGrid() {
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },
             {
                 data: 'Status', title: 'Status', sWidth: "8%", render: function (id, type, full, meta) {
-                    if ((full.fk_status == 5 || full.fk_status == 6) && $('.lbltitle').data('ut').includes('administrator') || $('.lbltitle').data('ut').includes('accounting')) return full.Status + ' <a title="Click here to update purchase order quantity" data-toggle="tooltip" href="po-amendment?id=' + full.id + '"><i class="fas fa-edit"></i></a>';
+                    if ((full.fk_status == 5 || full.fk_status == 6) && $('.lbltitle').data('ut').includes('administrator') || $('.lbltitle').data('ut').includes('accounting')) return full.Status + ' <a title="Click here to update purchase order quantity" data-toggle="tooltip" href="javascript:void(0);" onclick="AmendmentPO(' + full.id + ');"><i class="fas fa-edit"></i></a>';
                     else return full.Status;
                 }
             },
@@ -139,4 +139,8 @@ function orderStatus() {
             });
         }
     }]);
+}
+function AmendmentPO(id) {
+    ActivityLog('PO Amendment', '/PurchaseOrder/po-amendment?id=' + id + '');
+    window.location = 'po-amendment?id=' + id
 }

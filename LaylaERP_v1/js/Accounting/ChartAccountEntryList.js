@@ -1,11 +1,11 @@
 ﻿$(document).ready(function () {
-    EventGrid();
+    ChartofaccountGrid();
     $('#btnSearch').click(function () {
-        EventGrid();
+        ChartofaccountGrid();
     });
 })
 
-function EventGrid() {
+function ChartofaccountGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
@@ -49,18 +49,18 @@ function EventGrid() {
             { data: 'name', title: 'Name', sWidth: "10%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },
             { data: 'detailtype', title: 'Detail Type', sWidth: "10%" },
-            { data: 'balance', title: 'Balance', sWidth: "10%" },
-            { data: 'bank_balance', title: 'Bank Balance', sWidth: "10%" },
+            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'bank_balance', title: 'Bank Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             {
-                data: 'datesort', title: 'Date', sWidth: "10%", render: function (inv_num, type, full, meta) { return full.entrydate; }
+                data: 'datesort', title: 'Date', sWidth: "10%", render: function (id, type, full, meta) { return full.entrydate; }
             },
-            //{
-            //    'data': 'id', sWidth: "10%",
-            //    'render': function (id, type, full, meta) {
-            //        return '<span title="Click here to edit details" data-placement="bottom" data-toggle="tooltip"><a href="../Accounting/EditChartAccountEntry/' + id + '" onclick="ActivityLog();"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+            {
+                'data': 'id', sWidth: "10%",
+                'render': function (id, type, full, meta) {
+                    return '<span title="Click here to edit details" data-placement="bottom" data-toggle="tooltip"><a href="../Accounting/EditChartAccountEntry/' + id + '" onclick="ActivityLog();"><i class="glyphicon glyphicon-pencil"></i></a></span>';
 
-            //    }
-            //}
+                }
+            }
 
         ]
     });

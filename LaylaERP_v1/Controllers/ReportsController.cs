@@ -153,6 +153,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult SalesRepresentativePBI()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {

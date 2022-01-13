@@ -18,7 +18,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strSql = "SELECT  post_id, Recipient,Amount,Qty,[Message],_billing_first_name FirstName,_billing_last_name LastName,_billing_country Country,_billing_state [State],_billing_city City, " +
+                string strSql = "SELECT  post_id, Recipient,coalesce (Amount,'0') Amount,coalesce (Qty,'0') Qty,[Message],_billing_first_name FirstName,_billing_last_name LastName,_billing_country Country,_billing_state [State],_billing_city City, " +
                     "_billing_address_1 Address, _billing_address_2 Address2,_billing_company Company, _billing_postcode ZipCode,_billing_phone PhoneNumber, " +
                     "employee_id, employee_name, _billing_email sender_email FROM(SELECT  post_id, meta_key, meta_value, (Select top 1 Rlist.meta_value as Recipient from wp_woocommerce_order_items oi inner " +
                     "join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join wp_woocommerce_order_itemmeta Rlist on oi.order_item_id = Rlist.order_item_id and Rlist.meta_key = 'wc_gc_giftcard_to_multiple' where order_id = meta.post_id) Recipient," +

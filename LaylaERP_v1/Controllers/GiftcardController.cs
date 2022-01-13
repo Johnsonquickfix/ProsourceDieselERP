@@ -225,7 +225,10 @@ namespace LaylaERP.Controllers
 
                 model.message = data.Rows[0]["Message"].ToString();
                 model.qty = Convert.ToInt32(data.Rows[0]["Qty"].ToString());
-                model.amount = Convert.ToDecimal(data.Rows[0]["amount"].ToString()) / model.qty;
+                if (model.qty > 0)
+                    model.amount = Convert.ToDecimal(data.Rows[0]["amount"].ToString()) / model.qty;
+                else
+                    model.amount = 0;
                 return View(model);
             }
             else

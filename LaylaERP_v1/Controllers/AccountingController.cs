@@ -518,7 +518,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 //UserActivityLog.WriteDbLog(LogType.Submit, "Account id (" + model.rowid + ") updated in General Accounts.", "/Accounting/productsaccount" + ", " + Net.BrowserInfo);
-                //AccountingRepository.UpdatePcgType(model);
+                AccountingRepository.UpdateChartOfAccountEntry(model);
                 return Json(new { status = true, message = "Chart of account entry updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else

@@ -783,7 +783,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
                                + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.rowid = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -815,7 +815,7 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] pram = { new SqlParameter("@id", id) };
-                string strSql = "SELECT rowid, name, type, detail_type, balance, bank_balance, entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
+                string strSql = "SELECT rowid, name, type, detail_type, balance, bank_balance, convert(varchar(12), entry_date, 110 ) entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
                 dt = ds.Tables[0];
             }
@@ -832,7 +832,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                     new SqlParameter("@qflag", "U"),
-                    new SqlParameter("@name", model.rowid),
+                    new SqlParameter("@rowid", model.rowid),
                     new SqlParameter("@name", model.name),
                     new SqlParameter("@type", model.type),
                     new SqlParameter("@detail_type", model.detail_type),

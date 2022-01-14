@@ -38,6 +38,25 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
+                <label>Month</label>
+                <select class="form-control select2" id="ddlmonth" placeholder="Select user" multiple style="width: 100%;">
+                    <option value="1">January</option>
+                    <option value="2">Feburary</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
                 <br /><br />
                 <button id="filtersrchexp" class="button"><span title="Click here for forecast sales LSR report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
             </div>
@@ -78,7 +97,7 @@
                 Value1 = Difference / Ratio<br />
                 Value2 = Average - value1 * Ratio<br />
                 Forecast = (Numeric value of month + n)  * Value1 + Value2<br />
-                Base months are October, November, and December.<br />
+                Base months are September, October, and November.<br />
                 Weight of October, November, and December are 1, 2, 3 respectively.
             </p>
             <!--<p>
@@ -108,11 +127,14 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { DatagridOrder(); });
-
+        $.when(globallastyear('year'), globalnextyear('nextyear'), months()).done(function () { DatagridOrder(); });
         $("#filtersrchexp").click(function () {
             if ($("#year").val() == "") {
                 swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
+            }
+            else if ($("#month").val() == "")
+            {
+                swal('Alert', 'Please select month', 'error').then(function () { swal.close(); $('#month').focus(); });
             }
             else {
 
@@ -120,7 +142,8 @@
                 return false;
             }
         });
-
+        $('.select2').select2();
+        months();
     });
 
     //Years start
@@ -137,8 +160,15 @@
     function DatagridOrder() {
         var Year = $("#year").val();
         var Nextyear = $("#nextyear").val();
+        let assigned_to = '10,11,12';
+        console.log(assigned_to);
         var obj = { year: Year }
         var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
+        var montharray = $('#ddlmonth option:selected').toArray().map(item => item.value);
+        let month1 = parseInt(montharray[0]);
+        let month2 = parseInt(montharray[1]);
+        let month3 = parseInt(montharray[2]);
+        
         $.ajax({
             url: '/Reports/GetForecastSalesLSR',
             method: 'post',
@@ -153,16 +183,18 @@
                 data = JSON.parse(data);
                 let _avg = 0.00, _v1 = 0.00, _v2 = 0.00, _v3 = 0.00, _diff = 0.00, _summary = 0.00, _value1 = 0.00, _value2 = 0.00, _ratio = 0, _n = 0, _forcast = 0.00;
                 $.each(data, function (i, r) {
-                    if (r.month == 10) { _avg += parseFloat(r.sales) || 0.00; _v1 = (parseFloat(r.sales) || 0.00) * 1; }
-                    else if (r.month == 11) { _avg += parseFloat(r.sales) || 0.00; _v2 = (parseFloat(r.sales) || 0.00) * 2; }
-                    else if (r.month == 12) { _avg += parseFloat(r.sales) || 0.00; _v3 = (parseFloat(r.sales) || 0.00) * 3; }
+                    if (r.month == month1) { _avg += parseFloat(r.sales) || 0.00; _v1 = (parseFloat(r.sales) || 0.00) * 1; }
+                    else if (r.month == month2) { _avg += parseFloat(r.sales) || 0.00; _v2 = (parseFloat(r.sales) || 0.00) * 2; }
+                    else if (r.month == month3) { _avg += parseFloat(r.sales) || 0.00; _v3 = (parseFloat(r.sales) || 0.00) * 3; }
                 });
-                _avg = _avg > 0 ? _avg / 3 : 0;
+                //_avg = _avg > 0 ? _avg / 3 : 0;
+                _avg = _avg / 3;
                 _summary = _v1 + _v2 + _v3;
                 _diff = (_summary) - _avg * 6;
                 _ratio = 2;
                 _n = 3;
-                _value1 = _diff > 0 ? _diff / _ratio : 0;
+                //_value1 = _diff > 0 ? _diff / _ratio : 0;
+                _value1 = _diff / _ratio;
                 _value2 = _avg - (_value1 * _ratio);
 
                 let _list = $.map(data, function (v) { return { 'month': v.month, 'month_name': v.month_name, 'sales': v.sales, 'forecast': ((v.month + 3) * _value1) + _value2 } });
@@ -217,6 +249,11 @@
             complete: function () { $("#loader").hide(); }
         });
 
+    }
+
+    function months() {
+        var vals = ["9", "10", "11"];
+        $("#ddlmonth").val(vals).trigger("change");
     }
 </script>
 <script src="~/js/globalyear.js"></script>

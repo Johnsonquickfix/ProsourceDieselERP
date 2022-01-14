@@ -93,12 +93,12 @@
                 Average = Average of the previous year last three months sales.<br />
                 Summary = Summary of the previous year last three months sales with weight considered.<br />
                 Difference = Summary -  Average * (Sum of base months weight) <br />
-                Ratio = (Sumation of square of previous year last months weight) - (Sumation of previous year last three months weight / 3)^2<br />
+                Ratio = (Summation of square of previous year last months weight) - [(Summation of previous year last three months weight / 3)^2]*3<br />
                 Value1 = Difference / Ratio<br />
                 Value2 = Average - value1 * Ratio<br />
                 Forecast = (Numeric value of month + n)  * Value1 + Value2<br />
-                Base months are September, October, and November.<br />
-                Weight of October, November, and December are 1, 2, 3 respectively.
+                Base months are October, November, and December.<br />
+                Weight of October, November, and December are 1, 2 and 3 respectively.
             </p>
             <!--<p>
         <b>Example: Forcast for january 2022</b><br />

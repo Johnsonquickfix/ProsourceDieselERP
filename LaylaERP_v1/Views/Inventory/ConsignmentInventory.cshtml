@@ -116,5 +116,8 @@
 <script type="text/javascript">
     jQuery(function ($) {
         $('.inventory-table').wrap('<div class="wrapper-invents" \>');
+        $(document).on('click', '#btnSearch', function () {
+            $('.inventory-table').wrap('<div class="wrapper-invents" \>');
+        });
     });
 </script>

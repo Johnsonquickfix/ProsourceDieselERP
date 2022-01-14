@@ -29,6 +29,7 @@
     });
     $(document).on("click", ".btnEdit", function (t) {
         t.preventDefault(); $("#loader").show(); isEdit(true);
+        ActivityLog('PO Amendment Edit', '/PurchaseOrder/po-amendment?id=' + $('#lblPoNo').data('id') + '');
         $('#ddlVendor').prop("disabled", true); $('.billinfo,.orderfiles').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel" data-placement="left"><i class="fa fa-undo"></i> Cancel</button> <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update" data-placement="bottom"><i class="far fa-save"></i> Update</button>');
@@ -368,6 +369,8 @@ function saveVendorPO() {
     else if (date_livraison == "") { swal('alert', 'Please select planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
     //else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     else {
+        ActivityLog('PO Amendment Update for vendor id (' + vendorid + ')', '/PurchaseOrder/po-amendment?id=' + id + '');
+
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let _order = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, fk_warehouse: wh_id, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
@@ -386,7 +389,10 @@ function saveVendorPO() {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             $('#lblPoNo').data('id', result[0].id); 
-                            swal('Success', 'Purchase order updated successfully.', "success").then(function () { window.location.href = window.location.origin + "/PurchaseOrder/po-amendment?id=" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/po-amendment'); });
+                            swal('Success', 'Purchase order updated successfully.', "success").then(function () {
+                                window.location.href = window.location.origin + "/PurchaseOrder/po-amendment?id=" + result[0].id;
+                                //ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/po-amendment');
+                            });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });

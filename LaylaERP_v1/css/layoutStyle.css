@@ -3063,10 +3063,27 @@ width:100% !important;}
         .employee-scrolls {
             overflow: auto;
         }
+    .newvendor #aditional-info #dtdata_wrapper > .row + .row > .col-sm-12{padding:0px;max-width:calc(100% - 30px); margin:auto; float:none;overflow:auto;
+    }
+    .newvendor #dtdata, .calculate.margins .inventory-table {
+        min-width: 1000px;
+    }
+    #proposal-table .proposal-row .form-group.d-flex .col-sm-12 {
+        width: 100%;
+    }
+    #proposal-table .proposal-row .table-responsive {
+width:100%; overflow-x:auto !important;    }
     }
 @media(max-width:767px) {
+    .index_col_row > div {
+        width: 100%;
+    }
+    .index_col_row {
+    flex-wrap:wrap;}
     #btnResendEmail {
-    margin-right:15px; margin-top:10px;}
+        margin-right: 15px;
+        margin-top: 10px;
+    }
     .swal2-container, #roleModal {
         z-index: 9999999 !important;
     }

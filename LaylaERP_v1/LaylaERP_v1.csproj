@@ -1086,6 +1086,7 @@
     <Content Include="Views\Accounting\ChartOfAccountEntry.cshtml" />
     <Content Include="Views\Accounting\ChartAccountEntryList.cshtml" />
     <Content Include="Views\Accounting\EditChartAccountEntry.cshtml" />
+    <Content Include="Views\Reports\SalesRepresentativePBI.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

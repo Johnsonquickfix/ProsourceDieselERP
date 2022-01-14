@@ -600,6 +600,7 @@
                     ExpirationDate = (dt.Rows[0]["authorize_net_card_expiry_date"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_expiry_date"].ToString() : "";
                     ExpirationDate = ExpirationDate.Split('-')[1] + ExpirationDate.Split('-')[0];
                 }
+                //var result = clsAuthorizeNet.RefundTransaction("40080413310", "8888", "1223", 1);
                 var result = clsAuthorizeNet.RefundTransaction(TransactionID, CardNumber, ExpirationDate, model.NetTotal);
                 if (!string.IsNullOrEmpty(result))
                 {

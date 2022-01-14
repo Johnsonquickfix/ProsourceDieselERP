@@ -592,12 +592,14 @@
             try
             {
                 DataTable dt = OrderRepository.OrderPaymentDetails(model.order_id);
-                string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty;
+                string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty, crdtype = string.Empty, ExpirationDatePrint = string.Empty;
                 if (dt.Rows.Count > 0)
                 {
                     TransactionID = (dt.Rows[0]["authorize_net_trans_id"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_trans_id"].ToString() : "";
                     CardNumber = (dt.Rows[0]["authorize_net_card_account_four"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_account_four"].ToString() : "";
+                    crdtype = (dt.Rows[0]["authorize_net_cim_credit_card_card_type"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_cim_credit_card_card_type"].ToString() : "";
                     ExpirationDate = (dt.Rows[0]["authorize_net_card_expiry_date"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_expiry_date"].ToString() : "";
+                    ExpirationDatePrint = ExpirationDate.Split('-')[1] + "/" + ExpirationDate.Split('-')[0];
                     ExpirationDate = ExpirationDate.Split('-')[1] + ExpirationDate.Split('-')[0];
                 }
                 //var result = clsAuthorizeNet.RefundTransaction("40080413310", "8888", "1223", 1);
@@ -607,7 +609,8 @@
                     status = true; JSONresult = "Order placed successfully.";
                     OrderNotesModel note_model = new OrderNotesModel();
                     note_model.post_ID = model.order_id;
-                    note_model.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", model.NetTotal);
+                    note_model.comment_content = "Authorize.Net Credit Card Charge Refund Issued: " + crdtype + " ending in " + CardNumber + " (expires " + ExpirationDatePrint + ") (Transaction ID " + result + "). ";
+                    note_model.comment_content += string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", model.NetTotal);
                     note_model.is_customer_note = string.Empty;
                     note_model.is_customer_note = string.Empty;
 

@@ -2329,6 +2329,7 @@ namespace LaylaERP.BAL
                 exportorderlist.Clear();
                 string ssql;
                 DataSet ds1 = new DataSet();
+                //DataTable ds2 = new DataTable();
                 if (year != "" && productid != "")
                 {
 
@@ -2338,6 +2339,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@year", year),
                     new SqlParameter("@pid", productid),
                 };
+                    //ds1 = SQLHelper.ExecuteDataTable("erp_productinventoryforcoste_List", parameters);
                     ds1 = SQLHelper.ExecuteDataSet("erp_productinventoryforcoste_List", parameters);
                     if (ds1.Tables[0].Rows.Count > 0)
                     {

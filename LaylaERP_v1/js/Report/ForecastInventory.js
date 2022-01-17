@@ -93,7 +93,7 @@ function formatPartially(d) {
     let Totalforcostsale = 0;
     let Year = $("#year").val();
     var NextYear = $("#nextyear").val();
-    let option = { PID: d.id, Year: year, Type: account }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Month Name</th><th style="width:5%; text-align:left;">Sales (' + Year + ') </th><th style="width:10%; text-align:left;">Forecast Sales (' + NextYear + ')</th> </tr></thead>';
+    let option = { PID: d.id, Year: year, Type: account }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Month Name</th><th style="width:5%; text-align:left;">Sales Quantity (' + Year + ') </th><th style="width:10%; text-align:left;">Forecast Sales Quantity (' + NextYear + ')</th> </tr></thead>';
     $.ajax({
         url: '/Reports/GetProductInventoryforecast', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {

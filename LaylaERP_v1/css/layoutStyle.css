@@ -3073,8 +3073,24 @@ width:100% !important;}
     }
     #proposal-table .proposal-row .table-responsive {
 width:100%; overflow-x:auto !important;    }
+    #proposal-table .proposal-row > .col-md-12 {width:100%;}
+    .list.purchases .inventory-table{min-width:1000px;}
+    #tblAddItemFinal {min-width: 1000px;}
+    .checkdepositlist .inventory-table {
+    min-width:1000px;}
+    .newvendor .vender-section1 .inventory-table {
+        min-width: 1000px;
+    }
+  
     }
 @media(max-width:767px) {
+    body.add.product #target .nav-tabs-custom .form-group{flex-direction:column;}
+    body.add.product #target .nav-tabs-custom .form-group > label,
+    body.add.product #target .nav-tabs-custom .form-group > div {
+        width: 100%;
+    }
+        body .add.product #target .flex-row_box .col-md-3 {
+    height:auto !important;}
     .index_col_row > div {
         width: 100%;
     }
@@ -3110,5 +3126,61 @@ width:100%; overflow-x:auto !important;    }
         position: static;
         float: none !important;
     }
-
+    .newvendor .vender-section1 #RelatedItemdata_wrapper > .row > .col-sm-12 {
+        overflow-x: auto;
+        max-width: calc(100% - 30px);padding:0px;
+        margin: auto;
+    }
+    .activitylog .table-blue td:last-child {
+        word-break: break-word;
+    }
 }
+@media(max-width:576px) {
+    body.add.product #target .user-top-section.top-with-select .form-check.d-flex {
+        width: 100%;
+    }
+
+    body.add.product #target .custom-flex-space #add {
+        margin-top: 5px;
+    }
+    body.add.product #target .page-title {
+        flex-wrap: wrap;
+    }
+    body.add.product #target .page-heading {
+        width: 100%;
+        margin: 0px 0px 10px 0px;
+    }
+    body.add.product #target #btnbacklist.backtoback {
+    margin:0px 8px 0px 0px;}
+    #ddlattributeadd {
+    margin-bottom:5px;}
+    #product_variations .top.tablenav-top2 .alignleft.actions.bulkactions > select {
+    margin-right:auto;}
+    #product_variations .top.tablenav-top2 .a-float-right{
+        position:absolute; right:15px; bottom:25px; width:auto;
+    }
+    #product_variations .top.tablenav-top2 > *:first-child {
+        margin-bottom: 10px;
+    }
+        #product_variations .top.tablenav-top2 > * {
+    width:100%;}
+    body.add.product #target .flex-row_box .col-md-3 {
+        height: auto !important;
+    }
+    body.add.product .user-top-section .tablenav .actions {flex-wrap:wrap;
+    }
+    body.add.product #txtkeewordfilter {
+        margin-bottom:5px;
+    }
+    body.add.product #tab_23 .rowbox.proposal-row .col-md-6 {width:100%;
+    }
+    .page-title {
+        flex-wrap: wrap;
+    }
+.page-title .page-heading {
+width:100%; margin:0px 0px 10px 0px;}
+.page-title #btnAddVendor + div {
+width:100% !important; margin-top:10px !important;}
+    #order_final_total .col-sm-10.control-label {
+    width:100%;max-width:70%;}
+            }

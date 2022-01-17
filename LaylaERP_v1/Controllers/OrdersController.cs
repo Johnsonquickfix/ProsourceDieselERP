@@ -626,6 +626,41 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult UpdateAffirmPaymentRefund(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                DataTable dt = OrderRepository.OrderPaymentDetails(model.order_id);
+                string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty, crdtype = string.Empty, ExpirationDatePrint = string.Empty;
+                if (dt.Rows.Count > 0)
+                {
+                    TransactionID = (dt.Rows[0]["affirm_charge_id"] != Convert.DBNull) ? dt.Rows[0]["affirm_charge_id"].ToString() : "";
+                }
+                //var result = clsAuthorizeNet.RefundTransaction("40080413310", "8888", "1223", 1);
+                var result = clsAffirm.AffirmRefund(TransactionID, model.NetTotal);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    status = true; JSONresult = "Order placed successfully.";
+                    OrderNotesModel note_model = new OrderNotesModel();
+                    note_model.post_ID = model.order_id;
+                    //note_model.comment_content = "Authorize.Net Credit Card Charge Refund Issued: " + crdtype + " ending in " + CardNumber + " (expires " + ExpirationDatePrint + ") (Transaction ID " + result + "). ";
+                    note_model.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", model.NetTotal);
+                    note_model.is_customer_note = string.Empty;
+                    note_model.is_customer_note = string.Empty;
+
+                    OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                    note_model.comment_author = om.UserName; note_model.comment_author_email = om.EmailID;
+                    int res = OrderRepository.AddOrderNotes(note_model);
+                }
+                else
+                { status = false; JSONresult = "Something went wrong."; }
+                JSONresult = JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+        [HttpPost]
         public JsonResult UpdateAmazonPaymentRefund(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;

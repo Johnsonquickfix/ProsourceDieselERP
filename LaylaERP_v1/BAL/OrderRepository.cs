@@ -935,9 +935,11 @@
                 string strSQl = "SELECT post_id,max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
                                 + " max(case meta_key when '_wc_authorize_net_cim_credit_card_trans_id' then meta_value else '' end) authorize_net_trans_id,max(case meta_key when '_wc_authorize_net_cim_credit_card_account_four' then meta_value else '' end) authorize_net_card_account_four,"
                                 + " max(case meta_key when '_wc_authorize_net_cim_credit_card_card_expiry_date' then meta_value else '' end) authorize_net_card_expiry_date,max(case meta_key when '_wc_authorize_net_cim_credit_card_charge_captured' then meta_value else '' end) _wc_authorize_net_captured,"
+                                + " max(case meta_key when '_wc_authorize_net_cim_credit_card_card_type' then meta_value else '' end) authorize_net_cim_credit_card_card_type,"
                                 + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when '_paypal_status' then meta_value else '' end) paypal_status,"
-                                + " max(case meta_key when '_podium_uid' then meta_value else '' end) podium_uid,max(case meta_key when '_podium_status' then meta_value else '' end) podium_status"
-                                + " FROM wp_postmeta WHERE post_id = 853299 and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
+                                + " max(case meta_key when '_podium_uid' then meta_value else '' end) podium_uid,max(case meta_key when '_podium_status' then meta_value else '' end) podium_status,"
+                                + " max(case meta_key when '_transaction_id' then meta_value else '' end) transaction_id,max(case meta_key when '_wc_gateway_affirm_charge_id' then meta_value else '' end) affirm_charge_id"
+                                + " FROM wp_postmeta WHERE post_id = @order_id and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
                                 + " group by post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }

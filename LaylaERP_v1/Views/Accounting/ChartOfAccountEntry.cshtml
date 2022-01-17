@@ -54,7 +54,7 @@
     $(function () {
         $("#txtentrydate").datepicker({
             format: 'mm-dd-yyyy',
-        });
+        }).datepicker("setDate", 'now');
     });
 </script>
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>

@@ -557,12 +557,13 @@ function saveCO() {
             url: "/Orders/SaveCustomerOrderRefund",
             data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
             success: function (data) {
-                data = JSON.parse(data);
+                data = JSON.parse(data); //console.log(data);
                 if (data[0].Response == "Success") {
                     if (pay_gift == '') {
                         if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                        else if (pay_by == 'affirm') AffirmPaymentRefunds();
                         else '';
                     }
                     else if (AvailableGiftCardAmount >= 0 && pay_gift == 'gift_card') {
@@ -572,6 +573,7 @@ function saveCO() {
                             if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                            else if (pay_by == 'affirm') AffirmPaymentRefunds();
                             else '';
                         }
                         else if (AvailableGiftCardAmount >= net_total) {
@@ -589,6 +591,7 @@ function saveCO() {
                             if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                            else if (pay_by == 'affirm') AffirmPaymentRefunds();
                             else '';
 
                         }
@@ -682,6 +685,24 @@ function AuthorizeNetPaymentRefunds() {
             swal.showLoading();
             $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
                 console.log('Authorize.Net ', response);
+                if (response.status) {
+                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                }
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Affirm Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AffirmPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let option = { order_id: oid, NetTotal: invoice_amt };
+    swal.queue([{
+        title: 'Monthly Payments (affirm) Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Orders/UpdateAffirmPaymentRefund', option).then(response => {
+                console.log('Monthly Payments (affirm) : ', response);
                 if (response.status) {
                     swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
                 }

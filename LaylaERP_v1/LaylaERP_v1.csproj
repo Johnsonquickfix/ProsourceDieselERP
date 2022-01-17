@@ -258,6 +258,7 @@
     <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
+    <Compile Include="UTILITIES\clsAffirm.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
@@ -633,6 +634,7 @@
     <Content Include="Images\layout_arrows.png" />
     <Content Include="Images\linkbutton_bg.png" />
     <Content Include="Images\loading.gif" />
+    <Content Include="Images\logo-mail-1.png" />
     <Content Include="Images\menu_arrows.png" />
     <Content Include="Images\messager_icons.png" />
     <Content Include="Images\order.png" />

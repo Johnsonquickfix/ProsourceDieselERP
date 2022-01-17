@@ -44,19 +44,19 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("userdetails")]
-        public IHttpActionResult Userdetails(LoginModel model)
+        public IHttpActionResult Userdetails([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
-            if (!model.id.HasValue)
+            if (model.user_id == 0)
             {
                 return BadRequest("Please provide valid details.");
             }
             try
             {
                 string msg = string.Empty;
-                var balResult = UsersRepositry.UserInfo(model.id.Value);
+                var balResult = UsersRepositry.UserInfo(model.user_id);
                 if (balResult == null)
                 {
                     return BadRequest();
@@ -69,7 +69,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("editaccountdetails")]
         public IHttpActionResult UserdetailsUpdate(LoginModel model)
         {
@@ -103,7 +103,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("createuser")]
         public IHttpActionResult CreateUser(LoginModel model)
         {
@@ -127,12 +127,12 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getorders")]
-        public object GetOrders(SearchModel model)
+        public object GetOrders([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
-            if (model.user_id == 0 && model.order_id == 0)
+            if (model.user_id == 0)
             {
                 return BadRequest("Please provide valid details.");
             }
@@ -151,9 +151,9 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getuserorderdetail")]
-        public object GetUserOrderDetail(SearchModel model)
+        public object GetUserOrderDetail([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -180,7 +180,7 @@
 
         [HttpGet]
         [Route("redeemedgiftcards")]
-        public IHttpActionResult GetUserGiftCard(SearchModel model)
+        public IHttpActionResult GetUserGiftCard([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -207,7 +207,7 @@
 
         [HttpGet]
         [Route("getaddress")]
-        public IHttpActionResult GetUserAddress(SearchModel model)
+        public IHttpActionResult GetUserAddress([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -234,7 +234,7 @@
 
         [HttpGet]
         [Route("getbillingaddress")]
-        public IHttpActionResult GetUserBillingAddress(SearchModel model)
+        public IHttpActionResult GetUserBillingAddress([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -261,7 +261,7 @@
 
         [HttpGet]
         [Route("getshippingaddress")]
-        public IHttpActionResult GetUsershippingAddress(SearchModel model)
+        public IHttpActionResult GetUsershippingAddress([FromUri] SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -286,7 +286,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("updateshippingaddress")]
         public IHttpActionResult UpdateShippingAddress(UserShippingModel model)
         {
@@ -340,7 +340,7 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("updatebillingaddress")]
         public IHttpActionResult UpdateBillingAddress(UserBillingModel model)
         {

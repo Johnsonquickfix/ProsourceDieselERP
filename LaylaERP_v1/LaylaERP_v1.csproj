@@ -735,6 +735,7 @@
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\CancelRefund.js" />
+    <Content Include="js\Report\ForecastInventory.js" />
     <Content Include="js\Report\IDMeOrderReport.js" />
     <Content Include="js\Report\orderforecast.js" />
     <Content Include="js\Report\OrderTypeList.js" />
@@ -1087,6 +1088,7 @@
     <Content Include="Views\Accounting\ChartAccountEntryList.cshtml" />
     <Content Include="Views\Accounting\EditChartAccountEntry.cshtml" />
     <Content Include="Views\Reports\SalesRepresentativePBI.cshtml" />
+    <Content Include="Views\Reports\ForecastInventory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

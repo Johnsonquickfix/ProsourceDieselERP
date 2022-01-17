@@ -157,6 +157,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastInventory()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -735,6 +739,38 @@ namespace LaylaERP.Controllers
             ReportsRepository.GetForecastSalesHistoricalChart(Year);
             var list = ReportsRepository.exportorderlistchart;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult GetProductInventoryList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetProductInventoryList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public ActionResult GetProductInventoryforecast_OLD(string PID, string Year, string Type)
+        {
+            ReportsRepository.GetProductInventoryforecast(PID, Year, Type);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        [HttpPost]
+        public JsonResult GetProductInventoryforecast(string PID, string Year, string Type)
+        {
+            string result = string.Empty;
+            try
+            {
+                ReportsRepository.GetProductInventoryforecast(PID, Year, Type);
+               // DataTable dt = AccountingRepository.GetDetailsLedger(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(ReportsRepository.exportorderlist, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
     }
          

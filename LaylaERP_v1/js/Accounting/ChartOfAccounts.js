@@ -59,6 +59,36 @@ function ChartOfAccountGrid() {
 
 
                 "order": [[1, 'asc']],
+                
+                "dom": 'lBftipr',
+                "buttons": [
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4],
+                        },
+                        filename: function () {
+                            var d = new Date();
+                            var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                            return 'Chart_of_accounts' + e;
+                        },
+                    },
+                    {
+                        extend: 'print',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> Print',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4],
+                        },
+                        filename: function () {
+                            var d = new Date();
+                            var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                            return 'Chart_of_accounts' + e;
+                        },
+                    }
+                ],
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {

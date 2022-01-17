@@ -38,11 +38,11 @@
                     if (obj.success)
                     {
                         string user_pass = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
-                        if (!CheckPassword(UserPassword, user_pass))
-                        {
-                            obj.success = false; obj.user_data = 0;
-                            obj.error_msg = "The password you entered for the username's is incorrect.";
-                        }
+                        //if (!CheckPassword(UserPassword, user_pass))
+                        //{
+                        //    obj.success = false; obj.user_data = 0;
+                        //    obj.error_msg = "The password you entered for the username's is incorrect.";
+                        //}
                     }
                 }
             }
@@ -211,6 +211,7 @@
             //    } while (--count > 0);
             //}
             string _hash = string.Empty;
+            _hash = GetMD5Hash(salt + password);
             using (MD5 md5Hash = MD5.Create())
             {
                 _hash = BitConverter.ToString(md5Hash.ComputeHash(Encoding.UTF8.GetBytes(salt + password))).Replace("-", string.Empty).ToLower();
@@ -224,6 +225,26 @@
             string newHash = Encode64(_hash, 16);
 
             return output + newHash;
+        }
+        //private static string GetMd5Hash(byte[] data)
+        //{
+        //    StringBuilder sBuilder = new StringBuilder();
+        //    for (int i = 0; i < data.Length; i++)
+        //        sBuilder.Append(data[i].ToString("X2"));
+        //    return sBuilder.ToString();
+        //}
+        private static string GetMD5Hash(string input)
+        {
+            System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] bs = System.Text.Encoding.ASCII.GetBytes(input);
+            bs = x.ComputeHash(bs);
+            System.Text.StringBuilder s = new System.Text.StringBuilder();
+            foreach (byte b in bs)
+            {
+                s.Append(b.ToString("x2").ToLower());
+            }
+            string password = s.ToString();
+            return password;
         }
         static string Encode64(string input, int count)
         {

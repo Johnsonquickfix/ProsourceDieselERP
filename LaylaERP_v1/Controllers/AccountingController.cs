@@ -536,5 +536,17 @@ namespace LaylaERP.Controllers
             }
             return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetCharofaccountentrygrandtotal()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetCharofaccountentrygrandtotal();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

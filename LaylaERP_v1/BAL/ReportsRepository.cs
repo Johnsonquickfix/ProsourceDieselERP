@@ -2464,5 +2464,27 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
+
+        public static DataTable GetForecastInventoryLSR(string productid, string year, string flag)
+        //string productid, string year,  string flag
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+           {
+                      new SqlParameter("@qflag", "QT"),
+                    new SqlParameter("@year", year),
+                    new SqlParameter("@pid", productid),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_productinventoryforcoste_List", parameters);
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
-    getType();
+    //getType();
     getName();
-    getDetailType();
+    //getDetailType();
     $(".select2").select2();
     $("#btnSave").click(function () {
         AddChartOfAccountEntry();
@@ -35,6 +35,42 @@ function getName() {
         }, async: false
     });
 }
+
+$('#ddlname').change(function () {
+    var name = $('#ddlname').val();
+    var obj = {
+        strValue2: name,
+    }
+    $.ajax({
+        url: "/Accounting/GetType",
+        dataType: 'json',
+        type: "post",
+        data: JSON.stringify(obj),
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            var opt = '<option value="0">Please select type</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddltype').html(opt);
+        }
+    });
+
+    $.ajax({
+        url: "/Accounting/GetDetailType",
+        dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var opt = '<option value="0">Please select detail type</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddldetailtype').html(opt);
+        }
+    });
+
+});
 
 function getDetailType() {
     $.ajax({

@@ -172,9 +172,9 @@ namespace LaylaERP.Controllers
             }
             return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetDetailType()
+        public JsonResult GetDetailType(string strValue2)
         {
-            DataSet ds = AccountingRepository.GetDetailType();
+            DataSet ds = AccountingRepository.GetDetailType(strValue2);
             List<SelectListItem> accountsettinglist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -525,6 +525,16 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
             }
+        }
+        public JsonResult GetType(string strValue2)
+        {
+            DataSet ds = AccountingRepository.GetType(strValue2);
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountsettinglist.Add(new SelectListItem { Text = dr["pcg_type"].ToString(), Value = dr["account_parent"].ToString() });
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
         }
     }
 }

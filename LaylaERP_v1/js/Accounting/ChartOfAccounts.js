@@ -68,6 +68,7 @@ function ChartOfAccountGrid() {
                         text: '<i class="fas fa-file-csv"></i> CSV',
                         exportOptions: {
                             columns: [1, 2, 3, 4],
+                            modifier: {page: 'current'}
                         },
                         filename: function () {
                             var d = new Date();
@@ -81,6 +82,7 @@ function ChartOfAccountGrid() {
                         text: '<i class="fas fa-file-csv"></i> Print',
                         exportOptions: {
                             columns: [1, 2, 3, 4],
+                            modifier: { page: 'current' }
                         },
                         filename: function () {
                             var d = new Date();

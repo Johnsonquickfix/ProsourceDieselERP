@@ -740,12 +740,12 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataSet GetDetailType()
+        public static DataSet GetDetailType(string id)
         {
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where labelshort != 'NULL' ");
+                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where labelshort != 'NULL' and rowid ='" + id + "'");
 
             }
             catch (Exception ex)
@@ -848,6 +848,19 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataSet GetType(string id)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT pcg_type, account_parent from erp_accounting_account Where rowid ='" + id + "'");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
     }
 }

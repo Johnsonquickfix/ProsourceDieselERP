@@ -8,8 +8,9 @@
 function ChartofaccountGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [0] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -26,6 +27,26 @@ function ChartofaccountGrid() {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
+        },
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            console.log(data);
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+            var balance = api.column(4).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            var bankbalance = api.column(5).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+            $(api.column(3).footer()).html('Grand total');
+            $(api.column(4).footer()).html('$' + numberRenderer(balance));
+            $(api.column(5).footer()).html('$' + numberRenderer(bankbalance));
         },
         sAjaxSource: "/Accounting/GetEventsList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -81,6 +102,7 @@ function ChartofaccountGrid() {
                 extend: 'print',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
+                footer: true,
                 exportOptions: {
                     columns: [1, 2, 3, 4, 5, 6],
                 },

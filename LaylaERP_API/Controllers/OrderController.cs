@@ -33,6 +33,8 @@
             {
                 List<PostMetaModel> postMetas = new List<PostMetaModel>();
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_key", meta_value = "wc_order_" });
+                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_created_via", meta_value = "checkout" });
+                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_cart_hash", meta_value = "0" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_customer_user", meta_value = model.user_id });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_version", meta_value = "4.8.0" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_prices_include_tax", meta_value = "no" });

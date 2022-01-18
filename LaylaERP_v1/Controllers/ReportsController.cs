@@ -161,6 +161,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ForecastInventoryLSR()
+        {
+            return View();
+        }
+        public ActionResult ForecastInventoryHistorical()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -772,6 +780,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        public JsonResult GetForecastInventoryLSR(string PID, string Year, string Type)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReportsRepository.GetForecastInventoryLSR(PID, Year, Type);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
     }
-         
+
 }

@@ -19,10 +19,11 @@
     {
         public long user_id { get; set; }
         public int offset { get; set; }
+        public int pagesize { get; set; }
         public long order_id { get; set; }
         public SearchModel()
         {
-            user_id = order_id = 0; offset = 0;
+            user_id = order_id = 0; offset = 1; pagesize = 10;
         }
     }
 }

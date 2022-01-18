@@ -12,7 +12,7 @@
 
     public class CommonRepositry
     {
-        public static Dictionary<string, object> GetOrders(long user_id, int pageno)
+        public static Dictionary<string, object> GetOrders(long user_id, int pageno,int pagesize)
         {
             Dictionary<string, object> _list = new Dictionary<string, object>();
             DataTable dt = new DataTable();
@@ -24,7 +24,8 @@
                  {
                     new SqlParameter("@flag", "ORDLS"),
                     new SqlParameter("@customer_id", user_id),
-                    new SqlParameter("@pageno", pageno)
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize)
                 };
                 dt = SQLHelper.ExecuteDataTable("api_user_details", parameters);
                 int total = 0;
@@ -47,6 +48,7 @@
                     parentRow.Add(childRow);
                 }
                 _list.Add("orders", parentRow);
+                _list.Add("pageno", pageno);
                 _list.Add("total", total);
             }
             catch (Exception ex)

@@ -76,26 +76,26 @@
             ResultModel result = new ResultModel();
             if (model.id == 0)
             {
-                result.success = false; result.error_msg = "Please provide valid details.";
-                return Ok(result);
+                return Ok(new { success = false , err_msg = "Please provide valid details." });
             }
             if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
             {
                 if (model.user_new_pass != model.user_conf_pass)
                 {
-                    result.success = false; result.error_msg = "Error! confirm password field should be match with the password field.";
-                    return Ok(result);
+                    return Ok(new { success = false, err_msg = "Error! confirm password field should be match with the password field." });
                 }
             }
             try
             {
                 string msg = string.Empty;
                 var balResult = UsersRepositry.UserUpdate(model);
+
                 if (balResult == null)
                 {
-                    return BadRequest();
+                    //return BadRequest();
+                    return Ok(new { success = false, err_msg = "Error! confirm password field should be match with the password field." });
                 }
-                return Ok(balResult);
+                return Ok(new { success = balResult.success, err_msg = balResult.error_msg, user_data = balResult.user_data });
             }
             catch (Exception ex)
             {
@@ -138,7 +138,7 @@
             }
             try
             {
-                var balResult = CommonRepositry.GetOrders(model.user_id, model.offset);
+                var balResult = CommonRepositry.GetOrders(model.user_id, model.offset, model.pagesize);
                 if (balResult == null)
                 {
                     return BadRequest();
@@ -155,22 +155,39 @@
         [Route("getuserorderdetail")]
         public object GetUserOrderDetail([FromUri] SearchModel model)
         {
-            ResultModel result = new ResultModel();
+            OrderDetailModel result = new OrderDetailModel();
             if (model.user_id == 0)
             {
                 return BadRequest("Please provide valid user detail.");
             }
             try
             {
+                //var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
+                //balResult.Tables[0].TableName = "order_data";
+                //if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
+                //if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
+                //if (balResult == null)
+                //{
+                //    return BadRequest();
+                //}
+
                 var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
-                balResult.Tables[0].TableName = "order_data";
-                if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
-                if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
-                if (balResult == null)
+                result.order_data = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[1]));
+                if (balResult.Tables.Count > 1) result.order_items = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[1]));
+                if (balResult.Tables.Count > 2) result.order_coupons = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[2]));
+
+                if (result.order_data.Count > 0)
                 {
-                    return BadRequest();
+                    result.success = true;
+                    result.err_msg = "";
                 }
-                return Ok(balResult);
+                else
+                {
+                    result.success = false;
+                    result.err_msg = "Record not found.";
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -212,18 +229,26 @@
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                return BadRequest("Please provide valid details.");
+                //return BadRequest("Please provide valid details.");
+                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
+                return Ok(result);
             }
             try
             {
-                var balResult = CommonRepositry.GetUserAddress(model.user_id, "URADS");
-                result.user_data = balResult;
-                result.success = balResult.Rows.Count > 0 ? true : false;
-                result.error_msg = "";
-                if (balResult == null)
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "URADS")));
+                if (balResult.Count > 0)
                 {
-                    result.success = false;
+                    result.user_data = balResult[0];
+                    result.success = true;
+                    result.error_msg = "";
                 }
+                else
+                {
+                    result.user_data = "{}";
+                    result.success = false;
+                    result.error_msg = "Record not found.";
+                }
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -239,17 +264,24 @@
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                return BadRequest("Please provide valid details.");
+                //return BadRequest("Please provide valid details.");
+                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
+                return Ok(result);
             }
             try
             {
-                var balResult = CommonRepositry.GetUserAddress(model.user_id, "UBADS");
-                result.user_data = balResult;
-                result.success = balResult.Rows.Count > 0 ? true : false;
-                result.error_msg = "";
-                if (balResult == null)
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "UBADS")));
+                if (balResult.Count > 0)
                 {
+                    result.user_data = balResult[0];
+                    result.success = true;
+                    result.error_msg = "";
+                }
+                else
+                {
+                    result.user_data = "{}";
                     result.success = false;
+                    result.error_msg = "Record not found.";
                 }
                 return Ok(result);
             }
@@ -266,17 +298,24 @@
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                return BadRequest("Please provide valid details.");
+                //return BadRequest("Please provide valid details.");
+                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
+                return Ok(result);
             }
             try
             {
-                var balResult = CommonRepositry.GetUserAddress(model.user_id, "USADS");
-                result.user_data = balResult;
-                result.success = balResult.Rows.Count > 0 ? true : false;
-                result.error_msg = "";
-                if (balResult == null)
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "USADS")));
+                if (balResult.Count > 0)
                 {
+                    result.user_data = balResult[0];
+                    result.success = true;
+                    result.error_msg = "";
+                }
+                else
+                {
+                    result.user_data = "{}";
                     result.success = false;
+                    result.error_msg = "Record not found.";
                 }
                 return Ok(result);
             }

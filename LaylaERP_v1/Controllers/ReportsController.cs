@@ -780,6 +780,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpPost]
+        public JsonResult GetProductInventoryforecastmonth(string PID, string Year, string Type, string Month1, string Month2, string Month3)
+        {
+            string result = string.Empty;
+            try
+            {
+                ReportsRepository.GetProductInventoryforecastmonth(PID, Year, Type,Month1,Month2,Month3);
+                // DataTable dt = AccountingRepository.GetDetailsLedger(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(ReportsRepository.exportorderlist, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
 
         public JsonResult GetForecastInventoryLSR(string PID, string Year, string Type)
         {

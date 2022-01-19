@@ -862,5 +862,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataTable GetCharofaccountentrygrandtotal()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strQry = "select format(sum(balance),'#,##0.00') balance, format(sum(bank_balance),'#,##0.00') bank_balance from erp_chartaccount_entry";
+
+                DT = SQLHelper.ExecuteDataTable(strQry);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
     }
 }

@@ -50,7 +50,7 @@ $('#ddlname').change(function () {
         success: function (data) {
             var opt = '<option value="0">Please select type</option>';
             for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                opt += '<option selected value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddltype').html(opt);
         }
@@ -64,7 +64,7 @@ $('#ddlname').change(function () {
         success: function (data) {
             var opt = '<option value="0">Please select detail type</option>';
             for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                opt += '<option selected value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddldetailtype').html(opt);
         }

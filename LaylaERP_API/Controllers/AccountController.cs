@@ -271,19 +271,20 @@
             try
             {
                 var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "UBADS")));
-                if (balResult.Count > 0)
-                {
-                    result.user_data = balResult[0];
-                    result.success = true;
-                    result.error_msg = "";
-                }
-                else
-                {
-                    result.user_data = "{}";
-                    result.success = false;
-                    result.error_msg = "Record not found.";
-                }
-                return Ok(result);
+                return Ok(balResult[0]);
+                //if (balResult.Count > 0)
+                //{
+                //    result.user_data = balResult[0];
+                //    result.success = true;
+                //    result.error_msg = "";
+                //}
+                //else
+                //{
+                //    result.user_data = "{}";
+                //    result.success = false;
+                //    result.error_msg = "Record not found.";
+                //}
+                //return Ok(result);
             }
             catch (Exception ex)
             {
@@ -305,19 +306,20 @@
             try
             {
                 var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "USADS")));
-                if (balResult.Count > 0)
-                {
-                    result.user_data = balResult[0];
-                    result.success = true;
-                    result.error_msg = "";
-                }
-                else
-                {
-                    result.user_data = "{}";
-                    result.success = false;
-                    result.error_msg = "Record not found.";
-                }
-                return Ok(result);
+                return Ok(balResult[0]);
+                //if (balResult.Count > 0)
+                //{
+                //    result.user_data = balResult[0];
+                //    result.success = true;
+                //    result.error_msg = "";
+                //}
+                //else
+                //{
+                //    result.user_data = "{}";
+                //    result.success = false;
+                //    result.error_msg = "Record not found.";
+                //}
+                //return Ok(result);
             }
             catch (Exception ex)
             {

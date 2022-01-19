@@ -1095,6 +1095,7 @@
     <Content Include="Views\Reports\ForecastInventory.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSR.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryHistorical.cshtml" />
+    <Content Include="Views\Reports\InventoryReportsPowerBi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -130,21 +130,21 @@
             return obj;
         }
 
-        public static ResultModel UserUpdate(LoginModel model)
+        public static ResultModel UserUpdate(UserEditModel model)
         {
             ResultModel obj = new ResultModel();
             try
             {
                 string user_pass = string.Empty, user_new_pass = string.Empty;
-                if (!string.IsNullOrEmpty(model.user_pass) && !string.IsNullOrEmpty(model.user_new_pass))
-                { user_pass = EncryptedPwd(model.user_pass); user_new_pass = EncryptedPwd(model.user_pass); }
+                if (!string.IsNullOrEmpty(model.current_pwd) && !string.IsNullOrEmpty(model.new_pwd))
+                { user_pass = EncryptedPwd(model.current_pwd); user_new_pass = EncryptedPwd(model.new_pwd); }
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "URUPD"),
-                    new SqlParameter("@id", model.id),
+                    new SqlParameter("@id", model.user_id),
                     new SqlParameter("@user_pass", user_pass),
                     new SqlParameter("@user_new_pass", user_new_pass),
-                    new SqlParameter("@user_email", model.user_email),
+                    new SqlParameter("@user_email", model.email),
                     new SqlParameter("@display_name", model.display_name),
                     new SqlParameter("@first_name", model.first_name),
                     new SqlParameter("@last_name", model.last_name),

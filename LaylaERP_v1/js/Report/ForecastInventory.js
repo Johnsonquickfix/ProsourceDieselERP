@@ -1,8 +1,33 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();    
-    $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { ProductDataList(); });
- 
+    //$.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { ProductDataList(); });
+    $.when(globallastyear('year'), globalnextyear('nextyear'), months()).done(function () { ProductDataList(); });
     // Add event listener for opening and closing details 
+    $(document).on('click', "#btnsearch", function () {
+
+        var montharray = $('#ddlmonth option:selected').toArray().map(item => item.value);
+        console.log(montharray.length);
+
+        if ($("#year").val() == "") {
+            swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
+        }
+        else if ($("#ddlmonth").val() == "") {
+            swal('Alert', 'Please select month', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+        }
+        else if (montharray.length != 3) {
+            swal('Alert', 'Please select  three months', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+        }
+        else {
+
+            ProductDataList();
+            return false;
+        }
+        //ProductDataList();
+    }
+    );
+    $('.select2').select2();
+    months();
+
     $('#dtdataList tbody').on('click', '.pdetails-control', function () {
         // console.log('svvvd');
         var tr = $(this).closest('tr');
@@ -20,14 +45,12 @@
 
         }
     });
-   
-    $(document).on('click', "#btnsearch", function () {
-        ProductDataList();
-    }
-    );
+ 
+  
      
 });
 
+//Years start
 function globalnextyear(yearcount) {
     var currentYear = new Date().getFullYear() + 1;
     var yearSelect = document.getElementById(yearcount);
@@ -36,14 +59,21 @@ function globalnextyear(yearcount) {
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
 }
+//Years end
 function globallastyear(yearcount) {
     var currentYear = new Date().getFullYear() - 1;
     var yearSelect = document.getElementById(yearcount);
-    for (var i = -0; i < 5; i++) {
+    for (var i = -2; i < 4; i++) {
         var isSelected = currentYear === currentYear - i
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
 }
+
+
+function months() {
+    var vals = ["10", "11", "12"];
+    $("#ddlmonth").val(vals).trigger("change");
+} 
 function ProductDataList() {
     // console.log(obj);
     let urid = "";
@@ -93,31 +123,48 @@ function formatPartially(d) {
     let Totalforcostsale = 0;
     let Year = $("#year").val();
     var NextYear = $("#nextyear").val();
-    let option = { PID: d.id, Year: year, Type: account }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Month Name</th><th style="width:5%; text-align:left;">Sales Quantity (' + Year + ') </th><th style="width:10%; text-align:left;">Forecast Sales Quantity (' + NextYear + ')</th> </tr></thead>';
-    $.ajax({
-        url: '/Reports/GetProductInventoryforecast', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
-        success: function (result) {
-            result = JSON.parse(result);
-           // console.log(result);
-            
-            
-            if (result.length == 0) { wrHTML += '<tbody class="line_items_' + d.rowid + '"><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
-            $(result).each(function (index, row) {
-                Totalsale += Math.round(row.Discount);
-                Totalforcostsale += Math.round(row.fee);
-                wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.country + '</td>';
-                wrHTML += '<td style="width:5%; text-align:left;">' + Math.round(row.Discount) + '</td>';
-                //wrHTML += '<td style="width:10%; text-align:left;">' + parseFloat(row.fee,1) + '</td></tr > ';
-                wrHTML += '<td style="width:10%; text-align:left;">' + Math.round(row.fee) + '</td></tr > ';
-            });
-            wrHTML += '<tfoot><tr><td style="width:10%; text-align:left;"><strong><span id="total"> Total </span></strong></td>';
-            wrHTML += '<td style="width:5%; text-align:left;"><strong><span id="totalsale">' + Totalsale + '</span></strong></td>';
-            wrHTML += '<td style="width:5%; text-align:left;"><strong><span id="totalfircast">' + Totalforcostsale + '</span></strong></td></tr></tfoot>';
-            
-        },
-        error: function (xhr, status, err) { alert(err); },
-        complete: function () { }, async: false
-    });
+    var montharray = $('#ddlmonth option:selected').toArray().map(item => item.value);
+    let month1 = parseInt(montharray[0]);
+    let month2 = parseInt(montharray[1]);
+    let month3 = parseInt(montharray[2]);
+    let option = { PID: d.id, Year: year, Type: account, Month1: month1, Month2: month2, Month3: month3 }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Month Name</th><th style="width:5%; text-align:left;">Sales Quantity (' + Year + ') </th><th style="width:10%; text-align:left;">Forecast Sales Quantity (' + NextYear + ')</th> </tr></thead>';
+    
+    if ($("#year").val() == "") {
+        swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
+    }
+    else if ($("#ddlmonth").val() == "") {
+        swal('Alert', 'Please select month', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+    }
+    else if (montharray.length != 3) {
+        swal('Alert', 'Please select  three months', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+    }
+    else {
+
+        $.ajax({
+            url: '/Reports/GetProductInventoryforecastmonth', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
+            success: function (result) {
+                result = JSON.parse(result);
+                // console.log(result);
+
+
+                if (result.length == 0) { wrHTML += '<tbody class="line_items_' + d.rowid + '"><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
+                $(result).each(function (index, row) {
+                    Totalsale += Math.round(row.Discount);
+                    Totalforcostsale += Math.round(row.fee);
+                    wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.country + '</td>';
+                    wrHTML += '<td style="width:5%; text-align:left;">' + Math.round(row.Discount) + '</td>';
+                    //wrHTML += '<td style="width:10%; text-align:left;">' + parseFloat(row.fee,1) + '</td></tr > ';
+                    wrHTML += '<td style="width:10%; text-align:left;">' + Math.round(row.fee) + '</td></tr > ';
+                });
+                wrHTML += '<tfoot><tr><td style="width:10%; text-align:left;"><strong><span id="total"> Total </span></strong></td>';
+                wrHTML += '<td style="width:5%; text-align:left;"><strong><span id="totalsale">' + Totalsale + '</span></strong></td>';
+                wrHTML += '<td style="width:5%; text-align:left;"><strong><span id="totalfircast">' + Totalforcostsale + '</span></strong></td></tr></tfoot>';
+
+            },
+            error: function (xhr, status, err) { alert(err); },
+            complete: function () { }, async: false
+        });
+    }
     wrHTML += '</table>';
     return wrHTML;
 }

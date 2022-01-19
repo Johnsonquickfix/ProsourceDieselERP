@@ -23,7 +23,30 @@
     <input type="hidden" id="hfType" value="" />
     <div class="row index_col_row">
 
-        <div class="col-md-2">
+        <!--<div class="col-md-2">
+        <div class="form-group">
+            <label>Year</label><span style="color:red">*</span>
+            <select class="form-control" id="year">
+                <option value="">Year</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>Forecast year</label>
+            <select class="form-control" id="nextyear">
+            </select>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">-->
+        @*<label>Filter</label>*@
+        <!--<br /><br />-->
+        @*<button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button"></button>*@
+        <!--<button id="btnsearch" onclick="Search();" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
+        </div>
+    </div>-->
+        <div class="col-md-3">
             <div class="form-group">
                 <label>Year</label><span style="color:red">*</span>
                 <select class="form-control" id="year">
@@ -31,19 +54,38 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="form-group">
                 <label>Forecast year</label>
                 <select class="form-control" id="nextyear">
                 </select>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Month</label>
+                <select class="form-control select2" id="ddlmonth" placeholder="Select user" multiple style="width: 100%;">
+                    <option value="1">January</option>
+                    <option value="2">Feburary</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="form-group">
                 @*<label>Filter</label>*@
                 <br /><br />
                 @*<button type="button" id="btnsearch" onclick="Search();" class="btn btn-primary btn-flat button"></button>*@
-                <button id="btnsearch" onclick="Search();" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
+                <button id="btnsearch" class="button"><span title="Click here for forecast report" data-placement="bottom" data-toggle="tooltip">Filter</span></button>
             </div>
         </div>
     </div>
@@ -63,6 +105,9 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
+                            <tfoot align="right">
+                                <tr><th></th><th></th><th></th><th></th></tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

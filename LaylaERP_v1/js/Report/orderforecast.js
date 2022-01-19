@@ -1,10 +1,32 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $.when(globallastyear('year'), globalnextyear('nextyear')).done(function () { Search(); });
+    $.when(globallastyear('year'), globalnextyear('nextyear'), months()).done(function () { Search(); });
+    $(document).on('click', "#btnsearch", function () {
 
+        var montharray = $('#ddlmonth option:selected').toArray().map(item => item.value);
+        console.log(montharray.length);
+
+        if ($("#year").val() == "") {
+            swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
+        }
+        else if ($("#ddlmonth").val() == "") {
+            swal('Alert', 'Please select month', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+        }
+        else if (montharray.length != 3) {
+            swal('Alert', 'Please select  three months', 'error').then(function () { swal.close(); $('#ddlmonth').focus(); });
+        }
+        else {
+
+            Search();
+            return false;
+        }
+        //ProductDataList();
+    });
+    $('.select2').select2();
+    months();
 });
 
-
+//Years start
 function globalnextyear(yearcount) {
     var currentYear = new Date().getFullYear() + 1;
     var yearSelect = document.getElementById(yearcount);
@@ -13,13 +35,20 @@ function globalnextyear(yearcount) {
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
 }
+//Years end
 function globallastyear(yearcount) {
     var currentYear = new Date().getFullYear() - 1;
     var yearSelect = document.getElementById(yearcount);
-    for (var i = -0; i < 5; i++) {
+    for (var i = 0; i < 4; i++) {
         var isSelected = currentYear === currentYear - i
         yearSelect.options[yearSelect.options.length] = new Option(currentYear - i, currentYear - i, isSelected, isSelected);
     }
+}
+
+
+function months() {
+    var vals = ["10", "11", "12"];
+    $("#ddlmonth").val(vals).trigger("change");
 }
 function Search() {
     let sd = 'sd'; //$('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -28,7 +57,13 @@ function Search() {
     var NextYear = $("#nextyear").val();
     var account = '1';
     // var type = $('#ddltype').val();
+    var montharray = $('#ddlmonth option:selected').toArray().map(item => item.value);
+    let month1 = parseInt(montharray[0]);
+    let month2 = parseInt(montharray[1]);
+    let month3 = parseInt(montharray[2]);
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     if (account == "0") { swal('alert', 'Please select Payment Type', 'error'); }
+
     //else if (type == "0") { swal('alert', 'Please select Type', 'error'); }
     else {
         $('#dtdata').DataTable({
@@ -37,12 +72,34 @@ function Search() {
             searching: false,
             lengthMenu: [[12, 20, 50], [12, 20, 50]],
             "ajax": {
-                "url": '/Reports/Getorderforecast',
+                "url": '/Reports/Getorderforecastmonthvise',
                 "type": 'POST',
                 "dataType": 'json',
-                "data": { Month: Year, Year: ed, Type: account }
+                "data": { Month: Year, Year: ed, Type: account, Month1: month1, Month2: month2, Month3: month3}
                 //"data": JSON.stringify(obj)
 
+            },
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api(), data;
+                console.log(data);
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                var sales = api.column(2).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                var forecastales = api.column(3).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+                $(api.column(1).footer()).html('Grand total');
+                $(api.column(2).footer()).html('$' + numberRenderer(sales));
+                $(api.column(3).footer()).html('$' + numberRenderer(forecastales));
             },
             "columns": [
 
@@ -96,16 +153,6 @@ function Search() {
             ],
 
         });
-
-
-
-
-
-
-
-
-
     }
-
 }
 

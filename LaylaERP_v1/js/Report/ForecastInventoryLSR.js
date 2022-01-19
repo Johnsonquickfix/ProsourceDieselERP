@@ -5,8 +5,8 @@
         if ($("#year").val() == "") {
             swal('Alert', 'Please select year', 'error').then(function () { swal.close(); $('#year').focus(); });
         }
-        else if ($("#month").val() == "") {
-            swal('Alert', 'Please select month', 'error').then(function () { swal.close(); $('#month').focus(); });
+        else if ($("#ddlmonth").val() == "") {
+            swal('Alert', 'Please select Month', 'error').then(function () { swal.close(); $('#month').focus(); });
         }
         else {
 

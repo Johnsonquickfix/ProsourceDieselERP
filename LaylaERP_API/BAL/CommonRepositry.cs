@@ -9,6 +9,9 @@
     using System.Data.SqlClient;
     using Newtonsoft.Json;
     using LaylaERP_API.Models;
+    using System.Xml;
+    using System.Xml.XPath;
+    using System.Xml.Serialization;
 
     public class CommonRepositry
     {
@@ -174,6 +177,45 @@
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable AddOrders(long Pkey, string qFlag,long customer_id, long employee_id, string employee_name, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@customer_id", customer_id),
+                    new SqlParameter("@userid", employee_id),
+                    new SqlParameter("@username", employee_name),
+                    new SqlParameter("@postsXML", postsXML.OuterXml),
+                    new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
+                    new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
+                    new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_addorder", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static XmlDocument ToXml<T>(List<T> _ListObj)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            XPathNavigator nav = xmlDoc.CreateNavigator();
+            using (XmlWriter writer = nav.AppendChild())
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("Data"));
+                ser.Serialize(writer, _ListObj);
+            }
+            return xmlDoc;
         }
     }
 }

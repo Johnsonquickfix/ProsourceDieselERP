@@ -169,6 +169,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult InventoryReportsPowerBi()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {

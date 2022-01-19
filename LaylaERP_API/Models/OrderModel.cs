@@ -49,4 +49,26 @@
         public double net_total { get; set; }
         public string status { get; set; }
     }
+    public class CartItemsModel
+    {
+        public long order_item_id { get; set; }
+        public long order_id { get; set; }
+        public string product_type { get; set; }
+        public long product_id { get; set; }
+        public long variation_id { get; set; }
+        public string product_name { get; set; }
+        public decimal quantity { get; set; }
+        public decimal sale_rate { get; set; }
+        public decimal total { get; set; }
+        public decimal discount { get; set; }
+        public decimal tax_amount { get; set; }
+        public decimal shipping_amount { get; set; }
+        public decimal shipping_tax_amount { get; set; }
+        public CartItemsModel()
+        {
+            order_item_id = order_id = product_id= variation_id=0;
+            product_type = product_name = string.Empty;
+            quantity = sale_rate = total = discount = tax_amount = shipping_amount = shipping_tax_amount = 0;
+        }
+    }
 }

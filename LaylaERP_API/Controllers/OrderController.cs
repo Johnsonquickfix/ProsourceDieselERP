@@ -31,6 +31,11 @@
             //}
             try
             {
+                if (model.cartItems.Count == 0) return Ok(new { success = false, err_msg = "Please provide valid details." });
+                long order_id = 0, customer_id = 0;
+                order_id = model.orderId;
+                customer_id = model.user_id;
+
                 List<PostMetaModel> postMetas = new List<PostMetaModel>();
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_key", meta_value = "wc_order_" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_created_via", meta_value = "checkout" });
@@ -44,6 +49,7 @@
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_stock_reduced", meta_value = "yes" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "employee_id", meta_value = "0" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "employee_name", meta_value = "" });
+                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_currency", meta_value = "USD" });
 
                 if (model.customerdetails.Count > 0)
                 {
@@ -71,7 +77,7 @@
                     postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_1", meta_value = model.customerdetails[0].shipping_address_1 });
                     postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_2", meta_value = model.customerdetails[0].shipping_address_2 });
                     postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_index", meta_value = "" });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_currency", meta_value = "USD" });
+
                 }
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method", meta_value = model.paymentinfo.payment_method });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method_title", meta_value = model.paymentinfo.payment_method_title });
@@ -83,41 +89,43 @@
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_tax", meta_value = model.tax });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_gift_amount", meta_value = model.gift_amount });
 
-                OrderStatsModel orderStats = new OrderStatsModel();
-                orderStats.order_id = 0;
-                orderStats.parent_id = 0;
-                orderStats.returning_customer = 0;
-                orderStats.customer_id = !string.IsNullOrEmpty(model.user_id) ? Convert.ToInt64(model.user_id) : 0;
-                orderStats.num_items_sold = 0;
-                orderStats.total_sales = model.cartTotals;
-                orderStats.shipping_total = model.shipping;
-                orderStats.tax_total = model.tax;
-                orderStats.net_total = orderStats.total_sales;
+                //OrderStatsModel orderStats = new OrderStatsModel();
+                //orderStats.order_id = 0;
+                //orderStats.parent_id = 0;
+                //orderStats.returning_customer = 0;
+                //orderStats.customer_id = !string.IsNullOrEmpty(model.user_id) ? Convert.ToInt64(model.user_id) : 0;
+                //orderStats.num_items_sold = 0;
+                //orderStats.total_sales = model.cartTotals;
+                //orderStats.shipping_total = model.shipping;
+                //orderStats.tax_total = model.tax;
+                //orderStats.net_total = orderStats.total_sales;
+                List<CartItemsModel> cartItems = JsonConvert.DeserializeObject<List<CartItemsModel>>(JsonConvert.SerializeObject(model.cartItems));
 
-                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
-                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
-                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = CommonRepositry.ToXml(postMetas);
+                System.Xml.XmlDocument order_itemsXML = CommonRepositry.ToXml(cartItems);
 
-                string JSONresult = string.Empty;
-                //try
-                //{
-                //    //OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                //    System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
-                //    System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
-                //    System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
-                //    System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
-                //    System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
-
-                //    JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "U", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
-                //}
-                //catch { }
-                //return Json(JSONresult, JsonRequestBehavior.AllowGet);
-
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.AddOrders(order_id, "I", customer_id, 0, string.Empty, postsXML, order_statsXML, postmetaXML, order_itemsXML)));
+                if (balResult.Count > 0)
+                {
+                    return Ok(balResult[0]);
+                }
+                else
+                {
+                    result.user_data = "{}";
+                    result.success = false;
+                    result.error_msg = "Record not found.";
+                }
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                //return InternalServerError(ex);
+                result.user_data = "{}";
+                result.success = false;
+                result.error_msg = ex.Message;
+                return Ok(result);
             }
         }
     }

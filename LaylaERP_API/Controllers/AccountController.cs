@@ -172,7 +172,7 @@
                 //}
 
                 var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
-                result.order_data = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[1]));
+                result.order_data = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[0]));
                 if (balResult.Tables.Count > 1) result.order_items = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[1]));
                 if (balResult.Tables.Count > 2) result.order_coupons = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[2]));
 

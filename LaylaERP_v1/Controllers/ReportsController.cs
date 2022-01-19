@@ -806,6 +806,14 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
 
+        public ActionResult Getorderforecastmonthvise(string Month, string Year, string Type, string Month1, string Month2, string Month3)
+        {
+            ReportsRepository.Getorderforecastmonthvise(Month, Year, Type,  Month1,  Month2,  Month3);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+
     }
 
 }

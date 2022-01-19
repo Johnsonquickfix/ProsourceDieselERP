@@ -71,16 +71,16 @@
 
         [HttpPost]
         [Route("editaccountdetails")]
-        public IHttpActionResult UserdetailsUpdate(LoginModel model)
+        public IHttpActionResult UserdetailsUpdate(UserEditModel model)
         {
             ResultModel result = new ResultModel();
-            if (model.id == 0)
+            if (model.user_id == 0)
             {
                 return Ok(new { success = false, err_msg = "Please provide valid details." });
             }
-            if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
+            if (!string.IsNullOrEmpty(model.new_pwd) && !string.IsNullOrEmpty(model.conf_pwd))
             {
-                if (model.user_new_pass != model.user_conf_pass)
+                if (model.new_pwd != model.conf_pwd)
                 {
                     return Ok(new { success = false, err_msg = "Error! confirm password field should be match with the password field." });
                 }

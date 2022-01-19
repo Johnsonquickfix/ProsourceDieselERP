@@ -28,6 +28,22 @@
             user_login = user_pass = user_conf_pass = user_new_pass = user_nicename = user_email = display_name = billing_phone = first_name = last_name = nickname = user_registered = role = string.Empty;
         }
     }
+    public class UserEditModel
+    {
+        public Int64 user_id { get; set; }
+        public string email { get; set; }
+        public string current_pwd { get; set; }
+        public string new_pwd { get; set; }
+        public string conf_pwd { get; set; }
+        public string display_name { get; set; }
+        public string first_name { get; set; }
+        public string last_name { get; set; }
+        public UserEditModel()
+        {
+            user_id = 0;
+            email = current_pwd = new_pwd = conf_pwd = display_name = first_name = last_name = string.Empty;
+        }
+    }
 
     public class UserBillingModel
     {

@@ -168,7 +168,7 @@ namespace LaylaERP.Controllers
             List<SelectListItem> accountsettinglist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                accountsettinglist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["rowid"].ToString() });
+                accountsettinglist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["account_number"].ToString() });
             }
             return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
         }
@@ -490,13 +490,13 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetEventsList(JqDataTableModel model)
+        public JsonResult GetChartAccountEntryList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                DataTable dt = AccountingRepository.GetEventsList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = AccountingRepository.GetChartAccountEntryList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

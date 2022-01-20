@@ -169,7 +169,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account ";
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, pcg_type, active from erp_accounting_account ";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;
@@ -238,8 +238,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -253,6 +253,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@active","1"),
                     new SqlParameter("@reconcilable","0"),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
+                    new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -283,7 +284,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type,active from erp_accounting_account "
+                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams from erp_accounting_account "
                 + "where rowid=" + id + "";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -348,7 +349,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -358,6 +359,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@label", model.label),
                     new SqlParameter("@account_number",model.account_number),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
+                    new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -775,7 +777,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable GetChartAccountEntryList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetChartAccountEntryListNotUsed(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -875,6 +877,39 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static DataTable GetChartAccountEntryList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable Checkaccountnumber(AccountingModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT account_number from erp_accounting_account where account_number ='" + model.account_number + "'";
+                    dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

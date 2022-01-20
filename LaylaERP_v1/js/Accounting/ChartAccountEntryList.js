@@ -6,10 +6,11 @@
 function ChartofaccountGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
+    let obj = { strValue1: ID };// console.log(obj);
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        destroy: true, bProcessing: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -35,35 +36,22 @@ function ChartofaccountGrid() {
                     typeof i === 'number' ?
                         i : 0;
             };
-            var balance = api.column(4).data().reduce(function (a, b) {
+            var balance = api.column(4, { page: 'current' } ).data().reduce(function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0);
 
-            var bankbalance = api.column(5).data().reduce(function (a, b) {
+            var bankbalance = api.column(5, { page: 'current' } ).data().reduce(function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0);
             $(api.column(3).footer()).html('Page total');
             $(api.column(4).footer()).html('$' + numberRenderer(balance));
             $(api.column(5).footer()).html('$' + numberRenderer(bankbalance));
         },
-        sAjaxSource: "/Accounting/GetChartAccountEntryList",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
-            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            //var col = 'id';
-            //if (oSettings.aaSorting.length >= 0) {
-            //    var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "event_label" : oSettings.aaSorting[0][0] == 2 ? "startdate" : oSettings.aaSorting[0][0] == 3 ? "enddate" : oSettings.aaSorting[0][0] == 4 ? "task" : oSettings.aaSorting[0][0] == 5 ? "assigned_user" : oSettings.aaSorting[0][0] == 6 ? "name" : "id";
-            //    aoData.push({ name: "sSortColName", value: col });
-            //}
-            oSettings.jqXHR = $.ajax({
-                dataType: 'json', type: "GET", url: sSource, data: aoData,
-                "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
-                }
-            });
+        ajax: {
+            url: '/Accounting/GetChartAccountEntryList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
-        aoColumns: [
+        columns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
             { data: 'name', title: 'Name', sWidth: "10%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },

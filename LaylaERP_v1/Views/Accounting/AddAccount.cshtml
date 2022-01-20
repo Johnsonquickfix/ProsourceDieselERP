@@ -55,6 +55,17 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <div title="Enter E-mail">
+                                            <label for="exampleInputEmail1">Chart Tag<span style="color:red"></span></label>
+                                            <select class="form-control" id="ddltag">
+                                                <option value="">--Select chart tag--</option>
+                                                <option value="E">Expense</option>
+                                                <option value="I">Income</option>
+                                            </select> 
+                                        </div>
+                                    </div>
+
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnSave"><span title="Save details of chart of accounts" data-placement="left" data-toggle="tooltip"><b>Submit</b></span></a>
@@ -107,6 +118,7 @@
                 parentaccount = $("#ddlParentAccount").val();
                 //groupofaccount = $("#selector option:selected");
                 var detailtype = $("#txtdetailtype").val();
+                var tag = $("#ddltag").val();
 
                 if (pcgversion == "") {
                     swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
@@ -115,10 +127,10 @@
                     swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
                 }
                 else if (label == "") {
-                    swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
+                    swal('Alert', 'Please enter name', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
                 }
                 else if (parentaccount == 0) {
-                    swal('Alert', 'Please select parent account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
+                    swal('Alert', 'Please select type', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
                 }
                 //else if (groupofaccount == "") {
                 //    swal('Alert', 'Please Enter Group Of Account', 'error').then(function () { swal.close(); $('#txtGroupOfAccount').focus(); });
@@ -133,6 +145,7 @@
                         label: label,
                         pcg_type: groupofaccount,
                         labelshort: detailtype,
+                        extraparams: tag,
                     }
                     $.ajax({
                         url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',

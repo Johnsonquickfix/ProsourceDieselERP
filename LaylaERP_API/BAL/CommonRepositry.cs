@@ -217,5 +217,25 @@
             }
             return xmlDoc;
         }
+
+        public static DataTable GetCouponDetail(string flag,string CouponCode, string user_email)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@couponcode", CouponCode),
+                    new SqlParameter("@user_mail", user_email)
+                };
+                dt = SQLHelper.ExecuteDataTable("api_coupon_details", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

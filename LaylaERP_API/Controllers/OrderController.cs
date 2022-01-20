@@ -13,6 +13,48 @@
     [RoutePrefix("api/order")]
     public class OrderController : BaseApiController
     {
+        [HttpGet]
+        [Route("checkcoupon")]
+        public IHttpActionResult CheckCoupon([FromUri] CouponModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (string.IsNullOrEmpty(model.couponCode))
+            {
+                return Ok(new { });
+            }
+            try
+            {
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetCouponDetail("GTCOU", model.couponCode, string.Empty)));
+                if (balResult.Count > 0) return Ok(balResult[0]);
+                else return Ok(new { });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("checkusercoupon")]
+        public IHttpActionResult CheckUserCouponUsed([FromUri] CouponModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (string.IsNullOrEmpty(model.couponCode) || string.IsNullOrEmpty(model.umail_uid))
+            {
+                return Ok(new { });
+            }
+            try
+            {
+                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetCouponDetail("CKUCO", model.couponCode, model.umail_uid)));
+                if (balResult.Count > 0) return Ok(balResult[0]);
+                else return Ok(new { });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         [HttpPost]
         [Route("addorder")]
         public IHttpActionResult addorder(dynamic model)

@@ -25,7 +25,7 @@ function ChartOfAccountGrid() {
                     //{ data: 'account_parent', title: 'Parent Account Code', sWidth: "10%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "10%" },
-                    { data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
+                    /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },*/
                     {
                         'data': 'active', sWidth: "10%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {

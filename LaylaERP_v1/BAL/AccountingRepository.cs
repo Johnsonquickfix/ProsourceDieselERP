@@ -732,7 +732,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT label, rowid from erp_accounting_account");
+                DS = SQLHelper.ExecuteDataSet("SELECT label, account_number from erp_accounting_account");
 
             }
             catch (Exception ex)
@@ -745,7 +745,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where labelshort != 'NULL' and rowid ='" + id + "'");
+                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where account_number ='" + id + "'");
 
             }
             catch (Exception ex)
@@ -775,7 +775,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable GetEventsList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetChartAccountEntryList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -784,7 +784,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
-                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.rowid = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
+                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (eaa.label like '%" + searchid + "%' OR ept.pcg_type like '%" + searchid + "%' OR eaafordetail.labelshort like '%" + searchid + "%' OR balance like '%" + searchid + "%' OR bank_balance like '%" + searchid + "%')";
@@ -855,7 +855,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT pcg_type, account_parent from erp_accounting_account Where rowid ='" + id + "'");
+                DS = SQLHelper.ExecuteDataSet("SELECT pcg_type, account_parent from erp_accounting_account Where account_number ='" + id + "'");
 
             }
             catch (Exception ex)

@@ -20,6 +20,7 @@ namespace LaylaERP.Models
         public int fk_accounting_category { get; set; }
         public int active { get; set; }
         public int reconcilable { get; set; }
+        public string extraparams { get; set; }
     }
     public class ProductAccountingModel : PaggingModel
     {

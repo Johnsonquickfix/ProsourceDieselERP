@@ -233,16 +233,24 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    //int ID = 1;
-                    int ID = AccountingRepository.AddAccount(model);
-                    if (ID > 0)
+                    DataTable dt = AccountingRepository.Checkaccountnumber(model);
+                    if (dt.Rows.Count > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "New account " + model.pcg_type + " created in Chart of Accounts.", "/Accounting/AddAccount" + ", " + Net.BrowserInfo);
-                        return Json(new { status = true, message = "Chart of account saved successfully!!", url = "" }, 0);
+                        return Json(new { status = false, message = "Account number already exist", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        //int ID = 1;
+                        int ID = AccountingRepository.AddAccount(model);
+                        if (ID > 0)
+                        {
+                            UserActivityLog.WriteDbLog(LogType.Submit, "New account " + model.pcg_type + " created in Chart of Accounts.", "/Accounting/AddAccount" + ", " + Net.BrowserInfo);
+                            return Json(new { status = true, message = "Chart of account saved successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
                     }
                 }
             }
@@ -490,13 +498,13 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetChartAccountEntryList(JqDataTableModel model)
+        public JsonResult GetChartAccountEntryListNotUsed(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                DataTable dt = AccountingRepository.GetChartAccountEntryList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = AccountingRepository.GetChartAccountEntryListNotUsed(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -547,6 +555,17 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        public JsonResult GetChartAccountEntryList()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetChartAccountEntryList();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
     }
 }

@@ -50,13 +50,22 @@
                                 </select>
                             </div>
                         </div>
-                         <div class="form-group">
+                        <div class="form-group">
                             <div title="Enter E-mail">
                                 <label for="exampleInputEmail1">Detail Type<span style="color:red"></span></label>
                                 <input type="text" class="form-control" id="txtdetailtype" placeholder="Enter Detail Type">
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="exampleInputEmail1">Chart Tag<span style="color:red"></span></label>
+                                <select class="form-control" id="ddltag">
+                                    <option value="">--Select chart tag--</option>
+                                    <option value="E">Expense</option>
+                                    <option value="I">Income</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="box-footer">
                             <div class="text-right">
                                 <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="left" data-toggle="tooltip"><b>Update</b></span></a>
@@ -105,6 +114,7 @@
         var label = $("#txtLabel").val();
         var parentaccount = $("#ddlParentAccount").val();
         var detailtype = $("#txtdetailtype").val();
+        var tag = $("#ddltag").val();
 
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
@@ -113,10 +123,10 @@
             swal('Alert', 'Please enter account number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
         }
         else if (label == "") {
-            swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
+            swal('Alert', 'Please enter name', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
         }
         else if (parentaccount == 0) {
-            swal('Alert', 'Please select parent account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
+            swal('Alert', 'Please select type', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
         }
        
 
@@ -130,6 +140,7 @@
                 label: label,
                 pcg_type: groupofaccount,
                 labelshort: detailtype,
+                extraparams: tag,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -181,8 +192,9 @@
                         $("#txtChartOfAccounts").val(d[0].fk_pcg_version);
                         $("#txtAccountNumber").val(d[0].account_number);
                         $("#txtLabel").val(d[0].label);
-                        $("#ddlParentAccount").val(d[0].account_parent).trigger('change');
+                        setTimeout(function () { $("#ddlParentAccount").val(d[0].account_parent).trigger('change') },500);
                         $("#txtdetailtype").val(d[0].labelshort);
+                        $("#ddltag").val(d[0].extraparams).trigger('change');
                         //console.log(d[0].rowid);
                     }
                 },

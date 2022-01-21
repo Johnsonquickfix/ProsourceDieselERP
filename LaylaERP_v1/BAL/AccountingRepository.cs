@@ -12,6 +12,7 @@ namespace LaylaERP.BAL
 {
     public class AccountingRepository
     {
+        public static List<Export_Details> exportorderlist = new List<Export_Details>();
         public static DataSet GetNatureofJournal()
         {
             DataSet DS = new DataSet();
@@ -915,21 +916,78 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static void AccountProfitLossList(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                decimal discount = 0;
+                decimal total = 0;
+                DataSet ds1 = new DataSet();
+                string ssql;
 
-        public static DataTable GetAccountBalanceList()
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+                    SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                         new SqlParameter("@flag", "sh")
+                    };
+                    ds1 = DAL.SQLHelper.ExecuteDataSet("erp_account_profit_loss_list", param);
+                }
+                else
+                {
+                    ssql = "";
+                }
+                //DataSet ds1 = new DataSet();
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+
+                    //uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["account_number"].ToString());
+                    uobj.UID = Convert.ToInt64(ds1.Tables[0].Rows[i]["account_number"].ToString());
+                    uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["account_number"].ToString();
+                    uobj.shipping_city = ds1.Tables[0].Rows[i]["label"].ToString();
+                    uobj.shipping_state = ds1.Tables[0].Rows[i]["pcg_type"].ToString();
+                    uobj.country = ds1.Tables[0].Rows[i]["account_number"].ToString();
+                    discount = Convert.ToDecimal(ds1.Tables[0].Rows[i]["IncomVal"].ToString());
+                    total = Convert.ToDecimal(ds1.Tables[0].Rows[i]["ExpenseVal"].ToString());
+                    if (total != (decimal)0.000000)
+                        uobj.total = total.ToString();
+                    else
+                        uobj.total = "";
+                    if (discount != (decimal)0.000000)
+                        uobj.Discount = discount.ToString();
+                    else
+                        uobj.Discount = "";
+
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+        public static DataTable AccountProfitLossTotal(string from_date, string to_date)
         {
             DataTable dt = new DataTable();
             try
             {
-                string strWhr = string.Empty;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                         new SqlParameter("@flag", "tot")
+                    };
+                dt = DAL.SQLHelper.ExecuteDataTable("erp_account_profit_loss_list", param);
+                //dt = SQLHelper.ExecuteDataTable(strSql);
 
-                string strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 group by inv_complete, label_complete";
-                dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
-            {
-                throw ex;
-            }
+            { throw ex; }
             return dt;
         }
     }

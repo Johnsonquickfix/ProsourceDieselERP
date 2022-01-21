@@ -21,6 +21,7 @@
         //ProductStockGrid();
     });
     $("#txtsku").change(function () {
+        //if ($("#txtsku").val().length < 3) return false;
         ProductStockGrid();
     });
 

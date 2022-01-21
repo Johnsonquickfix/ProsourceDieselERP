@@ -524,8 +524,18 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
-                                + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 order by datesort desc";
+                                + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
+                if (userstatus != null)
+                {
+                    strWhr += " and (thirdparty_code ='" + userstatus + "') ";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);
+
                 /*if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (inv_num like '%" + searchid + "%' OR inv_complete like '%" + searchid + "%' OR code_journal like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%' OR v.name like '%" + searchid + "%') ";

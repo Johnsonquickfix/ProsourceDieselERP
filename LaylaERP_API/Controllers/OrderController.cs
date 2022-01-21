@@ -93,36 +93,36 @@
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "employee_name", meta_value = "" });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_currency", meta_value = "USD" });
 
-                if (model.customerdetails.Count > 0)
+                if (model.customerDetails.Count > 0)
                 {
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_first_name", meta_value = model.customerdetails[0].billing_first_name });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_last_name", meta_value = model.customerdetails[0].billing_last_name });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_email", meta_value = model.customerdetails[0].billing_email });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_country", meta_value = model.customerdetails[0].billing_country });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_state", meta_value = model.customerdetails[0].billing_state });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_city", meta_value = model.customerdetails[0].billing_city });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_postcode", meta_value = model.customerdetails[0].billing_postcode });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_phone", meta_value = model.customerdetails[0].billing_phone });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_address_1", meta_value = model.customerdetails[0].billing_address_1 });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_address_2", meta_value = model.customerdetails[0].billing_address_2 });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_company", meta_value = model.customerdetails[0].billing_company });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_first_name", meta_value = model.customerDetails[0].billing_first_name });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_last_name", meta_value = model.customerDetails[0].billing_last_name });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_email", meta_value = model.customerDetails[0].billing_email });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_country", meta_value = model.customerDetails[0].billing_country });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_state", meta_value = model.customerDetails[0].billing_state });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_city", meta_value = model.customerDetails[0].billing_city });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_postcode", meta_value = model.customerDetails[0].billing_postcode });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_phone", meta_value = model.customerDetails[0].billing_phone });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_address_1", meta_value = model.customerDetails[0].billing_address_1 });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_address_2", meta_value = model.customerDetails[0].billing_address_2 });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_company", meta_value = model.customerDetails[0].billing_company });
                     postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_billing_address_index", meta_value = "" });
 
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_first_name", meta_value = model.customerdetails[0].shipping_first_name });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_last_name", meta_value = model.customerdetails[0].shipping_last_name });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_email", meta_value = model.customerdetails[0].shipping_email });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_country", meta_value = model.customerdetails[0].shipping_country });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_state", meta_value = model.customerdetails[0].shipping_state });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_city", meta_value = model.customerdetails[0].shipping_city });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_postcode", meta_value = model.customerdetails[0].shipping_postcode });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_phone", meta_value = model.customerdetails[0].shipping_phone });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_1", meta_value = model.customerdetails[0].shipping_address_1 });
-                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_2", meta_value = model.customerdetails[0].shipping_address_2 });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_first_name", meta_value = model.customerDetails[0].shipping_first_name });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_last_name", meta_value = model.customerDetails[0].shipping_last_name });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_email", meta_value = model.customerDetails[0].shipping_email });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_country", meta_value = model.customerDetails[0].shipping_country });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_state", meta_value = model.customerDetails[0].shipping_state });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_city", meta_value = model.customerDetails[0].shipping_city });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_postcode", meta_value = model.customerDetails[0].shipping_postcode });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_phone", meta_value = model.customerDetails[0].shipping_phone });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_1", meta_value = model.customerDetails[0].shipping_address_1 });
+                    postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_2", meta_value = model.customerDetails[0].shipping_address_2 });
                     postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_shipping_address_index", meta_value = "" });
 
                 }
-                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method", meta_value = model.paymentinfo.payment_method });
-                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method_title", meta_value = model.paymentinfo.payment_method_title });
+                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method", meta_value = model.paymentInfo.payment_method });
+                postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_payment_method_title", meta_value = model.paymentInfo.payment_method_title });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_order_total", meta_value = model.cartTotals });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_cart_discount", meta_value = model.cartDiscount });
                 postMetas.Add(new PostMetaModel() { post_id = 0, meta_key = "_cart_discount_tax", meta_value = "0" });

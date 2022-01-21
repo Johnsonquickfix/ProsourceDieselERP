@@ -41,9 +41,10 @@ function AccountJournalList(is_date) {
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
     var ID = $("#hfid").val();
+    var obj = { strValue1: urid, strValue2: dfa, }
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }], order: [[2, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -85,7 +86,11 @@ function AccountJournalList(is_date) {
             console.log(DebitTotal);
             console.log(CreditTotal);
         },
-
+        ajax: {
+            url: '/Accounting/AccountJournalList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+        },
+        /*
         sAjaxSource: "/Accounting/AccountJournalList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
@@ -103,8 +108,8 @@ function AccountJournalList(is_date) {
                     return fnCallback(dtOption);
                 }
             });
-        },
-        aoColumns: [
+        },*/
+        columns: [
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             {
@@ -124,8 +129,9 @@ function AccountJournalList(is_date) {
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
+            { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
+            { data: 'datesort', title: 'Date', sWidth: "10%",},
         ],
         "dom": 'lBftipr',
         "buttons": [
@@ -139,6 +145,26 @@ function AccountJournalList(is_date) {
                     return 'Journals' + e;
                 },
             },
+
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: false,
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5],
+                },
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account Journal' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account journals</h3>';
+                },
+            }
         ],
     });
 }

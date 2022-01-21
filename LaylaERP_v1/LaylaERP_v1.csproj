@@ -663,7 +663,6 @@
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
-    <Content Include="js\Accounting\ProfitLossAccount.js" />
     <Content Include="js\app.js" />
     <Content Include="js\Bank\Bank.js" />
     <Content Include="js\Bank\BankEntries.js" />
@@ -1096,7 +1095,9 @@
     <Content Include="Views\Reports\ForecastInventory.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSR.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryHistorical.cshtml" />
-    <Content Include="Views\Accounting\ProfitLossAccount.cshtml" />
+    <Content Include="Views\Reports\InventoryReportsPowerBi.cshtml" />
+    <Content Include="Views\Reports\SalesForecastReportPowerBi.cshtml" />
+    <Content Include="Views\Reports\MiscReportPowerBi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

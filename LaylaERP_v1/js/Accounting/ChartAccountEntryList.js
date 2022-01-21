@@ -1,57 +1,16 @@
 ﻿$(document).ready(function () {
     ChartofaccountGrid();
     getGrandTotal();
-
-    function newexportaction(e, dt, button, config) {
-        var self = this;
-        var oldStart = dt.settings()[0]._iDisplayStart;
-        dt.one('preXhr', function (e, s, data) {
-            // Just this once, load all data from the server...
-            data.start = 0;
-            data.length = 2147483647;
-            dt.one('preDraw', function (e, settings) {
-                // Call the original action function
-                if (button[0].className.indexOf('buttons-copy') >= 0) {
-                    $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                    $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                    $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                    $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                    $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
-                }
-                dt.one('preXhr', function (e, s, data) {
-                    // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                    // Set the property to what it was before exporting.
-                    settings._iDisplayStart = oldStart;
-                    data.start = oldStart;
-                });
-                // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                setTimeout(dt.ajax.reload, 0);
-                // Prevent rendering of the full data to the DOM
-                return false;
-            });
-        });
-        // Requery the server with the new one-time export settings
-        dt.ajax.reload();
-    }
 })
 
 function ChartofaccountGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
+    let obj = { strValue1: ID };// console.log(obj);
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],
+        destroy: true, bProcessing: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -77,41 +36,28 @@ function ChartofaccountGrid() {
                     typeof i === 'number' ?
                         i : 0;
             };
-            var balance = api.column(4).data().reduce(function (a, b) {
+            var balance = api.column(4, { page: 'current' } ).data().reduce(function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0);
 
-            var bankbalance = api.column(5).data().reduce(function (a, b) {
+            var bankbalance = api.column(5, { page: 'current' } ).data().reduce(function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0);
             $(api.column(3).footer()).html('Page total');
             $(api.column(4).footer()).html('$' + numberRenderer(balance));
             $(api.column(5).footer()).html('$' + numberRenderer(bankbalance));
         },
-        sAjaxSource: "/Accounting/GetEventsList",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
-            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            //var col = 'id';
-            //if (oSettings.aaSorting.length >= 0) {
-            //    var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "event_label" : oSettings.aaSorting[0][0] == 2 ? "startdate" : oSettings.aaSorting[0][0] == 3 ? "enddate" : oSettings.aaSorting[0][0] == 4 ? "task" : oSettings.aaSorting[0][0] == 5 ? "assigned_user" : oSettings.aaSorting[0][0] == 6 ? "name" : "id";
-            //    aoData.push({ name: "sSortColName", value: col });
-            //}
-            oSettings.jqXHR = $.ajax({
-                dataType: 'json', type: "GET", url: sSource, data: aoData,
-                "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
-                }
-            });
+        ajax: {
+            url: '/Accounting/GetChartAccountEntryList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
-        aoColumns: [
-            { data: 'id', title: 'ID', sWidth: "5%" },
+        columns: [
+            { data: 'id', title: 'ID', sWidth: "5%", render: function (id, type, full, meta) { return full.account_number; } },
             { data: 'name', title: 'Name', sWidth: "10%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },
             { data: 'detailtype', title: 'Detail Type', sWidth: "10%" },
-            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'bank_balance', title: 'Bank Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'balance', title: 'Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'bank_balance', title: 'Bank Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'datesort', title: 'Date', sWidth: "10%", render: function (id, type, full, meta) { return full.entrydate; }
             },
@@ -130,7 +76,7 @@ function ChartofaccountGrid() {
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> CSV',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6],
+                    columns: [1, 2, 3, 4, 5],
                 },
                 filename: function () {
                     var d = new Date();
@@ -140,16 +86,21 @@ function ChartofaccountGrid() {
             },
             {
                 extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title:'',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
-                footer: true,
+                footer: false,
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6],                    
+                    columns: [1, 2, 3, 4, 5],                    
                 },
                 filename: function () {
                     var d = new Date();
                     var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Chart_of_account_entry' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>'; 
                 },
             }
         ],

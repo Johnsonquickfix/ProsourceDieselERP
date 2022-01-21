@@ -25,6 +25,7 @@ function ChartOfAccountGrid() {
                     //{ data: 'account_parent', title: 'Parent Account Code', sWidth: "10%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "10%" },
+                    /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },*/
                     {
                         'data': 'active', sWidth: "10%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {
@@ -68,7 +69,7 @@ function ChartOfAccountGrid() {
                         text: '<i class="fas fa-file-csv"></i> CSV',
                         exportOptions: {
                             columns: [1, 2, 3, 4],
-                            modifier: {page: 'current'}
+                            //modifier: {page: 'current'}
                         },
                         filename: function () {
                             var d = new Date();
@@ -82,7 +83,7 @@ function ChartOfAccountGrid() {
                         text: '<i class="fas fa-file-csv"></i> Print',
                         exportOptions: {
                             columns: [1, 2, 3, 4],
-                            modifier: { page: 'current' }
+                            //modifier: { page: 'current' }
                         },
                         filename: function () {
                             var d = new Date();

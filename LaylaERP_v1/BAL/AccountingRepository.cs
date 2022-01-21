@@ -12,7 +12,6 @@ namespace LaylaERP.BAL
 {
     public class AccountingRepository
     {
-        public static List<Export_Details> exportorderlist = new List<Export_Details>();
         public static DataSet GetNatureofJournal()
         {
             DataSet DS = new DataSet();
@@ -170,7 +169,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account ";
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, pcg_type, active from erp_accounting_account ";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;
@@ -239,8 +238,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -254,6 +253,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@active","1"),
                     new SqlParameter("@reconcilable","0"),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
+                    new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -284,7 +284,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type,active from erp_accounting_account "
+                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams from erp_accounting_account "
                 + "where rowid=" + id + "";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -349,7 +349,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -359,6 +359,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@label", model.label),
                     new SqlParameter("@account_number",model.account_number),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
+                    new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -733,7 +734,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT label, rowid from erp_accounting_account");
+                DS = SQLHelper.ExecuteDataSet("SELECT label, account_number from erp_accounting_account");
 
             }
             catch (Exception ex)
@@ -746,7 +747,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where labelshort != 'NULL' and rowid ='" + id + "'");
+                DS = SQLHelper.ExecuteDataSet("SELECT labelshort, rowid from erp_accounting_account Where account_number ='" + id + "'");
 
             }
             catch (Exception ex)
@@ -776,7 +777,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable GetEventsList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetChartAccountEntryListNotUsed(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -785,7 +786,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
-                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.rowid = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
+                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (eaa.label like '%" + searchid + "%' OR ept.pcg_type like '%" + searchid + "%' OR eaafordetail.labelshort like '%" + searchid + "%' OR balance like '%" + searchid + "%' OR bank_balance like '%" + searchid + "%')";
@@ -856,7 +857,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT pcg_type, account_parent from erp_accounting_account Where rowid ='" + id + "'");
+                DS = SQLHelper.ExecuteDataSet("SELECT pcg_type, account_parent from erp_accounting_account Where account_number ='" + id + "'");
 
             }
             catch (Exception ex)
@@ -876,81 +877,39 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
-        } 
-        public static void AccountProfitLossList(string from_date, string to_date)
-        {
-            try
-            {
-                exportorderlist.Clear();
-                decimal discount = 0;
-                decimal total = 0;
-                DataSet ds1 = new DataSet();
-                string ssql;
-
-                if (from_date != "" && to_date != "")
-                {
-                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                    fromdate = DateTime.Parse(from_date);
-                    todate = DateTime.Parse(to_date);
-                    SqlParameter[] param = {
-                        new SqlParameter("@from", from_date),
-                        new SqlParameter("@to", to_date),
-                         new SqlParameter("@flag", "sh")
-                    };
-                    ds1 = DAL.SQLHelper.ExecuteDataSet("erp_account_profit_loss_list", param);
-                }
-                else
-                {
-                    ssql = "";
-                }
-                //DataSet ds1 = new DataSet();
-                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-                {
-                    Export_Details uobj = new Export_Details();
-                    
-                    //uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["account_number"].ToString());
-                    uobj.UID = Convert.ToInt64( ds1.Tables[0].Rows[i]["account_number"].ToString());
-                    uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["account_number"].ToString();
-                    uobj.shipping_city = ds1.Tables[0].Rows[i]["label"].ToString();
-                    uobj.shipping_state = ds1.Tables[0].Rows[i]["pcg_type"].ToString();
-                    uobj.country = ds1.Tables[0].Rows[i]["account_number"].ToString();
-                    discount = Convert.ToDecimal(ds1.Tables[0].Rows[i]["IncomVal"].ToString());
-                    total =  Convert.ToDecimal(ds1.Tables[0].Rows[i]["ExpenseVal"].ToString());
-                    if(total != (decimal)0.000000)
-                        uobj.total =   total.ToString();
-                    else
-                        uobj.total = "";
-                    if (discount != (decimal)0.000000)
-                        uobj.Discount =  discount.ToString();
-                    else
-                        uobj.Discount = "";
-
-                    exportorderlist.Add(uobj);
-                }
-            }
-            catch (Exception ex) { throw ex; }
         }
-        public static DataTable AccountProfitLossTotal(string from_date, string to_date)
+
+        public static DataTable GetChartAccountEntryList()
         {
             DataTable dt = new DataTable();
             try
             {
-                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                fromdate = DateTime.Parse(from_date);
-                todate = DateTime.Parse(to_date);
-                SqlParameter[] param = {
-                        new SqlParameter("@from", from_date),
-                        new SqlParameter("@to", to_date),
-                         new SqlParameter("@flag", "tot")
-                    };
-                dt = DAL.SQLHelper.ExecuteDataTable("erp_account_profit_loss_list", param);
-                //dt = SQLHelper.ExecuteDataTable(strSql);
+                string strWhr = string.Empty;
 
+                string strSql = "SELECT ece.name account_number, ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                               + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1 order by account_number";
+                dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                throw ex;
+            }
             return dt;
         }
 
+        public static DataTable Checkaccountnumber(AccountingModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT account_number from erp_accounting_account where account_number ='" + model.account_number + "'";
+                    dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

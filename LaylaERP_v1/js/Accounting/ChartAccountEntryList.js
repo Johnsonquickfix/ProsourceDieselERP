@@ -9,7 +9,7 @@ function ChartofaccountGrid() {
     let obj = { strValue1: ID };// console.log(obj);
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -52,12 +52,12 @@ function ChartofaccountGrid() {
             dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         columns: [
-            { data: 'id', title: 'ID', sWidth: "5%" },
+            { data: 'id', title: 'ID', sWidth: "5%", render: function (id, type, full, meta) { return full.account_number; } },
             { data: 'name', title: 'Name', sWidth: "10%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },
             { data: 'detailtype', title: 'Detail Type', sWidth: "10%" },
-            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'bank_balance', title: 'Bank Balance', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'balance', title: 'Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'bank_balance', title: 'Bank Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'datesort', title: 'Date', sWidth: "10%", render: function (id, type, full, meta) { return full.entrydate; }
             },

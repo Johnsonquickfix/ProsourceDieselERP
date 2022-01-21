@@ -80,7 +80,7 @@
                     $("#loader").show(); isEdit(true);
                     $('#ddlVendor').prop("disabled", false); $('.billinfo,.orderfiles').prop("disabled", false); $("#divAlert,.top-action,.paymentlist,#divfileupload_services").empty();//$('#txtbillfirstname').focus();
                     $('.page-heading').text('New Purchase Order'); $(".order-files").addClass('hidden');
-                    $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text(0.00);
+                    $('#lblPoNo').text('Draft'); $('#lblPoNo').data('id', 0); $('#paidTotal').text('$0.00'); $('#paidTotal').data('paid', "0.00");
                     $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
                     $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Service"><i class="fas fa-concierge-bell"></i> Add Service</button>');
                     $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-placement="left">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save new purchase order.">');
@@ -100,7 +100,7 @@
         t.preventDefault();
         let rang = parseInt($(this).data('rang')) || 0, proc_type = parseInt($('#ddl_service_type').val()) || 0;
         bindOtherItems(proc_type, rang);
-        ActivityLog('Add/Edit other product in new purchase order ' + $("#txt_proc_desc").val()+'', '/PurchaseOrder/NewPurchaseOrder');
+        ActivityLog('Add/Edit other product in new purchase order ' + $("#txt_proc_desc").val() + '', '/PurchaseOrder/NewPurchaseOrder');
     });
     $("#POModal").on("change", ".addCalulate", function (t) {
         t.preventDefault();
@@ -239,7 +239,7 @@ function bindItems(data) {
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data[i].fk_product + '" value="' + data[i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
                     itemHtml += '<td class="text-right tax-amount" data-tax1="' + data[i].localtax1_tx + '" data-tax2="' + data[i].localtax2_tx + '">' + data[i].total_localtax1 + '</td>';
                     itemHtml += '<td class="text-right ship-amount">' + data[i].total_localtax2 + '</td>';
-                    itemHtml += '<td class="text-right row-total">' + data[i].total_ttc.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right row-total" data-total="' + data[i].total_ttc.toFixed(2) + '">' + formatCurrency(data[i].total_ttc) + '</td>';
                     itemHtml += '</tr>';
                 }
                 else { $('#txt_itemqty_' + data[i].rowid).val((parseFloat($('#txt_itemqty_' + data[i].rowid).val()) + data[i].qty).toFixed(2)); }
@@ -272,8 +272,9 @@ function calculateFinal() {
         tQty += rQty; rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
-        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2));
         tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
+        $(row).find(".row-total").text(formatCurrency(rNetAmt));
     });
     //other item
     $("#product_line_items > tr.other_item").each(function (index, row) {
@@ -284,27 +285,33 @@ function calculateFinal() {
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1;
-        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(formatCurrency(rNetAmt));
         tGrossAmt += 0;
         tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
         if (proc_type == 1) tTax_Amt2 += rNetAmt;
         else if (proc_type == 2) tTax_Amt1 += rNetAmt;
         else if (proc_type == 3) tOther_Amt += rNetAmt;
-        else {
-            tQty += rQty, tGrossAmt += rGrossAmt;
-        }
+        else { tQty += rQty, tGrossAmt += rGrossAmt; }
     });
 
     $(".thQuantity").text(tQty.toFixed(0));
-    $("#SubTotal").text(tGrossAmt.toFixed(2));
-    $("#discountTotal").text(tDisAmt.toFixed(2));
-    $("#salesTaxTotal").text(tTax_Amt1.toFixed(2));
-    $("#shippingTotal").text(tTax_Amt2.toFixed(2));
-    $("#otherTotal").text(tOther_Amt.toFixed(2));
-    $("#orderTotal").html(tNetAmt.toFixed(2));
-    let paid_amt = parseFloat($('#paidTotal').text()) || 0.00;
-    $('#unpaidTotal').text((tNetAmt - paid_amt).toFixed(2))
+    $("#SubTotal").text(formatCurrency(tGrossAmt)); $("#SubTotal").data('total', tGrossAmt.toFixed(2));
+    $("#discountTotal").text(formatCurrency(tDisAmt)); $("#discountTotal").data('total', tDisAmt.toFixed(2));
+    $("#salesTaxTotal").text(formatCurrency(tTax_Amt1)); $("#salesTaxTotal").data('total', tTax_Amt1.toFixed(2));
+    $("#shippingTotal").text(formatCurrency(tTax_Amt2)); $("#shippingTotal").data('total', tTax_Amt2.toFixed(2));
+    $("#otherTotal").text(formatCurrency(tOther_Amt)); $("#otherTotal").data('total', tOther_Amt.toFixed(2));
+    $("#orderTotal").html(formatCurrency(tNetAmt)); $("#orderTotal").data('total', tNetAmt.toFixed(2));
+    let paid_amt = parseFloat($('#paidTotal').data('paid')) || 0.00;
+    $('#unpaidTotal').text(formatCurrency(tNetAmt - paid_amt))
     $('[data-toggle="tooltip"]').tooltip();
+}
+function formatCurrency(total) {
+    var neg = false;
+    if (total < 0) {
+        neg = true;
+        total = Math.abs(total);
+    }
+    return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -432,12 +439,12 @@ function getPurchaseOrderInfo() {
         $('#line_items,#product_line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnClonePO" data-toggle="tooltip" title="Create duplicate purchase order" data-placement="left"><i class="fas fa-copy"></i> Clone</button> ');
-        var option = { strValue1: oid }; 
+        var option = { strValue1: oid };
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 //try {
-                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;                
+                let data = JSON.parse(result); let VendorID = 0, status_id = 0, fk_projet = 0, fk_user_approve = 0;
                 $.each(data['po'], function (key, row) {
                     VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0; fk_projet = parseInt(row.fk_projet) || 0;
                     $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
@@ -479,7 +486,7 @@ function getPurchaseOrderInfo() {
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
                         else if (status_id == 8) {
-                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(Rejected by ' + row.user_approve + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                            $('.page-heading').empty().append('Edit Purchase Order <span class="text-red">(Disapprove by ' + row.user_approve + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                             $(".top-action").append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                         }
@@ -493,7 +500,7 @@ function getPurchaseOrderInfo() {
                 });
                 getVendorProducts(VendorID);
                 $.each(data['pod'], function (key, row) {
-                    let itemHtml = '';
+                    let itemHtml = ''; let _total = formatCurrency(row.total_ttc);
                     if (row.fk_product > 0) {
                         itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
                         itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
@@ -503,7 +510,7 @@ function getPurchaseOrderInfo() {
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.fk_product + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
                         itemHtml += '<td class="text-right tax-amount" data-tax1="' + row.localtax1_tx + '" data-tax2="' + row.localtax2_tx + '">' + row.total_localtax1.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
-                        itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right row-total" data-total="' + row.total_ttc.toFixed(2) + '">' + _total + '</td>';
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
                     }
@@ -520,10 +527,11 @@ function getPurchaseOrderInfo() {
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
                         itemHtml += '<td class="text-right tax-amount">' + row.total_localtax1.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
-                        itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right row-total" data-total="' + row.total_ttc.toFixed(2) + '">' + _total + '</td>';
                         itemHtml += '</tr>';
                         $('#product_line_items').append(itemHtml);
                     }
+                    console.log(_total);
                 });
                 getPurchaseOrderPayments(oid);
                 //}
@@ -562,7 +570,7 @@ function getPurchaseOrderPayments(oid) {
                         itemHtml += '</tr>';
                     });
                     $('.paymentlist').append(itemHtml);
-                    $('#paidTotal').text(paid_amt.toFixed(2));
+                    $('#paidTotal').text(formatCurrency(paid_amt)); $('#paidTotal').data('paid', paid_amt.toFixed(2));
                 }
                 catch (error) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }
             },
@@ -641,8 +649,8 @@ function saveVendorPO() {
         let _order = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, fk_warehouse: wh_id, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private,
-            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
-            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text())
+            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").data('total')), localtax2: parseFloat($("#shippingTotal").data('total')), total_ht: parseFloat($("#SubTotal").data('total')),
+            discount: parseFloat($("#discountTotal").data('total')), total_ttc: parseFloat($("#orderTotal").data('total'))
         }
         let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option, _order, _list); return;
@@ -671,9 +679,9 @@ function orderApprove(oid, status_title, status) {
         title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                $.ajaxSetup({ async: false});
+                $.ajaxSetup({ async: false });
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
-                    result = JSON.parse(result); 
+                    result = JSON.parse(result);
                     if (result[0].Response == "Success") {
                         $('#lblPoNo').data('id', oid);
                         //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
@@ -685,7 +693,7 @@ function orderApprove(oid, status_title, status) {
                         swal('Success', 'Purchase order saved successfully.', "success");
                         $.when(getPurchaseOrderInfo()).done(function () {
                             getPurchaseOrderPrint(oid, true);
-                           /* ActivityLog('Purchase order ' + status_title + ' for purchase order id (' + oid + ')', '/PurchaseOrder/NewPurchaseOrder/' + oid + '');*/
+                            /* ActivityLog('Purchase order ' + status_title + ' for purchase order id (' + oid + ')', '/PurchaseOrder/NewPurchaseOrder/' + oid + '');*/
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

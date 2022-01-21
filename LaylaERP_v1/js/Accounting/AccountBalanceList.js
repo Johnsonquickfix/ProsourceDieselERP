@@ -1,9 +1,10 @@
 ﻿function AccountBalanceList() {
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
+    var obj = { id: ID };
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -20,7 +21,7 @@
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Accounting/AccountBalanceList",
+        /*sAjaxSource: "/Accounting/GetBalanceList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';
@@ -35,13 +36,17 @@
                     return fnCallback(dtOption);
                 }
             });
+        },*/
+        ajax: {
+            url: '/Accounting/AccountBalanceList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
             { data: 'account', title: 'Accounting Account', sWidth: "5%", class:"text-left" },
-            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
+            { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
+            { data: 'balance', title: 'Balance ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
         ],
 
         "dom": 'lBftipr',
@@ -56,6 +61,25 @@
                     return 'Account_Balance_List' + e;
                 },
             },
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: false,
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5],
+                },
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account_balance' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account Balance</h3>';
+                },
+            }
         ],
     });
 }

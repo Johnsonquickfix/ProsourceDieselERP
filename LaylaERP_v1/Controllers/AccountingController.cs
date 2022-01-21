@@ -69,6 +69,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ProfitLossAccount()
+        {
+            return View();
+        }
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -543,6 +547,35 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = AccountingRepository.GetCharofaccountentrygrandtotal();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        } 
+
+        [HttpPost]
+        public ActionResult AccountProfitLossList(string Year, string Month)
+        {
+            //var from_date = new DateTime(Convert.ToInt32(Year), Convert.ToInt32(Month), 1);
+            //var to_date = from_date.AddMonths(1).AddDays(-1);
+
+            //DateTime? fromdate = null, todate = null;
+            //if (!string.IsNullOrEmpty(Year))
+            //    fromdate = Convert.ToDateTime(Year);
+            //if (!string.IsNullOrEmpty(Month))
+            //    todate = Convert.ToDateTime(Month);
+
+            AccountingRepository.AccountProfitLossList(Month.ToString(), Year.ToString());
+            var k = Json(new { data = AccountingRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
+        public JsonResult AccountProfitLossTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.AccountProfitLossTotal(model.strValue1, model.strValue2);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

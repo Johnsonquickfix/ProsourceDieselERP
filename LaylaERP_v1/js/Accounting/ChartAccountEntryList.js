@@ -76,7 +76,7 @@ function ChartofaccountGrid() {
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> CSV',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6],
+                    columns: [1, 2, 3, 4, 5],
                 },
                 filename: function () {
                     var d = new Date();
@@ -86,16 +86,21 @@ function ChartofaccountGrid() {
             },
             {
                 extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title:'',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
-                footer: true,
+                footer: false,
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6],                    
+                    columns: [1, 2, 3, 4, 5],                    
                 },
                 filename: function () {
                     var d = new Date();
                     var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Chart_of_account_entry' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>'; 
                 },
             }
         ],

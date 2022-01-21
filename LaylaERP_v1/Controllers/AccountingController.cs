@@ -370,10 +370,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = AccountingRepository.AccountBalanceList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
         public JsonResult AccountBalanceGrandTotal()
@@ -395,10 +396,11 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = AccountingRepository.AccountJournalList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(result, 0);
         }
 
         public JsonResult AccountLedgerList(JqDataTableModel model)

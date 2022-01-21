@@ -86,7 +86,8 @@ function ChartofaccountGrid() {
             },
             {
                 extend: 'print',
-                title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title:'',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
                 footer: false,
@@ -97,6 +98,9 @@ function ChartofaccountGrid() {
                     var d = new Date();
                     var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Chart_of_account_entry' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>'; 
                 },
             }
         ],

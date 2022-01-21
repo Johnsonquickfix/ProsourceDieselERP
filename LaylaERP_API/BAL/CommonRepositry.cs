@@ -179,7 +179,7 @@
             return dt;
         }
 
-        public static DataTable AddOrders(long Pkey, string qFlag,long customer_id, long employee_id, string employee_name, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML)
+        public static DataTable AddOrders(long Pkey, string qFlag,long customer_id, string order_note, string order_comment, long employee_id, string employee_name, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_itemsXML)
         {
             var dt = new DataTable();
             try
@@ -190,6 +190,8 @@
                     new SqlParameter("@pkey", Pkey),
                     new SqlParameter("@qflag", qFlag),
                     new SqlParameter("@customer_id", customer_id),
+                    new SqlParameter("@order_note", order_note),
+                    new SqlParameter("@order_comment", order_comment),
                     new SqlParameter("@userid", employee_id),
                     new SqlParameter("@username", employee_name),
                     new SqlParameter("@postsXML", postsXML.OuterXml),

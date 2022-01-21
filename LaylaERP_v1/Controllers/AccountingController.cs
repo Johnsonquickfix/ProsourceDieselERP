@@ -600,5 +600,6 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
     }
 }

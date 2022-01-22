@@ -193,7 +193,7 @@ function PurchaseOrderGrid() {
             //        return val;
             //    }
             //},
-            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$').display },
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
             //{
             //    'data': 'date_livraison', sWidth: "10%", title: 'Planned date of delivery',
@@ -467,7 +467,7 @@ function format(d) {
     //});
     //wrHTML += '</table>';
     //return wrHTML;
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2, '$').display;
     let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:left;">Quantity</th><th style="width:10%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPoClosureOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
@@ -479,7 +479,7 @@ function format(d) {
                 wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" title="Click here to view bill preview" data-toggle="tooltip"  onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">' + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.Quenty + '</td>'
-                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+                wrHTML += '<td style="width:10%; text-align:right;">' + numberRenderer(row.total_ttc) + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },
@@ -675,6 +675,7 @@ function PoPartiallyColleps() {
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
     //console.log(d.ref);
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2, '$').display;
     let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:left;">Quantity</th><th style="width:10%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
@@ -686,7 +687,7 @@ function formatPartially(d) {
                 wrHTML += '<tr><td style="width:10%; text-align:left;"> <a title="Click here to view bill preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">'  + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">'  + row.Quenty + '</td>'
-                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+                wrHTML += '<td style="width:10%; text-align:right;">' + numberRenderer(row.total_ttc) + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

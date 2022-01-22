@@ -39,7 +39,7 @@ function AccountJournalList(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var ID = $("#hfid").val();
     var obj = { strValue1: urid, strValue2: dfa, }
     var table_EL = $('#JournalListdata').DataTable({
@@ -60,12 +60,12 @@ function AccountJournalList(is_date) {
             var api = this.api(), data;
             var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
 
-            let DebitTotal = api.column(7).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
-            let CreditTotal = api.column(8).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let DebitTotal = api.column(7, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(8, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
 
             $(api.column(0).footer()).html('Page Total');
-            $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
-            $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
+            $(api.column(7).footer()).html('$' + numberRenderer(DebitTotal));
+            $(api.column(8).footer()).html('$' + numberRenderer(CreditTotal));
             //console.log(DebitTotal, CreditTotal);
         },
         ajax: {
@@ -91,7 +91,7 @@ function AccountJournalList(is_date) {
                 }
             });
         },*/
-        columns: [
+        aoColumns: [
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datesort', title: 'Date', sWidth: "10%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
@@ -106,8 +106,8 @@ function AccountJournalList(is_date) {
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
-            { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
+            { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
         ],
         "dom": 'lBftipr',
         "buttons": [
@@ -185,7 +185,7 @@ function getGrandTotal(is_date) {
             var d = JSON.parse(data);
             if (d.length > 0) {
                 if (parseInt(d[0].debit).toFixed(2) > 0 || parseInt(d[0].debit).toFixed(2) == 0) {
-                    $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2)); $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2)); $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
+                    $("#txtdebit").text('$' + (d[0].debit)); $("#txtcredit").text('$' + (d[0].credit)); $("#txtbalance").text('$' + (d[0].balance))
                 }
             }
         },

@@ -378,7 +378,9 @@ function calculateFinal() {
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
-        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2));
+       // $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        $(row).find(".row-total").text(formatCurrency(rNetAmt));
         tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
 
         tpquty += totalqty;
@@ -400,12 +402,14 @@ function calculateFinal() {
         $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
         tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
     });
-    $("#SubTotal").text(tGrossAmt.toFixed(2));
-    $("#discountTotal").text(tDisAmt.toFixed(2));
+    //$("#SubTotal").text(tGrossAmt.toFixed(2));
+    $("#SubTotal").text(formatCurrency(tGrossAmt)); $("#SubTotal").data('total', tGrossAmt.toFixed(2));
+    //$("#discountTotal").text(tDisAmt.toFixed(2));
+    $("#discountTotal").text(formatCurrency(tDisAmt)); $("#discountTotal").data('total', tDisAmt.toFixed(2));
     $("#salesTaxTotal").text(tTax_Amt1.toFixed(2));
     $("#shippingTotal").text(tTax_Amt2.toFixed(2));
-    $("#orderTotal").html(tNetAmt.toFixed(2));
-
+   // $("#orderTotal").html(tNetAmt.toFixed(2));
+    $("#orderTotal").html(formatCurrency(tNetAmt)); $("#orderTotal").data('total', tNetAmt.toFixed(2));
     $("#Totalqty").html(tproduct);
     $("#Totalorder").html(torder);
     $("#Totalrecived").html(trecve);
@@ -415,6 +419,15 @@ function calculateFinal() {
     /*  $("#QtyTotal").html(tquty.toFixed(2));*/
     $("#QtyTotal").html(chkqty);
     $("#QtyRecTotal").html(tpquty.toFixed(2));
+}
+
+function formatCurrency(total) {
+    var neg = false;
+    if (total < 0) {
+        neg = true;
+        total = Math.abs(total);
+    }
+    return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -660,10 +673,13 @@ function getPurchaseOrderInfo() {
         else
             $(".btnpoclosed").hide();
 
-
-          $("#SubTotal").text(totalexc);
-         $("#discountTotal").text(totalincl);
-          $("#orderTotal").html(totaldisc);
+       
+         // $("#SubTotal").text(totalexc);
+       //  $("#discountTotal").text(totalincl);
+       //   $("#orderTotal").html(totaldisc);
+        $("#SubTotal").text(formatCurrency(totalexc)); $("#SubTotal").data('total', totalexc);
+        $("#discountTotal").text(formatCurrency(totalincl)); $("#discountTotal").data('total', totalincl);
+        $("#orderTotal").text(formatCurrency(totaldisc)); $("#orderTotal").data('total', totaldisc);
 
     }
     else {
@@ -763,11 +779,16 @@ function saveVendorPO() {
     else if (_list.length <= 0) { swal('Alert', 'To receive quantity should not be Zero', 'error').then(function () { swal.close(); }) }
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
+        //let option = {
+        //    RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID, WarehousepoID: warehousepo_ID,
+        //    Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private, IDRec: IDRecVal,
+        //    total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
+        //    discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), fk_status: status, PurchaseOrderProducts: _list
         let option = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID, WarehousepoID: warehousepo_ID,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private, IDRec: IDRecVal,
-            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
-            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), fk_status: status, PurchaseOrderProducts: _list
+            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").data('total')),
+            discount: parseFloat($("#discountTotal").data('total')), total_ttc: parseFloat($("#orderTotal").data('total')), fk_status: status, PurchaseOrderProducts: _list
         }
         //console.log(option); 
         $.ajax({
@@ -875,7 +896,7 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
                             itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].amount.toFixed(2) + '</td>';                            
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].amount) + '</td>';
                             itemHtml += '</tr>';
 
                         }

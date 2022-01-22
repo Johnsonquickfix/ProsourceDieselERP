@@ -203,7 +203,9 @@
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\PoemailController.cs" />
+    <Compile Include="Controllers\ProductBulkEditController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -1100,6 +1102,7 @@
     <Content Include="Views\Reports\SalesForecastReportPowerBi.cshtml" />
     <Content Include="Views\Reports\MiscReportPowerBi.cshtml" />
     <Content Include="Views\Accounting\ProfitLossAccount.cshtml" />
+    <Content Include="Views\ProductBulkEdit\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

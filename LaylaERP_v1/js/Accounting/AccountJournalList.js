@@ -39,20 +39,15 @@ function AccountJournalList(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var ID = $("#hfid").val();
     var obj = { strValue1: urid, strValue2: dfa, }
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
+        order: [[2, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
             $('#JournalListdata_filter input').unbind();
@@ -61,34 +56,21 @@ function AccountJournalList(is_date) {
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
-
         footerCallback: function (row, data, start, end, display) {
             var api = this.api(), data;
-            console.log(data);
-            var intVal = function (i) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '') * 1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
+            var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
 
-            var DebitTotal = api.column(7).data().reduce(function (a, b) {
-                return intVal(a) + intVal(b);
-            }, 0);
-
-            var CreditTotal = api.column(8).data().reduce(function (a, b) {
-                return intVal(a) + intVal(b);
-            }, 0);
+            let DebitTotal = api.column(7, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(8, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
 
             $(api.column(0).footer()).html('Page Total');
-            $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
-            $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
-            console.log(DebitTotal);
-            console.log(CreditTotal);
+            $(api.column(7).footer()).html('$' + numberRenderer(DebitTotal));
+            $(api.column(8).footer()).html('$' + numberRenderer(CreditTotal));
+            //console.log(DebitTotal, CreditTotal);
         },
         ajax: {
             url: '/Accounting/AccountJournalList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+            dataSrc: function (data) { return JSON.parse(data); }
         },
         /*
         sAjaxSource: "/Accounting/AccountJournalList",
@@ -109,61 +91,43 @@ function AccountJournalList(is_date) {
                 }
             });
         },*/
-        columns: [
+        aoColumns: [
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
-            {
-                data: 'datesort', title: 'Date', sWidth: "10%", render: function (inv_num, type, full, meta) { return full.datecreation; }
-            },
+            { data: 'datesort', title: 'Date', sWidth: "10%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
             {
                 data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "11%",
                 'render': function (inv_num, type, full, meta) {
-                    if (full.code_journal == "AC")
-                        return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
-                    else
-                        return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
+                    if (full.code_journal == "AC") return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                    else return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
                     //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-
                 }
             },
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
-            { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-bold text-right', render: $.fn.dataTable.render.number('', '.', 2, '') },
-            { data: 'datesort', title: 'Date', sWidth: "10%",},
+            { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
         ],
         "dom": 'lBftipr',
         "buttons": [
             {
-                extend: 'csv',
-                className: 'button',
-                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
                 filename: function () {
-                    var d = new Date();
-                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Journals' + e;
                 },
             },
-
             {
                 extend: 'print',
                 //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
-                title: '',
-                className: 'button',
-                text: '<i class="fas fa-file-csv"></i> Print',
-                footer: false,
-                exportOptions: {
-                    columns: [1, 2, 3, 4, 5],
-                },
+                title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8], },
                 filename: function () {
-                    var d = new Date();
-                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Account Journal' + e;
                 },
-                messageTop: function () {
-                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account journals</h3>';
-                },
+                messageTop: function () { return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account journals</h3>'; },
             }
         ],
     });
@@ -221,7 +185,7 @@ function getGrandTotal(is_date) {
             var d = JSON.parse(data);
             if (d.length > 0) {
                 if (parseInt(d[0].debit).toFixed(2) > 0 || parseInt(d[0].debit).toFixed(2) == 0) {
-                    $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2)); $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2)); $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2))
+                    $("#txtdebit").text('$' + (d[0].debit)); $("#txtcredit").text('$' + (d[0].credit)); $("#txtbalance").text('$' + (d[0].balance))
                 }
             }
         },

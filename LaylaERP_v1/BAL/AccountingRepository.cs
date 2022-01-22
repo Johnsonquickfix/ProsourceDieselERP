@@ -502,9 +502,9 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strSql = "SELECT (COALESCE(sum(case when senstag = 'C' then credit end),0)) credit,"
-                               + " (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit,"
-                               + " ((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0))) as balance FROM erp_accounting_bookkeeping where 1 = 1";
+                string strSql = "SELECT Format((COALESCE(sum(case when senstag = 'C' then credit end),0)),'#,##0.00') credit,"
+                               + " Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
+                               + " Format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)),'#,##0.00') as balance FROM erp_accounting_bookkeeping where 1 = 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 
@@ -629,10 +629,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "SELECT cast(isnull(sum(debit),0) as decimal(10,2)) as debit, cast(isnull(sum(credit),0) as decimal(10,2)) as credit, cast(isnull(sum(credit)-sum(debit),0) as decimal(10,2)) as balance from erp_accounting_bookkeeping where 1 = 1";
+                string strSql = "SELECT format(isnull(sum(debit),0),'#,##0.00') as debit, format(isnull(sum(credit),0), '#,##0.00') as credit, format(isnull(sum(credit)-sum(debit),0),'#,##0.00') as balance from erp_accounting_bookkeeping where 1 = 1";
                 strSql += strWhr;
                 dt = SQLHelper.ExecuteDataTable(strSql);
-
             }
             catch (Exception ex)
             { throw ex; }

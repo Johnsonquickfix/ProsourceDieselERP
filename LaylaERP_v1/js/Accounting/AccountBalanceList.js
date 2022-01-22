@@ -2,6 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var obj = { id: ID };
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
@@ -44,9 +45,9 @@
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
             { data: 'account', title: 'Accounting Account', sWidth: "5%", class:"text-left" },
-            { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
-            { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
-            { data: 'balance', title: 'Balance ($)', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, ''), class: "text-right" },
+            { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+            { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+            { data: 'balance', title: 'Balance ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
         ],
 
         "dom": 'lBftipr',
@@ -69,7 +70,7 @@
                 text: '<i class="fas fa-file-csv"></i> Print',
                 footer: false,
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5],
+                    //columns: [1, 2, 3, 4, 5],
                 },
                 filename: function () {
                     var d = new Date();
@@ -94,9 +95,9 @@ function GrandToatl(){
         success: function (data) {
             var d = JSON.parse(data);
             if (d.length > 0) {
-                $("#txtdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
-                $("#txtcredit").text('$' + parseFloat(d[0].credit).toFixed(2));
-                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+                $("#txtdebit").text('$' + (d[0].debit));
+                $("#txtcredit").text('$' + (d[0].credit));
+                $("#txtbalance").text('$' + (d[0].balance));
             }
         },
         error: function (msg) {

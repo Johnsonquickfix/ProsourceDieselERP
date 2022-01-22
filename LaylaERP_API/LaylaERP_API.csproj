@@ -216,9 +216,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CouponModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\OrderModel.cs" />
+    <Compile Include="Models\CouponModel.cs" />
     <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

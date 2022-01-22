@@ -66,6 +66,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="exampleInputEmail1">Account type<span style="color:red"></span></label>
+                                <select class="form-control" id="ddlactype">
+                                    <option value="">--Select account type--</option>
+                                    <option value="BS">Balance sheet</option>
+                                    <option value="PL">Profit and loss</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="box-footer">
                             <div class="text-right">
                                 <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="left" data-toggle="tooltip"><b>Update</b></span></a>
@@ -115,7 +125,7 @@
         var parentaccount = $("#ddlParentAccount").val();
         var detailtype = $("#txtdetailtype").val();
         var tag = $("#ddltag").val();
-
+        var actype = $("#ddlactype").val();
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -141,6 +151,7 @@
                 pcg_type: groupofaccount,
                 labelshort: detailtype,
                 extraparams: tag,
+                ac_type: actype,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -195,6 +206,7 @@
                         setTimeout(function () { $("#ddlParentAccount").val(d[0].account_parent).trigger('change') },500);
                         $("#txtdetailtype").val(d[0].labelshort);
                         $("#ddltag").val(d[0].extraparams).trigger('change');
+                        $("#ddlactype").val(d[0].ac_type).trigger('change');
                         //console.log(d[0].rowid);
                     }
                 },

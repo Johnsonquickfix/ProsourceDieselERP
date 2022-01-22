@@ -64,10 +64,10 @@ function AccountDataList(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     let obj = { strValue1: dfa, strValue2: urid };
     // console.log(obj);
-    $('#dtdataList').DataTable({
+    var table = $('#dtdataList').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
         language: {
             lengthMenu: "_MENU_ per page",
@@ -82,37 +82,146 @@ function AccountDataList(is_date) {
             dataSrc: function (data) { return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+
+           // console.log(data);
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            var sales = api.column(2).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            var forecastales = api.column(3).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+          //  bailance = forecastales - sales;
+            $(api.column(1).footer()).html('Grand total');
+            $(api.column(2).footer()).html(numberRenderer(sales));
+            $(api.column(3).footer()).html(numberRenderer(forecastales));
+            //  $(api.column(3).footer()).html('Balance $' + numberRenderer(bailance));
+        },
         columns: [
             { data: 'row_num', title: '#', sWidth: "0.1%" },
             {
-                data: 'rowid', title: 'Account Name', sWidth: "88%", render: function (data, type, row) {
+                data: 'rowid', title: 'Account Name', sWidth: "89.9%", className: 'text-left', render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #<b>' + row.Acctext + '</b>';
 
                 }
             },
             {
-                data: 'debit', title: 'Debit', sWidth: "8%", class: 'text-bold', render: function (data, type, row) {
+                data: 'debit', sWidth: "5%", class: 'text-right', render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "0.00")
                         tprice = "";
                     else
-                        tprice = '$' + data;
+                        tprice =   numberRenderer(data);
                     return tprice
                 }
             },
+           // { data: 'debit', sWidth: "8%", className: 'text-bold', render: $.fn.dataTable.render.number(',', '.', 2,).display },
             {
-                data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: function (data, type, row) {
+                data: 'credit', sWidth: "5%", class: 'text-right', render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "0.00")
                         tprice = "";
                     else
-                        tprice = '$' + data;
+                        tprice = numberRenderer(data);
                     return tprice
                 }
             }
         ],
-        columnDefs: [{ targets: [0], searchable: false }]
+        columnDefs: [{ targets: [0], searchable: false }],
+        dom: 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                exportOptions: {
+                    columns: [1, 2, 3],
+                },
+                filename: function () {
+                    var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Ledger for' + from;
+                },
+            },
+            //{
+            //    extend: 'excel',
+            //    className: 'button',
+            //    text: '<i class="fas fa-file-csv"></i> Excel',
+            //    exportOptions: {
+            //        columns: [1, 2, 3],
+            //    },
+            //    footer: true,
+            //    filename: function () {
+            //        var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+            //        return 'ProfitLoss for' + from;
+            //    },
+            //},
+            {
+                extend: 'print',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: true,
+                exportOptions: {
+                    columns: [0,1, 2, 3],
+                },
+                filename: function () {
+                    var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Ledger for' + from;
+                },
+            },
+            {
+                extend: 'pdfHtml5',
+                footer: true,
+                exportOptions: {
+                    columns: [1, 2, 3],
+                    
+                },
+                customize: function (doc) {
+                    //doc.defaultStyle.alignment = 'right';
+                    doc.styles.tableHeader.alignment = 'right';
+                    // doc.styles.tableHeader[2].alignment = 'right';
+                    // doc.content[1].alignment = ['left', 'right', 'right'];
+
+                    doc.content[0].text = "Layla Sleep Inc - Ledger";
+                    doc.content[0].text.alignment = 'left';
+
+                    var rowCountd = table.rows().count() + 1;
+                    for (i = 0; i < rowCountd; i++) {
+                        doc.content[1].table.body[i][0].alignment = 'left';
+                    };
+
+                    var rowCount = doc.content[1].table.body.length;
+                    for (i = 1; i < rowCount; i++) {
+                        doc.content[1].table.body[i][2].alignment = 'right';
+                        doc.content[1].table.body[i][1].alignment = 'right';
+
+                    }
+                 
+
+                   // doc.styles.tableHeader.alignment = ['left', 'right', 'right'];
+                    doc.content[1].table.widths =
+                        Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
+                    doc.content[1].table.widths = ['50%', '25%', '25%'];
+                  
+
+                },
+
+                filename: function () {
+                    var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Ledger for' + from;
+                },
+            }
+        ],
     });
 }
 /* Formatting function for row details - modify as you need */
@@ -123,7 +232,7 @@ function formatPartially(d) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     let option = { strValue1: d.rowid, strValue2: urid, strValue3: dfa }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Transaction ID</th><th style="width:5%; text-align:left;">Journal</th><th style="width:10%; text-align:left;">Date</th><th style="width:10%; text-align:left;">Accounting Doc</th><th style="width:46%; text-align:left;">Label</th><th style="width:10%; text-align:right;"></th><th style="width:10%; text-align:right;"></th></tr></thead>';
     $.ajax({
         url: '/Accounting/GetDetailsLedger', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
@@ -148,19 +257,19 @@ function formatPartially(d) {
                 //console.log(row.datecrt);
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')
-                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' + '$' + row.debit + '</td>';
+                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' +  numberRenderer( row.debit) + '</td>';
                 else
                     wrHTML += '<td style="width:10%; text-align:right;">' + '' + '</td>';
                 if (row.credit != '')
-                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right credit-amount">' + '$' + row.credit + '</td></tr > ';
+                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right credit-amount">' + numberRenderer( row.credit) + '</td></tr > ';
                 else
                     wrHTML += '<td style="width:10%; text-align:right;">' + '' + '</td></tr > ';
             });
             wrHTML += '<tfoot><tr><td colspan="5" style="width:10%; text-align:right;"><b> Total accounting account ' + account + ' : </<b></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">$' + Totaldebit + '</span></strong></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalcredit">$' + Totalcredit + '</span></strong></td></tr>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">' + numberRenderer(Totaldebit) + '</span></strong></td>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalcredit">' + numberRenderer(Totalcredit) + '</span></strong></td></tr>';
             wrHTML += '<tr><td colspan="5" style="width:10%; text-align:right;"><b> Balance : </<b></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalbailance">$' + Totalbaolance + '</span></strong></td>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalbailance">' + numberRenderer(Totalbaolance) + '</span></strong></td>';
             wrHTML += '<td style="width:5%; text-align:right;"></td></tr></tfoot>';
         },
         error: function (xhr, status, err) { alert(err); },
@@ -170,6 +279,7 @@ function formatPartially(d) {
     return wrHTML;
 }
 function getGrandTotal(is_date) {
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2, '$').display;
     let urid = $("#ddlVendor").val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -185,7 +295,7 @@ function getGrandTotal(is_date) {
             var d = JSON.parse(data);
             if (d.length > 0) {
                 if (parseInt(d[0].debit).toFixed(2) > 0) {
-                    $("#totaldebit").text('$' + d[0].debit); $("#totalcredival").text('$' + d[0].credit); $("#totalbalval").text('$' + d[0].balance)
+                    $("#totaldebit").text('$' + d[0].debit); $("#totalcredival").text('$' + d[0].credit); $("#totalbalval").text( numberRenderer(d[0].balance))
                 }
             }
         },

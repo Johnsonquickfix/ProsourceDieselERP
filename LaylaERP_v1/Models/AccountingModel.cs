@@ -21,6 +21,7 @@ namespace LaylaERP.Models
         public int active { get; set; }
         public int reconcilable { get; set; }
         public string extraparams { get; set; }
+        public string ac_type { get; set; }
     }
     public class ProductAccountingModel : PaggingModel
     {

@@ -239,8 +239,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -255,6 +255,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@reconcilable","0"),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
                     new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
+                    new SqlParameter("@ac_type",model.ac_type ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -285,7 +286,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams from erp_accounting_account "
+                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams, ac_type from erp_accounting_account "
                 + "where rowid=" + id + "";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -350,7 +351,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams, ac_type=@ac_type where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -361,6 +362,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@account_number",model.account_number),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
                     new SqlParameter("@extraparams",model.extraparams ?? (object)DBNull.Value),
+                    new SqlParameter("@ac_type",model.ac_type ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

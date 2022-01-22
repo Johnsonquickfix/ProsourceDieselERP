@@ -124,7 +124,7 @@ $(function () {
     height: '250px'
   });
 
-  /* Morris.js Charts */
+  /* Morris.js Charts 
   // Sales chart
   var area = new Morris.Area({
     element   : 'revenue-chart',
@@ -176,7 +176,7 @@ $(function () {
     gridTextFamily   : 'Open Sans',
     gridTextSize     : 10
   });
-
+*/
   // Donut Chart
   var donut = new Morris.Donut({
     element  : 'sales-chart',
@@ -198,4 +198,12 @@ $(function () {
   });
   
 
+});
+jQuery(function ($) {
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger: "hover"
+    });
+    $(document).on('mouseleave', '[data-toggle="tooltip"]', function () {
+        $(this).tooltip('hide');
+    });
 });

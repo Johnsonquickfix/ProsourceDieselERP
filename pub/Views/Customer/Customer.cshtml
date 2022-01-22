@@ -1,9 +1,9 @@
 ﻿
-@{
-    ViewBag.Title = "Customer";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewBag.Title = "Manage Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 @*datatables CSS*@
+<input type="hidden" id="hfEdit" value="" />
+
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 @*datatables js*@
@@ -14,125 +14,72 @@
             Customer
         </h1>
     </section>*@
+
+
 <div class="page-title">
-    <h2 class="page-heading">Customers</h2>
+    <h2 class="page-heading">Manage Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser" onclick="return ActivityLog('Create new customer in manage customer','/Customer/Customer');">
+    <span title="Click here to add new customer" data-placement="bottom" data-toggle="tooltip">Add New Customer</span></a>
 </div>
-<section class="content section-content table-design">
-    <div class="user-top-section">
-        <div class="tablenav top">
+<section class="content section-content table-design customer-section">
+    <div class="user-top-section" id="customer-section-top">
+        @*<div class="col-md-3">
+                <div class="form-group">
+                    <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
+                </div>
+            </div>*@
+        <!---sdf-->
+        <div class="tablenav top tablenav-top2">
             <div class="alignleft actions bulkactions">
                 <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
-                    <option value="">Select Status</option>
+                    <option value="">Sort by status</option>
                     <option value="0">Active</option>
                     <option value="1">InActive</option>
                 </select>
-                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                <span title="Click here to search (Active/Inactive) customer" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button></span>
             </div>
-            <br class="clear">
-            @*<div class="col-md-3">
-            <div class="form-group">
-                <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="ddlStatus">
+                    <option value="1">Bulk Action</option>
+                    <option value="2">Delete</option>
+                </select>
+                <span title="Click here to change customer's status inactive" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button></span>
             </div>
-        </div>*@
-            @*<div class="col-sm-2">
-            <a href="../../Customer/NewUser" class="btn btn-primary btn-flat"><i class="fa fa-user"></i> Add New User</a>
-        </div>*@
-
-        </div>
-            <!---sdf-->
-            <div class="tablenav top tablenav-top2">
-                <div class="alignleft actions bulkactions">
-                    <select class="form-control" id="ddlStatus">
-                        <option value="1">Bulk Action</option>
-                        <option value="2">Delete</option>
-                    </select>
-                    <button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button>
-                </div>
-                <div class="alignleft actions bulkactions">
-                    <select class="form-control" id="ddlUserStatus">
-                        <option value="0">Active</option>
-                        <option value="1">InActive</option>
-                    </select>
-                    <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
-                </div>
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="ddlUserStatus">
+                    <option value="0">Active</option>
+                    <option value="1">InActive</option>
+                </select>
+                <span title="Click here to change customer's status(Active/Inactive)" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
+            </div>
         </div>
     </div>
-        <!-- end top-->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                                    <th>Cust ID</th>
-                                    <th>Customer Name</th>
-                                    <th>E-mail</th>
-                                    <th>Status</th>
-                                    <th>Phone</th>
-                                    <th>Registration Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                <th>Cust ID</th>
+                                <th>Customer Name</th>
+                                <th>E-mail</th>
+                                <th>Status</th>
+                                <th>Phone</th>
+                                <th>Registration Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 </section>
-
+@*<input type="hidden" id="hfEdit" value="" />*@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
-    $(document).ready(function () {
-        $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { dataGridLoad(); }, 50);
-    });
    
-    $('#checkAll').click(function () {
-        debugger
-        var isChecked = $(this).prop("checked");
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-    });
-
-    function Singlecheck() {
-        var isChecked = $('#CheckSingle').prop("checked");
-        var isHeaderChecked = $("#checkAll").prop("checked");
-        if (isChecked == false && isHeaderChecked)
-            $("#checkAll").prop('checked', isChecked);
-        else {
-            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                if ($(this).prop("checked") == false)
-                    isChecked = false;
-            });
-            $("#checkAll").prop('checked', isChecked);
-        }
-    }
-
-    $('#btnApply').click(function () {
-        var id = "";
-        var status = $("#ddlStatus").val();
-        $("input:checkbox[name=CheckSingle]:checked").each(function () {
-            id += $(this).val() + ",";
-        });
-        if (status == "1") {
-            //UpdateCustomerStatus();
-        }
-        else {
-            id = id.replace(/,(?=\s*$)/, '');
-            DeleteCustomer(id);
-            dataGridLoad();
-        }
-    })
-
-    $('#btnChange').click(function () {
-        var id = "";
-        $("input:checkbox[name=CheckSingle]:checked").each(function () {
-            id += $(this).val() + ",";
-        });
-        id = id.replace(/,(?=\s*$)/, '');
-        ChangeStatus(id);
-        dataGridLoad();
-        $("#checkAll").prop('checked', false);
-    })
 </script>

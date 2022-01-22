@@ -1,4 +1,4 @@
-﻿
+﻿@model dynamic
 @{
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
     ViewBag.Title = "Dashboard";
@@ -6,9 +6,8 @@
     Layout = null;
 }
 
-<script src="~/Scripts/jquery.js" type="text/javascript"></script>
-<script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
-<link href="~/Content/css/Style.css" rel="stylesheet" />
+@*<script src="~/Scripts/jquery.js" type="text/javascript"></script>
+*@
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +28,7 @@
     <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
     <link href="~/Content/css/tabcss.css" rel="stylesheet" />
     <link href="~/Content/AdminLTE-3.1.0/_all-skins.min.css" rel="stylesheet" />
-    <link href="~/Content/dx/dx.light.css" rel="stylesheet" />
+    @*<link href="~/Content/dx/dx.light.css" rel="stylesheet" />*@
     <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
     <link href="~/Content/css/Style.css" rel="stylesheet" />
     <!-- Main Style -->
@@ -37,6 +36,20 @@
     <!-- jQuery -->
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
     <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+
+    <script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
+    <link href="~/Content/css/Style.css" rel="stylesheet" />
+    <script type="text/javascript">
+        jQuery.browser = {};
+        (function () {
+            jQuery.browser.msie = false;
+            jQuery.browser.version = 0;
+            if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+                jQuery.browser.msie = true;
+                jQuery.browser.version = RegExp.$1;
+            }
+        })();
+    </script>
 </head>
 <body class="skin-blue layla-skin sidebar-mini fixed">
     <div class="wrapper" style="height: auto; min-height: 100%;">
@@ -70,13 +83,23 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-user"></i>
-                                <span class="hidden-xs">@(user.UserName)</span>
+                                <span class="hidden-xs lbluser-name" data-uid="@user.UserID">@(user.UserName)</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
-
+                                    @try
+                                    {
+                                        if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                        {
+                                            <img src="data:image;base64,@ViewBag.User_Image" class="img-circle" alt="User Image">
+                                        }
+                                        else
+                                        {
+                                            <img runat="server" src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                                        }
+                                    }
+                                    catch { }
                                     <p>
                                         @(user.UserName)
                                         <small>@(user.EmailID)</small>
@@ -128,7 +151,18 @@
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                        @try
+                        {
+                            if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                            {
+                                <img runat="server" id="show_Profile_image" class="img-circle" src="data:image;base64,@ViewBag.User_Image" alt="User Image">
+                            }
+                            else
+                            {
+                                <img runat="server" src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                            }
+                        }
+                        catch { }
                     </div>
                     <div class="pull-left info">
                         <p>@(user.UserName)</p>
@@ -138,8 +172,15 @@
                 <!-- search form -->
                 <form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search...">
-                        <span class="input-group-btn">
+                        <!--<input type="text" name="q" class="form-control" readonly placeholder="Search...">-->
+
+
+                        <span class="input-group-btn" title="Click here to view search bar" data-placement="bottom" data-toggle="tooltip">
+
+                            <button type="button" id="btnsearch" name="search" class="btn btn-flat" style="width:100%;">
+
+                                <span style="float:left;">Click here to search...</span>
+                            </button>
                             <button type="submit" name="search" id="search-btn" class="btn btn-flat">
                                 <i class="fa fa-search"></i>
                             </button>
@@ -202,7 +243,7 @@
         </footer>
         <div class="modal in printable autoprint" id="resetpassword" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
         <div class="modal in printable autoprint" id="userprofile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
-
+        <div class="modal in printable autoprint" id="searchbar" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
     </div>
 
 
@@ -211,56 +252,85 @@
     <script src="~/Content/AdminLTE-3.1.0/fastclick.js"></script>
     <!-- AdminLTE App -->
     <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
-    <script src="~/js/app.js"></script>
-    <script src="~/Content/dx/dx.all.js"></script>
+    <script src="~/js/app.js?v=2"></script>
+    @*<script src="~/Content/dx/dx.all.js"></script>*@
     <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
     <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
-
+    <script src="~/js/UserActivity.js"></script>
     <script>
-        var GetUserID = parseInt('@(user.UserID)') || 0;
+        var GetUserID = 0;
         $(document).ready(function () {
-            setTimeout(function () {
-                addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
+            localStorage.setItem('isEdit', 'no');
+            $.when(filluserMenu()).done(function () {
+                addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
-            }, 100);
-            setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
+            });
+            //setTimeout(function () {
+            //    addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
+            //    App.fixIframeCotent();
+            //}, 100);
+            //setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
+
+           // GetUsers();
+
             $(document).on('click', '#btnExit', function () {
+                ActivityLog('Logout user @user.UserName', '/Home/Index');
                 top.window.location.href = top.window.location.origin + '/Home/Login';
             });
-            $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
+            $(document).on("click", "#btnuserprofile", function (t) {
+                t.preventDefault();
+                ProfileModal();
+            });
+            $(document).on("click", "#btnsearch", function (t) {t.preventDefault(); SearchbarModal();});
 
             $('#userprofile').on('shown.bs.modal', function () {
                 $('#txtState').select2({
-                    dropdownParent: $('#userprofile'),
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
-                    ajax: {
-                        url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });
-            }
+                    //dropdownParent: $('#userprofile'),
+                    //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //ajax: {
+                    //    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    //    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                    //    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                    //    error: function (xhr, status, err) { }, cache: true
+                    //}
 
-            );
-
-            $('#userprofile').on('shown.bs.modal', function () {
-                $("#txtCity").select2({
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
-                        url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
+                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) {
+                            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                            return JSON.stringify(obj);
+                        },
+                        processResults: function (data) {
+                            var jobj = JSON.parse(data);
+                            console.log(jobj);
+                            return {
+                                results: $.map(jobj, function (item) {
+                                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                                })
+                            };
+                        },
                         error: function (xhr, status, err) { }, cache: true
                     }
                 });
             });
-            $("#userprofile").on("keyup", "#txtPhone", function (evt) {       
-                var phoneNumber = document.getElementById('txtPhone');             
+
+            //$('#userprofile').on('shown.bs.modal', function () {
+            //    $("#txtCity").select2({
+            //        allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+            //        ajax: {
+            //            url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            //            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            //            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
+            //            error: function (xhr, status, err) { }, cache: true
+            //        }
+            //    });
+            //});
+            $("#userprofile").on("keyup", "#txtPhone", function (evt) {
+                var phoneNumber = document.getElementById('txtPhone');
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
                 phoneNumber.value = phoneFormat(phoneNumber.value);
             });
-
 
             function phoneFormat(input) {
                 input = input.replace(/\D/g, '');
@@ -277,30 +347,13 @@
                 }
                 return input;
             }
-            var input = document.querySelector("#txtPhone");
-            window.intlTelInput(input, {
-
-                utilsScript: "~/Scripts/intlTelInput.js",
-            });
-
-                //$("#State").append("<option>" + $("#hfState").val()+ "</option>");
-
         });
-
         function filluserMenu() {
-            var obj = { userId: GetUserID };
-            jQuery.ajax({
-                url: '/AccountAPI/getMenus', dataType: 'json', type: "Post",
-                beforeSend: function () {
-                    //$("#loading-div-background").show();
-                },
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                success: function (data) {$('.sidebar-menu').sidebarMenu({ data: data });},
-                error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
-            });
+            let option = { userId: parseInt($('.lbluser-name').data('uid') || 0) };
+            $.post('/AccountAPI/getMenus', option).then(response => {
+                $('.sidebar-menu').sidebarMenu({ data: response });
+            }).catch(err => { swal('Error!', err, 'error'); });
         }
-
         ///Add Modal Profile
         function ProfileModal() {
             var myHtml = '';
@@ -333,14 +386,18 @@
                                                 <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
                                                 <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                                             </span>
-                                            @if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                            @try
                                             {
-                                            <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(ViewBag.User_Image)" alt="User profile picture">
-                                            }
-                                            else
-                                            {
+                                                if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                                {
+                                            <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@ViewBag.User_Image" alt="User profile picture">
+                                                }
+                                                else
+                                                {
                                             <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Images/userprofile2.png" alt="User profile picture">
+                                                }
                                             }
+                                            catch { }
                                             <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
                                             <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
                                             <input type="hidden" id="hfzipstatus" />
@@ -356,25 +413,25 @@
                                 <div class="box-header with-border">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">User Name</label>
-                                            <input type="text" id="txtUserNickName" class="form-control" placeholder="Enter User Name" value=@ViewBag.user_login readonly>
+                                            <label for="exampleInputEmail1">User Name<span style="color:red;"> *</span></label>
+                                            <input type="text" id="txtUserNickName" class="form-control" placeholder="Enter User Name" value="@ViewBag.user_login" readonly>
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">E-mail</label>
+                                            <label for="exampleInputEmail1">E-mail<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtUserEmail" class="form-control" placeholder="Enter Your Mail Address" value=@ViewBag.user_email readonly>
 
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">First Name</label>
+                                            <label for="exampleInputEmail1">First Name<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" value=@ViewBag.first_name>
 
 
                                         </div>
                                         <div class="form-group">
 
-                                            <label for="exampleInputEmail1">Last Name</label>
+                                            <label for="exampleInputEmail1">Last Name<span style="color:red;"> *</span></label>
                                             <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" value=@ViewBag.last_name>
 
                                         </div>
@@ -387,53 +444,70 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">User Type</label>
-                                            <input type="text" class="form-control" value="@ViewBag.user_role" id="txtUserRole" placeholder="User Role" readonly>
+                                            <label for="exampleInputEmail1">User Type<span style="color:red;"> *</span></label>
+                                            <input type="text" class="form-control" id="txtUserRole" placeholder="User Role" value="" readonly>
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Contact Number</label>
+                                            <label for="exampleInputEmail1">Contact Number<span style="color:red;"> *</span></label>
                                             <input type="text" class="form-control" id="txtPhone"  value="@ViewBag.user_phone" placeholder="Enter Your Phone Number">
                                         </div>
 
 
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Address</label>
+                                            <label for="exampleInputEmail1">Address<span style="color:red;"> *</span></label>
                                             <input id="txtAddress" class="form-control" placeholder="Enter Your Address" value="@ViewBag.user_address"></input>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Address 1</label>
-                                            <input type="text" class="form-control" id="txtAddress2" value="@ViewBag.address2" placeholder="Enter Your Address 1">
+                                            <label for="exampleInputEmail1">Address Line 2</label>
+                                            <input type="text" class="form-control" id="txtAddress2" value="@ViewBag.address2" placeholder="Address Line 2">
 
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">City</label>
-                                            <select id="txtCity" class="form-control select2">
+                                            <label for="exampleInputEmail1">City<span style="color:red;"> *</span></label>
+                                            @*<select id="txtCity" class="form-control select2">
                                                 <option selected value="@ViewBag.City">@ViewBag.City </option>
-                                            </select>
+                                            </select>*@
+                                            <input type="text" class="form-control" id="txtCity" value="@ViewBag.City" placeholder="City">
+
 
                                         </div> </div>
                                     <div class="col-sm-4">
 
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">State</label>
+                                            <label for="exampleInputEmail1">State<span style="color:red;"> *</span></label>
                                             <select class="form-control select2" id="txtState">
                                                 <option selected value="@ViewBag.State">@ViewBag.State </option>
 
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label" for="Post/Zip Code">Post/Zip Code</label>
+                                            <label class="control-label" for="Post/Zip Code">Post/Zip Code<span style="color:red;"> *</span></label>
                                             <div class="">
                                                 <input type="text" id="txtPostCode" value="@ViewBag.postcode" class="form-control" placeholder="Post/Zip Code">
                                             </div>
                                         </div>
 
+
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Country</label>
+                                            <label for="exampleInputEmail1">Country<span style="color:red;"> *</span></label>
                                             <select class="form-control" id="txtCountry">
-                                                <option value="US-United States">US-United States</option>
-                                                <option value="CA-Canada">CA-Canada</option>
+                                                @if (ViewBag.country == "US")
+                                                {
+                                                <option selected value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                                }
+                                                @if (ViewBag.country == "CA")
+                                                {
+                                                <option selected value="CA">CA - Canada</option>
+                                                <option value="US">US - United States</option>
+                                                }
+                                                @if (ViewBag.country == "")
+                                                {
+                                                <option selected value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                                }
+
                                             </select>
                                         </div>
                                     </div>
@@ -457,16 +531,163 @@
             $("#userprofile").empty().html(myHtml);
             $("#userprofile").modal({ backdrop: 'static' }); $("#txtUserNickName").focus();
 
+                $(document).ready(function () {
+                     var string = '@ViewBag.user_role';
+                var uniqueList = string.split(',').filter(function (item, i, allItems) {
+                return i == allItems.indexOf(item);
+                }).join(',');
+                $("#txtUserRole").val(uniqueList);
+
+                });
+
         }
 
+        function SearchbarModal() {
+            var myHtml = '';
+            //header
+            myHtml += '<div class="modal-dialog profile-dialog search-box-indy">';
+            myHtml += '<div class="modal-content">';
+            myHtml += '<div class="modal-header">';
+            myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+            myHtml += '<div class="page-title"><h2 class="page-heading">Search bar</h2></div>';
+            myHtml += '</div>';
+            myHtml += '<div class="modal-body">';
+            myHtml += '<div class="createuser-section section_wrapper">';
+            myHtml += '<div class="create-user-box">';
+            myHtml += '<div class="row">';
+            myHtml += '<div class="col-md-12">';
+            myHtml += '<div class="box box-primary create-user-primary">';
+            myHtml += '<div class="box-header with-border">';
+            myHtml += '<div class="col-sm-12">';
+            myHtml += '<div class="input-group">';
+            myHtml += '<span title="Your search parameters" data-placement="bottom" data-toggle="tooltip"><input type="text" id="txtsearch" name="q" class="form-control" placeholder="Search..."></span>';
+            myHtml += '<span class="input-group-btn" title="Click here to search" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnsearchbar" name="search" class="btn btn-flat"><i class="fa fa-search"></i></button></span>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '<div class="box-header with-border">';
+            myHtml += '<form id="saveForm" method="post">';
+            myHtml += '<div class="col-sm-4">';
+            myHtml += '<div class="form-group">';
+            myHtml += '<input type="hidden" value="@ViewBag.Type"  id="hfrbtvalue" />';
+            myHtml += '<input id="strValue1" checked="checked" name="strValue1" type="radio" value="SRUSR" /><label for="strValue1">USRES</label>';
+            myHtml += '</div>';
+            myHtml += '<div class="form-group"><div id="contentuser"><table id="tblUsers" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
+            myHtml += '</div>';
 
+            myHtml += '<div class="col-sm-4">';
+            myHtml += '<div class="form-group">';
+            myHtml += '<input id="strValue2" name="strValue1" type="radio" value="SRCUS" /><label for="strValue2">CUSTOMERS</label>';
+            myHtml += '</div>';
+            myHtml += '<div class="form-group"><div id="contentcus"><table id="tblCustomer" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
+            myHtml += '</div>';
 
+            myHtml += '<div class="col-sm-4">';
+            myHtml += '<div class="form-group">';
+            myHtml += '<input id="strValue3" name="strValue1" type="radio" value="SRORD" /><label for="strValue3">ORDERS</label>';
+            myHtml += '</div>';
+            myHtml += '<div class="form-group"><div id="contentorder"><table id="tblorder" class="table-indy"><tbody><tr><td>No data</td></tr></tbody></table></div></div>';
+            myHtml += '</div>';
+
+            myHtml += '</form>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            $("#searchbar").empty().html(myHtml);
+            $("#searchbar").modal({ backdrop: 'static' }); $("#btnsearchbar").focus();
+            SearchbarBinding('SRALL', '');
+        }
+        function SearchbarBinding(serchOn,seachValue) {
+            var myHtml = '';
+            var obj = { strValue1: serchOn, strValue2: seachValue };
+            $.get('/Home/GetUsersDetails', obj).then(result => {
+                result = JSON.parse(result); console.log(result);
+                if (serchOn == 'SRALL') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(3,\'User Management\',\'/Users/Users\',\'' + r.id + '\');"><span title="Click here to view user" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblUsers tbody").empty().append(myHtml);
+                    myHtml = result['Table1'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table1'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(16,\'Manage Customer\',\'/Customer/Customer\',\'' + r.user_email + '\');"><span title="Click here to view customer" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblCustomer tbody").empty().append(myHtml);
+                    myHtml = result['Table2'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table2'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="setTab(8,\'Orders History\',\'/Orders/OrdersHistory\',\'' + r.id + '\');"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblorder tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRUSR') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/userprofile2.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(3,\'User Management\',\'/Users/Users\',\'' + r.id + '\');"><span title="Click here to view user" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblUsers tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRCUS') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/Customer.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.user_login + '</h5>' + r.user_email + '<a id="auser" href="javascript:void(0);" onclick="setTab(16,\'Manage Customer\',\'/Customer/Customer\',\'' + r.user_email + '\');"><span title="Click here to view customer" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblCustomer tbody").empty().append(myHtml);
+                }
+                else if (serchOn == 'SRORD') {
+                    myHtml = result['Table'].length > 0 ? '' : '<tr><td>No data</td></tr>';
+                    $.each(result['Table'], function (i, r) {
+                        myHtml += '<tr>';
+                        myHtml += '<td> <img src="/Images/order.png" width="25" height="25" class=""></td>';
+                        myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="setTab(8,\'Orders History\',\'/Orders/OrdersHistory\',\'' + r.id + '\');"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        //myHtml += '<td><h5>' + r.id + '</h5>' + r.post_date + '<a id="auser" href="javascript:void(0);" onclick="addTabs({id:\'8\',title: \'Orders History\',close: true,url: \'/Orders/OrdersHistory?name=' + r.id + '\',urlType:\'none\'});App.fixIframeCotent();refreshTab();"><span title="Click here to view order" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></span></a></td>';
+                        myHtml += '</tr>';
+                    });
+                    $("#tblorder tbody").empty().append(myHtml);
+                }
+            }).catch(err => { console.log(err); });
+        }
+        function setTab(_tabid, _title, _url, _value) {
+            localStorage.setItem('_search', _value); $('#searchbar').modal('hide');
+            addTabs({ id: _tabid, title: _title, close: true, url: _url, urlType: 'none' }); App.fixIframeCotent(); refreshTab();
+        }
+        function openOrderPage(order_type) {
+            addTabs({ id: '8', title: 'Orders History', close: true, url: '/Orders/OrdersHistory' + (order_type.length > 0 ? '?type=' + order_type : '?v=1.0.0'), urlType: 'none' });
+            App.fixIframeCotent();
+        }
+        function openCustomerPage(customer_type) {
+            addTabs({ id: '16', title: 'Manage Customers', close: true, url: '/Customer/Customer', urlType: 'none' });
+            App.fixIframeCotent();
+        }
+        
+        $(document).on('click', "#btnsearchbar", function () {
+            var checkid = $("input[name='strValue1']:checked").val();
+            var search = $("#txtsearch").val();
+            SearchbarBinding(checkid, search);
+        });
     </script>
-    @*<script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
-        <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>*@
-
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
             $("#loader").hide();
             $(document).on('click', "#btnSave", function () {
                 UpdateProfile();
@@ -480,44 +701,123 @@
                 //$("#userprofile").modal("hide");
                 t.preventDefault(); ResetPasswordModal();
             });
+       // $("#txtPostCode").change();
+    });
 
+        function loadData() {
+            $("#tblCustomer tbody").empty();
+             let checkid = $("input[name='strValue1']:checked").val(),search = $("#txtsearch").val();
+             var obj = { strValue1: checkid, strValue2: search };
+             $.ajax({
+                 url: '/Home/Index',
+                 type: 'post',
+                 contentType: "application/json; charset=utf-8",
+                 dataType: 'JSON',
+                 data: JSON.stringify(obj),
+                 success: function () {
+                    // $("#tblUsers").load("/Home/GetUsersDetails");
+                     alert("first");
+                     $("#tblCustomer").load();
+                     alert("last");
+                    // $("#theTable").load("/Home/GetUsersDetails");
+                 },
+                 error: function (msg) { console.log(msg); }
+             });
 
-        });
+        }
 
         $("#userprofile").on("change", "#txtPostCode", function (t) {
-            City = $("#txtCity").val();
-            State = $("#txtState").val();
-            PostalCode = $("#txtPostCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        $('#hfzipstatus').val(data.status);
-                    }
-                    else {
-                        $("#txtPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
-                    }
-                },
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
+           // console.log($("#txtCountry").val());
+            if ($("#txtPostCode").val() != '') {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#hfzipstatus').val(data.status);
+
+                        }
+                        else {
+                            if ($('#txtCountry').val() == "US") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
+                        if ($('#txtCountry').val() == "CA") {
+                            $('#hfzipstatus').val("true");
+                        }
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                    async: false
+                })
+            }
+        });
+
+
+        $("#userprofile").on("change", "#txtState", function (t) {
+
+            console.log($("#txtCountry").val());
+            if ($("#txtPostCode").val() != '') {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtPostCode").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#hfzipstatus').val(data.status);
+                        }
+                        else {
+                            if ($('#txtCountry').val() == "US") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                                swal('Alert', 'Post/Zip code is not valid for state', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            }
+                            if ($('#txtCountry').val() == "CA") {
+                                $('#hfzipstatus').val("true");
+                            }
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+        });
+
+        $("#userprofile").on("change", "#txtCountry", function (t) {
+            $('#txtAddress').val("");
+            $("#txtAddress2").val("");
+            $("#txtCity").val("");
+            $("#txtPostCode").val("");
+            $("#txtState").val(null).trigger('change');
         });
 
         function UpdateProfile() {
-           
-
             var ImageURL;
             var canvas = document.createElement('canvas');
             var objimg = document.getElementById('show_picture');
@@ -550,85 +850,91 @@
             City = $("#txtCity").val();
             State = $("#txtState").val();
             address2 = $("#txtAddress2").val();
+            if (address2 == '')
+                address2 = '';
 
             if (NickName == "") {
-                swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+                swal('Alert', 'Please enter user name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
             }
             else if (Email == "") {
-                swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
             }
             else if (FirstName == "") {
-                swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+                swal('Alert', 'Please enter first name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
             }
             else if (LastName == "") {
-                swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
+                swal('Alert', 'Please enter last name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
             }
             else if ($('#txtUserRole').val() == 0) {
-                swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+                swal('Alert', 'Please select user type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
             }
             else if (Phone == "") {
-                swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+                swal('Alert', 'Please enter contact no.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
             }
             else if (address == "") {
-                swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+                swal('Alert', 'Please enter address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
             }
 
             else if ($('#txtCity').val() == 0) {
-                swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+                swal('Alert', 'Please select city', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
             }
             else if ($('#txtState').val() == 0) {
-                swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+                swal('Alert', 'Please select state', 'error').then(function () { swal.close(); $('#txtState').focus(); });
             }
             else if (Zipcode == "") {
-                swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                swal('Alert', 'Please enter post/zip code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
             }
             else if ($('#txtCountry').val() == 0) {
-                swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+                swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
             }
 
 
             else {
-                var obj = {
-                    ID: ID,
-                    user_email: Email,
-                    user_nicename: NickName,
-                    first_name: FirstName,
-                    last_name: LastName,
-                    address: address,
-                    country: country,
-                    phone: Phone,
-                    user_role: UserRole,
-                    User_Image: Picture,
-                    billing_postcode: Zipcode,
-                    billing_state: State,
-                    billing_city: City,
-                    billing_address_2: address2
+               // $("#userprofile").on("change", "#txtPostCode", function (t)
+                $("#txtPostCode").change();
+               // console.log(statusofsave);
+                if ($("#hfzipstatus").val() == "true") {
+                    var obj = {
+                        ID: ID,
+                        user_email: Email,
+                        user_nicename: NickName,
+                        first_name: FirstName,
+                        last_name: LastName,
+                        address: address,
+                        country: country,
+                        phone: Phone,
+                        user_role: UserRole,
+                        User_Image: Picture,
+                        billing_postcode: Zipcode,
+                        billing_state: State,
+                        billing_city: City,
+                        billing_address_2: address2
+                    }
+                    $.ajax({
+                        url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                //swal('Success!', data.message, 'success');
+                                swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
+                                //$("#userprofile").modal("hide");
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error')
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+                    })
                 }
-                $.ajax({
-                    url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    beforeSend: function () { $("#loader").show(); },
-                    success: function (data) {
-                        if (data.status == true) {
-                            swal('Alert!', data.message, 'success');
-                            $("#userprofile").modal("hide");
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error')
-                        }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (error) {
-                        swal('Error!', 'something went wrong', 'error');
-                    },
-                })
             }
         }
 
-
-     
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -639,70 +945,66 @@
             }
         }
 
-
         function ResetPasswordModal() {
             var myHtml = '';
             //header
             myHtml += `
 <div class="modal-dialog profile-dialog reset-password-model">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
-            <div class="page-title">
-                <h2 class="page-heading">Reset Password</h2>
-            </div>
-        </div>
-        <div class="modal-body">
-            <div class="createuser-section section_wrapper">
-                <div class="create-user-box">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-primary create-user-primary">
-                                <div class="box-header with-border">
-
-                                    <div class="">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">New Password</label>
-                                            <button type="button" id="btnGeneratePassword" class="btn" >Generate Password</button>
-                                            <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
-                                            <span class="" id='result'></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Confirm Password</label>
-                                            <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
-                                            <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
-                                            <span class="" id="message"></span>
-                                        </div>
-                                        <div class="form-group">
-
-                                        </div>
-                                        <div class="form-group">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="box-footer text-right">
-                                    <span class="pop-btn"><a href="#" class="btn btn-danger" id="btnupdate"><b>Update Password</b></a>
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- /.nav-tabs-custom -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
+                <div class="page-title">
+                    <h2 class="page-heading">Reset Password</h2>
                 </div>
             </div>
-        </div >
-    </div>
+            <div class="modal-body">
+                <div class="createuser-section section_wrapper">
+                    <div class="create-user-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary create-user-primary">
+                                    <div class="box-header with-border">
+
+                                        <div class="">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">New Password</label>
+                                                <button type="button" id="btnGeneratePassword" class="btn" >Generate Password</button>
+                                                <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
+                                                <span class="" id='result'></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Confirm Password</label>
+                                                <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
+                                                <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                                                <span class="" id="message"></span>
+                                            </div>
+                                            <div class="form-group">
+
+                                            </div>
+                                            <div class="form-group">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer text-right">
+                                        <span class="pop-btn"><a href="#" class="btn btn-danger" id="btnupdate"><b>Update Password</b></a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- /.nav-tabs-custom -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                </div>
+            </div >
+        </div>
 </div>`
                 ;
 
             $("#resetpassword").empty().html(myHtml);
             $("#resetpassword").modal({ backdrop: 'static' }); $("#txtUserEmail").focus();
         }
-
-
-
     </script>
 
     <script>
@@ -713,9 +1015,9 @@
             })
             $(document).on('click', "#PasswordShow", function () {
                 if ($('#txtPassword').val() == "")
-                    swal('Alert', 'Password is not zenrated', 'error');
+                    swal('Alert', 'Password is not generated', 'error');
                 else
-                    swal('Alert', 'Password IS ' + $('#txtPassword').val() + '', 'success');
+                    swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
 
             })
             $(document).on('click', "#btnGeneratePassword", function () {
@@ -733,11 +1035,15 @@
                             $('#txtPassword').val(data.message);
                             $('#txtConfirmPassword').val(data.message);
                             $("#txtPassword").change();
+                            if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
+                                $('#message').html('Matching').css('color', 'green');
+                            } else
+                                $('#message').html('Not matching').css('color', 'red');
                         }
                         else {
                             $("#txtPassword").val("");
                             $("#txtConfirmPassword").val("");
-                            //swal('Alert', 'Post zip code is not  valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                            //swal('Alert', 'Post zip code is not  valid for City and State', 'error').then(function () {swal.close(); $('#txtPostCode').focus(); });
                         }
                     },
 
@@ -746,8 +1052,8 @@
                     },
                 })
             });
-
             passwordcheck();
+            $("#txtPostCode").change();
         });
 
 
@@ -756,7 +1062,6 @@
             result = $('#result').html();
             if (result == "Password strength is weak") {
                 $('#result').attr({ 'style': 'color:Red;' });
-
             }
             if (result == "Password Strength is low") {
                 $('#result').attr({ 'style': 'color:Olive;' });
@@ -767,8 +1072,6 @@
             if (result == "Password strength is strong") {
                 $('#result').attr({ 'style': 'color:Green;' });
             }
-
-
         })
         $("#resetpassword").on("input", "#txtPassword", function (t) {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -794,7 +1097,7 @@
                 if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
                     $('#message').html('Matching').css('color', 'green');
                 } else
-                    $('#message').html('Not Matching').css('color', 'red');
+                    $('#message').html('Not matching').css('color', 'red');
             });
         }
         function ResetPassword() {
@@ -802,13 +1105,13 @@
             Password = $("#txtPassword").val();
             ConfirmPassword = $("#txtConfirmPassword").val();
             if (Password == "") {
-                swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+                swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
             }
             else if (ConfirmPassword == "") {
-                swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Please enter confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else if (Password !== ConfirmPassword) {
-                swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else {
                 var obj = {
@@ -822,7 +1125,8 @@
                     dataType: "json",
                     success: function (data) {
                         if (data.status == true) {
-                            swal('Alert!', data.message, 'success');
+                            //swal('Alert!', data.message, 'success');
+                            swal('Success!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
                             $("#resetpassword").modal("hide");
                             $("#userprofile").modal("show");
                         }

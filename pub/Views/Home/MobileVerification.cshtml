@@ -9,6 +9,7 @@
     <script type="text/javascript">var ue_t0 = ue_t0 || +new Date();</script>
     <meta charset="utf-8">
     <title dir="ltr">OTP Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="~/Images/layla32.png">
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
@@ -26,7 +27,7 @@
                         <a class="a-link-nav-icon" tabindex="-1" href="">
                             <img src="~/Images/layla1-logo.png" />
                             @*<i class="a-icon a-icon-logo" role="img" aria-label="Amazon"></i>
-                        <i class="a-icon a-icon-domain-in a-icon-domain" role="presentation"></i>*@
+                                <i class="a-icon a-icon-domain-in a-icon-domain" role="presentation"></i>*@
                         </a>
                     </div>
                 </div>
@@ -74,17 +75,12 @@
 
                                 <div class="a-box a-spacing-extra-large" id="varification-box">
                                     <div class="a-box-inner">
-                                        <p>
-                                        </p><h1 class="login-h1">
+                                        <h1 class="login-h1">
                                             Verify OTP
                                         </h1>
-                                        <p></p>
-
                                         <p>
                                             One Time Password (OTP) has been sent to your e-mail.
-
                                         </p>
-
                                         <div class="a-row a-spacing-top-large">
                                             <div class="a-column a-span5">
                                                 <label for="auth-pv-enter-code" class="a-form-label">
@@ -92,48 +88,35 @@
                                                 </label>
                                             </div>
                                             <div class="a-column a-span5 a-text-right a-span-last">
-
                                                 @*<form id="auth-resend-form" method="post" action="" class="a-spacing-mini">*@
-                                                    <a id="" class="a-spacing-extra-large a-link-normal" href="@Url.Action("MobileVerification","Home")">
-                                                        Resend OTP
-                                                    </a>
-
+                                                <a id="" class="a-spacing-extra-large a-link-normal" href="@Url.Action("MobileVerification","Home")">
+                                                    Resend OTP
+                                                </a>
                                                 @*</form>*@
-
                                             </div>
                                         </div>
-
-                                        <form id="auth-pv-form" method="post" action="" class="a-spacing-none" data-fwcim-id="etI1IkIT">
+                                        <form id="auth-pv-form" class="a-spacing-none">
                                             <input type="hidden" name="appActionToken" value=""><input type="hidden" name="appAction" value="">
                                             <input type="hidden" name="prevRID" value="">
                                             <input type="hidden" name="workflowState" value="">
                                             <div></div>
-                                            <input type="password" maxlength="6" name="OTP" id="auth-pv-enter-code" autocomplete="off" class="a-input-text a-span12 a-spacing-medium auth-autofocus auth-required-field" value="@Session["OTP"].ToString()">
 
+                                            <input type="password" maxlength="6" data-keyvalue="-" name="OTP" id="auth-pv-enter-code" runat="server" autocomplete="off" class="a-input-text a-span12 a-spacing-medium auth-autofocus auth-required-field" value="">
                                             <span class="a-button a-spacing-medium a-button-span12 a-button-primary otp-varification-btn" id="a-autoid-0">
                                                 <span class="a-button-inner">
                                                     <input id="auth-verify-button" name="pvSubmit" class="a-button-input" type="submit" aria-labelledby="a-autoid-0-announce"><span class="a-button-text" aria-hidden="true" id="a-autoid-0-announce">
                                                         Verify
                                                     </span>
-                                                    
-
                                                 </span>
-                                                       
                                             </span>
                                             <h5 style="color:black"> OTP is expired on <span id="lblCounter"></span> Seconds OTP has been sent successfully at your Email.</h5>
-                                            <script type="text/javascript">cf()</script>
-
-
                                             <input name="metadata1" type="hidden" value="">
                                         </form>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -143,25 +126,25 @@
             <div class="a-section a-spacing-top-extra-large auth-footer main-login-footer">
                 @*<div class="a-divider a-divider-section"><div class="a-divider-inner"></div></div>*@
                 @*<div class="footer-menu-login">
-                    <span class="auth-footer-seperator"></span>
-                    <a class="a-link-normal"  href="">
-                        Privacy & Policy
-                    </a>
-                    <span class="auth-footer-seperator"></span>
-                    <a class="a-link-normal"  href="">
-                        Terms & Conditions
-                    </a>
-                    <span class="auth-footer-seperator"></span>
-                    <a class="a-link-normal" href="">
-                        FAQ
-                    </a>
-                    <span class="auth-footer-seperator"></span>
+                        <span class="auth-footer-seperator"></span>
+                        <a class="a-link-normal"  href="">
+                            Privacy & Policy
+                        </a>
+                        <span class="auth-footer-seperator"></span>
+                        <a class="a-link-normal"  href="">
+                            Terms & Conditions
+                        </a>
+                        <span class="auth-footer-seperator"></span>
+                        <a class="a-link-normal" href="">
+                            FAQ
+                        </a>
+                        <span class="auth-footer-seperator"></span>
 
-                    <a class="a-link-normal"  href="">
-                        Contact
-                    </a>
-                    <span class="auth-footer-seperator"></span>
-                </div>*@
+                        <a class="a-link-normal"  href="">
+                            Contact
+                        </a>
+                        <span class="auth-footer-seperator"></span>
+                    </div>*@
                 <div class="a-section a-spacing-none a-text-center">
                     <span class="a-size-mini a-color-secondary">
                         © 2021, LaylaERP, Inc. or its affiliates
@@ -169,9 +152,9 @@
                 </div>
             </div>
         </div>
-            <div id="auth-external-javascript" class="auth-external-javascript" data-external-javascripts="">
-            </div>
+        <div id="auth-external-javascript" class="auth-external-javascript" data-external-javascripts="">
         </div>
+    </div>
 
     <div id="a-popover-root" style="z-index:-1;position:absolute;"></div>
     @ViewBag.Result
@@ -181,7 +164,27 @@
 <script>
     var Counter =600;
     $(document).ready(function () {
-
+        $('#auth-pv-enter-code').focus();
+        $('#auth-pv-enter-code').val(@ViewBag.otp);
+        $(document).on("click", "#auth-verify-button", function (t) {
+            t.preventDefault(); 
+            $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
+            let option = { OTP: $('#auth-pv-enter-code').val() };
+            $.ajax({
+                type: "POST", url: "/Home/MobileVerification", contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                beforeSend: function () { $("#loader").show(); },
+                success: function (result) {
+                    if (result.status == true) {
+                        window.location.href = result.url;
+                    }
+                    else {                        
+                        $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(result.message);
+                    }
+                },
+                complete: function () { },
+                error: function (xhr, status, err) { $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(err); }, async: false
+            });
+        });
         setInterval(function () {
             if (Counter > 0) {
                 $('#lblCounter').text(Counter);
@@ -190,8 +193,6 @@
             else {
                 location.href = 'Login'
             }
-            
-
         }, 1000);
 
 
@@ -200,7 +201,7 @@
 
 
 
-    })
+    });
 
 </script>
 

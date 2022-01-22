@@ -232,7 +232,7 @@ function formatPartially(d) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     let option = { strValue1: d.rowid, strValue2: urid, strValue3: dfa }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Transaction ID</th><th style="width:5%; text-align:left;">Journal</th><th style="width:10%; text-align:left;">Date</th><th style="width:10%; text-align:left;">Accounting Doc</th><th style="width:46%; text-align:left;">Label</th><th style="width:10%; text-align:right;"></th><th style="width:10%; text-align:right;"></th></tr></thead>';
     $.ajax({
         url: '/Accounting/GetDetailsLedger', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
@@ -257,19 +257,19 @@ function formatPartially(d) {
                 //console.log(row.datecrt);
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')
-                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' + '$' + row.debit + '</td>';
+                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right debit-amount">' +  numberRenderer( row.debit) + '</td>';
                 else
                     wrHTML += '<td style="width:10%; text-align:right;">' + '' + '</td>';
                 if (row.credit != '')
-                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right credit-amount">' + '$' + row.credit + '</td></tr > ';
+                    wrHTML += '<td id="artist_' + row.inv_num + '" style="width:5%; text-align:right;" class="text-right credit-amount">' + numberRenderer( row.credit) + '</td></tr > ';
                 else
                     wrHTML += '<td style="width:10%; text-align:right;">' + '' + '</td></tr > ';
             });
             wrHTML += '<tfoot><tr><td colspan="5" style="width:10%; text-align:right;"><b> Total accounting account ' + account + ' : </<b></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">$' + Totaldebit + '</span></strong></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalcredit">$' + Totalcredit + '</span></strong></td></tr>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totaldebit">' + numberRenderer(Totaldebit) + '</span></strong></td>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalcredit">' + numberRenderer(Totalcredit) + '</span></strong></td></tr>';
             wrHTML += '<tr><td colspan="5" style="width:10%; text-align:right;"><b> Balance : </<b></td>';
-            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalbailance">$' + Totalbaolance + '</span></strong></td>';
+            wrHTML += '<td style="width:5%; text-align:right;"><strong><span id="Totalbailance">' + numberRenderer(Totalbaolance) + '</span></strong></td>';
             wrHTML += '<td style="width:5%; text-align:right;"></td></tr></tfoot>';
         },
         error: function (xhr, status, err) { alert(err); },

@@ -224,6 +224,7 @@ function AccountList(is_date) {
 } 
 function getGrandTotal(is_date) {
     //let urid = $("#ddlVendor").val();
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2, '$').display;
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
@@ -239,10 +240,10 @@ function getGrandTotal(is_date) {
             if (d.length > 0) {
                 if (parseInt(d[0].IncomVal).toFixed(2) > 0 || parseInt(d[0].IncomVal).toFixed(2) == 0) {
                     $("#txtdebit").text('$' + parseFloat(d[0].IncomVal).toFixed(2)); $("#txtcredit").text('$' + parseFloat(d[0].ExpenseVal).toFixed(2));
-                    if (parseInt(d[0].prls).toFixed(2) > 0)
-                        $("#txtbalance").text('$' + parseFloat(d[0].prls).toFixed(2))
-                    else
-                        $("#txtbalance").text('$' + parseFloat(d[0].prls).toFixed(2))
+                    //if (parseInt(d[0].prls).toFixed(2) > 0)
+                    //    $("#txtbalance").text('$' + parseFloat(d[0].prls).toFixed(2))
+                    //else
+                    $("#txtbalance").text(numberRenderer(d[0].prls));
                 }
             }
         },

@@ -24,7 +24,7 @@
     $("#btnSearch").click(function () {
         AccountList(true);
         getGrandTotal(true);
-    })
+    }) 
 
  
 

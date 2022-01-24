@@ -2768,5 +2768,69 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable InventoryProductList(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@qflag", "PD"),
+                    new SqlParameter("@year", sMonths),
+                    new SqlParameter("@month", 0),
+                    new SqlParameter("@pid", productid),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_productinventorydetails_List", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static void InventoryProductDetailList(string productid, string year, string flag, string Month)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+                DataSet ds1 = new DataSet();
+                //DataTable ds2 = new DataTable();
+                if (year != "" && productid != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                      new SqlParameter("@qflag", "QT"),
+                    new SqlParameter("@year", year),
+                    new SqlParameter("@month", Month),
+                    new SqlParameter("@pid", productid),
+                };
+                    //ds1 = SQLHelper.ExecuteDataTable("erp_productinventoryforcoste_List", parameters);
+                    ds1 = SQLHelper.ExecuteDataSet("erp_productinventorydetails_List", parameters);
+                    if (ds1.Tables[0].Rows.Count > 0)
+                    {
+                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                        {
+                            Export_Details uobj = new Export_Details();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["sr"].ToString()))
+                                uobj.tax = ds1.Tables[0].Rows[i]["sr"].ToString();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Month_name"].ToString()))
+                                uobj.country = ds1.Tables[0].Rows[i]["Month_name"].ToString();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["total"].ToString()))
+                                uobj.Discount = ds1.Tables[0].Rows[i]["total"].ToString();
+                            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["amounttotal"].ToString())) 
+                                uobj.fee = ds1.Tables[0].Rows[i]["amounttotal"].ToString();
+                            else
+                                uobj.fee = "0.00";
+                            exportorderlist.Add(uobj);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

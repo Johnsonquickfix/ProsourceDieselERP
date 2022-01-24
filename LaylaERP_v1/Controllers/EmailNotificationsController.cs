@@ -76,7 +76,7 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
-        public ActionResult Refunded(EmailSettingModel model)
+        public ActionResult Refunded(OrderModel model)
         {
             return View(model);
         }

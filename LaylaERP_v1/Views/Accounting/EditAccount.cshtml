@@ -46,7 +46,7 @@
                             <div title="Enter E-mail">
                                 <label for="exampleInputEmail1">Type<span style="color:red">*</span></label>
                                 <select class="form-control" id="ddlParentAccount">
-                                    <option value="0">--Select type--</option>
+                                    @*<option value="0">--Select type--</option>*@
                                 </select>
                             </div>
                         </div>
@@ -63,6 +63,16 @@
                                     <option value="">--Select chart tag--</option>
                                     <option value="E">Expense</option>
                                     <option value="I">Income</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="exampleInputEmail1">Account tag<span style="color:red"></span></label>
+                                <select class="form-control" id="ddlactype">
+                                    <option value="">--Select account type--</option>
+                                    <option value="BS">Balance sheet</option>
+                                    <option value="PL">Profit and loss</option>
                                 </select>
                             </div>
                         </div>
@@ -85,6 +95,7 @@
 
 <script>
     $(document).ready(function () {
+        getType();
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         GetAccountByID(id);
@@ -115,7 +126,7 @@
         var parentaccount = $("#ddlParentAccount").val();
         var detailtype = $("#txtdetailtype").val();
         var tag = $("#ddltag").val();
-
+        var actype = $("#ddlactype").val();
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -141,6 +152,7 @@
                 pcg_type: groupofaccount,
                 labelshort: detailtype,
                 extraparams: tag,
+                ac_type: actype,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -195,6 +207,7 @@
                         setTimeout(function () { $("#ddlParentAccount").val(d[0].account_parent).trigger('change') },500);
                         $("#txtdetailtype").val(d[0].labelshort);
                         $("#ddltag").val(d[0].extraparams).trigger('change');
+                        $("#ddlactype").val(d[0].ac_type).trigger('change');
                         //console.log(d[0].rowid);
                     }
                 },
@@ -207,11 +220,17 @@
 
 </script>
 <script>
-    $.get('/Accounting/GetParentAccount', function (data) {
-        var items = "";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlParentAccount");
-        })
-    });
-
+    function getType(){
+       // $.get('/Accounting/GetParentAccount', function (data) {
+            $.ajax({
+                url: "/Accounting/GetParentAccount",
+                type: "Get",
+                success: function (data) {
+                    $('#ddlParentAccount').append('<option value="">Please Select Type</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ddlParentAccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                    }
+                }, async: false
+            });
+    }
 </script>

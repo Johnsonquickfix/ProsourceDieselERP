@@ -36,7 +36,7 @@ function AccountList(is_date) {
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     let bailance = 0.00;
-    $('#Listdata').DataTable({
+    var table = $('#Listdata').DataTable({
         destroy: true,
         "scrollX": true,
         searching: false,
@@ -134,19 +134,19 @@ function AccountList(is_date) {
                     return 'ProfitLoss for' + from;
                 },
             },
-            {
-                extend: 'excel',
-                className: 'button',
-                text: '<i class="fas fa-file-csv"></i> Excel',
-                exportOptions: {
-                    columns: [1, 2, 3],
-                },
-                footer: true,
-                filename: function () {
-                    var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
-                    return 'ProfitLoss for' + from;
-                },
-            },
+            //{
+            //    extend: 'excel',
+            //    className: 'button',
+            //    text: '<i class="fas fa-file-csv"></i> Excel',
+            //    exportOptions: {
+            //        columns: [1, 2, 3],
+            //    },
+            //    footer: true,
+            //    filename: function () {
+            //        var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+            //        return 'ProfitLoss for' + from;
+            //    },
+            //},
             {
                 extend: 'print',
                 className: 'button',
@@ -175,6 +175,11 @@ function AccountList(is_date) {
                     doc.content[0].text = "Layla Sleep Inc - Profit and Loss A/C";
                     doc.content[0].text.alignment = 'left';
 
+
+                    var rowCountd = table.rows().count() + 1;
+                    for (i = 0; i < rowCountd; i++) {
+                        doc.content[1].table.body[i][0].alignment = 'left';
+                    };
                     
                     var rowCount = doc.content[1].table.body.length;
                     for (i = 1; i < rowCount; i++) {

@@ -415,7 +415,17 @@
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
-                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "ORI", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+                DataTable dt = OrderRepository.AddOrdersPost(model.order_id, "ORI", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
+                JSONresult = JsonConvert.SerializeObject(dt);
+                long refund_orderid = 0;
+                if (dt.Rows.Count > 0)
+                {
+                    if (dt.Rows[0]["response"].ToString().Trim().ToLower() == "success")
+                    {
+                        refund_orderid = (dt.Rows[0]["id"] != Convert.DBNull) ? Convert.ToInt64(dt.Rows[0]["id"]) : 0;
+                        OrderRepository.OrderRefundInvoiceMail(refund_orderid);
+                    }
+                }
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

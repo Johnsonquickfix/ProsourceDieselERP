@@ -88,7 +88,7 @@ function formatPartially(d) {
     let Totalforcostsale = 0;
     let Year = $("#year").val();
     let month = $("#ddlmonth").val();
- 
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2, '$').display;
     let option = { PID: d.id, Year: year, Type: account, Month: month }, wrHTML = '<table id="table1_' + d.rowid + '" class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40%; text-align:left;">Month Name</th><th style="width:30%; text-align:left;">Sales Quantity (' + Year + ') </th><th style="width:30%; text-align:left;">Sales Total (' + Year + ')</th> </tr></thead>';
 
     if ($("#year").val() == "") {
@@ -107,11 +107,11 @@ function formatPartially(d) {
                     wrHTML += '<tr class="paid_item"><td style="width:40%; text-align:left;">' + row.country + '</td>';
                     wrHTML += '<td style="width:30%; text-align:left;">' + Math.round(row.Discount) + '</td>';
                     //wrHTML += '<td style="width:10%; text-align:left;">' + parseFloat(row.fee,1) + '</td></tr > ';
-                    wrHTML += '<td style="width:30%; text-align:left;">' + parseFloat(row.fee,2) + '</td></tr > ';
+                    wrHTML += '<td style="width:30%; text-align:left;">' + numberRenderer(row.fee) + '</td></tr > ';
                 });
                 wrHTML += '<tfoot><tr><td style="width:40%; text-align:left;"><strong><span id="total"> Total </span></strong></td>';
                 wrHTML += '<td style="width:30%; text-align:left;"><strong><span id="totalsale">' + Totalsale + '</span></strong></td>';
-                wrHTML += '<td style="width:30%; text-align:left;"><strong><span id="totalfircast">' + Totalforcostsale + '</span></strong></td></tr></tfoot>';
+                wrHTML += '<td style="width:30%; text-align:left;"><strong><span id="totalfircast">' + numberRenderer(Totalforcostsale) + '</span></strong></td></tr></tfoot>';
             },
             error: function (xhr, status, err) { alert(err); },
             complete: function () { }, async: false

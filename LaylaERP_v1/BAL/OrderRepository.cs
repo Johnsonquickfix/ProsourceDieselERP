@@ -1409,5 +1409,93 @@
             }
             catch { }
         }
+        //Sent Refund Invoice in mail
+        public static void OrderRefundInvoiceMail(long OrderID)
+        {
+            try
+            {
+                OrderModel order_obj = OrderRepository.OrderRefundInvoice(OrderID);
+                String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "Refunded", order_obj);
+                SendEmail.SendEmails_outer(order_obj.b_email, "You have been issued a refund.", renderedHTML, string.Empty);
+            }
+            catch { }
+        }
+        public static OrderModel OrderRefundInvoice(long OrderID)
+        {
+            OrderModel obj = new OrderModel();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "RODET"),
+                    new SqlParameter("@order_id", OrderID)
+                };
+
+                DataSet DS = SQLHelper.ExecuteDataSet("wp_posts_order_refund_search", parameters);
+                foreach (DataRow dr in DS.Tables[0].Rows)
+                {
+                    obj.order_id = (dr["order_id"] != Convert.DBNull) ? Convert.ToInt64(dr["order_id"]) : 0;
+                    obj.order_date = (dr["date_created"] != Convert.DBNull) ? dr["date_created"].ToString() : "";
+                    obj.payment_method = (dr["payment_method"] != Convert.DBNull) ? dr["payment_method"].ToString() : "";
+                    obj.payment_method_title = (dr["payment_method_title"] != Convert.DBNull) ? dr["payment_method_title"].ToString() : "";
+                    obj.b_first_name = (dr["_billing_first_name"] != Convert.DBNull) ? dr["_billing_first_name"].ToString() : "";
+                    obj.b_last_name = (dr["_billing_last_name"] != Convert.DBNull) ? dr["_billing_last_name"].ToString() : "";
+                    obj.b_company = (dr["_billing_company"] != Convert.DBNull) ? dr["_billing_company"].ToString() : "";
+                    obj.b_address_1 = (dr["_billing_address_1"] != Convert.DBNull) ? dr["_billing_address_1"].ToString() : "";
+                    obj.b_address_2 = (dr["_billing_address_2"] != Convert.DBNull) ? dr["_billing_address_2"].ToString() : "";
+                    obj.b_postcode = (dr["_billing_postcode"] != Convert.DBNull) ? dr["_billing_postcode"].ToString() : "";
+                    obj.b_city = (dr["_billing_city"] != Convert.DBNull) ? dr["_billing_city"].ToString() : "";
+                    obj.b_country = (dr["_billing_country"] != Convert.DBNull) ? dr["_billing_country"].ToString() : "";
+                    obj.b_state = (dr["_billing_state"] != Convert.DBNull) ? dr["_billing_state"].ToString() : "";
+                    obj.b_email = (dr["_billing_email"] != Convert.DBNull) ? dr["_billing_email"].ToString() : "";
+                    obj.b_phone = (dr["_billing_phone"] != Convert.DBNull) ? dr["_billing_phone"].ToString() : "";
+                    obj.TotalDiscount = (dr["discount"] != Convert.DBNull) ? Math.Abs(Convert.ToDecimal(dr["discount"])) : 0;
+                    obj.TotalShipping = (dr["shipping"] != Convert.DBNull) ? Math.Abs(Convert.ToDecimal(dr["shipping"])) : 0;
+                    obj.TotalGift = (dr["refund_giftcard_amount"] != Convert.DBNull) ? Math.Abs(Convert.ToDecimal(dr["refund_giftcard_amount"])) : 0;
+                }
+                List<OrderProductsModel> _list = new List<OrderProductsModel>();
+
+                foreach (DataRow dr in DS.Tables[1].Rows)
+                {
+                    OrderProductsModel productsModel = new OrderProductsModel();
+                    if (dr["order_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(dr["order_id"].ToString().Trim()))
+                        productsModel.order_id = Convert.ToInt64(dr["order_id"]);
+                    else
+                        productsModel.order_id = 0;
+
+                    productsModel.product_type = (dr["order_item_type"] != Convert.DBNull) ? dr["order_item_type"].ToString() : "line_item";
+                    productsModel.product_name = (dr["order_item_name"] != Convert.DBNull) ? dr["order_item_name"].ToString() : "";
+
+                    if (productsModel.product_type == "line_item")
+                    {
+                        if (dr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(dr["qty"].ToString().Trim()))
+                            productsModel.quantity = Math.Abs(Convert.ToDecimal(dr["qty"].ToString().Trim()));
+                        else
+                            productsModel.quantity = 0;
+
+                        if (dr["total"] != DBNull.Value && !string.IsNullOrWhiteSpace(dr["total"].ToString().Trim()))
+                            productsModel.total = Math.Abs(Convert.ToDecimal(dr["total"].ToString()));
+                        else
+                            productsModel.total = 0;
+                        if (dr["line_tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(dr["line_tax"].ToString().Trim()))
+                            productsModel.tax_amount = Math.Abs(Convert.ToDecimal(dr["line_tax"].ToString()));
+                        else
+                            productsModel.tax_amount = 0;
+                    }
+                    _list.Add(productsModel);
+                }
+                obj.OrderProducts = _list;
+
+                obj.GrassAmount = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.total);
+                obj.TotalTax = obj.OrderProducts.Where(f => f.product_type == "line_item").Sum(x => x.tax_amount);
+                obj.TotalStateRecycling = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name == "State Recycling Fee").Sum(x => x.total);
+                obj.TotalFee = obj.OrderProducts.Where(f => f.product_type == "fee" && f.product_name != "State Recycling Fee").Sum(x => x.total);
+
+                obj.NetTotal = (obj.GrassAmount - (obj.TotalDiscount + obj.TotalGift)) + obj.TotalTax + obj.TotalShipping + obj.TotalStateRecycling + obj.TotalFee;
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return obj;
+        }
     }
 }

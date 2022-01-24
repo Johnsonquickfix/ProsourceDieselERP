@@ -170,7 +170,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, pcg_type, active from erp_accounting_account ";
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, ac_type, pcg_type, active from erp_accounting_account ";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;

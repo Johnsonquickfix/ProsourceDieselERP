@@ -1,4 +1,18 @@
 ﻿$(document).ready(function () {
+
+    var urlpath = window.location.pathname;
+    console.log('dd',urlpath);
+    var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+    console.log(pathid);
+    if (pathid == "1000011") {
+        $('.nav-tabs a[href="#tab_22"]').tab('show');
+        //console.log(pathid);
+    };
+    if (pathid == "1000022") {
+        $('.nav-tabs a[href="#tab_23"]').tab('show');
+        //console.log(pathid);
+    };
+
     $("#loader").hide(); //$('.select2').select2();
     $('#txtDate').daterangepicker({
         ranges: {
@@ -35,43 +49,43 @@
     //    when(PoPartiallyColleps()).done(function () { PoClosureGridColleps(); })
     //});
 
-    if ($("#ROPOrder").val() == "PO2") {
-        $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
-        $("#tab_21").removeClass("active");
+    //if ($("#ROPOrder").val() == "PO2") {
+    //    $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
+    //    $("#tab_21").removeClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-2").addClass("active");
-        $(".Receive-order-PO ul li.ROPO-2 a").addClass("active");
-        $("#tab_22").addClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2").addClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2 a").addClass("active");
+    //    $("#tab_22").addClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
-        $("#tab_23").removeClass("active");
-    } else if ($("#ROPOrder").val() == "PO3") {
-        $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
-        $("#tab_21").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
+    //    $("#tab_23").removeClass("active");
+    //} else if ($("#ROPOrder").val() == "PO3") {
+    //    $(".Receive-order-PO ul li.ROPO-1").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-1 a.active").removeClass("active");
+    //    $("#tab_21").removeClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
-        $("#tab_22").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
+    //    $("#tab_22").removeClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-3").addClass("active");
-        $(".Receive-order-PO ul li.ROPO-3 a.active").addClass("active");
-        $("#tab_23").addClass("active");
-    } else {
-        $(".Receive-order-PO ul li.ROPO-1").addClass("active");
-        $(".Receive-order-PO ul li.ROPO-1 a.active").addClass("active");
-        $("#tab_21").addClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-3").addClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-3 a.active").addClass("active");
+    //    $("#tab_23").addClass("active");
+    //} else {
+    //    $(".Receive-order-PO ul li.ROPO-1").addClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-1 a.active").addClass("active");
+    //    $("#tab_21").addClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
-        $("#tab_22").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-2 a").removeClass("active");
+    //    $("#tab_22").removeClass("active");
 
-        $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
-        $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
-        $("#tab_23").removeClass("active");
-    }
+    //    $(".Receive-order-PO ul li.ROPO-3").removeClass("active");
+    //    $(".Receive-order-PO ul li.ROPO-3 a.active").removeClass("active");
+    //    $("#tab_23").removeClass("active");
+    //}
 
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
@@ -167,7 +181,7 @@ function PurchaseOrderGrid() {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a title="Click here to receive order" data-toggle="tooltip" href="NewReceiveOrder/' + full.id + '" onclick="ActivityLog(\'View/Edit purchase po no (' + id + ') in POs Reception \',\'/Reception/ReceiveOrder\');">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                        return '<a title="Click here to receive order" data-toggle="tooltip" href="/Reception/NewReceiveOrder/' + full.id + '" onclick="ActivityLog(\'View/Edit purchase po no (' + id + ') in POs Reception \',\'/Reception/ReceiveOrder\');">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     }
                     else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
                 }
@@ -436,7 +450,7 @@ function PoClosureGridColleps() {
                 'data': 'ref', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
                     if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        return '<a title="Click here to view details" data-toggle="tooltip" href="/Reception/NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
                     }
                     else { return "No Permission"; }
                 }
@@ -661,7 +675,7 @@ function PoPartiallyColleps() {
                 'data': 'ref', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
                     if ($("#hfEdit").val() == "1") {
-                        return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"  onclick="ActivityLog(\'Edit POs reception received orders list\',\'/Reception/ReceiveOrder/' + row.id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        return '<a title="Click here to view details" data-toggle="tooltip" href="/Reception/NewReceiveOrder/' + row.id + '"  onclick="ActivityLog(\'Edit POs reception received orders list\',\'/Reception/ReceiveOrder/' + row.id +'\');"><i class="glyphicon glyphicon-pencil"></i></a>'
                     }
                     else { return "No Permission"; }
                 }

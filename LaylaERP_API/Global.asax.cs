@@ -11,6 +11,10 @@ namespace LaylaERP_API
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
+        protected void Application_BeginRequest()
+        {
+            //HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
+        }
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

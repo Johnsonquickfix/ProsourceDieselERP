@@ -93,7 +93,7 @@ function getOrderInfo() {
     }
 }
 function getOrderItemList(oid) {
-    var option = { strValue1: oid };
+    let option = { strValue1: oid };
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardrefundAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
@@ -111,12 +111,14 @@ function getOrderItemList(oid) {
                     itemHtml += '<td><input min="0" max="' + row.quantity + '" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + orderitemid + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
                     itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
                     itemHtml += '<td><input min="0" max="0" autocomplete="off" disabled class="form-control number rowAmountCalulate" type="number" id="txt_RefundAmt_' + orderitemid + '" value="0" name="txt_RefundAmt" placeholder="Amount"></td>';
                 }
                 else {
                     itemHtml += '<td><input min="0" max="' + row.quantity + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + orderitemid + '" value="0" name="txt_RefundQty" placeholder="Qty" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + row.quantity + ')"></td>';
                     itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
                     itemHtml += '<td><input min="0" max="' + max_amt + '" autocomplete="off" class="form-control billinfo number rowAmountCalulate" type="number" id="txt_RefundAmt_' + orderitemid + '" value="0" name="txt_RefundAmt" placeholder="Amount" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + max_amt + ');" data-maxamt="' + max_amt + '"></td>';
                 }
 
@@ -161,7 +163,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
                 recyclingfeeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 recyclingfeeHtml += '<td class="text-center item-action"><i class="fa fa-plus-circle"></i></td>';
-                recyclingfeeHtml += '<td>' + row.product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td><td></td>';
+                recyclingfeeHtml += '<td>' + row.product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td class="RefundAmount text-right"></td><td></td>';
                 recyclingfeeHtml += '</tr>';
                 zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(row.total) || 0.00);
                 $("#stateRecyclingFeeTotal").data("orderitemid", orderitemid);
@@ -173,8 +175,8 @@ function getOrderItemList(oid) {
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
                 feeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" class="' + (feetype == '%' ? 'percent_fee' : 'fixed_fee') + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '" data-totalamt="' + row.total + '"> ';
                 feeHtml += '<td class="text-center item-action"><i class="fas fa-plus-circle"></i></td>';
-                feeHtml += '<td>' + row.product_name + '</td><td></td><td class="text-right row-refuntamt"></td>';
-                feeHtml += '<td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
+                feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="text-right row-refuntamt"></td>';
+                feeHtml += '<td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td>';
                 if (row.total <= 0) {
                     feeHtml += '<td><input min="0" autocomplete="off" disabled class="form-control number" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount"></td>';
                 }
@@ -188,7 +190,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'shipping') {
                 shippingHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
-                shippingHtml += '<td>Shipping</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td><td></td>';
+                shippingHtml += '<td>Shipping</td><td></td><td></td><td class="text-right row-refuntamt"></td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td class="RefundAmount text-right"><td></td>';
                 shippingHtml += '</tr>';
                 zShippingAmt = zShippingAmt + (parseFloat(row.total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
@@ -206,7 +208,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
-                refundHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td><td></td>';
+                refundHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(row.total) || 0.00);
                 $('#order_refunds').append(refundHtml);
@@ -223,7 +225,7 @@ function getOrderItemList(oid) {
                     $("#tritemId_" + orderitemid).find('[name=txt_RefundQty]').attr({ "max": max_return, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_return + ')' });
                     $("#tritemId_" + orderitemid).data("returnqty", row.quantity); $("#tritemId_" + orderitemid).data("returnamt", _total.toFixed(2));
                     if (row.quantity != 0) $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + row.quantity + '</span>');
-                    $("#tritemId_" + orderitemid).find('.TotalAmount').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + _total.toFixed(2) + '</span>');
+                    $("#tritemId_" + orderitemid).find('.linetotal').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + _total.toFixed(2) + '</span>');
                     $("#tritemId_" + orderitemid).find('.RowTax').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + _totaltax.toFixed(2) + '</span>');
 
                     let max_amt = parseFloat($("#txt_RefundAmt_" + orderitemid).data("maxamt")) - row.total;

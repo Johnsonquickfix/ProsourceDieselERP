@@ -242,7 +242,7 @@
             DateTime endDate = DateTime.Parse(DateRange[1].Trim(), culture);
 
             //DataTable dt = OrderRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
-            DataTable dt = DashboardRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
+            DataTable dt = DashboardRepository.OrderListDashboardDetails(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
             var result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             if (dt.Rows.Count > 0)
                 ViewData.Model = dt.AsEnumerable();

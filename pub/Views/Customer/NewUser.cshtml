@@ -1,7 +1,7 @@
 ﻿@model LaylaERP.Models.CustomerModel
 
 @{
-    ViewBag.Title = "Add New Customer";
+    ViewBag.Title = "NewUser";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
@@ -13,7 +13,6 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">Add New Customer</h2>
-    <span title="Click here to back to customer list" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })</span>
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
@@ -21,289 +20,126 @@
         <div class="box-body">
             <div class="form-horizontal create-new-customer" id="parent">
                 <input type="hidden" id="hfid" value="@ViewBag.id" />
-                <input type="hidden" id="hfzipstatus" />
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group" style="display:none;">
-                            <label class="control-label " for="User Name">User Name/Email</label><span style="color:red">*</span>
+                        <div class="form-group">
+                            <label class="control-label " for="Email">Email</label>
+                            <div class="">
+                                <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="User Name">User Name</label>
                             <div class="">
                                 <input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Email">User Name/Email</label><span style="color:red">*</span>
-                            <div class="">
-                                <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label " for="First Name">First Name</label><span style="color:red">*</span>
+                            <label class="control-label " for="First Name">First Name</label>
                             <div class="">
                                 <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Last Name">Last Name</label><span style="color:red">*</span>
+                            <label class="control-label " for="Last Name">Last Name</label>
                             <div class="">
                                 <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" />
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Contact No.">Contact Number</label><span style="color:red">*</span>
+                            <label class="control-label " for="Address 1">Address 1</label>
+                            <div class="">
+                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Address 2">Address 2</label>
+                            <div class="">
+                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Post/Zip Code">Post/Zip Code</label>
+                            <div class="">
+                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Country/Region">Country/Region</label>
+                            <div class="">
+                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region"  disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label " for="State/Country">State/Country</label>
+                            <div class="">
+                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="City">City</label>
+                            <div class="">
+                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Contact No.">Contact No.</label>
                             <div class="">
                                 <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-
-                        <div class="form-group">
-                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                            <label class="control-label " for="Address 1">Address</label><span style="color:red">*</span>
-                            <div class="">
-                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Address 2">Address Line 2</label>
-                            <div class="">
-                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address Line 2" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="City">City</label><span style="color:red">*</span>
-                            <div class="">
-                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        @*<div class="form-group">
-                    <label class="control-label " for="State/Country">State</label>
-                    <div class="">
-                        <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
-                    </div>
-                </div>*@
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">State</label><span style="color:red">*</span>
-                            <select class="form-control" id="txtBillingState">
-                                <option selected value=""></option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Post/Zip Code">Zip Code</label><span style="color:red">*</span>
-                            <div class="">
-                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Zip Code" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Country</label><span style="color:red">*</span>
-                            <select class="form-control select1" id="txtBillingCountry">
-                                <option value="US">US - United States</option>
-                                <option value="CA">CA - Canada</option>
-                            </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="box-footer">
-            <div class="text-right">
-                <span title="Click here to save customer details" data-placement="bottom" data-toggle="tooltip"><input type="submit" value="Submit" id="btnSave" class="btn btn-danger" /></span>
+                <div class="text-right">
+                    <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
+                    @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
     </div>
-    <div class="map" id="map" style="display:none;"></div>
 </section>
 <!-- /.content -->
 @*@section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
     }*@
-
+<script src="~/Scripts/intlTelInput.js"></script>
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
-
     $(document).ready(function () {
         $("#loader").hide();
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
-        if (id != "" && id != "NewUser") {
-           // console.log(id);
-            //debugger
+        if (id != "") {
+            debugger
             //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
         }
 
-
+      
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
-        //$('#txtBillingPostCode').change(function () {
-        //    getdatabyzip();
-        //})
-
-        $("#txtBillingState").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) {
-                    var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() };
-                    return JSON.stringify(obj);
-                },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                  //  console.log(jobj);
-                    return {
-                        results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.State }
-                        })
-                    };
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-
-        $('.select1').select2();
-
-        isEdit(true);
-        
-       
-    });
-
-    function isEdit(val) {
-        localStorage.setItem('isEdit', val ? 'yes' : 'no');
-    }
-
-    $('#txtUserEmail').change(function () {
-
-        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-        var emailaddressVal = $("#txtUserEmail").val();
-        if (!emailReg.test(emailaddressVal)) {
-            $("#txtUserEmail").val('');
-            swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-        }
-        //else {
-
-        //    email = $("#txtUserEmail").val();
-        //    var obj = {
-        //        user_email: email
-        //    }
-        //    $.ajax({
-        //        url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
-        //        contentType: "application/json; charset=utf-8",
-        //        data: JSON.stringify(obj),
-        //        dataType: "json",
-        //        success: function (data) {
-        //            if (data.status == false) {
-
-        //            }
-        //            else {
-        //                $("#txtUserEmail").val("");
-        //                swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-        //            }
-        //        },
-
-        //        error: function (error) {
-        //            swal('Error!', 'something went wrong', 'error');
-        //        },
-        //    })
-        //}
-
-    });
-
-    $('#txtBillingPostCode').change(function () {
-        City = $("#txtBillingCity").val();
-        State = $("#txtBillingState").val();
-        PostalCode = $("#txtBillingPostCode").val();
-       // console.log(City, State, PostalCode);
-        var obj = {
-            billing_state: State,
-            billing_city: City,
-            billing_postcode: PostalCode
-        }
-        $.ajax({
-            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-              //  console.log(data);
-                if (data.status == true) {
-                    // swal('Alert!', 'Post zip code is valid for City and State', 'success')
-                    // $('#hfzipstatus').val(data.status);
-                    $('#hfzipstatus').val(data.status);
-                  // console.log('eree', data.status);
-
-                }
-                else {
-                    if ($('#txtBillingCountry').val() == "US") {
-                        $("#txtBillingPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
-                    }
-                    if ($('#txtBillingCountry').val() == "CA") {
-                        $('#hfzipstatus').val("true");
-                    }
-                }
-            },
-
-            error: function (error) {
-                swal('Error!', 'Something went wrong', 'error');
-            },
-            async: false
+        $('#txtBillingPostCode').change(function () {
+            getdatabyzip();
         })
+
+      
     });
-
-    $('#txtBillingState').change(function () {
-        if ($("#txtBillingPostCode").val() != '' && $("#txtBillingState").val() != null) {
-            City = $("#txtBillingCity").val();
-            State = $("#txtBillingState").val();
-            PostalCode = $("#txtBillingPostCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
-                        // $('#hfzipstatus').val(data.status);
-                        $('#hfzipstatus').val(data.status);
-                        console.log('state', data.status);
-                    }
-                    else {
-                        if ($('#txtBillingCountry').val() == "US") {
-                            $("#txtBillingPostCode").val("");
-                            $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Zip code is not valid for the state', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
-                        }
-                        if ($('#txtBillingCountry').val() == "CA") {
-                            $('#hfzipstatus').val("true");
-                        }
-                    }
-                },
-
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-        });
 
     document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtBillingPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
-
+   
 
     function phoneFormat(input) {
         input = input.replace(/\D/g, '');
@@ -320,79 +156,30 @@
         }
         return input;
     }
-
-
-</script>
-<script>
-    function initMap() {
-        let address1Field = document.querySelector("#txtBillingAddress1");
-        // Create the autocomplete object, restricting the search predictions to
-        // addresses in the US and Canada.
-        autocomplete = new google.maps.places.Autocomplete(address1Field, {
-            componentRestrictions: { country: ["us", "ca"] },
-            fields: ["address_components", "geometry"],
-            types: ["address"],
-        });
-        // When the user selects an address from the drop-down, populate the
-        // address fields in the form.
-        autocomplete.addListener("place_changed", fillInAddress);
-
-        function fillInAddress() {
-            const place = autocomplete.getPlace();
-            //console.log(place);
-            let address = '';
-            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
-            if (obj.length > 0)
-                address = obj[0].long_name;
-            obj = place.address_components.filter(element => element.types[0] == 'route');
-            if (obj.length > 0)
-                address = address + ' ' + obj[0].long_name;
-            $("#txtBillingAddress1").val(address);
-            obj = place.address_components.filter(element => element.types[0] == 'locality');
-            if (obj.length > 0)
-                $("#txtBillingCity").val(obj[0].long_name);
-            else
-                $("#txtBillingCity").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
-            if (obj.length > 0)
-                $("#txtBillingPostCode").val(obj[0].long_name);
-            else
-                $("#txtBillingPostCode").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-            if (obj.length > 0)
-                $("#txtBillingState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-            else
-                $("#txtBillingState").empty();
-            obj = place.address_components.filter(element => element.types[0] == 'country');
-            if (obj.length > 0)
-                $('#txtBillingCountry').val(obj[0].short_name.trim()).trigger('change'); //$("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
-            else
-                $("#txtBillingCountry").empty();
-
-            $("#txtBillingPostCode").change();
-        }
-
-        function renderAddress(place) {
-            //map.setCenter(place.geometry.location);
-            //marker.setPosition(place.geometry.location);
-            //marker.setVisible(true);
-        }
-    }
-</script>
-<script>
-    $('#txtBillingCountry').on('select2:select', function (e) {
-        $("#txtBillingAddress1").val("");
-        $("#txtBillingAddress2").val("");
-        $("#txtBillingPostCode").val("");
-        $("#txtBillingState").val(null).trigger('change');
-        $("#txtBillingCity").val("");
+    var input = document.querySelector("#txtBillingPhone");
+    window.intlTelInput(input, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        // geoIpLookup: function(callback) {
+        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+        //     var countryCode = (resp && resp.country) ? resp.country : "";
+        //     callback(countryCode);
+        //   });
+        // },
+        // hiddenInput: "full_number",
+        // initialCountry: "auto",
+        // localizedCountries: { 'de': 'Deutschland' },
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        // separateDialCode: true,
+        utilsScript: "~/Scripts/intlTelInput.js",
     });
+
 </script>
-<!--Google Place API -->
-@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc&libraries&callback=initMap&libraries=places&v=weekly" async></script>
-
-
-
-
 

@@ -805,6 +805,9 @@ function saveVendorPO() {
                     if ($("#hfstatus").val() == "6") {
                         $('.btnEdit').hide();
                         $('.btnpoopen').show();
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000022" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                        //swal('Success', data.message, 'success').then((result) => { location.href = '../ReceiveOrder/1000022'; });
+                        $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000022">Back to List</a>');
                     }
                     else {
                         $('.btnEdit').show();
@@ -840,7 +843,7 @@ function updatepocloser() {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });            
+                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder/1000022'; });
             }
             else {
                 swal('Error!', data.message, 'error')
@@ -866,7 +869,8 @@ function updatepoopen() {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });
+                swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder/1000011'; });
+                 
             }
             else {
                 swal('Error!', data.message, 'error')

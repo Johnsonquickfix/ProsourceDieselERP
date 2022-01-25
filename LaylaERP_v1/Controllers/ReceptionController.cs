@@ -107,21 +107,21 @@ namespace LaylaERP.Controllers
                     b_status = true;
                     if (model.fk_status == 6)
                     {
-                        Session["ROPO"] = "PO3";
+                        //Session["ROPO"] = "PO3";
                         JSONstring = "Purchase record closed successfully!!";
                         UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ")  closed in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
 
                     }
                     else if (model.fk_status == 5)
                     {
-                        Session["ROPO"] = "PO2";
+                       // Session["ROPO"] = "PO2";
                         JSONstring = "Purchase record opened successfully!!";
                         UserActivityLog.WriteDbLog(LogType.Submit, "PO id (" + model.IDRec + ") opened in PO recepion", "/Reception/NewReceiveOrder/" + model.IDRec + "" + ", " + Net.BrowserInfo);
 
                     }
                     else
                     {
-                        Session["ROPO"] = "";
+                        //Session["ROPO"] = "";
                     }
                 }
                 else

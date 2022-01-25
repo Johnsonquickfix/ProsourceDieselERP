@@ -1,70 +1,225 @@
-﻿@model  LaylaERP.Models.EmailSettingModel
+﻿@model  LaylaERP.Models.OrderModel
 @{
     Layout = null;
 }
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
-    <title>@Model.email_heading</title>
+    <title>Layla Order Refund Invoice</title>
 </head>
-<body style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
-    <div style=" background-color:#fff; box-shadow:0px 0px 4px #ddd; max-width:600px; margin:auto;">
-        <div style="text-align: center; padding:25px 10px 10px 10px;">
-            <a style="text-decoration:none;" href="#">
-                <img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" />
-            </a>
-        </div>
-        <div style="background-color:#f6f7f9; margin:15px; padding:15px 0px;">
-            <h2>@Model.email_heading</h2>
-        </div>
-        <div style="background-color:#f6f7f9; margin:15px; padding:15px 0px;">
-            <h2>@Model.additional_content</h2>
-        </div>
-        <div style="clear:both;"></div>
-        <div>
-            <ul style="padding:0 15px; margin:0;">
-                <li style="list-style:none; margin-bottom:20px; margin-left:0;  width:47%; float:left; padding:10px 2px; border-radius: 3px; border:1px solid #ddd;">
-                    <a style="text-decoration:none;" href="http://v2.zopim.com/widget/livechat.html?key=GNFx4Up7Iivqtqu4bIG8HnTTR2CwGeaA&utm_campaign=MAP%3A%20Topper%20-%20Shipping%20Delay%20Version%20%28HXbiAm%29&utm_medium=email&utm_source=2019%20-%20Topper%20MAP&_ke=eyJrbF9lbWFpbCI6ICJncmVnZ0BsYXlsYXNsZWVwLmNvbSIsICJrbF9jb21wYW55X2lkIjogIkxGUVRKSyJ9"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-chat-icon.png" alt="Layla Chat" /></a>
-                    <span style="margin-top: 5px; display:block; line-height: 20px;">M-F 7AM-4PM MST<br />S-S 8AM-5PM MST</span>
-                </li>
-                <li style="list-style:none; margin-bottom:20px; margin-left:0; width:47%; float:right; padding:10px 2px; border-radius: 3px;border:1px solid #ddd;">
-                    <a style="text-decoration:none;" href="tel:855-358-1676"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-phone-icon.png" alt="Layla Phone" /></a>
-                    <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="tel:855-358-1676">855-358-1676</a><br /> 24 HOURS</span>
-                </li>
-                <div style="clear:both;"></div>
-                <li style="list-style:none; margin-bottom:20px; margin-left:0; width:100%; float:left; padding:10px 0; border-radius: 3px;border:1px solid #ddd;">
-                    <a style="text-decoration:none;" href="mailto:support@laylasleep.com"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-mail-icon.png" alt="Layla Mail" /></a>
-                    <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="mailto:support@laylasleep.com">support@laylasleep.com</a></span>
-                </li>
-            </ul>
-        </div>
-        <div style="clear:both;"></div>
-        <div style="margin-top:20px; padding:15px;">
-            <a href="//refer.laylasleep.com" target="_blank"><img style="margin:0; width:100%;" style="width:100%;" src="https://laylasleep.com/wp-content/themes/layla-white/images/share-reward.jpg" alt="Layla Offers" /></a>
-        </div>
-        <div style="margin:0; background-color:#404042;">
-            <ul style="padding:0; margin:0;">
-                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
-                    <a style="display:block;" href="https://www.facebook.com/laylasleep">
-                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-fb.png" alt="Layla On Facebook" />
-                    </a>
-                </li>
-                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
-                    <a style="display:block;" href="https://twitter.com/laylasleep">
-                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-twit.png" alt="Layla On Twitter" />
-                    </a>
-                </li>
-                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
-                    <a style="display:block;" href="https://www.instagram.com/laylasleep/">
-                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-insta.png" alt="Layla On Insta" />
-                    </a>
-                </li>
-            </ul>
-        </div>
+<body>
+    <div id="wrapper" dir="ltr" style="background-color:#59595b;margin:0;padding:70px 0 70px 0;width:100%">
+        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+            <tbody>
+                <tr>
+                    <td align="center" valign="top">
+                        <div id="template_header_image">
+                            <p style="margin-top:0"><img src="https://laylasleep.com/wp-content/uploads/2018/12/logo-mail-1.png" alt="Layla" style="border:none;display:inline-block;font-size:14px;font-weight:bold;height:auto;outline:none;text-decoration:none;text-transform:capitalize;vertical-align:middle;margin-right:10px" class="CToWUd" /></p>
+                        </div>
+                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_container" style="background-color:#ffffff;border:1px solid #505052;border-radius:3px">
+                            <tbody>
+                                <tr>
+                                    <td align="center" valign="top">
+
+                                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_header" style="background-color:#ff4100;color:#ffffff;border-bottom:0;font-weight:bold;line-height:100%;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-radius:3px 3px 0 0">
+                                            <tbody>
+                                                <tr>
+                                                    <td id="header_wrapper" style="padding:36px 48px;display:block">
+                                                        <h1 style="font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff">You have been issued a refund.</h1>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+
+                                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_body">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top" id="body_content" style="background-color:#ffffff">
+
+                                                        <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top" style="padding:48px 48px 0">
+                                                                        <div id="body_content_inner" style="color:#636363;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left">
+
+                                                                            <p style="margin:0 0 16px">Hi @Model.b_first_name  @Model.b_last_name,</p>
+                                                                            <p style="margin:0 0 16px">We have applied a refund to your Layla Order. Please allow 3-5 business days for this to reflect in your financial account. For your reference, the details of your refund are below.</p>
+
+
+                                                                            <h2 style="color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left">
+                                                                                <a href="http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D" style="font-weight:normal;text-decoration:underline;color:#ff4100" target="_blank">[Order #@Model.order_id]</a> @String.Format("({0:MMMM dd, yyyy})", @Model.order_date)
+                                                                            </h2>
+
+                                                                            <div style="margin-bottom:40px">
+                                                                                <table cellspacing="0" cellpadding="6" border="1" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;width:100%;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Product</th>
+                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">Quantity</th>
+                                                                                            <th scope="col" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">Price</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        @if (Model.OrderProducts != null)
+                                                                                        {
+                                                                                            foreach (var item in Model.OrderProducts)
+                                                                                            {
+                                                                                                if (item.product_type == "line_item")
+                                                                                                {
+                                                                                                    <tr>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:left;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word">
+                                                                                                            @item.product_name
+                                                                                                        </td>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:right;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
+                                                                                                            @item.quantity
+                                                                                                        </td>
+                                                                                                        <td style="color:#636363;border:1px solid #e5e5e5;padding:12px;text-align:right;vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif">
+                                                                                                            @String.Format("${0:0.00}", @item.total)
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    </tbody>
+                                                                                    <tfoot>
+                                                                                        <tr>
+                                                                                            <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;border-top-width:4px">Subtotal:</th>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right;border-top-width:4px">@String.Format("${0:0.00}", @Model.GrassAmount)</td>
+                                                                                        </tr>
+                                                                                        @if (Model.TotalDiscount != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Discount:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:-0.00}", @Model.TotalDiscount)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalShipping != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;">Shipping:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right;">@String.Format("${0:0.00}", @Model.TotalShipping)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalTax != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Tax:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalTax)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalStateRecycling != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">State Recycling Fee:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalStateRecycling)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalFee != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Fee:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.TotalFee)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        @if (Model.TotalGift != 0)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Gift Card:</th>
+                                                                                                <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${-0:0.00}", @Model.TotalGift)</td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        <tr>
+                                                                                            <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Payment method:</th>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.payment_method_title)</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <th scope="row" colspan="2" style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left">Total Refund:</th>
+                                                                                            <td style="color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right">@String.Format("${0:0.00}", @Model.NetTotal)</td>
+                                                                                        </tr>
+                                                                                    </tfoot>
+                                                                                </table>
+                                                                            </div>
+
+
+                                                                            <table id="addresses" cellspacing="0" cellpadding="0" border="0" style="width:100%;vertical-align:top;margin-bottom:40px;padding:0">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td valign="top" width="50%" style="text-align:left;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;border:0;padding:0">
+                                                                                            <h2 style="color:#ff4100;display:block;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left">Billing address</h2>
+
+                                                                                            <address style="padding:12px 12px 0;color:#636363;border:1px solid #e5e5e5">
+                                                                                                @Model.b_first_name  @Model.b_last_name<br />
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_company))
+                                                                                                {@Model.b_company <br />}
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_address_1))
+                                                                                                {@Model.b_address_1<br />}
+                                                                                                @if (!string.IsNullOrEmpty(@Model.b_address_2))
+                                                                                                {@Model.b_address_2<br />}
+                                                                                                @Model.b_city, @Model.b_state @Model.b_postcode @Model.b_country
+                                                                                                <br />@Model.b_phone	<p style="margin:0 0 16px"><a href="mailto:@Model.b_email" target="_blank">@Model.b_email</a></p>
+                                                                                            </address>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                            <p style="margin:0 0 16px">
+                                                                                Thanks for reading.
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+
+                                        <table border="0" cellpadding="10" cellspacing="0" width="600" id="template_footer">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top" style="padding:0">
+                                                        <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2" valign="middle" id="credit" style="border:0;color:#ff8d66;font-family:Arial;font-size:12px;line-height:125%;text-align:center;padding:0 48px 48px 48px">
+                                                                        <p>
+                                                                            Layla Sleep Inc<br />
+                                                                            157 Church Street Suite 1956<br />
+                                                                            New Haven, CT 06510<br />
+                                                                            855-358-1676<br />
+                                                                            <a href="mailto:support@laylasleep.com" target="_blank">support@laylasleep.com</a>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

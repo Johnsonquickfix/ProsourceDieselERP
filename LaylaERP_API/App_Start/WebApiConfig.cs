@@ -9,11 +9,13 @@ namespace LaylaERP_API
     {
         public static void Register(HttpConfiguration config)
         {
+            config.EnableCors();
             string origin = System.Configuration.ConfigurationManager.AppSettings["AOrigins"];
-            //var cors = new EnableCorsAttribute(origin, "*", "GET,HEAD,POST");
-            var cors = new EnableCorsAttribute("*", "*", "GET,HEAD,POST");
-            //var cors = new EnableCorsAttribute("*", "*", "GET,POST");
+            var cors = new EnableCorsAttribute(origin, "*", "GET,HEAD,POST");
+            //var cors = new EnableCorsAttribute("*", "*", "GET,HEAD,POST");
+            //var cors = new EnableCorsAttribute("*", "Origin, Content-Type, Accept", "GET, PUT, POST, DELETE, OPTIONS");
             config.EnableCors(cors);
+
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();

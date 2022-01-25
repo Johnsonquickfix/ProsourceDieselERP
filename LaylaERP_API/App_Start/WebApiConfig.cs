@@ -10,8 +10,8 @@ namespace LaylaERP_API
         public static void Register(HttpConfiguration config)
         {
             string origin = System.Configuration.ConfigurationManager.AppSettings["AOrigins"];
-            var cors = new EnableCorsAttribute(origin, "*", "GET,HEAD,POST");
-            //var cors = new EnableCorsAttribute("*", "*", "GET,HEAD,POST");
+            //var cors = new EnableCorsAttribute(origin, "*", "GET,HEAD,POST");
+            var cors = new EnableCorsAttribute("*", "*", "GET,HEAD,POST");
             //var cors = new EnableCorsAttribute("*", "*", "GET,POST");
             config.EnableCors(cors);
             // Web API configuration and services

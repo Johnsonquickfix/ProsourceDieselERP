@@ -359,6 +359,79 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable OrderListDashboardDetails(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            // totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (p.id like '" + searchid + "%' "
+                            //+ " OR os.num_items_sold='%" + searchid + "%' "
+                            //+ " OR os.total_sales='%" + searchid + "%' "
+                            //+ " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '" + searchid + "%' "
+                            //+ " OR p.post_date like '%" + searchid + "%' "
+                            + " OR COALESCE(pmf.meta_value, '') like '" + searchid + "%' "
+                            + " OR COALESCE(pml.meta_value, '') like '" + searchid + "%' "
+                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+                            + " )";
+                }
+
+                if (!string.IsNullOrEmpty(from_date))
+                {
+                    strWhr += " and convert(date,p.post_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
+                }
+                if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() != "ADMINISTRATOR")
+                {
+                    long user = CommanUtilities.Provider.GetCurrent().UserID;
+                    strWhr += " and pm.meta_value = '" + user + "'";
+                }
+
+                string strSql = "SELECT  p.id order_id, p.id as chkorder, CONVERT(varchar, CAST(pmfot.meta_value  AS money), 1) total_sales,"
+                            + " (case p.post_status when 'wc-pendingpodiuminv' then 'Pending Podium Invoice'"
+                            + " when 'wc-processing' then 'Processing'"
+                            + " when 'wc-pending' then 'Pending payment'"
+                            + " when 'wc-on-hold' then 'On Hold'"
+                            + " when 'wc-completed' then 'Completed'"
+                            + " when 'wc-cancelled' then 'Cancelled'"
+                            + " when 'wc-refunded' then 'Refunded'"
+                            + " when 'wc-failed' then 'Failed'"
+                            + " when 'wc-cancelnopay' then 'Cancelled - No Payment'"
+                            + " when 'wc-podium' then 'Order via Podium'"
+                            + " when 'draft' then 'Draft'"
+                            + " else '-' end) as status,"
+                            + " convert(varchar,p.post_date,101) date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName" 
+                            + " FROM wp_posts p inner join wp_postmeta pmfot on p.id = pmfot.post_id and pmfot.meta_key = '_order_total' "
+                            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'" 
+                            + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id'"
+                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString() + " order by p.id desc ";
+                //+ " limit 10 ";
+
+                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_posts p "
+                        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                        + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id'"
+                        + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                //if (ds.Tables[1].Rows.Count > 0)
+                //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         //public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
         //{
         //    DataTable dt = new DataTable();

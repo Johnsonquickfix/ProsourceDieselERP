@@ -13,34 +13,39 @@
 <div class="page-title">
     <h2 class="page-heading">Adjustable Base Report</h2> 
 </div>
-<section class="content content-section p-0 reports-section">
-    <div class="user-top-section">
-        <div class="tablenav top">
-            <div class="alignleft actions bulkactions">
-                <select class="form-control" id="month">
-                    <option value="">Month</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">Jun</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
-                <select class="form-control" id="year">
-                    <option value="">Year</option>
-                </select>
-                <input type="button" id="filtersrchexp" value="Search" class="button" />
-                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-            </div>
-        </div>
-    </div>
+<section class="content content-section p-0">
     <div class="row">
+        <div style="width: auto;float: left;margin-right: 10px;">
+            
+            <select class="form-control" id="month">
+                <option value="">Month</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+        <div style="width: auto;float: left;margin-right: 10px;">
+           
+            <select class="form-control" id="year">
+                <option value="">Year</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+            </select>
+        </div>
+        <div style="width: auto;float: left;margin-right: 10px;">
+            <input type="button" id="filtersrchexp" value="Search" class="button" />
+            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+        </div>
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
@@ -49,8 +54,8 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Order Date</th>
-                                <th>Status</th>
-                                <th>Order By</th>
+                                <th>Status</th>                                
+                                <th>Order By</th>                              
                                 <th>Order Total</th>
                             </tr>
                         </thead>
@@ -62,9 +67,8 @@
 
     <script>
         $(document).ready(function () {
-            globalyear('year');
-
-            $("#filtersrchexp").click(function () {
+            //setTimeout(function () { DatagridOrder(); }, 50);
+            $("#filtersrchexp").click(function () {          
                 if ($("#month").val() == "") {
                     swal('Alert', 'Please Select Month', 'error').then(function () { swal.close(); $('#month').focus(); });
                 }
@@ -72,19 +76,22 @@
                     swal('Alert', 'Please Select Year', 'error').then(function () { swal.close(); $('#year').focus(); });
                 }
                 else {
+
                     DatagridOrder();
+                    $("#month").val("");
+                    $("#year").val("");
                     return false;
+
                 }
             });
         });
-
+       
         function DatagridOrder() {
             var Month = $("#month").val();
             var Year = $("#year").val();
             //var obj = { mydate: mydate };
             $('#dtdata').DataTable({
                 destroy: true,
-                "scrollX": true,
                 searching: false,
                 "ajax": {
                     "url": '/Reports/GetAjBaseData',
@@ -96,29 +103,29 @@
                 },
                 "columns": [
 
-
-                    { 'data': 'order_item_type', 'sWidth': "15%" },
+                    
+                    { 'data': 'order_id', 'sWidth': "15%" },
                     {
                         'data': 'order_created', sWidth: "20%",
                         'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var datevalue = ("0" + (date.getDate())).slice(-2);
-                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
+                            var date = new Date(parseInt(jsonDate.substr(6)));                         
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC' ;
                         }
                     },
-                    { 'data': 'orderstatus', 'sWidth': "10%" },
-                    //{ 'data':'orderstatus' },
+                    { 'data': 'orderstatus','sWidth': "10%" },
+                    //{ 'data':'orderstatus' },                   
                     { 'data': 'address', 'sWidth': "40%" },
                     { 'data': 'total', 'sWidth': "15%" }
 
                 ],
                 columnDefs: [{
-                    orderable: false,
+                    orderable: false,                    
                     data: null,
                     defaultContent: '',
                 }],
-
-                "order": [0, 'desc'],
+                
+                "order": [1, 'asc'],
 
                 "dom": 'Bfrtip',
                 "buttons": [
@@ -126,13 +133,9 @@
                     {
                         extend: 'csv',
                         className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> Export',
-                        filename: function () {
-                            var d = new Date();
-                            return 'AJBase_Report_' + "0" + + $("#month").val() + '_' + $("#year").val();
-                        },
+                        text: '<i class="fas fa-file-csv"></i> Export'
                     },
-
+                    
                 ],
 
             });
@@ -141,4 +144,4 @@
 
     </script>
 </section>
-<script src="~/js/globalyear.js"></script>
+

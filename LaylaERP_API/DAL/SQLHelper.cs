@@ -10,7 +10,7 @@
     public static class SQLHelper
     {
         #region Declaration
-        private static string _conString = System.Configuration.ConfigurationManager.ConnectionStrings["constr"].ToString();
+        private static string _conString = System.Configuration.ConfigurationManager.ConnectionStrings["constr_api"].ToString();
         #endregion
 
         #region ExecuteNonQuery

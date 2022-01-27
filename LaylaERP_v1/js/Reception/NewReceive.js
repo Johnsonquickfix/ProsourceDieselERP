@@ -4,7 +4,7 @@
     $(".select2").select2();
     getVendor(); getMasters();
     getPurchaseOrderInfo()
-    getwarehaouseid();
+    //getwarehaouseid();
     getPurchasehistory();
     bindfileuploade();
 
@@ -32,28 +32,28 @@
 
 
 
-    $("#ddlVendor").change(function () {
-        let today = new Date();
-        $('#txtPODate').val(today.toLocaleDateString("en-US"));
-        // $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        // $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" data-placement="bottom" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
-        $('.billinfo').prop("disabled", false);
-        let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        getVendorProducts(VendorID);
-        setTimeout(function () {
-            let _details = getVendorDetails();
-            if (_details.length > 0) {
-                $('#txtRefvendor').val(_details[0].code_vendor);
-                $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
-                $('#ddlBalancedays').val((parseInt(_details[0].BalanceID) || 0)).trigger('change');
-                $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
-                $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
-                $('#txtIncoTerms').val(_details[0].location_incoterms);
-                $('#ddlwarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
-            }
-        }, 50);
-    });
+    //$("#ddlVendor").change(function () {
+    //    let today = new Date();
+    //    $('#txtPODate').val(today.toLocaleDateString("en-US"));
+    //    // $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
+    //    // $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
+    //    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" data-placement="bottom" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
+    //    $('.billinfo').prop("disabled", false);
+    //    let VendorID = parseInt($('#ddlVendor').val()) || 0;
+    //    getVendorProducts(VendorID);
+    //    setTimeout(function () {
+    //        let _details = getVendorDetails();
+    //        if (_details.length > 0) {
+    //            $('#txtRefvendor').val(_details[0].code_vendor);
+    //            $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
+    //            $('#ddlBalancedays').val((parseInt(_details[0].BalanceID) || 0)).trigger('change');
+    //            $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
+    //            $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
+    //            $('#txtIncoTerms').val(_details[0].location_incoterms);
+    //            //$('#ddlwarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
+    //        }
+    //    }, 50);
+    //});
 
 
     //$('#ddlProduct').select2({
@@ -231,8 +231,12 @@ function getMasters() {
 
 
              //Warehouse
-            $("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
-            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+            $("#ddlwarehouse").html('<option value="0">Select Warehouse</option>');
+            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+
+
+            //$("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
+            //for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
 
             //$("#ddlwarehouse").html('<option value="0">Select Warehoused</option>');
             //for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
@@ -281,7 +285,7 @@ function getwarehaouseid() {
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
     });
-    $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
+  //  $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
 }
 function getVendorDetails() {
     let VendorID = parseInt($('#ddlVendor').val()) || 0;
@@ -602,12 +606,12 @@ function getPurchaseOrderInfo() {
                         $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
-                        $('#ddlwarehousepo').val(data['po'][i].fk_warehouse).trigger('change');
+                        //$('#ddlwarehousepo').val(data['po'][i].fk_warehouse).trigger('change');
                         $('#ddlwarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         $("#hfid").val(data['po'][i].rowid);
                         $("#hfstatus").val(data['po'][i].fk_status);
                         $("#hfsaleno").val(fk_projet);
-                       // $("#hftext").val(data['po'][i].user_approve);
+                        $("#hftext").val(data['po'][i].fk_warehouse);
                         //console.log(data['po'][i].fk_status hfsaleno); hftext
                         if (data['po'][i].fk_status == "5")
                             $(".btnpoclosed").show();
@@ -784,7 +788,8 @@ function saveVendorPO() {
     let balance_days = parseInt($("#ddlBalancedays").val()) || 0;
     let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
     let warehouse_ID = parseInt($("#ddlwarehouse").val()) || 0;
-    let warehousepo_ID = parseInt($("#ddlwarehousepo").val()) || 0;
+    let warehousepo_ID = parseInt($("#ddlwarehouse").val()) || 0;
+    /*let warehousepo_ID = parseInt($("#ddlwarehousepo").val()) || 0;*/
     let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
     let IDRecVal = parseInt($("#hfid").val()) || 0;
     let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
@@ -840,20 +845,29 @@ function saveVendorPO() {
                 if (data.status == true) {
                     //$('#lblPoNo').data('id', data.id);
                     SendPO_POApproval(data.id);
-                    getPurchaseOrderInfo();
-                    $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
+                    //getMasters();
+                    getPurchaseOrderInfo(); 
                     getPurchasehistory();
+                    //$('#ddlwarehouse').val($('#hftext').val()).trigger('change');
+                     
                     if ($("#hfstatus").val() == "6") {
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000022">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
                         $('.btnEdit').hide();
-                        $('.btnpoopen').show();
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000022" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                  
+                        $('.btnpoclosed').hide();
+                       // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000022">Back to List</a><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+                       // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000022" data-toggle="tooltip" title="Back to List">Back to List</a>');
                         //swal('Success', data.message, 'success').then((result) => { location.href = '../ReceiveOrder/1000022'; });
                         $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000022">Back to List</a>');
                     }
+                    
                     else {
-                        $('.btnEdit').show();
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000011">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+                       // $('.btnEdit').show();
                         $('.btnpoopen').hide();
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000011" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                   
+                       // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000011">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Update</button>');
+                       // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000011" data-toggle="tooltip" title="Back to List">Back to List</a>');
                         $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000011">Back to List</a>');
                     }
                     swal('Success', data.message, 'success');

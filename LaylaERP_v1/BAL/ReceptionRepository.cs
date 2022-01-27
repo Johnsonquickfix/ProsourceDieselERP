@@ -476,8 +476,8 @@ namespace LaylaERP.BAL
                 //Add Stock
                 // strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
 
-                if (model.WarehouseID == model.WarehousepoID)
-                {
+                //if (model.WarehouseID == model.WarehousepoID)
+                //{
 
                     foreach (PurchaseReceiceOrderProductsModel obj in model.PurchaseOrderProducts)
                     {
@@ -506,32 +506,32 @@ namespace LaylaERP.BAL
                         }
                         //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
                     }
-                }
-                else
-                {
-                    foreach (PurchaseReceiceOrderProductsModel obj in model.PurchaseOrderProducts)
-                    {
-                        if (obj.fk_product > 0)
-                        {
-                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
-                                  model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                //}
+                //else
+                //{
+                //    foreach (PurchaseReceiceOrderProductsModel obj in model.PurchaseOrderProducts)
+                //    {
+                //        if (obj.fk_product > 0)
+                //        {
+                //            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                //            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
+                //                  model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                            //strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                            //strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
-                            //      model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                //            //strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                //            //strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
+                //            //      model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
-                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                //            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                //            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
+                //                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','I' ;",
-                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
-                        }
-                        //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
-                    }
-                }
+                //            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                //            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','I' ;",
+                //                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                //        }
+                //        //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
+                //    }
+                //}
                 // if (SQLHelper.ExecuteNonQueryWithTrans(strstock) > 0)
                 // select 'PR',pod.fk_purchase_re,pod.fk_product," + model.WarehouseID + ",po.date_creation,pod.qty,'R' from commerce_purchase_receive_order_detail pod"
                 if (!string.IsNullOrEmpty(strstock))

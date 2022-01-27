@@ -45,6 +45,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
+            //clsAmazonPay.RefundTransaction(1,"uuuuuu", 4);
             return View();
         }
 
@@ -677,7 +678,7 @@
             try
             {
 
-                var result = clsAmazonPay.RefundTransaction("", model.NetTotal);
+                //var result = clsAmazonPay.RefundTransaction(1,"", model.NetTotal);
                 //if (!string.IsNullOrEmpty(result))
                 //{
                 //    status = true; JSONresult = "Order placed successfully.";
@@ -693,7 +694,7 @@
                 //}
                 //else
                 //{ status = false; JSONresult = "Something went wrong."; }
-                JSONresult = JsonConvert.SerializeObject(result);
+                //JSONresult = JsonConvert.SerializeObject(result);
             }
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);

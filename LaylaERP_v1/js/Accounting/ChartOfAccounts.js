@@ -25,9 +25,8 @@ function ChartOfAccountGrid() {
                     //{ data: 'account_parent', title: 'Parent Account Code', sWidth: "10%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "10%" },
-                    /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },*/
                     { data: 'ac_type', title: 'Account tag', sWidth: "10%" },
-
+                    { data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
                     {
                         'data': 'active', sWidth: "10%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {
@@ -70,7 +69,7 @@ function ChartOfAccountGrid() {
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV',
                         exportOptions: {
-                            columns: [1, 2, 3, 4],
+                            columns: [1, 2, 3, 4, 5, 6],
                             //modifier: {page: 'current'}
                         },
                         filename: function () {
@@ -81,16 +80,20 @@ function ChartOfAccountGrid() {
                     },
                     {
                         extend: 'print',
+                        title:'',
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> Print',
                         exportOptions: {
-                            columns: [1, 2, 3, 4],
+                            columns: [1, 2, 3, 4, 5 , 6],
                             //modifier: { page: 'current' }
                         },
                         filename: function () {
                             var d = new Date();
                             var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                             return 'Chart_of_accounts' + e;
+                        },
+                        messageTop: function () {
+                            return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>';
                         },
                     }
                 ],

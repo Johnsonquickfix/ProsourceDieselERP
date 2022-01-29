@@ -1,0 +1,40 @@
+﻿@model dynamic
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+
+}
+
+<!-- Full Calendar -->
+<link href="~/Content/fullcalendar/fullcalendar.css" rel="stylesheet" />
+@*<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.print.css" media="print" />*@
+<div class="row">
+    <div class="col-md-12 col-md-push-0">
+        <!-- THE CALENDAR -->
+        <div id="eventcalendar"></div>
+    </div><!-- /.col -->
+</div>
+
+<!-- Include moment-->
+<script type="text/javascript" src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
+<!-- Full Calendar -->
+<script type="text/javascript" src="~/Content/fullcalendar/fullcalendar.js"></script>
+@*<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.js"></script>*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#eventcalendar').fullCalendar({
+            themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
+            header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth' },
+            eventLimit: true, // allow "more" link when too many events
+            events: function (start, end, timezone, callback) {
+                let option = { strValue1: moment(start).format('MM/DD/YYYY'), strValue2: moment(end).format('MM/DD/YYYY') };
+                $.ajax({
+                    url: '/api/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, success: function (result) { callback(result); }
+                });
+            },
+            //events: 'https://fullcalendar.io/api/demo-feeds/events.json',
+            //eventRender: function (event, element) { element.qtip({ content: event.description }); },
+            editable: false
+        });
+    });
+</script>

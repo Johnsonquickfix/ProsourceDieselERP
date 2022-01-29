@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace LaylaERP_v1.BAL
+namespace LaylaERP.BAL
 {
     public class EventsRepository
     {
@@ -17,7 +17,7 @@ namespace LaylaERP_v1.BAL
             DataSet DS = new DataSet();
             try
             {
-              
+
                 string strSQl = "SELECT ID, user_login, user_status, iif(user_status = '0', 'Active', 'InActive') as status,user_email, user_registered as created_date, " +
                                 "um.meta_value as meta_value FROM wp_users u INNER JOIN wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%' WHERE u.user_status = '0' ORDER BY ID DESC";
 
@@ -135,6 +135,27 @@ namespace LaylaERP_v1.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataTable GetCalenderEvents(long user_id, DateTime? start_date, DateTime? end_date)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@flag", "CLEVE"),
+                    new SqlParameter("@user_id", user_id),
+                    start_date.HasValue ? new SqlParameter("@start_date", start_date) :new SqlParameter("@start_date", DBNull.Value),
+                    end_date.HasValue ? new SqlParameter("@end_date", end_date) : new SqlParameter("@end_date", DBNull.Value)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_events_search", para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return dt;
         }
     }
 }

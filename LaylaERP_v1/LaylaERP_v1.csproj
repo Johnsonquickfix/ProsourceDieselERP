@@ -661,6 +661,7 @@
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
     <Content Include="js\Accounting\AccountLedgerList.js" />
+    <Content Include="js\Accounting\Balancesheet.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1105,6 +1106,7 @@
     <Content Include="Views\Accounting\ProfitLossAccount.cshtml" />
     <Content Include="Views\ProductBulkEdit\Index.cshtml" />
     <Content Include="Views\Reports\InventoryReportDetails.cshtml" />
+    <Content Include="Views\Accounting\Balancesheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

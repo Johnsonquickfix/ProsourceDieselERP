@@ -186,6 +186,7 @@
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
+    <Compile Include="Controllers\CommonAPIController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
@@ -594,6 +595,8 @@
     <Content Include="Content\EmployeeLinkedFiles\default.png" />
     <Content Include="Content\EmployeeProfileImage\default.png" />
     <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="Content\fullcalendar\fullcalendar.css" />
+    <Content Include="Content\fullcalendar\fullcalendar.js" />
     <Content Include="Content\highcharts\accessibility.js" />
     <Content Include="Content\highcharts\data.js" />
     <Content Include="Content\highcharts\drilldown.js" />
@@ -661,6 +664,7 @@
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
     <Content Include="js\Accounting\AccountLedgerList.js" />
+    <Content Include="js\Accounting\Balancesheet.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1105,6 +1109,8 @@
     <Content Include="Views\Accounting\ProfitLossAccount.cshtml" />
     <Content Include="Views\ProductBulkEdit\Index.cshtml" />
     <Content Include="Views\Reports\InventoryReportDetails.cshtml" />
+    <Content Include="Views\Accounting\Balancesheet.cshtml" />
+    <Content Include="Views\Shared\_Calendar_Event.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

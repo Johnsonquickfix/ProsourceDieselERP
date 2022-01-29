@@ -73,6 +73,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Balancesheet()
+        {
+            return View();
+        }
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -598,6 +602,51 @@ namespace LaylaERP.Controllers
             {
                 DataTable dt = AccountingRepository.GetChartAccountEntryList();
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetAccountbalancesheet(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountbalancesheet(model.strValue1, model.strValue2);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetAccountbalancesheetDetails(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountbalancesheetDetails(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult exportbalancesheet(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                //DateTime? fromdate = null, todate = null;
+                //if (!string.IsNullOrEmpty(model.strValue5))
+                //    fromdate = Convert.ToDateTime(model.strValue5);
+                //if (!string.IsNullOrEmpty(model.strValue6))
+                //    todate = Convert.ToDateTime(model.strValue6);
+                DataSet ds = AccountingRepository.exportbalancesheet(model.strValue1, model.strValue2, model.sSearch);
+                // DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate);
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);

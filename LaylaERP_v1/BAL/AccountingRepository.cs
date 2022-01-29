@@ -1001,5 +1001,75 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
+
+        public static DataTable GetAccountbalancesheet(string from_date, string to_date)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                        new SqlParameter("@pcg_type", "type"),
+                         new SqlParameter("@flag", "sh")
+                    };
+                dt = DAL.SQLHelper.ExecuteDataTable("erp_account_balance sheet", param);
+          
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetAccountbalancesheetDetails(string pcg_type, string from_date, string to_date)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                SqlParameter[] param = {
+                        new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                        new SqlParameter("@pcg_type", pcg_type),
+                         new SqlParameter("@flag", "type")
+                    };
+                dt = DAL.SQLHelper.ExecuteDataTable("erp_account_balance sheet", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet exportbalancesheet(string from_date, string to_date, string searchid)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                   {
+                     new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                        new SqlParameter("@pcg_type", "ex"),
+                    new SqlParameter("@flag", "ex"),
+                    new SqlParameter("@searchcriteria", searchid),
+
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_account_balance sheet", parameters);
+                ds.Tables[0].TableName = "item"; ds.Tables[1].TableName = "details";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

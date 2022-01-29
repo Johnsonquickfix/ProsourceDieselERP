@@ -265,5 +265,50 @@
 
             return sb.ToString();
         }
+        public static byte[] getPassword(string str)
+        {
+            byte[] hash = (byte[])MD5Helper.md5(str, true);
+            int count = 1 << 13;
+            string _hash = ToHex(hash, true);
+            //do
+            //{
+            //_hash = ToHex(hash, true);
+            _hash = System.Text.Encoding.UTF8.GetString(hash);
+            //_hash = BitConverter.ToString(hash).Replace("-", "");
+            hash = (byte[])MD5Helper.md5(_hash, true);
+            _hash = System.Text.Encoding.UTF8.GetString(hash);
+            //} while (0 < --count);
+            return (byte[])hash;
+        }
+        public static string ToHex(byte[] bytes, bool upperCase)
+        {
+            //StringBuilder result = new StringBuilder(bytes.Length * 2);
+            string result = string.Empty;
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                result = result + Convert.ToChar(bytes[i]).ToString();
+            }
+
+            return result.ToString();
+        }
+        public static string Md5Sum(string strToEncrypt)
+        {
+            System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
+            byte[] bytes = ue.GetBytes(strToEncrypt);
+
+            // encrypt bytes
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            byte[] hashBytes = md5.ComputeHash(bytes);
+
+            // Convert the encrypted bytes back to a string (base 16)
+            string hashString = "";
+
+            for (int i = 0; i < hashBytes.Length; i++)
+            {
+                hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
+            }
+
+            return hashString.PadLeft(32, '0');
+        }
     }
 }

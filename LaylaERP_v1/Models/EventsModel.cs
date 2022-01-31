@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace LaylaERP_v1.Models
+﻿namespace LaylaERP.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+
     public class EventsModel
     {
         public int rowid { get; set; }

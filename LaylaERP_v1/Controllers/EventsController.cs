@@ -1,16 +1,16 @@
-﻿using LaylaERP.BAL;
-using LaylaERP.Models;
-using LaylaERP_v1.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace LaylaERP_v1.Controllers
+﻿namespace LaylaERP.Controllers
 {
+    using BAL;
+    using Models;
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc;
+
+
     public class EventsController : Controller
     {
         // GET: Events
@@ -31,6 +31,11 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        // GET: Events
+        public ActionResult EventCalendar()
+        {
+            return View();
+        }
         [HttpGet]
         public JsonResult GetUsersList()
         {
@@ -47,15 +52,15 @@ namespace LaylaERP_v1.Controllers
         [HttpPost]
         public JsonResult AddEvents(EventsModel model)
         {
-                int ID = EventsRepository.AddEvents(model);
-                if (ID > 0)
-                {
-                    return Json(new { status = true, message = "Event saved successfully.", url = "", id = ID }, 0);
-                }
-                else
-                {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                }
+            int ID = EventsRepository.AddEvents(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Event saved successfully.", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
 
         public JsonResult GetEventsList(JqDataTableModel model)

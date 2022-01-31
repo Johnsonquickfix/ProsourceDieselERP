@@ -1,0 +1,180 @@
+﻿
+@{
+    ViewBag.Title = "Event Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Full Calendar -->
+<link href="~/Content/fullcalendar/fullcalendar.css" rel="stylesheet" />
+<div class="page-title">
+    <h2>Calendar Events</h2>
+</div>
+<div class="row">
+    <div class="col-md-12 col-md-push-0">
+        <div class="box box-primary">
+            <div class="box-body no-padding">
+                <!-- THE CALENDAR -->
+                <div id="eventcalendar"></div>
+            </div>
+        </div>
+    </div><!-- /.col -->
+</div>
+
+<div class="modal in printable " id="eventModal" role="dialog" aria-hidden="true"></div>
+
+<!-- Include moment-->
+<script type="text/javascript" src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
+<!-- Full Calendar -->
+<script type="text/javascript" src="~/Content/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#eventcalendar').fullCalendar({
+            themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
+            header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth' },
+            eventLimit: true, // allow "more" link when too many events
+            events: function (start, end, timezone, callback) {
+                let option = { strValue1: moment(start).format('MM/DD/YYYY'), strValue2: moment(end).format('MM/DD/YYYY') };
+                $.ajax({
+                    url: '/api/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, success: function (result) { callback(result); }
+                });
+            },
+            //events: 'https://fullcalendar.io/api/demo-feeds/events.json',
+            //eventRender: function (event, element) { element.qtip({ content: event.description }); },
+            editable: false,
+            //eventClick: function (calEvent, jsEvent, view) {
+
+            //    alert('Event: ' + calEvent.title);
+            //    alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            //    alert('View: ' + view.name);
+
+            //    // change the border color just for fun
+            //    $(this).css('border-color', 'red');
+
+            //}
+            //select: function (start, end, jsEvent, view) {
+            //    var abc = prompt('Enter Title');
+            //    var allDay = !start.hasTime && !end.hasTime;
+            //    var newEvent = new Object();
+            //    newEvent.title = abc;
+            //    newEvent.start = moment(start).format();
+            //    newEvent.allDay = false;
+            //    $('#calendar').fullCalendar('renderEvent', newEvent);
+
+            //}
+            select: function (start, end, allDay) {
+                console.log(moment(start).format('MM/DD/YYYY'), moment(end).format('MM/DD/YYYY'), allDay);
+                addEventModal(moment(start).format('MM/DD/YYYY'), moment(end).format('MM/DD/YYYY'));
+                //var title = prompt('New Select Date:');
+                //if (title) {
+                //    calendar.fullCalendar('renderEvent',
+                //        {
+                //            title: title,
+                //            start: start,
+                //            end: end,
+                //            allDay: allDay
+                //        }, true);
+                //    calendar.fullCalendar('unselect');
+                //    alert("end of select");
+                //}
+            },
+            eventRender: function (event, element) {
+                $(element).tooltip({ title: event.title + ' : ' + event.description });
+            }
+        });
+        $(document).on("change", "#ddleventtype", function (t) {
+            t.preventDefault(); let id = parseInt($('#ddleventtype').val()) || 0;
+            if (id > 0) $('#ddluser').prop('disabled', false);
+            else $('#ddluser').prop('disabled', true);
+        });
+    });
+
+    function addEventModal(start, end) {
+        let _Html = '<div class="modal-dialog">';
+        _Html += '<div class="modal-content">';
+        _Html += '<div class="modal-header">';
+        _Html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+        _Html += '<h4 class="modal-title" id="myModalLabel">Add Event</h4>';
+        _Html += '</div>';
+        _Html += '<div class="modal-body">';
+
+        _Html += '<div class="row">';
+
+        _Html += '<div class="col-md-4" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="startdate">Start Date</label><span style="color:red">*</span>';
+        _Html += '<input type="text" class="form-control" id="txtstartdate" disabled value="' + start + '"/>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '<div class="col-md-4" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="enddate">End Date</label><span style="color:red">*</span>';
+        _Html += '<input type="text" class="form-control" id="txtenddate" value="' + end + '"/>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '<div class="col-md-4" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="enddate">Event Type</label><span style="color:red">*</span>';
+        _Html += '<select class="form-control select2" id="ddleventtype" placeholder="Event Type" style="width: 100%;"><option value="1">Public</option><option value="0" selected>Private</option></select>';
+        _Html += '</div>';
+        _Html += '</div>';
+
+        _Html += '</div >';
+
+        _Html += '<div class="row">';
+        _Html += '<div class="col-md-12" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="task">Event Assigned To</label>';
+        _Html += '<select class="form-control select2" id="ddluser" placeholder="Select user" multiple style="width: 100%;" disabled></select>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '</div >';
+
+        _Html += '<div class="row">';
+        _Html += '<div class="col-md-12" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="task">Title</label><span style="color:red">*</span>';
+        _Html += '<input type="text" class="form-control" id="txttask" maxlength="250" placeholder="Event Title"/>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '</div >';
+
+        _Html += '<div class="row">';
+        _Html += '<div class="col-md-12" >';
+        _Html += '<div class="form-group">';
+        _Html += '<label for="enddate">Description</label>';
+        _Html += '<textarea class="form-control" id="txtdescription" placeholder="Event Description" rows="3"></textarea>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '</div>';
+
+        _Html += '<div class="btn-group" style="width: 100%; margin-bottom: 10px;">';
+        _Html += '    <ul class="fc-color-picker" id="color-chooser">';
+        _Html += '        <li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-orange" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-green" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-lime" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-red" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-purple" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '    </ul>';
+        _Html += '</div>';
+
+        _Html += '</div > ';
+        _Html += '<div class="modal-footer">';
+        _Html += '<button type="button" class="btn btn-danger" id="btnApplyFee" data-orderitemid="' + 0 + '">Add</button>';
+        _Html += '</div>';
+        _Html += '</div>';
+        _Html += '</div>';
+        $("#eventModal").empty().html(_Html);
+        $("#eventModal").modal({ backdrop: 'static', keyboard: false }); $("#txttask").focus();
+        $('#txtstartdate,#txtenddate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+        $('#ddleventtype,#ddluser').select2()
+    }
+</script>
+

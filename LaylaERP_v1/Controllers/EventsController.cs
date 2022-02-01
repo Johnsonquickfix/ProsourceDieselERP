@@ -65,7 +65,7 @@
                     return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                 }
             }
-            catch(Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }            
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }
         }
 
         public JsonResult GetEventsList(JqDataTableModel model)
@@ -94,15 +94,19 @@
         }
         public JsonResult UpdateEvents(EventsModel model)
         {
-            if (model.rowid > 0)
+            try
             {
-                EventsRepository.EditEvents(model);
-                return Json(new { status = true, message = "Event updated successfully", url = "", id = model.rowid }, 0);
+                if (model.rowid > 0)
+                {
+                    EventsRepository.EditEvents(model);
+                    return Json(new { status = true, message = "Event updated successfully", url = "", id = model.rowid }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+                }
             }
-            else
-            {
-                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
-            }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }
         }
 
     }

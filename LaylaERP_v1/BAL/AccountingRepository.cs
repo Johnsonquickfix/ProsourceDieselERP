@@ -1073,5 +1073,28 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static DataSet GetAccountBalance(string from_date, string to_date)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                     new SqlParameter("@from", from_date),
+                        new SqlParameter("@to", to_date),
+                    new SqlParameter("@flag", "sh")
+               
+
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_account_balance_sheet_list", parameters);
+                ds.Tables[0].TableName = "ass"; ds.Tables[1].TableName = "libb"; ds.Tables[2].TableName = "assnm"; ds.Tables[3].TableName = "libnm";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

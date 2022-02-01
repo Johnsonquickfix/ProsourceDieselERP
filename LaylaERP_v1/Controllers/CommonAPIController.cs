@@ -10,7 +10,7 @@
     using System.Web.Http;
     using LaylaERP.UTILITIES;
 
-    [RoutePrefix("api/commonapi")]
+    [RoutePrefix("api2/commonapi")]
     public class CommonAPIController : ApiController
     {
         [HttpPost]

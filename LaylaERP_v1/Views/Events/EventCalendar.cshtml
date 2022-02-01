@@ -41,7 +41,7 @@
             events: function (start, end, timezone, callback) {
                 let option = { strValue1: moment(start).format('MM/DD/YYYY'), strValue2: moment(end).format('MM/DD/YYYY') };
                 $.ajax({
-                    url: '/api/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, beforeSend: function () { $("#loader").show(); },
+                    url: '/api2/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, beforeSend: function () { $("#loader").show(); },
                     success: function (result) { callback(result); },
                     complete: function () { $("#loader").hide(); }, error: function (xhr, status, err) { $("#loader").hide(); }
                 });

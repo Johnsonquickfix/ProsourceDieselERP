@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Event Calendar";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 
 <!-- Full Calendar -->
@@ -12,7 +13,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 
-<div class="page-title">
+<div class="page-title" data-ut="@user.UserType.ToString().ToLower()">
     <h2>Calendar Events</h2>
 </div>
 <div class="row">
@@ -167,7 +168,17 @@
 
         _Html += '</div > ';
         _Html += '<div class="modal-footer">';
-        _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+        if ($('.page-title').data('ut').includes('administrator')) {
+            _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+        }
+        else {
+            if (obj.is_editable) {
+                _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+            }
+            else {
+                _Html += '<button class="btn btn-default" id="btnclose" data-dismiss="modal">Close</button>';
+            }
+        }
         _Html += '</div>';
         _Html += '</div>';
         _Html += '</div>';
@@ -177,6 +188,18 @@
         $('#ddleventtype,#ddluser').select2(); getUsers();
         $('#ddleventtype').val(obj.event_type).trigger('change');
         $('#ddluser').val(obj.assigned_to).trigger('change');
+        if ($('.page-title').data('ut').includes('administrator')) {
+            $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
+        }
+        else {
+            if (obj.is_editable) {
+                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
+            }
+            else {
+                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', true);
+            }
+        }
+
     }
 
     function getUsers() {

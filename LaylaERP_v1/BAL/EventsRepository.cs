@@ -1,15 +1,15 @@
-﻿using LaylaERP.DAL;
-using LaylaERP.UTILITIES;
-using LaylaERP_v1.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-
-namespace LaylaERP.BAL
+﻿namespace LaylaERP.BAL
 {
+    using DAL;
+    using UTILITIES;
+    using Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using System.Linq;
+    using System.Web;
+
     public class EventsRepository
     {
         public static DataSet GetUsers()
@@ -47,6 +47,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@task",model.task),
                     new SqlParameter("@description",model.description),
                     new SqlParameter("@assigned_user",model.assigned_user),
+                    new SqlParameter("@backgroundcolor",model.backgroundcolor)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_event", para));
                 return result;

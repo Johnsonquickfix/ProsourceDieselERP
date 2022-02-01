@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace LaylaERP_v1.Models
+﻿namespace LaylaERP.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+
     public class EventsModel
     {
         public int rowid { get; set; }
@@ -19,6 +19,7 @@ namespace LaylaERP_v1.Models
         public string task { get; set; }
         public string description { get; set; }
         public string assigned_user { get; set; }
+        public string backgroundcolor { get; set; }
 
     }
 

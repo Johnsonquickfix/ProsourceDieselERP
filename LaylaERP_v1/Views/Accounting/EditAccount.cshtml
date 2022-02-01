@@ -76,6 +76,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="exampleInputEmail1">Balance sheet type<span style="color:red"></span></label>
+                                <select class="form-control" id="ddlbstype">
+                                    <option value="">--Select balance sheet type--</option>
+                                    <option value="AS">Assets</option>
+                                    <option value="LB">Liabilities</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="box-footer">
                             <div class="text-right">
                                 <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="left" data-toggle="tooltip"><b>Update</b></span></a>
@@ -127,6 +137,8 @@
         var detailtype = $("#txtdetailtype").val();
         var tag = $("#ddltag").val();
         var actype = $("#ddlactype").val();
+        var bstype = $("#ddlbstype").val();
+
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -153,6 +165,7 @@
                 labelshort: detailtype,
                 extraparams: tag,
                 ac_type: actype,
+                bs_type: bstype,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -208,6 +221,7 @@
                         $("#txtdetailtype").val(d[0].labelshort);
                         $("#ddltag").val(d[0].extraparams).trigger('change');
                         $("#ddlactype").val(d[0].ac_type).trigger('change');
+                        $("#ddlbstype").val(d[0].bs_type).trigger('change');
                         //console.log(d[0].rowid);
                     }
                 },

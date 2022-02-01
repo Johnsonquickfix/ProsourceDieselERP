@@ -717,7 +717,7 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
-                AccountingRepository.UpdateAccountCategory(model);
+                //AccountingRepository.UpdateAccountCategory(model);
                 //UserActivityLog.WriteDbLog(LogType.Submit, "create new General Account " + model.pcg_type + " in General Accounts.", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
                 return Json(new { status = true, message = "Category of account update successfully", url = "", id = model.rowid }, 0);
             }

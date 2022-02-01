@@ -44,7 +44,7 @@
                                         <div title="Enter E-mail">
                                             <label for="exampleInputEmail1">Type<span style="color:red">*</span></label>
                                             <select class="form-control" id="ddlParentAccount">
-                                                <option value="0">--Select type--</option>
+                                                <option value="0">Please select type</option>
                                             </select>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                         <div title="Enter E-mail">
                                             <label for="exampleInputEmail1">Chart Tag<span style="color:red"></span></label>
                                             <select class="form-control" id="ddltag">
-                                                <option value="">--Select chart tag--</option>
+                                                <option value="">Please select chart tag</option>
                                                 <option value="E">Expense</option>
                                                 <option value="I">Income</option>
                                             </select>
@@ -70,7 +70,7 @@
                                         <div title="Enter E-mail">
                                             <label for="exampleInputEmail1">Account Tag<span style="color:red"></span></label>
                                             <select class="form-control" id="ddlactype">
-                                                <option value="">--Select account type--</option>
+                                                <option value="">Please select account type</option>
                                                 <option value="BS">Balance sheet</option>
                                                 <option value="PL">Profit and loss</option>
                                             </select>
@@ -80,10 +80,16 @@
                                         <div title="Enter E-mail">
                                             <label for="exampleInputEmail1">Balance sheet type<span style="color:red"></span></label>
                                             <select class="form-control" id="ddlbstype">
-                                                <option value="">--Select balance sheet type--</option>
+                                                <option value="">Please select balance sheet type</option>
                                                 <option value="AS">Assets</option>
                                                 <option value="LB">Liabilities</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div title="Enter E-mail">
+                                            <label for="exampleInputEmail1">Account category<span style="color:red"></span></label>
+                                            <select class="form-control" id="ddlaccountcategory"></select>
                                         </div>
                                     </div>
                                     <div class="box-footer">
@@ -102,7 +108,7 @@
         <script>
             $(document).ready(function () {
                 $("#loader").hide();
-
+                getAccountCategory();
                 $(document).on('click', "#btnSave", function () {
                     AddAccount();
                     
@@ -137,6 +143,7 @@
                 var tag = $("#ddltag").val();
                 var actype = $("#ddlactype").val();
                 var bstype = $("#ddlbstype").val();
+                var accountcategory = $("#ddlaccountcategory").val();
 
                 if (pcgversion == "") {
                     swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
@@ -166,6 +173,7 @@
                         extraparams: tag,
                         ac_type: actype,
                         bs_type: bstype,
+                        fk_accounting_category: accountcategory,
                     }
                     $.ajax({
                         url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -198,4 +206,18 @@
             }
     
 
+</script>
+<script>
+    function getAccountCategory() {
+        $.ajax({
+            url: "/Accounting/GetAccountCategory",
+            type: "Get",
+            success: function (data) {
+                $('#ddlaccountcategory').append('<option value="0">Please select account category</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlaccountcategory').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                }
+            }, async: false
+        });
+    }
 </script>

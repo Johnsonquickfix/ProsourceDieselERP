@@ -671,5 +671,16 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public JsonResult GetAccountCategory()
+        {
+            DataSet ds = AccountingRepository.GetAccountCategory();
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountsettinglist.Add(new SelectListItem { Text = dr["account_category"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -20,14 +20,12 @@ function ChartOfAccountGrid() {
                 "columns": [
                     { data: 'ID', title: 'Account Code', sWidth: "10%" },
                     { data: 'account_number', title: 'Account Number', sWidth: "10%", sType: 'numeric' },
-                    //{ data: 'labelshort', title: 'Short label', sWidth: "10%" },
                     { data: 'label', title: 'Name', sWidth: "10%" },
-                    //{ data: 'account_parent', title: 'Parent Account Code', sWidth: "10%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "10%" },
                     { data: 'ac_type', title: 'Account tag', sWidth: "10%" },
                     { data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
-                    { data: 'bs_type', title: 'Balance sheet type', sWidth: "10%" },
+                    { data: 'bs_type', title: 'BS Tag' },
                     {
                         'data': 'active', sWidth: "10%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {

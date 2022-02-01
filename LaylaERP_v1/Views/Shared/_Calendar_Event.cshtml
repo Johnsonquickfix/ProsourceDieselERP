@@ -29,12 +29,15 @@
             events: function (start, end, timezone, callback) {
                 let option = { strValue1: moment(start).format('MM/DD/YYYY'), strValue2: moment(end).format('MM/DD/YYYY') };
                 $.ajax({
-                    url: '/api/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, success: function (result) { callback(result); }
+                    url: '/api2/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, success: function (result) { callback(result); }
                 });
             },
             //events: 'https://fullcalendar.io/api/demo-feeds/events.json',
             //eventRender: function (event, element) { element.qtip({ content: event.description }); },
-            editable: false
+            editable: false,
+            eventRender: function (event, element) {
+                $(element).tooltip({ title: event.title + ' : ' + event.description });
+            }
         });
     });
 </script>

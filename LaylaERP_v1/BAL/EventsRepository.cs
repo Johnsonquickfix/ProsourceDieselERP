@@ -47,6 +47,7 @@
                     new SqlParameter("@task",model.task),
                     new SqlParameter("@description",model.description),
                     new SqlParameter("@assigned_user",model.assigned_user),
+                    new SqlParameter("@backgroundcolor",model.backgroundcolor)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_event", para));
                 return result;

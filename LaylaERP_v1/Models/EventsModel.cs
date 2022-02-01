@@ -19,6 +19,7 @@
         public string task { get; set; }
         public string description { get; set; }
         public string assigned_user { get; set; }
+        public string backgroundcolor { get; set; }
 
     }
 

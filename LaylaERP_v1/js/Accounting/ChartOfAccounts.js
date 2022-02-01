@@ -25,7 +25,7 @@ function ChartOfAccountGrid() {
                     { data: 'labelshort', title: 'Detail Type', sWidth: "10%" },
                     { data: 'ac_type', title: 'Account tag', sWidth: "10%" },
                     { data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
-                    { data: 'bs_type', title: 'Balance sheet type' },
+                    { data: 'bs_type', title: 'BS Tag' },
                     {
                         'data': 'active', sWidth: "10%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {

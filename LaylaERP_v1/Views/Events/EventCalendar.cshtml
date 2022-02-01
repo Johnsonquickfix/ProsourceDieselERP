@@ -61,25 +61,11 @@
                 //$(this).css('border-color', 'red');
 
             },
-            //select: function (start, end, jsEvent, view) {
-            //    var abc = prompt('Enter Title');
-            //    var allDay = !start.hasTime && !end.hasTime;
-            //    var newEvent = new Object();
-            //    newEvent.title = abc;
-            //    newEvent.start = moment(start).format();
-            //    newEvent.allDay = false;
-            //    $('#calendar').fullCalendar('renderEvent', newEvent);
-
-            //}
             select: function (start, end, allDay) {
-                let obj = {
-                    id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: '', event_type: 0
-                }
+                let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
                 addEventModal(obj);
             },
-            eventRender: function (event, element) {
-                $(element).tooltip({ title: event.title + ' : ' + event.description });
-            }
+            eventRender: function (event, element) { $(element).tooltip({ title: event.title + ' : ' + event.description }); }
         });
         $(document).on("change", "#ddleventtype", function (t) {
             t.preventDefault(); let id = parseInt($('#ddleventtype').val()) || 0;
@@ -164,7 +150,7 @@
         _Html += '<div class="btn-group" style="width: 100%; margin-bottom: 10px;">';
         _Html += '    <ul class="fc-color-picker" id="color-chooser">';
         _Html += '        <li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-check-square"></i></a></li>';
         _Html += '        <li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>';
         _Html += '        <li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>';
         _Html += '        <li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>';

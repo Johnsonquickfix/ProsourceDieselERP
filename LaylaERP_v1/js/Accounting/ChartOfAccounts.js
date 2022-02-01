@@ -69,7 +69,7 @@ function ChartOfAccountGrid() {
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6],
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8],
                             //modifier: {page: 'current'}
                         },
                         filename: function () {
@@ -84,7 +84,7 @@ function ChartOfAccountGrid() {
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> Print',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5 , 6],
+                            columns: [1, 2, 3, 4, 5 , 6, 7, 8],
                             //modifier: { page: 'current' }
                         },
                         filename: function () {

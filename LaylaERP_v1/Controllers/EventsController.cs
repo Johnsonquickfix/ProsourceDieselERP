@@ -1,6 +1,7 @@
 ﻿namespace LaylaERP.Controllers
 {
     using BAL;
+    using LaylaERP.UTILITIES;
     using Models;
     using Newtonsoft.Json;
     using System;
@@ -52,15 +53,19 @@
         [HttpPost]
         public JsonResult AddEvents(EventsModel model)
         {
-            int ID = EventsRepository.AddEvents(model);
-            if (ID > 0)
+            try
             {
-                return Json(new { status = true, message = "Event saved successfully.", url = "", id = ID }, 0);
+                int ID = EventsRepository.AddEvents(model);
+                if (ID > 0)
+                {
+                    return Json(new { status = true, message = "Event saved successfully.", url = "", id = ID }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
             }
-            else
-            {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-            }
+            catch(Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }            
         }
 
         public JsonResult GetEventsList(JqDataTableModel model)

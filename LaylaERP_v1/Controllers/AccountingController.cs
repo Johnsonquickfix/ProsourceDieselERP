@@ -77,6 +77,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Balancesheetlist()
+        {
+            return View();
+        }
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -650,6 +654,21 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+        [HttpGet]
+        public JsonResult GetAccountBalance(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                //if (!string.IsNullOrEmpty(model.strValue1))
+                //    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = AccountingRepository.GetAccountBalance(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

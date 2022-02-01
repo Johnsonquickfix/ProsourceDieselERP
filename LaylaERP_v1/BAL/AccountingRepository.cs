@@ -1111,5 +1111,74 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable GetAccountCategoryList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT rowid as id, account_category from erp_accounting_category";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int AddAccountCategory(AccountCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "INSERT into erp_accounting_category(account_category) values(@account_category); SELECT SCOPE_IDENTITY();";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@account_category", model.account_category ?? (object)DBNull.Value),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetAccountCategoryById(string strValue1)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT rowid, account_category from erp_accounting_category where rowid='" + strValue1 + "'";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+        public static int UpdateAccountCategory(AccountCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "UPDATE erp_accounting_category set account_category=@account_category where rowid='" + model.rowid + "'";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@account_category", model.account_category),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

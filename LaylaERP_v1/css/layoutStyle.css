@@ -3184,3 +3184,15 @@ width:100% !important; margin-top:10px !important;}
     #order_final_total .col-sm-10.control-label {
     width:100%;max-width:70%;}
             }
+
+#eventcalendar .table-bordered > tbody > tr > td, #eventcalendar .table-bordered > thead > tr > th, #eventcalendar .table-bordered > thead > tr > td {
+    border: 1px solid #dedede;
+}
+
+#eventcalendar .table-bordered > tbody > tr > td, #eventcalendar .table-bordered > thead > tr > th, #eventcalendar .table-bordered > thead > tr > td {
+    border: 1px solid #dedede;
+}
+
+td.fc-more-cell a.fc-more {
+    color: #fff;
+}

@@ -81,6 +81,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult AccountCategorylist()
+        {
+            return View();
+        }
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -671,5 +675,68 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public JsonResult GetAccountCategory()
+        {
+            DataSet ds = AccountingRepository.GetAccountCategory();
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountsettinglist.Add(new SelectListItem { Text = dr["account_category"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetAccountCategoryList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountCategoryList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult AddAccountCategory(AccountCategoryModel model)
+        {
+            //int ID = 1;
+            int ID = AccountingRepository.AddAccountCategory(model);
+            if (ID > 0)
+            {
+                //UserActivityLog.WriteDbLog(LogType.Submit, "create new General Account " + model.pcg_type + " in General Accounts.", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
+                return Json(new { status = true, message = "Category of account saved successfully", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+        public JsonResult UpdateAccountCategory(AccountCategoryModel model)
+        {
+            if (model.rowid > 0)
+            {
+                //AccountingRepository.UpdateAccountCategory(model);
+                //UserActivityLog.WriteDbLog(LogType.Submit, "create new General Account " + model.pcg_type + " in General Accounts.", "/Accounting/AddPcgType" + ", " + Net.BrowserInfo);
+                return Json(new { status = true, message = "Category of account update successfully", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetAccountCategoryById(string strValue1)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountCategoryById(strValue1);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

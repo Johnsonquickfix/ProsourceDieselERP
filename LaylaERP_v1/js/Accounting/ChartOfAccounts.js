@@ -26,6 +26,7 @@ function ChartOfAccountGrid() {
                     { data: 'ac_type', title: 'Account tag', sWidth: "10%" },
                     { data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
                     { data: 'bs_type', title: 'BS Tag', sWidth: "6%" },
+                    { data: 'account_category', title: 'Account category', sWidth: "6%" },
                     {
                         'data': 'active', sWidth: "4%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {
@@ -68,7 +69,7 @@ function ChartOfAccountGrid() {
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6],
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8],
                             //modifier: {page: 'current'}
                         },
                         filename: function () {
@@ -83,7 +84,7 @@ function ChartOfAccountGrid() {
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> Print',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5 , 6],
+                            columns: [1, 2, 3, 4, 5 , 6, 7, 8],
                             //modifier: { page: 'current' }
                         },
                         filename: function () {

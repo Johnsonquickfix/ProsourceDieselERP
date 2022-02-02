@@ -54,5 +54,10 @@ namespace LaylaERP.Models
         public decimal bank_balance { get; set; }
         public DateTime entry_date { get; set; }
     }
+    public class AccountCategoryModel
+    {
+        public int rowid { get; set; }
+        public string account_category { get; set; }
+    }
 
 }

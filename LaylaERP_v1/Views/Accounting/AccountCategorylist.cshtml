@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "AccountCategorylist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<input type="hidden" id="hfEdit" value="" />
+<div class="page-title">
+    <h2>Category of Account<span class="text-gray"></span></h2>
+</div>
+<section class="content section-content employees-section">
+    <div class="row">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="col-sm-6" id="Addpgctype">
+                    <input type="hidden" id="hfid" />
+                    <div class="form-group">
+                        <label for="accountcategory">Account Category<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtaccountcategory" />
+                    </div>
+                    <div class="box-footer">
+                        <div class="text-right">
+                            <span title="Click here to save account category" data-placement="left" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnAdd" value="Save"></span>
+                            <span title="Click here to update account category" data-placement="left" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnUpdate" value="Update"></span>
+                            <span title="Click here to reset" data-placement="left" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnReset" value="Reset"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <table id="AccountCategoryListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Id</th>
+                                <th class="text-left">Account Category</th>
+                                <th class="text-left">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        AccountCategoryList();
+
+        $("#loader").hide();
+        $("#btnUpdate").hide();
+        $(document).on('click', "#btnAdd", function () {
+            AddAccountCategory();
+        })
+        $(document).on('click', "#btnReset", function () {
+            ResetBox();
+            $("#btnAdd").show();
+            $("#btnUpdate").hide();
+        })
+        $(document).on('click', "#btnUpdate", function () {
+            UpdateAccountCategory();
+        })
+    })
+</script>
+
+<script src="@Url.Content("~/js/Accounting/AccountCategoryList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+

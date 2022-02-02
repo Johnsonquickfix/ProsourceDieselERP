@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Event Calendar";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 
 <!-- Full Calendar -->
@@ -12,7 +13,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 
-<div class="page-title">
+<div class="page-title" data-ut="@user.UserType.ToString().ToLower()">
     <h2>Calendar Events</h2>
 </div>
 <div class="row">
@@ -41,52 +42,31 @@
             events: function (start, end, timezone, callback) {
                 let option = { strValue1: moment(start).format('MM/DD/YYYY'), strValue2: moment(end).format('MM/DD/YYYY') };
                 $.ajax({
-                    url: '/api/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, beforeSend: function () { $("#loader").show(); },
+                    url: '/api2/commonapi/eventlist', type: "Post", dataType: "JSON", data: option, beforeSend: function () { $("#loader").show(); },
                     success: function (result) { callback(result); },
                     complete: function () { $("#loader").hide(); }, error: function (xhr, status, err) { $("#loader").hide(); }
                 });
             },
-            //events: 'https://fullcalendar.io/api/demo-feeds/events.json',
-            //eventRender: function (event, element) { element.qtip({ content: event.description }); },
-            editable: false,
-            //eventClick: function (calEvent, jsEvent, view) {
+            editable: true,
+            eventClick: function (calEvent, jsEvent, view) {
+                let obj = {
+                    id: calEvent.id, event_label: calEvent.event_label, start_date: moment(calEvent.start).format('MM/DD/YYYY'), end_date: moment(calEvent.end).format('MM/DD/YYYY'),
+                    task: calEvent.title, description: calEvent.description, backgroundcolor: calEvent.backgroundColor, event_type: 0, assigned_to: calEvent.assigned_to
+                }
+                if (obj.assigned_to != "" && obj.assigned_to != null) {
+                    obj.assigned_to = obj.assigned_to.split(",").map((el) => parseInt(el));
+                    obj.event_type = 1;
+                }
+                addEventModal(obj);
+                // change the border color just for fun
+                //$(this).css('border-color', 'red');
 
-            //    alert('Event: ' + calEvent.title);
-            //    alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            //    alert('View: ' + view.name);
-
-            //    // change the border color just for fun
-            //    $(this).css('border-color', 'red');
-
-            //}
-            //select: function (start, end, jsEvent, view) {
-            //    var abc = prompt('Enter Title');
-            //    var allDay = !start.hasTime && !end.hasTime;
-            //    var newEvent = new Object();
-            //    newEvent.title = abc;
-            //    newEvent.start = moment(start).format();
-            //    newEvent.allDay = false;
-            //    $('#calendar').fullCalendar('renderEvent', newEvent);
-
-            //}
-            select: function (start, end, allDay) {
-                addEventModal(moment(start).format('MM/DD/YYYY'), moment(end).format('MM/DD/YYYY'));
-                //var title = prompt('New Select Date:');
-                //if (title) {
-                //    calendar.fullCalendar('renderEvent',
-                //        {
-                //            title: title,
-                //            start: start,
-                //            end: end,
-                //            allDay: allDay
-                //        }, true);
-                //    calendar.fullCalendar('unselect');
-                //    alert("end of select");
-                //}
             },
-            eventRender: function (event, element) {
-                $(element).tooltip({ title: event.title + ' : ' + event.description });
-            }
+            select: function (start, end, allDay) {
+                let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
+                addEventModal(obj);
+            },
+            eventRender: function (event, element) { $(element).tooltip({ title: event.title + ' : ' + event.description }); }
         });
         $(document).on("change", "#ddleventtype", function (t) {
             t.preventDefault(); let id = parseInt($('#ddleventtype').val()) || 0;
@@ -98,15 +78,18 @@
         });
         // Color chooser button
         $(document).on("click", "#color-chooser > li > a", function (e) {
-            e.preventDefault(); var currColor = '#3c8dbc'; //Red by default
+            e.preventDefault(); var currColor = '#ff851b'; //Red by default
             // Save color
             currColor = $(this).css('color');
+            $('#color-chooser').find('i').removeClass('fa-check-square'); $('#color-chooser').find('i').addClass('fa-square');
+            $(this).find('i').removeClass('fa-square'); $(this).find('i').addClass('fa-check-square');
             // Add color effect to button
             $('#btnAddNewEvent').css({ 'background-color': currColor, 'border-color': currColor });
+            $('#btnAddNewEvent').data('bgcolor', currColor);
         })
     });
 
-    function addEventModal(start, end) {
+    function addEventModal(obj) {
         let _Html = '<div class="modal-dialog">';
         _Html += '<div class="modal-content">';
         _Html += '<div class="modal-header">';
@@ -120,13 +103,13 @@
         _Html += '<div class="col-md-4" >';
         _Html += '<div class="form-group">';
         _Html += '<label for="startdate">Start Date</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txtstartdate" disabled value="' + start + '"/>';
+        _Html += '<input type="text" class="form-control" id="txtstartdate" disabled value="' + obj.start_date + '"/>';
         _Html += '</div>';
         _Html += '</div>';
         _Html += '<div class="col-md-4" >';
         _Html += '<div class="form-group">';
         _Html += '<label for="enddate">End Date</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txtenddate" value="' + end + '"/>';
+        _Html += '<input type="text" class="form-control" id="txtenddate" value="' + obj.end_date + '"/>';
         _Html += '</div>';
         _Html += '</div>';
         _Html += '<div class="col-md-4" >';
@@ -151,7 +134,7 @@
         _Html += '<div class="col-md-12" >';
         _Html += '<div class="form-group">';
         _Html += '<label for="task">Title</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txttask" maxlength="250" placeholder="Event Title"/>';
+        _Html += '<input type="text" class="form-control" id="txttask" maxlength="250" placeholder="Event Title" value="' + obj.task + '"/>';
         _Html += '</div>';
         _Html += '</div>';
         _Html += '</div >';
@@ -160,7 +143,7 @@
         _Html += '<div class="col-md-12" >';
         _Html += '<div class="form-group">';
         _Html += '<label for="enddate">Description</label>';
-        _Html += '<textarea class="form-control" id="txtdescription" placeholder="Event Description" rows="3"></textarea>';
+        _Html += '<textarea class="form-control" id="txtdescription" placeholder="Event Description" rows="3">' + obj.description + '</textarea>';
         _Html += '</div>';
         _Html += '</div>';
         _Html += '</div>';
@@ -168,7 +151,7 @@
         _Html += '<div class="btn-group" style="width: 100%; margin-bottom: 10px;">';
         _Html += '    <ul class="fc-color-picker" id="color-chooser">';
         _Html += '        <li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-square"></i></a></li>';
+        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-check-square"></i></a></li>';
         _Html += '        <li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>';
         _Html += '        <li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>';
         _Html += '        <li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>';
@@ -185,7 +168,17 @@
 
         _Html += '</div > ';
         _Html += '<div class="modal-footer">';
-        _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent">Add</button>';
+        if ($('.page-title').data('ut').includes('administrator')) {
+            _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+        }
+        else {
+            if (obj.is_editable) {
+                _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+            }
+            else {
+                _Html += '<button class="btn btn-default" id="btnclose" data-dismiss="modal">Close</button>';
+            }
+        }
         _Html += '</div>';
         _Html += '</div>';
         _Html += '</div>';
@@ -193,6 +186,20 @@
         $("#eventModal").modal({ backdrop: 'static', keyboard: false }); $("#txttask").focus();
         $('#txtstartdate,#txtenddate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
         $('#ddleventtype,#ddluser').select2(); getUsers();
+        $('#ddleventtype').val(obj.event_type).trigger('change');
+        $('#ddluser').val(obj.assigned_to).trigger('change');
+        if ($('.page-title').data('ut').includes('administrator')) {
+            $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
+        }
+        else {
+            if (obj.is_editable) {
+                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
+            }
+            else {
+                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', true);
+            }
+        }
+
     }
 
     function getUsers() {
@@ -203,7 +210,7 @@
                 $.each(dt['Table'], function (i, row) { $("#ddluser").append('<option value="' + row.ID + '">' + row.user_login + '</option>'); });
             },
             complete: function () { $("#loader").hide(); },
-            error: function (xhr, status, err) { $("#loader").hide(); }
+            error: function (xhr, status, err) { $("#loader").hide(); }, async: false
         });
     }
 
@@ -217,9 +224,10 @@
         else if (enddate == "") { swal('Alert', 'Please enter end date', 'error').then(function () { swal.close(); $('#txtenddate').focus(); }); }
         else if (task == "") { swal('Alert', 'Please enter task', 'error').then(function () { swal.close(); $('#txttask').focus(); }); }
         else {
-            var obj = { event_label: 'Event', start_date: startdate, end_date: enddate, assigned_to: assignedto, assigned_user: assigneduser, status: 1, task: task, description: description, backgroundcolor: backgroundcolor }
+            var obj = { rowid: parseInt($("#btnAddNewEvent").data('id')) || 0, event_label: 'Event', start_date: startdate, end_date: enddate, assigned_to: assignedto, assigned_user: assigneduser, status: 1, task: task, description: description, backgroundcolor: $('#btnAddNewEvent').data('bgcolor') }
+            let _event = obj.rowid > 0 ? 'UpdateEvents' : 'AddEvents';
             $.ajax({
-                url: '/Events/AddEvents/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8",
+                url: '/Events/' + _event, dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(obj), beforeSend: function () { $("#loader").show(); },
                 success: function (data) {
                     if (data.status == true) {

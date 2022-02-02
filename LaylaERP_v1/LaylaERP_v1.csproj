@@ -660,6 +660,7 @@
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="Images\varient_pic.png" />
     <Content Include="js\Accounting\AccountBalanceList.js" />
+    <Content Include="js\Accounting\AccountCategoryList.js" />
     <Content Include="js\Accounting\AccountingJournal.js" />
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
@@ -1112,8 +1113,8 @@
     <Content Include="Views\Accounting\Balancesheet.cshtml" />
     <Content Include="Views\Shared\_Calendar_Event.cshtml" />
     <Content Include="Views\Events\EventCalendar.cshtml" />
-    <Content Include="Views\Balancesheetlist.cshtml" />
     <Content Include="Views\Accounting\Balancesheetlist.cshtml" />
+    <Content Include="Views\Accounting\AccountCategorylist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -37,6 +37,10 @@
         {
             return View();
         }
+        public ActionResult GoogleCalendar()
+        {
+            return View();
+        }
         [HttpGet]
         public JsonResult GetUsersList()
         {

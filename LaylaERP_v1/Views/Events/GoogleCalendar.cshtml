@@ -48,12 +48,12 @@
             themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
             header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth' },
             eventLimit: true, // allow "more" link when too many events
-            events: {
-                googleCalendarApiKey: 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
-                googleCalendarId: 'johnson.quickfix@gmail.com',
-                //googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com',
-                className: 'gcal-event' // an option!
-            },
+            //events: {
+            //    googleCalendarApiKey: 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
+            //    googleCalendarId: 'johnson.quickfix@gmail.com',
+            //    //googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com',
+            //    className: 'nice-event' // an option!
+            //},
             //events: function (start, end, timezone, callback) {
             //    let option = {};
             //    $.ajax({
@@ -65,6 +65,12 @@
             //        error: function (xhr, status, err) { console.log(xhr, status, err); }
             //    });
             //},
+            googleCalendarApiKey: 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
+            eventSources: [
+                { googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com' },
+                { googleCalendarId: 'addressbook#contacts@group.v.calendar.google.com' },
+                { googleCalendarId: 'johnson.quickfix@gmail.com', className: 'nice-event' }
+            ],
             editable: true,
             eventClick: function (calEvent, jsEvent, view) {
                 let obj = {
@@ -82,7 +88,7 @@
                 //let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
                 //addEventModal(obj);
             },
-            eventRender: function (event, element) { $(element).tooltip({ title: event.title + ' : ' + event.description }); }
+            eventRender: function (event, element) { $(element).tooltip({ title: event.title }); }
         });
         $(document).on("change", "#ddleventtype", function (t) {
             t.preventDefault(); let id = parseInt($('#ddleventtype').val()) || 0;

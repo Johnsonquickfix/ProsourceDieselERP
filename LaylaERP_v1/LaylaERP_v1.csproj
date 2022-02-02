@@ -1112,6 +1112,8 @@
     <Content Include="Views\Accounting\Balancesheet.cshtml" />
     <Content Include="Views\Shared\_Calendar_Event.cshtml" />
     <Content Include="Views\Events\EventCalendar.cshtml" />
+    <Content Include="Views\Balancesheetlist.cshtml" />
+    <Content Include="Views\Accounting\Balancesheetlist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

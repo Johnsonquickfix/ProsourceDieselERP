@@ -29,7 +29,7 @@
             </div>
         </div>
         <div style="text-align:right" class="col-md-6">
-            <button type="button" title="Click here for print" data-placement="bottom" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
+            <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
         </div>
     </div>
     <div id="printable" class="row">
@@ -81,25 +81,50 @@
                     </tr>
 
                     <tr>
-                        <td valign="top">
-                            <strong>Total(Expense) : <span id="TotalExpense"></span></strong>
+                        <td>
+                            <table width="98%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <strong>Net Profit :</strong>
+                                    </td>
+                                    <td valign="top" width="50%" align="right">
+                                        <strong><span id="Totalprofit"></span></strong>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                        <td valign="top">
-                            <strong>Total(Income) : <span id="TotalIncome"></span></strong>
-                        </td>
+                        <td></td>
+
                     </tr>
                     <tr>
-                        <td colspan="2" valign="top">
-                            -------------------------------------
+                        <td valign="top">
+                            <table width="98%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <strong>Total(Expense) :</strong>
+                                    </td>
+                                    <td valign="top" width="50%" align="right">
+                                        <strong><span id="TotalExpense"></span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <table width="98%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <strong>Total(Income) :</strong>
+                                    </td>
+                                    <td valign="top" width="50%" align="right">
+                                        <strong><span id="TotalIncome"></span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                            @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
                         </td>
                     </tr>
-                    <tr>
-                        <td valign="top">
-                            <strong>Net Profit : <span id="Totalprofit"></span></strong>
-                        </td>
-                        <td valign="top">
-                        </td>
-                    </tr>
+
+
                 </table>
             </div>
         </div>
@@ -278,7 +303,7 @@
                             tprofit = Totallib - Totalacc;
 
                             $("#TotalIncome").html(formatCurrency(Totallib));
-                            $("#TotalExpense").html(formatCurrency(Totalacc));
+                            $("#TotalExpense").html(formatCurrency(Totalacc + tprofit));
                              
                             $("#Totalprofit").html(formatCurrency(tprofit));
 

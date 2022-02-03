@@ -3,7 +3,7 @@
     var obj = { id: ID };
     //var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#AccountCategoryListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -42,7 +42,7 @@
             dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         aoColumns: [
-            { data: 'id', title: 'Id', sWidth: "5%" },
+            { data: 'id', title: 'Id', sWidth: "5%", render: function (inv_num, type, full, meta) { return full.sortid; } },
             { data: 'label', title: 'Label', sWidth: "10%", class: "text-left" },
             { data: 'date_start', title: 'Start date', sWidth: "10%", class: "text-left" },
             { data: 'date_end', title: 'Date end', sWidth: "10%", class: "text-left" },

@@ -1224,7 +1224,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "SELECT rowid id,label, CONVERT(varchar,date_start,112) as datesort, CONVERT(varchar,date_start,101) date_start, CONVERT(varchar, date_end, 101) date_end, (case when status = '1' then 'Active' else 'Inactive' end) status, datec from erp_accounting_fiscalyear";
+                string strSql = "SELECT rowid id,label, REPLACE(label,'-','') sortid, CONVERT(varchar,date_start,112) as datesort, CONVERT(varchar,date_start,101) date_start, CONVERT(varchar, date_end, 101) date_end, (case when status = '1' then 'Active' else 'Inactive' end) status, datec from erp_accounting_fiscalyear";
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
             }

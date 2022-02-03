@@ -47,10 +47,10 @@
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
-                    //if ($("#hfEdit").val() == "1") {
+                    if ($("#hfEdit").val() == "1") {
                         return '<span title="Click here to edit account category." data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
-                    //}
-                    //else { return "No permission" }
+                    }
+                    else { return "No permission" }
                 }
             },
         ],
@@ -108,7 +108,7 @@ function EditSelect(id) {
             $("#btnAdd").hide();
             $("#btnUpdate").show();
 
-            //isEdit(true);
+            isEdit(true);
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
@@ -147,7 +147,7 @@ function UpdateAccountCategory() {
             },
             complete: function () {
                 $("#loader").hide();
-                //isEdit(false);
+                isEdit(false);
             },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })

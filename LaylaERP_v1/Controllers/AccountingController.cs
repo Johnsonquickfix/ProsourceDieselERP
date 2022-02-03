@@ -89,6 +89,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult AccountFiscalYearList()
+        {
+            return View();
+        }
 
         public JsonResult GetNatureofJournal(SearchModel model)
         {

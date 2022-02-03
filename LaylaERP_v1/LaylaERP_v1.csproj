@@ -1115,6 +1115,7 @@
     <Content Include="Views\Events\EventCalendar.cshtml" />
     <Content Include="Views\Accounting\Balancesheetlist.cshtml" />
     <Content Include="Views\Accounting\AccountCategorylist.cshtml" />
+    <Content Include="Views\Accounting\ProfitLossAccountList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

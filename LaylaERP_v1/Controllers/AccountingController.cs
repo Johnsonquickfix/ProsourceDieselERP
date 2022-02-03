@@ -85,6 +85,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ProfitLossAccountList()
+        {
+            return View();
+        }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -737,6 +742,36 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetAccountProfitLoss(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                //if (!string.IsNullOrEmpty(model.strValue1))
+                //    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = AccountingRepository.GetAccountProfitLoss(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult Getfinancialyear(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.Getfinancialyear();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                if(dr["status"].ToString() == "1")
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString(),Selected = true  });
+                else
+                    productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
         }
     }
 }

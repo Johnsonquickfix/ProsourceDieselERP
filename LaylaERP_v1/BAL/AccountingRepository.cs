@@ -1180,5 +1180,42 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataSet GetAccountProfitLoss(string from_date, string to_date)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                     new SqlParameter("@from", to_date),
+                       new SqlParameter("@rowid", from_date),
+                        new SqlParameter("@to", to_date),
+                    new SqlParameter("@flag", "sh")
+
+
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_account_Profit_and_Loss_list", parameters);
+                ds.Tables[0].TableName = "inc"; ds.Tables[1].TableName = "exp"; ds.Tables[2].TableName = "incnm"; ds.Tables[3].TableName = "expnm"; ds.Tables[4].TableName = "fincyer";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataSet Getfinancialyear()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select rowid as ID, label as Name , status from erp_accounting_fiscalyear  ;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

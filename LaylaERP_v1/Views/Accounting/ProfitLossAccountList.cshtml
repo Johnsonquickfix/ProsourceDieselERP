@@ -19,7 +19,7 @@
                 <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions">
                         <div class="input-group space-heads">
-                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>*@
+                            <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
                             @*<input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
                             <select class="form-control select2" id="ddlfinaceyear"></select>
                         </div>
@@ -124,17 +124,32 @@
                 //    getAssets(true);
                 //});
                 getfinaceyear();
+                //fincyear = getCurrentFinancialYear();
+                //$('#ddlfinaceyear').text(fincyear).trigger('change');
+                //console.log(fincyear);
                 getAssets(true);
 
                 $('#ddlfinaceyear').change(function () {
                     getAssets(true); 
-                    $("#selectyear").html($("#ddlfinaceyear :selected").text());
+                   
                 });
 
             });
 
+        //function getCurrentFinancialYear() {
+        //    var fiscalyear = "";
+        //    var today = new Date();
+        //    if ((today.getMonth() + 1) <= 3) {
+        //        fiscalyear = (today.getFullYear() - 1) + "-" + today.getFullYear()
+        //    } else {
+        //        fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
+        //    }
+        //    return fiscalyear
+        //}
+
         function getfinaceyear() {
             let fincyear = "";
+          //  fincyear = getCurrentFinancialYear();
             $.ajax({
                 url: "/Accounting/Getfinancialyear",
                 type: "Get",
@@ -142,7 +157,14 @@
                     $('#ddlfinaceyear').empty();
                     $('#ddlfinaceyear').append('<option value="">Please Select Financial Year</option>');
                     for (var i = 0; i < data.length; i++) {
-                        $('#ddlfinaceyear').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                        if (data[i].Selected == true) {
+                            $('#ddlfinaceyear').append('<option value="' + data[i].Value + '" selected>' + data[i].Text + '</option>');
+                        }
+                        else {
+                            $('#ddlfinaceyear').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                        }
+
+                       // $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
                     }
                 }, async: false
             });
@@ -259,6 +281,10 @@
                             $("#TotalExpense").html(formatCurrency(Totalacc));
                              
                             $("#Totalprofit").html(formatCurrency(tprofit));
+
+                            for (let i = 0; i < data['fincyer'].length; i++) {
+                                $("#selectyear").html(data['fincyer'][i].dateyear);
+                            }
 
                         }
                         catch (error) {

@@ -773,5 +773,57 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
+
+        public JsonResult GetAccountFiscalYearList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountFiscalYearList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult AddAccountFiscalYear(FiscalYearModel model)
+        {
+            //int ID = 1;
+            int ID = AccountingRepository.AddAccountFiscalYear(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Fiscal year saved successfully", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+        public JsonResult GetAccountFiscalYearById(string strValue1)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountFiscalYearById(strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
+        }
+
+        public JsonResult UpdateAccountFiscalYear(FiscalYearModel model)
+        {
+            if (model.rowid > 0)
+            {
+                AccountingRepository.UpdateAccountFiscalYear(model);
+                return Json(new { status = true, message = "Fiscal year update successfully", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
     }
 }

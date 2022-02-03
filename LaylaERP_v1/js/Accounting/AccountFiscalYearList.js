@@ -51,7 +51,7 @@
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
                     //if ($("#hfEdit").val() == "1") {
-                        return '<span title="Click here to edit account category." data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    return '<span title="Click here to edit fiscal year." data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                     //}
                     //else { return "No permission" }
                 }

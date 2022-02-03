@@ -85,10 +85,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        public ActionResult AccountFiscalYearList()
+        public ActionResult ProfitLossAccountList()
         {
             return View();
         }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -743,56 +744,34 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult GetAccountFiscalYearList(JqDataTableModel model)
+        [HttpGet]
+        public JsonResult GetAccountProfitLoss(SearchModel model)
         {
-            string result = string.Empty;
-            int TotalRecord = 0;
+            string JSONresult = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.GetAccountFiscalYearList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                long id = 0;
+                //if (!string.IsNullOrEmpty(model.strValue1))
+                //    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = AccountingRepository.GetAccountProfitLoss(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(ds);
             }
-            catch (Exception ex) { throw ex; }
-            return Json(result, 0);
-            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            catch { }
+            return Json(JSONresult, 0);
         }
+        public JsonResult Getfinancialyear(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.Getfinancialyear();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                if(dr["status"].ToString() == "1")
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString(),Selected = true  });
+                else
+                    productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
 
-        public JsonResult AddAccountFiscalYear(FiscalYearModel model)
-        {
-            //int ID = 1;
-            int ID = AccountingRepository.AddAccountFiscalYear(model);
-            if (ID > 0)
-            {
-                return Json(new { status = true, message = "Fiscal year saved successfully", url = "", id = ID }, 0);
-            }
-            else
-            {
-                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
-            }
-        }
-        public JsonResult GetAccountFiscalYearById(string strValue1)
-        {
-            string result = string.Empty;
-            try
-            {
-                DataTable dt = AccountingRepository.GetAccountFiscalYearById(strValue1);
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-            }
-            catch (Exception ex) { throw ex; }
-            return Json(result, 0);
-        }
-
-        public JsonResult UpdateAccountFiscalYear(FiscalYearModel model)
-        {
-            if (model.rowid > 0)
-            {
-                AccountingRepository.UpdateAccountFiscalYear(model);
-                return Json(new { status = true, message = "Fiscal year update successfully", url = "", id = model.rowid }, 0);
-            }
-            else
-            {
-                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
-            }
         }
     }
 }

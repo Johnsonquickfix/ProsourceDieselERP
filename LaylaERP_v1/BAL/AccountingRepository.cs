@@ -1180,5 +1180,80 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static DataTable GetAccountFiscalYearList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT rowid id,label, CONVERT(varchar,date_start,112) as datesort, CONVERT(varchar,date_start,101) date_start, CONVERT(varchar, date_end, 101) date_end, (case when status = '1' then 'Active' else 'Inactive' end) status, datec from erp_accounting_fiscalyear";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int AddAccountFiscalYear(FiscalYearModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag","I"),
+                    new SqlParameter("@label", model.label),
+                    new SqlParameter("@date_start", model.date_start),
+                    new SqlParameter("@date_end", model.date_end),
+                    new SqlParameter("@status", model.status),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_accounting_fiscal", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetAccountFiscalYearById(string id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT rowid id,label, CONVERT(varchar,date_start,110) date_start, CONVERT(varchar, date_end, 110) date_end, status from erp_accounting_fiscalyear where rowid='" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int UpdateAccountFiscalYear(FiscalYearModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag","U"),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@label", model.label),
+                    new SqlParameter("@date_start", model.date_start),
+                    new SqlParameter("@date_end", model.date_end),
+                    new SqlParameter("@status", model.status),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_accounting_fiscal", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

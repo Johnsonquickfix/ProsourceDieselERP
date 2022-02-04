@@ -60,4 +60,14 @@ namespace LaylaERP.Models
         public string account_category { get; set; }
     }
 
+    public class FiscalYearModel
+    {
+        public int rowid { get; set; }
+        public string label { get; set; }
+        public DateTime date_start { get; set; }
+        public DateTime date_end { get; set; }
+        public int status { get; set; }
+
+    }
+
 }

@@ -658,6 +658,7 @@
     <Content Include="Images\varient_pic.png" />
     <Content Include="js\Accounting\AccountBalanceList.js" />
     <Content Include="js\Accounting\AccountCategoryList.js" />
+    <Content Include="js\Accounting\AccountFiscalYearList.js" />
     <Content Include="js\Accounting\AccountingJournal.js" />
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
@@ -1111,6 +1112,7 @@
     <Content Include="Views\Accounting\AccountCategorylist.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSRPowerBi.cshtml" />
     <Content Include="Views\Accounting\ProfitLossAccountList.cshtml" />
+    <Content Include="Views\Accounting\AccountFiscalYearList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

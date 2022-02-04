@@ -1113,6 +1113,7 @@
     <Content Include="Views\Reports\ForecastInventoryLSRPowerBi.cshtml" />
     <Content Include="Views\Accounting\ProfitLossAccountList.cshtml" />
     <Content Include="Views\Accounting\AccountFiscalYearList.cshtml" />
+    <Content Include="Views\Reports\ForecastInventoryLSPowerBi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

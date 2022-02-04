@@ -21,8 +21,11 @@
                 <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions">
                         <div class="input-group space-heads">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                             <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
+                            <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
+                            @*<input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
+                            <select class="form-control select2" id="ddlfinaceyear"></select>
                         </div>
                     </div>
                     
@@ -30,7 +33,7 @@
             </div>
         </div>
         <div style="text-align:right" class="col-md-6">
-            <button type="button" title="Click here for print" data-placement="bottom" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
+            <button type="button" title="Click here for print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
         </div>
         </div>
         <div id="printable" class="row">
@@ -73,23 +76,36 @@
             $(document).ready(function () {
                 // $.when(getAssets()).done(function () { getLiabilites(); });
                 $("#loader").hide();
-                $('#txtOrderDate').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
-                    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
-                    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-                }, function (start, end, label) {
-                    getAssets(true);
-                });
+                getfinaceyear();
                 getAssets(true);
 
+                $('#ddlfinaceyear').change(function () {
+                    getAssets(true);
+
+                });
+
             });
+
+            function getfinaceyear() {
+                let fincyear = ""; 
+                $.ajax({
+                    url: "/Accounting/Getfinancialyear",
+                    type: "Get",
+                    success: function (data) {
+                        $('#ddlfinaceyear').empty();
+                        $('#ddlfinaceyear').append('<option value="">Please Select Financial Year</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].Selected == true) {
+                                $('#ddlfinaceyear').append('<option value="' + data[i].Value + '" selected>' + data[i].Text + '</option>');
+                            }
+                            else {
+                                $('#ddlfinaceyear').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                            } 
+                        }
+                    }, async: false
+                }); 
+            }
+
             function formatCurrency(total) {
                 var neg = false;
                 if (total < 0) {
@@ -99,8 +115,11 @@
                 return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
             }
             function getAssets(is_date) {
-                let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+
+                let sd = $('#ddlfinaceyear').val();
+                let ed = '2';
 
                 var option = { strValue1: sd, strValue2: ed };
                 $.ajax({
@@ -212,20 +231,7 @@
                 window.print();
                // newWin.document.title = "Readings on PageLinks";
                 document.body.innerHTML = originalContents;
-                $('#txtOrderDate').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
-                    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
-                    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-                }, function (start, end, label) {
-                    getAssets(true);
-                });
+                getfinaceyear();
             }
         </script>
 </section>

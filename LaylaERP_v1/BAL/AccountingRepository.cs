@@ -1086,6 +1086,7 @@ namespace LaylaERP.BAL
                     {
                      new SqlParameter("@from", from_date),
                         new SqlParameter("@to", to_date),
+                    new SqlParameter("@rowid", from_date),
                     new SqlParameter("@flag", "sh")
                
 

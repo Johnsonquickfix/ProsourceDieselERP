@@ -41,6 +41,22 @@
                 <div id="divass">
                     <table>
                         <tr>
+                            <td align="center" colspan="2" valign="top">
+                                <strong>Layla Sleep Inc</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" colspan="2" valign="top">
+                                <strong> Balance Sheet</strong>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align="center" colspan="2" valign="top">
+                                <strong><span id="selectyear">-</span></strong>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
                                 <table id="tblass" class="table-blue table table-bordered table-striped dataTable">
                                     <thead>
@@ -67,6 +83,35 @@
                                 </table>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td valign="top">
+                                <table width="98%">
+                                    <tr>
+                                        <td valign="top" width="50%">
+                                            <strong>Grand Total	(ASSETS) :</strong>
+                                        </td>
+                                        <td valign="top" width="50%" align="right">
+                                            <strong><span id="TotalExpense"></span></strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td valign="top">
+                                <table width="98%">
+                                    <tr>
+                                        <td valign="top" width="50%">
+                                            <strong>Grand Total	(LIABILITIES) :</strong>
+                                        </td>
+                                        <td valign="top" width="50%" align="right">
+                                            <strong><span id="TotalIncome"></span></strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                                @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
+                            </td>
+                        </tr>
+
                     </table>
                 </div>
             </div>
@@ -167,11 +212,11 @@
                             else {
                                 $('#account_ass').empty();
                             }
-                            itemHtmassfoot += '<tr>';
-                            itemHtmassfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            itemHtmassfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totalacc) + '</span></strong></td>';
-                            itemHtmassfoot += '</tr>';
-                            $('#account_assfoot').empty().append(itemHtmassfoot);
+                            //itemHtmassfoot += '<tr>';
+                            //itemHtmassfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
+                            //itemHtmassfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totalacc) + '</span></strong></td>';
+                            //itemHtmassfoot += '</tr>';
+                            //$('#account_assfoot').empty().append(itemHtmassfoot);
                             if (data['libb'].length > 0) {
                                 for (let i = 0; i < data['libnm'].length; i++) {
                                     itemHtmllib += '<tr id="tritemIdlib_' + data['libnm'][i].pcg_type + '" data-key="' + data['libnm'][i].pcg_type + '">';
@@ -203,11 +248,18 @@
                             //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">---</span></strong></td>';
                             //itemHtmlibfoot += '</tr>';
 
-                            itemHtmlibfoot += '<tr>';
-                            itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totallib) + '</span></strong></td>';
-                            itemHtmlibfoot += '</tr>';
-                            $('#account_libfoot').empty().append(itemHtmlibfoot);
+                            //itemHtmlibfoot += '<tr>';
+                            //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
+                            //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totallib) + '</span></strong></td>';
+                            //itemHtmlibfoot += '</tr>';
+                            //$('#account_libfoot').empty().append(itemHtmlibfoot);
+
+                            $("#TotalIncome").html(formatCurrency(Totallib));
+                            $("#TotalExpense").html(formatCurrency(Totalacc));
+
+                            for (let i = 0; i < data['fincyer'].length; i++) {
+                                $("#selectyear").html(data['fincyer'][i].dateyear);
+                            }
 
                         }
                         catch (error) {
@@ -227,7 +279,7 @@
                 document.body.innerHTML = printContents;
                 //let title_el = document.querySelector("title");
                 //title_el.innerHTML = "World";
-                document.title = "Balance Sheet";
+                document.title = ".";
                 window.print();
                // newWin.document.title = "Readings on PageLinks";
                 document.body.innerHTML = originalContents;

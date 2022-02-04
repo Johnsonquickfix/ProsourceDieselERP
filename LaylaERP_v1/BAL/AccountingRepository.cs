@@ -1092,7 +1092,7 @@ namespace LaylaERP.BAL
 
                 };
                 ds = SQLHelper.ExecuteDataSet("erp_account_balance_sheet_list", parameters);
-                ds.Tables[0].TableName = "ass"; ds.Tables[1].TableName = "libb"; ds.Tables[2].TableName = "assnm"; ds.Tables[3].TableName = "libnm";
+                ds.Tables[0].TableName = "ass"; ds.Tables[1].TableName = "libb"; ds.Tables[2].TableName = "assnm"; ds.Tables[3].TableName = "libnm"; ds.Tables[4].TableName = "fincyer";
             }
             catch (Exception ex)
             {

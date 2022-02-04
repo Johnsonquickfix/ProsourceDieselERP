@@ -583,19 +583,19 @@ function getPurchaseOrderInfo() {
                         fk_user_approve = parseInt(data['po'][i].fk_user_approve) || 0;
                         if (fk_user_approve > 0) {
                             if (data['po'][i].fk_status == "6")
-                                $('.page-heading').text('Receive Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000022">Back to List</a>');
+                                $('.page-heading').text('Closed Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000022">Back to List</a>');
                             else if (data['po'][i].fk_status == "5")
-                                $('.page-heading').text('Receive Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000011">Back to List</a>');
+                                $('.page-heading').text('Received Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000011">Back to List</a>');
                             else
-                                $('.page-heading').text('Receive Order (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
+                                $('.page-heading').text('New Order Receive (Approved by ' + data['po'][i].user_approve + ')').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
                         }
                         else {
                             if (data['po'][i].fk_status == "6")
-                                $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000022">Back to List</a>');
+                                $('.page-heading').text('Closed Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000022">Back to List</a>');
                             else if (data['po'][i].fk_status == "5")
-                                $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000011">Back to List</a>');
+                                $('.page-heading').text('Received Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder/1000011">Back to List</a>');
                             else
-                                   $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
+                                $('.page-heading').text('New Order Receive ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
                         }
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0; fk_projet = parseInt(data['po'][i].fk_projet) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
@@ -858,7 +858,7 @@ function saveVendorPO() {
                        // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000022">Back to List</a><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
                        // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000022" data-toggle="tooltip" title="Back to List">Back to List</a>');
                         //swal('Success', data.message, 'success').then((result) => { location.href = '../ReceiveOrder/1000022'; });
-                        $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000022">Back to List</a>');
+                        $('.page-heading').text('Closed Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000022">Back to List</a>');
                     }
                     
                     else {

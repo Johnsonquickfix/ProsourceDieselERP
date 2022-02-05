@@ -66,7 +66,13 @@
                 let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
                 addEventModal(obj);
             },
-            eventRender: function (event, element) { $(element).tooltip({ title: event.title + ' : ' + event.description }); }
+            eventRender: function (event, element) {
+                console.log(event,element);
+                $(element).tooltip({ title: event.title + ' : ' + event.description, placement: 'bottom' });
+                //element.qtip({
+                //    content: event.title
+                //});
+            }
         });
         $(document).on("change", "#ddleventtype", function (t) {
             t.preventDefault(); let id = parseInt($('#ddleventtype').val()) || 0;

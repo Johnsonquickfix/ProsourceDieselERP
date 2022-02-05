@@ -34,6 +34,7 @@
 
 <!-- Include moment-->
 <script type="text/javascript" src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
+<script type='text/javascript' src="https://apis.google.com/js/api.js"></script>
 <!-- Full Calendar -->
 <script type="text/javascript" src="~/Content/fullcalendar/fullcalendar.js"></script>
 <script type='text/javascript' src="~/Content/fullcalendar/gcal.min.js"></script>
@@ -42,8 +43,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         //Global variables to access the calendar
-        var clientId = 'Your cliendID', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = 'Your google calendar id', eventsList = [];
-        $("#loader").hide();
+        var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = 'johnson.quickfix@gmail.com', eventsList = [];
+        $("#loader").hide(); printCalendar();
         $('#eventcalendar').fullCalendar({
             themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
             header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth' },
@@ -84,6 +85,16 @@
                 //addEventModal(obj);
 
             },
+            dayClick: function () {
+                //var eventTitle = prompt('Event Title:');
+                //if (eventTitle) {
+                //    var newEvent = { title: eventTitle, start: '2022-01-01', };
+                //    $('#eventcalendar').fullCalendar('renderEvent', newEvent, true);
+                //}
+                //$('#eventcalendar').fullCalendar('unselect');
+
+
+            },
             select: function (start, end, allDay) {
                 //let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
                 //addEventModal(obj);
@@ -111,156 +122,66 @@
         })
     });
 
-    function addEventModal(obj) {
-        let _Html = '<div class="modal-dialog">';
-        _Html += '<div class="modal-content">';
-        _Html += '<div class="modal-header">';
-        _Html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-        _Html += '<h4 class="modal-title" id="myModalLabel">Add Event</h4>';
-        _Html += '</div>';
-        _Html += '<div class="modal-body">';
+</script>
+<script>
+    /* This solution makes use of "simple access" to google, providing only an API Key.
+    * This way we can only get access to public calendars. To access a private calendar,
+    * we would need to use OAuth 2.0 access.
+    *
+    * "Simple" vs. "Authorized" access: https://developers.google.com/api-client-library/javascript/features/authentication
+    * Examples of "simple" vs OAuth 2.0 access: https://developers.google.com/api-client-library/javascript/samples/samples#authorizing-and-making-authorized-requests
+    *
+    * We will make use of "Option 1: Load the API discovery document, then assemble the request."
+    * as described in https://developers.google.com/api-client-library/javascript/start/start-js
+    */
+    function printCalendar() {
+        // The "Calendar ID" from your calendar settings page, "Calendar Integration" secion:
+        //var calendarId = 'YOUR_CALENDAR_ID@group.calendar.google.com';
+        var calendarId = 'johnson.quickfix@gmail.com';
 
-        _Html += '<div class="row">';
+        // 1. Create a project using google's wizzard: https://console.developers.google.com/start/api?id=calendar
+        // 2. Create credentials:
+        //    a) Go to https://console.cloud.google.com/apis/credentials
+        //    b) Create Credentials / API key
+        //    c) Since your key will be called from any of your users' browsers, set "Application restrictions" to "None",
+        //       leave "Website restrictions" blank; you may optionally set "API restrictions" to "Google Calendar API"
+        var apiKey = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc';
+        // You can get a list of time zones from here: http://www.timezoneconverter.com/cgi-bin/zonehelp
+        var userTimeZone = "Europe/Budapest";
 
-        _Html += '<div class="col-md-4" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="startdate">Start Date</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txtstartdate" disabled value="' + obj.start_date + '"/>';
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '<div class="col-md-4" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="enddate">End Date</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txtenddate" value="' + obj.end_date + '"/>';
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '<div class="col-md-4" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="enddate">Event Type</label><span style="color:red">*</span>';
-        _Html += '<select class="form-control select2" id="ddleventtype" placeholder="Event Type" style="width: 100%;"><option value="1">Public</option><option value="0" selected>Private</option></select>';
-        _Html += '</div>';
-        _Html += '</div>';
-
-        _Html += '</div >';
-
-        _Html += '<div class="row">';
-        _Html += '<div class="col-md-12" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="task">Event Assigned To</label>';
-        _Html += '<select class="form-control select2" id="ddluser" placeholder="Select user" multiple style="width: 100%;" disabled></select>';
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '</div >';
-
-        _Html += '<div class="row">';
-        _Html += '<div class="col-md-12" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="task">Title</label><span style="color:red">*</span>';
-        _Html += '<input type="text" class="form-control" id="txttask" maxlength="250" placeholder="Event Title" value="' + obj.task + '"/>';
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '</div >';
-
-        _Html += '<div class="row">';
-        _Html += '<div class="col-md-12" >';
-        _Html += '<div class="form-group">';
-        _Html += '<label for="enddate">Description</label>';
-        _Html += '<textarea class="form-control" id="txtdescription" placeholder="Event Description" rows="3">' + obj.description + '</textarea>';
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '</div>';
-
-        _Html += '<div class="btn-group" style="width: 100%; margin-bottom: 10px;">';
-        _Html += '    <ul class="fc-color-picker" id="color-chooser">';
-        _Html += '        <li><a class="text-aqua" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-blue" href="#"><i class="fa fa-check-square"></i></a></li>';
-        _Html += '        <li><a class="text-light-blue" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-teal" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-yellow" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-orange" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-green" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-lime" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-red" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-purple" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-fuchsia" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '        <li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>';
-        _Html += '    </ul>';
-        _Html += '</div>';
-
-        _Html += '</div > ';
-        _Html += '<div class="modal-footer">';
-        if ($('.page-title').data('ut').includes('administrator')) {
-            _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
-        }
-        else {
-            if (obj.is_editable) {
-                _Html += '<button type="button" class="btn btn-danger" id="btnAddNewEvent" data-id="' + obj.id + '" data-bgcolor="' + obj.backgroundcolor + '">' + (obj.id > 0 ? 'Update' : 'Add') + '</button>';
+        // Initializes the client with the API key and the Translate API.
+        gapi.client.init({
+            'apiKey': apiKey,
+            // Discovery docs docs: https://developers.google.com/api-client-library/javascript/features/discovery
+            'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        }).then(function () {
+            // Use Google's "apis-explorer" for research: https://developers.google.com/apis-explorer/#s/calendar/v3/
+            // Events: list API docs: https://developers.google.com/calendar/v3/reference/events/list
+            return gapi.client.calendar.events.list({
+                'calendarId': calendarId,
+                'timeZone': userTimeZone,
+                'singleEvents': true,
+                'timeMin': (new Date()).toISOString(), //gathers only events not happened yet
+                'maxResults': 20,
+                'orderBy': 'startTime'
+            });
+        }).then(function (response) {
+            console.log('response: ', response, response.result.items);
+            if (response.result.items) {
+                var calendarRows = ['<table class="wellness-calendar"><tbody>'];
+                response.result.items.forEach(function (entry) {
+                    var startsAt = moment(entry.start.dateTime).format("L") + ' ' + moment(entry.start.dateTime).format("LT");
+                    var endsAt = moment(entry.end.dateTime).format("LT");
+                    calendarRows.push(`<tr><td>${startsAt} - ${endsAt}</td><td>${entry.summary}</td></tr>`);
+                });
+                calendarRows.push('</tbody></table>');
+                $('#wellness-calendar').html(calendarRows.join(""));
             }
-            else {
-                _Html += '<button class="btn btn-default" id="btnclose" data-dismiss="modal">Close</button>';
-            }
-        }
-        _Html += '</div>';
-        _Html += '</div>';
-        _Html += '</div>';
-        $("#eventModal").empty().html(_Html);
-        $("#eventModal").modal({ backdrop: 'static', keyboard: false }); $("#txttask").focus();
-        $('#txtstartdate,#txtenddate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-        $('#ddleventtype,#ddluser').select2(); getUsers();
-        $('#ddleventtype').val(obj.event_type).trigger('change');
-        $('#ddluser').val(obj.assigned_to).trigger('change');
-        if ($('.page-title').data('ut').includes('administrator')) {
-            $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
-        }
-        else {
-            if (obj.is_editable) {
-                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', false);
-            }
-            else {
-                $('#txtenddate,#ddleventtype,#ddluser,#txttask,#txtdescription').prop('disabled', true);
-            }
-        }
-
-    }
-
-    function getUsers() {
-        $.ajax({
-            url: "/Events/GetUsersList", type: "Get", beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                let dt = JSON.parse(data);
-                $.each(dt['Table'], function (i, row) { $("#ddluser").append('<option value="' + row.ID + '">' + row.user_login + '</option>'); });
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+        }, function (reason) {
+            console.log('Error: ' + reason.result.error.message);
         });
-    }
+    };
 
-    function AddEvents() {
-        let startdate = $("#txtstartdate").val(), enddate = $("#txtenddate").val();
-        let assignedto = $('#ddluser option:selected').toArray().map(item => item.value).join();
-        let assigneduser = $('#ddluser option:selected').toArray().map(item => item.text).join();
-        let task = $("#txttask").val(), description = $("#txtdescription").val(); backgroundcolor = '';
-
-        if (startdate == "") { swal('Alert', 'Please enter start date', 'error').then(function () { swal.close(); $('#txtstartdate').focus(); }); }
-        else if (enddate == "") { swal('Alert', 'Please enter end date', 'error').then(function () { swal.close(); $('#txtenddate').focus(); }); }
-        else if (task == "") { swal('Alert', 'Please enter task', 'error').then(function () { swal.close(); $('#txttask').focus(); }); }
-        else {
-            var obj = { rowid: parseInt($("#btnAddNewEvent").data('id')) || 0, event_label: 'Event', start_date: startdate, end_date: enddate, assigned_to: assignedto, assigned_user: assigneduser, status: 1, task: task, description: description, backgroundcolor: $('#btnAddNewEvent').data('bgcolor') }
-            let _event = obj.rowid > 0 ? 'UpdateEvents' : 'AddEvents';
-            $.ajax({
-                url: '/Events/' + _event, dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj), beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Success', data.message, 'success').then((result) => { $("#eventModal").modal('hide'); $('#eventcalendar').fullCalendar('refetchEvents'); });
-                    }
-                    else { swal('Alert!', data.message, 'error'); }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-    }
+    // Loads the JavaScript client library and invokes `start` afterwards.
+    gapi.load('client', printCalendar);
 </script>

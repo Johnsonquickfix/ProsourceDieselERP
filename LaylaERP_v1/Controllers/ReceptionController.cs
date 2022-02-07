@@ -467,6 +467,22 @@ namespace LaylaERP.Controllers
             return Json(new { status = status, message = result }, 0);
         }
 
+        [HttpGet]
+        public JsonResult getinvoicehistory(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.getinvoicehistory(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
 
     }
 }

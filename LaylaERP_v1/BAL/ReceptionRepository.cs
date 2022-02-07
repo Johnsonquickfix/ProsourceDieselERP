@@ -753,6 +753,27 @@ namespace LaylaERP.BAL
             return ds;
         }
 
+        public static DataSet getinvoicehistory(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@po_id", id), };
+                string strSql = "select top 1 fk_purchase from commerce_purchase_receive_order"
+                                + " where fk_purchase = @po_id;"
+                                +   "Select max(p.fk_purchase) id,max(p.rowid) RicD,p.ref refordervendor,sum(recqty) Quenty, string_agg(concat(' ' ,description, ' (*',recqty,')'), ',') des,max(CONVERT(VARCHAR(12), p.date_creation, 107)) dtcration,max(CONVERT(VARCHAR(12), p.date_creation, 107)) date_creation, Cast(CONVERT(DECIMAL(10,2),max(p.total_ttc)) as nvarchar) total_ttc from commerce_purchase_receive_order p "
+                                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid  "
+                                      + " where p.fk_purchase =  @po_id and product_type = 0 and p.fk_status in (5,6) and 1 = 1 group by  p.ref  order by RicD desc"; 
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
 
     }
 

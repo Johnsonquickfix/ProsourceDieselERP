@@ -308,7 +308,7 @@ function getAllUserType(sValue) {
         var user_type = '';
         $('.subsubsub li').each(function (index) {
             let val = $(this).data('uservalue'), txt = $(this).data('usertext');
-            console.log(txt);
+           // console.log(txt);
            // console.log(sValue);
               let i = sValue.toLowerCase().trim().indexOf(val);
             //let i = sValue.trim().indexOf(val);

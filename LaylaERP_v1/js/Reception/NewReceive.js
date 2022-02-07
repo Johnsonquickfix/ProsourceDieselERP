@@ -6,6 +6,7 @@
     getPurchaseOrderInfo()
     //getwarehaouseid();
     getPurchasehistory();
+    getinvoicehistory();
     bindfileuploade();
 
 
@@ -974,6 +975,42 @@ function getPurchasehistory() {
 
     }
 
+}
+
+function getinvoicehistory() {
+    let oid = parseInt($('#lblPoNo').data('id')) || 0;
+    
+    if (oid > 0) {
+        var option = { strValue1: oid };
+        $.ajax({
+            url: "/Reception/GetInvoiceHistory", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    // console.log(result);
+                    let itemHtml = '';
+                    if (data['pod'].length > 0) {
+                        for (let i = 0; i < data['pod'].length; i++) {
+                            itemHtml += '<tr id="tritemId_' + data['pod'][i].RicD + '" data-key="' + data['pod'][i].RicD + '">';
+                            itemHtml += '<td style="text-align:left;"> <a href="#" title="Click here to view bill preview" data-toggle="tooltip"  onclick="getInvoicePrintnew(' + data['pod'][i].RicD + '); "><i class="fas fa - search - plus"></i>' + data['pod'][i].refordervendor + '</a></td>';
+                            itemHtml += '<td>' + data['pod'][i].dtcration + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].des + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].Quenty + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].total_ttc) + '</td>';
+                            itemHtml += '</tr>';
+
+                        }
+                        $('#product_invoichistory').empty().append(itemHtml);
+                    }
+                }
+                catch (error) {
+                    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+        }); 
+    } 
 }
 
 $(document).on('click', "#btnuploade", function () {

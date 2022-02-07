@@ -342,7 +342,7 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].saleprice == null)
                 $("#txtsalepricekit").text('$0.00');
             else
-                $("#txtsalepricekit").text('$' + i[0].saleprice.toFixed(2));
+                $("#txtsalepricekit").text('$' + i[0].saleprice);
 
             if ($("#txtsalepricekit").text() == "$0.00") {
                 $("#lblRegularPrice").hide();
@@ -355,14 +355,14 @@ function GetDataPurchaseByID(order_id) {
             if (i[0].cost_price == null)
                 $("#txtCostprice").text('$0.00');
             else
-                $("#txtCostprice").text('$' + i[0].cost_price.toFixed(2));
+                $("#txtCostprice").text('$' + i[0].cost_price);
 
            
 
             if (i[0].purchase_price == null)
                 $("#txtbestbying").text('$0.00');
             else
-                $("#txtbestbying").text('$' + i[0].purchase_price.toFixed(2));
+                $("#txtbestbying").text('$' + i[0].purchase_price);
             $("#txtnumattached").text(i[0].filecount);            
             $("#txtVendor").text(i[0].vname);
             $("#txtPrivate").val(i[0].Private_Notes);
@@ -932,17 +932,18 @@ function EditUser(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-          //  console.log(i);
+           // console.log(i[0].fk_vendor);
+            $('#ddlvender').val(i[0].fk_vendor).trigger('change');
             $("#txtminpurchasequantity").val(i[0].minpurchasequantity);
             $("#txttaglotno").val(i[0].taglotserialno);
-            $("#txtSaletax").val(i[0].salestax.toFixed(2));
+            $("#txtSaletax").val(formatCurrency(i[0].salestax));
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
-            $("#txtcostprice").val(i[0].cost_price.toFixed(2));
-            $("#txtshippingprice").val(i[0].shipping_price.toFixed(2));
+            $("#txtcostprice").val(formatCurrency(i[0].cost_price));
+            $("#txtshippingprice").val(formatCurrency(i[0].shipping_price));
             $("#txtMisccosts").val(i[0].Misc_Costs);
             $("#txtDiscountqty").val(i[0].discount);
             $("#txtRemarks").val(i[0].remark);
-            $('#ddlvender').val(i[0].fk_vendor).trigger('change');
+            
             $('#ddltaxrate').val(i[0].taxrate).trigger('change');
             $('#lblcopyto').show();
             $('#ddlvendercopy').show();
@@ -953,6 +954,14 @@ function EditUser(id) {
     });
 }
 
+function formatCurrency(total) {
+    var neg = false;
+    if (total < 0) {
+        neg = true;
+        total = Math.abs(total);
+    }
+    return   parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "1,").toString();
+}
 function DeleteUser(id) {
     var ids = id;
     var obj = { ID: ids }

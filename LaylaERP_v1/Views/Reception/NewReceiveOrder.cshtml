@@ -195,15 +195,38 @@
 
                     </div>
                     @*<div class="box-header with-border">
-                            <h3 class="box-title">Files</h3>
-                        </div>
-                        <div class="box-body">
-                            <ul class="nav nav-pills nav-stacked" id="billfiles">
-                                <li>None</li>
-                            </ul>
-                        </div>*@
+                    <h3 class="box-title">Files</h3>
+                </div>
+                <div class="box-body">
+                    <ul class="nav nav-pills nav-stacked" id="billfiles">
+                        <li>None</li>
+                    </ul>
+                </div>*@
                 </div>
             </div>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Invoice History</h3>
+                </div>
+                <div class="box box-solid">
+                    <div class="table-responsive" id="divinvoichistory">
+                        <table id="tblinvoichistory" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width: 10%">Bill No</th>
+                                    <th class="text-left" style="width: 10%">Receive Date</th>
+                                    <th class="text-left" style="width: 55%">Description</th>
+                                    <th class="text-left" style="width: 10%">Quantity</th>
+                                    <th class="text-left" style="width: 15%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product_invoichistory"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="row rowbox proposal-row">
                 <div class="col-md-12">
                     <div class="box box-primary">
@@ -311,5 +334,6 @@
 
 <div class="modal in printable autoprint table-design not-fixed popuptable" id="POModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <script src="@Url.Content("~/js/Reception/ReceivePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 <script src="@Url.Content("~/js/Reception/NewReceive.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

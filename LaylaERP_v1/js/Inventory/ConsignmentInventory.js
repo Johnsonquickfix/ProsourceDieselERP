@@ -132,7 +132,8 @@ function ProductStockGrid() {
             },
             {
                 data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                    //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                    if (row.post_parent > 0) return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0); else return '';
                 }
             },
         ],
@@ -159,7 +160,10 @@ function format(d) {
                     wrHTML += '<td><a style="text-decoration: underline;font-weight: 700;" href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
                 else
                     wrHTML += '<td>' + row.UnitsinPO.toFixed(0) + '</td>';
-                wrHTML += '<td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr > ';
+                wrHTML += '<td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td>';
+                //wrHTML += '<td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td>';
+                wrHTML += '<td>' + (row.op_stock + row.stock - (row.SaleUnits - row.Damage)).toFixed(0) + '</td>';
+                wrHTML += '</tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },
@@ -260,14 +264,14 @@ function exportTableToCSV(filename) {
             $(result['item']).each(function (index, data) {
                 //Parent Row
                 if (data.post_parent > 0)
-                    csv += '-  #' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock).toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '-  #' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock).toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 else
-                    csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 //Child Row                
                 let res = result['details'].filter(element => element.product_id == data.id);
                 if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Units in Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
                 $(res).each(function (index, wrhRow) {
-                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + (wrhRow.op_stock + wrhRow.stock).toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock + wrhRow.UnitsinPO - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
+                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + (wrhRow.op_stock + wrhRow.stock).toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
                 });
             });
             download_csv(csv, filename);

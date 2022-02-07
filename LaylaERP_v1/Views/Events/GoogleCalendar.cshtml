@@ -44,7 +44,7 @@
     $(document).ready(function () {
         //Global variables to access the calendar
         var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = 'johnson.quickfix@gmail.com', eventsList = [];
-        $("#loader").hide(); printCalendar();
+        $("#loader").hide(); //printCalendar();
         $('#eventcalendar').fullCalendar({
             themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
             header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth' },
@@ -68,7 +68,7 @@
             //},
             googleCalendarApiKey: 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
             eventSources: [
-                { googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com' },
+                //{ googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com' },
                 { googleCalendarId: 'addressbook#contacts@group.v.calendar.google.com' },
                 { googleCalendarId: 'johnson.quickfix@gmail.com', className: 'nice-event' }
             ],
@@ -84,6 +84,8 @@
                 }
                 //addEventModal(obj);
 
+                
+
             },
             dayClick: function () {
                 //var eventTitle = prompt('Event Title:');
@@ -98,6 +100,54 @@
             select: function (start, end, allDay) {
                 //let obj = { id: 0, event_label: '', start_date: moment(start).format('MM/DD/YYYY'), end_date: moment(end).format('MM/DD/YYYY'), assigned_to: '', task: '', description: '', backgroundcolor: 'rgb(0, 115, 183)', event_type: 0 }
                 //addEventModal(obj);
+                var event = {
+                    'summary': 'Google I/O 2015',
+                    'location': '800 Howard St., San Francisco, CA 94103',
+                    'description': 'A chance to hear more about Google\'s developer products.',
+                    'start': {
+                        'dateTime': '2022-02-26T09:00:00-07:00',
+                        'timeZone': 'America/Los_Angeles'
+                    },
+                    'end': {
+                        'dateTime': '2022-02-26T17:00:00-07:00',
+                        'timeZone': 'America/Los_Angeles'
+                    },
+                    'recurrence': [
+                        'RRULE:FREQ=DAILY;COUNT=2'
+                    ],
+                    'attendees': [],
+                    'reminders': {
+                        'useDefault': false,
+                        'overrides': [
+                            { 'method': 'email', 'minutes': 24 * 60 },
+                            { 'method': 'popup', 'minutes': 10 }
+                        ]
+                    }
+                };
+                console.log(event);
+                var request = gapi.client.calendar.events.insert({
+                    'calendarId': 'johnson.quickfix@gmail.com',
+                    'resource': event
+                });
+
+                request.execute(function (event) {
+                    console.log('response: ', event);
+                });
+
+                //gapi.client.init({
+                //    'apiKey': 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
+                //    'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+                //}).then(function () {
+                //    return gapi.client.calendar.events.insert({
+                //        'calendarId': 'johnson.quickfix@gmail.com',
+                //        'resource': event
+                //    });
+
+                //}).then(function (response) {
+                //    console.log('response: ', response);
+                //}, function (reason) {
+                //    console.log('Error: ' + reason.result.error.message);
+                //});
             },
             eventRender: function (event, element) { $(element).tooltip({ title: event.title }); }
         });
@@ -158,11 +208,9 @@
             // Use Google's "apis-explorer" for research: https://developers.google.com/apis-explorer/#s/calendar/v3/
             // Events: list API docs: https://developers.google.com/calendar/v3/reference/events/list
             return gapi.client.calendar.events.list({
-                'calendarId': calendarId,
-                'timeZone': userTimeZone,
-                'singleEvents': true,
-                'timeMin': (new Date()).toISOString(), //gathers only events not happened yet
-                'maxResults': 20,
+                'calendarId': calendarId, 'timeZone': userTimeZone, 'singleEvents': true, 
+                //'timeMin': (new Date()).toISOString(), //gathers only events not happened yet
+                //'maxResults': 20,
                 'orderBy': 'startTime'
             });
         }).then(function (response) {

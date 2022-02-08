@@ -49,7 +49,7 @@ namespace LaylaERP.BAL
         }
 
         // public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(int userid,DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -67,7 +67,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
-                     //new SqlParameter("@salestatus", salestatus)
+                    new SqlParameter("@userid", userid)
                 };
                 DataSet ds = SQLHelper.ExecuteDataSet("erp_purchase_receiveorder_search", parameters);
                 dt = ds.Tables[0];
@@ -178,7 +178,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPoClosureOrderDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPoClosureOrderDetailsList(int userid, DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
                 try
@@ -189,6 +189,7 @@ namespace LaylaERP.BAL
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "ARecev"),
                     new SqlParameter("@searchcriteria", searchid),
+                     new SqlParameter("@userid", userid)
 
                 };
                     dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);
@@ -269,7 +270,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPartiallyDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPartiallyDetailsList(int userid,DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
         {           
             DataTable dt = new DataTable();
             try
@@ -280,7 +281,8 @@ namespace LaylaERP.BAL
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "Recev"),
                     new SqlParameter("@searchcriteria", searchid),
-            
+                    new SqlParameter("@userid", userid)
+
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);                
             

@@ -170,6 +170,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
+            DataTable dt = new DataTable();
             string result = string.Empty;
             int TotalRecord = 0;
             try
@@ -179,7 +180,12 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
-                DataTable dt = ReceptionRepository.GetPurchaseOrder(fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                string usertype = CommanUtilities.Provider.GetCurrent().UserType;
+                int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
+                if (usertype.ToUpper() == "ADMINISTRATOR")
+                     dt = ReceptionRepository.GetPurchaseOrder(0,fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                else
+                    dt = ReceptionRepository.GetPurchaseOrder(userid,fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -246,6 +252,7 @@ namespace LaylaERP.Controllers
         [HttpGet]
         public JsonResult GetPoClosureOrderDetailsList(JqDataTableModel model)
         {
+            DataTable dt = new DataTable();
             string result = string.Empty;
             try
             {
@@ -254,7 +261,13 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
-                DataTable dt = ReceptionRepository.GetPoClosureOrderDetailsList(fromdate, todate,model.sSearch, model.strValue2, model.strValue3);
+                string usertype = CommanUtilities.Provider.GetCurrent().UserType;
+                int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
+                if (usertype.ToUpper() == "ADMINISTRATOR")
+                    dt = ReceptionRepository.GetPoClosureOrderDetailsList(0,fromdate, todate,model.sSearch, model.strValue2, model.strValue3);
+                else
+                    dt = ReceptionRepository.GetPoClosureOrderDetailsList(userid,fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -277,6 +290,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
         {
+            DataTable dt = new DataTable();
             string result = string.Empty;
             try
             {
@@ -285,7 +299,13 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
-                DataTable dt = ReceptionRepository.GetPartiallyDetailsList(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+
+                string usertype = CommanUtilities.Provider.GetCurrent().UserType;
+                int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
+                if (usertype.ToUpper() == "ADMINISTRATOR")
+                    dt = ReceptionRepository.GetPartiallyDetailsList(0,fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+                else
+                    dt = ReceptionRepository.GetPartiallyDetailsList(userid,fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Google Calendar Events";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 
 
@@ -16,7 +17,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 
-<div class="page-title">
+<div class="page-title" data-email="@user.EmailID.ToString().ToLower()">
     <h2>Google Calendar Events</h2>
 </div>
 <div class="row">
@@ -43,7 +44,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         //Global variables to access the calendar
-        var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = 'johnson.quickfix@gmail.com', eventsList = [];
+        var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = $(".page-title").data('email'), eventsList = [];
         $("#loader").hide(); //printCalendar();
         $('#eventcalendar').fullCalendar({
             themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',
@@ -66,11 +67,12 @@
             //        error: function (xhr, status, err) { console.log(xhr, status, err); }
             //    });
             //},
-            googleCalendarApiKey: 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc',
+            googleCalendarApiKey: clientId,
             eventSources: [
                 //{ googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com' },
                 { googleCalendarId: 'addressbook#contacts@group.v.calendar.google.com' },
-                { googleCalendarId: 'johnson.quickfix@gmail.com', className: 'nice-event' }
+                //{ googleCalendarId: 'johnson.quickfix@gmail.com', className: 'nice-event' }
+                { googleCalendarId: calendarId, className: 'nice-event' }
             ],
             editable: true,
             eventClick: function (calEvent, jsEvent, view) {
@@ -126,7 +128,7 @@
                 };
                 console.log(event);
                 var request = gapi.client.calendar.events.insert({
-                    'calendarId': 'johnson.quickfix@gmail.com',
+                    'calendarId': calendarId,
                     'resource': event
                 });
 

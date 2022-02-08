@@ -594,6 +594,7 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\fullcalendar\fullcalendar.css" />
     <Content Include="Content\fullcalendar\fullcalendar.js" />
+    <Content Include="Content\fullcalendar\gcal.min.js" />
     <Content Include="Content\highcharts\accessibility.js" />
     <Content Include="Content\highcharts\data.js" />
     <Content Include="Content\highcharts\drilldown.js" />
@@ -1114,6 +1115,7 @@
     <Content Include="Views\Accounting\ProfitLossAccountList.cshtml" />
     <Content Include="Views\Accounting\AccountFiscalYearList.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSPowerBi.cshtml" />
+    <Content Include="Views\Events\GoogleCalendar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

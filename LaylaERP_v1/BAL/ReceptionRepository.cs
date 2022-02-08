@@ -49,7 +49,7 @@ namespace LaylaERP.BAL
         }
 
         // public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(int userid,DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -67,7 +67,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
-                     //new SqlParameter("@salestatus", salestatus)
+                    new SqlParameter("@userid", userid)
                 };
                 DataSet ds = SQLHelper.ExecuteDataSet("erp_purchase_receiveorder_search", parameters);
                 dt = ds.Tables[0];
@@ -178,7 +178,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPoClosureOrderDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPoClosureOrderDetailsList(int userid, DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
                 try
@@ -189,6 +189,7 @@ namespace LaylaERP.BAL
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "ARecev"),
                     new SqlParameter("@searchcriteria", searchid),
+                     new SqlParameter("@userid", userid)
 
                 };
                     dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);
@@ -269,7 +270,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPartiallyDetailsList(DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPartiallyDetailsList(int userid,DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
         {           
             DataTable dt = new DataTable();
             try
@@ -280,7 +281,8 @@ namespace LaylaERP.BAL
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "Recev"),
                     new SqlParameter("@searchcriteria", searchid),
-            
+                    new SqlParameter("@userid", userid)
+
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_purchase_receiveorder_search", parameters);                
             
@@ -745,6 +747,27 @@ namespace LaylaERP.BAL
                 SqlParameter[] para = { new SqlParameter("@flag", "GETPO"), new SqlParameter("@id", id), };
                 ds = SQLHelper.ExecuteDataSet("erp_purchasereceive_order_search", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataSet getinvoicehistory(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@po_id", id), };
+                string strSql = "select top 1 fk_purchase from commerce_purchase_receive_order"
+                                + " where fk_purchase = @po_id;"
+                                +   "Select max(p.fk_purchase) id,max(p.rowid) RicD,p.ref refordervendor,sum(recqty) Quenty, string_agg(concat(' ' ,description, ' (*',recqty,')'), ',') des,max(CONVERT(VARCHAR(12), p.date_creation, 107)) dtcration,max(CONVERT(VARCHAR(12), p.date_creation, 107)) date_creation, Cast(CONVERT(DECIMAL(10,2),max(p.total_ttc)) as nvarchar) total_ttc from commerce_purchase_receive_order p "
+                                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid  "
+                                      + " where p.fk_purchase =  @po_id and product_type = 0 and p.fk_status in (5,6) and 1 = 1 group by  p.ref  order by RicD desc"; 
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
             catch (Exception ex)
             {

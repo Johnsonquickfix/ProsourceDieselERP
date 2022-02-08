@@ -144,7 +144,9 @@ function printinvoice(id, result, is_mail, is_inv) {
         if (tr.product_type == 0) {
             myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
             myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">' + tr.product_sku + '</td>';
-            myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">' + tr.description + '</td>';
+            if (so_no > 0) myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">' + tr.description + '</td>';
+            else myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">' + tr.description + '<br>Tag/Lot/Serial No. :- ' + tr.product_serialno + '</td>';
+
             myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">' + number_format(tr.qty, 0, '.', ',') + '</td>';
             myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">$' + number_format(tr.subprice, 2, '.', ',') + '</td>';
             myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + number_format(tr.total_ht, 2, '.', ',') + '</td>';
@@ -165,15 +167,18 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '        <tr>';
     myHtml += '            <td style="vertical-align: top; width:50%;padding:0px;">';
     myHtml += '                <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
-    myHtml += '                    <tr>';
-    myHtml += '                        <td style="color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;">Comments or Special Instructions</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr>';
-    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">1.Payment term:' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr>';
-    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">2.' + data['po'][0].location_incoterms + '</td>';
-    myHtml += '                    </tr>';
+    if (so_no > 0) { myHtml += ''; }
+    else {
+        myHtml += '                    <tr>';
+        myHtml += '                        <td style="color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;">Comments or Special Instructions</td>';
+        myHtml += '                    </tr>';
+        myHtml += '                    <tr>';
+        myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">1.Payment term:' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td>';
+        myHtml += '                    </tr>';
+        myHtml += '                    <tr>';
+        myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">2.' + data['po'][0].location_incoterms + '</td>';
+        myHtml += '                    </tr>';
+    }
     myHtml += '                    <tr>';
     myHtml += '                        <td style="border-top: 1px solid #ddd;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                            <h4 class="headline" style="text-align:left;font-family:sans-serif;color: #555;font-size: 16px;line-height: 18px;margin-bottom: 5px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 600;">Notes</h4>';
@@ -183,27 +188,30 @@ function printinvoice(id, result, is_mail, is_inv) {
 
     myHtml += '                    <tr>';
     myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
-    myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
-    myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
-    myHtml += '                                <tr>';
-    myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
-    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
-    myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
-    myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
-    myHtml += '                                </tr>';
-    myHtml += '                            </thead>';
-    myHtml += '                            <tbody style="border:1px solid #ddd;">';
-    $(data['popd']).each(function (index, trpd) {
-        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
-        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
-        myHtml += '</tr>';
-        paid_amt += trpd.amount
-    });
-    myHtml += '                            </tbody>';
-    myHtml += '                        </table>';
+    if (so_no > 0) { myHtml += ''; }
+    else {
+        myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
+        myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+        myHtml += '                                <tr>';
+        myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
+        myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+        myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
+        myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
+        myHtml += '                                </tr>';
+        myHtml += '                            </thead>';
+        myHtml += '                            <tbody style="border:1px solid #ddd;">';
+        $(data['popd']).each(function (index, trpd) {
+            myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+            myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
+            myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+            myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
+            myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
+            myHtml += '</tr>';
+            paid_amt += trpd.amount
+        });
+        myHtml += '                            </tbody>';
+        myHtml += '                        </table>';
+    }
     myHtml += '                        </td>';
     myHtml += '                    </tr>';
 

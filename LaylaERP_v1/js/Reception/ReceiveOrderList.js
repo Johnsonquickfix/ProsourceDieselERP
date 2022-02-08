@@ -3,7 +3,7 @@
     var urlpath = window.location.pathname;
     console.log('dd',urlpath);
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
-    console.log(pathid);
+    //console.log(pathid);
     if (pathid == "1000011") {
         $('.nav-tabs a[href="#tab_22"]').tab('show');
         //console.log(pathid);

@@ -1114,6 +1114,7 @@
     <Content Include="Views\Accounting\ProfitLossAccountList.cshtml" />
     <Content Include="Views\Accounting\AccountFiscalYearList.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSPowerBi.cshtml" />
+    <Content Include="Views\Events\GoogleCalendar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

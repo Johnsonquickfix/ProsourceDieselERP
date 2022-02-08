@@ -569,6 +569,7 @@
                 {
                     result = "Order placed successfully.";
                     status = true;
+                    model.payment_method_title = model.payment_method_title.Replace("{BR}", "<br>");
                     SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
                 }
             }

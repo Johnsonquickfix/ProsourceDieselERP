@@ -5,17 +5,20 @@ using System;
 using System.Data;
 using System.Text;
 using LaylaERP.UTILITIES;
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace LaylaERP.BAL
 {
     public class ThirdPartyRepository
     {
-        public int AddNewVendorBasicInfo(ThirdPartyModel model)
+        public int AddNewVendorBasicInfo(ThirdPartyModel model, int UserId)
         {
             string strsql = "";
             try
             {
-                 strsql = "vendorbasicinfo";
+                strsql = "vendorbasicinfo";
+                model.pwd = EncryptedPwd(model.pwd);
                 //strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
                 //    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
@@ -44,15 +47,16 @@ namespace LaylaERP.BAL
                     new SqlParameter("@label", model.Name ?? (object)DBNull.Value),
                     new SqlParameter("@nature", model.NatureofJournal),
                     new SqlParameter("@active", model.VendorStatus),
-                     new SqlParameter("@qflag", "AVBI"),
+                    new SqlParameter("@qflag", "AVBI"),
+                    new SqlParameter("@fk_user", UserId),
+                    new SqlParameter("@pwd", model.pwd),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
             {
-                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
-
+                //UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }
@@ -827,9 +831,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-
-                string strSql = "Select v.rowid as ID, t.vendor_type, v.name as VendorName, v.name_alias as AliasName,v.entity,v.status,v.code_vendor as VendorCode, v.zip,v.address,v.address1,v.town,v.fk_state as State,v.fk_country as Country, v.phone,v.fax,v.url,v.email,v.fk_workforce as Workforce,v.fk_typparty as ThirdPartyType,v.fk_business_entity as BusinessEntityType, v.capital, v.fournisseur as Vendor," +
-                    "v.location_incoterms as Incoterms, v.salestaxused as Salestaxused,v.SalesRepresentative,v.PaymentTermsID,v.BalanceID,v.PaymentDate,v.Currency ,v.EnableVendorUOM ,v.UnitsofMeasurment,v.MinimumOrderQuanity,v.DefaultTax,v.TaxIncludedinPrice,v.DefaultDiscount,v.CreditLimit,v.VendorStatus FROM wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid where 1 = 1 ";
+                string strSql = string.Empty;
+                long userid = CommanUtilities.Provider.GetCurrent().UserID;
+                    strSql = "Select v.rowid as ID, t.vendor_type, v.name as VendorName, v.name_alias as AliasName,v.entity,v.status,v.code_vendor as VendorCode, v.zip,v.address,v.address1,v.town,v.fk_state as State,v.fk_country as Country, v.phone,v.fax,v.url,v.email,v.fk_workforce as Workforce,v.fk_typparty as ThirdPartyType,v.fk_business_entity as BusinessEntityType, v.capital, v.fournisseur as Vendor," +
+                        "v.location_incoterms as Incoterms, v.salestaxused as Salestaxused,v.SalesRepresentative,v.PaymentTermsID,v.BalanceID,v.PaymentDate,v.Currency ,v.EnableVendorUOM ,v.UnitsofMeasurment,v.MinimumOrderQuanity,v.DefaultTax,v.TaxIncludedinPrice,v.DefaultDiscount,v.CreditLimit,v.VendorStatus,wu.user_login username FROM wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid left join wp_users wu on wu.ID = v.fk_user where 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (v.name like '%" + searchid + "%' OR t.vendor_type='%" + searchid + "%' OR v.address='%" + searchid + "%' OR v.phone like '%" + searchid + "%')";
@@ -838,9 +843,13 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
+                if (CommanUtilities.Provider.GetCurrent().UserType.ToUpper() == "VENDOR")
+                {
+                    strWhr += " and fk_user = " + userid + "";
+                }
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
-                strSql += "; SELECT (Count(v.rowid)/" + pagesize.ToString() + ") TotalPage,Count(v.rowid) TotalRecord from wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid  WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT (Count(v.rowid)/" + pagesize.ToString() + ") TotalPage,Count(v.rowid) TotalRecord from wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid left join wp_users wu on wu.ID = v.fk_user WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1204,6 +1213,140 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-      
+
+        public static DataTable AddNewVendorUser(ThirdPartyModel model, byte[] image)
+        {
+            try
+            {
+                model.pwd = EncryptedPwd(model.pwd);
+                string username = model.Name;
+                //string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT SCOPE_IDENTITY();";
+                string strsql = "erp_vendoruser";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@user_login", model.Name),
+                    new SqlParameter("@user_pass", model.pwd),
+                    new SqlParameter("@user_nicename", username),
+                    new SqlParameter("@user_email", model.EMail),
+                    new SqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new SqlParameter("@display_name", username),
+                    new SqlParameter("@user_image", image),
+                    new SqlParameter("@qflag", "I"),
+                };
+                DataTable result = SQLHelper.ExecuteDataTable(strsql, para);
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void AddUserVendorMetaData(ThirdPartyModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); SELECT SCOPE_IDENTITY() as ID;";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@user_id", id),
+                    new SqlParameter("@meta_key", varFieldsName),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        //Password----------------
+        private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        public static string EncryptedPwd(string varPassword)
+        {
+            string expected = "$P$BPGbwPLs6N6VlZ7OqRUvIY1Uvo/Bh9/";
+            return MD5Encode(varPassword, expected);
+        }
+        static string MD5Encode(string password, string hash)
+        {
+            string output = "*0";
+            if (hash == null) return output;
+            if (hash.StartsWith(output)) output = "*1";
+
+            string id = hash.Substring(0, 3);
+            // We use "$P$", phpBB3 uses "$H$" for the same thing
+            if (id != "$P$" && id != "$H$") return output;
+
+            // get who many times will generate the hash
+            int count_log2 = itoa64.IndexOf(hash[3]);
+            if (count_log2 < 7 || count_log2 > 30)
+                return output;
+
+            int count = 1 << count_log2;
+
+            string salt = hash.Substring(4, 8);
+            if (salt.Length != 8)
+                return output;
+
+            byte[] hashBytes = { };
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hashBytes = md5Hash.ComputeHash(Encoding.ASCII.GetBytes(salt + password));
+                byte[] passBytes = Encoding.ASCII.GetBytes(password);
+                do
+                {
+                    hashBytes = md5Hash.ComputeHash(hashBytes.Concat(passBytes).ToArray());
+                } while (--count > 0);
+            }
+
+            output = hash.Substring(0, 12);
+            string newHash = Encode64(hashBytes, 16);
+
+            return output + newHash;
+        }
+        static string Encode64(byte[] input, int count)
+        {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            do
+            {
+                int value = (int)input[i++];
+                sb.Append(itoa64[value & 0x3f]); // to uppercase
+                if (i < count)
+                    value = value | ((int)input[i] << 8);
+                sb.Append(itoa64[(value >> 6) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                if (i < count)
+                    value = value | ((int)input[i] << 16);
+                sb.Append(itoa64[(value >> 12) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                sb.Append(itoa64[(value >> 18) & 0x3f]);
+            } while (i < count);
+
+            return sb.ToString();
+        }
+        //Password End--------------
+
+        public static void UpdateUserVendorMetaData(ThirdPartyModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "UPDATE wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@user_id", id),
+                    new SqlParameter("@meta_key", varFieldsName),
+                    new SqlParameter("@meta_value", varFieldsValue ?? (object)DBNull.Value),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

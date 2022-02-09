@@ -394,7 +394,7 @@
             int OTPValue = _rdm.Next(1000, 9999);
             CommanUtilities.Provider.AddOTP(OTPValue);
             ViewBag.otp = OTPValue;
-            SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTPValue + "</b>");
+            SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Login OTP verification.", "Login OTP is <b>" + OTPValue + "</b>");
             //Session["OTPTime"] = CommonDate.CurrentDate();
             return View();
         }        
@@ -414,7 +414,7 @@
                     }
                     else
                     {
-                        JSONresult = "Verification Faild...";
+                        JSONresult = "OTP verification failed...";
                     }
                 }
                 else

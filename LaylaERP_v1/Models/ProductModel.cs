@@ -171,6 +171,7 @@ namespace LaylaERP.Models
         public string taglotserialno { get; set; }
         public string Status { get; set; }
         public string is_setprise { get; set; }
+        public string date_to { get; set; }
 
     }
     public class ProductCategoryModel : PaggingModel

@@ -418,12 +418,12 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy') date_inc,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status,is_setprise"
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy') date_inc,FORMAT(date_to,'MM/dd/yyyy') date_to,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status,is_setprise"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE" + strWhr;
 
-                    strSQl += ";";
+                    strSQl += " order by rowid desc;";
                     SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
                     while (sdr.Read())
                     {
@@ -448,6 +448,7 @@ namespace LaylaERP.BAL
                         productsModel.discount = sdr["discount"].ToString();
                         productsModel.Status = sdr["Status"].ToString();
                         productsModel.is_setprise = sdr["is_setprise"].ToString();
+                        productsModel.date_to = sdr["date_to"].ToString();
                         _list.Add(productsModel);
                     }
                 }
@@ -1236,23 +1237,45 @@ namespace LaylaERP.BAL
 
         public static int AddBuyingtProduct(ProductModel model, DateTime dateinc)
         {
-            int result = 0;
+           // int result = 0;
             try
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price,Misc_Costs) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10},{11}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.Misc_Costs));
+                ////  strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price,Misc_Costs) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10},{11}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.Misc_Costs));
                 //strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
                 //strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
                 // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '"+ model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = "+ model.fk_vendor + ") "));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
-                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                //  result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+ 
+                string strsql = "erp_buyingtProduct_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@id", 0),
+                    new SqlParameter("@fk_product", model.fk_product),
+                    new SqlParameter("@fk_vendor", model.fk_vendor),
+                    new SqlParameter("@purchase_price", model.purchase_price),
+                    new SqlParameter("@cost_price",model.cost_price),
+                    new SqlParameter("@minpurchasequantity",model.minpurchasequantity),
+                    new SqlParameter("@salestax",model.salestax),
+                    new SqlParameter("@taxrate",model.taxrate),
+                    new SqlParameter("@discount",model.discount),
+                    new SqlParameter("@remark",model.remark),
+                    new SqlParameter("@taglotserialno",model.taglotserialno),
+                    new SqlParameter("@shipping_price",model.shipping_price),
+                    new SqlParameter("@Misc_Costs",model.Misc_Costs),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+
             }
             catch (Exception ex)
             { throw ex; }
-            return result;
+             
         }
 
         public static int AddBuyingtProductwarehouse(ProductModel model, DateTime dateinc)

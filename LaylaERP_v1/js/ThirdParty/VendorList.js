@@ -20,7 +20,7 @@ function VendorGrid() {
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            obj.Search = aoData[45].value;
+            obj.Search = aoData[50].value;
             var col = 'ID';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "vendor_type" : oSettings.aaSorting[0][0] == 3 ? "name_alias" : oSettings.aaSorting[0][0] == 4 ? "zip" : oSettings.aaSorting[0][0] == 5 ? "address" : oSettings.aaSorting[0][0] == 6 ? "phone" : "id";
@@ -65,8 +65,7 @@ function VendorGrid() {
                     return tPhone
                 }
             },
-
-
+            { data: 'userid', title: 'User Id' },
             {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {

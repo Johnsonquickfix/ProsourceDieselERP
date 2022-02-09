@@ -35,30 +35,40 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddVendorBasicInfo(ThirdPartyModel model)
         {
-            if (ModelState.IsValid)
-            {
+            byte[] image = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/EmployeeProfileImage/default.png"));
+            //if (ModelState.IsValid)
+            //{
                 if (model.rowid > 0)
                 {
                     UserActivityLog.WriteDbLog(LogType.Submit, "vendor id (" + model.rowid + ") updated in vendors basic info", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
                     new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    if (model.fk_user > 0)
+                    {
+                        UpdateUserVendorMetaData(model, model.fk_user);
+                    }
                     //new ThirdPartyRepository().EditJournal(model);
                     return Json(new { status = true, message = "Vendor basic info updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
-                    int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
-                    if (ID > 0)
+                    DataTable dt = ThirdPartyRepository.AddNewVendorUser(model, image);
+                    if (Convert.ToInt32(dt.Rows[0]["userid"]) > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "New vendor " + model.vendor_type + ", " + model.Name + " created in manage vendors.", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
-                        //new ThirdPartyRepository().AddJournal(model,ID);
-                        return Json(new { status = true, message = "Vendor basic info saved successfully!!", url = "", id = ID }, 0);
+                        AddUserVendorMetaData(model, Convert.ToInt32(dt.Rows[0]["userid"]));
+                        int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model,Convert.ToInt32(dt.Rows[0]["userid"]));
+                        if (ID > 0)
+                        {
+                            UserActivityLog.WriteDbLog(LogType.Submit, "New vendor " + model.vendor_type + ", " + model.Name + " created in manage vendors.", "/ThirdParty/NewVendor" + ", " + Net.BrowserInfo);
+                            //new ThirdPartyRepository().AddJournal(model,ID);
+                            return Json(new { status = true, message = "Vendor basic info saved successfully!!", url = "", id = ID }, 0);
+                        }
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        return Json(new { status = false, message = dt.Rows[0]["ErrorMessage"], url = "", id = 0 }, 0);
                     }
                 }
-            }
+            //}
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
         public JsonResult AddVendorAdditionalInfo(ThirdPartyModel model)
@@ -639,6 +649,26 @@ namespace LaylaERP.Controllers
                 return Json(new { message = ex.Message }, 0);
             }
             return Json(new { message = strmsg }, 0);
+        }
+        private void AddUserVendorMetaData(ThirdPartyModel model, long id)
+        {
+            string[] varQueryArr1 = new string[10];
+            string[] varFieldsName = new string[10] { "first_name", "last_name", "wp_capabilities", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[10] { model.Name, model.Name, "vendor", model.Address, model.Country, model.Phone, model.Address1, model.City, model.State, model.ZipCode };
+            for (int n = 0; n < 10; n++)
+            {
+                ThirdPartyRepository.AddUserVendorMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+        private void UpdateUserVendorMetaData(ThirdPartyModel model, long id)
+        {
+            string[] varQueryArr1 = new string[9];
+            string[] varFieldsName = new string[9] { "first_name", "last_name", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[9] { model.Name, model.Name, model.Address, model.Country, model.Phone, model.Address1, model.City, model.State, model.ZipCode };
+            for (int n = 0; n < 9; n++)
+            {
+                ThirdPartyRepository.UpdateUserVendorMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
         }
     }
 }

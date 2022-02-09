@@ -3,6 +3,7 @@
     $(".select2").select2();
     $("#txtContactPhone").mask("(999) 999-9999");
     $("#txtPhone").mask("(999) 999-9999");
+    getNatureofJournal();
     getVendorType();
     getStatus();
     getSalesTaxUsed();
@@ -22,7 +23,6 @@
     VendorWarehouseList();
     VendorRelatedProduct();
     VendorLinkedFiles();
-    getNatureofJournal();
     InvoiceGrid();
     $(document).on('click', '#btnChange', function () { orderStatus(); });
     isEdit(true);
@@ -123,6 +123,8 @@ $('#btnReset').click(function () {
     $('#USPS input:text').val('');
 })
 $('#btnNextTab1').click(function (e) {
+    var url = window.location.pathname;
+    var URL = url.substring(url.lastIndexOf('/') + 1);
     ID = $("#hfid").val();
     VendorType = $("#ddlvendortype").val();
     VendorCode = $("#txtVendorCode").val();
@@ -144,25 +146,34 @@ $('#btnNextTab1').click(function (e) {
     WorkingHours = $("#txtWorkinghours").val();
     VendorStatus = $("#chkVendorStatus").prop("checked") ? 1 : 0;
     NatureofJournal = $("#ddlNatureofJournal").val();
+    Password = $('#txtPassword').val();
+    ConfirmPassword = $('#txtConfirmPassword').val();
+    vendoruser_id = $("#vendoruserid").val();
 
     var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (VendorType == "-1") { swal('alert', 'Please select vendor type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
-    else if (VendorName == "") { swal('alert', 'Please enter vendor name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
-    else if (AliasName == "") { swal('alert', 'Please enter alias name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
-    else if (Address1 == "") { swal('alert', 'Please enter address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }) }
-    else if (City == "") { swal('alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
-    else if (Status == "") { swal('alert', 'Please enter status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
-    else if (State == "") { swal('alert', 'Please enter state', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
-    else if (ZipCode == "") { swal('alert', 'Please enter zipcode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
-    else if (Country == "-1") { swal('alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
-    else if (Phone == "") { swal('alert', 'Please enter phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
-    //else if (NatureofJournal == "-1") { swal('alert', 'Please select nature of journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
+    if (VendorType == "-1") { swal('Alert', 'Please select vendor type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
+    else if (VendorName == "") { swal('Alert', 'Please enter vendor name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
+    else if (AliasName == "") { swal('Alert', 'Please enter alias name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
+    else if (Address1 == "") { swal('Alert', 'Please enter address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }) }
+    else if (City == "") { swal('Alert', 'Please enter city', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
+    else if (Status == "") { swal('Alert', 'Please enter status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
+    else if (State == "") { swal('Alert', 'Please enter state', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
+    else if (ZipCode == "") { swal('Alert', 'Please enter zipcode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
+    else if (Country == "-1") { swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
+    else if (Phone == "") { swal('Alert', 'Please enter phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
+    else if (EMail == "") { swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (URL == "NewVendor")
+    {
+        if (Password == "") { swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); }) }
+        else if (ConfirmPassword == "") {swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
+        else if (Password !== ConfirmPassword) {swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
+    }
     else {
         var obj = {
             rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,
-            Name: VendorName, AliasName: AliasName, Status: Status, Address: Address1,
+            Name: VendorName, AliasName: AliasName, Status: Status, Address: Address1, Address1: Address2,
             City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
-            Workinghours: WorkingHours, VendorStatus: VendorStatus, NatureofJournal: NatureofJournal
+            Workinghours: WorkingHours, VendorStatus: VendorStatus, NatureofJournal: NatureofJournal, pwd: ConfirmPassword, fk_user: vendoruser_id
         }
         $.ajax({
             url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
@@ -900,7 +911,7 @@ function getShippingMethod() {
                     var d = JSON.parse(data);
                     if (d.length > 0) {
                         if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
-
+                        $("#vendoruserid").val(d[0].fk_user);
                         $("#txVendorName").val(d[0].VendorName);
                         $("#txtAliasName").val(d[0].AliasName);
                         $("#ddlvendortype").val(d[0].vendor_type).trigger("change");
@@ -940,19 +951,19 @@ function getShippingMethod() {
                         $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                         $("#txtNotesPublic").val(d[0].note_public);
                         $("#txtNotesPrivate").val(d[0].note_private);
-                        $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change");
+                        setTimeout(function () { $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change"); }, 1000);
 
-                        $("#txtCapital").val(d[0].capital);
+                        $("#txtCapital").val(parseFloat(d[0].capital).toFixed(2));
                         $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
                         $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
-                        $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
+                        setTimeout(function () { $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change"); }, 1000);
                         console.log(d[0].IncotermsType);
                         $("#txtIncoTerm").val(d[0].Incoterms);
                         $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
-                        $("#txtCreditLimit").val(d[0].CreditLimit);
-                        $("#txtOutStandingLimit").val(d[0].outstanding_limit);
+                        $("#txtCreditLimit").val(parseFloat(d[0].CreditLimit).toFixed(2));
+                        $("#txtOutStandingLimit").val(parseFloat(d[0].outstanding_limit).toFixed(2));
                         $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
-                        $("#txtOrderMinAmt").val(d[0].order_min_amount);
+                        $("#txtOrderMinAmt").val(parseFloat(d[0].order_min_amount).toFixed(2));
 
                         $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID).trigger("change");
                         $("#txtShippingRate").val(d[0].ShippingRate);
@@ -1690,3 +1701,70 @@ function ActivityLog(ModuleName, ModuleURL) {
 
 }
 
+$(document).on('click', "#PasswordShow", function () {
+    if ($('#txtPassword').val() == "")
+        swal('Alert', 'Password is not generated!', 'error');
+    else
+        swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
+
+})
+
+function passwordcheck() {
+    $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
+        if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
+            $('#message').html('Matching').css({ "color": "green", "opacity": "1" });
+        } else
+            $('#message').html('Not Matching').css({ "color": "red", "opacity": "1" });
+    });
+}
+
+$("#txtPassword").change(function () {
+    $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+    result = $('#result').html();
+    if (result == "Password strength is weak") {
+        $('#result').attr({ 'style': 'color:Red;' });
+
+    }
+    if (result == "Password Strength is low") {
+        $('#result').attr({ 'style': 'color:Olive;' });
+    }
+    if (result == "Password strength is medium") {
+        $('#result').attr({ 'style': 'color:Lime;' });
+    }
+    if (result == "Password strength is strong") {
+        $('#result').attr({ 'style': 'color:Green;' });
+    }
+    Password = $("#txtPassword").val();
+    strength = 1;
+    var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+    jQuery.map(arr, function (regexp) {
+        if (Password.match(regexp))
+            strength++;
+    });
+
+})
+$("#txtPassword").on("input", function () {
+    $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+    result = $('#result').html();
+    if (result == "Password strength is weak") {
+        $('#result').attr({ 'style': 'color:Red;' });
+
+    }
+    if (result == "Password Strength is low") {
+        $('#result').attr({ 'style': 'color:Olive;' });
+    }
+    if (result == "Password strength is medium") {
+        $('#result').attr({ 'style': 'color:Lime;' });
+    }
+    if (result == "Password strength is strong") {
+        $('#result').attr({ 'style': 'color:Green;' });
+    }
+    Password = $("#txtPassword").val();
+    strength = 1;
+    var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+    jQuery.map(arr, function (regexp) {
+        if (Password.match(regexp))
+            strength++;
+    });
+
+})

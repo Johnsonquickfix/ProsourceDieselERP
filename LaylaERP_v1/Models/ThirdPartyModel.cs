@@ -180,5 +180,7 @@ namespace LaylaERP.Models
         public byte[] ImageFiledata { get; set; }
         public string ImagePath { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
+        public string pwd { get; set; }
+        public long fk_user { get; set; }
     }
 }

@@ -344,7 +344,7 @@ namespace LaylaERP.Controllers
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
-            DataTable dt = ProductRepository.GetproductPurchase_Items(model);
+           // DataTable dt = ProductRepository.GetproductPurchase_Items(model);
 
             if (model.ID > 0)
             {
@@ -353,12 +353,12 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                if (dt.Rows.Count > 0)
-                {
-                    return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
-                }
-                else
-                {
+                //if (dt.Rows.Count > 0)
+                //{
+                //    return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
+                //}
+                //else
+                //{
                     UserActivityLog.WriteDbLog(LogType.Submit, "Add buying price", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
                     DataTable dtware = ProductRepository.Getwarehouse(model);
                     if (dtware.Rows.Count > 0)
@@ -370,11 +370,15 @@ namespace LaylaERP.Controllers
                         resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
                         ProductRepository.AddBuyingtProductwarehouse(model, dateinc);
                     }
-                }
+               // }
             }
             if (resultOne > 0)
             {
-                return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "Updated successfully!!", url = "Manage" }, 0);
+            }
+            else if (resultOne < 0)
+            {
+                return Json(new { status = true, message = "Today current price already added.!!", url = "" }, 0);
             }
             else
             {

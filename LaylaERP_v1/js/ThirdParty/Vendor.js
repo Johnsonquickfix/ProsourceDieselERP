@@ -3,6 +3,7 @@
     $(".select2").select2();
     $("#txtContactPhone").mask("(999) 999-9999");
     $("#txtPhone").mask("(999) 999-9999");
+    getNatureofJournal();
     getVendorType();
     getStatus();
     getSalesTaxUsed();
@@ -22,7 +23,6 @@
     VendorWarehouseList();
     VendorRelatedProduct();
     VendorLinkedFiles();
-    getNatureofJournal();
     InvoiceGrid();
     $(document).on('click', '#btnChange', function () { orderStatus(); });
     isEdit(true);
@@ -951,19 +951,19 @@ function getShippingMethod() {
                         $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                         $("#txtNotesPublic").val(d[0].note_public);
                         $("#txtNotesPrivate").val(d[0].note_private);
-                        $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change");
+                        setTimeout(function () { $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change"); }, 1000);
 
-                        $("#txtCapital").val(d[0].capital);
+                        $("#txtCapital").val(parseFloat(d[0].capital).toFixed(2));
                         $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
                         $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
-                        $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
+                        setTimeout(function () { $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change"); }, 1000);
                         console.log(d[0].IncotermsType);
                         $("#txtIncoTerm").val(d[0].Incoterms);
                         $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
-                        $("#txtCreditLimit").val(d[0].CreditLimit);
-                        $("#txtOutStandingLimit").val(d[0].outstanding_limit);
+                        $("#txtCreditLimit").val(parseFloat(d[0].CreditLimit).toFixed(2));
+                        $("#txtOutStandingLimit").val(parseFloat(d[0].outstanding_limit).toFixed(2));
                         $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
-                        $("#txtOrderMinAmt").val(d[0].order_min_amount);
+                        $("#txtOrderMinAmt").val(parseFloat(d[0].order_min_amount).toFixed(2));
 
                         $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID).trigger("change");
                         $("#txtShippingRate").val(d[0].ShippingRate);

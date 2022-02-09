@@ -777,7 +777,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise, date_to: data[i].date_to
                 });
 
             }
@@ -811,13 +811,14 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
-                layoutHtml += '<td>' + data[i].StatusActive + '</td>';              
+                layoutHtml += '<td>' + data[i].date_to + '</td>';
+                layoutHtml += '<td>' + data[i].StatusActive + '</td>';
                 layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + '); ActivityLog(\'Edit Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-pencil"></i></a></td>';
                 if (data[i].StatusActive == "InActive")
                     layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + '); ActivityLog(\'active Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
                     layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + '); ActivityLog(\'delete Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
-                    
+                
                 layoutHtml += '</tr>';
             }
         }
@@ -839,10 +840,12 @@ function bindbuying(data) {
         layoutHtml += '<th>Misc. Price</th>';
         layoutHtml += '<th>Cost Price</th>';
         layoutHtml += '<th>Discount</th>';   
-        layoutHtml += '<th>Date</th>';
+        layoutHtml += '<th>Date From</th>';
+        layoutHtml += '<th>Date To</th>';
         layoutHtml += '<th>Status</th>';
         layoutHtml += '<th>Action</th>';
         layoutHtml += '<th>Delete</th>';
+        
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="Vendor_services"></tbody>';
         layoutHtml += '</table>';

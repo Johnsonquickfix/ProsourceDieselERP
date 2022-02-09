@@ -145,23 +145,23 @@
                                             <select class="form-control select2" id="ddlNatureofJournal">
                                             </select>
                                         </div>
-                                        <div class="row" id="PasswordParent">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
+                                        <div class="form-group form-password-group" id="PasswordParent">
+                                            @*<div class="col-md-4">*@
+                                                <div class="form-group form-password-group">
                                                     <label for="Password">Password</label><span style="color:red">*</span>
                                                     @*<span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>*@
                                                     <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
                                                     <span class="" id='result'></span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
+                                            @*</div>*@
+                                            @*<div class="col-md-4">*@
+                                                <div class="form-group form-password-group">
                                                     <label for="exampleInputEmail1">Confirm Password<span style="color:red">*</span></label>
-                                                    @*<i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>*@
+                                                    <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
                                                     <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
                                                     <span class="genrate_password" id="message"></span>
                                                 </div>
-                                            </div>
+                                            @*</div>*@
                                         </div>
                                         <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
                                     </div>

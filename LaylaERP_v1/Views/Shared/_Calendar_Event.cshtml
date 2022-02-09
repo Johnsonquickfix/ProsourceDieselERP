@@ -19,6 +19,7 @@
 <script type="text/javascript" src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
 <!-- Full Calendar -->
 <script type="text/javascript" src="~/Content/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript" src="~/Content/fullcalendar/jquery.qtip-1.0.js"></script>
 @*<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.js"></script>*@
 <script type="text/javascript">
     $(document).ready(function () {
@@ -36,7 +37,32 @@
             //eventRender: function (event, element) { element.qtip({ content: event.description }); },
             editable: false,
             eventRender: function (event, element) {
-                $(element).tooltip({ title: event.title + ' : ' + event.description });
+                //$(element).tooltip({ title: event.title + ' : ' + event.description });
+
+                element.qtip({
+                    content: { text: false, title: { text: event.title }, text: event.description },
+                    position: {
+                        adjust: { screen: true },
+                        corner: { target: 'bottomMiddle', tooltip: 'topLeft' }
+                    },
+                    //show: {
+                    //    solo: true, effect: { type: 'slide' }, effect: function () {
+                    //        $(this).fadeTo(200, 0.8);
+                    //    }
+                    //},
+                    hide: { when: 'mouseout', fixed: true },
+                    style: {
+                        //tip: true, // Give it a speech bubble tip
+                        border: {
+                            width: 2,
+                            //radius: 5,
+                            color: '#474968'
+                        },
+                        title: {
+                            color: '#fff', background: 'darkorange '
+                        },
+                    }
+                });
             }
         });
     });

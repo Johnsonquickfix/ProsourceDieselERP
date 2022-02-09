@@ -834,7 +834,7 @@ namespace LaylaERP.BAL
                 string strSql = string.Empty;
                 long userid = CommanUtilities.Provider.GetCurrent().UserID;
                     strSql = "Select v.rowid as ID, t.vendor_type, v.name as VendorName, v.name_alias as AliasName,v.entity,v.status,v.code_vendor as VendorCode, v.zip,v.address,v.address1,v.town,v.fk_state as State,v.fk_country as Country, v.phone,v.fax,v.url,v.email,v.fk_workforce as Workforce,v.fk_typparty as ThirdPartyType,v.fk_business_entity as BusinessEntityType, v.capital, v.fournisseur as Vendor," +
-                        "v.location_incoterms as Incoterms, v.salestaxused as Salestaxused,v.SalesRepresentative,v.PaymentTermsID,v.BalanceID,v.PaymentDate,v.Currency ,v.EnableVendorUOM ,v.UnitsofMeasurment,v.MinimumOrderQuanity,v.DefaultTax,v.TaxIncludedinPrice,v.DefaultDiscount,v.CreditLimit,v.VendorStatus,wu.user_login username FROM wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid left join wp_users wu on wu.ID = v.fk_user where 1 = 1 ";
+                        "v.location_incoterms as Incoterms, v.salestaxused as Salestaxused,v.SalesRepresentative,v.PaymentTermsID,v.BalanceID,v.PaymentDate,v.Currency ,v.EnableVendorUOM ,v.UnitsofMeasurment,v.MinimumOrderQuanity,v.DefaultTax,v.TaxIncludedinPrice,v.DefaultDiscount,v.CreditLimit,v.VendorStatus,wu.user_login username, wu.ID userid FROM wp_vendor v left join wp_vendortype t on v.vendor_type = t.rowid left join wp_users wu on wu.ID = v.fk_user where 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (v.name like '%" + searchid + "%' OR t.vendor_type='%" + searchid + "%' OR v.address='%" + searchid + "%' OR v.phone like '%" + searchid + "%')";
@@ -1053,7 +1053,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
                 string strSql = "Select p.rowid,p.fk_vendor,post.post_title ProductName,v.name VendorName,Concat('$',cast(p.purchase_price as decimal(18,2))) purchase_price," +
                     "Concat('$',cast(((p.purchase_price + p.shipping_price + p.taxrate) - p.discount) as decimal(18,2))) cost_price,Concat('$',cast(p.shipping_price as decimal(18,2))) shipping_price," +
-                    "p.discount,p.taxrate,p.date_inc,p.date_modified,p.effective_date,p.minpurchasequantity,p.salestax,p.taxrate,p.discount,p.remark from Product_Purchase_Items p " +
+                    "p.date_inc,p.date_modified,p.effective_date,p.minpurchasequantity,p.salestax,concat('$',cast(p.discount as decimal(18,2))) discount, concat('$',cast(p.taxrate as decimal(18,2))) taxrate,p.remark from Product_Purchase_Items p " +
                     "left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id where p.fk_vendor='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {

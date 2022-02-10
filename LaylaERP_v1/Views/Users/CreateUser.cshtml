@@ -54,23 +54,23 @@
                                     <input type="hidden" id="hfid" value="@ViewBag.id" />
                                     <input type="hidden" id="hfzipstatus" />
                                     <input type="hidden" id="hfvpassordshow" />
-                                    <label for="exampleInputEmail1">User Login<span style="color:red;"> *</span></label>
+                                    <label for="txtUserNickName">User Login<span style="color:red;"> *</span></label>
                                     <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">E-mail<span style="color:red;"> *</span></label>
+                                    <label for="txtUserEmail">E-mail<span style="color:red;"> *</span></label>
                                     <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">First Name<span style="color:red;"> *</span></label>
+                                    <label for="txtFirstName">First Name<span style="color:red;"> *</span></label>
                                     <input type="text" class="form-control" id="txtFirstName" placeholder="First Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Last Name<span style="color:red;"> *</span></label>
+                                    <label for="txtLastName">Last Name<span style="color:red;"> *</span></label>
                                     <input type="text" class="form-control" id="txtLastName" placeholder="Last Name" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">User Status</label>
+                                    <label for="userstatus">User Status</label>
                                     <select class="form-control" id="userstatus">
                                         <option value="0">Active</option>
                                         <option value="1">InActive</option>
@@ -408,7 +408,7 @@
 
                     }
                     else {
-                        $("#txtUserNickName").val("");
+                        $("#txtUserNickName").val('');
                         swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
                     }
                 },
@@ -463,6 +463,9 @@
         passwordcheck();
 
         isEdit(true);
+
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
     });
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -736,7 +739,7 @@
     function reset() {
         $('#show_picture').attr('src', '~/Images/userprofile2.png');
         $("#txtUserEmail").val("");
-        $("#txtUserNickName").val("");
+        $("#txtUserNickName").val('');
         $("#txtFirstName").val("");
         $("#txtLastName").val("");
         $("#txtAddress").val("");

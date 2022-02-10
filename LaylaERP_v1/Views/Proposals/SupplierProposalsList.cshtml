@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Supplier Proposals (DTC)";
+    ViewBag.Title = "Vendor Sales PO";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-title">
-                <h2 class="page-heading">Supplier Proposals (DTC)</h2>
+                <h2 class="page-heading">Vendor Sales PO</h2>
                 <div style="margin-left:auto;min-width:280px;">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -66,6 +66,6 @@
 
 
 </section>
-@*<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@
+<script src="@Url.Content("~/js/Proposals/ProposalPrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Proposals/SupplierProposalsList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

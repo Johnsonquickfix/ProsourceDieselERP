@@ -44,5 +44,24 @@
             return dt;
         }
 
+        //Get Purchase order Print 
+        public static DataSet GetSupplierProposalsDetails(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", "GETPO"), new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_Proposals_search", para);
+                ds.Tables[0].TableName = "po";
+                if (ds.Tables.Count > 1) ds.Tables[1].TableName = "pod";
+                if (ds.Tables.Count > 2) ds.Tables[2].TableName = "sod";
+                if (ds.Tables.Count > 3) ds.Tables[3].TableName = "com";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

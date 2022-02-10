@@ -44,5 +44,23 @@
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+        [HttpGet]
+        [Route("proposals/proposals-print")]
+        public JsonResult GetProposalsPrint(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            //OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            OperatorModel om = new OperatorModel();
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
     }
 }

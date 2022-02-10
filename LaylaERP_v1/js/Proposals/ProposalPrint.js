@@ -13,7 +13,7 @@
     });
 });
 function printmodal(is_inv) {
-    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
+    let inv_title = is_inv ? 'Invoice' : 'Vendor Sales PO';
     let modalHtml = '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
@@ -25,18 +25,18 @@ function printmodal(is_inv) {
     $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
     //console.log('show');
 }
-function getPurchaseOrderPrint(id, is_mail) {
+function PrintProposals(id) {
     if (id > 0) {
         printmodal(false);
         $.ajaxSetup({ async: false });
-        $.get('/PurchaseOrder/GetPurchaseOrderPrint', { strValue1: id }).done(function (result) {
-            printinvoice(id, result, is_mail, false);
+        $.get('/proposals/proposals-print', { strValue1: id }).done(function (result) {
+            printinvoice(id, result,  false);
         }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
     }
 }
-function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); //console.log(data);
-    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
+function printinvoice(id, result, is_inv) {
+    let data = JSON.parse(result.data); console.log(data);
+    let inv_title = is_inv ? 'Invoice' : 'Vendor Sales PO';
     let so_no = parseInt(data['po'][0].fk_projet) || 0;
     let va_cp = so_no > 0 ? 33.3 : 66.3;
     let oth_email = data['po'][0].user_email, po_authmail = data['po'][0].po_authmail;
@@ -49,8 +49,8 @@ function printinvoice(id, result, is_mail, is_inv) {
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
     //let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     //_com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
-    let _com_add = data['Table4'][0].com_name + ', <br>' + data['Table4'][0].add + ', <br>' + data['Table4'][0].city + ', ' + data['Table4'][0].state + ' ' + data['Table4'][0].zip + ', <br>' + (data['Table4'][0].country == "CA" ? "Canada" : data['Table4'][0].country == "US" ? "United States" : data['Table4'][0].country) + '.<br>';
-    _com_add += 'Phone: ' + data['Table4'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + data['Table4'][0].email + ' <br> ' + data['Table4'][0].website;
+    let _com_add = data['com'][0].com_name + ', <br>' + data['com'][0].add + ', <br>' + data['com'][0].city + ', ' + data['com'][0].state + ' ' + data['com'][0].zip + ', <br>' + (data['com'][0].country == "CA" ? "Canada" : data['com'][0].country == "US" ? "United States" : data['com'][0].country) + '.<br>';
+    _com_add += 'Phone: ' + data['com'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + data['com'][0].email + ' <br> ' + data['com'][0].website;
 
     let myHtml = '<table id="invoice" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
@@ -119,7 +119,7 @@ function printinvoice(id, result, is_mail, is_inv) {
         myHtml += '        <td style="vertical-align: text-top;padding:0;width: 33.1" align="left">';
         myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Ship To:</h3>';
         myHtml += '            <p class="recipientInfo" style="width: 100%;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
-        myHtml += '               ' + data['Table3'][0].s_first_name + ' ' + data['Table3'][0].s_last_name + '<br>' + data['Table3'][0].s_address_1 + '<br>' + (data['Table3'][0].s_address_2.length > 0 ? data['Table3'][0].s_address_2 + '<br>' : '') + data['Table3'][0].s_city + ', ' + data['Table3'][0].s_state + ' ' + data['Table3'][0].s_postcode + ', ' + (data['Table3'][0].s_country == "CA" ? "Canada" : data['Table3'][0].s_country == "US" ? "United States" : data['Table3'][0].s_country) + '<br>Phone: ' + data['Table3'][0].b_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>' + data['Table3'][0].b_email;
+        myHtml += '               ' + data['sod'][0].s_first_name + ' ' + data['sod'][0].s_last_name + '<br>' + data['sod'][0].s_address_1 + '<br>' + (data['sod'][0].s_address_2.length > 0 ? data['sod'][0].s_address_2 + '<br>' : '') + data['sod'][0].s_city + ', ' + data['sod'][0].s_state + ' ' + data['sod'][0].s_postcode + ', ' + (data['sod'][0].s_country == "CA" ? "Canada" : data['sod'][0].s_country == "US" ? "United States" : data['sod'][0].s_country) + '<br>Phone: ' + data['sod'][0].b_phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>' + data['sod'][0].b_email;
         myHtml += '            </p>';
         myHtml += '        </td>';
     }
@@ -268,26 +268,26 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</table >';
 
     $('#PrintModal .modal-body').empty().append(myHtml);
-    if (data['po'][0].fk_status == 3 && is_mail) {
-        let opt_app = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
-        if (opt_app.strValue1.length > 5 && is_mail) {
-            $.ajax({
-                type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_app),
-                success: function (result) { console.log(result); },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                complete: function () { }, async: false
-            });
-        }
-    }
-    else if (data['po'][0].fk_status == 8 && is_mail) {
-        let opt_rej = { strValue1: data['po'][0].po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
-        $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_rej),
-            success: function (result) { console.log(result); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { }, async: false
-        });
-    }
+    //if (data['po'][0].fk_status == 3 && is_mail) {
+    //    let opt_app = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml, strValue4: oth_email, strValue5: _com_add }
+    //    if (opt_app.strValue1.length > 5 && is_mail) {
+    //        $.ajax({
+    //            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_app),
+    //            success: function (result) { console.log(result); },
+    //            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+    //            complete: function () { }, async: false
+    //        });
+    //    }
+    //}
+    //else if (data['po'][0].fk_status == 8 && is_mail) {
+    //    let opt_rej = { strValue1: data['po'][0].po_authmail, strValue2: data['po'][0].ref, strValue3: '', strValue4: data['po'][0].user_email, strValue5: _com_add }
+    //    $.ajax({
+    //        type: "POST", url: '/PurchaseOrder/SendMailPOReject', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_rej),
+    //        success: function (result) { console.log(result); },
+    //        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+    //        complete: function () { }, async: false
+    //    });
+    //}
 }
 
 function getInvoicePrint(id) {
@@ -365,149 +365,4 @@ function number_format(number, decimals, decPoint, thousandsSep) {
         s[1] += new Array(prec - s[1].length + 1).join('0')
     }
     return s.join(dec)
-}
-
-function printinvoice_old(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); //console.log(data);
-    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
-    var modalHtml = '';
-    modalHtml += '<div class="modal-dialog modal-lg">';
-    modalHtml += '<div class="modal-content">';
-    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
-    modalHtml += '<div class="modal-body no-padding"></div>';
-    modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-success pull-left btnprintinvoice"><i class="fa fa-print"></i> Print</button ><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
-    //modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
-    modalHtml += '</div>';
-    modalHtml += '</div>';
-    $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
-    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_net = 0.00;
-
-    let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    var myHtml = '';
-    myHtml += '<div class="invoice">';
-    myHtml += '<style>div: after,div: before{display:block;clear:both;content:" "}body{color:#4f4f4f}.payerGuestCentered{margin:auto;width:995px}.invoiceDetails.invoiceInfo{width:auto;position:relative}.invoiceDetails.folded - corner{display:none;width:0;height:0;position:absolute;top:-2px;right:-2px;background:#e6e6e6}[class^=col-xs]{position:relative;float:left}.col - xs - 12{width:100 %}.col - xs - 5{width:41.66666667 %}.col - xs - 7{width:58.33333333 %}.col - xs - 6{width:50 %}.invoiceDetails.pageCurl{direction:rtl;color:#9da3a6}.invoiceDetails.invsummary.paySummary{border:1px solid #ddd;padding:15px}.invoice h1,.invoice h2,.invoice h3,.invoice h4,.invoice h5,.invoice h6{color:#2c2e2f}.invoiceDetails #itemDetails{margin:0}.invoiceDetails.itemdetailsheader{margin:0;border:1px solid #ddd}.invoiceDetails.itemdetailsheader.itemquantity{width:10 %}.invoiceDetails.itemdetailsheader.itemprice{width:15 %}.invoiceDetails.itemdetailsheader.itemamount{width:15 %}.invoiceDetails.itemdetailsbody{margin:0}.invoiceDetails.itemdetailsbody.itemquantity{width:10 %}.invoiceDetails.itemdetailsbody.itemprice{width:15 %}.invoiceDetails.itemdetailsbody.itemamount{width:15 %}.invoiceDetails #invoiceTotals{margin:0}.invoiceDetails #invoiceTotals{margin:0}.invoiceDetails.headline{color:#555;width:100 %}.invoice p{margin:12px 0}.items{width:12 %}.table - out td{padding:0}.table - in1 tr: first - child td{background:#f9f9f9}.table - in1 td{padding:5px 15px}</style>';
-    myHtml += '<div class="section invoiceDetails">';
-    myHtml += '        <div class="row invoiceInfo" style="font-size: 14px;">';
-    myHtml += '            <div class="col-xs-12">';
-    myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
-    myHtml += '                    <div id="printPreview" style="width: 41.66666667%;">';
-    myHtml += '                        <div class="businessLogo"><img src="//laylaerp.com/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
-    myHtml += '                        <div class="businfobox">' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
-    myHtml += '                        <div class="businfobox">Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
-    myHtml += '                    </div>';
-    myHtml += '                    <div style="width:58.33333333%; float:right;">';
-    myHtml += '                        <table style="width: 100%;">';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref) + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' date:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].date_creation + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Reference:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].ref_supplier + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Planned date of delivery:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].date_livraison + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                        </table>';
-    myHtml += '                    </div>';
-    myHtml += '                </div>';
-    myHtml += '                <div style="border-bottom: 1px solid #ddd;"></div>';
-    myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom: 10px;">';
-    myHtml += '                    <div class="headline"><h3>Bill To:</h3></div>';
-    myHtml += '                    <div>' + data['po'][0].vendor_name + '<br/>' + data['po'][0].address + '<br/>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ' ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country);
-    myHtml += '                    <div>' + data['po'][0].vendor_email + '</div>';
-    myHtml += '                </div>';
-    myHtml += '            </div>';
-    myHtml += '            <div class="row" style="padding-right:15px;padding-left:15px;">';
-    myHtml += '                <table style="width: 100%; table-layout: fixed;font-size: 14px;">';
-    myHtml += '                    <thead style="border: 1px solid #ddd;background-color: #f9f9f9;font-weight: 700;">';
-    myHtml += '                        <tr>';
-    myHtml += '                            <th style="padding:5px 15px;">Item#</th>';
-    myHtml += '                            <th style="padding:5px 15px;"><div class="wrap">Description</div></th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Quantity</th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Price</th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Amount</th>';
-    myHtml += '                        </tr>';
-    myHtml += '                    </thead>';
-    myHtml += '                    <tbody>';
-    $(data['pod']).each(function (index, tr) {
-        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="padding:5px 15px;">' + tr.product_sku + '</td>';
-        myHtml += '    <td style="padding:5px 15px;"><div class="wrap">' + tr.description + '</div></td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.qty.toFixed(0) + '</td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.subprice.toFixed(2) + '</td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.total_ht.toFixed(2) + '</td>';
-        myHtml += '</tr>';
-        if (tr.fk_product > 0) total_qty += tr.qty;
-        total_gm += tr.total_ht, total_tax += tr.total_localtax1, total_shamt += tr.total_localtax2, total_discamt += tr.discount, total_net += tr.total_ttc;
-    });
-    myHtml += '                    </tbody>';
-    myHtml += '                </table>';
-    myHtml += '            </div>';
-    myHtml += '            <div class="row" style="padding-right:15px;padding-left:15px;">';
-    myHtml += '                <table style="width: 100%;">';
-    myHtml += '                    <tbody>';
-    myHtml += '                        <tr>';
-    myHtml += '                            <td style="vertical-align: top; width:50%;font-size: 14px;">';
-    myHtml += '                                <table style="width: 100%;">';
-    myHtml += '                                    <thead style="border: 1px solid #ddd;background-color:#f9f9f9;font-weight:700;"><tr><th style="padding:5px 15px;">Comments or Special Instructions</th></tr></thead>';
-    myHtml += '                                    <tr><td style="padding:5px 15px;">1. Payment terms: ' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td></tr>';
-    myHtml += '                                    <tr><td style="padding:5px 15px;">2. ' + data['po'][0].location_incoterms + '</td></tr>';
-    myHtml += '                                </table>';
-    myHtml += '                            </td>';
-    myHtml += '                            <td style="vertical-align: top; width:50%;font-size: 14px;">';
-    myHtml += '                                <table style="width: 100%;">';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Subtotal (' + total_qty.toFixed(0) + ')</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_gm.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Item discounts</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">-$' + total_discamt.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Tax</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_tax.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Shipping</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_shamt.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
-    myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Total</th>';
-    myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + total_net.toFixed(2) + '</th>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
-    myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Deposit (' + startingNumber + '%)</th>';
-    myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + (total_net * (startingNumber / 100)).toFixed(2) + '</th>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                </table>';
-    myHtml += '                            </td>';
-    myHtml += '                        </tr>';
-    myHtml += '                    </tbody>';
-    myHtml += '                </table>';
-    myHtml += '             </div>';
-    myHtml += '             <div style="margin-top: 15px;"></div>';
-    myHtml += '         </div>';
-    myHtml += '     </div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    $('#PrintModal .modal-body').append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
-    if (opt.strValue1.length > 5 && is_mail) {
-        $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) { console.log(result); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { }, async: false
-        });
-    }
 }

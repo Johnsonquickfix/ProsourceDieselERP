@@ -64,7 +64,7 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a>' + id + '</a> <a href="#" title="Click here to view order preview" data-toggle="tooltip" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a>' + id + '</a> <a href="#" title="Click here to view order preview" data-toggle="tooltip" onclick="PrintProposals(' + full.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },

@@ -543,8 +543,8 @@ function addCustomerModal(cus_name) {
     myHtml += '</div>';
     myHtml += '</div >';
 
-    $('#billModal .modal-body').append(myHtml); BindStateCounty("ddlCusBillingState", { id: 'US' });//$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999");
+    $('#billModal .modal-body').append(myHtml);  BindStateCounty("ddlCusBillingState", { id: 'US' });
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); //$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
     let newEl = document.getElementById('txtCusBillingAddress1');
     setupAutocomplete(newEl);
 }
@@ -572,7 +572,8 @@ function saveCustomer() {
     else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtCusBillingMobile').focus(); }) }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtCusBillingAddress1').focus(); }) }
     else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCusBillingCity').focus(); }) }
-    else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').focus(); }) }
+    else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').select(); }) }
+    else if (BillingState == "0") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').focus(); }) }
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCusBillingPostCode').focus(); }) }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCusBillingCountry').focus(); }) }
     else {

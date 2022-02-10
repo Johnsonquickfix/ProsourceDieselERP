@@ -597,6 +597,7 @@
     <Content Include="Content\fullcalendar\fullcalendar.css" />
     <Content Include="Content\fullcalendar\fullcalendar.js" />
     <Content Include="Content\fullcalendar\gcal.min.js" />
+    <Content Include="Content\fullcalendar\jquery.qtip-1.0.js" />
     <Content Include="Content\highcharts\accessibility.js" />
     <Content Include="Content\highcharts\data.js" />
     <Content Include="Content\highcharts\drilldown.js" />

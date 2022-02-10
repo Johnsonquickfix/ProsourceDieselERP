@@ -393,11 +393,79 @@
             }
         });
 
+        
+        $('#txtUserNickName').change(function () {
+
+            UserName = $("#txtUserNickName").val();
+            var obj = {
+                user_nicename: UserName
+            }
+            $.ajax({
+                url: '/Users/GetUserName/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == false) {
+
+                    }
+                    else {
+                        $("#txtUserNickName").val('');
+                        swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
+        $('#txtUserEmail').change(function () {
+
+            if ($('#txtUserEmail').val() == "") {
+                return false;
+            }
+            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            var emailaddressVal = $("#txtUserEmail").val();
+            if (!emailReg.test(emailaddressVal)) {
+                $("#txtUserEmail").val('');
+                swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+            }
+            else {
+
+                email = $("#txtUserEmail").val();
+                var obj = {
+                    user_email: email
+                }
+                $.ajax({
+                    url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == false) {
+
+                        }
+                        else {
+                            $("#txtUserEmail").val("");
+                            swal('Alert', 'User email already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+
+        });
+
+
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
             $("#hidimagetype").val('2');
         });
-
         passwordcheck();
 
         isEdit(true);
@@ -409,75 +477,6 @@
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
-
-
-    $('#txtUserNickName').change(function () {
-
-        UserName = $("#txtUserNickName").val();
-        var obj = {
-            user_nicename: UserName
-        }
-        $.ajax({
-            url: '/Users/GetUserName/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-                if (data.status == false) {
-
-                }
-                else {
-                    $("#txtUserNickName").val('');
-                    swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
-                }
-            },
-
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
-    });
-
-    $('#txtUserEmail').change(function () {
-
-        if ($('#txtUserEmail').val() == "") {
-            return false;
-        }
-
-        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-        var emailaddressVal = $("#txtUserEmail").val();
-        if (!emailReg.test(emailaddressVal)) {
-            $("#txtUserEmail").val('');
-            swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-        }
-        else {
-
-            email = $("#txtUserEmail").val();
-            var obj = {
-                user_email: email
-            }
-            $.ajax({
-                url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == false) {
-
-                    }
-                    else {
-                        $("#txtUserEmail").val("");
-                        swal('Alert', 'User email already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-                    }
-                },
-
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-
-    });
 
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))

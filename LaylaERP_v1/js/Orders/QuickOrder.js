@@ -224,11 +224,11 @@ function NewOrderNo() {
     );
     let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
-        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
-        //    result = JSON.parse(result);
-        //    if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
-        //    else { swal('Error', data[0].Response, "error"); }
-        //}, completeFun, errorFun, false);
+        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+            result = JSON.parse(result);
+            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+            else { swal('Error', data[0].Response, "error"); }
+        }, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }

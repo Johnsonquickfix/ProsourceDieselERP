@@ -421,9 +421,6 @@
             })
         });
 
-        $('#txtPassword').val('');
-        $('#txtUserNickName').val('');
-
         $('#txtUserEmail').change(function () {
 
             var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -470,8 +467,10 @@
 
         isEdit(true);
 
-       
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
     });
+
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
@@ -504,7 +503,7 @@
 
     $('#txtPassword').val('');
     $('#txtUserNickName').val('');
-    alert('233');
+ 
     $("#txtPassword").on("input", function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -762,7 +761,14 @@
         $("#txtCity").val("0");
         $("#txtState").val("0");
         $("#txtAddress2").val("");
-    } 
+    }
+
+
+
+    $(window).load(function () {
+        // executes when complete page is fully loaded, including all frames, objects and images
+        alert("window is loaded");
+    });
      
 </script>
 

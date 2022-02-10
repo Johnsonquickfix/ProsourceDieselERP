@@ -179,6 +179,7 @@
         $('.select1').select2();
         $('#txtPassword').val('');
         $('#txtUserNickName').val('');
+        alert('321');
         //$.get('GetCity', function (data) {
         //    $.each(data, function (index, value) {
         //        $('<option>').val(value).text(value).appendTo("#txtCity");
@@ -464,8 +465,7 @@
 
         isEdit(true);
 
-        $('#txtPassword').val('');
-        $('#txtUserNickName').val('');
+       
     });
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');

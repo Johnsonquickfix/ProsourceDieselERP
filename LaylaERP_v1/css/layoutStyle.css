@@ -3049,15 +3049,61 @@ body.order .email_settings_in h3 {padding-left:15px;}
 .accountledgerlist .inventory-table th {padding-right:20px !important;}
 .autogenerate .dataTables_scrollHeadInner {
 width:100% !important;}
+#chkwarehousestatus {
+    margin: 5px 4px 0px 0px;
+    float: left;
+}
+#chkVendorStatus, #chkstatus {
+    margin: 2px 4px 0px 0px;
+    float: left;
+}
 @media(max-width:1000px) {
     #btnResendEmail {
         margin-right: 15px;
         margin-top: 10px;
     }
+    #PurchaseInvoicedata_wrapper .row:first-child + div > div{overflow:auto;}
+    #Warehousedata_wrapper .row:first-child + div > div {
+        overflow: auto;
+    }
+    #PurchaseInvoicedata_wrapper .row:first-child + div table {min-width:900px;}
+    #Warehousedata_wrapper .row:first-child + div table {
+        min-width: 900px;
+    }
+    .vender-section1 #tab_10 .box-body {overflow:auto;}
+    .vender-section1 #tab_10 .box-body table{width:900px;}
+    .vender-section1 #tab_10 .proposal-row > div{width:100%}
+    .pos.reception #dtdataPartially_wrapper .row > div.col-sm-12 {
+        overflow: auto;
+        max-width: calc(100% - 30px);
+        margin: auto;
+        padding: 0px;
+    }
+    .pos.reception #dtdataPoClosure_wrapper .row > div.col-sm-12 {
+        overflow: auto;
+        max-width: calc(100% - 30px);
+        margin: auto;
+        padding: 0px;
+    }
+    }
+.new.receive.order #lbltitle .btn-danger {
+    margin-left: 10px;
+}
+.order.history #dtdata td:last-child {white-space:nowrap;
 }
 @media(max-width:992px) {
+    .new.receive.order .table-responsive {
+    overflow:auto !important;}
+    .new.receive.order .proposal-row > div {
+    width:100%;}
+    .new.receive.order .proposal-row input[type=file] {
+        width: 200px;
+    }
+    .new.receive.order .select2-container {
+    width:100% !important;}
     .gift.card.modal-open #GiftModal .modal-dialog {
-    overflow-x:auto;}
+        overflow-x: auto;
+    }
         .gift.card.modal-open #GiftModal .modal-dialog .modal-content {
         min-width:1000px;}
         .employee-scrolls {
@@ -3113,6 +3159,12 @@ width:100%; overflow-x:auto !important;    }
     }
 
     #billModal .modal-dialog {
+        overflow-x: auto;
+    }
+    .order.modal-open #billModal .modal-dialog {
+        overflow-x: visible;
+    }
+    .order.modal-open #billModal{
         overflow-x: auto;
     }
 

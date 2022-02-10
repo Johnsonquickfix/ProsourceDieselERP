@@ -417,9 +417,8 @@ namespace LaylaERP.BAL
                 else
                 {
                     if (!string.IsNullOrEmpty(strValue1))
-                        // strWhr += " fk_product = " + strValue1;
-                         strWhr += " ppi.rowid in (SELECT max(rowid) id from Product_Purchase_Items WHERE fk_product = " + strValue1 + " group by fk_vendor) ";
-                        string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy hh.mm') date_inc,FORMAT(date_to,'MM/dd/yyyy hh.mm') date_to,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status,is_setprise,fk_vendor,fk_product"
+                        strWhr += " fk_product = " + strValue1;
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,Cast(CONVERT(DECIMAL(10,2),salestax) as nvarchar) salestax,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)  purchase_price, Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)  cost_price,  Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,  Cast(CONVERT(DECIMAL(10,2),Misc_Costs) as nvarchar)  Misc_Costs, FORMAT(date_inc,'MM/dd/yyyy') date_inc,FORMAT(date_to,'MM/dd/yyyy') date_to,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status,is_setprise"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE" + strWhr;
@@ -450,8 +449,6 @@ namespace LaylaERP.BAL
                         productsModel.Status = sdr["Status"].ToString();
                         productsModel.is_setprise = sdr["is_setprise"].ToString();
                         productsModel.date_to = sdr["date_to"].ToString();
-                        productsModel.fk_vendor = sdr["fk_vendor"].ToString();
-                        productsModel.fk_product = sdr["fk_product"].ToString();
                         _list.Add(productsModel);
                     }
                 }
@@ -2751,26 +2748,5 @@ namespace LaylaERP.BAL
             }
             return result;
         }
-
-        public static DataSet Getpricedetails(long id, long vid)
-        {
-            DataSet ds = new DataSet();
-            try
-            { 
-                SqlParameter[] para = { 
-                    new SqlParameter("@fk_product", id),
-                    new SqlParameter("@fk_vendor", vid)
-                }; 
-                ds = SQLHelper.ExecuteDataSet("erp_productpricedetails", para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";  
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return ds;
-        }
-
-
     }
 }

@@ -28,8 +28,8 @@
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
-    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
+    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -69,7 +69,7 @@
         });
     });
     $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
-    $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
+    $(document).on("change", ".addnvar,.addnvar-qty", function (t) {
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
         let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
         if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
@@ -115,6 +115,7 @@
     });
     $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
     $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
+    //$("#billModal").on("change", "#txtCusBillingPostCode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode"));  });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -223,11 +224,11 @@ function NewOrderNo() {
     );
     let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
-        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
-            result = JSON.parse(result);
-            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
-            else { swal('Error', data[0].Response, "error"); }
-        }, completeFun, errorFun, false);
+        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+        //    result = JSON.parse(result);
+        //    if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+        //    else { swal('Error', data[0].Response, "error"); }
+        //}, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }

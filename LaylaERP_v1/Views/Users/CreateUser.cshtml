@@ -500,9 +500,6 @@
         });
 
     })
-
-    $('#txtPassword').val('');
-    $('#txtUserNickName').val('');
  
     $("#txtPassword").on("input", function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -766,6 +763,8 @@
 
     $(window).on("load", function () {
         // Handler for .load() called.
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
         alert("window2 is loaded");
     });
      

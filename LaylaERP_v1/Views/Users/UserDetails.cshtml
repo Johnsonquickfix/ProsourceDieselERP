@@ -576,7 +576,8 @@
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
-  
+    $('#txtPassword').val('');
+
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -878,6 +879,15 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+
+    $(window).on("load", function () {
+        // Handler for .load() called.
+        $('#txtPassword').val('');
+        //$('#txtUserNickName').val('');
+        //$('#txtUserEmail').val('');
+        // alert("window2 is loaded");
+    });
 
 </script>
 

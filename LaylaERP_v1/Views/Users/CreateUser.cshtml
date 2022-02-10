@@ -54,23 +54,23 @@
                                     <input type="hidden" id="hfid" value="@ViewBag.id" />
                                     <input type="hidden" id="hfzipstatus" />
                                     <input type="hidden" id="hfvpassordshow" />
-                                    <label for="exampleInputEmail1">User Login<span style="color:red;"> *</span></label>
-                                    <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name" autocomplete="off">
+                                    <label for="txtUserNickName">User Login<span style="color:red;"> *</span></label>
+                                    <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name" autocomplete="false">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">E-mail<span style="color:red;"> *</span></label>
-                                    <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address" autocomplete="off">
+                                    <label for="txtUserEmail">E-mail<span style="color:red;"> *</span></label>
+                                    <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address" autocomplete="false">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">First Name<span style="color:red;"> *</span></label>
-                                    <input type="text" class="form-control" id="txtFirstName" placeholder="First Name" autocomplete="off">
+                                    <label for="txtFirstName">First Name<span style="color:red;"> *</span></label>
+                                    <input type="text" class="form-control" id="txtFirstName" placeholder="First Name" autocomplete="false">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Last Name<span style="color:red;"> *</span></label>
-                                    <input type="text" class="form-control" id="txtLastName" placeholder="Last Name" autocomplete="off">
+                                    <label for="txtLastName">Last Name<span style="color:red;"> *</span></label>
+                                    <input type="text" class="form-control" id="txtLastName" placeholder="Last Name" autocomplete="false">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">User Status</label>
+                                    <label for="userstatus">User Status</label>
                                     <select class="form-control" id="userstatus">
                                         <option value="0">Active</option>
                                         <option value="1">InActive</option>
@@ -88,7 +88,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Contact Number<span style="color:red;"> *</span></label>
-                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number" autocomplete="off">
+                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number" autocomplete="false">
                                 </div>
                                 <div class="form-group">
                                     <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Address Line 2</label>
-                                    <input type="text" class="form-control" id="txtAddress2" placeholder="Address Line 2" autocomplete="off">
+                                    <input type="text" class="form-control" id="txtAddress2" placeholder="Address Line 2" autocomplete="false">
 
                                 </div>
                                 @*<div class="form-group">
@@ -109,7 +109,7 @@
                                     </div>*@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">City<span style="color:red;"> *</span></label>
-                                    <input type="text" id="txtCity" class="form-control" autocomplete="off" />
+                                    <input type="text" id="txtCity" class="form-control" autocomplete="false" />
                                 </div>
 
                             </div>
@@ -129,7 +129,7 @@
                                 <div class="form-group">
                                     <label class="control-label" for="Zip Code">Zip Code<span style="color:red;"> *</span></label>
                                     <div class="">
-                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" autocomplete="off">
+                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" autocomplete="false">
                                     </div>
                                 </div>
 
@@ -143,7 +143,7 @@
                                 <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Password<span style="color:red;"> *</span></label>
                                     <span><button type="button" id="btnGeneratePassword" class="btn" title="Click here to generate password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>
-                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password" autocomplete="off">
+                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password" autocomplete="false">
                                     @*<span class="genrate_password" id="message">Generate Password</span>*@
                                     <span class="" id='result'></span>
                                 </div>
@@ -151,7 +151,7 @@
                                 <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Confirm Password<span style="color:red;"> *</span></label>
                                     <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
-                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password" autocomplete="off">
+                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password" autocomplete="false">
                                     <span class="genrate_password" id="message"></span>
                                 </div>
 
@@ -178,6 +178,8 @@
         $("#loader").hide();
         $('.select1').select2();
         $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
+        $('#txtUserEmail').val('');
         //$.get('GetCity', function (data) {
         //    $.each(data, function (index, value) {
         //        $('<option>').val(value).text(value).appendTo("#txtCity");
@@ -391,6 +393,7 @@
             }
         });
 
+        
         $('#txtUserNickName').change(function () {
 
             UserName = $("#txtUserNickName").val();
@@ -407,7 +410,7 @@
 
                     }
                     else {
-                        $("#txtUserNickName").val("");
+                        $("#txtUserNickName").val('');
                         swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
                     }
                 },
@@ -417,8 +420,12 @@
                 },
             })
         });
+
         $('#txtUserEmail').change(function () {
 
+            if ($('#txtUserEmail').val() == "") {
+                return false;
+            }
             var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
             var emailaddressVal = $("#txtUserEmail").val();
             if (!emailReg.test(emailaddressVal)) {
@@ -462,10 +469,15 @@
         passwordcheck();
 
         isEdit(true);
+
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
     });
+
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
+
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -491,6 +503,7 @@
         });
 
     })
+ 
     $("#txtPassword").on("input", function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -735,7 +748,7 @@
     function reset() {
         $('#show_picture').attr('src', '~/Images/userprofile2.png');
         $("#txtUserEmail").val("");
-        $("#txtUserNickName").val("");
+        $("#txtUserNickName").val('');
         $("#txtFirstName").val("");
         $("#txtLastName").val("");
         $("#txtAddress").val("");
@@ -750,6 +763,15 @@
         $("#txtAddress2").val("");
     }
 
+
+    $(window).on("load", function () {
+        // Handler for .load() called.
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
+        $('#txtUserEmail').val('');
+       // alert("window2 is loaded");
+    });
+     
 </script>
 
 

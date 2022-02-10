@@ -179,7 +179,7 @@
         $('.select1').select2();
         $('#txtPassword').val('');
         $('#txtUserNickName').val('');
-        alert('321');
+       
         //$.get('GetCity', function (data) {
         //    $.each(data, function (index, value) {
         //        $('<option>').val(value).text(value).appendTo("#txtCity");
@@ -393,9 +393,7 @@
             }
         });
 
-        $('#txtPassword').val('');
-        $('#txtUserNickName').val('');
-        alert('23');
+        
         $('#txtUserNickName').change(function () {
 
             UserName = $("#txtUserNickName").val();
@@ -422,6 +420,9 @@
                 },
             })
         });
+
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
 
         $('#txtUserEmail').change(function () {
 
@@ -475,9 +476,6 @@
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
 
-    $('#txtPassword').val('');
-    $('#txtUserNickName').val('');
-
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -503,6 +501,10 @@
         });
 
     })
+
+    $('#txtPassword').val('');
+    $('#txtUserNickName').val('');
+    alert('233');
     $("#txtPassword").on("input", function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();

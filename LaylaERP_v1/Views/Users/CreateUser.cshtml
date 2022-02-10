@@ -393,6 +393,9 @@
             }
         });
 
+        $('#txtPassword').val('');
+        $('#txtUserNickName').val('');
+        alert('23');
         $('#txtUserNickName').change(function () {
 
             UserName = $("#txtUserNickName").val();
@@ -419,6 +422,7 @@
                 },
             })
         });
+
         $('#txtUserEmail').change(function () {
 
             var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -470,6 +474,10 @@
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');
     }
+
+    $('#txtPassword').val('');
+    $('#txtUserNickName').val('');
+
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();

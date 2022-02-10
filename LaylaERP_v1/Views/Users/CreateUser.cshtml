@@ -423,6 +423,9 @@
 
         $('#txtUserEmail').change(function () {
 
+            if ($('#txtUserEmail').val() == "") {
+                return false;
+            }
             var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
             var emailaddressVal = $("#txtUserEmail").val();
             if (!emailReg.test(emailaddressVal)) {

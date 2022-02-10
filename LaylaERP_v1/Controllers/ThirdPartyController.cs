@@ -670,5 +670,20 @@ namespace LaylaERP.Controllers
                 ThirdPartyRepository.UpdateUserVendorMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
+        public JsonResult GetVendorPurchaseOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int postatus =0;
+            int TotalRecord = 0;
+            try
+            {
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    postatus = Convert.ToInt32(model.strValue3);
+                DataTable dt = ThirdPartyRepository.GetVendorPurchaseOrderList(model.strValue1, model.strValue2, postatus, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
     }
 }

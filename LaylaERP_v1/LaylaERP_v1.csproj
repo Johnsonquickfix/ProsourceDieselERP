@@ -737,6 +737,7 @@
     <Content Include="js\Product\ProductCategory.js" />
     <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ShippingClass.js" />
+    <Content Include="js\Proposals\ProposalPrint.js" />
     <Content Include="js\Proposals\SupplierProposalsList.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\POAmendment.js" />

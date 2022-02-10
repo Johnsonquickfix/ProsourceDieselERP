@@ -168,6 +168,7 @@
     <Compile Include="BAL\PaymentInvoiceRepository.cs" />
     <Compile Include="BAL\PoemailRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
+    <Compile Include="BAL\ProposalsRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Controllers\ProductBulkEditController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PromotionalEmailController.cs" />
+    <Compile Include="Controllers\ProposalsController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -735,6 +737,7 @@
     <Content Include="js\Product\ProductCategory.js" />
     <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ShippingClass.js" />
+    <Content Include="js\Proposals\SupplierProposalsList.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\POAmendment.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
@@ -1116,6 +1119,7 @@
     <Content Include="Views\Accounting\AccountFiscalYearList.cshtml" />
     <Content Include="Views\Reports\ForecastInventoryLSPowerBi.cshtml" />
     <Content Include="Views\Events\GoogleCalendar.cshtml" />
+    <Content Include="Views\Proposals\SupplierProposalsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

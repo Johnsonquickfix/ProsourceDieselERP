@@ -1348,5 +1348,58 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable GetVendorPurchaseOrderList(string userstatus, string VendorID, int postatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor, p.fk_projet,v.SalesRepresentative request_author, v.name vendor_name, v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                               + " convert(varchar, p.date_creation, 101) date_creation,convert(varchar, p.date_livraison, 101) date_livraison, s.Status,total_ttc,wr.ref warehouse_name, concat(wr.address, '', '', wr.city, '', '', wr.town, ' ', wr.zip, ' ', wr.country) destination, "
+                               + " case when convert(date, p.date_livraison) < convert(date, DATEADD(MINUTE, -240, GETUTCDATE())) and p.fk_status != 6 then 'Past Due' else '' end past_due, convert(varchar, p.date_modified, 101) date_modified,convert(varchar, p.date_modified, 112) date_modified_s,"
+                               + " convert(varchar, p.date_creation, 112) date_creation_s,convert(varchar, p.date_livraison, 112) date_livraison_s,p.fk_status,ur_a.user_login user_approve, fk_user_amendment,'Amendment by ' + ur_ame.user_login + convert(varchar, date_amendment, 100) user_amendment,"
+                               + " p.fk_supplier from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID left outer join wp_warehouse wr on wr.rowid = p.fk_warehouse"
+                               + " left outer join wp_users ur_a on ur_a.id = p.fk_user_approve left outer join wp_users ur_ame on ur_ame.id = p.fk_user_amendment"
+                               //+ " where 1 = 1 and p.fk_supplier = 8 and p.fk_projet = 0 and v.VendorStatus = 1";
+                               + " where 1 = 1 and p.fk_projet = 0 and p.fk_supplier ='" + VendorID + "'";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                }
+                //if (userstatus != null)
+                //{
+                //        strWhr += " and (v.VendorStatus ='" + userstatus + "') ";
+
+                //}
+                //if (userstatus != null)
+                //{
+                //    strWhr += " and (p.fk_supplier ='" + VendorID + "') ";
+
+                //}
+                if (postatus > 0)
+                {
+                    strWhr += " and (p.fk_status ='" + postatus + "') ";
+
+                }
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord  from commerce_purchase_order p"
+                                + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID left outer join wp_warehouse wr on wr.rowid = p.fk_warehouse"
+                               + " left outer join wp_users ur_a on ur_a.id = p.fk_user_approve left outer join wp_users ur_ame on ur_ame.id = p.fk_user_amendment"
+                               + " where 1 = 1 and p.fk_projet = 0 and p.fk_supplier ='" + VendorID + "'" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

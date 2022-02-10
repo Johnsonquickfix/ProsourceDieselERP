@@ -37,7 +37,7 @@
                 @*<li><a href="#tab_7" data-toggle="tab"><span title="Vendor Payment method" data-toggle="tooltip">Payment Methods</span></a></li>*@
                 <li><a href="#tab_7" data-toggle="tab"><span title="Vendor products & services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
                 <li><a href="#tab_8" data-toggle="tab"><span title="Vendor payments" data-toggle="tooltip">Payments</span></a></li>
-                @*<li><a href="#tab_12" data-toggle="tab"><span title="Vendor Purchase Information" data-toggle="tooltip">Purchase Information</span></a></li>*@
+                <li><a href="#tab_11" data-toggle="tab"><span title="Vendor purchase order" data-toggle="tooltip">Purchase Order</span></a></li>
                 <li><a href="#tab_9" data-toggle="tab"><span title="Vendor linked warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
                 <li><a href="#tab_10" data-toggle="tab"><span title="Vendor linked files" data-toggle="tooltip">Linked Files</span></a></li>
 
@@ -142,25 +142,25 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Nature of Journal<span style="color:red;"></span></label>
-                                            <select class="form-control select2" id="ddlNatureofJournal">
-                                            </select>
+                                            <select class="form-control select2" id="ddlNatureofJournal"></select>
                                         </div>
+                                        <input type="text" id="txtcache" value="xyz" style="height: 0px; width: 0px; border-color: white; float: left" />
                                         <div class="form-group form-password-group" id="PasswordParent">
                                             @*<div class="col-md-4">*@
-                                                <div class="form-group form-password-group">
-                                                    <label for="Password">Password</label><span style="color:red">*</span>
-                                                    @*<span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>*@
-                                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
-                                                    <span class="" id='result'></span>
-                                                </div>
+                                            <div class="form-group form-password-group">
+                                                <label for="Password">Password</label><span style="color:red">*</span>
+                                                @*<span><button type="button" id="btnGeneratePassword" class="btn" title="Click Here To Generate Password" data-placement="bottom" data-toggle="tooltip">Generate Password</button></span>*@
+                                                <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
+                                                <span class="" id='result'></span>
+                                            </div>
                                             @*</div>*@
                                             @*<div class="col-md-4">*@
-                                                <div class="form-group form-password-group">
-                                                    <label for="exampleInputEmail1">Confirm Password<span style="color:red">*</span></label>
-                                                    <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
-                                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
-                                                    <span class="genrate_password" id="message"></span>
-                                                </div>
+                                            <div class="form-group form-password-group">
+                                                <label for="exampleInputEmail1">Confirm Password<span style="color:red">*</span></label>
+                                                <i id="PasswordShow" class="glyphicon glyphicon-eye-open"></i>
+                                                <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                                                <span class="genrate_password" id="message"></span>
+                                            </div>
                                             @*</div>*@
                                         </div>
                                         <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
@@ -246,14 +246,14 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         @*<div class="form-group">
-                            <label for="Balance">Payment Type</label>
-                            <select class="form-control" id="ddlPaymentType">
-                                <option value="-1">Please Select Payment Type</option>
-                                <option value="banktranser">Bank Transfer</option>
-                                <option value="cheque">Cheque</option>
-                                <option value="creditcard">Credit Card</option>
-                            </select>
-                        </div>*@
+                                    <label for="Balance">Payment Type</label>
+                                    <select class="form-control" id="ddlPaymentType">
+                                        <option value="-1">Please Select Payment Type</option>
+                                        <option value="banktranser">Bank Transfer</option>
+                                        <option value="cheque">Cheque</option>
+                                        <option value="creditcard">Credit Card</option>
+                                    </select>
+                                </div>*@
                                         <div class="form-group">
                                             <label class="control-label " for="IncoTerm">IncoTerm</label>
                                             <div class="d-flex">
@@ -306,198 +306,198 @@
                                 </div>
                             </div>
                         </div>
-                      
 
-                            <div id="bnk_details" style="display:none;">
-                                <h2 class="box-header">Bank details</h2>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Account Name</label>
-                                                    <input type="text" class="form-control" id="txtBankAccountName" placeholder="Account Name" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Account Number</label>
-                                                    <input type="text" class="form-control" id="txtBankAccountNumber" placeholder="Account Number" />
-                                                </div>
+
+                        <div id="bnk_details" style="display:none;">
+                            <h2 class="box-header">Bank details</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Account Name</label>
+                                                <input type="text" class="form-control" id="txtBankAccountName" placeholder="Account Name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Account Number</label>
+                                                <input type="text" class="form-control" id="txtBankAccountNumber" placeholder="Account Number" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Bank name</label>
-                                                    <input type="text" class="form-control" id="txtBankName" placeholder="Bank name" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Routing number</label>
-                                                    <input type="text" class="form-control" id="txtBankRoutingNumber" placeholder="Routing number" />
-                                                </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Bank name</label>
+                                                <input type="text" class="form-control" id="txtBankName" placeholder="Bank name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Routing number</label>
+                                                <input type="text" class="form-control" id="txtBankRoutingNumber" placeholder="Routing number" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">IBAN</label>
-                                                    <input type="text" id="txtBankIBAN" class="form-control" placeholder="IBAN" />
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">IBAN</label>
+                                                <input type="text" id="txtBankIBAN" class="form-control" placeholder="IBAN" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">BIC/Swift</label>
+                                                <input type="text" id="txtBankSwift" class="form-control" placeholder="BIC/Swift" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="cheq_payment" style="display:none;">
+                            <h2 class="box-header">Cheque Payment</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Title</label>
+                                                <input type="text" id="txtChequeTitle" class="form-control" placeholder="Title" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Description </label>
+                                                <textarea class="form-control" id="txtChequeDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Instructions</label>
+                                                <input type="text" class="form-control" id="txtChequeInstructions" placeholder="Instructions" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="pay_invoice" style="display:none;">
+                            <h2 class="box-header">Paypal Invoice</h2>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <label class="control-label">API Credentials</label>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" id="txtPPInvoiceAPIUsername" placeholder="Username" />
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">BIC/Swift</label>
-                                                    <input type="text" id="txtBankSwift" class="form-control" placeholder="BIC/Swift" />
+                                                <div class="col-md-4">
+                                                    <input type="password" id="txtPPInvoiceAPIPassword" class="form-control" placeholder="password" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" id="txtPPInvoiceAPISignature" class="form-control" placeholder="Signature" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="cheq_payment" style="display:none;">
-                                <h2 class="box-header">Cheque Payment</h2>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Title</label>
-                                                    <input type="text" id="txtChequeTitle" class="form-control" placeholder="Title" />
-                                                </div>
+                        </div>
+                        <div id="pay_strd" style="display:none;">
+                            <h2 class="box-header">Paypal Standard</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Title</label>
+                                                <input type="text" class="form-control" id="txtPaypalTitle" placeholder="Title" />
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Description </label>
-                                                    <textarea class="form-control" id="txtChequeDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
-                                                </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Description</label>
+                                                <textarea class="form-control" id="txtPaypalDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Instructions</label>
-                                                    <input type="text" class="form-control" id="txtChequeInstructions" placeholder="Instructions" />
-                                                </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Paypal email</label>
+                                                <input type="email" id="txtPaypalEmail" class="form-control" placeholder="Paypal email" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
 
-                            </div>
-                            <div id="pay_invoice" style="display:none;">
-                                <h2 class="box-header">Paypal Invoice</h2>
+                                            <input type="checkbox" id="chkPaypalProduction" />
+                                            <label class="control-label" for="Paypal_Production">Paypal Production</label>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="box box-primary">
-                                            <div class="box-header">
-                                                <label class="control-label">API Credentials</label>
+                                            <div class="form-group">
+                                                <label class="control-label">IPN email notification</label>
+                                                <input type="text" class="form-control" id="txtPaypalIPNEmailNotification" placeholder="IPN email notification" />
                                             </div>
-                                            <div class="box-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <input type="text" class="form-control" id="txtPPInvoiceAPIUsername" placeholder="Username" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="password" id="txtPPInvoiceAPIPassword" class="form-control" placeholder="password" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" id="txtPPInvoiceAPISignature" class="form-control" placeholder="Signature" />
-                                                    </div>
-                                                </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Receiver email</label>
+                                                <input type="text" class="form-control" id="txtPaypalReceiverEmail" placeholder="Receiver email" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Paypal Identity token</label>
+                                                <input type="text" class="form-control" id="txtPaypalIdentitytoken" placeholder="Paypal Identity token" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Payment Action</label>
+                                                <select class="form-control select2" id="ddlPaypalPaymentAction" style="width:100%;">
+                                                    <option value="Capture">Capture</option>
+                                                    <option value="Authorize">Authorize</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="pay_strd" style="display:none;">
-                                <h2 class="box-header">Paypal Standard</h2>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Title</label>
-                                                    <input type="text" class="form-control" id="txtPaypalTitle" placeholder="Title" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Description</label>
-                                                    <textarea class="form-control" id="txtPaypalDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Paypal email</label>
-                                                    <input type="email" id="txtPaypalEmail" class="form-control" placeholder="Paypal email" />
-                                                </div>
-                                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <label class="control-label">API Credentials</label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-
-                                                <input type="checkbox" id="chkPaypalProduction" />
-                                                <label class="control-label" for="Paypal_Production">Paypal Production</label>
-
-                                                <div class="form-group">
-                                                    <label class="control-label">IPN email notification</label>
-                                                    <input type="text" class="form-control" id="txtPaypalIPNEmailNotification" placeholder="IPN email notification" />
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input type="text" id="txtPaypalAPIUserName" class="form-control" placeholder="Username" />
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Receiver email</label>
-                                                    <input type="text" class="form-control" id="txtPaypalReceiverEmail" placeholder="Receiver email" />
+                                                <div class="col-md-4">
+                                                    <input type="password" id="txtPaypalAPIPassword" class="form-control" placeholder="password" />
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-                                                <div class="form-group">
-                                                    <label class="control-label">Paypal Identity token</label>
-                                                    <input type="text" class="form-control" id="txtPaypalIdentitytoken" placeholder="Paypal Identity token" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Payment Action</label>
-                                                    <select class="form-control select2" id="ddlPaypalPaymentAction" style="width:100%;">
-                                                        <option value="Capture">Capture</option>
-                                                        <option value="Authorize">Authorize</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="box box-primary">
-                                            <div class="box-header">
-                                                <label class="control-label">API Credentials</label>
-                                            </div>
-                                            <div class="box-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <input type="text" id="txtPaypalAPIUserName" class="form-control" placeholder="Username" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="password" id="txtPaypalAPIPassword" class="form-control" placeholder="password" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" id="txtPaypalAPISignature" class="form-control" placeholder="Signature" />
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" id="txtPaypalAPISignature" class="form-control" placeholder="Signature" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                       
+                        </div>
+
                         <div class="box-footer">
                             <div class="text-right">
                                 <button type="button" id="btnNextTab3" class="btn btn-danger "><span title="Save details and go to next tab" data-placement="top" data-toggle="tooltip">Save & Next</span></button>
@@ -872,9 +872,9 @@
                                             <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label><br />
                                         </div>
                                         @*<div class="form-group form-check">
-                                                <input type="checkbox" id="chkTaxIncludedinprice" />
-                                                <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
-                                            </div>*@
+                                    <input type="checkbox" id="chkTaxIncludedinprice" />
+                                    <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
+                                </div>*@
 
                                         <div class="form-group">
                                             <input type="checkbox" id="chkShippingTaxIncludedinprice" />
@@ -975,16 +975,16 @@
                     </div>
                 </div>
                 @*<div class="tab-pane" id="tab_7">
-                    <div id="payments">
-                        
-                        <div class="box-footer">
-                            <div class="text-right">
-                                <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
-                            </div>
-                        </div>
-                    </div>
+            <div id="payments">
 
-                </div>*@
+                <div class="box-footer">
+                    <div class="text-right">
+                        <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>*@
                 <div class="tab-pane" id="tab_7">
                     <div id="aditional-info">
                         <div class="row">
@@ -1042,17 +1042,17 @@
                                 <div class="box-body">
                                     <div class="alignleft actions bulkactions">
                                         @*<select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
-                                                <option value="0">Select Status</option>
-                                                <option value="1">Draft</option>
-                                                <option value="3">Approved</option>
-                                                <option value="7">Canceled</option>
-                                                <option value="8">Refused</option>
-                                            </select>
-                                            <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
+                                    <option value="0">Select Status</option>
+                                    <option value="1">Draft</option>
+                                    <option value="3">Approved</option>
+                                    <option value="7">Canceled</option>
+                                    <option value="8">Refused</option>
+                                </select>
+                                <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
                                     </div>
                                     @*<label class="control-label col-sm-2">
-                                            List of purchase order/invoices
-                                        </label>*@
+                                List of purchase order/invoices
+                            </label>*@
                                     <div class="form-group col-sm-4">
                                         <select class="form-control select2" id="ddlInvoiceServices" style="width:100%">
                                             @*<option value="1">Purchase orders</option>*@
@@ -1087,6 +1087,60 @@
                         <div class="box-footer">
                             <div class="text-right">
                                 <button type="button" id="btnNextTab8" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_11">
+                    <div id="aditional-info">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box-body">
+                                    <div class="alignleft actions bulkactions col-sm-4">
+                                        <select class="form-control select2" id="ddlPoOrderStatus" placeholder="Select Status">
+                                            <option value="0">Select Status</option>
+                                            <option value="1">Draft</option>
+                                            <option value="3">Approved</option>
+                                            <option value="5">Received Partial</option>
+                                            <option value="6">Received All</option>
+                                            @*<option value="7">Canceled</option>*@
+                                            <option value="8">Disapprove</option>
+                                        </select>
+                                        <button type="button" id="btnPosearch" class="btn btn-primary btn-flat button">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dtdatapurchaseorder" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>PO No.</th>
+                                                            <th>Date</th>
+                                                            <th>Invoice No</th>
+                                                            <th>Destination</th>
+                                                            <th>Destination Address</th>
+                                                            <th>Amount</th>
+                                                            <th>Planned date of delivery</th>
+                                                            <th>Status</th>
+                                                            <th>Modified Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab10" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -1189,48 +1243,48 @@
                         </div>
                     </div>
                     @*<div id="linkWarehouse">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="box-body">
-                                        <label class="control-label col-sm-1">Warehouse</label>
-                                        <div class="form-group col-sm-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <label class="control-label col-sm-1">Warehouse</label>
+                            <div class="form-group col-sm-6">
 
-                                            <select class="form-control" id="ddlWarehouseList"></select>
-                                        </div>
+                                <select class="form-control" id="ddlWarehouseList"></select>
+                            </div>
 
-                                        <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+                            <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                            <thead>
+                                                <tr style="text-align:center;">
+                                                    <th>Vendor Name</th>
+                                                    <th>Warehouse</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="box box-primary">
-                                        <div class="box-header">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
-                                                        <thead>
-                                                            <tr style="text-align:center;">
-                                                                <th>Vendor Name</th>
-                                                                <th>Warehouse</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-footer">
-                                <div class="text-right">
-                                    @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
-                                </div>
-                            </div>
-                        </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                    </div>
+                </div>
+            </div>*@
                 </div>
             </div>
         </div>
@@ -1342,7 +1396,6 @@
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         if (id != "NewVendor") {

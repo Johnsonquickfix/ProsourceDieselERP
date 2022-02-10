@@ -777,7 +777,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise, date_to: data[i].date_to
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs, StatusActive: data[i].Status, is_setprise: data[i].is_setprise, date_to: data[i].date_to, fk_vendor: data[i].fk_vendor, fk_product: data[i].fk_product
                 });
 
             }
@@ -818,7 +818,9 @@ function bindbuying(data) {
                     layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + '); ActivityLog(\'active Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
                     layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + '); ActivityLog(\'delete Vendor prices\',\'/Product/AddNewProduct Vendor ' + data[i].PKey +'\');"><i class="glyphicon glyphicon-trash"></i></a></td>';
-                
+
+                layoutHtml += '<td><a href="javascript:void(0);" title="Click here view details" data-toggle="tooltip" class="editbutton" href="#" onclick="getpricedetails(' + data[i].fk_product + ',' + data[i].fk_vendor +'); "><i class="fas fa-search-plus"></i></a></td>';
+
                 layoutHtml += '</tr>';
             }
         }
@@ -845,7 +847,7 @@ function bindbuying(data) {
         layoutHtml += '<th>Status</th>';
         layoutHtml += '<th>Action</th>';
         layoutHtml += '<th>Delete</th>';
-        
+        layoutHtml += '<th>View All Price</th>';
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="Vendor_services"></tbody>';
         layoutHtml += '</table>';
@@ -1001,6 +1003,8 @@ function DeleteUser(id) {
     })
   
 }
+
+ 
 
 function ActiveUser(id) {
     var ids = id;

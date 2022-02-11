@@ -45,12 +45,12 @@
         }
 
         //Get Purchase order Print 
-        public static DataSet GetSupplierProposalsDetails(long id)
+        public static DataSet GetSupplierProposalsDetails(long id,string flag= "GETPO")
         {
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] para = { new SqlParameter("@flag", "GETPO"), new SqlParameter("@id", id), };
+                SqlParameter[] para = { new SqlParameter("@flag", flag), new SqlParameter("@id", id), };
                 ds = SQLHelper.ExecuteDataSet("erp_Proposals_search", para);
                 ds.Tables[0].TableName = "po";
                 if (ds.Tables.Count > 1) ds.Tables[1].TableName = "pod";

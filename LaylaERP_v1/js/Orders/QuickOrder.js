@@ -115,7 +115,7 @@
     });
     $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
     $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
-    //$("#billModal").on("change", "#txtCusBillingPostCode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode"));  });
+    $("#billModal").on("change", "#txtCusBillingPostCode", function (t) { t.preventDefault(); let _zip = $(this).val(); GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -528,7 +528,7 @@ function addCustomerModal(cus_name) {
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="State">State<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingState"></select></div>';
+    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingState"></select></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -538,16 +538,17 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Country">Country<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
+    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
     myHtml += '</div>';
 
     myHtml += '</div>';
     myHtml += '</div >';
 
-    $('#billModal .modal-body').append(myHtml);  BindStateCounty("ddlCusBillingState", { id: 'US' });
+    $('#billModal .modal-body').append(myHtml); BindStateCounty("ddlCusBillingState", { id: 'US' });
+    $("#ddlCusBillingCountry,#ddlCusBillingState").select2({ dropdownParent: "#billModal" });
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); //$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
-    let newEl = document.getElementById('txtCusBillingAddress1');
-    setupAutocomplete(newEl);
+    //let newEl = document.getElementById('txtCusBillingAddress1');
+    //setupAutocomplete(newEl);
 }
 function saveCustomer() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;

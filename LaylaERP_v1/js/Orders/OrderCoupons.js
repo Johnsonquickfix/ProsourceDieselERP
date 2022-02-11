@@ -50,7 +50,7 @@ function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry, ctrzip) {
                 if (coun.length > 0) { result.country = wc_states[k].abbreviation; return; }
             });
             ctrcity.val(result.city); ctrcountry.val(result.country).trigger('change');
-            console.log(result, ctrzip);
+            //console.log(result, ctrzip);
             if (result.state == null) {
                 ctrstate.val("0").trigger('change');
                 swal('Alert!', 'Zip code is not valid for the state.', "error").then(function () { swal.close(); ctrzip.focus(); })

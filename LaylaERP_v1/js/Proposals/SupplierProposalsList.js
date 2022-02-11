@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide();
+    $("#loader").hide(); $("#ddlVendor").select2();
     $('#txtDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -17,11 +17,26 @@
         PurchaseOrderGrid();
     });
     $('#txtDate').val('');
-    $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); PurchaseOrderGrid(); });
-    PurchaseOrderGrid();
+    $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); LoadGrid(); });
+    $.when(getVendor()).done(function () { LoadGrid() });
+    $(document).on("change", "#ddlVendor", function (t) { t.preventDefault(); LoadGrid(); });
+    
 });
-function PurchaseOrderGrid() {
-    let urid = 1;
+function getVendor() {
+    //$("#ddlVendor").select2();
+    $.ajax({
+        url: "/PurchaseOrder/GetVendor",
+        type: "Get",
+        success: function (data) {
+            $('#ddlVendor').empty().append('<option value="-1">Please Select Vendor</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+}
+function LoadGrid() {
+    let vid = parseInt($('#ddlVendor').val()) || 0;
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
@@ -42,7 +57,7 @@ function PurchaseOrderGrid() {
         },
         sAjaxSource: "/proposals/proposals-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: 0 });
+            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid });
 
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);

@@ -167,11 +167,6 @@
         $('#auth-pv-enter-code').focus();
         $('#auth-pv-enter-code').val(@ViewBag.otp);
         $(document).on("click", "#auth-verify-button", function (t) {
-            if ($('#auth-pv-enter-code').val() == "") {
-                alert("Please enter OTP.");
-                $('#auth-pv-enter-code').focus();
-                return false;
-            }
             t.preventDefault(); 
             $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
             let option = { OTP: $('#auth-pv-enter-code').val() };

@@ -28,8 +28,8 @@
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
-    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
+    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -69,7 +69,7 @@
         });
     });
     $.when(CategoryWiseProducts()).done(function () { getOrderInfo(); });
-    $(document).on("click", ".addnvar,.addnvar-qty", function (t) {
+    $(document).on("change", ".addnvar,.addnvar-qty", function (t) {
         t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
         let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
         if (price < regular_price && regular_price > 0) $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
@@ -115,6 +115,7 @@
     });
     $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
     $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
+    $("#billModal").on("change", "#txtCusBillingPostCode", function (t) { t.preventDefault(); let _zip = $(this).val(); GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -527,7 +528,7 @@ function addCustomerModal(cus_name) {
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="State">State<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingState"></select></div>';
+    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingState"></select></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -537,16 +538,17 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Country">Country<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
+    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
     myHtml += '</div>';
 
     myHtml += '</div>';
     myHtml += '</div >';
 
-    $('#billModal .modal-body').append(myHtml); $("#ddlCusBillingState,#ddlCusBillingCountry").select2(); BindStateCounty("ddlCusBillingState", { id: 'US' });
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999");
-    let newEl = document.getElementById('txtCusBillingAddress1');
-    setupAutocomplete(newEl);
+    $('#billModal .modal-body').append(myHtml); BindStateCounty("ddlCusBillingState", { id: 'US' });
+    $("#ddlCusBillingCountry,#ddlCusBillingState").select2({ dropdownParent: "#billModal" });
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); //$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
+    //let newEl = document.getElementById('txtCusBillingAddress1');
+    //setupAutocomplete(newEl);
 }
 function saveCustomer() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
@@ -567,14 +569,15 @@ function saveCustomer() {
     if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
     else if (Email != "" && !rex_email.test(Email)) { swal('alert', 'Please enter valid email.', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
     //else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
-    else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }) }
-    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }) }
-    else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); }) }
-    else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); }) }
-    else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); }) }
-    else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); }) }
-    else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); }) }
-    else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingMobile').focus(); }) }
+    else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtCusFirstName').focus(); }) }
+    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtCusLastName').focus(); }) }
+    else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtCusBillingMobile').focus(); }) }
+    else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtCusBillingAddress1').focus(); }) }
+    else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCusBillingCity').focus(); }) }
+    else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').select(); }) }
+    else if (BillingState == "0") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').focus(); }) }
+    else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCusBillingPostCode').focus(); }) }
+    else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCusBillingCountry').focus(); }) }
     else {
         var obj = {
             ID: 0, user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,

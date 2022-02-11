@@ -540,7 +540,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
-                strSql += strWhr;
+                strSql += strWhr + " order by datesort desc, id desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
                 /*if (!string.IsNullOrEmpty(searchid))

@@ -38,7 +38,8 @@ function BindStateCounty(ctr, obj) {
     }
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Get City By Pin code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
+function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry, ctrzip) {
+    if (zipcode == '') { ctrcity.val(''); ctrcountry.val('US').trigger('change'); ctrstate.val("0").trigger('change'); return false; }
     var option = { strValue1: zipcode };
     $.ajax({
         type: "POST", url: '/Orders/GetCity', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
@@ -48,7 +49,13 @@ function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
                 let coun = wc_states[k].states.filter(element => element.abbreviation == 'NY');
                 if (coun.length > 0) { result.country = wc_states[k].abbreviation; return; }
             });
-            ctrcity.val(result.city); ctrcountry.val(result.country).trigger('change'); ctrstate.val(result.state).trigger('change');
+            ctrcity.val(result.city); ctrcountry.val(result.country).trigger('change');
+            //console.log(result, ctrzip);
+            if (result.state == null) {
+                ctrstate.val("0").trigger('change');
+                swal('Alert!', 'Zip code is not valid for the state.', "error").then(function () { swal.close(); ctrzip.focus(); })
+            }
+            else ctrstate.val(result.state).trigger('change');
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         complete: function () { $("#loader").hide(); }, async: false

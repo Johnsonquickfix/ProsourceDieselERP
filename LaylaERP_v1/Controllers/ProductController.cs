@@ -2010,25 +2010,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
-        [HttpGet]
-        public JsonResult Getpricedetails(SearchModel model)
-        {
-            string JSONresult = string.Empty; 
-            try
-            {
-                long id = 0; long viid = 0;
-                if (!string.IsNullOrEmpty(model.strValue1))
-                    id = Convert.ToInt64(model.strValue1);
-                if (!string.IsNullOrEmpty(model.strValue2))
-                    viid = Convert.ToInt64(model.strValue2);
-                DataSet ds = ProductRepository.Getpricedetails(id, viid);
-                JSONresult = JsonConvert.SerializeObject(ds);
-            }
-            catch { }
-            return Json(new { data = JSONresult }, 0);
-        }
-
+   
     }
      
 

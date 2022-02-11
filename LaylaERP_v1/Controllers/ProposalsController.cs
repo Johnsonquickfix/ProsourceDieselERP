@@ -21,6 +21,13 @@
         {
             return View();
         }
+        // GET: SupplierProposals
+        [Route("proposals/proposals-view")]
+        public ActionResult SupplierProposalsView(long id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
 
         [HttpGet]
         [Route("proposals/proposals-list")]
@@ -56,11 +63,27 @@
                 long id = 0;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     id = Convert.ToInt64(model.strValue1);
-                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id);
+                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id,"GETPO");
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
             return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
+        [HttpGet]
+        [Route("proposals/getproposals-details")]
+        public JsonResult GetProposalsByID(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id, "POBID");
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

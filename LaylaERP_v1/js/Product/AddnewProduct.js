@@ -72,7 +72,7 @@
         $("#btnSave").hide();
         $('#btnSave').text("Update");
         $('#txtPublishDate').attr('readonly', true);
-        $('#txtsku').attr('readonly', true);
+       // $('#txtsku').attr('readonly', true);
         //$("#txtPublishDate").datepicker("disable"); txtsku
         $("#txtPublishDate").datepicker("destroy");
 

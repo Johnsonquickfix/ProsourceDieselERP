@@ -618,6 +618,9 @@ function AddBuyingt() {
     else if (parseInt(currency) == 0) {
         swal('Alert', 'Price can not be zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
+    else if (parseInt(minpurchasequantity) >= 0) {
+        swal('Alert', 'Min. purchase quantity can not be zero', 'error').then(function () { swal.close(); $('#txtminpurchasequantity').focus(); });
+    }
     else {
         var obj = {
             ID: ID,

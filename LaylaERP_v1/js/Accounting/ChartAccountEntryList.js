@@ -53,7 +53,7 @@ function ChartofaccountGrid() {
         },
         columns: [
             { data: 'id', title: 'ID', sWidth: "5%", render: function (id, type, full, meta) { return full.account_number; } },
-            { data: 'name', title: 'Name', sWidth: "10%", class: 'text-left' },
+            { data: 'name', title: 'Name', sWidth: "15%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },
             { data: 'detailtype', title: 'Detail Type', sWidth: "10%" },
             { data: 'balance', title: 'Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },

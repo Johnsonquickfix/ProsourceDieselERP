@@ -907,7 +907,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ece.name account_number, ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                string strSql = "SELECT ece.name account_number, ece.rowid id, CONCAT(eaa.label,' (',ece.name,')') name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
                                + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1 order by account_number";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }

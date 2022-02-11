@@ -12,7 +12,7 @@
         },
         startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
-    }, function (start, end, label) { 
+    }, function (start, end, label) {
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
         PurchaseOrderGrid();
     });
@@ -20,7 +20,7 @@
     $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); LoadGrid(); });
     $.when(getVendor()).done(function () { LoadGrid() });
     $(document).on("change", "#ddlVendor", function (t) { t.preventDefault(); LoadGrid(); });
-    
+
 });
 function getVendor() {
     //$("#ddlVendor").select2();
@@ -79,7 +79,7 @@ function LoadGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a>' + id + '</a> <a href="#" title="Click here to view order preview" data-toggle="tooltip" onclick="PrintProposals(' + full.id + ');"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="proposals-view?id=' + full.id + '" title="Click here to view order preview" data-toggle="tooltip">PO-' + full.fk_projet + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + full.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
@@ -97,7 +97,7 @@ function LoadGrid() {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'address', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip +  ' ' + dtrow.fk_country;
+                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip + ' ' + dtrow.fk_country;
                     return val;
                 }
             },

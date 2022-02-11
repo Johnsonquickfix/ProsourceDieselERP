@@ -37,44 +37,50 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                <thead>
-                                    <tr>
-                                        @*<th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
-                                        <th>PO No.</th>
-                                        <th>Date</th>
-                                        <th>Invoice No</th>
-                                        <th>SO No</th>
-                                        <th>Vendor Name</th>
-                                        <th>Address</th>
-                                        <th>Zip Code</th>
-                                        <th>Planned date of delivery</th>
-                                        <th>Status</th>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active" title="Click here to see Non-Invoiced PO List" data-toggle="tooltip">
+                <a class="active" href="#tabPO_01" data-toggle="tab">Non-Invoiced PO<span class="badge badge-danger"></span></a>
+            </li>
+            <li class="" title="Click here to see Invoiced PO List" data-toggle="tooltip">
+                <a class="" href="#tabPO_02" data-toggle="tab">Invoiced PO<span class="badge badge-danger"></span></a>
+            </li>
+        </ul>
+        <div class="tab-content clearfix">
+            <div class="tab-pane active" id="tabPO_01">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                            <thead>
+                                <tr>
+                                    @*<th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
+                                    <th>PO No.</th>
+                                    <th>Date</th>
+                                    <th>Invoice No</th>
+                                    <th>SO No</th>
+                                    <th>Vendor Name</th>
+                                    <th>Address</th>
+                                    <th>Zip Code</th>
+                                    <th>Status</th>
 
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
+                                </tr>
+                            </thead>
+                        </table>
+
+
                     </div>
                 </div>
-                <div class="box-footer">
-                    <div class="row">
-                        <div class="col-sm-8 inventory-btn">
-                            @*<button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>*@
-                        </div>
+            </div>
+            <div class="tab-pane" id="tabPO_02" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="dtdataIPO" class="table-blue table table-bordered table-striped dataTable" width="100%">
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 </section>
 <script src="@Url.Content("~/js/Proposals/ProposalPrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Proposals/SupplierProposalsList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

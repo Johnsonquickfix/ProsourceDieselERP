@@ -280,7 +280,7 @@ namespace LaylaERP.Controllers
                 status = true;
                 //String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "GiftCardOrder", model);
 
-                result = SendEmail.SendEmails(model.b_email, "Payment request from Layla Sleep Inc.", "Hi " + model.b_first_name +" "+ model.b_last_name + ", please use this secure link to make your payment. Thank you! https://www.sandbox.paypal.com/invoice/p/#" + model.paypal_id + " ");
+                result = SendEmail.SendEmails(model.b_email, "Payment request from Layla Sleep Inc.", "Hi " + model.b_first_name +" "+ model.b_last_name + ",<br> please use this secure link to make your payment. Thank you! https://www.sandbox.paypal.com/invoice/p/#" + model.paypal_id + " ");
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);

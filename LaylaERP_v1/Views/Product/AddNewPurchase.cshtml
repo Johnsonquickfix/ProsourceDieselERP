@@ -142,18 +142,19 @@
                                         </div>
                                     </div>
                                     <div class="form-group d-flex">
-                                        <label class="col-sm-3 control-label">Sales Tax </label>
+                                        <label class="col-sm-3 control-label">Price (with no discount)</label>
                                         <div class="col-sm-9">
-                                            <input type="text" min="0" id="txtSaletax" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtcurrencyconversionrate" value="0" class="form-control">
                                         </div>
                                     </div>
 
 
                                     <div class="form-group d-flex">
-                                        <label class="col-sm-3 control-label">Price (with no discount)</label>
+                                        <label class="col-sm-3 control-label">Sales Tax </label>
                                         <div class="col-sm-3">
-                                            <input type="text" min="0" id="txtcurrencyconversionrate" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtSaletax" value="0" class="form-control">
                                         </div>
+
                                         <div class="col-sm-6">
                                             <select id="ddltaxrate" class="form-control">
                                                 <option value="0" selected="">Excl. tax</option>
@@ -175,13 +176,14 @@
                                         </div>
                                     </div>
 
+
+
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Cost Price</label>
                                         <div class="col-sm-3">
                                             <input type="text" min="0" id="txtcostprice" class="form-control">
                                         </div>
                                     </div>
-
 
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Discount</label>
@@ -192,6 +194,7 @@
                                             %
                                         </div>
                                     </div>
+
 
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Remarks</label>
@@ -231,12 +234,12 @@
                                                         <th class="text-left">Vendor</th>
                                                         <th>Tag/Lot/Serial No.</th>
                                                         <th>Purchase quantity</th>
-                                                        <th>Sales Tax</th>
                                                         <th>Price</th>
+                                                        <th>Sales Tax</th> 
                                                         <th>Shipping Price</th>
                                                         <th>Misc. Price</th>
-                                                        <th>Cost Price</th>
                                                         <th>Discount</th>
+                                                        <th>Cost Price</th>
                                                         <th>Date From</th>
                                                         <th>Date To</th>
                                                         <th>Status</th>

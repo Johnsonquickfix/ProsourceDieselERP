@@ -806,9 +806,9 @@ function bindbuying(data) {
                     layoutHtml += '<td><input style="opacity:1" name="CheckSingle"  type="checkbox"   class="chkprise" value="' + data[i].PKey + '" id="chkprise_' + data[i].PKey + '"></td>';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].taglotserialno + '</td>';
-                layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';               
-                layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';
+                layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].purchase_price + '</td>';
+                layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';             
                 layoutHtml += '<td>' + '$' + data[i].shipping_price + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].Misc_Costs + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
@@ -839,12 +839,12 @@ function bindbuying(data) {
         layoutHtml += '<th>Vendors</th>';
         layoutHtml += '<th>Tag/Lot/Serial No.</th>';
         layoutHtml += '<th>Purchase quantity</th>';
-        layoutHtml += '<th>Sales Tax</th>';
         layoutHtml += '<th>Price</th>';
+        layoutHtml += '<th>Sales Tax</th>';  
         layoutHtml += '<th>Shipping Price</th>';
         layoutHtml += '<th>Misc. Price</th>';
-        layoutHtml += '<th>Cost Price</th>';
-        layoutHtml += '<th>Discount</th>';   
+        layoutHtml += '<th>Discount</th>';
+        layoutHtml += '<th>Cost Price</th>'; 
         layoutHtml += '<th>Date From</th>';
         layoutHtml += '<th>Date To</th>';
         layoutHtml += '<th>Status</th>';

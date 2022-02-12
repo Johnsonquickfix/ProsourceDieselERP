@@ -3248,3 +3248,7 @@ width:100% !important; margin-top:10px !important;}
 td.fc-more-cell a.fc-more {
     color: #fff;
 }
+
+table.product-tabless thead th, table.product-tabless tbody tr td {
+    font-size: 12px !important;
+}

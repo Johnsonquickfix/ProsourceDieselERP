@@ -43,6 +43,8 @@
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    supplierid = Convert.ToInt64(model.strValue3);
                 if (!string.IsNullOrEmpty(model.strValue4))
                     IsBilled = model.strValue4.Equals("1") ? true : false;
                 DataTable dt = ProposalsRepository.GetProposals(fromdate, todate, supplierid, IsBilled, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);

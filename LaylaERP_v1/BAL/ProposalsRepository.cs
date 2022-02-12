@@ -13,7 +13,7 @@
 
     public class ProposalsRepository
     {
-        public static DataTable GetProposals(DateTime? fromdate, DateTime? todate, long supplierid, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetProposals(DateTime? fromdate, DateTime? todate, long supplierid, bool IsBilled, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -26,6 +26,7 @@
                     new SqlParameter("@flag", "SERCH"),
                     //!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                     new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@isbilled", IsBilled),
                     new SqlParameter("@searchcriteria", search),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),

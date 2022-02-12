@@ -240,8 +240,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type, fk_accounting_category) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type, @fk_accounting_category); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -251,7 +251,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@account_number",model.account_number),
                     new SqlParameter("@account_parent",model.account_parent),
                     new SqlParameter("@label", model.label),
-                    new SqlParameter("@fk_accounting_category","0"),
+                    //new SqlParameter("@fk_accounting_category","0"),
                     new SqlParameter("@active","1"),
                     new SqlParameter("@reconcilable","0"),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),

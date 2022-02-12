@@ -175,6 +175,15 @@
                                         <input type="text" id="txtPublishDate" class="form-control billinfo" placeholder="Publish Date (MM/DD/YYYY)" autocomplete="off" />
                                     </div>
                                 </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlstatus" class="form-control">
+                                            <option value="publish">Publish</option>
+                                            <option value="private">Private</option> 
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div id="divdayexpire" class="form-group d-flex">
                                     <label class="col-sm-3 control-label">Days to expire</label>
@@ -187,7 +196,7 @@
                                     <div class="col-sm-9">
                                         <select id="ddlRecipientemail" class="form-control">
                                             <option value="none">None</option>
-                                            <option value="product" selected="selected">Use product</option>                                        
+                                            <option value="product" selected="selected">Use product</option>
                                         </select>
                                     </div>
                                 </div>

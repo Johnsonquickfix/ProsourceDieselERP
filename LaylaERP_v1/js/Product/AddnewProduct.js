@@ -992,6 +992,7 @@ function AddProduct() {
     saleprice = $("#txtsaleprice").val();
     taxstatus = $("#ddltaxstatus").val();
     classtax = $("#ddlclasstax").val();
+    pdstatus = $("#ddlstatus").val();
     sku = $("#txtsku").val();    
     enableStockval = enableStock;
     Stockquantity = $("#txtStockquantity").val();
@@ -1062,7 +1063,8 @@ function AddProduct() {
             PublishDate: date_publish,
             _gift_card: giftcard,
             _gift_card_expiration_days: dayexpire,
-            _gift_card_template_default_use_image: Recipientemail
+            _gift_card_template_default_use_image: Recipientemail,
+            post_status: pdstatus
         }
         var checkstr = confirm('Want to save/update product?');
         if (checkstr == true) {
@@ -1164,7 +1166,10 @@ function GetDataByID(order_id) {
             if (i[0].taxclass == "" || i[0].taxclass == null)
                 $('#ddlclasstax').val("standard").trigger('change');
             else
-                $('#ddlclasstax').val(i[0].taxclass).trigger('change');
+                $('#ddlclasstax').val(i[0].taxclass).trigger('change'); 
+            
+            $('#ddlstatus').val(i[0].post_status).trigger('change');
+
             $("#txtsku").val(i[0].sku);
           //  console.log(i[0].Publish_Date);
             if (i[0].Publish_Date != null)

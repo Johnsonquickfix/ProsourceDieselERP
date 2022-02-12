@@ -149,6 +149,21 @@
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
         successModal(pay_mode, pay_id, false, false);
     });
+    $(document).on("click", "#btnSendMail", function (t) {
+        t.preventDefault(); let option = { order_id: parseInt($('#hfOrderNo').val()) || 0 };
+        swal.queue([{
+            title: 'Do you want send invoice in mail?', confirmButtonText: 'Yes, Sent it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    swal.showLoading();
+                    $.get('/order/order-sendinvoice', option).then(response => {
+                        if (response.status) { swal('Success', 'Mail send successfully.', 'success'); }
+                        else swal('Error!', 'Something went wrong, please try again.', 'error');
+                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
+                });
+            }
+        }]);
+    });
     /*start add order item meta*/
     $(document).on("click", ".add_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
@@ -712,7 +727,8 @@ function getOrderInfo() {
 
                     if (data[0].is_edit == '1') {
                         if (data[0].is_shiped > 0) {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
+                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger" id="btnSendMail" data-toggle="tooltip" title="Send Order invoice in Mail"><i class="fas fa-envelope"></i> Send Mail</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                         }
                         else {

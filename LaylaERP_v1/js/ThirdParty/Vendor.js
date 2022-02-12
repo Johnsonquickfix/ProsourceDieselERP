@@ -615,6 +615,10 @@ $('#btnNextTab10').click(function (e) {
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');
 });
+$('#btnNextTab11').click(function (e) {
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});
 $('#btnNextTab7').click(function (e) {
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');

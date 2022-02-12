@@ -76,14 +76,14 @@
         <div style="margin:0 15px 20px; padding:15px 0; border-bottom:1px solid #ddd; background-color:#f6f6f6;">
             <div style="margin:0 auto;">
                 <span style="display: block;">
-                    <strong style="width:200px; display:inline-block; text-align:left;">Sub-Total:</strong><span>@String.Format("${0:0.00}", @Model.GrassAmount)</span>
+                    <strong style="width:200px; display:inline-block; text-align:left;">Sub-Total:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", @Model.GrassAmount)</span>
                 </span>
                 
                 <span style="display:block;">
-                    <strong style="width:200px; display:inline-block; text-align:left;">Shipping:</strong><span>@String.Format("${0:0.00}", @Model.TotalShipping)</span>
+                    <strong style="width:200px; display:inline-block; text-align:left;">Shipping:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", @Model.TotalShipping)</span>
                 </span>
                 <span style="display:block;">
-                    <strong style="width:200px; display:inline-block; text-align:left;">Sale Tax:</strong><span>@String.Format("${0:0.00}", @Model.TotalTax)</span>
+                    <strong style="width:200px; display:inline-block; text-align:left;">Sale Tax:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", @Model.TotalTax)</span>
                 </span>
              
                

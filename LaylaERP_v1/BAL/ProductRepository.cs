@@ -1227,6 +1227,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_content", model.post_content),
                     new SqlParameter("@post_title", model.post_title),
                     new SqlParameter("@post_name", model.post_name),
+                    new SqlParameter("@post_status", model.post_status),
                     new SqlParameter("@post_modified",model.PublishDate),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

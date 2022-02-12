@@ -732,8 +732,9 @@ function ReSendGiftCard() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status == true) {
-                swal('Success', 'Email send successfully.', "success");
-                location.href = "../../Giftcard/GiftCardList";
+                //swal('Success', 'Email sent.', "success");
+                //location.href = "../../Giftcard/GiftCardList";
+                swal('Success', 'Email sent.', "success").then(function () { swal.close(); location.href = "../../Giftcard/GiftCardList"; });
             }
             else {
                 swal('Error', result.message, "error").then((result) => { return false; }); }

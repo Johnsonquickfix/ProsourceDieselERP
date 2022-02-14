@@ -160,11 +160,11 @@
         successModal(pay_mode, pay_id, false, false);
     });
     $(document).on("click", "#btnDownloadinPdf", function (t) {
-        t.preventDefault(); let order_id = parseInt($('#hfOrderNo').val()) || 0;
-        let doc = new jsPDF();
-        let specialElementHandlers = { '#editor': function (element, renderer) { return true; } };
-        doc.fromHTML($('#billModal modal-body').html(), 15, 15, { 'width': 170, 'elementHandlers': specialElementHandlers });
-        doc.save(order_id + '.pdf');
+        t.preventDefault();
+        let order_id = parseInt($('#hfOrderNo').val()) || 0;
+        var options = {};
+        var pdf = new jsPDF('p', 'pt', 'a4');
+        pdf.addHTML($("#tbprint"), 15, 15, options, function () { pdf.save(order_id + '.pdf'); });
     });
     $(document).on("click", "#btnSendMail", function (t) {
         t.preventDefault(); let option = { order_id: parseInt($('#hfOrderNo').val()) || 0 };
@@ -225,6 +225,14 @@
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
+function Base64ToBytes(base64) {
+    var s = window.atob(base64);
+    var bytes = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) {
+        bytes[i] = s.charCodeAt(i);
+    }
+    return bytes;
+};
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Get New Order No ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function NewOrderNo() {
     let cus_id = parseInt($("#ddlUser").val()) || 0, oid = 0, postMetaxml = [];
@@ -2406,7 +2414,7 @@ function successModal(paymode, id, is_mail, is_back) {
 
     var myHtml = '';
     myHtml += '<div style="margin:0;padding:0;color: #4f4f4f;font-family: Arial, sans-serif;">';
-    myHtml += '<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
+    myHtml += '<table id="tbprint" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
     myHtml += '<tr>';
     myHtml += '<td align="center" style="padding:0;">';
     myHtml += '<table role="presentation" style="width:602px;border-collapse:collapse;border-spacing:0;text-align:left;">';

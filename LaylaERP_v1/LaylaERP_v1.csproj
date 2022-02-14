@@ -633,6 +633,8 @@
     <Content Include="Images\Customer.png" />
     <Content Include="Images\datagrid_icons.png" />
     <Content Include="Images\datebox_arrow.png" />
+    <Content Include="Images\gift-card-layla.png" />
+    <Content Include="Images\gift-card-layla_v1-600x325.png" />
     <Content Include="Images\gift-card.png" />
     <Content Include="Images\home-404.jpg" />
     <Content Include="Images\layla1-logo.png" />

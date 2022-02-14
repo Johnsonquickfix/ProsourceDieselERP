@@ -240,8 +240,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type, fk_accounting_category) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type, @fk_accounting_category); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -251,7 +251,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@account_number",model.account_number),
                     new SqlParameter("@account_parent",model.account_parent),
                     new SqlParameter("@label", model.label),
-                    new SqlParameter("@fk_accounting_category","0"),
+                    //new SqlParameter("@fk_accounting_category","0"),
                     new SqlParameter("@active","1"),
                     new SqlParameter("@reconcilable","0"),
                     new SqlParameter("@labelshort",model.labelshort ?? (object)DBNull.Value),
@@ -530,8 +530,8 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
-                                + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
+                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name, subledger_label FROM erp_accounting_bookkeeping eab"
+                                + " left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (userstatus != null)
                 {
                     strWhr += " and (thirdparty_code ='" + userstatus + "') ";

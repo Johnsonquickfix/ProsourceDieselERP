@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "NewVendor";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -38,6 +39,7 @@
                 <li><a href="#tab_7" data-toggle="tab"><span title="Vendor products & services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
                 <li><a href="#tab_8" data-toggle="tab"><span title="Vendor payments" data-toggle="tooltip">Payments</span></a></li>
                 <li><a href="#tab_11" data-toggle="tab"><span title="Vendor purchase order" data-toggle="tooltip">Purchase Order</span></a></li>
+                <li><a href="#tab_12" data-toggle="tab"><span title="Vendor sales po" data-toggle="tooltip">Sales PO</span></a></li>
                 <li><a href="#tab_9" data-toggle="tab"><span title="Vendor linked warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
                 <li><a href="#tab_10" data-toggle="tab"><span title="Vendor linked files" data-toggle="tooltip">Linked Files</span></a></li>
 
@@ -246,14 +248,14 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         @*<div class="form-group">
-                                    <label for="Balance">Payment Type</label>
-                                    <select class="form-control" id="ddlPaymentType">
-                                        <option value="-1">Please Select Payment Type</option>
-                                        <option value="banktranser">Bank Transfer</option>
-                                        <option value="cheque">Cheque</option>
-                                        <option value="creditcard">Credit Card</option>
-                                    </select>
-                                </div>*@
+                                                <label for="Balance">Payment Type</label>
+                                                <select class="form-control" id="ddlPaymentType">
+                                                    <option value="-1">Please Select Payment Type</option>
+                                                    <option value="banktranser">Bank Transfer</option>
+                                                    <option value="cheque">Cheque</option>
+                                                    <option value="creditcard">Credit Card</option>
+                                                </select>
+                                            </div>*@
                                         <div class="form-group">
                                             <label class="control-label " for="IncoTerm">IncoTerm</label>
                                             <div class="d-flex">
@@ -872,9 +874,9 @@
                                             <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label><br />
                                         </div>
                                         @*<div class="form-group form-check">
-                                    <input type="checkbox" id="chkTaxIncludedinprice" />
-                                    <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
-                                </div>*@
+                                                <input type="checkbox" id="chkTaxIncludedinprice" />
+                                                <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
+                                            </div>*@
 
                                         <div class="form-group">
                                             <input type="checkbox" id="chkShippingTaxIncludedinprice" />
@@ -975,16 +977,16 @@
                     </div>
                 </div>
                 @*<div class="tab-pane" id="tab_7">
-            <div id="payments">
+                        <div id="payments">
 
-                <div class="box-footer">
-                    <div class="text-right">
-                        <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
-                    </div>
-                </div>
-            </div>
+                            <div class="box-footer">
+                                <div class="text-right">
+                                    <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
+                                </div>
+                            </div>
+                        </div>
 
-        </div>*@
+                    </div>*@
                 <div class="tab-pane" id="tab_7">
                     <div id="aditional-info">
                         <div class="row">
@@ -1042,17 +1044,17 @@
                                 <div class="box-body">
                                     <div class="alignleft actions bulkactions">
                                         @*<select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
-                                    <option value="0">Select Status</option>
-                                    <option value="1">Draft</option>
-                                    <option value="3">Approved</option>
-                                    <option value="7">Canceled</option>
-                                    <option value="8">Refused</option>
-                                </select>
-                                <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
+                                                <option value="0">Select Status</option>
+                                                <option value="1">Draft</option>
+                                                <option value="3">Approved</option>
+                                                <option value="7">Canceled</option>
+                                                <option value="8">Refused</option>
+                                            </select>
+                                            <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>*@
                                     </div>
                                     @*<label class="control-label col-sm-2">
-                                List of purchase order/invoices
-                            </label>*@
+                                            List of purchase order/invoices
+                                        </label>*@
                                     <div class="form-group col-sm-4">
                                         <select class="form-control select2" id="ddlInvoiceServices" style="width:100%">
                                             @*<option value="1">Purchase orders</option>*@
@@ -1096,17 +1098,23 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="box-body">
-                                    <div class="alignleft actions bulkactions col-sm-4">
-                                        <select class="form-control select2" id="ddlPoOrderStatus" placeholder="Select Status">
-                                            <option value="0">Select Status</option>
-                                            <option value="1">Draft</option>
-                                            <option value="3">Approved</option>
-                                            <option value="5">Received Partial</option>
-                                            <option value="6">Received All</option>
-                                            @*<option value="7">Canceled</option>*@
-                                            <option value="8">Disapprove</option>
-                                        </select>
-                                        <button type="button" id="btnPosearch"><span title="Click here to search status of purchase order" data-placement="bottom" data-toggle="tooltip">Search</span></button>
+                                    <div class="form-inline">
+                                        <div class="form-group mx-sm-3 mb-2">
+                                            <select class="form-control select2" id="ddlPoOrderStatus" placeholder="Select Status">
+                                                <option value="0">Select Status</option>
+                                                @*<option value="1">Draft</option>*@
+                                                <option value="3">Approved</option>
+                                                <option value="5">Received Partial</option>
+                                                <option value="6">Received All</option>
+                                                @*<option value="7">Canceled</option>*@
+                                                @*<option value="8">Disapprove</option>*@
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                                        </div>
+                                        <button type="button" class="btn btn-danger" id="btnPosearch"><span title="Click here to search purchase order" data-placement="bottom" data-toggle="tooltip">Search</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -1141,6 +1149,60 @@
                         <div class="box-footer">
                             <div class="text-right">
                                 <button type="button" id="btnNextTab10" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_12">
+                    <div id="aditional-info">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box-body">
+                                    <div class="form-inline">
+                                        <div class="form-group mx-sm-3 mb-2">
+                                            <select class="form-control select2" id="ddlInvoice_NonInvoice" placeholder="Select Status">
+                                                <option value="0">Non-Invoiced</option>
+                                                <option value="1">Invoiced</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input id="txtInvoiceDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                                        </div>
+                                        <button type="button" class="btn btn-danger" id="btnSalesPosearch"><span title="Click here to search sales order" data-placement="bottom" data-toggle="tooltip">Search</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dtpoinvoice" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>PO No.</th>
+                                                            <th>Date</th>
+                                                            <th>Invoice No</th>
+                                                            <th>SO No</th>
+                                                            @*<th>Vendor Name</th>*@
+                                                            <th>Address</th>
+                                                            <th>Zip Code</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab11" class="btn btn-danger "><span title="Go to next tab" data-placement="top" data-toggle="tooltip">Next</span></button>
                             </div>
                         </div>
                     </div>
@@ -1243,48 +1305,48 @@
                         </div>
                     </div>
                     @*<div id="linkWarehouse">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box-body">
-                            <label class="control-label col-sm-1">Warehouse</label>
-                            <div class="form-group col-sm-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <label class="control-label col-sm-1">Warehouse</label>
+                                        <div class="form-group col-sm-6">
 
-                                <select class="form-control" id="ddlWarehouseList"></select>
-                            </div>
+                                            <select class="form-control" id="ddlWarehouseList"></select>
+                                        </div>
 
-                            <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+                                        <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
 
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
-                                            <thead>
-                                                <tr style="text-align:center;">
-                                                    <th>Vendor Name</th>
-                                                    <th>Warehouse</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-footer">
-                    <div class="text-right">
-                        @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
-                    </div>
-                </div>
-            </div>*@
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                        <thead>
+                                                            <tr style="text-align:center;">
+                                                                <th>Vendor Name</th>
+                                                                <th>Warehouse</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <div class="text-right">
+                                    @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                                </div>
+                            </div>
+                        </div>*@
                 </div>
             </div>
         </div>
@@ -1523,5 +1585,4 @@
     passwordcheck();
 </script>
 
-
-
+<script src="@Url.Content("~/js/Proposals/ProposalPrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

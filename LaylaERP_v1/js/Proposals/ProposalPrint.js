@@ -30,11 +30,11 @@ function PrintProposals(id) {
         printmodal(false);
         $.ajaxSetup({ async: false });
         $.get('/proposals/proposals-print', { strValue1: id }).done(function (result) {
-            printinvoice(id, result,  false);
+            print_invoice(id, result,  false);
         }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
     }
 }
-function printinvoice(id, result, is_inv) {
+function print_invoice(id, result, is_inv) {
     let data = JSON.parse(result.data); console.log(data);
     let inv_title = is_inv ? 'Invoice' : 'Vendor Sales PO';
     let so_no = parseInt(data['po'][0].fk_projet) || 0;
@@ -286,23 +286,23 @@ function printinvoice(id, result, is_inv) {
     //}
 }
 
-function getInvoicePrint(id) {
-    if (id > 0) {
-        printmodal(true);
-        var option = { strValue1: id };
-        $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
-            success: function (result) {
-                try {
-                    printinvoice(id, result, false, true);
-                }
-                catch (error) { swal('Alert!', "something went wrong.", "error"); }
-            },
-            complete: function () { },
-            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
-        });
-    }
-}
+//function getInvoicePrint(id) {
+//    if (id > 0) {
+//        printmodal(true);
+//        var option = { strValue1: id };
+//        $.ajax({
+//            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
+//            success: function (result) {
+//                try {
+//                    print_invoice(id, result, false, true);
+//                }
+//                catch (error) { swal('Alert!', "something went wrong.", "error"); }
+//            },
+//            complete: function () { },
+//            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
+//        });
+//    }
+//}
 
 function number_format(number, decimals, decPoint, thousandsSep) {
     //   example 1: number_format(1234.56)

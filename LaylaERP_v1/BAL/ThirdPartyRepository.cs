@@ -1349,7 +1349,7 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataTable GetVendorPurchaseOrderList(string userstatus, string VendorID, int postatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetVendorPurchaseOrderList(string VendorID, int postatus, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -1366,18 +1366,20 @@ namespace LaylaERP.BAL
                                + " where 1 = 1 and p.fk_projet = 0 and p.fk_supplier ='" + VendorID + "'";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                    //strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                    strWhr +=" and concat(convert(varchar, p.rowid), '', isnull(p.ref, ''), ' ', isnull(p.ref_ext, ''), ' ', isnull(v.name, ''), ' ', isnull(v.address, ''), ' ', isnull(v.town, ''), ' ', convert(varchar, p.fk_projet), ' ',"
+                    + "wr.address, ', ', wr.city, ', ', wr.town, ' ', wr.zip, ' ', wr.country, ' ', isnull(v.phone, ''), ' ', convert(varchar, total_ttc), ' ',"
+                    + "case when convert(date, p.date_livraison) < DATEADD(MINUTE, -240, GETUTCDATE()) then 'Past Due' else '' end) like '%" + searchid + "%'";
                 }
-                //if (userstatus != null)
-                //{
-                //        strWhr += " and (v.VendorStatus ='" + userstatus + "') ";
+                if (fromdate != null)
+                {
+                    strWhr += " and convert(date, p.date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101)) ";
+                }
+                if (postatus == 0)
+                {
+                    strWhr += " and (p.fk_status in (3,5,6)) ";
 
-                //}
-                //if (userstatus != null)
-                //{
-                //    strWhr += " and (p.fk_supplier ='" + VendorID + "') ";
-
-                //}
+                }
                 if (postatus > 0)
                 {
                     strWhr += " and (p.fk_status ='" + postatus + "') ";
@@ -1391,6 +1393,38 @@ namespace LaylaERP.BAL
                                + " where 1 = 1 and p.fk_projet = 0 and p.fk_supplier ='" + VendorID + "'" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetProposals(DateTime? fromdate, DateTime? todate, long supplierid, bool IsBilled, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH"),
+                    //!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
+                    new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@isbilled", IsBilled),
+                    new SqlParameter("@searchcriteria", search),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir)
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_vendor_proposals_search", parameters);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());

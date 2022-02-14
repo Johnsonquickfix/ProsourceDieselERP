@@ -1873,6 +1873,7 @@ function SalesOrderGrid() {
     let vid = parseInt($('#hfid').val()) || 0;
     let sd = $('#txtInvoiceDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtInvoiceDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    //let _Invoice = $("#ddlInvoice_NonInvoice").val();
     if ($('#txtInvoiceDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtpoinvoice').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
@@ -1928,7 +1929,7 @@ function SalesOrderGrid() {
                     if (data > 0) return '#' + data; else return '';
                 }
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
+            //{ data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'address', title: 'Address', sWidth: "25%", render: function (data, type, dtrow) {
                     let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip + ' ' + dtrow.fk_country;

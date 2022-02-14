@@ -33,7 +33,7 @@
         if ($("#ddlbillcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); }
     });
     $(document).on("blur", "#txtshipzipcode", function (t) {
-        t.preventDefault(); 
+        t.preventDefault();
         if ($("#ddlshipcountry").val() == 'US') { $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
     });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
@@ -159,6 +159,13 @@
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
         successModal(pay_mode, pay_id, false, false);
     });
+    $(document).on("click", "#btnDownloadinPdf", function (t) {
+        t.preventDefault(); let order_id = parseInt($('#hfOrderNo').val()) || 0;
+        let doc = new jsPDF();
+        let specialElementHandlers = { '#editor': function (element, renderer) { return true; } };
+        doc.fromHTML($('#billModal modal-body').html(), 15, 15, { 'width': 170, 'elementHandlers': specialElementHandlers });
+        doc.save(order_id + '.pdf');
+    });
     $(document).on("click", "#btnSendMail", function (t) {
         t.preventDefault(); let option = { order_id: parseInt($('#hfOrderNo').val()) || 0 };
         swal.queue([{
@@ -249,11 +256,11 @@ function NewOrderNo() {
     );
     let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
-        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
-        //    result = JSON.parse(result);
-        //    if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
-        //    else { swal('Error', data[0].Response, "error"); }
-        //}, completeFun, errorFun, false);
+        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+            result = JSON.parse(result);
+            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+            else { swal('Error', data[0].Response, "error"); }
+        }, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }
@@ -738,7 +745,8 @@ function getOrderInfo() {
                     if (data[0].is_edit == '1') {
                         if (data[0].is_shiped > 0) {
                             $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
-                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger" id="btnSendMail" data-toggle="tooltip" title="Send Order invoice in Mail"><i class="fas fa-envelope"></i> Send Mail</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger" id="btnSendMail" data-toggle="tooltip" title="Send Order invoice in Mail"><i class="fas fa-envelope"></i> Send Mail</button>');
+                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                         }
                         else {
@@ -2390,6 +2398,7 @@ function successModal(paymode, id, is_mail, is_back) {
     modalHtml += '<div class="modal-footer">';
     if (is_back) modalHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
     else modalHtml += '<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">OK</button>';
+    modalHtml += ' <button type="button" class="btn btn-primary" id="btnDownloadinPdf" data-toggle="tooltip" title="Donload in PDF Invoice."><i class="fa fa-file-pdf"></i> Print in PDF</button>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
@@ -2441,7 +2450,7 @@ function successModal(paymode, id, is_mail, is_back) {
     myHtml += '<tfoot>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#SubTotal').text() + '</span></td></tr>';
     myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + $('#discountTotal').text() + '</span></td></tr>';
-    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $('#shippingTotal').text() + '</td></tr>';
+    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#shippingTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';
@@ -2470,7 +2479,7 @@ function successModal(paymode, id, is_mail, is_back) {
     $('#order_line_items > tr').each(function (index, tr) {
         var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
+        myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount.toFixed(2) + '</span></td></tr>';
     });
     $('#tblorder_details tbody').append(myHtml);
 

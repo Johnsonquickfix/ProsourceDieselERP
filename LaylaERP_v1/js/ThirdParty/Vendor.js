@@ -1802,7 +1802,7 @@ function PurchaseOrderGrid() {
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdatapurchaseorder').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, //scrollX: false, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -1835,11 +1835,13 @@ function PurchaseOrderGrid() {
             {
                 data: 'ref', sWidth: "10%", title: 'PO No',
                 render: function (id, type, full, meta) {
-                    if ($("#hfEdit").val() == "1") {
-                        //return '<a title="Click here to purchase order" data-toggle="tooltip" href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                        return '<a title="Click here to purchase order" data-toggle="tooltip" href="#">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    }
-                    else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
+                    //if ($("#hfEdit").val() == "1") {
+                    //    //return '<a title="Click here to purchase order" data-toggle="tooltip" href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    //    return '<a title="Click here to purchase order" data-toggle="tooltip" href="#">' + id + '</a> <a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    //}
+                    //else {
+                    return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    //}
                 }
             },
             { data: 'date_creation_s', title: 'Order Date', sWidth: "10%", render: function (id, type, full, meta) { return full.date_creation; } },
@@ -1873,7 +1875,7 @@ function SalesOrderGrid() {
     let vid = parseInt($('#hfid').val()) || 0;
     let sd = $('#txtInvoiceDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtInvoiceDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
-    //let _Invoice = $("#ddlInvoice_NonInvoice").val();
+    let _Invoice = $("#ddlInvoice_NonInvoice").val();
     if ($('#txtInvoiceDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtpoinvoice').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
@@ -1892,7 +1894,7 @@ function SalesOrderGrid() {
         },
         sAjaxSource: "/ThirdParty/GetProposalsList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid }, { name: "strValue4", value: '0' });
+            aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid }, { name: "strValue4", value: _Invoice });
 
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
@@ -1914,7 +1916,7 @@ function SalesOrderGrid() {
             {
                 'data': 'ref', sWidth: "15%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a href="proposals-view?id=' + full.id + '" title="Click here to view order preview" data-toggle="tooltip">PO-' + full.fk_projet + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + full.id + ');"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="#" title="Click here to view order preview" data-toggle="tooltip">PO-' + full.fk_projet + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + full.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },

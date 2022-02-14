@@ -1366,7 +1366,10 @@ namespace LaylaERP.BAL
                                + " where 1 = 1 and p.fk_projet = 0 and p.fk_supplier ='" + VendorID + "'";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                    //strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                    strWhr +=" and concat(convert(varchar, p.rowid), '', isnull(p.ref, ''), ' ', isnull(p.ref_ext, ''), ' ', isnull(v.name, ''), ' ', isnull(v.address, ''), ' ', isnull(v.town, ''), ' ', convert(varchar, p.fk_projet), ' ',"
+                    + "wr.address, ', ', wr.city, ', ', wr.town, ' ', wr.zip, ' ', wr.country, ' ', isnull(v.phone, ''), ' ', convert(varchar, total_ttc), ' ',"
+                    + "case when convert(date, p.date_livraison) < DATEADD(MINUTE, -240, GETUTCDATE()) then 'Past Due' else '' end) like '%" + searchid + "%'";
                 }
                 if (fromdate != null)
                 {

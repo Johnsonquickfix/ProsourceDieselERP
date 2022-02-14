@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
@@ -190,6 +191,10 @@ namespace LaylaERP.Controllers
             return View();
         }
         public ActionResult ForecastInventoryLSPowerBi()
+        {
+            return View();
+        }
+        public ActionResult POApprovedReport()
         {
             return View();
         }
@@ -862,6 +867,52 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetPOApproveList(SearchModel model)
+        {
+            string JSONresult = string.Empty; 
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                DataSet ds = ReportsRepository.GetPOApproveList(fromdate, todate);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { data = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SendPOMailReceve(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Non-Invoiced PO < b >#" + model.strValue2 + "</b>.<br />Please see below attached file.<br /><br /><br /><br />" ;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Non-Invoiced PO #" + model.strValue2 + ".", strBody, _html, "non-invoiced-po.html");
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
         }
 
     }

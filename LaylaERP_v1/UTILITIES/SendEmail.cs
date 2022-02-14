@@ -206,6 +206,52 @@
             }
             return result;
         }
+        public static string SendEmails_outer(string varReceipientEmailId, string strSubject, string strBody, string fileHtml, string filename)
+        {
+            string result = "Your mail has been sent successfuly !";
+            try
+            {
+                string SenderEmailID = "sales@laylaerp.com", SenderEmailPwd = "Presto55555!", SMTPServerName = "mail.laylaerp.com";
+                int SMTPServerPortNo = 587;
+                bool SSL = false;
+                DataTable dt = DAL.SQLHelper.ExecuteDataTable("Select SenderEmailID,SenderEmailPwd,SMTPServerName,SMTPServerPortNo,SSL from wp_system_settings where entity = 1;");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
+                    SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
+                    SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
+                    //SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
+                }
+                using (MailMessage mm = new MailMessage(SenderEmailID.ToString(), varReceipientEmailId, strSubject, strBody))
+                {
+                    mm.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = SMTPServerName.Trim(); // "smtp.gmail.com";
+                    smtp.EnableSsl = SSL;
+                    NetworkCredential NetworkCred = new NetworkCredential(SenderEmailID.Trim(), SenderEmailPwd.Trim());
+                    smtp.UseDefaultCredentials = true;//false
+                    smtp.Credentials = NetworkCred;
+                    //smtp.Timeout = 5000;
+                    //GlobalVariable.strSMTPServerPortNo = "587";
+                    smtp.Port = SMTPServerPortNo; // 587;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    if (!string.IsNullOrEmpty(fileHtml))
+                    {
+                        byte[] inputBytes = Encoding.UTF8.GetBytes(fileHtml);
+                        var stream = new System.IO.MemoryStream(inputBytes);
+                        mm.Attachments.Add(new Attachment(stream, filename));
+                    }
+                    smtp.Send(mm);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = "Please contact your Administrator!!";
+                //throw ex;
+            }
+            return result;
+        }
     }
 
 }

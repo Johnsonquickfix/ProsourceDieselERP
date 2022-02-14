@@ -498,6 +498,19 @@
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
+        [HttpGet]
+        [Route("order/order-sendinvoice")]
+        public JsonResult ResentOrderInvoice(OrderModel model)
+        {
+            bool status = true;
+            try
+            {
+                OrderRepository.OrderInvoiceMail(model.order_id);
+                return Json(new { status = status }, 0);
+            }
+            catch { status = false;  }
+            return Json(new { status }, 0);
+        }
         [HttpPost]
         public JsonResult GetCustomersOrderList(JqDataTableModel model)
         {

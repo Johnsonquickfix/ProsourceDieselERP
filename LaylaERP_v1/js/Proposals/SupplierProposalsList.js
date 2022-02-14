@@ -19,7 +19,7 @@
     $('#txtDate').val('');
     $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); LoadGrid(); });
     $.when(getVendor()).done(function () { LoadGrid(); });
-    $(document).on("change", "#ddlVendor", function (t) { t.preventDefault(); LoadGrid(); });
+    $(document).on("change", "#ddlVendor", function (t) { t.preventDefault(); LoadGrid(); LoadGridIPO(); });
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         let target = $(e.target).attr("href") // activated tab
         if (target == '#tabPO_01') LoadGrid();
@@ -64,7 +64,7 @@ function LoadGrid() {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid }, { name: "strValue4", value: '0' });
 
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            //console.log(aoData);
+            console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {

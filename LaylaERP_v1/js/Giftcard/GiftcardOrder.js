@@ -7,8 +7,11 @@
     var id = url.substring(url.lastIndexOf('/') + 1);
     if (id != "Giftcard") { disableall(); }
     else { $("#btnResendEmail").hide(); $("#ddlGiftcardStatus").hide(); $("#btnResendEmail").prop("disabled", true); }
-    $('#txtPostCode').on('keyup',function () {
-        checkZip(); isEdit(true);
+    //$('#txtPostCode').on('keyup',function () {
+    //    checkZip(); isEdit(true);
+    //});
+    $('#txtPostCode').on('change', function () {
+        if ($("#ddlCountry").val() == 'US' && $('#txtPostCode').val() != '') { checkZip(); } isEdit(true);
     });
     $('#ddlState').change(function () {
         checkZip(); isEdit(true);
@@ -23,26 +26,26 @@
         }
         else if (gc_status == "Send_to_recipient") {
             ReSendGiftCard();
-          
+
         }
         else if (gc_status == "Disable") {
             changeStatus();
         }
     });
-    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault();  AcceptPayment(); });
-    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Gift card order processed, waiting for payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) +''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
+    $("#GiftModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
+    $("#GiftModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); ActivityLog('Gift card order processed, waiting for payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + ''); window.location.href = window.location.origin + "/GiftCard/GiftCardList"; });
     $("#GiftModal").on("change", "#ddlPaymentMethod", function (t) {
         t.preventDefault();
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
         else { $('.podiumchannel').addClass('hidden'); }
     });
-   
+
 });
 function disableall() {
     $("#btnOrderCheckout").hide();
     $("#btnResendEmail").show();
     $("#btnOrderCheckout").prop("disabled", true);
-    $("#txtFirstName").prop("disabled", true); 
+    $("#txtFirstName").prop("disabled", true);
     $("#txtLastName").prop("disabled", true);
     $("#txtPhone").prop("disabled", true);
     $("#txtLastName").prop("disabled", true);
@@ -55,7 +58,7 @@ function disableall() {
     $("#txtAddress1").prop("disabled", true);
     $("#txtAddress2").prop("disabled", true);
     $("#txtCompany").prop("disabled", true);
- 
+
 }
 
 function checkZip() {
@@ -118,7 +121,7 @@ $("#btnGiftBackOrder").click(function () {
     localStorage.setItem("Orderdeliverydate", $("#EmployeeListdata").data('deliverydate'));
 });
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Gift Card ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-var todaydate = new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'});
+var todaydate = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
 function createPostMeta() {
     let oid = $('#hfOrderNo').val(), _total = parseFloat($('#orderTotal').text()) || 0.00;
     let postMetaxml = [];
@@ -203,7 +206,7 @@ function saveGiftCard() {
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add recipient.', "error").then((result) => { return false; }); return false; }
     let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-   /* $('#btnOrderCheckout').prop("disabled", true);*/
+    /* $('#btnOrderCheckout').prop("disabled", true);*/
     $('#btnOrderCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
@@ -220,7 +223,7 @@ function saveGiftCard() {
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide();  $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
+        complete: function () { $("#loader").hide(); $('.billinfo').prop("disabled", false); $('#btnOrderCheckout').text("Place Order"); isEdit(false); },
     });
     $('#btnOrderCheckout').text("Checkout");
     return false;
@@ -253,11 +256,11 @@ function GiftCardPaymentModal() {
     let billing_phone = $('#txtPhone').val(), billing_email = $('#txtSenderEmail').val();
 
     let shipping_first_name = $('#txtFirstName').val(), shipping_last_name = $('#txtLastName').val();
-    
+
     let shipping_address_1 = $('#txtAddress1').val(), shipping_address_2 = $('#txtAddress2').val();
     let shipping_city = $('#txtCity').val(), shipping_state = $('#ddlState').val(), shipping_postcode = $('#txtPostCode').val();
     let shipping_country = $('#ddlCountry').val();
-   // let pay_mathod = $('#lblOrderNo').data('pay_option');
+    // let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
     myHtml += '<div class="modal-dialog modal-lg">';
@@ -324,7 +327,7 @@ function GiftCardPaymentModal() {
     myHtml += '</span>';
     myHtml += '</div>';
     myHtml += '</div>';
-    
+
     myHtml += '<div class="col-md-6 podiumchannel">';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" checked="" value="' + billing_email + '"><label class="form-check-label">Email Channel</label></div>';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" value="' + billing_phone.replace(/[^0-9]/g, "") + '"><label class="form-check-label">SMS Channel</label></div>';
@@ -344,7 +347,7 @@ function GiftCardPaymentModal() {
     $("#GiftModal").modal({ backdrop: 'static', keyboard: false });
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtSenderEmail").val()); ActivityLog('Gift card proceed for paypal payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + '');}
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtSenderEmail").val()); ActivityLog('Gift card proceed for paypal payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + ''); }
     else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Gift card proceed for podium payment', '/Giftcard/Ordermeta/' + parseInt($('#hfOrderNo').val()) + ''); }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
@@ -402,7 +405,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
     let discountAmount = 0.00;
     let taxAmount = 0.00;
     _items.push({
-        name: $("#lblOrderNo").data("pname"), quantity: qty,unit_amount: { currency_code: "USD", value: rate },tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 },
+        name: $("#lblOrderNo").data("pname"), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 },
         discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
     });
     let paupal_xml = {
@@ -621,9 +624,9 @@ function successModal(paymode, id, is_mail) {
     }
 }
 function sendInvoice(paymode, id) {
-    
+
     let order_id = parseInt($('#hfOrderNo').val()) || 0;
-    let order_date = todaydate; 
+    let order_date = todaydate;
     let payment_method = paymode;
     let b_first_name = $('#txtFirstName').val(), b_last_name = $('#txtLastName').val();
     let b_company = $('#txtCompany').val();
@@ -655,7 +658,7 @@ function sendInvoice(paymode, id) {
         b_address_1: b_address_1, b_address_2: b_address_2, b_postcode: b_postcode, b_city: b_city, b_country: b_country, b_state: b_state, b_email: b_email, b_phone: b_phone,
         s_first_name: s_first_name, s_last_name: s_last_name, s_company: s_company, s_address_1: s_address_1, s_address_2: s_address_2, s_postcode: s_postcode, s_city: s_city, s_country: s_country, s_state: s_state,
         paypal_id: id, GrassAmount: GrassAmount, TotalTax: TotalTax, TotalShipping: TotalShipping,
-        NetTotal: NetTotal,OrderProducts: _item
+        NetTotal: NetTotal, OrderProducts: _item
     }
     $.ajax({
         type: "POST", url: '/Giftcard/SendPaypalInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
@@ -725,7 +728,7 @@ function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide()
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ReSendGiftCard ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function ReSendGiftCard() {
-    var obj = { order_id:parseInt($('#hfOrderNo').val()) }
+    var obj = { order_id: parseInt($('#hfOrderNo').val()) }
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Giftcard/ResendMailInvoice",
@@ -737,7 +740,8 @@ function ReSendGiftCard() {
                 swal('Success', 'Email sent.', "success").then(function () { swal.close(); location.href = "../../Giftcard/GiftCardList"; });
             }
             else {
-                swal('Error', result.message, "error").then((result) => { return false; }); }
+                swal('Error', result.message, "error").then((result) => { return false; });
+            }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { },

@@ -28,8 +28,14 @@
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
-    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); });
+    $(document).on("blur", "#txtbillzipcode", function (t) {
+        t.preventDefault();
+        if ($("#ddlbillcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); }
+    });
+    $(document).on("blur", "#txtshipzipcode", function (t) {
+        t.preventDefault(); 
+        if ($("#ddlshipcountry").val() == 'US') { $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
+    });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -115,7 +121,11 @@
     });
     $("#billModal").on("change", "#ddlCusBillingCountry", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); BindStateCounty("ddlCusBillingState", { id: $("#ddlCusBillingCountry").val() }); });
     $("#billModal").on("change", "#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
-    $("#billModal").on("change", "#txtCusBillingPostCode", function (t) { t.preventDefault(); let _zip = $(this).val(); GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip); });
+    $("#billModal").on("change", "#txtCusBillingPostCode", function (t) {
+        t.preventDefault(); let _zip = $(this).val();
+        if ($("#ddlCusBillingCountry").val() == 'CA') return false;
+        GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip);
+    });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -148,6 +158,21 @@
         let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
         successModal(pay_mode, pay_id, false, false);
+    });
+    $(document).on("click", "#btnSendMail", function (t) {
+        t.preventDefault(); let option = { order_id: parseInt($('#hfOrderNo').val()) || 0 };
+        swal.queue([{
+            title: 'Do you want send invoice in mail?', confirmButtonText: 'Yes, Sent it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    swal.showLoading();
+                    $.get('/order/order-sendinvoice', option).then(response => {
+                        if (response.status) { swal('Success', 'Mail send successfully.', 'success'); }
+                        else swal('Error!', 'Something went wrong, please try again.', 'error');
+                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
+                });
+            }
+        }]);
     });
     /*start add order item meta*/
     $(document).on("click", ".add_order_item_meta", function (t) {
@@ -224,11 +249,11 @@ function NewOrderNo() {
     );
     let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
-        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
-            result = JSON.parse(result);
-            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
-            else { swal('Error', data[0].Response, "error"); }
-        }, completeFun, errorFun, false);
+        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+        //    result = JSON.parse(result);
+        //    if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+        //    else { swal('Error', data[0].Response, "error"); }
+        //}, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }
@@ -712,7 +737,8 @@ function getOrderInfo() {
 
                     if (data[0].is_edit == '1') {
                         if (data[0].is_shiped > 0) {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
+                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger" id="btnSendMail" data-toggle="tooltip" title="Send Order invoice in Mail"><i class="fas fa-envelope"></i> Send Mail</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                         }
                         else {

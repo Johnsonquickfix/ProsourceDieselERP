@@ -29,12 +29,12 @@
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     $(document).on("blur", "#txtbillzipcode", function (t) {
-        t.preventDefault(); if ($("#ddlbillcountry").val() == 'CA') return false;
-        GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode"));
+        t.preventDefault();
+        if ($("#ddlbillcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); }
     });
     $(document).on("blur", "#txtshipzipcode", function (t) {
-        t.preventDefault(); $("#loader").show(); if ($("#ddlshipcountry").val() == 'CA') return false;
-        GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode"));
+        t.preventDefault(); 
+        if ($("#ddlshipcountry").val() == 'US') { $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
     });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
@@ -249,11 +249,11 @@ function NewOrderNo() {
     );
     let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
-        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
-            result = JSON.parse(result);
-            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
-            else { swal('Error', data[0].Response, "error"); }
-        }, completeFun, errorFun, false);
+        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+        //    result = JSON.parse(result);
+        //    if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+        //    else { swal('Error', data[0].Response, "error"); }
+        //}, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }

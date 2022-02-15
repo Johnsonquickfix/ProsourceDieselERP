@@ -104,7 +104,7 @@ function AccountJournalList(is_date) {
                 }
             },
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
-            { data: 'subledger_label', title: 'Subledger Label', sWidth: "15%" },
+            { data: 'subledger_label', title: 'Label', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
             { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
             { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },

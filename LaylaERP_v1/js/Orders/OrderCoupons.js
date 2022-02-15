@@ -76,3 +76,15 @@ function groupArrayOfObjects(list, key) {
 };
 function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null'); }
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
+
+function toDataURL(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        var reader = new FileReader();
+        reader.onloadend = function () { callback(reader.result); }
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+}

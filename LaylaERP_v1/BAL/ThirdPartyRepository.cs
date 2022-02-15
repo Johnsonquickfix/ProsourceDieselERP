@@ -681,14 +681,21 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                if (country == "CA")
+                //if (country == "CA")
+                //{
+                //    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName");
+                //}
+                //else
+                //{
+                //    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName");
+                //}
+                string strwhere = "";
+                if (country != null)
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName");
+                    strwhere = "and Country='" + country + "'";
                 }
-                else
-                {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName");
-                }
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_statelist  where (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') " + strwhere + " ;");
+                
             }
             catch (Exception ex)
             { throw ex; }

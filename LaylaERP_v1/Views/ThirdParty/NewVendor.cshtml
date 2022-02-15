@@ -1473,8 +1473,30 @@
                 }));
         }
         SearchSelect("#ddlState");
-        SearchSelect("#ddlContactState");
+        SearchSelect1("#ddlContactState");
         function SearchSelect(ddl) {
+            $(ddl).select2({
+                allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                ajax: {
+                    url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) {
+                        var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+                        return JSON.stringify(obj);
+                    },
+                    processResults: function (data) {
+                        var jobj = JSON.parse(data);
+                        return {
+                            results: $.map(jobj, function (item) {
+                                return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State }
+                            })
+                        };
+                    },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
+        }
+
+        function SearchSelect1(ddl) {
             $(ddl).select2({
                 allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                 ajax: {
@@ -1495,6 +1517,7 @@
                 }
             });
         }
+
         $('#txtZipCode').change(function () {
             City = $("#ddlCity").val();
             State = $("#ddlState").val();

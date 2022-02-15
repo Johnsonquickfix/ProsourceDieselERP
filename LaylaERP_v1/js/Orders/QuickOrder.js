@@ -160,11 +160,53 @@
         successModal(pay_mode, pay_id, false, false);
     });
     $(document).on("click", "#btnDownloadinPdf", function (t) {
-        t.preventDefault(); let order_id = parseInt($('#hfOrderNo').val()) || 0;
-        let doc = new jsPDF();
-        let specialElementHandlers = { '#editor': function (element, renderer) { return true; } };
-        doc.fromHTML($('#billModal modal-body').html(), 15, 15, { 'width': 170, 'elementHandlers': specialElementHandlers });
-        doc.save(order_id + '.pdf');
+        t.preventDefault();
+        let order_id = parseInt($('#hfOrderNo').val()) || 0;
+        var options = {};
+        var pdf = new jsPDF('p', 'pt', 'a4');
+        pdf.addHTML($("#tbprint"), 15, 15, options, function () { pdf.save(order_id + '.pdf'); });
+
+        //var elementHTML = document.getElementById('tbprint');
+
+        //html2canvas(elementHTML, {
+        //    useCORS: true,
+        //    onrendered: function (canvas) {
+        //        var pdf = new jsPDF('p', 'pt', 'a4');
+
+        //        var pageHeight = 980;
+        //        var pageWidth = 900;
+        //        for (var i = 0; i <= elementHTML.clientHeight / pageHeight; i++) {
+        //            var srcImg = canvas;
+        //            var sX = 0;
+        //            var sY = pageHeight * i; // start 1 pageHeight down for every new page
+        //            var sWidth = pageWidth;
+        //            var sHeight = pageHeight;
+        //            var dX = 0;
+        //            var dY = 0;
+        //            var dWidth = pageWidth;
+        //            var dHeight = pageHeight;
+
+        //            window.onePageCanvas = document.createElement("canvas");
+        //            onePageCanvas.setAttribute('width', pageWidth);
+        //            onePageCanvas.setAttribute('height', pageHeight);
+        //            var ctx = onePageCanvas.getContext('2d');
+        //            ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+
+        //            var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+        //            var width = onePageCanvas.width;
+        //            var height = onePageCanvas.clientHeight;
+
+        //            if (i > 0) // if we're on anything other than the first page, add another page
+        //                pdf.addPage(612, 864); // 8.5" x 12" in pts (inches*72)
+
+        //            pdf.setPage(i + 1); // now we declare that we're working on that page
+        //            pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width * .62), (height * .62)); // add content to the page
+        //        }
+
+        //        // Save the PDF
+        //        pdf.save('document.pdf');
+        //    }
+        //});
     });
     $(document).on("click", "#btnSendMail", function (t) {
         t.preventDefault(); let option = { order_id: parseInt($('#hfOrderNo').val()) || 0 };
@@ -1891,15 +1933,17 @@ function getItemShippingCharge(isFinalcal) {
         $.when(GetSRTaxRate()).done(function () {
             if (options.strValue4 == '') return false;
             $.post('/Orders/GetProductShipping', options).then(response => {
-                response = JSON.parse(response);
-                $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                    let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
-                    if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
-                    else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
-                    let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
-                    if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
-                    else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
-                });
+                if (response != '') {
+                    response = JSON.parse(response);
+                    $("#order_line_items > tr.paid_item").each(function (index, tr) {
+                        let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
+                        if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                        else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
+                        let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                        if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                        else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
+                    });
+                }
             }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
     }
@@ -2406,7 +2450,7 @@ function successModal(paymode, id, is_mail, is_back) {
 
     var myHtml = '';
     myHtml += '<div style="margin:0;padding:0;color: #4f4f4f;font-family: Arial, sans-serif;">';
-    myHtml += '<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
+    myHtml += '<table id="tbprint" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
     myHtml += '<tr>';
     myHtml += '<td align="center" style="padding:0;">';
     myHtml += '<table role="presentation" style="width:602px;border-collapse:collapse;border-spacing:0;text-align:left;">';
@@ -2414,7 +2458,8 @@ function successModal(paymode, id, is_mail, is_back) {
     myHtml += '<td align="center" style="padding: 10px 15px; background-color: #f8f8f8;">';
     myHtml += '<table role="presentation" style="width:100%;">';
     myHtml += '<tr>';
-    myHtml += '<td><img alt="Layla Logo" src="https://quickfix16.com/wp-content/themes/layla-white/images/logo.png"></td>';
+    //myHtml += '<td><img alt="Layla Logo" src="https://quickfix16.com/wp-content/themes/layla-white/images/logo.png"></td>';    
+    myHtml += '<td><img alt="Layla Logo" src="#" id="imgLogoprint"></td>';
     myHtml += '<td align="right">';
     myHtml += '<h1 style="font-size: 42px; margin:0px; font-style: italic; color: #4f4f4f">Thank you.</h1>';
     myHtml += '<h2 style="font-size: 20px; margin:0px; color: #4f4f4f">Your order has been received</h2>';
@@ -2484,6 +2529,10 @@ function successModal(paymode, id, is_mail, is_back) {
     $('#tblorder_details tbody').append(myHtml);
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
+    toDataURL('https://quickfix16.com/wp-content/themes/layla-white/images/logo.png', function (dataUrl) {
+        console.log('RESULT:', dataUrl);
+        $('#imgLogoprint').attr("src", dataUrl);
+    });
     //var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#billModal .modal-body').html() }
     //if ($('#txtbillemail').val().length > 5 && is_mail == true) {
     //    sendInvoice(paymode, id)

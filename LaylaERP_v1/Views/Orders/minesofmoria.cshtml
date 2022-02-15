@@ -467,7 +467,10 @@
 <div class="modal in printable " id="billModal" role="dialog" aria-hidden="true"></div>
 
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+<script type="text/javascript" src="~/Content/jspdf/jspdf.debug.js"></script>
+<script type="text/javascript" src="~/Content/jspdf/html2canvas.js"></script>
+@*<script src="~/Content/jspdf/jspdf.min.js"></script>*@
+
 <script src="@Url.Content("~/js/Orders/OrderCoupons.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Orders/QuickOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

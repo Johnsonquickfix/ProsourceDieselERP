@@ -1933,15 +1933,17 @@ function getItemShippingCharge(isFinalcal) {
         $.when(GetSRTaxRate()).done(function () {
             if (options.strValue4 == '') return false;
             $.post('/Orders/GetProductShipping', options).then(response => {
-                response = JSON.parse(response);
-                $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                    let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
-                    if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
-                    else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
-                    let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
-                    if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
-                    else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
-                });
+                if (response != '') {
+                    response = JSON.parse(response);
+                    $("#order_line_items > tr.paid_item").each(function (index, tr) {
+                        let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
+                        if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                        else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
+                        let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                        if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                        else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
+                    });
+                }
             }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
     }

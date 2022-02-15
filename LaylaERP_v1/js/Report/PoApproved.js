@@ -87,6 +87,23 @@ function PurchaseOrderGrid() {
             //{ data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
         ],
 
+        "dom": 'Bfrtip',
+        "buttons": [
+
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Export',
+                filename: function () {
+                    var d = new Date();
+                    return 'Non-InvoicedPO_' + $("#txtDate").val().replaceAll('/', '.') ;
+                },
+
+            },
+
+        ],
+
+
     });
 }
 
@@ -98,9 +115,21 @@ function SendPO_Approval() {
 
     var option = { strValue1: sd, strValue2: ed };
         // $.get("/Reception/GetReceveOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
-    $.get("/Reports/GetPOApproveList", option).then(response => { send_mail(1, response); }).catch(err => { });
+    $.get("/Reports/GetPOApproveList", option).then(response => {
+      //  $("#loader").show();
+       
+        let data = JSON.parse(response.data);
+      //  console.log(data['pod'].length);
+        if (data['pod'].length > 0) {
+            send_mail(1, response); 
+        }
+        else {
+            swal('Alert!', " No any PO on list for generate report", 'error');
+        }
+       // $("#loader").hide();
+    }).catch(err => { });
      
-}
+}   
 function send_mail(id, result) {
     let data = JSON.parse(result.data);
     //console.log('jsondata', result);
@@ -169,14 +198,17 @@ function send_mail(id, result) {
     //console.log(myHtml);
 
     let opt = { strValue1: po_authmail, strValue2: $("#txtDate").val().replaceAll('/', '.'), strValue3: myHtml }
-     console.log(opt);
+   //  console.log(opt);
     //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
     if (opt.strValue1.length > 1) {
         $.ajax({
             type: "POST", url: '/Reports/SendPOMailReceve', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            beforeSend: function () {
+                $("#loader").show();
+            },
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { }, async: false
+            complete: function () { swal('Success!', 'Mail sent successfuly !', 'success'); $("#loader").hide(); }//, async: false
         });
     }
 }

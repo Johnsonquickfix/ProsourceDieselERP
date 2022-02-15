@@ -18,19 +18,37 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strSql = "SELECT  post_id, Recipient,coalesce (Amount,'0') Amount,coalesce (Qty,'0') Qty,[Message],_billing_first_name FirstName,_billing_last_name LastName,_billing_country Country,_billing_state [State],_billing_city City, " +
-                    "_billing_address_1 Address, _billing_address_2 Address2,_billing_company Company, _billing_postcode ZipCode,_billing_phone PhoneNumber, " +
-                    "employee_id, employee_name, _billing_email sender_email FROM(SELECT  post_id, meta_key, meta_value, (Select top 1 Rlist.meta_value as Recipient from wp_woocommerce_order_items oi inner " +
-                    "join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join wp_woocommerce_order_itemmeta Rlist on oi.order_item_id = Rlist.order_item_id and Rlist.meta_key = 'wc_gc_giftcard_to_multiple' where order_id = meta.post_id) Recipient," +
-                    "(Select top 1 amt.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join " +
-                    "wp_woocommerce_order_itemmeta amt on oi.order_item_id = amt.order_item_id and amt.meta_key = 'wc_gc_giftcard_amount' where order_id = meta.post_id) Amount, " +
-                    "(Select top 1 qty.meta_value from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id " +
-                    "left join wp_woocommerce_order_itemmeta qty on oi.order_item_id = qty.order_item_id and qty.meta_key = '_qty' where order_id = meta.post_id) Qty, " +
-                    "(Select top 1 msg.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left " +
-                    "join wp_woocommerce_order_itemmeta msg on oi.order_item_id = msg.order_item_id and msg.meta_key = 'wc_gc_giftcard_message' where order_id = meta.post_id) [Message] " +
-                    "FROM wp_postmeta meta where post_id = (select order_id from wp_woocommerce_gc_cards where id = '" + id + "') ) AS SourceTable PIVOT(MIN([meta_value]) FOR[meta_key] IN " +
-                    "(_billing_first_name, _billing_last_name, _billing_country, _billing_state, _billing_city, _billing_address_1, _billing_address_2, _billing_company, _billing_postcode, _billing_phone, employee_id, employee_name, _billing_email)) " +
-                    "AS PivotOutput";
+                //string strSql = "SELECT  post_id, Recipient,coalesce (Amount,'0') Amount,coalesce (Qty,'0') Qty,[Message],_billing_first_name FirstName,_billing_last_name LastName,_billing_country Country,_billing_state [State],_billing_city City, " +
+                //    "_billing_address_1 Address, _billing_address_2 Address2,_billing_company Company, _billing_postcode ZipCode,_billing_phone PhoneNumber, " +
+                //    "employee_id, employee_name, _billing_email sender_email FROM(SELECT  post_id, meta_key, meta_value, (Select top 1 Rlist.meta_value as Recipient from wp_woocommerce_order_items oi inner " +
+                //    "join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join wp_woocommerce_order_itemmeta Rlist on oi.order_item_id = Rlist.order_item_id and Rlist.meta_key = 'wc_gc_giftcard_to_multiple' where order_id = meta.post_id) Recipient," +
+                //    "(Select top 1 amt.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left join " +
+                //    "wp_woocommerce_order_itemmeta amt on oi.order_item_id = amt.order_item_id and amt.meta_key = 'wc_gc_giftcard_amount' where order_id = meta.post_id) Amount, " +
+                //    "(Select top 1 qty.meta_value from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id " +
+                //    "left join wp_woocommerce_order_itemmeta qty on oi.order_item_id = qty.order_item_id and qty.meta_key = '_qty' where order_id = meta.post_id) Qty, " +
+                //    "(Select top 1 msg.meta_value as Recipient from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id left " +
+                //    "join wp_woocommerce_order_itemmeta msg on oi.order_item_id = msg.order_item_id and msg.meta_key = 'wc_gc_giftcard_message' where order_id = meta.post_id) [Message] " +
+                //    "FROM wp_postmeta meta where post_id = (select order_id from wp_woocommerce_gc_cards where id = '" + id + "') ) AS SourceTable PIVOT(MIN([meta_value]) FOR[meta_key] IN " +
+                //    "(_billing_first_name, _billing_last_name, _billing_country, _billing_state, _billing_city, _billing_address_1, _billing_address_2, _billing_company, _billing_postcode, _billing_phone, employee_id, employee_name, _billing_email)) " +
+                //    "AS PivotOutput";
+                string strSql = "SELECT post_id,(Select top 1 oim.meta_value as Recipient from wp_woocommerce_order_items oi"
+                                    + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'wc_gc_giftcard_to_multiple' where order_id = post_id ) Recipient,"
+                                    + " (Select top 1 oim.meta_value as Recipient from wp_woocommerce_order_items oi"
+                                    + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'wc_gc_giftcard_amount' where order_id = post_id) Amount, "
+                                    + " (Select top 1 oim.meta_value from wp_woocommerce_order_items oi"
+                                    + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = '_qty' where order_id = post_id) Qty, "
+                                    + " (Select top 1 oim.meta_value as Recipient from wp_woocommerce_order_items oi"
+                                    + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'wc_gc_giftcard_message' where order_id = post_id) [Message] ,"
+                                    + " max(case when meta_key = '_billing_first_name' then meta_value else '' end) FirstName,max(case when meta_key = '_billing_last_name' then meta_value else '' end) LastName,"
+                                    + " max(case when meta_key = '_billing_country' then meta_value else '' end) Country,max(case when meta_key = '_billing_state' then meta_value else '' end) [State],"
+                                    + " max(case when meta_key = '_billing_city' then meta_value else '' end) City,max(case when meta_key = '_billing_address_1' then meta_value else '' end) Address,"
+                                    + " max(case when meta_key = '_billing_address_2' then meta_value else '' end) Address2,max(case when meta_key = '_billing_company' then meta_value else '' end) Company, "
+                                    + " max(case when meta_key = '_billing_postcode' then meta_value else '' end) ZipCode,max(case when meta_key = '_billing_phone' then meta_value else '' end) PhoneNumber,"
+                                    + " max(case when meta_key = 'employee_id' then meta_value else '' end) employee_id,max(case when meta_key = 'employee_name' then meta_value else '' end) employee_name, "
+                                    + " max(case when meta_key = '_billing_email' then meta_value else '' end) sender_email"
+                                    + " FROM wp_woocommerce_gc_cards gc"
+                                    + " inner join wp_postmeta pm on pm.post_id = gc.order_id"
+                                    + " where id = '" + id + "' group by post_id";
                 DataTable result = SQLHelper.ExecuteDataTable(strSql);
                 return result;
             }

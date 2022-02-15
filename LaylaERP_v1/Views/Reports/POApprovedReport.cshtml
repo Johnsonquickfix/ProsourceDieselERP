@@ -34,8 +34,9 @@
                                 <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
                             </div>
                         </div>
-                        <div class="alignleft actions">
-                            <button type="button" id="btnsearch"   class="btn btn-primary btn-flat button">Generate Report</button>
+                        <div class="alignleft actions right">
+                            @*<button type="button" id="btnsearch" class="btn btn-primary btn-flat button">Send Mail</button>*@
+                            <button type="button" class="btn btn-danger" id="btnsearch" data-toggle="tooltip" title="Send non-invoiced PO in mail"><i class="fas fa-envelope"></i> Send Mail</button>
                         </div>
                     </div>
                 </div>
@@ -53,14 +54,12 @@
                                             <tr>
                                                 <th>PO No.</th>
                                                 <th>Invoice No</th>
-                                                 
                                                 <th>Warehouse</th>
                                                 <th>Destination</th>
                                                 <th>Amount</th>
                                                 <th>Planned date of delivery</th>
                                                 <th>Past Due</th>
-                                                <th>Status</th>
-                                              
+                                                <th>Status</th>                                              
                                             </tr>
                                         </thead>
                                     </table>

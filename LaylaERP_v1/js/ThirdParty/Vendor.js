@@ -142,6 +142,7 @@ $('#btnReset').click(function () {
     $('#USPS input:text').val('');
 })
 $('#btnNextTab1').click(function (e) {
+    debugger
     var url = window.location.pathname;
     var URL = url.substring(url.lastIndexOf('/') + 1);
     ID = $("#hfid").val();
@@ -194,34 +195,71 @@ $('#btnNextTab1').click(function (e) {
             City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
             Workinghours: WorkingHours, VendorStatus: VendorStatus, NatureofJournal: NatureofJournal, pwd: ConfirmPassword, fk_user: vendoruser_id
         }
-        $.ajax({
-            url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    $("#hfid").val(data.id);
-                    $("#txtContactPhone").mask("(999) 999-9999");
-                    $("#txtPhone").mask("(999) 999-9999");
-                    //swal('Alert!', data.message, 'success');
-                    var link = $('#mytabs .active').next().children('a').attr('href');
-                    $('#mytabs a[href="' + link + '"]').tab('show');
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide(); 
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+        if (URL == "NewVendor") {
+            if (Password == "") { swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); return false }) }
+            else if (ConfirmPassword == "") { swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); return false }); }
+            else if (Password !== ConfirmPassword) { swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); return false }); }
+            else {
+                $.ajax({
+                    url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#loader").show();
+                    },
+                    success: function (data) {
+                        if (data.status == true) {
+                            $("#hfid").val(data.id);
+                            $("#txtContactPhone").mask("(999) 999-9999");
+                            $("#txtPhone").mask("(999) 999-9999");
+                            //swal('Alert!', data.message, 'success');
+                            var link = $('#mytabs .active').next().children('a').attr('href');
+                            $('#mytabs a[href="' + link + '"]').tab('show');
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error')
+                        }
+                    },
+                    complete: function () {
+                        $("#loader").hide();
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+        }
+        else {
+            $.ajax({
+                url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        $("#hfid").val(data.id);
+                        $("#txtContactPhone").mask("(999) 999-9999");
+                        $("#txtPhone").mask("(999) 999-9999");
+                        //swal('Alert!', data.message, 'success');
+                        var link = $('#mytabs .active').next().children('a').attr('href');
+                        $('#mytabs a[href="' + link + '"]').tab('show');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                complete: function () {
+                    $("#loader").hide();
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
     }
 });
 $('#btnNextTab2').click(function (e) {

@@ -119,6 +119,8 @@ function PurchaseOrderGrid() {
 
             {
                 extend: 'pdfHtml5',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> PDF',
                 footer: true,
                 exportOptions: {
                     columns: [0, 1, 2, 3, 4, 5, 6, 7],

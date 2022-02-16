@@ -46,26 +46,15 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddBankAccount(BankModel model)
         {
-            if (ModelState.IsValid)
+            int ID = BankRepository.AddBankAccount(model);
+            if (ID > 0)
             {
-                if (model.rowid > 0)
-                {
-
-                }
-                else
-                {
-                    int ID = BankRepository.AddBankAccount(model);
-                    if (ID > 0)
-                    {
-                        return Json(new { status = true, message = "Bank data saved successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                }
+                return Json(new { status = true, message = "Bank data saved successfully!!", url = "" }, 0);
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
 
         public JsonResult GetAccountingAccount(SearchModel model)

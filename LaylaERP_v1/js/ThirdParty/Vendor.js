@@ -181,12 +181,12 @@ $('#btnNextTab1').click(function (e) {
     else if (Country == "-1") { swal('Alert', 'Please select country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
     else if (Phone == "") { swal('Alert', 'Please enter phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
     else if (EMail == "") { swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    else if (URL == "NewVendor")
-    {
-        if (Password == "") { swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); }) }
-        else if (ConfirmPassword == "") {swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
-        else if (Password !== ConfirmPassword) {swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
-    }
+    //else if (URL == "NewVendor")
+    //{
+    //    if (Password == "") { swal('Alert', 'Please enter password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); }) }
+    //    else if (ConfirmPassword == "") {swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
+    //    else if (Password !== ConfirmPassword) {swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });}
+    //}
     else {
         var obj = {
             rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,

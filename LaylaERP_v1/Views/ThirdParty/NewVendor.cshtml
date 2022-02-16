@@ -51,6 +51,7 @@
                         <input type="hidden" id="hfContactid" value="" />
                         <input type="hidden" id="hfWarehouseListid" value="" />
                         <input type="hidden" id="vendoruserid" />
+                        <input type="hidden" id="hfzipstatus" value="" />
                         <div class="box-header">
                             <h2 class="box-title">Vendor Info</h2>
                         </div>
@@ -1586,6 +1587,41 @@
         });
         $("#txtPaymentDate").datepicker({
             format: 'yyyy-mm-dd',
+        });
+
+        $('#ddlState').change(function () {
+            if ($("#txtZipCode").val() != '' && $("#ddlState").val() != null) {
+                City = $("#ddlCity").val();
+                State = $("#ddlState").val();
+                PostalCode = $("#txtZipCode").val();
+                var obj = {
+                    billing_state: State, billing_city: City, billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#hfzipstatus').val(data.status);
+                        } else {
+                            if ($('#ddlCountry').val() == "US") {
+                                $("#txtZipCode").val("");
+                                $('#hfzipstatus').val(data.status);
+                                swal('Alert', 'Zip code is not valid for the state', 'error').then(function () {
+                                    swal.close();
+                                    $('#txtZipCode').focus();
+                                });
+                            }
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'Something went wrong', 'error');
+                    },
+                })
+            }
         });
     })
     function CheckAll() {

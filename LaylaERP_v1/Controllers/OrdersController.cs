@@ -46,6 +46,7 @@
         {
             ViewBag.id = id;
             //clsAmazonPay.RefundTransaction(1,"uuuuuu", 4);
+            //clsAmazonPay.RefundTransaction_old(1, "uuuuuu", 4);
             return View();
         }
 

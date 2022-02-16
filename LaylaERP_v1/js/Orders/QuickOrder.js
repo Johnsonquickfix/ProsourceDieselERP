@@ -983,7 +983,7 @@ function getItemList(pid, vid, Qty) {
                 if (pr.reg_price > pr.sale_price) {
                     coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
                     //let pro_ids = [pr.variation_id, -1];
-                    let coupon_list = auto_coupon.filter(element => element.post_title_old == pr.product_id);
+                    let coupon_list = auto_coupon.filter(element => element.post_title_id == pr.product_id);
                     if (coupon_list.length > 0) {
                         coupon_list[0].coupon_amount = coupon_amt; //coupon_list[0].product_ids = pro_ids;
                         if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
@@ -1729,7 +1729,8 @@ function deleteAllCoupons(coupon_type) {
     }
     else if (coupon_type == 'friend_diff') {
         let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
-        $('#li_118').remove(); $('#li_611172').remove();
+        //$('#li_118').remove(); $('#li_611172').remove();
+        $('#li_memory_foam_mattress,#li_hybrid_mattress').remove();
         //$('#billCoupon li').each(function (index, li) {
         //    if ($(li).data('type') == 'diff' && ($(li).data('coupon') == '118' || $(li).data('coupon') == '611172')) {
         //        let id = $(li).data('coupon'), rq_prd_ids = [];
@@ -1757,7 +1758,8 @@ function deleteAllCoupons(coupon_type) {
         //});
     }
     else if (coupon_type == 'friend_auto') {
-        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
+        //$('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
+        $('#li_memory_foam_mattress,#li_hybrid_mattress').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
     }
     else if (coupon_type != '') {
         swal({ title: '', text: 'Would you like to remove this coupon?', type: "question", showCancelButton: true })
@@ -1778,7 +1780,7 @@ function deleteAllCoupons(coupon_type) {
                             //get diff Coupon
                             if (reg_price > sale_price) {
                                 coupon_amt = (reg_price - sale_price);
-                                let coupon_list = auto_coupon.filter(element => element.post_title == pid);
+                                let coupon_list = auto_coupon.filter(element => element.post_title_id == pid);
                                 if (coupon_list.length > 0) {
                                     coupon_list[0].coupon_amount = coupon_amt;
                                     if (coupon_list.length > 0) auto_code.push(coupon_list[0]);

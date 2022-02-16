@@ -495,6 +495,39 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetExportCoupons(string strValue1, string userstatus,  string searchid)
+        {
+            DataTable dt = new DataTable(); 
+            try
+            {
+                //string strWhr = string.Empty;
+                if (strValue1 == "0" || strValue1 == null)
+                    strValue1 = "";
+                if (userstatus == "0" || userstatus == null)
+                    userstatus = "";
+
+                SqlParameter[] parameters =
+               {
+
+                    new SqlParameter("@post_status", userstatus),
+                   new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@strValue1", strValue1), 
+                    new SqlParameter("@flag", "exp")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_coupon_search", parameters);
+               // ds.Tables[0].TableName = "item";
+                dt = ds.Tables[0];
+                 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
         public static DataTable AutoGenerateGetList(string strValue1, string userstatus, string strValue3, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

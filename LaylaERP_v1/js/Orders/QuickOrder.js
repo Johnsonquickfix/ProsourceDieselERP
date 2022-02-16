@@ -983,7 +983,7 @@ function getItemList(pid, vid, Qty) {
                 if (pr.reg_price > pr.sale_price) {
                     coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
                     //let pro_ids = [pr.variation_id, -1];
-                    let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
+                    let coupon_list = auto_coupon.filter(element => element.post_title_old == pr.product_id);
                     if (coupon_list.length > 0) {
                         coupon_list[0].coupon_amount = coupon_amt; //coupon_list[0].product_ids = pro_ids;
                         if (coupon_list.length > 0) auto_code.push(coupon_list[0]);

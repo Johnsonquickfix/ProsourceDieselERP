@@ -41,7 +41,7 @@
             parameters.Add("RefundAmount.Amount", refund_amount.ToString());
             parameters.Add("RefundAmount.CurrencyCode", "USD");
             parameters.Add("RefundReferenceId", "SO-" + order_id);
-            parameters.Add("SellerRefundNote", "");            
+            parameters.Add("SellerRefundNote", "");
             parameters.Add("Timestamp", DateTime.UtcNow.ToString("s") + "Z");
             parameters.Add("Version", "2013-01-01");
             //parameters.Add("SignatureMethod", "HmacSHA256");
@@ -133,7 +133,7 @@
                 .WithRefundReferenceId("SO-" + order_id)
                 .WithSellerRefundNote("")
                 .WithSoftDescriptor("");
-            client.Refund(refund);
+            var result = client.Refund(refund);
             //IDictionary<string, string> apiParametersDict = client.GetParameters();
 
             //CollectionAssert.AreEqual(apiParametersDict, expectedParamsDict);
@@ -194,9 +194,9 @@
         private static String CalculateStringToSignV2(IDictionary<String, String> parameters)
         {
             StringBuilder data = new StringBuilder();
-            IDictionary<String, String> sorted =
-                  new SortedDictionary<String, String>(parameters, StringComparer.Ordinal);
-            data.Append("POST");
+            IDictionary<String, String> sorted = new SortedDictionary<String, String>(parameters, StringComparer.Ordinal);
+            //data.Append("POST");
+            data.Append("GET");
             data.Append("\n");
             Uri endpoint = new Uri(base_url);
 

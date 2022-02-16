@@ -81,7 +81,7 @@ function PurchaseOrderGrid() {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
             { data: 'destination', title: 'Destination Address', sWidth: "30%" }, 
-            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$').display },            
+            { data: 'total_ttc', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$').display },
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { return full.date_livraison; } },
             { data: 'Status', title: 'Status', sWidth: "10%" },
             //{ data: 'date_modified_s', title: 'Modified Date', sWidth: "8%", render: function (id, type, full, meta) { return full.date_modified; } },
@@ -100,6 +100,68 @@ function PurchaseOrderGrid() {
                 },
 
             },
+            {
+                extend: 'print',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                title: function () {
+                    return "Layla Sleep Inc - Non-Invoiced PO";
+                },
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                },
+                filename: function () {
+                    //var from = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Non-InvoicedPO_' + $("#txtDate").val().replaceAll('/', '.');
+                },
+            },
+
+            {
+                extend: 'pdfHtml5',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> PDF',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+
+                },
+                customize: function (doc) {
+                    //doc.defaultStyle.alignment = 'right';
+                    doc.styles.tableHeader.alignment = 'left';
+                    // doc.styles.tableHeader[2].alignment = 'right';
+                    // doc.content[1].alignment = ['left', 'right', 'right'];
+
+                    doc.content[0].text = "Layla Sleep Inc - Non-Invoiced PO";
+                    doc.content[0].text.alignment = 'left';
+
+                    var rowCountd = table.rows().count() + 1;
+                    for (i = 0; i < rowCountd; i++) {
+                        doc.content[1].table.body[i][5].alignment = 'right';
+                    };
+
+                    var rowCount = doc.content[1].table.body.length;
+                    for (i = 1; i < rowCount; i++) {
+                        doc.content[1].table.body[i][5].alignment = 'right';
+                        //doc.content[1].table.body[i][1].alignment = 'right';
+
+                    }
+
+
+                    // doc.styles.tableHeader.alignment = ['left', 'right', 'right'];
+                    //doc.content[1].table.widths =
+                    //    Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
+                   // doc.content[1].table.widths = ['50%', '25%', '25%'];
+
+
+                },
+
+                filename: function () {
+                   // var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Non-InvoicedPO_' + $("#txtDate").val().replaceAll('/', '.');
+                },
+            }
 
         ],
 
@@ -124,7 +186,7 @@ function SendPO_Approval() {
             send_mail(1, response); 
         }
         else {
-            swal('Alert!', " No any PO on list for generate report", 'error');
+            swal('Alert!', "No record found.", 'error');
         }
        // $("#loader").hide();
     }).catch(err => { });
@@ -146,6 +208,7 @@ function send_mail(id, result) {
     let myHtml = '<table id="non-invoiced-po" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
     myHtml += '                                        <td  style="padding:0px 2.5px">';
+    myHtml += '                                        <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_titleNew + '</h2>';
     myHtml += '                                        </td>';
     myHtml += ' </tr>';
@@ -208,7 +271,7 @@ function send_mail(id, result) {
             },
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { swal('Success!', 'Mail sent successfuly !', 'success'); $("#loader").hide(); }//, async: false
+            complete: function () { swal('Success!', 'E-mail sent.', 'success'); $("#loader").hide(); }//, async: false
         });
     }
 }

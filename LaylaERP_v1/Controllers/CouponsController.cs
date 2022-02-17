@@ -249,6 +249,45 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
+        [HttpGet]
+        public JsonResult GetExportCoupons(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                //DateTime? fromdate = null, todate = null;
+                //if (!string.IsNullOrEmpty(model.strValue5))
+                //    fromdate = Convert.ToDateTime(model.strValue5);
+                //if (!string.IsNullOrEmpty(model.strValue6))
+                //    todate = Convert.ToDateTime(model.strValue6);
+                //DataSet ds = ReportsRepository.exportwalmartlist(fromdate, todate, model.sSearch, model.strValue2, model.strValue3);
+                //// DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate);
+                ///
+                string usertype = CommanUtilities.Provider.GetCurrent().UserType;
+                DataTable dt = new DataTable();
+                int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
+                if (usertype.ToUpper() == "ADMINISTRATOR")
+                {
+                    dt = CouponsRepository.GetExportCoupons(model.strValue1, model.strValue2, model.strValue3);
+                    result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                }
+                else
+                {
+                    //DateTime now = CommonDate.CurrentDate();
+
+                    //DateTime firstDayNextMonth = now.AddDays(-now.Day + 1).AddMonths(1);
+                    //// var now = DateTime.Now;
+                    ////var first = new DateTime(now.Year, now.Month+1, 1);
+                    //var Expiredate = firstDayNextMonth.Date.ToString("MM/dd/yyyy");
+                    //dt = CouponsRepository.GetListUserType(Expiredate, userid, model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                }
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
 
         [HttpGet]
         public JsonResult AutoGenerateGetList(JqDataTableModel model)

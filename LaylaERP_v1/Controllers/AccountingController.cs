@@ -398,12 +398,12 @@ namespace LaylaERP.Controllers
             //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
-        public JsonResult AccountBalanceGrandTotal()
+        public JsonResult AccountBalanceGrandTotal(JqDataTableModel model)
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.AccountBalanceGrandTotal();
+                DataTable dt = AccountingRepository.AccountBalanceGrandTotal(model.strValue1);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

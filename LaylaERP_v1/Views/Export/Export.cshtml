@@ -137,13 +137,11 @@
     $(document).ready(function () {
         //$("#hello").css("display", "none");
         GetUsersCount();
-       
-        //DatagridCustomers();
-        //DatagridOrder();
-
-        //DatagridUsers();
-
         //Button click for Orders
+        setTimeout(function () { DatagridOrder(); }, 50);
+        setTimeout(function () { DatagridUsers(); }, 50);
+        setTimeout(function () { DatagridCustomers(); }, 50);
+
         $("#btnorder").click(function () {
             if ($("#fromdate").val() == "") {
                 swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
@@ -152,83 +150,35 @@
                 swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todate').focus(); });
             }
             else {
-                var d1 = $("#fromdate").val();
-                var d2 = $("#todate").val();
-                var d3 = new Date();
-                var d4 = d3.getFullYear() + '-' + ("0" + (d3.getMonth() + 1)).slice(-2) + '-' + d3.getDate();
-                if (d1 > d2) {
-                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
-                }
-                //else if (d2 > d4) {
-                //    swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
-                //}
-                else {
-                    DatagridOrder();
-                    $("#fromdate").val("");
-                    $("#todate").val("");
-                    return false;
-                }
+                DatagridOrder();
             }
         });
-        setTimeout(function () { DatagridOrder(); }, 50);
 
         //Button Click for users
         $("#btnusers").click(function () {
-            var d5 = $("#fromdateusers").val();
-            var d6 = $("#todateusers").val();
-            var d7 = new Date();
-            var currentdate = d7.getFullYear() + '-' + ("0" + (d7.getMonth() + 1)).slice(-2) + '-' + d7.getDate();
-
             if ($("#fromdateusers").val() == "") {
                 swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
             }
             else if ($("#todateusers").val() == "") {
                 swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
             }
-            else if (d5 > d6) {
-                swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
-            }
-            //else if (d6 > currentdate) {
-            //    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
-            //}
             else {
                 DatagridUsers();
-                $("#fromdateusers").val("");
-                $("#todateusers").val("");
-                return false;
             }
         });
-        setTimeout(function () { DatagridUsers(); }, 50);
-
-
 
         //Button click for customer
         $("#btncustomers").click(function () {
-            var dt = $("#fromdatecustomers").val();
-            var dt1 = $("#todatecustomers").val();
-            var dt2 = new Date();
-            var dt3 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
-
             if ($("#fromdatecustomers").val() == "") {
                 swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
             }
             else if ($("#todatecustomers").val() == "") {
                 swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todatecustomers').focus(); });
             }
-            else if (dt > dt1) {
-                swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
-            }
-            //else if (dt1 > dt3) {
-            //    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
-            //}
             else {
                 DatagridCustomers();
-                $("#fromdatecustomers").val("");
-                $("#todatecustomers").val("");
-                return false;
             }
         });
-        setTimeout(function () { DatagridCustomers(); }, 50);
 
         //$(document).on('click', "#btnorder", function () {
         //    DatagridOrder();
@@ -237,9 +187,22 @@
         //    DatagridUsers();
         //})
 
-        $("#btnvieworders").click(function () { DatagridOrder(); });
-        $("#btnviewusers").click(function () { $("#new_role").val("%"); DatagridUsers(); });
-        $("#btnviewcustomers").click(function () { DatagridCustomers(); });
+        $("#btnvieworders").click(function () {
+            $("#fromdate").val("");
+            $("#todate").val("");
+            DatagridOrder();
+        });
+        $("#btnviewusers").click(function () {
+            $("#new_role").val("%");
+            $("#fromdateusers").val("");
+            $("#todateusers").val("");
+            DatagridUsers();
+        });
+        $("#btnviewcustomers").click(function () {
+            $("#fromdatecustomers").val("");
+            $("#todatecustomers").val("");
+            DatagridCustomers();
+        });
 
         $(document).on("click", "tbody .select-checkbox", function (t) {
             t.preventDefault();

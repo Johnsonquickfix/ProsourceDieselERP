@@ -104,8 +104,12 @@ function PurchaseOrderGrid() {
         columns: [
             /*{ data: 'ref', title: 'Parent ID', sWidth: "8%" },*/
             {
-                'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                //'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
+                //    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                //}
+                 'data': 'id', sWidth: "5%",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
             {
@@ -122,7 +126,7 @@ function PurchaseOrderGrid() {
             { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
-        columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
+        columnDefs: [{ targets: [0], searchable: false, orderable: false }], order: [[1, "desc"]]
     });
 }
 function formatPO(d) {
@@ -172,8 +176,13 @@ function PoPartiallyColleps() {
         },
         columns: [
             {
-                'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
-                    return '<input type="checkbox" name="CheckSinglepr" id="CheckSinglepr" onClick="Singlecheckpr();" value="' + data + '"><label></label>';
+                //'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
+                //    return '<input type="checkbox" name="CheckSinglepr" id="CheckSinglepr" onClick="Singlecheckpr();" value="' + data + '"><label></label>';
+                //}
+
+                 'data': 'id', sWidth: "5%",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSinglepr" id="CheckSinglepr" onClick="Singlecheckpr();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
             {
@@ -190,38 +199,78 @@ function PoPartiallyColleps() {
             { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
-        columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
+        columnDefs: [{ targets: [0], searchable: false, orderable:false }], order: [[1, "desc"]]
     });
 }
 
-function CheckAll() {
-    var isChecked = $('#checkall').prop("checked");
+//function CheckAll() {
+//    var isChecked = $('#checkall').prop("checked");
+//    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+//}
+//function Singlecheck(chk) {
+//    var isChecked = $(chk).prop("checked");
+//    var isHeaderChecked = $("#checkall").prop("checked");
+//    if (isChecked == false && isHeaderChecked)
+//        $("#checkall").prop('checked', isChecked);
+//    else {
+//        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+//            if ($(this).prop("checked") == false)
+//                isChecked = false;
+//        });
+//        $("#checkall").prop('checked', isChecked);
+//    }
+//}
+
+//CheckBoxes
+$('#checkAll').click(function () {
+    var isChecked = $(this).prop("checked");
     $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-}
-function Singlecheck(chk) {
-    var isChecked = $(chk).prop("checked");
-    var isHeaderChecked = $("#checkall").prop("checked");
+});
+
+function Singlecheck() {
+    var isChecked = $('#CheckSingle').prop("checked");
+    var isHeaderChecked = $("#checkAll").prop("checked");
     if (isChecked == false && isHeaderChecked)
-        $("#checkall").prop('checked', isChecked);
+        $("#checkAll").prop('checked', isChecked);
+
     else {
         $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false)
                 isChecked = false;
         });
-        $("#checkall").prop('checked', isChecked);
+        $("#checkAll").prop('checked', isChecked);
     }
 }
 
+//function CheckAllpr() {
+//    var isChecked = $('#checkallpr').prop("checked");
+//    $('#dtdataPartially tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+//}
 
-function CheckAllpr() {
-    var isChecked = $('#checkallpr').prop("checked");
+$('#checkallpr').click(function () {
+    var isChecked = $(this).prop("checked");
     $('#dtdataPartially tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-}
-function Singlecheckpr(chk) {
-    var isChecked = $(chk).prop("checked");
+});
+//function Singlecheckpr(chk) {
+//    var isChecked = $(chk).prop("checked");
+//    var isHeaderChecked = $("#checkallpr").prop("checked");
+//    if (isChecked == false && isHeaderChecked)
+//        $("#checkallpr").prop('checked', isChecked);
+//    else {
+//        $('#dtdataPartially tr:has(td)').find('input[type="checkbox"]').each(function () {
+//            if ($(this).prop("checked") == false)
+//                isChecked = false;
+//        });
+//        $("#checkallpr").prop('checked', isChecked);
+//    }
+//}
+
+function Singlecheckpr() {
+    var isChecked = $('#CheckSinglepr').prop("checked");
     var isHeaderChecked = $("#checkallpr").prop("checked");
     if (isChecked == false && isHeaderChecked)
         $("#checkallpr").prop('checked', isChecked);
+
     else {
         $('#dtdataPartially tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false)

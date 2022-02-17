@@ -26,7 +26,7 @@ function dataGridLoad(order_type) {
     let _items = [];
     //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: '0', strValue2: '1', strValue3: '2', strValue4: '3' }; //console.log(obj);
-    $('#dtdata').DataTable({
+    let table = $('#dtdata').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]], bProcessing: true, responsive: true, scrollX: true,
         language: {
             lengthMenu: "_MENU_ per page",
@@ -56,7 +56,7 @@ function dataGridLoad(order_type) {
             { data: 'post_title', title: 'Name', sWidth: "12%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
             {
-                data: 'regula_price', title: 'Retail Price', sWidth: "8%", render: function (data, type, row) {
+                data: 'regula_price', title: 'Retail Price', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -67,7 +67,7 @@ function dataGridLoad(order_type) {
             },
           
             {
-                data: 'sale_price', title: 'Sale Price', sWidth: "8%", render: function (data, type, row) {
+                data: 'sale_price', title: 'Sale Price', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -77,7 +77,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'cast_prise', title: 'Cost Price (Purchase)', sWidth: "8%", render: function (data, type, row) {
+                data: 'cast_prise', title: 'Cost Price (Purchase)', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -88,7 +88,7 @@ function dataGridLoad(order_type) {
             },
             { data: 'vname', title: 'Vendor', sWidth: "10%" },
             {
-                data: 'regulaMargin', title: 'Retail Margin (Default)', sWidth: "8%", render: function (data, type, row) {
+                data: 'regulaMargin', title: 'Retail Margin (Default)', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -98,7 +98,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'regularmarginpersantage', title: 'Retail Margin (%)', sWidth: "8%", render: function (data, type, row) {
+                data: 'regularmarginpersantage', title: 'Retail Margin (%)', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -108,7 +108,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'Margin', title: 'Sale Margin (Default)', sWidth: "8%", render: function (data, type, row) {
+                data: 'Margin', title: 'Sale Margin (Default)', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -119,7 +119,7 @@ function dataGridLoad(order_type) {
             },
             
             {
-                data: 'marginpersantage', title: 'Sale Margin (%)', sWidth: "8%", render: function (data, type, row) {
+                data: 'marginpersantage', title: 'Sale Margin (%)', class: 'text-right', sWidth: "8%", render: function (data, type, row) {
                     var tprice = 'toFormat';
                     if (data.toString() == "")
                         tprice = "";
@@ -134,7 +134,94 @@ function dataGridLoad(order_type) {
         columnDefs: [
             { targets: [0], visible: false, searchable: false },
             { targets: [1, 2], orderable: false }
-        ]
+        ],
+        "dom": 'Bfrtip',
+        "buttons": [
+
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Export',
+                filename: function () {
+                    var d = new Date();
+                    return 'Products_Margin_List' ;
+                },
+
+            },
+            {
+                extend: 'print',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                title: function () {
+                    return "Layla Sleep Inc - Products Margin List";
+                },
+                footer: true,
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                },
+                filename: function () {
+                    //var from = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Products_Margin_List';
+                },
+            },
+
+            {
+                extend: 'pdfHtml5',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> PDF',
+                footer: true,
+                exportOptions: {
+                    columns: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+
+                },
+                customize: function (doc) {
+                    //doc.defaultStyle.alignment = 'right';
+                    doc.styles.tableHeader.alignment = 'left';
+                    // doc.styles.tableHeader[2].alignment = 'right';
+                    // doc.content[1].alignment = ['left', 'right', 'right'];
+
+                    doc.content[0].text = "Layla Sleep Inc - Products Margin List";
+                    doc.content[0].text.alignment = 'left';
+
+                    var rowCountd = table.rows().count() + 1;
+                    for (i = 0; i < rowCountd; i++) {
+                        doc.content[1].table.body[i][3].alignment = 'right';
+                        doc.content[1].table.body[i][4].alignment = 'right';
+                        doc.content[1].table.body[i][5].alignment = 'right';
+                        doc.content[1].table.body[i][7].alignment = 'right';
+                        doc.content[1].table.body[i][8].alignment = 'right';
+                        doc.content[1].table.body[i][9].alignment = 'right';
+                    };
+
+                    var rowCount = doc.content[1].table.body.length;
+                    for (i = 1; i < rowCount; i++) {
+                        doc.content[1].table.body[i][3].alignment = 'right';
+                        doc.content[1].table.body[i][4].alignment = 'right';
+                        doc.content[1].table.body[i][5].alignment = 'right';
+                        doc.content[1].table.body[i][7].alignment = 'right';
+                        doc.content[1].table.body[i][8].alignment = 'right';
+                        doc.content[1].table.body[i][9].alignment = 'right';
+                        //doc.content[1].table.body[i][1].alignment = 'right';
+
+                    }
+
+
+                    // doc.styles.tableHeader.alignment = ['left', 'right', 'right'];
+                    //doc.content[1].table.widths =
+                    //    Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
+                    // doc.content[1].table.widths = ['50%', '25%', '25%'];
+
+
+                },
+
+                filename: function () {
+                    // var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Products_Margin_List';
+                },
+            }
+
+        ],
     });
 }
 

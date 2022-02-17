@@ -128,7 +128,7 @@
                 {
                     new SqlParameter("@postsJSON", postsJSON),
                 };
-                dt = SQLHelper.ExecuteDataTable("wp_posts_order_import", parameters);
+                dt = SQLHelper.ExecuteDataTable("erp_order_import", parameters);
             }
             catch (Exception ex)
             {

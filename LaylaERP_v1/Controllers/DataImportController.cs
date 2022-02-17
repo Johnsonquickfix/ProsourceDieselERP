@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LaylaERP.BAL;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,8 @@ namespace LaylaERP_v1.Controllers
 
                 if (!string.IsNullOrEmpty(result))
                 {
-                    var dyn = JsonConvert.DeserializeObject<dynamic>(result);
+                    //var dyn = JsonConvert.DeserializeObject<dynamic>(result);
+                    OrderRepository.ImportOrders(result);
                 }
             }
             catch { }

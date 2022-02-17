@@ -361,7 +361,7 @@
                 int res = OrderRepository.RemoveOrderFee(model);
                 if (res > 0)
                 {
-                    result = "Fee successfuly removed.";
+                    result = "Fee successfully removed.";
                     state = true;
                 }
             }

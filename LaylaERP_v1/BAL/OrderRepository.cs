@@ -119,6 +119,23 @@
             catch (Exception Ex) { throw Ex; }
             return dt;
         }
+        public static DataTable ImportOrders(string postsJSON)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@postsJSON", postsJSON),
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_import", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
 
         public static DataTable GetProducts(string strSearch)
         {

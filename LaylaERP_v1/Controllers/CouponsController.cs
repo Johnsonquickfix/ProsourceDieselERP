@@ -268,11 +268,11 @@ namespace LaylaERP.Controllers
                 int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
                 if (usertype.ToUpper() == "ADMINISTRATOR")
                 {
-                    dt = CouponsRepository.GetExportCoupons(model.strValue1, model.strValue2, model.strValue3);
+                    dt = CouponsRepository.GetExportCoupons(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
                     result = JsonConvert.SerializeObject(dt, Formatting.Indented);
                 }
-                else
-                {
+                //else
+                //{
                     //DateTime now = CommonDate.CurrentDate();
 
                     //DateTime firstDayNextMonth = now.AddDays(-now.Day + 1).AddMonths(1);
@@ -281,8 +281,8 @@ namespace LaylaERP.Controllers
                     //var Expiredate = firstDayNextMonth.Date.ToString("MM/dd/yyyy");
                     //dt = CouponsRepository.GetListUserType(Expiredate, userid, model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                     //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-                }
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                //}
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);

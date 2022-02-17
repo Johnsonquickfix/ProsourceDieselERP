@@ -495,7 +495,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetExportCoupons(string strValue1, string userstatus,  string searchid)
+        public static DataTable GetExportCoupons(string strValue1, string userstatus,  string searchid, string year,string month)
         {
             DataTable dt = new DataTable(); 
             try
@@ -504,18 +504,20 @@ namespace LaylaERP.BAL
                 if (strValue1 == "0" || strValue1 == null)
                     strValue1 = "";
                 if (userstatus == "0" || userstatus == null)
-                    userstatus = "";
+                    userstatus = "percent";
 
                 SqlParameter[] parameters =
                {
 
-                    new SqlParameter("@post_status", userstatus),
+                    new SqlParameter("@post_status", strValue1),
                    new SqlParameter("@searchcriteria", searchid),
-                    new SqlParameter("@strValue1", strValue1), 
+                    new SqlParameter("@strValue1", userstatus),
+                    new SqlParameter("@year", year),
+                    new SqlParameter("@month", month),
                     new SqlParameter("@flag", "exp")
                 };
 
-                DataSet ds = SQLHelper.ExecuteDataSet("erp_coupon_search", parameters);
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_expocoupon_search", parameters);
                // ds.Tables[0].TableName = "item";
                 dt = ds.Tables[0];
                  

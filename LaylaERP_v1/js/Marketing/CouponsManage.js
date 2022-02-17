@@ -116,13 +116,13 @@ function dataGridLoad(order_type) {
                 }
             }
         ],
-        dom: 'lBftip', buttons: [ 
-        {
-            extend: 'csvHtml5', title: 'Manage Coupons', titleAttr: 'CSV',
-            exportOptions: { columns: ':visible' },
-                action: function (e, dt, button, config) { exportTableToCSV('Manage Coupons.csv', $('div.dataTables_filter input').val()); }
-        }
-        ],
+        //dom: 'lBftip', buttons: [ 
+        //{
+        //    extend: 'csvHtml5', title: 'Manage Coupons', titleAttr: 'CSV',
+        //    exportOptions: { columns: ':visible' },
+        //        action: function (e, dt, button, config) { exportTableToCSV('Manage Coupons.csv', $('div.dataTables_filter input').val()); }
+        //}
+        //],
     });
 }
 
@@ -178,6 +178,10 @@ function Status() {
     }
 }
 
+$('#btnexport').click(function () {
+    exportTableToCSV('Manage Coupons.csv', $('div.dataTables_filter input').val());
+});
+
 $('#btnmontholyautoGenerate').click(function () {
     var month = $('#month').val();
     var year = $('#ddlyear').val();
@@ -226,20 +230,22 @@ function exportTableToCSV(filename,filteval) {
     let csv = 'Code' + colDelim + 'Coupon Type' + colDelim + 'Coupon amount' + colDelim + 'Description' + colDelim + 'Product IDs' + colDelim + 'Usage/Limit' + colDelim + 'Expiry date'  + rowDelim;
 
     let order_type = $('#hfType').val();
-    let types = $('#ddltype').val();
+    let types = $('#ddltypeexpot').val();
+    let year = $('#year').val();
+    let month = $('#monthex').val();
     //console.log(order_type, types, filteval);
 
     //let urid = parseInt($("#ddlSearchStatus").val());
     //let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     //let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     //if ($('#txtDate').val() == '') { sd = ''; ed = '' };
-    let obj = { strValue1: order_type, strValue2: types, strValue3: filteval };// console.log(obj);
+    let obj = { strValue1: order_type, strValue2: types, strValue3: filteval, strValue4: year, strValue5: month };// console.log(obj);
     $.ajax({
         url: "/Coupons/GetExportCoupons", data: obj,
         type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             result = JSON.parse(result);
-            console.log(result);
+            //console.log(result);
             $(result).each(function (index, data) {
                 //Parent Row
                 //if (data.post_parent > 0)

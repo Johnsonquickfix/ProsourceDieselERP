@@ -216,7 +216,7 @@
                 return new Promise(function (resolve) {
                     swal.showLoading();
                     $.get('/order/order-sendinvoice', option).then(response => {
-                        if (response.status) { swal('Success', 'Mail send successfully.', 'success'); }
+                        if (response.status) { swal('Success', 'E-mail sent.', 'success'); }
                         else swal('Error!', 'Something went wrong, please try again.', 'error');
                     }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
                 });

@@ -190,6 +190,7 @@
     <Compile Include="Controllers\CommonAPIController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\DataImportController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -1131,6 +1132,7 @@
     <Content Include="Views\Proposals\SupplierProposalsList.cshtml" />
     <Content Include="Views\Proposals\SupplierProposalsView.cshtml" />
     <Content Include="Views\Reports\POApprovedReport.cshtml" />
+    <Content Include="Views\DataImport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

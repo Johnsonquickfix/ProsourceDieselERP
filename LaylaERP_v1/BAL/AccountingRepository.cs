@@ -43,6 +43,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountingJournal/" + model.rowid + "", "Insert accounting journal");
                 throw Ex;
             }
         }
@@ -66,6 +67,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountingJournal/" + model.rowid + "", "Update accounting journal");
                 throw Ex;
             }
         }
@@ -265,6 +267,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AddAccount/" + model.rowid + "", "Insert charts of account");
                 throw Ex;
             }
         }
@@ -375,6 +378,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/EditAccount/" + model.rowid + "", "Update charts of account");
                 throw Ex;
             }
         }
@@ -408,6 +412,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AddPcgType/" + model.rowid + "", "Insert general account.");
                 throw Ex;
             }
         }
@@ -464,6 +469,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AddPcgType/" + model.rowid + "", "Update general account");
                 throw Ex;
             }
         }
@@ -804,6 +810,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/ChartOfAccountEntry/" + model.rowid + "", "Insert chart of account entry.");
                 throw Ex;
             }
         }
@@ -878,6 +885,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/EditChartAccountEntry/" + model.rowid + "", "Update chart of account entry.");
                 throw Ex;
             }
         }
@@ -1153,6 +1161,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountCategoryList/" + model.rowid + "", "Insert account category.");
                 throw Ex;
             }
         }
@@ -1187,6 +1196,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountCategoryList/" + model.rowid + "", "Update account category.");
                 throw Ex;
             }
         }
@@ -1261,6 +1271,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountFiscalYearList/" + model.rowid + "", "Insert fiscal year.");
                 throw Ex;
             }
         }
@@ -1300,6 +1311,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/AccountFiscalYearList/" + model.rowid + "", "Update fiscal year.");
                 throw Ex;
             }
         }

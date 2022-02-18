@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -77,6 +78,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Warehouse/AddNewWarehouses/" + model.rowid + "", "Insert warehouse");
                 throw Ex;
             }
         }
@@ -144,6 +146,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Warehouse/UpdateWarehouse/" + model.rowid + "", "Update warehouse");
                 throw Ex;
             }
         }
@@ -1084,6 +1087,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Warehouse/Editwarehousesinfo/" + model.rowid + "", "Update warehouse additional info");
                 throw Ex;
             }
         }

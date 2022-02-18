@@ -126,7 +126,7 @@
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@postsJSON", postsJSON),
+                    new SqlParameter("@json", postsJSON),
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_order_import", parameters);
             }

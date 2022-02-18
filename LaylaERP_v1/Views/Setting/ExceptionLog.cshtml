@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "ExceptionLog";
+}
+<form method="post">
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="input-group">
+                <label for="LogDate">Log Date</label>
+                <input type="text" class="form-control" name="txtLogDate" id="txtLogDate" readonly /><span class="even-space"></span>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer text-right">
+        <button type="submit" id="btnChangeDate" class="btn btn-danger">Change</button>
+    </div>
+</form>
+    @foreach (string text in ViewBag.Data)
+    {
+        <h4>@text</h4>
+    }
+
+    <script>
+        $(document).ready(function () {
+          
+            $("#txtLogDate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');;
+        })
+    </script>

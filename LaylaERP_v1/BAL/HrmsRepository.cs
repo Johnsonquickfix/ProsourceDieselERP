@@ -157,6 +157,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Insert employee basic details");
                 throw Ex;
             }
         }
@@ -187,6 +188,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Update employee basic details");
                 throw Ex;
             }
         }
@@ -215,6 +217,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Insert employee basic details in user");
                 throw Ex;
             }
         }
@@ -234,6 +237,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + id + "", "Insert employee meta details");
                 throw Ex;
             }
         }
@@ -253,6 +257,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + id + "", "Insert employee meta details");
                 throw Ex;
             }
         }
@@ -273,6 +278,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + id + "", "Update employee meta details");
                 throw Ex;
             }
         }
@@ -304,6 +310,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Insert employee details");
                 throw Ex;
             }
         }
@@ -337,6 +344,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Update employee details");
                 throw Ex;
             }
         }
@@ -399,6 +407,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + id + "", "Update employee salary details");
                 throw Ex;
             }
         }
@@ -425,6 +434,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + id + "", "Update employee account details");
                 throw Ex;
             }
         }
@@ -578,6 +588,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Employee/AddEmployeeBasicInfo/" + model.rowid + "", "Update employee status");
                 throw Ex;
             }
         }

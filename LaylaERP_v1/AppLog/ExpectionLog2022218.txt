@@ -1,0 +1,15 @@
+
+==========================================================================================================
+                                               LaylaERP                                                   
+                                             Expection Log                                    
+==========================================================================================================
+ ==========================================================================================================
+ Date Time: 2/18/2022 4:46:32 PM
+ URL: ThirdParty/NewVendor/1
+ Host: LAPTOP-Q2OM22VA
+ IP: 192.168.1.3
+ Error Query: vendorbasicinfo
+ Error: @natur is not a parameter for procedure vendorbasicinfo.
+ Source : .Net SqlClient Data Provider
+ StackTrace:    at LaylaERP.DAL.SQLHelper.ExecuteNonQuery(String query, SqlParameter[] parameters)
+   at LaylaERP.BAL.ThirdPartyRepository.EditVendorBasicInfo(ThirdPartyModel model)

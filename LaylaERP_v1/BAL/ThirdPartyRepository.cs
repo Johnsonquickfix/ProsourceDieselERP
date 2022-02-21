@@ -56,7 +56,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
-                //UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
+                UserActivityLog.ExpectionErrorLog(Ex, "ThirdParty/NewVendor/" + model.rowid + "", strsql);
                 throw Ex;
             }
         }

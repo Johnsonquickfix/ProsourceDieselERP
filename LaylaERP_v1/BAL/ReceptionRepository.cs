@@ -49,7 +49,7 @@ namespace LaylaERP.BAL
         }
 
         // public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-        public static DataTable GetPurchaseOrder(int userid,DateTime? fromdate, DateTime? todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(int userid,DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -62,7 +62,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@flag", "SERCH"),
                    // !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                    // new SqlParameter("@isactive", userstatus),
-                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@searchcriteria", searchcriteria),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
@@ -178,7 +178,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPoClosureOrderDetailsList(int userid, DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPoClosureOrderDetailsList(int userid, DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string searchcriteria)
         {
             DataTable dt = new DataTable();
                 try
@@ -188,7 +188,7 @@ namespace LaylaERP.BAL
                     fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "ARecev"),
-                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@searchcriteria", searchcriteria),
                      new SqlParameter("@userid", userid)
 
                 };
@@ -270,7 +270,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetPartiallyDetailsList(int userid,DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string productid)
+        public static DataTable GetPartiallyDetailsList(int userid,DateTime? fromdate, DateTime? todate, string searchid, string categoryid, string searchcriteria)
         {           
             DataTable dt = new DataTable();
             try
@@ -280,7 +280,7 @@ namespace LaylaERP.BAL
                     fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
                     new SqlParameter("@flag", "Recev"),
-                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@searchcriteria", searchcriteria),
                     new SqlParameter("@userid", userid)
 
                 };

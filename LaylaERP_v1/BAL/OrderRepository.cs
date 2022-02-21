@@ -136,6 +136,20 @@
             }
             return dt;
         }
+        public static DataTable ExportOrders()
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { };
+                dt = SQLHelper.ExecuteDataTable("erp_order_export", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
 
         public static DataTable GetProducts(string strSearch)
         {

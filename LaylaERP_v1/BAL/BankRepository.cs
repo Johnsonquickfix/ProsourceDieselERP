@@ -6,6 +6,7 @@ using System.Web;
 using LaylaERP.Models;
 using System.Data.SqlClient;
 using LaylaERP.DAL;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -53,6 +54,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Bank/newfinaccount/" + model.rowid + "", "Insert bank details");
                 throw Ex;
             }
         }
@@ -186,6 +188,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Bank/EditBankAccount/" + model.rowid + "", "Update bank details");
                 throw Ex;
             }
         }
@@ -228,6 +231,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Bank/FileUpload/" + BankID + "", "Upload file for bank");
                 throw Ex;
             }
         }
@@ -282,6 +286,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Bank/FileUpload/" + model.rowid + "", "Delete file form bank");
                 throw Ex;
             }
         }

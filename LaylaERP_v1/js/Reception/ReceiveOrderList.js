@@ -91,6 +91,14 @@
         PurchaseOrderGrid();
     });
 
+    $('#btnreceveSearch').click(function () {
+        PoPartiallyColleps();
+    });
+
+    $('#btncloser').click(function () {
+        PoClosureGridColleps();
+    });
+
 
     // Add event listener for opening and closing details
     $('#dtdataPoClosure tbody').on('click', '.details-control', function () {
@@ -128,7 +136,7 @@
    
 });
 function PurchaseOrderGrid() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+    let urid = $("#txtorderpono").val();
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
@@ -393,7 +401,7 @@ function PoClosureGridColleps() {
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
-    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
+    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#txtordeclose").val() };// console.log(obj);
     //console.log(obj);
     $('#dtdataPoClosure').DataTable({
         oSearch: { "sSearch": '' }, bAutoWidth: false, searching: false, scrollX: false,
@@ -506,11 +514,11 @@ function format(d) {
 
 
 function PoPartiallyColleps() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+    let urid = $("#txtorderrecevepo").val();
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
-    let obj = { strValue1: sd, strValue2: ed, strValue3: $("#ddlSearchStatus").val() };// console.log(obj);
+    let obj = { strValue1: sd, strValue2: ed, strValue3: urid };// console.log(obj);
     console.log(obj);
     //let tableval = $('#dtdataPartially').DataTable({
     //    columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],

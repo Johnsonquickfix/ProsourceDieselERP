@@ -97,8 +97,7 @@
 
     $('#btncloser').click(function () {
         PoClosureGridColleps();
-    });
-
+    }); 
 
     // Add event listener for opening and closing details
     $('#dtdataPoClosure tbody').on('click', '.details-control', function () {
@@ -135,6 +134,33 @@
     });
    
 });
+function AddKeyPress(e) {
+    // look for window.event in case event isn't passed in
+    e = e || window.event;
+    if (e.keyCode == 13) {
+        document.getElementById('btnSearch').click();
+        return false;
+    }
+    return true;
+}
+function AddKeyPressclose(e) {
+    // look for window.event in case event isn't passed in
+    e = e || window.event;
+    if (e.keyCode == 13) {
+        document.getElementById('btncloser').click();
+        return false;
+    }
+    return true;
+}
+function AddKeyPressReceived(e) {
+    // look for window.event in case event isn't passed in
+    e = e || window.event;
+    if (e.keyCode == 13) {
+        document.getElementById('btnreceveSearch').click();
+        return false;
+    }
+    return true;
+}
 function PurchaseOrderGrid() {
     let urid = $("#txtorderpono").val();
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');

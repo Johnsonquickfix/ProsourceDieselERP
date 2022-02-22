@@ -1,7 +1,9 @@
 ﻿using LaylaERP.BAL;
 using Newtonsoft.Json;
+using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -43,6 +45,74 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return View();
+        }
+
+        public ActionResult ExportData()
+        {
+            
+            var result = string.Empty;
+            try
+            {
+                Dictionary<string,Dictionary<string, object>> parentRow = new Dictionary<string,Dictionary<string, object>>();
+                Dictionary<string, object> childRow;
+                DataTable dt = OrderRepository.ExportOrders();
+                foreach (DataRow row in dt.Rows)
+                {
+                    childRow = new Dictionary<string, object>();
+                    //childRow.Add("id", row["id"]);
+                    //childRow.Add("post_status", row["post_status"]);
+                    //childRow.Add("post_date", row["post_date"]);
+                    //childRow.Add("order_total", row["order_total"]);
+                    //childRow.Add("shipstation_shipped_item_count", row["shipstation_shipped_item_count"]);
+
+                    if (row["posts"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["posts"].ToString());
+                        childRow.Add("posts", obj);
+                    }
+                    else
+                        childRow.Add("posts", "{}");
+                    if (row["post_meta"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["post_meta"].ToString());
+                        childRow.Add("post_meta", obj);
+                    }
+                    else
+                        childRow.Add("post_meta", "{}");
+                    if (row["comments"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["comments"].ToString());
+                        childRow.Add("comments", obj);
+                    }
+                    else
+                        childRow.Add("comments", "{}");
+                    if (row["woocommerce_order_items"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["woocommerce_order_items"].ToString());
+                        childRow.Add("woocommerce_order_items", obj);
+                    }
+                    else
+                        childRow.Add("woocommerce_order_items", "{}");
+                    if (row["wc_order_stats"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_stats"].ToString());
+                        childRow.Add("wc_order_stats", obj);
+                    }
+                    else
+                        childRow.Add("wc_order_stats", "{}");
+                    if (row["wc_order_product_lookup"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_product_lookup"].ToString());
+                        childRow.Add("wc_order_product_lookup", obj);
+                    }
+                    else
+                        childRow.Add("wc_order_product_lookup", "{}");
+                    parentRow.Add(row["id"].ToString(), childRow);
+                }
+                result = JsonConvert.SerializeObject(parentRow, Formatting.Indented);
+            }
+            catch { }
+            return Content(result, ContentType.Json, Encoding.UTF8);
         }
     }
 }

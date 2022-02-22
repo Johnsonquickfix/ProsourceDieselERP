@@ -823,9 +823,8 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                //SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-','0000',MAX(rowid + 1)) FROM wp_vendor;
-                //DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from wp_vendor;");
-                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-', MAX(RIGHT(REPLICATE(0, 5) + LEFT(rowid+1, 5),5))) as Code FROM wp_vendor");
+                //DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-', MAX(RIGHT(REPLICATE(0, 5) + LEFT(rowid+1, 5),5))) as Code FROM wp_vendor");
+                DT = SQLHelper.ExecuteDataTable("SELECT ('SU'+RIGHT('0' + RTRIM(YEAR(GETDATE())), 2)+RIGHT('0' + RTRIM(MONTH(GETDATE())), 2)+'-'+ RIGHT('00000'+CAST(coalesce(max(rowid + 1),'1') AS VARCHAR(5)),5)) as Code from wp_vendor");
             }
             catch (Exception ex)
             { throw ex; }

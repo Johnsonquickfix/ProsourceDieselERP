@@ -1133,6 +1133,7 @@
     <Content Include="Views\Proposals\SupplierProposalsView.cshtml" />
     <Content Include="Views\Reports\POApprovedReport.cshtml" />
     <Content Include="Views\DataImport\Index.cshtml" />
+    <Content Include="Views\DataImport\ExportData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

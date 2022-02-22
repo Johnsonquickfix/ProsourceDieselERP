@@ -299,6 +299,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/UpdateCustomer/" + model.ID + "", "Updated status users");
                 throw Ex;
             }
         }
@@ -317,6 +318,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/DeleteUsers/" + ID + "", "Delete Users");
                 throw Ex;
             }
         }
@@ -334,6 +336,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/ActiveUsers/" + ID + "", "Active Users");
                 throw Ex;
             }
         }
@@ -351,6 +354,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/changeRoleStatus/" + model.ID + "", "Change User role status");
                 throw Ex;
             }
         }
@@ -373,6 +377,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/Grantrole/" + model.ID + "", "Grant role for users");
                 throw Ex;
             }
         }
@@ -409,6 +414,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/Revokerole/" + model.ID + "", "Revoke role permission for users");
                 throw Ex;
             }
         }
@@ -448,6 +454,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/CreateUser/" + model.ID + "", "Create New Users");
                 throw Ex;
             }
         }
@@ -536,6 +543,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/UpdateUser/" + model.ID + "", "Update Users");
                 throw Ex;
             }
         }
@@ -556,6 +564,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/Adduser_MetaData/" + model.ID + "", "Add Users Meta");
                 throw Ex;
             }
         }
@@ -577,6 +586,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/Updateuser_MetaData/" + model.ID + "", "Update Users Meta");
                 throw Ex;
             }
         }
@@ -752,6 +762,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/NewRole/" + model.role_id + "", "New user role");
                 throw Ex;
             }
         }
@@ -785,6 +796,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/ChangePermission/" + ID + "", "Change Role Permission");
                 throw Ex;
             }
 
@@ -803,6 +815,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/CopyPermission/" + role_id + "", "Copy Permission");
                 throw Ex;
             }
         }
@@ -837,6 +850,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/UpdateAddPermission/" + role_id + "", "Update Add Permission");
                 throw Ex;
             }
 
@@ -853,6 +867,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/UpdateEditPermission/" + role_id + "", "Update Edit Permission");
                 throw Ex;
             }
 
@@ -869,6 +884,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                 UserActivityLog.ExpectionErrorLog(Ex, "Users/UpdateDeletePermission/" + role_id + "", "Update Delete Permission");
                 throw Ex;
             }
 

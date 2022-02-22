@@ -1,4 +1,5 @@
 ﻿using LaylaERP.DAL;
+using LaylaERP.UTILITIES;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -27,6 +28,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/NewUser/" + model.ID + "", "created in manage customer");
                 throw Ex;
             }
         }
@@ -48,6 +50,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/NewUser/" + model.ID + "", "Updated  manage customer");
                 throw Ex;
             }
         }
@@ -66,6 +69,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Adduser_MetaData/" + model.ID + "", "created in metadata customer");
                 throw Ex;
             }
         }
@@ -84,6 +88,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Updateuser_MetaData/" + model.ID + "", "Updated  meta data customer");
                 throw Ex;
             }
         }
@@ -102,6 +107,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Adduser_MetaData_BillingAddress/" + model.ID + "", "create in billing address customer");
                 throw Ex;
             }
         }
@@ -121,6 +127,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Updateuser_MetaData_BillingAddress/" + model.ID + "", "Updated meta Billing Address customer");
                 throw Ex;
             }
         }
@@ -139,6 +146,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Adduser_MetaData_ShippingAddress/" + model.ID + "", "Create meta Shipping Address customer");
                 throw Ex;
             }
         }
@@ -157,6 +165,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/Updateuser_MetaData_ShippingAddress/" + model.ID + "", "Update meta Shipping Address customer");
                 throw Ex;
             }
         }
@@ -256,6 +265,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/UpdateCustomer/" + model.ID + "", "Updated  manage customer");
                 throw Ex;
             }
         }
@@ -273,6 +283,7 @@ namespace LaylaERP.Models
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/DeleteCustomer/" + ID + "", "Delete Customer ");
                 throw Ex;
             }
         }
@@ -293,6 +304,7 @@ namespace LaylaERP.Models
             Ex)
             
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Customer/ChangeCustomerStatus/" + model.ID + "", "Update Customer status changed");
                 throw Ex;
             }
         }

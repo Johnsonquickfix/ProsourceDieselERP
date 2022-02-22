@@ -72,13 +72,27 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                         childRow.Add("posts", "{}");
-                    //if (row["post_meta"] != DBNull.Value)
-                    //{
-                    //    dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["post_meta"].ToString());
-                    //    childRow.Add("post_meta", obj);
-                    //}
-                    //else
-                    //    childRow.Add("post_meta", "{}");
+                    if (row["post_meta"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["post_meta"].ToString());
+                        childRow.Add("post_meta", obj);
+                    }
+                    else
+                        childRow.Add("post_meta", "{}");
+                    if (row["comments"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["comments"].ToString());
+                        childRow.Add("comments", obj);
+                    }
+                    else
+                        childRow.Add("comments", "{}");
+                    if (row["woocommerce_order_items"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["woocommerce_order_items"].ToString());
+                        childRow.Add("woocommerce_order_items", obj);
+                    }
+                    else
+                        childRow.Add("woocommerce_order_items", "{}");
                     if (row["wc_order_stats"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_stats"].ToString());
@@ -86,6 +100,13 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                         childRow.Add("wc_order_stats", "{}");
+                    if (row["wc_order_product_lookup"] != DBNull.Value)
+                    {
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_product_lookup"].ToString());
+                        childRow.Add("wc_order_product_lookup", obj);
+                    }
+                    else
+                        childRow.Add("wc_order_product_lookup", "{}");
                     parentRow.Add(row["id"].ToString(), childRow);
                 }
                 result = JsonConvert.SerializeObject(parentRow, Formatting.Indented);

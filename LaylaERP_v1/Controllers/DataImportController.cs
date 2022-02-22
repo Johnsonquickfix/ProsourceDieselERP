@@ -110,6 +110,23 @@ namespace LaylaERP_v1.Controllers
                     parentRow.Add(row["id"].ToString(), childRow);
                 }
                 result = JsonConvert.SerializeObject(parentRow, Formatting.Indented);
+
+                var content = new StringContent(result, Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/erpdataimport.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+
             }
             catch { }
             return Content(result, ContentType.Json, Encoding.UTF8);

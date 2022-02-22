@@ -41,6 +41,7 @@ namespace LaylaERP.BAL
             } 
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/AddCoupons/" + model.ID + "", "Add New Coupons");
                 throw Ex;
             }
         }
@@ -71,6 +72,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/CreateAutoCoupons/" + model.ID + "", "Add New Auto Assign Coupons");
                 throw Ex;
             }
         }
@@ -92,6 +94,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/CreateCoupons/" + model.ID + "", "Update New Coupons");
                 throw Ex;
             }
         }
@@ -113,6 +116,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/CreateAutoCoupons/" + model.ID + "", "Update Auto Assign  Coupons");
                 throw Ex;
             }
         }
@@ -134,6 +138,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/Adduser_MetaData/" + model.ID + "", "New new Coupons Meta Data");
                 throw Ex;
             }
         }
@@ -155,6 +160,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/AdduserAuto_MetaData/" + model.ID + "", "Add New Auto Assign Meta Data Coupons");
                 throw Ex;
             }
         }
@@ -174,6 +180,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/AddexpiresMeta/" + model.ID + "", "Add New Expires Meta Coupons");
                 throw Ex;
             }
         }
@@ -193,6 +200,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/AdduserAuto_MetaData/" + model.ID + "", "Add New Auto Assign Expires Meta Data Coupons");
                 throw Ex;
             }
         }
@@ -212,6 +220,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/Update_MetaData/" + model.ID + "", "Update meta data Coupons");
                 throw Ex;
             }
         }
@@ -231,6 +240,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/UpdateAuto_MetaData/" + model.ID + "", "Update Auto Assign Meta Data Coupons");
                 throw Ex;
             }
         }
@@ -250,6 +260,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/Update_MetaData/" + model.ID + "", "Update Expires data Coupons");
                 throw Ex;
             }
         }
@@ -617,6 +628,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/ChangeTrash/" +  ID + "", "Change status coupons");
                 throw Ex;
             }
         }
@@ -822,6 +834,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coupons/AutogenrateCoupon/" + code + "", "Add Auto genrate Coupon");
                 throw Ex;
             }
             return result;

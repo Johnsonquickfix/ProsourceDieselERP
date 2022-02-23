@@ -542,6 +542,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Reception/ReceptionPurchase/" + model.IDRec + "", "Update Reception PO,s Receive Order");
                 throw Ex;
             }
             return result;
@@ -560,6 +561,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Reception/UpdateStatusReceptionPurchase/" + model.IDRec + "", "Update status reception purchase");
                 throw Ex;
             }
             return result;
@@ -720,6 +722,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Reception/FileUploade/" + fk_product + "", "Add Purchase order linkedfiles");
                 throw Ex;
             }
         }
@@ -735,7 +738,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Reception/Deletefileuploade/" + model.ID + "", "Delete purchase order linkedfiles");
+                throw ex; 
+            }
             return result;
         }
 

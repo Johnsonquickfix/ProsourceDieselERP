@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
-
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -334,6 +334,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/Changestatus/" + "0" + "", "Update Product Status");
                 throw Ex;
             }
         }
@@ -654,6 +655,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/NewShipping/" + model.ID + "", "Add new Shipping class");
                 throw Ex;
             }
         }
@@ -669,6 +671,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/deleteShippingprice/" + model.ID + "", "Delete shipping class");
                 throw Ex;
             }
         }
@@ -1142,6 +1145,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/saveAttributes/" + model.ID + "", "Create New Attributes");
                 throw Ex;
             }
         }
@@ -1178,6 +1182,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + model.ID + "", "Create New Product");
                 throw Ex;
             }
         }
@@ -1212,6 +1217,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/FileUploade/" + fk_product + "", "Uploade product linked files");
                 throw Ex;
             }
         }
@@ -1235,6 +1241,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + ID + "", "Product Update Details");
                 throw Ex;
             }
         }
@@ -1278,7 +1285,9 @@ namespace LaylaERP.BAL
 
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/BuyingPrice/" + model.ID + "", "Add buying price");
+                throw ex; }
              
         }
 
@@ -1299,7 +1308,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/BuyingPrice/" + model.ID + "", "Add product warehouse");
+                throw ex; }
             return result;
         }
 
@@ -1318,7 +1329,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/CreateShipname/" + model.ID + "", "insert Shipping class details.");
+                throw ex; 
+            }
             return result;
         }
 
@@ -1340,7 +1354,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/BuyingPrice/" + model.ID + "", "Update buying price");
+                throw ex; 
+            }
             return result;
         }
         public static int updateshippingclass(ProductModel model)
@@ -1358,7 +1375,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/CreateShipname/" + model.ID + "", "Update Shipping class details.");
+                throw ex; 
+            }
             return result;
         }
         public static int updateNotesProduct(ProductModel model)
@@ -1379,7 +1399,9 @@ namespace LaylaERP.BAL
                 strSql.Append(strSql_insert);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex) {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateNotes/" + model.ID + "", "Add note in add/edit product");
+            }
             return result;
         }
         public static int DeleteBuyingtProduct(ProductModel model)
@@ -1393,7 +1415,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/DeleteBuyingPrice/" + model.ID + "", "Delete buying price");
+                throw ex; }
             return result;
         }
         public static int SetBuyingPrice(ProductModel model)
@@ -1408,7 +1432,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/SetBuyingPrice/" + model.ID + "", "Update setprise set for product");
+                throw ex; }
             return result;
         }
         public static int ActiveuyingPrice(ProductModel model)
@@ -1422,7 +1448,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/UpdateChildvariations/" + model.ID + "", "Update product buying price active");
+                throw ex; }
             return result;
         }
 
@@ -1441,7 +1469,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/Createwarehouse/" + model.ID + "", "Add warehouse to product");
+                throw ex; }
             return result;
         }
         public static DataTable Getproductwarehouse(ProductModel model)
@@ -1570,7 +1600,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/DeleteProductwarehouse/" + model.ID + "", "Delete product warehouse");
+                throw ex; 
+            }
             return result;
         }
         public static int ActiveProductwarehouse(ProductModel model)
@@ -1584,7 +1617,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/ActiveProductwarehouse/" + model.ID + "", "Active product warehouse");
+                throw ex; 
+            }
             return result;
         }
         public static int Deletefileuploade(ProductModel model)
@@ -1598,7 +1634,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/Deletefileuploade/" + model.ID + "", "Delete product linkedfiles");
+                throw ex; }
             return result;
         }
         public static int UpdateProductsVariation(string post_title, string post_excerpt, long ID)
@@ -1635,6 +1673,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + model.ID + "", "Update Product Meta Data");
                 throw Ex;
             }
         }
@@ -1674,7 +1713,9 @@ namespace LaylaERP.BAL
                 strSql.Append(strSql_insert);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex) {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/Savevariations/" + "0" + "", "Update/Insert Product Variation Details");
+            }
             return result;
         }
 
@@ -1723,7 +1764,9 @@ namespace LaylaERP.BAL
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex) {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/Savevariations/" + "0" + "", "Update/Insert Shipping Product");
+            }
             return result;
         }
 
@@ -1742,7 +1785,10 @@ namespace LaylaERP.BAL
                 }
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/Savevariations/" + "0" + "", "Update product status");
+            }
             return result;
         }
         public static void UpdateProductsMetaVariation(long id, string varFieldsName, string varFieldsValue)
@@ -1787,7 +1833,10 @@ namespace LaylaERP.BAL
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/Savevariations/" + "0" + "", "Insert product _price details");
+            }
             return result;
         }
 
@@ -1816,7 +1865,9 @@ namespace LaylaERP.BAL
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex ) {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/SaveChildvariations/" + "0" + "", "Insert Child variations");
+            }
             return result;
         }
 
@@ -1842,7 +1893,9 @@ namespace LaylaERP.BAL
                 }
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch { }
+            catch (Exception Ex){
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/UpdateChildvariations/" + "0" + "", "Update Product Free Quantity");
+            }
             return result;
         }
 
@@ -1864,6 +1917,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/update_term/" + ID + "", "Add Term Product");
                 throw Ex;
             }
         }
@@ -1939,6 +1993,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/update_term/" + ID + "", "Add Shipping Product");
                 throw Ex;
             }
         }
@@ -1957,6 +2012,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/delete_term/" + ID + "", "Delete Term");
                 throw Ex;
             }
         }
@@ -1976,6 +2032,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/CreateProduct/" + id + "", "Product Update Meta Data Details");
                 throw Ex;
             }
         }
@@ -2054,6 +2111,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/NoteAdd/" + obj.post_ID + "", "Product Note Add");
                 throw ex;
             }
             return result;
@@ -2073,6 +2131,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/NoteDelete/" + obj.post_ID + "", "Product Note Delete");
                 throw ex;
             }
             return result;
@@ -2132,6 +2191,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductCategory/" + model.parent + "", "Update product category meta data");
                 throw Ex;
             }
         }
@@ -2230,7 +2290,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/ProductImages/" + metaid + "", "Add Product Image");
+                throw ex; 
+            }
             return result;
         }
 
@@ -2246,7 +2309,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Product/ProductImages/" + metaid + "", "Update Product Image");
+                throw ex; 
+            }
             return result;
         }
         public int AddProductCategory(ProductCategoryModel model, string name, string slug)
@@ -2306,6 +2372,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductCategory/" + "0" + "", "Add product category description");
                 throw Ex;
             }
         }
@@ -2422,6 +2489,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/DeleteCategorywithProduct/" + "0" + "", "Delete category with product");
                 throw Ex;
             }
         }
@@ -2476,6 +2544,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductCategory/" + "0" + "", "Add product category image");
                 throw Ex;
             }
         }
@@ -2551,6 +2620,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductCategory/" + post_id + "", "Update Product Category");
                 throw Ex;
             }
         }

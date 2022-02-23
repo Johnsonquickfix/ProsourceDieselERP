@@ -1,9 +1,11 @@
 ﻿using LaylaERP.BAL;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,7 +14,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
-namespace LaylaERP_v1.Controllers
+namespace LaylaERP.Controllers
 {
     public class DataImportController : Controller
     {
@@ -49,11 +51,11 @@ namespace LaylaERP_v1.Controllers
 
         public ActionResult ExportData()
         {
-            
+
             var result = string.Empty;
             try
             {
-                Dictionary<string,Dictionary<string, object>> parentRow = new Dictionary<string,Dictionary<string, object>>();
+                Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
                 Dictionary<string, object> childRow;
                 DataTable dt = OrderRepository.ExportOrders();
                 foreach (DataRow row in dt.Rows)
@@ -129,6 +131,57 @@ namespace LaylaERP_v1.Controllers
 
             }
             catch { }
+            return Content(result, ContentType.Json, Encoding.UTF8);
+        }
+
+        public ActionResult UpldateDataInMySQL()
+        {
+
+            var result = string.Empty;
+            string _myConnString = System.Configuration.ConfigurationManager.ConnectionStrings["mysqlconstr"].ToString();
+            MySqlConnection myConnection = new MySqlConnection(_myConnString);
+            myConnection.Open();
+
+            MySqlCommand myCommand = myConnection.CreateCommand();
+            MySqlTransaction myTrans;
+
+            // Start a local transaction
+            myTrans = myConnection.BeginTransaction();
+            // Must assign both transaction object and connection
+            // to Command object for a pending local transaction
+            myCommand.Connection = myConnection;
+            myCommand.Transaction = myTrans;
+
+            try
+            {
+                myCommand.CommandText = "insert into Test (id, desc) VALUES (100, 'Description')";
+                myCommand.ExecuteNonQuery();
+                myCommand.CommandText = "insert into Test (id, desc) VALUES (101, 'Description')";
+                myCommand.ExecuteNonQuery();
+                myTrans.Commit();
+                Console.WriteLine("Both records are written to database.");
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    myTrans.Rollback();
+                }
+                catch (SqlException ex)
+                {
+                    if (myTrans.Connection != null)
+                    {
+                        Console.WriteLine("An exception of type " + ex.GetType() + " was encountered while attempting to roll back the transaction.");
+                    }
+                }
+
+                Console.WriteLine("An exception of type " + e.GetType() + " was encountered while inserting the data.");
+                Console.WriteLine("Neither record was written to database.");
+            }
+            finally
+            {
+                myConnection.Close();
+            }
             return Content(result, ContentType.Json, Encoding.UTF8);
         }
     }

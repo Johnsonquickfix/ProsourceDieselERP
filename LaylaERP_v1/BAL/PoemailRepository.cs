@@ -7,6 +7,7 @@ using System.Web;
 using LaylaERP_v1.Models;
 using System.Data.SqlClient;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP_v1.BAL
 {
@@ -103,6 +104,7 @@ namespace LaylaERP_v1.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Poemail/AddPoemail/" + model.rowid + "", "Insert poemail details.");
                 throw Ex;
             }
         }
@@ -139,6 +141,7 @@ namespace LaylaERP_v1.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Poemail/UpdateEmail/" + model.rowid + "", "Update poemail details.");
                 throw Ex;
             }
         }

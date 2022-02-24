@@ -597,7 +597,7 @@ function saveCO() {
                     $('.billinfo').prop("disabled", true);
                     swal('Success!', 'Order refunded successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
                 }
-                else { swal('Error', data[0].Response, "error").then((result) => { return false; }); }
+                else { swal('Error', data.message, "error").then((result) => { return false; }); }
             },
             error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
             complete: function () { $("#loader").hide(); isEdit(false); },

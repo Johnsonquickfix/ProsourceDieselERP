@@ -46,7 +46,7 @@
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch { status = false; JSONresult = "Something went wrong! Please try again."; }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message }, 0);  }
             return Json(new { status = status, message = JSONresult }, 0);
         }
 

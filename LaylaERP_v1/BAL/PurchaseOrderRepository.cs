@@ -195,6 +195,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePayment/" + Pkey + "", "Payment taken from invoice");
                 throw new Exception(ex.Message);
             }
             return dt;

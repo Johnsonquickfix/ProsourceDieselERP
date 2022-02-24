@@ -290,6 +290,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "CheckDeposit/Paymenttobank/" + Pkey + "", "Payment send to bank");
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -310,6 +311,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "CheckDeposit/RejectorClearedAmount/" + Pkey + "", "Update payment bank status");
                 throw new Exception(ex.Message);
             }
             return dt;

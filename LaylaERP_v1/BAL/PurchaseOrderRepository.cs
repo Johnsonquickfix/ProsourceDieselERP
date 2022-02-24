@@ -195,6 +195,12 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                if(qFlag == "POP")
+                    UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePayment/" + Pkey + "", "Payment taken from invoice");
+                if (qFlag == "POAMD")
+                    UserActivityLog.ExpectionErrorLog(ex, "PurchaseOrder/POAmendment/" + Pkey + "", "PO Amendment");
+                if (qFlag == "I")
+                    UserActivityLog.ExpectionErrorLog(ex, "PurchaseOrder/NewPurchase/" + Pkey + "", "New Purchase Order"); 
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -215,6 +221,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "PurchaseOrder/UpdatePurchaseOrderStatus/" + model.Search + "", "Update Purchase Order Status");
                 throw Ex;
             }
             return dt;

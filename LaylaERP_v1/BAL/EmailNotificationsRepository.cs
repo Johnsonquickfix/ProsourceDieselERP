@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -105,7 +106,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "EmailNotification/AddEmailNotification/" + "0" + "", "Add email notification");
+                throw ex; 
+            }
             return result;
         }
 
@@ -120,7 +124,10 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "EmailNotification/updateEmailNotification/" + "0"  + "", "Update email notification");
+                throw ex; 
+            }
             return result;
         }
         public static EmailSettingModel GetDetails(string optionname)
@@ -210,6 +217,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "EmailSetting/Updatewoocommerce/" + id + "", "Update email sender options");
                 throw Ex;
             }
         }

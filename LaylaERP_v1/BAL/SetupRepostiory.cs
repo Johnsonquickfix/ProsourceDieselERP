@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -113,6 +114,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setup/AddProductWarehouseRule/" + model.rowid + "", "Insert suffix split logic product.");
                 throw Ex;
             }
         }
@@ -135,6 +137,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setup/AddProductWarehouseRuleDetails/" + model.rowid + "", "Insert suffix split logic details.");
                 throw Ex;
             }
         }
@@ -212,6 +215,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setup/UpdateProductWarehouseRule/" + model.searchid + "", "Update suffix split logic details.");
                 throw Ex;
             }
         }

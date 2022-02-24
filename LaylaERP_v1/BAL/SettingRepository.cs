@@ -7,6 +7,7 @@ using LaylaERP.DAL;
 using LaylaERP.Models;
 using System.Data.SqlClient;
 using System.Text;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -109,6 +110,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/Update_Setting/" + id + "", "Update global setting.");
                 throw Ex;
             }
         }
@@ -158,6 +160,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/NewRule/" + model.rule_name + "", "Insert shipping rule.");
                 throw Ex;
             }
         }
@@ -227,6 +230,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/NewRule/" + model.fk_rule + "", "Delete shipping rule.");
                 throw Ex;
             }
         }
@@ -288,7 +292,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Setting/NewRule/" + model.fk_products + "", "Update shipping rule.");
+                throw ex; }
             return result;
         }
         public static int Addshippingruledetails(SettingModel model)
@@ -310,7 +316,9 @@ namespace LaylaERP.BAL
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
                 }
             catch (Exception ex)
-            { throw ex; }
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Setting/CreateShiprule/" + model.fk_products + "", "Insert shipping rule.");
+                throw ex; }
             return result;
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using LaylaERP.Models;
 using System.Data.SqlClient;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.BAL
 {
@@ -41,6 +42,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "AddAgentCommission/AddAgentCommission/" + model.AOV_Range1 + "", "Insert agent commission details.");
                 throw Ex;
             }
         }
@@ -83,6 +85,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "UpdateCommission/UpdateCommission/" + model.id + "", "Update agent commission details.");
                 throw Ex;
             }
         }

@@ -150,6 +150,23 @@
             }
             return dt;
         }
+        public static DataSet ExportOrders(long id)
+        {
+            var ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters = { 
+                    new SqlParameter("@flag", "UORDER"),
+                    new SqlParameter("@id", id)
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_order_export", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return ds;
+        }
 
         public static DataTable GetProducts(string strSearch)
         {

@@ -237,6 +237,7 @@
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\OrdersMySQLController.cs" />
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\PoemailController.cs" />
@@ -255,6 +256,7 @@
     <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
+    <Compile Include="DAL\MYSQLHelper.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -756,6 +758,7 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Marketing\NewAutoGenerate.js" />
+    <Content Include="js\OrdersMySQL\OrderRefundMySQL.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderCoupons.js" />
     <Content Include="js\Orders\OrderHistory.js" />
@@ -1168,6 +1171,7 @@
     <Content Include="Views\Reports\POApprovedReport.cshtml" />
     <Content Include="Views\DataImport\Index.cshtml" />
     <Content Include="Views\DataImport\ExportData.cshtml" />
+    <Content Include="Views\OrdersMySQL\OrderRefund.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -73,6 +73,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/Update_Setting/" + id + "", "Update global setting.");
                 throw Ex;
             }
         }

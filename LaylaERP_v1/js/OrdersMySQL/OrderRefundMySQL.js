@@ -550,7 +550,8 @@ function saveCO() {
             url: "/OrdersMySQL/SaveCustomerOrderRefund",
             data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
             success: function (data) {
-                data = JSON.parse(data); //console.log(data);
+                //data = JSON.parse(data); //
+                console.log(data);
                 if (data.status == true) {
                     if (pay_gift == '') {
                         if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();

@@ -131,6 +131,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "GiftCard/SaveGiftCardOrder/" + Pkey + "", "Add gift card order");
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -158,6 +159,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
+                UserActivityLog.ExpectionErrorLog(ex, "Giftcard/UpdatePaypalPaymentAccept/" + Pkey + "", "Update paypal payment accept");
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -224,6 +226,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Giftcard/ChangeGiftCardStatus/" + ID + "", "Change gift card status");
                 throw Ex;
             }
         }
@@ -243,6 +246,7 @@ namespace LaylaERP.BAL
             }
             catch (Exception Ex)
             {
+                UserActivityLog.ExpectionErrorLog(Ex, "Giftcard/ChangeGiftCardOrderStatus/" + ID + "", "Change gift card order status");
                 throw Ex;
             }
         }

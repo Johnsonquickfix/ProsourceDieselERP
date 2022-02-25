@@ -350,7 +350,8 @@
         });
         function filluserMenu() {
             let option = { userId: parseInt($('.lbluser-name').data('uid') || 0) };
-            $.post('/AccountAPI/getMenus', option).then(response => {
+                //$.post('/AccountAPI/getMenus', option).then(response => {
+            $.post('/AccountAPI/getMenusdata', option).then(response => {
                 $('.sidebar-menu').sidebarMenu({ data: response });
             }).catch(err => { swal('Error!', err, 'error'); });
         }

@@ -260,6 +260,23 @@
             { throw ex; }
             return DT;
         }
+        public static DataTable GetUsersMenuAuth(string UserType)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                    {
+                    new SqlParameter("@Values", UserType),
+                };
+                string strquery = "erp_getusersmenuAuth";
+                DT = SQLHelper.ExecuteDataTable(strquery, para);
+                //DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,case when wem.parent_id = 0 then null else wem.parent_id end parent_id,wer.add_,wer.edit_,wer.delete_,(case coalesce(wem.parent_id,0) when 0 then 0 else 1 end) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Value = @User_Type And status=1;", para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static DataTable GetPermissions(string UserType, string menu_url)
         {
             DataTable DT = new DataTable();

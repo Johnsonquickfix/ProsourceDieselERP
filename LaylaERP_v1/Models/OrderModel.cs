@@ -47,6 +47,7 @@
         public OrderPostStatusModel OrderPostStatus { get; set; }
         public List<OrderOtherItemsModel> OrderOtherItems { get; set; }
         public List<OrderTaxItemsModel> OrderTaxItems { get; set; }
+        public List<OrderProductsMetaModel> OrderItemMeta { get; set; }
 
         //insert values dynamic column
         public string postsXML { get; set; }

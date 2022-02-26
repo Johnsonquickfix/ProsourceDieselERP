@@ -11,7 +11,9 @@
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); CustomerAddress($("#ddlUser").val()); }, 50); return false; });
+    $("#ddlUser").change(function () {
+        $.when(NewOrderNo()).done(function () { CustomerAddress($("#ddlUser").val()); }).fail(function (error) { console.log(error); }); return false;
+    });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function (t) {
@@ -39,7 +41,7 @@
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
-    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/Orders/OrdersHistory"; ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') order processed, waiting for payment.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
+    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') order processed, waiting for payment.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); });
     /*Start New order Popup function*/
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); $("#loader").show();
@@ -58,10 +60,10 @@
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
-        ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/Orders/OrdersHistory');
+        ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory');
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
-    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/Orders/OrdersHistory'); });
+    $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); ActivityLog('Edit order id (' + $('#hfOrderNo').val() + ') in order history', '/OrdersMySQL/OrdersHistory'); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -86,21 +88,6 @@
         let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
         if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
         getItemList(pid, vid, qty);
-    });
-    $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
-        t.preventDefault();
-        let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
-        var oid = parseInt($('#hfOrderNo').val()) || 0;
-        if (cus_id > 0) {
-            $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
-            if (oid == 0) {
-                setTimeout(function () { NewOrderNo(); }, 50);
-            }
-            $("#billModal").modal('hide'); CustomerAddress(cus_id); return false;
-        }
-        else {
-            swal('Alert!', 'Please Search Customer.', "info").then((result) => { $('#ddlCustomerSearch').select2('open'); return false; }); return false;
-        }
     });
     $("#billModal").on("change", "#ddlCustomerSearch", function (t) {
         t.preventDefault();
@@ -148,7 +135,7 @@
         if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
         let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
         $($btn).attr('disabled', 'disabled');
-        $.post('/Orders/OrderNoteAdd', option).then(response => {
+        $.post('/OrdersMySQL/OrderNoteAdd', option).then(response => {
             if (response.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
             else swal('Alert!', result.message, "error");
         }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $($btn).removeAttr('disabled'); });
@@ -227,7 +214,8 @@
     $(document).on("click", ".add_order_item_meta", function (t) {
         t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
         let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
-        $.post('/Orders/GetOrderItemMeta', { strValue1: _item_id }).then(response => {
+        $.post('/OrdersMySQL/GetOrderItemMeta', { strValue1: _item_id }).then(response => {
+            console.log(response);
             let meta_list = JSON.parse(response);
             if (meta_list.length == 0) meta_list.push({ id: 0, item_id: $item.data('orderitemid'), key: '', 'value': '' });
             AddItemMetaModal($item.data('id'), _item_id, meta_list);
@@ -256,8 +244,8 @@
             _status = true;
         });
         if (_status) {
-            let _data = { order_itemmetaXML: JSON.stringify(meta_list) }; $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
-            $.ajax({ method: 'post', url: '/Orders/SaveOrderProductMeta', data: _data }).done(function (result, textStatus, jqXHR) {
+            let _data = { OrderItemMeta: meta_list }; $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
+            $.ajax({ method: 'post', url: '/OrdersMySQL/SaveOrderProductMeta', data: _data }).done(function (result, textStatus, jqXHR) {
                 if (result) { $('#tritemId_' + row_id).data('meta_data', dis_list); $("#billModal").modal('hide'); }
             }).fail(function (jqXHR, textStatus, errorThrown) { swal('Alert!', 'Something went wrong, please try again.', "error"); }).always(function () { $($btn).html("Add"); $($btn).removeAttr('disabled'); });
         }
@@ -299,10 +287,13 @@ function NewOrderNo() {
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
         ajaxFunction('/OrdersMySQL/GenerateNewOrderNo', option, beforeSendFun, function (result) {
-            if (result.status) { $('#hfOrderNo').val(result.id); $('#lblOrderNo').text('Order #' + result.id + ' detail '); }
-            else { swal('Error', data.message, "error"); }
-        }, completeFun, errorFun, false);
-        isEdit(true); $('.billnote').prop("disabled", false);
+            let id = parseInt(result.id) || 0;
+            if (id > 0) {
+                let id = parseInt(result.id) || 0;
+                $('#hfOrderNo').val(result.id); $('#lblOrderNo').text('Order #' + result.id + ' detail '); $('.billnote').prop("disabled", false); isEdit(true);
+            }
+            else { swal('Error', result.message, "error"); $('.billnote').prop("disabled", true); }
+        }, completeFun, errorFun, true);
     }
 }
 ///Find Address of Customer
@@ -459,7 +450,6 @@ function searchOrderModal() {
 }
 function bindCustomerOrders(id) {
     let opt = { strValue1: parseInt(id) || 0 };
-    let _address = [];
     $.post('/Orders/GetCustomersAddresssList', opt).then(response => {
         $('#tblCusOrders').dataTable({
             destroy: true, data: JSON.parse(response), order: [[0, "desc"]],
@@ -492,7 +482,6 @@ function bindCustomerOrders(id) {
             ]
         });
     }).catch(err => { swal('Error!', err, 'error'); });
-
 }
 function ShowUseAddress(chk) {
     var isChecked = $(chk).prop("checked");
@@ -507,8 +496,12 @@ function selectOrderAddress(ele) {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
-        if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
-        $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
+        if (oid == 0) {
+            NewOrderNo(); oid = parseInt($('#hfOrderNo').val()) || 0;
+            if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
+        }
+        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); $("#ddlUser").val(0).trigger('change'); }
+
         ///billing_Details
         if ($(ele).data('bfn') != undefined) $('#txtbillfirstname').val($(ele).data('bfn'));
         if ($(ele).data('bln') != undefined) $('#txtbilllastname').val($(ele).data('bln'));
@@ -1118,11 +1111,11 @@ function AddItemMetaModal(id, itemid, meta_list) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function DeleteNotes(id) {
-    let option = { comment_ID: id }; let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let oid = parseInt($('#hfOrderNo').val()) || 0; let option = { comment_ID: id, post_ID: oid };
     swal({ title: '', text: 'Would you like to remove this note?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
-                ajaxFunction('/Orders/OrderNoteDelete', option, beforeSendFun, function (result) {
+                ajaxFunction('/OrdersMySQL/OrderNoteDelete', option, beforeSendFun, function (result) {
                     if (result.status) getOrderNotesList(oid);
                     else swal('Alert!', result.message, "error");
                 }, completeFun, errorFun, false);
@@ -1156,7 +1149,7 @@ function ApplyFee(orderitemid, feevalue) {
     let oid = parseInt($('#hfOrderNo').val()) || 0, line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
     let option = { order_item_id: orderitemid, order_id: oid, item_name: product_name, item_type: 'fee', amount: line_total };
-    ajaxFunction('/Orders/AddFee', option, beforeSendFun, function (result) {
+    ajaxFunction('/OrdersMySQL/AddFee', option, beforeSendFun, function (result) {
         let feeHtml = '';
         if (orderitemid > 0) {
             $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
@@ -1164,7 +1157,7 @@ function ApplyFee(orderitemid, feevalue) {
             feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
             $('#trfeeid_' + orderitemid).empty().append(feeHtml);
-            ActivityLog('Fee updated (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/OrdersHistory');
+            ActivityLog('Fee updated (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/OrdersMySQL/OrdersHistory');
         }
         else {
             let feeHtml = '';
@@ -1174,7 +1167,7 @@ function ApplyFee(orderitemid, feevalue) {
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
             feeHtml += '</tr>';
             $('#order_fee_line_items').append(feeHtml);
-            ActivityLog('Fee added (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/OrdersHistory');
+            ActivityLog('Fee added (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/OrdersMySQL/OrdersHistory');
         }
         $("#billModal").modal('hide'); calcFinalTotals();
 
@@ -1185,7 +1178,7 @@ function RemoveFee(orderitemid) {
         .then((result) => {
             if (result.value) {
                 let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
-                ajaxFunction('/Orders/RemoveFee', option, beforeSendFun, function (result) {
+                ajaxFunction('/OrdersMySQL/RemoveFee', option, beforeSendFun, function (result) {
                     let feamount = $('#trfeeid_' + orderitemid).data('feeamt');
                     if (result.status) { $('#trfeeid_' + orderitemid).remove(); calcFinalTotals(); ActivityLog('Fee id (' + orderitemid + ') with amount (' + feamount + ') Deleted in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
                     else { swal('Alert!', result.message, "error"); }
@@ -2079,9 +2072,9 @@ function saveCO() {
         url: "/OrdersMySQL/SaveCustomerOrder",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
-            result = JSON.parse(result);
-            if (result[0].Response == "Success") {
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
+            if (result.status) {
+                if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true);
+                //$('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
                 //$.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true); });
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
@@ -2098,16 +2091,15 @@ function updateCO() {
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
-    let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
+    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
     //console.log(obj);
     swal.queue([{
         title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                $.post('/Orders/SaveCustomerOrder', obj).done(function (result) {
-                    result = JSON.parse(result);
-                    if (result[0].Response == "Success") {
+                $.post('/OrdersMySQL/SaveCustomerOrder', obj).done(function (result) {
+                    if (result.status) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                         swal('Success', 'Order updated successfully.', "success"); getOrderInfo(); $('[data-toggle="tooltip"]').tooltip();
                     }

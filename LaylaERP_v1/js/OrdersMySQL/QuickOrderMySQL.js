@@ -2214,8 +2214,8 @@ function PaymentModal() {
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
-    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for podium payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/OrdersMySQL/minesofmoria/' + $('#hfOrderNo').val() + ''); }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for podium payment from order payment invoice.', '/OrdersMySQL/minesofmoria/' + $('#hfOrderNo').val() + ''); }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 
@@ -2281,7 +2281,7 @@ function updatePayment(oid, taskUid) {
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
     ];
     let opt = { OrderPostMeta: _postMeta };
-    $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
+    $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
         if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, false, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
@@ -2369,7 +2369,7 @@ function PaypalPayment(ppemail) {
                     else {
                         let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ',{BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
                         let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
-                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
+                        $.post('/OrdersMySQL/UpdatePaymentInvoiceID', option_pu).then(result => {
                             swal('Success!', result.message, 'success'); $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                             successModal('PayPal', inv_id, true, true);
                         }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
@@ -2396,7 +2396,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             console.log(senddata);
             let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', {BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
             let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
-            $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
+            $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 successModal('PayPal', id[id.length - 2], true, true);

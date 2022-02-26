@@ -89,9 +89,9 @@ function ChangePermission(id, addid, editid, deleteid,flag) {
     //console.log(id);
     var split_str = id.split(",");
     if (split_str.indexOf("4") !== -1) {
-        swal('Alert!', "You have not permission to approve role permission please unselect it", 'error');
+        swal('Alert!', "Role Permission menu can not be approved.Please remove the tick mark first.", 'error');
     }
-    else { 
+    else {
         $.ajax({
             url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",

@@ -86,31 +86,38 @@ function ChangePermission(id, addid, editid, deleteid,flag) {
     var rolename = $("#userrole :selected").text(); 
     var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id, flag: flag }
     ActivityLog('Approved Permission for role ' + rolename + '', '/Users/AssignRole/' + role_id + '');
-    $.ajax({
-        url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () {
-            $("#loader").show();
-        },
-        success: function (data) {
-            if (data.status == true) {
-              
-              
-                swal('Success!', data.message, 'success');
-            }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () {
-            $("#loader").hide();
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
+    //console.log(id);
+    var split_str = id.split(",");
+    if (split_str.indexOf("4") !== -1) {
+        swal('Alert!', "You have not permission to approve role permission please unselect it", 'error');
+    }
+    else { 
+        $.ajax({
+            url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+
+
+                    swal('Success!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
 }
 
 $("#userrole").change(function () {

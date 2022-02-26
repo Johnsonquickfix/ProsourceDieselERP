@@ -421,9 +421,24 @@ namespace LaylaERP.BAL
 
         public static int GetRoleID(string UserValue)
         {
-            int count = 0;
-            string strQuery = "select ID from wp_user_classification  where User_value = '" + UserValue + "' ";
-            count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
+            int count = 0; 
+            var numbers = UserValue.Split(',');
+            int s = numbers.Length;  
+            if (s == 1)
+            {
+                string strQuery = "select ID from wp_user_classification  where User_value = '" + UserValue + "' ";
+                count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
+            }
+            else if (UserValue.Contains("administrator"))
+            {
+                count = 65;
+            }
+            else
+            {
+                string strQuery = "select top 1 ID from wp_user_classification  where User_value in(select * from [Split] ( '" + UserValue + "' ,',') ) ";
+                count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
+            }
+
             //select COUNT(meta_value)as meta_value from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' where meta_value like '%Mod Squad%' OR meta_value like '%modsquad%'
             return count;
         }

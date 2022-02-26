@@ -144,9 +144,12 @@ namespace LaylaERP.Controllers
                // Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
                 //Dictionary<string, object> childRow;
 
+
                 //parentRow.Add("Administrator");
-                string str = "{ 'context_name': { 'lower_bound': 'value', 'pper_bound': 'value' } }";
-                
+                string str = "{'usermeta': { 'wp_capabilities': 'administrator' } }";
+
+               // string str = "{ 'context_name': { 'lower_bound': 'value', 'pper_bound': 'value' } }";
+
                 object a = JsonConvert.DeserializeObject(str, typeof(object));
 
                 result = JsonConvert.SerializeObject(a, Formatting.Indented);

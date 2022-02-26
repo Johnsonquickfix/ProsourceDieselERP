@@ -237,23 +237,23 @@
             return result;
         }
 
-
         [HttpPost]
         public JsonResult GenerateNewOrderNo(OrderModel model)
         {
             string JSONresult = string.Empty;
             try
             {
+                string host = Request.ServerVariables["HTTP_ORIGIN"];
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_id", meta_value = om.UserID.ToString() });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_name", meta_value = om.UserName.ToString() });
 
-                JSONresult = AddOrdersPost(model.OrderPostMeta).ToString();
+                JSONresult = AddOrdersPost(host, model.OrderPostMeta).ToString();
             }
             catch (Exception ex) { return Json(new { status = true, message = ex.Message, id = "0" }, 0); }
             return Json(new { status = true, message = "Success.", id = JSONresult }, 0);
         }
-        public static long AddOrdersPost(List<OrderPostMetaModel> _list)
+        public static long AddOrdersPost(string host, List<OrderPostMetaModel> _list)
         {
             long id = 0;
             try
@@ -261,7 +261,7 @@
                 StringBuilder strSql = new StringBuilder("INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)");
                 strSql.Append("VALUES('1','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "','','Order &ndash; " + CommonDate.UtcDate().ToString("MMMM dd, yyyy @ HH:mm tt") + "','','auto-draft',"
                                    + "'open','closed','','order-" + CommonDate.UtcDate().ToString("MMM-dd-yyyy-HHmm-tt") + "','','','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "',"
-                                   + "'','0','http://173.247.242.204/~rpsisr/woo/post_type=shop_order&p=','0','shop_order','','0')");
+                                   + "'','0','" + host + "/~rpsisr/woo/post_type=shop_order&p=','0','shop_order','','0')");
 
                 strSql.Append("; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)");
                 strSql.Append(" SELECT LAST_INSERT_ID(),'0','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "','0','0','0','0','0','0','auto-draft','0' ; SELECT LAST_INSERT_ID();");
@@ -452,6 +452,166 @@
             }
             catch (Exception Ex) { throw Ex; }
             return result;
+        }
+
+        [HttpPost]
+        public JsonResult AddFee(OrderOtherItemsModel model)
+        {
+            long id = 0;
+            try
+            {
+                string strSQL = string.Empty;
+                if (model.order_item_id > 0)
+                {
+                    strSQL = string.Format("update wp_woocommerce_order_items set order_item_name ='{0}' where order_item_id={1};update wp_woocommerce_order_itemmeta set meta_value='{2}' where order_item_id={3} and meta_key in ('_fee_amount','_line_total'); ", model.item_name, model.order_item_id, model.amount, model.order_item_id);
+                    if (DAL.MYSQLHelper.ExecuteNonQuery(strSQL) > 0) id = model.order_item_id;
+                }
+                else
+                {
+                    MySqlParameter[] parameters =
+                    {
+                        new MySqlParameter("@order_item_name", model.item_name),
+                        new MySqlParameter("@order_item_type", model.item_type),
+                        new MySqlParameter("@order_id", model.order_id)
+                    };
+                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT SCOPE_IDENTITY();";
+                    id = Convert.ToInt64(DAL.MYSQLHelper.ExecuteScalar(strSQL, parameters));
+                    if (id > 0)
+                    {
+                        strSQL = string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) values ('{0}','_fee_amount','{1}'),('{2}','_tax_class',''),('{3}','tax_status','taxable'),('{4}','_line_total','{5}'),('{6}','_line_tax','0') ", id, model.amount, id, id, id, model.amount, id);
+                        DAL.MYSQLHelper.ExecuteNonQuery(strSQL);
+                    }
+                }
+            }
+            catch { Json(new { status = false, order_item_id = 0 }, 0); }
+            return Json(new { status = true, order_item_id = id }, 0);
+        }
+        [HttpPost]
+        public JsonResult RemoveFee(OrderOtherItemsModel model)
+        {
+            string result = "Invalid Details.";
+            bool state = false;
+            try
+            {
+                string strSQL = string.Format("delete from wp_woocommerce_order_itemmeta where order_item_id={1};delete from wp_woocommerce_order_items where order_item_id={1};", model.order_item_id, model.order_item_id);
+                int res = DAL.MYSQLHelper.ExecuteNonQuery(strSQL);
+                if (res > 0)
+                {
+                    result = "Fee successfully removed.";
+                    state = true;
+                }
+            }
+            catch { state = false; result = "Invalid Details."; }
+            return Json(new { status = state, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult GetOrderItemMeta(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                //JSONresult = OrderRepository.GetOrderItemMeta(id);
+
+                MySqlParameter[] parameters = { new MySqlParameter("@order_id", id) };
+                string strSQl = "select concat('[', group_concat(concat('{\"id\":',oim_s.meta_id,',\"item_id\":',oim_s.order_item_id,',\"key\":\"',oim_s.meta_key,'\",\"value\":\"',oim_s.meta_value,'\"}'),','), ']') meta_data"
+                                + " from wp_woocommerce_order_itemmeta oim_s where oim_s.order_item_id = @order_id and oim_s.meta_key like '_system_%'";
+                JSONresult = DAL.MYSQLHelper.ExecuteScalar(strSQl, parameters).ToString();
+                JSONresult = string.IsNullOrEmpty(JSONresult) ? "[]" : JSONresult;
+            }
+            catch (Exception ex) { return Json("[]", 0); }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult SaveOrderProductMeta(OrderModel model)
+        {
+            string result = "Invalid Details.";
+            bool state = false;
+            try
+            {
+                StringBuilder strSql = new StringBuilder("");
+                foreach (OrderProductsMetaModel obj in model.OrderItemMeta)
+                {
+                    if (obj.id > 0 && !string.IsNullOrEmpty(obj.key))
+                    {
+                        strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_key = '{0}', meta_value = '{1}' where meta_id = {2}; ", obj.key, obj.value, obj.id));
+                    }
+                    else if (obj.id > 0 && string.IsNullOrEmpty(obj.key))
+                    {
+                        strSql.Append(string.Format("delete from wp_woocommerce_order_itemmeta where meta_id = {0}; ", obj.id));
+                    }
+                    else if (obj.id == 0 && !string.IsNullOrEmpty(obj.key))
+                    {
+                        strSql.Append(string.Format("insert into wp_woocommerce_order_itemmeta (order_item_id,meta_key,meta_value) VALUES({0},'{1}','{2}'); ", obj.item_id, obj.key, obj.value));
+                    }
+                }
+                int res = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (res > 0)
+                {
+                    result = "Item Meta successfully updated.";
+                    state = true;
+                }
+            }
+            catch { state = false; result = "Invalid Details."; }
+            return Json(new { status = state, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult OrderNoteAdd(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                model.comment_author = om.UserName; model.comment_author_email = om.EmailID;
+                model.comment_date = CommonDate.CurrentDate(); model.comment_date_gmt = CommonDate.UtcDate();
+
+                string strSQL = "INSERT INTO wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP,comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved,comment_agent, comment_type,comment_parent,user_id)"
+                            + " VALUES(@comment_post_ID,@comment_author,@comment_author_email,'','',@comment_date,@comment_date_gmt,@comment_content,'0','1','WooCommerce','order_note','0','0');";
+                if (model.is_customer_note == "customer")
+                    strSQL += "insert into wp_commentmeta(comment_id,meta_key,meta_value) select LAST_INSERT_ID(),'is_customer_note','1';";
+                strSQL += "update wp_posts set post_modified = @comment_date, post_modified_gmt = @comment_date_gmt where id = @comment_post_ID; ";
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_post_ID", model.post_ID),
+                    new MySqlParameter("@comment_author", model.comment_author),
+                    new MySqlParameter("@comment_author_email", model.comment_author_email),
+                    new MySqlParameter("@comment_date", model.comment_date),
+                    new MySqlParameter("@comment_date_gmt", model.comment_date_gmt),
+                    new MySqlParameter("@comment_content", model.comment_content)
+                };
+                int res = DAL.MYSQLHelper.ExecuteNonQuery(strSQL, parameters);
+                if (res > 0)
+                {
+                    JSONresult = "Order note added successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult OrderNoteDelete(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                model.comment_date = CommonDate.CurrentDate(); model.comment_date_gmt = CommonDate.UtcDate();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_ID", model.comment_ID),
+                    new MySqlParameter("@comment_post_ID", model.post_ID),
+                    new MySqlParameter("@comment_date", model.comment_date),
+                    new MySqlParameter("@comment_date_gmt", model.comment_date_gmt),
+                };
+                int res = DAL.MYSQLHelper.ExecuteNonQuery("update wp_comments set comment_approved = '0' where comment_ID = @comment_ID; update wp_posts set post_modified = @comment_date, post_modified_gmt = @comment_date_gmt where id = @comment_post_ID;", parameters);
+                if (res > 0)
+                {
+                    JSONresult = "Order note deleted successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
         }
     }
 }

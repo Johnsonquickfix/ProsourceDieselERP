@@ -40,10 +40,10 @@ function getOrderInfo() {
                     if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
                         $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                     else
-                        $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
+                        $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
                 }
                 else {
-                    $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
+                    $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
                 }
                 $('#lblOrderNo').data('pay_by', data[0].payment_method);
                 $('#lblOrderNo').data('pay_gift', data[0].IsGift);
@@ -257,7 +257,7 @@ function getOrderItemList(oid) {
         let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
         $("#netPaymentTotal").text(netpay.toFixed(2));
         if (netpay <= 0 && zGiftCardAmt <= zGiftCardrefundAmt)
-            $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
+            $('.box-tools,.footer-finalbutton').empty().append('<a class="btn btn-danger" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="left" title="" data-original-title="Go to Order List">Back to List</a>');
         //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
         $("#order_line_items,#order_fee_line_items").find(".rowCalulate").change(function () { calculateRefunOnQty(); });
         $("#order_line_items,#order_fee_line_items").find(".rowAmountCalulate").change(function () { calculateRefunOnAmount(); });

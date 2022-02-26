@@ -613,5 +613,48 @@
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = b_status, message = JSONresult }, 0);
         }
+
+        [HttpPost]
+        public JsonResult UpdatePaymentInvoiceID(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model.OrderPostMeta)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model.OrderPostMeta[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                if (Payment_method.ToLower() == "podium")
+                {
+                    //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                    //// step 3 : Add Order Note
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.OrderPostMeta[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
+                }
+                else
+                {
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pending", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                }
+
+                int res = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (res > 0)
+                {
+                    status = true; result = "Order placed successfully.";
+                    model.payment_method_title = model.payment_method_title.Replace("{BR}", "<br>");
+                    SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
     }
 }

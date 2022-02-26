@@ -146,14 +146,14 @@ namespace LaylaERP.Controllers
 
 
                 //parentRow.Add("Administrator");
-                string str = "{'usermeta': { 'wp_capabilities': 'administrator' } }";
+                string str =  "administrator";
 
                // string str = "{ 'context_name': { 'lower_bound': 'value', 'pper_bound': 'value' } }";
 
-                object a = JsonConvert.DeserializeObject(str, typeof(object));
+                //object a = JsonConvert.DeserializeObject(str, typeof(object));
 
-                result = JsonConvert.SerializeObject(a, Formatting.Indented);
-                var content = new StringContent(result, Encoding.UTF8, "application/json");
+                //result = JsonConvert.SerializeObject(a, Formatting.Indented);
+                var content = new StringContent(str, Encoding.UTF8);
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");

@@ -12,6 +12,7 @@ using System.Dynamic;
 using Newtonsoft.Json;
 using System.Text;
 using LaylaERP.UTILITIES;
+using System.Text.RegularExpressions;
 
 namespace LaylaERP.Controllers
 {
@@ -22,8 +23,20 @@ namespace LaylaERP.Controllers
         {
 
             //RoleCounter();
-            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
-            return View();
+            string UserValue = CommanUtilities.Provider.GetCurrent().UserType;
+            var numbers = UserValue.Split(',');
+            string pattern = @"^\w+"; 
+            var firstWord = Regex.Match(UserValue, pattern);
+
+            int s = numbers.Length;
+            if (s == 1)
+                ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
+            else if (UserValue.Contains("administrator"))
+                ViewBag.user_role = "administrator";
+            else
+                ViewBag.user_role = firstWord.Value;
+
+                return View();
         }
 
         [HttpPost]

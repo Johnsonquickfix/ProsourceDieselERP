@@ -1291,14 +1291,25 @@
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT 'Default' IsDefault,user_id customer_id,concat('{',STRING_AGG(concat('\"_',meta_key,'\": \"',meta_value,'\"'),','),'}') as meta_data"
-                                + " FROM wp_usermeta WHERE user_id = '" + CustomerID + "' and (meta_key like 'billing_%' OR meta_key like 'shipping_%') and meta_key not like '%_method' group by user_id"
-                                + " UNION ALL"
-                                + " select distinct IsDefault, customer_id, meta_data from"
-                                + " (SELECT '' IsDefault, pmu.meta_value customer_id, concat('{', STRING_AGG(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"'),','), '}') as meta_data"
-                                + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
-                                + " inner join wp_postmeta pm on pm.post_id = pmu.post_id and (pm.meta_key like '_billing%' OR pm.meta_key like '_shipping_%') and pm.meta_key not like '%_method'"
-                                + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value) tt";
+                //string strSql = "SELECT 'Default' IsDefault,user_id customer_id,concat('{',STRING_AGG(concat('\"_',meta_key,'\": \"',meta_value,'\"'),','),'}') as meta_data"
+                //                + " FROM wp_usermeta WHERE user_id = '" + CustomerID + "' and (meta_key like 'billing_%' OR meta_key like 'shipping_%') and meta_key not like '%_method' group by user_id"
+                //                + " UNION ALL"
+                //                + " select distinct IsDefault, customer_id, meta_data from"
+                //                + " (SELECT '' IsDefault, pmu.meta_value customer_id, concat('{', STRING_AGG(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"'),','), '}') as meta_data"
+                //                + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
+                //                + " inner join wp_postmeta pm on pm.post_id = pmu.post_id and (pm.meta_key like '_billing%' OR pm.meta_key like '_shipping_%') and pm.meta_key not like '%_method'"
+                //                + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value) tt";
+                string strSql = "select distinct row_number() OVER(ORDER BY customer_id) IsDefault,customer_id,meta_data from"
+                            + " (SELECT user_id customer_id, concat('{',STRING_AGG(concat('\"_', meta_key, '\": \"', meta_value, '\"'), ','),'}') as meta_data"
+                            + " FROM wp_usermeta WHERE user_id = '" + CustomerID + "' and meta_key in ('billing_first_name', 'billing_last_name', 'billing_company', 'billing_address_1', 'billing_address_2', 'billing_city', 'billing_state', 'billing_country', 'billing_postcode', 'billing_phone', 'billing_email', 'shipping_first_name', 'shipping_last_name', 'shipping_company', 'shipping_address_1', 'shipping_address_2', 'shipping_city', 'shipping_state', 'shipping_country', 'shipping_postcode')"
+                            + " group by user_id"
+                            + " union all"
+                            + " SELECT distinct pmu.meta_value customer_id, concat('{', STRING_AGG(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"'), ','), '}') as meta_data"
+                            + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
+                            + " inner join wp_postmeta pm on pm.post_id = pmu.post_id"
+                            + " and pm.meta_key in ('_billing_first_name', '_billing_last_name', '_billing_company', '_billing_address_1', '_billing_address_2', '_billing_city', '_billing_state', '_billing_country', '_billing_postcode', '_billing_phone', '_billing_email', '_shipping_first_name', '_shipping_last_name', '_shipping_company', '_shipping_address_1', '_shipping_address_2', '_shipping_city', '_shipping_state', '_shipping_country', '_shipping_postcode')"
+                            + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft'"
+                            + " group by po.ID, pmu.meta_value) tt group by customer_id, meta_data";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

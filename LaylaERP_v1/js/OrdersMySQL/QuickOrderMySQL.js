@@ -293,7 +293,7 @@ function NewOrderNo() {
                 $('#hfOrderNo').val(result.id); $('#lblOrderNo').text('Order #' + result.id + ' detail '); $('.billnote').prop("disabled", false); isEdit(true);
             }
             else { swal('Error', result.message, "error"); $('.billnote').prop("disabled", true); }
-        }, completeFun, errorFun, true);
+        }, completeFun, errorFun, false);
     }
 }
 ///Find Address of Customer
@@ -467,8 +467,9 @@ function bindCustomerOrders(id) {
                 },
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
-                        let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let row = JSON.parse(dtrow.meta_data); 
+                        //let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' +  dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault == 1 ? ' <span class="label label-success">Default</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
@@ -497,10 +498,12 @@ function selectOrderAddress(ele) {
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
         if (oid == 0) {
-            NewOrderNo(); oid = parseInt($('#hfOrderNo').val()) || 0;
-            if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
+            $.when(NewOrderNo()).done(function () {
+                oid = parseInt($('#hfOrderNo').val()) || 0;
+                if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
+            }).fail(function (error) { console.log(error); });            
         }
-        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); $("#ddlUser").val(0).trigger('change'); }
+        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);  }
 
         ///billing_Details
         if ($(ele).data('bfn') != undefined) $('#txtbillfirstname').val($(ele).data('bfn'));

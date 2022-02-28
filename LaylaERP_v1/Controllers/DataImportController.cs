@@ -204,7 +204,7 @@ namespace LaylaERP.Controllers
             return Content(result, ContentType.Json, Encoding.UTF8);
         }
 
-        public ActionResult ErpLogin()
+        public ActionResult ErpApi()
         {
             var result = string.Empty;
             try
@@ -213,17 +213,18 @@ namespace LaylaERP.Controllers
                 //Dictionary<string, object> childRow;
 
                 //parentRow.Add("Administrator");
-                string luser = "luser=devteamva";
-                string lpwd = "lpwd=K+AMADu5yb2SMD5&sA";
+                //string luser = "luser=devteamva";
+                //string lpwd = "lpwd=K+AMADu5yb2SMD5&sA";
 
-                string lulp = luser + ", " + lpwd;
+                //string lulp = luser + ", " + lpwd;
+                string orderid = "903417";
                 //object a = JsonConvert.DeserializeObject(unstr, typeof(object));
 
                 //result = JsonConvert.SerializeObject(unstr, Formatting.Indented);
-                var content = new StringContent(lulp, Encoding.UTF8);
+                var content = new StringContent(orderid, Encoding.UTF8);
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/aspsplit.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;

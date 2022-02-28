@@ -169,6 +169,41 @@ namespace LaylaERP.Controllers
             return Content(result, ContentType.Json, Encoding.UTF8);
         }
 
+
+        public ActionResult ExportDataUnserial()
+        {
+            var result = string.Empty;
+            try
+            {
+                // Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
+                //Dictionary<string, object> childRow;
+
+                //parentRow.Add("Administrator");
+                string unstr = "unstr={a:2:{i:0;s:13:'Administrator';i:1;s:8:'SalesRep';}}";
+
+                //object a = JsonConvert.DeserializeObject(unstr, typeof(object));
+
+                //result = JsonConvert.SerializeObject(unstr, Formatting.Indented);
+                var content = new StringContent(unstr, Encoding.UTF8);
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/serial.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+            }
+            catch { }
+            return Content(result, ContentType.Json, Encoding.UTF8);
+        }
+
         public ActionResult UpldateDataInMySQL()
         {
 

@@ -137,16 +137,15 @@ namespace LaylaERP.Controllers
 
         public ActionResult ExportDatanew()
         {
-
             var result = string.Empty;
             try
             {
                // Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
                 //Dictionary<string, object> childRow;
-
+                 
                 //parentRow.Add("Administrator");
-                string str = "{ 'context_name': { 'lower_bound': 'value', 'pper_bound': 'value' } }";
-                
+                string str =  "{'str': {'str': 'Administrator,SalesRep'}}";
+
                 object a = JsonConvert.DeserializeObject(str, typeof(object));
 
                 result = JsonConvert.SerializeObject(a, Formatting.Indented);

@@ -213,10 +213,10 @@ namespace LaylaERP.Controllers
                 //Dictionary<string, object> childRow;
 
                 //parentRow.Add("Administrator");
-                string luser = "devteamva";
-                string lpwd = "K+AMADu5yb2SMD5&sA";
+                string luser = "luser=devteamva";
+                string lpwd = "lpwd=K+AMADu5yb2SMD5&sA";
 
-                string lulp = luser + "," + lpwd;
+                string lulp = luser + ", " + lpwd;
                 //object a = JsonConvert.DeserializeObject(unstr, typeof(object));
 
                 //result = JsonConvert.SerializeObject(unstr, Formatting.Indented);

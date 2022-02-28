@@ -169,7 +169,14 @@ function dataGridLoad(order_type) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(id).html() + '"><label></label>';
                 }
             },
-            { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
+            {
+                data: 'id', title: 'OrderID', sWidth: "8%",
+                render: function (id, type, full, meta) {
+                    if (full.post_mime_type == 'shop_order_erp') return '#' + id + ' <i class="fas fa-exclamation-triangle" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '#' + id;
+                }
+
+            },
             {
                 data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
                     return row.first_name + ' ' + row.last_name;

@@ -65,7 +65,7 @@ $(document).ready(function () {
             preConfirm: function () {
                 return new Promise(function (resolve) {
                     swal.showLoading();
-                    $.get('/order/order-import', {}).then(response => {
+                    $.get('/OrdersMySQL/order-import', {}).then(response => {
                         if (response.status) { swal('Success', 'Orders updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload(); }
                         else swal('Error!', 'Something went wrong, please try again.', 'error');
                     }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
@@ -169,7 +169,14 @@ function dataGridLoad(order_type) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(id).html() + '"><label></label>';
                 }
             },
-            { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
+            {
+                data: 'id', title: 'OrderID', sWidth: "8%",
+                render: function (id, type, full, meta) {
+                    if (full.post_mime_type == 'shop_order_erp') return '#' + id + ' <i class="fas fa-exclamation-triangle" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '#' + id;
+                }
+
+            },
             {
                 data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
                     return row.first_name + ' ' + row.last_name;
@@ -323,8 +330,8 @@ function PaymentStatus(oid, pp_id, email) {
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
-                                let opt = { order_id: oid, b_first_name: '', order_itemmetaXML: JSON.stringify(_paystatus) };
-                                $.post('/Orders/UpdatePodiumPaymentAccept', opt).done(function (data) {
+                                let opt = { order_id: oid, b_first_name: '', payment_method: 'ppec_paypal', OrderPostMeta: _paystatus };
+                                $.post('/OrdersMySQL/UpdatePodiumPaymentAccept', opt).done(function (data) {
                                     console.log(data);
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
@@ -403,8 +410,8 @@ function podiumPaymentStatus(oid, podium_id, email) {
                             title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                             preConfirm: function () {
                                 return new Promise(function (resolve) {
-                                    let opt = { order_id: oid, b_first_name: order_note, order_itemmetaXML: JSON.stringify(_paystatus) };
-                                    $.post('/Orders/UpdatePodiumPaymentAccept', opt).done(function (data) {
+                                    let opt = { order_id: oid, b_first_name: order_note, payment_method: 'podium', order_itemmetaXML: JSON.stringify(_paystatus) };
+                                    $.post('/OrdersMySQL/UpdatePodiumPaymentAccept', opt).done(function (data) {
                                         data = JSON.parse(data);
                                         if (data[0].Response == "Success") {
                                             swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
@@ -446,9 +453,10 @@ function cancelorder(id) {
         .then((result) => {
             if (result.value) {
                 let obj = { order_id: id }
-                $.post('/Orders/OrderCancel', obj).done(function (data) {
+                $.post('/OrdersMySQL/OrderCancel', obj).done(function (data) {
+                    console.log(data);
                     data = JSON.parse(data);
-                    if (data[0].response == "success") { cancelpayment(data[0]); ActivityLog('Cancel order id (' + id + ') in order history', '/Orders/OrdersHistory'); }
+                    if (data[0].response == "success") { cancelpayment(data[0]); ActivityLog('Cancel order id (' + id + ') in order history', '/OrdersMySQL/OrdersHistory'); }
                     else { swal('Error', data[0].payment_method_title, "error"); }
                 });
             }
@@ -465,7 +473,7 @@ function cancelpayment(data) {
                 onOpen: () => {
                     swal.showLoading();
                     $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.payid + '/cancel';
+                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.paypal_id + '/cancel';
                         let opt_cnl = { subject: "Invoice Cancelled", note: "Cancelling the invoice", send_to_invoicer: true, send_to_recipient: true, additional_recipients: [data.billing_email] }
                         $.ajax({
                             type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
@@ -484,7 +492,7 @@ function cancelpayment(data) {
                 onOpen: () => {
                     swal.showLoading();
                     $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.payid + '/refunds';
+                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.paypal_id + '/refunds';
                         let date = new Date();
                         let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
                         let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
@@ -512,7 +520,7 @@ function cancelpayment(data) {
                 onOpen: () => {
                     swal.showLoading();
                     $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.payid + '/cancel';
+                        let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.podium_uid + '/cancel';
                         let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
                         $.ajax({
                             type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),

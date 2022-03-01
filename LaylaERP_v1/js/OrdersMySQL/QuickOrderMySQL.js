@@ -293,7 +293,7 @@ function NewOrderNo() {
                 $('#hfOrderNo').val(result.id); $('#lblOrderNo').text('Order #' + result.id + ' detail '); $('.billnote').prop("disabled", false); isEdit(true);
             }
             else { swal('Error', result.message, "error"); $('.billnote').prop("disabled", true); }
-        }, completeFun, errorFun, true);
+        }, completeFun, errorFun, false);
     }
 }
 ///Find Address of Customer
@@ -468,7 +468,8 @@ function bindCustomerOrders(id) {
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        //let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' +  dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault == 1 ? ' <span class="label label-success">Default</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
@@ -497,10 +498,12 @@ function selectOrderAddress(ele) {
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
         if (oid == 0) {
-            NewOrderNo(); oid = parseInt($('#hfOrderNo').val()) || 0;
-            if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
+            $.when(NewOrderNo()).done(function () {
+                oid = parseInt($('#hfOrderNo').val()) || 0;
+                if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
+            }).fail(function (error) { console.log(error); });
         }
-        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); $("#ddlUser").val(0).trigger('change'); }
+        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
 
         ///billing_Details
         if ($(ele).data('bfn') != undefined) $('#txtbillfirstname').val($(ele).data('bfn'));
@@ -2214,8 +2217,8 @@ function PaymentModal() {
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
-    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for podium payment from order payment invoice.', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/OrdersMySQL/minesofmoria/' + $('#hfOrderNo').val() + ''); }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for podium payment from order payment invoice.', '/OrdersMySQL/minesofmoria/' + $('#hfOrderNo').val() + ''); }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 
@@ -2281,7 +2284,7 @@ function updatePayment(oid, taskUid) {
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
     ];
     let opt = { OrderPostMeta: _postMeta };
-    $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
+    $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
         if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, false, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
@@ -2300,14 +2303,14 @@ function createPaypalXML(oid, pp_no, pp_email) {
     else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
     else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
     else custom_label = 'Other Fee';
-    console.log(srf_total, fee_total, gc_total);
+    //console.log(srf_total, fee_total, gc_total);
     let _items = []; fee_total = fee_total + srf_total - gc_total;
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        let discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;//parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     });
     let paupal_xml = {
@@ -2369,7 +2372,7 @@ function PaypalPayment(ppemail) {
                     else {
                         let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ',{BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
                         let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
-                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
+                        $.post('/OrdersMySQL/UpdatePaymentInvoiceID', option_pu).then(result => {
                             swal('Success!', result.message, 'success'); $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                             successModal('PayPal', inv_id, true, true);
                         }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
@@ -2396,7 +2399,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             console.log(senddata);
             let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', {BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
             let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
-            $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
+            $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
                 swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 successModal('PayPal', id[id.length - 2], true, true);

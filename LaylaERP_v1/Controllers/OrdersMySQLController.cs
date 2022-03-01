@@ -45,6 +45,40 @@
             return View();
         }
 
+        [HttpGet]
+        [Route("order/order-import")]
+        public JsonResult ImportOnlineOrders(SearchModel model)
+        {
+            bool status = false;
+            try
+            {
+                var result = string.Empty;
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(result) && result != "null")
+                {
+                    OrderRepository.ImportOrders(result);
+                }
+
+                return Json(new { status = true }, 0);
+            }
+            catch { status = false; }
+            return Json(new { status }, 0);
+        }
+
         [HttpPost]
         public JsonResult SaveCustomerOrderRefund(OrderModel model)
         {
@@ -94,7 +128,7 @@
                 //model.guid = string.Format("{0}?{1}={2}", Net.Host, model.post_type, model.post_name);
                 model.guid = string.Format("{0}?{1}={2}", "http://173.247.242.204/~rpsisr/woo/", "post_type=shop_order_refund&p", "");
                 model.menu_order = "0";
-                model.post_mime_type = string.Empty;
+                model.post_mime_type = "shop_order_refund_erp";
                 model.comment_count = "0";
 
                 string strSQL = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,"
@@ -182,7 +216,8 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_gross_revenue from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
-                    strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
+                    //strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
+                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',"+ model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
                     strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
                     /// step 5 : wp_woocommerce_order_items
@@ -219,7 +254,7 @@
                                 else if (obj.product_type == "tax")
                                 {
                                     strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.product_name, n_orderid));
-                                    strSql.Append(string.Format(" union all select order_item_id,'tax_amount','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.total, n_orderid));
+                                    strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.total, n_orderid));
                                     strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.tax_amount, n_orderid));
                                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax';", obj.order_item_id, n_orderid));
                                 }
@@ -261,7 +296,7 @@
                 StringBuilder strSql = new StringBuilder("INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)");
                 strSql.Append("VALUES('1','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "','','Order &ndash; " + CommonDate.UtcDate().ToString("MMMM dd, yyyy @ HH:mm tt") + "','','auto-draft',"
                                    + "'open','closed','','order-" + CommonDate.UtcDate().ToString("MMM-dd-yyyy-HHmm-tt") + "','','','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "',"
-                                   + "'','0','" + host + "/~rpsisr/woo/post_type=shop_order&p=','0','shop_order','','0')");
+                                   + "'','0','" + host + "/~rpsisr/woo/post_type=shop_order&p=','0','shop_order','shop_order_erp','0')");
 
                 strSql.Append("; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)");
                 strSql.Append(" SELECT LAST_INSERT_ID(),'0','" + CommonDate.CurrentDate().ToString("yyyy-MM-dd HH:mm:ss") + "','" + CommonDate.UtcDate().ToString("yyyy-MM-dd HH:mm:ss") + "','0','0','0','0','0','0','auto-draft','0' ; SELECT LAST_INSERT_ID();");
@@ -412,7 +447,7 @@
                 strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
+                strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
                 strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
 
@@ -612,6 +647,138 @@
             }
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = b_status, message = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePaymentInvoiceID(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model.OrderPostMeta)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model.OrderPostMeta[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                if (Payment_method.ToLower() == "podium")
+                {
+                    //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                    //// step 3 : Add Order Note
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.OrderPostMeta[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
+                }
+                else
+                {
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3} and post_status != 'wc-on-hold';", "wc-pending", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostMeta[0].post_id));
+                }
+
+                int res = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (res > 0)
+                {
+                    status = true; result = "Order placed successfully.";
+                    model.payment_method_title = model.payment_method_title.Replace("{BR}", "<br>");
+                    SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult OrderCancel(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                MySqlParameter[] parameters =
+                    {
+                        new MySqlParameter("@order_id", model.order_id)
+                    };
+                string strSQL = "SELECT post_status FROM wp_posts WHERE id = @order_id";
+                string post_status = DAL.MYSQLHelper.ExecuteScalar(strSQL, parameters).ToString();
+
+                if (post_status.ToLower().Equals("wc-pending") || post_status.ToLower().Equals("wc-pendingpodiuminv"))
+                {
+                    DateTime getdate = CommonDate.CurrentDate(), utcdate = CommonDate.UtcDate();
+                    MySqlParameter[] up_para =
+                        {
+                            new MySqlParameter("@order_id", model.order_id),
+                            new MySqlParameter("@getdate", getdate),
+                            new MySqlParameter("@utcdate", utcdate)
+                        };
+                    strSQL = "update wp_wc_order_stats set status='wc-cancelled' where order_id = @order_id; update wp_posts set post_status='wc-cancelled',post_modified=@getdate,post_modified_gmt=@utcdate where id = @order_id; ";
+                    int res = DAL.MYSQLHelper.ExecuteNonQuery(strSQL, up_para);
+                    if (res > 0)
+                    {
+                        strSQL = "select pm.post_id,'success' response,'wc-pending' post_status,max(case when meta_key = '_payment_method' then meta_value else '' end) payment_method,"
+                                + " max(case when meta_key = '_payment_method_title' then meta_value else '' end) payment_method_title,"
+                                + " max(case when meta_key = '_podium_uid' then meta_value else '' end) podium_uid, max(case when meta_key = '_paypal_id' then meta_value else '' end) paypal_id,"
+                                + " max(case when meta_key = '_billing_email' then meta_value else '' end) billing_email,'' payment_uid,max(case when meta_key = '_order_total' then meta_value else '' end) total_sales"
+                                + " from wp_postmeta pm where post_id = " + model.order_id + " group by pm.post_id;";
+
+                        dt = DAL.MYSQLHelper.ExecuteDataTable(strSQL);
+                        JSONresult = JsonConvert.SerializeObject(dt);
+                    }
+                }
+                else
+                {
+                    JSONresult = "[{\"post_id\":903432,\"response\":\"fail\",\"post_status\":\"draft\",\"payment_method\":\"\",\"payment_method_title\":\"Order can not be cancelled because it is in process.\",\"podium_uid\":\"\",\"paypal_id\":\"\",\"billing_email\":\"\",\"payment_uid\":\"\",\"total_sales\":\"0\"}]";
+                }
+
+
+                //if (dt.Rows.Count > 0)
+                //{
+                //    if (dt.Rows[0]["response"].ToString().Trim() == "success")
+                //        OrderRepository.OrderCancelInvoiceMail(model.order_id);
+                //}
+            }
+            catch (Exception ex) { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePodiumPaymentAccept(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model.OrderPostMeta)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model.order_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                strSql.Append(string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}', post_modified_gmt = '{2}' where id = {3};", "wc-processing", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_id));
+
+                if (model.payment_method == "podium")
+                {
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.order_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Payment completed through Podium by {username}" + model.b_first_name + " on " + cDate.ToString("MM-dd-yyyy HH:mm:ss")));
+                }
+
+                int res = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (res > 0)
+                {
+                    JSONresult = "[{\"id\":903432,\"Response\":\"Success\"}]";
+                    //OrderRepository.OrderInvoiceMail(model.order_id);
+                }
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

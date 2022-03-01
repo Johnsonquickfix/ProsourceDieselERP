@@ -10,7 +10,7 @@
 
     public class clsAuthorizeNet
     {
-        public static dynamic RefundTransaction(string TransactionID, string CardNumber, string ExpirationDate, decimal TransactionAmount)
+        public static dynamic RefundTransaction(string OrderID, string TransactionID, string CardNumber, string ExpirationDate, decimal TransactionAmount)
         {
             string transId = string.Empty;
             String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
@@ -34,8 +34,9 @@
                 transactionType = transactionTypeEnum.refundTransaction.ToString(),    // refund type
                 payment = paymentType,
                 amount = TransactionAmount,
-                refTransId = TransactionID
+                refTransId = TransactionID,
             };
+            //transactionRequest.order.invoiceNumber = OrderID;
 
             var request = new createTransactionRequest { transactionRequest = transactionRequest };
 

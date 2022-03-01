@@ -234,6 +234,7 @@
     <Compile Include="Controllers\GiftcardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
+    <Compile Include="Controllers\InportExcelController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
@@ -747,6 +748,7 @@
     <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
+    <Content Include="js\ImportExcel\orderinvoice.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
@@ -1176,6 +1178,8 @@
     <Content Include="Views\OrdersMySQL\OrderRefund.cshtml" />
     <Content Include="Views\OrdersMySQL\minesofmoria.cshtml" />
     <Content Include="Views\OrdersMySQL\OrdersHistory.cshtml" />
+    <Content Include="Views\InportExcel\ImportExcel.cshtml" />
+    <Content Include="Views\InportExcel\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

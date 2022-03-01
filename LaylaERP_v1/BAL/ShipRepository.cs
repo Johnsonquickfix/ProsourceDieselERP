@@ -114,7 +114,7 @@
                         + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country "
                         + " FROM wp_posts p inner join split_record sr on sr.main_order_id = p.ID inner join split_detail sd on sd.split_id = sr.split_id "
                         + " inner join wp_postmeta pm on pm.post_id = p.ID "
-                        + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' "
+                        + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' AND post_mime_type = 'shop_order_erp' "
                         + " and convert(varchar,p.post_modified_gmt,20) BETWEEN convert(varchar,'" + from_date.ToString("yyyy-MM-dd HH:mm:ss") + "',20)  AND convert(varchar,'" + to_date.ToString("yyyy-MM-dd HH:mm:ss") + "',20) "
                         + " group by p.ID,p.post_date_gmt,p.post_modified_gmt,sd.split_detail_id,sd.order_name order by p.ID desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);

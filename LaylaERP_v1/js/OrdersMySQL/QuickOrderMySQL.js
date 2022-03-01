@@ -467,7 +467,7 @@ function bindCustomerOrders(id) {
                 },
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
-                        let row = JSON.parse(dtrow.meta_data); 
+                        let row = JSON.parse(dtrow.meta_data);
                         //let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' +  dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault == 1 ? ' <span class="label label-success">Default</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
@@ -501,9 +501,9 @@ function selectOrderAddress(ele) {
             $.when(NewOrderNo()).done(function () {
                 oid = parseInt($('#hfOrderNo').val()) || 0;
                 if (oid > 0) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
-            }).fail(function (error) { console.log(error); });            
+            }).fail(function (error) { console.log(error); });
         }
-        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);  }
+        else { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false); }
 
         ///billing_Details
         if ($(ele).data('bfn') != undefined) $('#txtbillfirstname').val($(ele).data('bfn'));
@@ -2303,14 +2303,14 @@ function createPaypalXML(oid, pp_no, pp_email) {
     else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
     else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
     else custom_label = 'Other Fee';
-    console.log(srf_total, fee_total, gc_total);
+    //console.log(srf_total, fee_total, gc_total);
     let _items = []; fee_total = fee_total + srf_total - gc_total;
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        let discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;//parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     });
     let paupal_xml = {

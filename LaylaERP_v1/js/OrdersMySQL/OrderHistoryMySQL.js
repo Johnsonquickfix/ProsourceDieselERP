@@ -65,7 +65,7 @@ $(document).ready(function () {
             preConfirm: function () {
                 return new Promise(function (resolve) {
                     swal.showLoading();
-                    $.get('/order/order-import', {}).then(response => {
+                    $.get('/OrdersMySQL/order-import', {}).then(response => {
                         if (response.status) { swal('Success', 'Orders updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload(); }
                         else swal('Error!', 'Something went wrong, please try again.', 'error');
                     }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;

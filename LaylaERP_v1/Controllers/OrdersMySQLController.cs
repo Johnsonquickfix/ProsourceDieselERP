@@ -46,7 +46,7 @@
         }
 
         [HttpGet]
-        [Route("order/order-import")]
+        [Route("OrdersMySQL/order-import")]
         public JsonResult ImportOnlineOrders(SearchModel model)
         {
             bool status = false;

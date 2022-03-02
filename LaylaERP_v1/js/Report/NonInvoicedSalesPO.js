@@ -31,7 +31,125 @@
         SendPO_Approval();
     });
 });
+
 function PurchaseOrderGrid() {
+    let urid = parseInt($("#ddlSearchStatus").val());
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    var obj = { strValue1: sd, strValue2: ed, }
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
+    let table = $('#dtdata').DataTable({
+        //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
+        order: [[0, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        }, 
+        ajax: {
+            url: '/Reports/GetNonInvoicedSales', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
+        }, 
+        aoColumns: [
+            { data: 'ref', title: 'PO No', sWidth: "10%" },
+            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'fk_projet', title: 'SO No.', sWidth: "10%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
+            { data: 'warehouse_name', title: 'Destination', sWidth: "10%" },
+            { data: 'destination', title: 'Destination Address', sWidth: "20%" },
+            { data: 'total_ttc', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$').display },
+            { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { return full.date_livraison; } },
+            { data: 'Status', title: 'Status', sWidth: "10%" },
+        ],
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Export',
+                filename: function () {
+                    // var d = new Date();
+                    return 'Non-InvoicedSalesPO_' + $("#txtDate").val().replaceAll('/', '.');
+                },
+
+            },
+            {
+                extend: 'print',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                title: function () {
+                    return "Layla Sleep Inc - Non-Invoiced Sales PO";
+                },
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                },
+                filename: function () {
+                    //var from = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Non-InvoicedPO_' + $("#txtDate").val().replaceAll('/', '.');
+                },
+            },
+
+            {
+                extend: 'pdfHtml5',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> PDF',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+
+                },
+                customize: function (doc) {
+                    //doc.defaultStyle.alignment = 'right';
+                    doc.styles.tableHeader.alignment = 'left';
+                    // doc.styles.tableHeader[2].alignment = 'right';
+                    // doc.content[1].alignment = ['left', 'right', 'right'];
+
+                    doc.content[0].text = "Layla Sleep Inc - Non-Invoiced Sales PO";
+                    doc.content[0].text.alignment = 'left';
+
+                    var rowCountd = table.rows().count() + 1;
+                    for (i = 0; i < rowCountd; i++) {
+                        doc.content[1].table.body[i][6].alignment = 'right';
+                    };
+
+                    var rowCount = doc.content[1].table.body.length;
+                    for (i = 1; i < rowCount; i++) {
+                        doc.content[1].table.body[i][6].alignment = 'right';
+                        //doc.content[1].table.body[i][1].alignment = 'right';
+
+                    }
+
+
+                    // doc.styles.tableHeader.alignment = ['left', 'right', 'right'];
+                    //doc.content[1].table.widths =
+                    //    Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
+                    // doc.content[1].table.widths = ['50%', '25%', '25%'];
+
+
+                },
+
+                filename: function () {
+                    // var from = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY') + '-' + $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+                    return 'Non-InvoicedPO_' + $("#txtDate").val().replaceAll('/', '.');
+                },
+            },
+
+
+        ],
+
+    });
+}
+
+
+function PurchaseOrderGridold() {
     let urid = parseInt($("#ddlSearchStatus").val());
     let sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');

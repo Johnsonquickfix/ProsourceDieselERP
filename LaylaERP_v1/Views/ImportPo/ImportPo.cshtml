@@ -32,6 +32,12 @@
     <div class="row index_col_row">
         <div class="col-md-3">
             <div class="form-group">
+                <label>Vendor</label>
+                <select class="form-control select2" id="ddlVendor" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
                 <label for="userid">Upload (Excel file)<span style="color:red">*</span></label>
                 <input type="file" class="form-control" id="importEstFile" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
             </div>
@@ -54,6 +60,7 @@
                             <table id="EmailListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
                                 <thead>
                                     <tr>
+                                        <th>Id</th>
                                         <th>Date</th>
                                         <th>Invoice</th>
                                         <th>Requisition</th>
@@ -61,6 +68,7 @@
                                         <th>Currency</th>
                                         <th>Original Amount</th>
                                         <th>Remain Amount</th>
+                                        <th>Vendor</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -82,22 +90,27 @@
 <script>
     $(document).on("click", "#btnEstUpload", function () {
         let files = $("#importEstFile").get(0).files;
+        let vendor_id = $("#ddlVendor").val();
         let formData = new FormData();
         formData.append('importFile', files[0]);
-        $.ajax({
-            url: '/ImportPo/uploadpofile/', data: formData, type: 'POST', contentType: false, processData: false,
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.Status === 1) { swal("Success!", data.Message, "success"); ImportPoList();}
-                else { swal("Error!", data.Message, "error"); }
-            },
-            error: function (errormessage) { $("#loader").hide(); swal("Alert!", "Something went wrong .", "error"); },
-            complete: function () { $("#loader").hide(); }
-        });
+        formData.append('vendorid', vendor_id);
+        if (vendor_id == "-1") { swal("Alert!", "Please select the vendor.", "error"); }
+        else {
+            $.ajax({
+                url: '/ImportPo/uploadpofile/', data: formData, type: 'POST', contentType: false, processData: false,
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.Status === 1) { swal("Success!", data.Message, "success"); ImportPoList(); }
+                    else { swal("Error!", data.Message, "error"); }
+                },
+                error: function (errormessage) { $("#loader").hide(); swal("Alert!", "Something went wrong .", "error"); },
+                complete: function () { $("#loader").hide(); }
+            });
+        }
     });
 
 </script>
 <script>
-    $(document).ready(function () { $("#loader").hide(); ImportPoList(); })
+    $(document).ready(function () { $("#loader").hide(); ImportPoList(); getVendor(); $(".select2").select2(); })
 </script>
 <script src="@Url.Content("~/js/ImportPo/ImportPo.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

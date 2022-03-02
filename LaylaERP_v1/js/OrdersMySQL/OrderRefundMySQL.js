@@ -606,7 +606,8 @@ function saveCO() {
                     $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                     $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
                     $('.billinfo').prop("disabled", true);
-                    swal('Success!', 'Order refunded successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                    //swal('Success!', 'Order refunded successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                    swal('Success!', 'Order refunded successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
                 else { swal('Error', data.message, "error").then((result) => { return false; }); }
             },
@@ -623,7 +624,7 @@ function PodiumPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), payment_uid = $('#lblOrderNo').data('payment_uid').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
 
-    let opt_refund = { reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
+    let opt_refund = { invoiceNumber: invoice_no, reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, uid: payment_uid, note: '' };
     //console.log(opt_inv);
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
@@ -631,17 +632,10 @@ function PodiumPaymentRefunds() {
         title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
-            $.get('/Setting/GetPodiumToken', option).then(response => {
-                let access_token = response.message;
-                $.ajax({
-                    type: 'post', url: podium_baseurl + '/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
-                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                }).then(response => {
-                    console.log(response);
-                    let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt.toFixed(2) + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
-                    $.post('/Orders/OrderNoteAdd', option).then(response => {
-                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
-                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            $.get('/Setting/PodiumInvoiceRefund', opt_refund).then(response => {
+                let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt.toFixed(2) + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                $.post('/Orders/OrderNoteAdd', option).then(response => {
+                    if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

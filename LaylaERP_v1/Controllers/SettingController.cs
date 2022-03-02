@@ -266,6 +266,17 @@ namespace LaylaERP.Controllers
             catch { result = ""; }
             return Json(result, 0);
         }
+        [HttpGet]
+        public JsonResult PodiumInvoiceRefund(clsPodiumModal model)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = clsPodium.PodiumInvoiceRefund(model);
+            }
+            catch { result = ""; }
+            return Json(result, 0);
+        }
         //For Order Shipping Rule
 
         [HttpPost]

@@ -36,7 +36,7 @@ $(document).ready(function () {
     });
     var urlParams = new URLSearchParams(window.location.search);
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
-    $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname)).done(function () {
+    $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname), UpdateOrders()).done(function () {
         if (order_type.length > 0) {
             $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type);
         }
@@ -74,6 +74,9 @@ $(document).ready(function () {
         }]);
     });
 });
+function UpdateOrders() {
+    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });;
+}
 function GetMonths() {
     var d1 = new Date('01-01-2020');
     var d2 = new Date();
@@ -389,7 +392,7 @@ function PaypalPaymentCancel(ppemail) {
 
 //Check podium Payment Status.
 function podiumPaymentStatus(oid, podium_id, email) {
-    let option = { strValue1: podium_id }; 
+    let option = { strValue1: podium_id };
     swal.queue([{
         title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {

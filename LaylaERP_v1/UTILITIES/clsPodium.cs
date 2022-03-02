@@ -126,11 +126,46 @@ namespace LaylaERP.UTILITIES
             }
             return invoice_info;
         }
+
+        public static string PodiumInvoiceRefund(clsPodiumModal modal)
+        {
+            string invoice_info = string.Empty;
+            string access_token = GetToken();
+
+            if (!string.IsNullOrEmpty(access_token))
+            {
+                var client_rest = new RestClient("https://api.podium.com/v4/invoices/" + modal.invoiceNumber + "/refund");
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Accept", "application/json");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", "Bearer " + access_token);
+                request.AddParameter("application/json", "{\"reason\":\"" + modal.reason + "\",\"note\":\"\",\"amount\":\"" + modal.amount + "\",\"locationUid\":\"" + modal.locationUid + "\",\"paymentUid\":\"" + modal.uid + "\"}", ParameterType.RequestBody);
+                IRestResponse response_rest = client_rest.Execute(request);
+
+                if (response_rest.StatusCode == HttpStatusCode.OK)
+                {
+                    invoice_info = response_rest.Content;
+                }
+            }
+            return invoice_info;
+        }
     }
     public class clsPodiumAccessToken
     {
         public string access_token { get; set; }
         public string refresh_token { get; set; }
         public string expires_in { get; set; }
+    }
+
+    public class clsPodiumModal
+    {
+        public string uid { get; set; }
+        public int amount { get; set; }
+        public string channelIdentifier { get; set; }
+        public string customerName { get; set; }
+        public string locationUid { get; set; }
+        public string reason { get; set; }
+        public string invoiceNumber { get; set; }
+        public string lineItems { get; set; }
     }
 }

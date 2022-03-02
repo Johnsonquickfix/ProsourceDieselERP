@@ -11,6 +11,7 @@ namespace LaylaERP.UTILITIES
     public class clsPodium
     {
         private static string base_url = "https://accounts.podium.com";
+        private static string locationUid = "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7";
         public static string GetToken()
         {
             // string client_id = "2f936404-dabc-4cf7-a61b-80e6bef42f66", client_secret = "fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df", refresh_token = "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f";
@@ -67,7 +68,7 @@ namespace LaylaERP.UTILITIES
         {
             string invoice_info = string.Empty;
             // string client_id = "2f936404-dabc-4cf7-a61b-80e6bef42f66", client_secret = "fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df", refresh_token = "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f";
-            string client_id = string.Empty, client_secret = string.Empty, refresh_token = string.Empty, locationUid = "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7";
+            string client_id = string.Empty, client_secret = string.Empty, refresh_token = string.Empty;
             System.Data.DataTable dt = BAL.Users.AppSystemSetting();
             if (dt.Rows.Count > 0)
             {

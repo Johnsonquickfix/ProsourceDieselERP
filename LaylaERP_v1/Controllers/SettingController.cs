@@ -254,6 +254,18 @@ namespace LaylaERP.Controllers
             catch { b_status = false; result = ""; }
             return Json(new { status = b_status, message = result }, 0);
         }
+        [HttpGet]
+        public JsonResult GetPodiumInvoiceStatus(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                string access_token = clsPodium.GetToken();
+                result = clsPodium.GetPodiumInvoiceDetails(access_token, model.strValue1);
+            }
+            catch { result = ""; }
+            return Json(result, 0);
+        }
         //For Order Shipping Rule
 
         [HttpPost]

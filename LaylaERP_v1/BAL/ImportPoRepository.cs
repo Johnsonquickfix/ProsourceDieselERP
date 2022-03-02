@@ -17,14 +17,15 @@ namespace LaylaERP_v1.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "SELECT rowid, CONVERT(varchar,po_date,112) podatesort, CONVERT(varchar,po_date, 101)po_date, po_invoice_number, customer_requisition, CONVERT(varchar,po_date,112) poduedatesort, CONVERT(varchar,po_due_date,101) po_due_date, po_currency, original_invoice_amt, remain_invoice_amt from commerce_purchase_order_invoice_balance WHERE 1=1";
+                string strSql = "SELECT cp.rowid, CONVERT(varchar,po_date,112) podatesort, CONVERT(varchar,po_date, 101)po_date, po_invoice_number, customer_requisition, CONVERT(varchar,po_date,112) poduedatesort, CONVERT(varchar,po_due_date,101) po_due_date, po_currency, original_invoice_amt, remain_invoice_amt, wv.name vendorname"
+                               +" from commerce_purchase_order_invoice_balance cp left join wp_vendor wv on wv.rowid = cp.vendor_id WHERE 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    //strWhr += " and (user_id like '%" + searchid + "%' OR user_email like '%" + searchid + "%')";
+                    strWhr += " and (concat(po_date, customer_requisition, po_invoice_number, po_due_date, po_currency, original_invoice_amt, remain_invoice_amt, wv.name) like '%" + searchid + "%')";
                 }
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
 
-                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM commerce_purchase_order_invoice_balance WHERE 1=1" + strWhr.ToString();
+                strSql += "; SELECT (Count(cp.rowid)/" + pagesize.ToString() + ") TotalPage,Count(cp.rowid) TotalRecord FROM commerce_purchase_order_invoice_balance cp left join wp_vendor wv on wv.rowid = cp.vendor_id WHERE 1=1" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

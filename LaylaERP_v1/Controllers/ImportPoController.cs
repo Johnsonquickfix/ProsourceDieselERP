@@ -32,7 +32,7 @@ namespace LaylaERP_v1.Controllers
         }
         [HttpPost]
         [ActionName("uploadpofile")]
-        public ActionResult ImportPoFile(HttpPostedFileBase importFile)
+        public ActionResult ImportPoFile(HttpPostedFileBase importFile, string vendorid)
         {
             if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
             long size = importFile.ContentLength;
@@ -41,7 +41,7 @@ namespace LaylaERP_v1.Controllers
             {
                 try
                 {
-                    var fileData = GetDataFromPoExcelFile(importFile.InputStream);
+                    var fileData = GetDataFromPoExcelFile(importFile.InputStream, vendorid);
                     XmlDocument xmlDoc = CommonClass.ToXml(fileData);
                     var dt = UploadXMLData("IDEST", xmlDoc);
                     if (dt.Rows.Count > 0)
@@ -61,7 +61,7 @@ namespace LaylaERP_v1.Controllers
             else { return Json(new { Status = 0, Message = "Not excel file or size of file is larger than 2MB" }); }
         }
 
-        private List<ImportPoModel> GetDataFromPoExcelFile(Stream stream)
+        private List<ImportPoModel> GetDataFromPoExcelFile(Stream stream, string vendorid)
         {
             var poList = new List<ImportPoModel>();
             try
@@ -89,7 +89,8 @@ namespace LaylaERP_v1.Controllers
                                 po_currency = objDataRow["Currency"].ToString(),
                                 original_invoice_amt = objDataRow["Original Invoice Amount"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Original Invoice Amount"].ToString()) ? Convert.ToDecimal(objDataRow["Original Invoice Amount"].ToString()) : 0) : 0,
                                 remain_invoice_amt = objDataRow["Remaining Invoice Amount"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Remaining Invoice Amount"].ToString()) ? Convert.ToDecimal(objDataRow["Remaining Invoice Amount"].ToString()) : 0) : 0,
-                            }); 
+                                vendor_id = vendorid,
+                            }) ; 
                         }
                     }
                 }

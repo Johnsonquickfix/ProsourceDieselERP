@@ -31,11 +31,12 @@
 
             var transactionRequest = new transactionRequestType
             {
-                transactionType = transactionTypeEnum.refundTransaction.ToString(),    // refund type
+                transactionType = (TransactionAmount > 0 ? transactionTypeEnum.refundTransaction.ToString() : transactionTypeEnum.voidTransaction.ToString()),    // refund type
                 payment = paymentType,
                 amount = TransactionAmount,
-                refTransId = TransactionID
+                refTransId = TransactionID,
             };
+            //transactionRequest.order.invoiceNumber = OrderID;
 
             var request = new createTransactionRequest { transactionRequest = transactionRequest };
 

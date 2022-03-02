@@ -45,6 +45,40 @@
             return View();
         }
 
+        [HttpGet]
+        [Route("OrdersMySQL/order-import")]
+        public JsonResult ImportOnlineOrders(SearchModel model)
+        {
+            bool status = false;
+            try
+            {
+                var result = string.Empty;
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(result) && result != "null")
+                {
+                    OrderRepository.ImportOrders(result);
+                }
+
+                return Json(new { status = true }, 0);
+            }
+            catch { status = false; }
+            return Json(new { status }, 0);
+        }
+
         [HttpPost]
         public JsonResult SaveCustomerOrderRefund(OrderModel model)
         {
@@ -697,7 +731,7 @@
                 }
                 else
                 {
-                    JSONresult = "[{\"post_id\":903432,\"response\":\"fail\",\"post_status\":\"draft\",\"payment_method\":\"\",\"payment_method_title\":\"Order cannot cancel because it in Process.\",\"podium_uid\":\"\",\"paypal_id\":\"\",\"billing_email\":\"\",\"payment_uid\":\"\",\"total_sales\":\"0\"}]";
+                    JSONresult = "[{\"post_id\":903432,\"response\":\"fail\",\"post_status\":\"draft\",\"payment_method\":\"\",\"payment_method_title\":\"Order can not be cancelled because it is in process.\",\"podium_uid\":\"\",\"paypal_id\":\"\",\"billing_email\":\"\",\"payment_uid\":\"\",\"total_sales\":\"0\"}]";
                 }
 
 

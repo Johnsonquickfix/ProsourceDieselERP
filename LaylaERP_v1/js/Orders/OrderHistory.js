@@ -58,21 +58,6 @@ $(document).ready(function () {
     $('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
-    $(document).on("click", "#btnUpdateOrder", function (t) {
-        t.preventDefault(); let option = {};
-        swal.queue([{
-            title: 'Do you want update orders?', confirmButtonText: 'Yes, do it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
-            preConfirm: function () {
-                return new Promise(function (resolve) {
-                    swal.showLoading();
-                    $.get('/order/order-import', {}).then(response => {
-                        if (response.status) { swal('Success', 'Orders updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();}
-                        else swal('Error!', 'Something went wrong, please try again.', 'error');
-                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
-                });
-            }
-        }]);
-    });
 });
 function GetMonths() {
     var d1 = new Date('01-01-2020');

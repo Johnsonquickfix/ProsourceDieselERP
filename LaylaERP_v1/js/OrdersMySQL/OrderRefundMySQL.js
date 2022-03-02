@@ -2,7 +2,7 @@
     $.when(getOrderInfo()).done(function () { $('.billinfo').prop("disabled", true); });
     $(document).on("click", ".btnRefundOrder", function (t) {
         t.preventDefault(); $('.billinfo').prop("disabled", false); isEdit(true);
-        $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundCancel">Cancel</button> <button type="button" class="btn btn-danger btnRefundOk">Refund $0.00 manually</button>');
+        $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundCancel">Cancel</button> <button type="button" class="btn btn-danger btnRefundOk">Refund $0.00</button>');
     });
     $(document).on("click", ".btnRefundCancel", function (t) {
         t.preventDefault(); $('.billinfo').prop("disabled", true); getOrderInfo(); isEdit(false);
@@ -355,7 +355,7 @@ function calculateRefunOnAmount() {
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
     $('#order_line_items > tr').each(function (index, tr) {
         $(tr).find("[name=txt_RefundQty]").val(0);
-        refund_amt = parseFloat($(tr).find("[name=txt_RefundAmt]").val()) || 0       
+        refund_amt = parseFloat($(tr).find("[name=txt_RefundAmt]").val()) || 0
 
         let grossAmount = 0.00; taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         if (taxAmount > 0 && tax_rate > 0) grossAmount = parseFloat(((refund_amt * 100) / ((tax_rate * 100) + 100)).toFixed(2));
@@ -373,7 +373,7 @@ function calculateRefunOnAmount() {
     total = total + feetotal + taxtotal + staterecyclingtotal;
     $('#order_shipping_line_items').find(".RefundAmount").text(shippingtotal.toFixed(2)); $('.btnRefundOk').data('tax', taxtotal.toFixed(2));
     $('.btnRefundOk').data('qty', qty); $('.btnRefundOk').data('total', total.toFixed(2)); $('.btnRefundOk').data('nettotal', total.toFixed(2));
-    $('.btnRefundOk').text('Refund $' + total.toFixed(2) + ' manually');
+    $('.btnRefundOk').text('Refund $' + total.toFixed(2));
 }
 function calculateRefunOnQty() {
     let qty = 0.00, subtotal = 0.00, taxtotal = 0.00, shippingtotal = 0.00, staterecyclingtotal = 0.00, feetotal = 0.00, total = 0.00;
@@ -402,7 +402,7 @@ function calculateRefunOnQty() {
     total = total + feetotal + staterecyclingtotal;
     $('#order_shipping_line_items').find(".RefundAmount").text(shippingtotal.toFixed(2));
     $('.btnRefundOk').data('qty', qty); $('.btnRefundOk').data('total', total.toFixed(2)); $('.btnRefundOk').data('tax', taxtotal.toFixed(2)); $('.btnRefundOk').data('nettotal', total.toFixed(2));
-    $('.btnRefundOk').text('Refund $' + total.toFixed(2) + ' manually');
+    $('.btnRefundOk').text('Refund $' + total.toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function createPostMeta() {
@@ -546,7 +546,7 @@ function saveCO() {
         pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
         AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text().replace('$', '');
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
+    if (itemsDetails.length <= 0) { swal('Alert!', 'Please enter refund amount / quantity.', "error"); return false; }
     //let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let obj = { order_id: oid, OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus };
     //console.log(obj); return false;
@@ -682,7 +682,8 @@ function PaypalPaymentRefunds() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AuthorizeNetPaymentRefunds() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let order_total = parseFloat($('#orderTotal').text()) || 0.00, rfund_total = parseFloat($('.btnRefundOk').data('nettotal')) || 0.00;
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (order_total == rfund_total ? 0 : rfund_total);
     let option = { order_id: oid, NetTotal: invoice_amt };
     swal.queue([{
         title: 'Authorize.Net Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,

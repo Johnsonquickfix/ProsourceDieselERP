@@ -811,6 +811,7 @@
     <Content Include="js\Report\ForecastInventoryLSR.js" />
     <Content Include="js\Report\IDMeOrderReport.js" />
     <Content Include="js\Report\InventoryReportDetails.js" />
+    <Content Include="js\Report\NonInvoicedSalesPO.js" />
     <Content Include="js\Report\orderforecast.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
@@ -1188,6 +1189,7 @@
     <Content Include="Views\OrdersMySQL\minesofmoria.cshtml" />
     <Content Include="Views\OrdersMySQL\OrdersHistory.cshtml" />
     <Content Include="Views\ImportPo\ImportPo.cshtml" />
+    <Content Include="Views\Reports\NonInvoicedSalesPO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

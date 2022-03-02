@@ -2,7 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmailListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -38,7 +38,7 @@
             });
         },
         aoColumns: [
-
+            { data: 'rowid', title: 'Id', sWidth: "5%" },
             { data: 'podatesort', title: 'Date', sWidth: "5%", render: function (inv_num, type, full, meta) { return full.po_date; } },
             { data: 'po_invoice_number', title: 'Invoice', sWidth: "10%" },
             { data: 'customer_requisition', title: 'Requisition', sWidth: "10%" },
@@ -46,6 +46,20 @@
             { data: 'po_currency', title: 'Currency', sWidth: "10%" },
             { data: 'original_invoice_amt', title: 'Original Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             { data: 'remain_invoice_amt', title: 'Remain Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'vendorname', title: 'Vendor', sWidth: "10%" },
         ]
+    });
+}
+
+function getVendor() {
+    $.ajax({
+        url: "/PurchaseOrder/GetVendor",
+        type: "Get",
+        success: function (data) {
+            $('#ddlVendor').append('<option value="-1">Please Select Vendor</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
     });
 }

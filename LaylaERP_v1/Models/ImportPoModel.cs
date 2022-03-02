@@ -15,6 +15,6 @@ namespace LaylaERP_v1.BAL
         public string po_currency { get; set; }
         public decimal original_invoice_amt { get; set; }
         public decimal remain_invoice_amt { get; set; }
-        //public string vendorid { get; set; }
+        public string vendor_id { get; set; }
     }
 }

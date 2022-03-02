@@ -217,7 +217,7 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     //strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
-                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',"+ model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
+                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
                     strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
                     /// step 5 : wp_woocommerce_order_items
@@ -684,7 +684,7 @@
                 if (res > 0)
                 {
                     status = true; result = "Order placed successfully.";
-                    model.payment_method_title = model.payment_method_title.Replace("{BR}", "<br>");
+                    model.payment_method_title = !string.IsNullOrEmpty(model.payment_method_title) ? model.payment_method_title.Replace("{BR}", "<br>") : "";
                     SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
                 }
             }

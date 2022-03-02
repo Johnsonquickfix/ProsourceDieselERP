@@ -22,7 +22,7 @@ namespace LaylaERP.Controllers
             {
                 DataSet DT = SettingRepository.DisplaySettings();
                 ViewBag.AuthorizeNet = DT.Tables[0].Rows[0]["AuthorizeNet"].ToString();
-                
+
                 ViewBag.id = DT.Tables[0].Rows[0]["ID"].ToString();
                 ViewBag.Paypal = DT.Tables[0].Rows[0]["Paypal"].ToString();
                 ViewBag.AmazonPay = DT.Tables[0].Rows[0]["AmazonPay"].ToString();
@@ -79,7 +79,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-       [HttpGet]
+        [HttpGet]
         public ActionResult ExceptionLog()
         {
             string datepath = System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString();
@@ -111,13 +111,13 @@ namespace LaylaERP.Controllers
             }
             else
             {
-               
+
                 string[] message = { "No Record Found!" };
                 ViewBag.Data = message;
                 return View();
             }
 
-                
+
         }
         public ActionResult OrderShippingRule()
         {
@@ -143,8 +143,8 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                long urid = 0; 
-                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                long urid = 0;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     urid = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
@@ -154,7 +154,7 @@ namespace LaylaERP.Controllers
                 DataTable dt = UTILITIES.UserActivityLog.GetActivityLog(urid, fromdate, todate, model.PageNo, model.PageSize, out TotalRecord);
                 result = JsonConvert.SerializeObject(dt);
             }
-            catch(Exception ex) { }
+            catch (Exception ex) { }
             //return Json(JSONresult, 0);
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
@@ -190,7 +190,7 @@ namespace LaylaERP.Controllers
             string podium_code = model.podium_code;
             string podium_refresh_code = model.podium_refresh_code;
             string podium_locationuid = model.podium_locationuid;
-            SettingRepository.Updatesetting(model, id,email);
+            SettingRepository.Updatesetting(model, id, email);
 
         }
         private void Update_EntityInfo(SettingModel model, long id)
@@ -204,12 +204,12 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-                    UserActivityLog.WriteDbLog(LogType.Submit, "Save global settings", "/Setting/Setting/"+ model.ID + "" + ", " + Net.BrowserInfo);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Save global settings", "/Setting/Setting/" + model.ID + "" + ", " + Net.BrowserInfo);
                     Update_Setting(model, model.ID);
                     Update_EntityInfo(model, model.ID);
                     return Json(new { status = true, message = "Setting saved successfully, Please login again!!", url = "" }, 0);
                 }
-                
+
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
@@ -236,6 +236,19 @@ namespace LaylaERP.Controllers
             try
             {
                 result = clsPodium.GetToken();
+                b_status = true;
+            }
+            catch { b_status = false; result = ""; }
+            return Json(new { status = b_status, message = result }, 0);
+        }
+        [HttpGet]
+        public JsonResult GetPodiumInvoice(SearchModel model)
+        {
+            string result = string.Empty;
+            bool b_status = false;
+            try
+            {
+                result = clsPodium.CreatePodiumInvoice(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
                 b_status = true;
             }
             catch { b_status = false; result = ""; }

@@ -5,7 +5,7 @@
     var table_EL = $('#EmailListdata').DataTable({
 
         columnDefs: [{ "orderable": true, "targets": 1 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true, scrollX:true ,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",

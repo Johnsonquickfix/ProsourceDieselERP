@@ -2249,32 +2249,46 @@ function PodiumPayment() {
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
     if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
-    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: _locationUid };
-    //console.log(opt_inv); return;
+    let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+    //let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: _locationUid };
+    let opt_inv = { strValue1: bill_to, strValue2: bill_name, strValue3: 'INV-' + oid, strValue4: JSON.stringify(_lineItems), strValue5: pay_by.includes('podium') ? inv_id : '' };
+    console.log(opt_inv);
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };
     swal.queue([{
         title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
-            $.get('/Setting/GetPodiumToken', option).then(response => {
-                let access_token = response.message;
-                let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-                if (inv_id.length > 0 && pay_by.includes('podium')) {
-                    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
-                    let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
-                    $.ajax({
-                        type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
-                }
-                $.ajax({
-                    type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
-                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                }).then(response => {
-                    updatePayment(oid, response.data.uid);
-                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
+            $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
+                let _data = JSON.parse(response.message); let uid = _data.data.uid; 
+                let _postMeta = [
+                    { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
+                    { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
+                ];
+                let opt = { OrderPostMeta: _postMeta }; console.log(opt);
+                $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
+                    swal('Success!', response.message, 'success');
+                    if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', uid, false, true); }
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+            //$.get('/Setting/GetPodiumToken', option).then(response => {
+            //    let access_token = response.message;
+            //    let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+            //    if (inv_id.length > 0 && pay_by.includes('podium')) {
+            //        let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
+            //        let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
+            //        $.ajax({
+            //            type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+            //            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+            //        }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
+            //    }
+            //    $.ajax({
+            //        type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
+            //        beforeSend: function (xhr) { xhr.setRequestHeader("Content-Type", "application/json"); xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+            //    }).then(response => {
+            //        updatePayment(oid, response.data.uid);
+            //    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
+            //}).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
         }
     }]);
 }

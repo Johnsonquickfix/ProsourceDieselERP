@@ -26,13 +26,14 @@
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
                         </div>
-                        <div class="form-group mb-2">
-                            <label class="control-label"></label>
-                        </div>
+                        
                         @*<div class="form-group mx-sm-3 mb-2">
                             <select class="form-control select2" id="ddlVendor"></select>
                         </div>*@
-                        <button type="submit" class="btn btn-danger" id="btnSearch">Reload</button>
+                        <div class="form-group  mx-sm-3 mb-2">
+                            <select class="form-control select2" id="ddlAccount"  style="max-width:90%;"></select>
+                        </div>
+                        @*<button type="submit" class="btn btn-danger" id="btnSearch">Reload</button>*@
                     </div>
                     @*</form>*@
                 </div>
@@ -47,6 +48,8 @@
                         <thead>
                             <tr>
                                 <th class="text-left">ID</th>
+                                <th class="text-left">Date</th>
+                                <th class="text-left">Label</th>
                                 <th class="text-left">Acccounting Account</th>
                                 <th class="text-left">Debit</th>
                                 <th class="text-left">Credit</th>

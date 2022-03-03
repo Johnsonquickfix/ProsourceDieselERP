@@ -24,6 +24,29 @@
                 Item = ApiTransactionKey
             };
 
+            var request_invoice = new getTransactionDetailsRequest();
+            request_invoice.transId = TransactionID;
+
+            // instantiate the controller that will call the service
+            var controller_invoice = new getTransactionDetailsController(request_invoice);
+            controller_invoice.Execute();
+
+            string typeEnum = transactionTypeEnum.voidTransaction.ToString();
+
+            // get the response from the service (errors contained if any)
+            var response_invoice = controller_invoice.GetApiResponse();
+            if (response_invoice != null && response_invoice.messages.resultCode == messageTypeEnum.Ok)
+            {
+                if (response_invoice.transaction.transactionStatus == "capturedPendingSettlement")
+                    typeEnum = transactionTypeEnum.voidTransaction.ToString();
+                else if (response_invoice.transaction.transactionStatus == "settledSuccessfully")
+                    typeEnum = transactionTypeEnum.refundTransaction.ToString();
+            }
+            else
+            {
+                typeEnum = transactionTypeEnum.voidTransaction.ToString();
+            }
+
             var creditCard = new creditCardType { cardNumber = CardNumber, expirationDate = ExpirationDate };
 
             //standard api call to retrieve response
@@ -31,7 +54,7 @@
 
             var transactionRequest = new transactionRequestType
             {
-                transactionType = (TransactionAmount > 0 ? transactionTypeEnum.refundTransaction.ToString() : transactionTypeEnum.voidTransaction.ToString()),    // refund type
+                transactionType = typeEnum,    // refund type
                 payment = paymentType,
                 amount = TransactionAmount,
                 refTransId = TransactionID,

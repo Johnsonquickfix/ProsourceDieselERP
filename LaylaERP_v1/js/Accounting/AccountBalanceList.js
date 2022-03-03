@@ -15,14 +15,16 @@
         AccountBalanceList(true);
         GrandToatl(true);
     });
+    getChartofaccount();
+    $(".select2").select2();
     AccountBalanceList(true);
     GrandToatl(true);
     $("#ddlVendor").change(function () { $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text(''); AccountBalanceList(true); GrandToatl(true); });
-
-    $("#btnSearch").click(function () {
-        //$("#ddlVendor").val("").trigger('change');
-        AccountBalanceList(true);
-    })
+    $("#ddlAccount").change(function () { $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text(''); AccountBalanceList(true); GrandToatl(true); });
+    //$("#btnSearch").click(function () {
+    //    $("#ddlAccount").val("").trigger('change');
+    //    AccountBalanceList(true);
+    //});
 })
 
 
@@ -31,10 +33,16 @@ function AccountBalanceList(is_date) {
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     var vendor = $("#ddlVendor").val();
-    var obj = { strValue1: vendor, strValue2: dfa };
+    let account_num = $("#ddlAccount").val();
+    var myvar = []; var print = [];
+    if (account_num == "") { print = [3,4,5,6]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 1, 2] }] }
+    else { print = [1,2,4,5]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 3, 6] }] }
+
+    var obj = { strValue1: vendor, strValue2: dfa, strValue3: account_num };
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: myvar, order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -74,7 +82,9 @@ function AccountBalanceList(is_date) {
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
-            { data: 'account', title: 'Accounting Account', sWidth: "5%", class:"text-left" },
+            { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; }},
+            { data: 'label_operation', title: 'Label', sWidth: "15%", class: "text-left" },
+            { data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'balance', title: 'Balance ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
@@ -100,7 +110,7 @@ function AccountBalanceList(is_date) {
                 text: '<i class="fas fa-file-csv"></i> Print',
                 footer: false,
                 exportOptions: {
-                    //columns: [1, 2, 3, 4, 5],
+                    columns: print,
                 },
                 filename: function () {
                     var d = new Date();
@@ -119,7 +129,8 @@ function GrandToatl(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-    let obj = { strValue1: dfa};
+    let account_num = $("#ddlAccount").val();
+    let obj = { strValue1: dfa, strValue2: account_num };
     $.ajax({
         url: "/Accounting/AccountBalanceGrandTotal",
         type: "GET",
@@ -140,15 +151,15 @@ function GrandToatl(is_date) {
     });
 }
 
-//function getVendor() {
-//    $.ajax({
-//        url: "/Accounting/GetVendor",
-//        type: "Get",
-//        success: function (data) {
-//            $('#ddlVendor').append('<option value="">Please Select Vendor</option>');
-//            for (var i = 0; i < data.length; i++) {
-//                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
-//            }
-//        }, async: false
-//    });
-//}
+function getChartofaccount() {
+    $.ajax({
+        url: "/Accounting/ChartofAccountsdropdown",
+        type: "Get",
+        success: function (data) {
+            $('#ddlAccount').append('<option value="">Please select account</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlAccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+}

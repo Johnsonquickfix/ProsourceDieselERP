@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";
+            ViewBag.pay_option = "[" + pay_method + "]";            
             return View();
         }
 
@@ -42,6 +42,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
+            /////clsAuthorizeNet.RefundTransaction("40083218602", "1111", "0323", 1);
             return View();
         }
 
@@ -217,7 +218,7 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     //strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
-                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',"+ model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
+                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
                     strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
                     /// step 5 : wp_woocommerce_order_items
@@ -243,7 +244,7 @@
                                 else if (obj.product_type == "fee")
                                 {
                                     strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
+                                    strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
                                     strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.product_type));
                                 }
                                 else if (obj.product_type == "shipping")
@@ -684,7 +685,7 @@
                 if (res > 0)
                 {
                     status = true; result = "Order placed successfully.";
-                    model.payment_method_title = model.payment_method_title.Replace("{BR}", "<br>");
+                    model.payment_method_title = !string.IsNullOrEmpty(model.payment_method_title) ? model.payment_method_title.Replace("{BR}", "<br>") : "";
                     SendEmail.SendEmails(model.b_email, model.payment_method, model.payment_method_title);
                 }
             }

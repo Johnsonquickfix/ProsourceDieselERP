@@ -95,7 +95,7 @@ function LoadGrid() {
             },
             {
                 data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
+                    if (dtrow.parent_so > 0) return '#' + dtrow.parent_so; else return '#' + dtrow.fk_projet;
                 }
             },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },

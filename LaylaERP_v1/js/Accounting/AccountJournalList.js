@@ -17,6 +17,7 @@
     });
     getGrandTotal(true);
     getVendor();
+    getChartofaccount();
     $(".select2").select2();
     AccountJournalList(true);
 
@@ -26,8 +27,15 @@
         getGrandTotal(true);
     });
 
+    $('#ddlAccount').change(function () {
+        $("#txtdebit").text(''); $("#txtcredit").text(''); $("#txtbalance").text('')
+        AccountJournalList(true);
+        getGrandTotal(true);
+    });
+
     $("#btnSearch").click(function () {
         $("#ddlVendor").val("").trigger('change');
+        $("#ddlAccount").val("").trigger('change');
         AccountJournalList(true);
     })
 
@@ -41,7 +49,8 @@ function AccountJournalList(is_date) {
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var ID = $("#hfid").val();
-    var obj = { strValue1: urid, strValue2: dfa, }
+    var account_num = $("#ddlAccount").val();
+    var obj = { strValue1: urid, strValue2: dfa, strValue3: account_num }
     var table_EL = $('#JournalListdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
         order: [[2, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -174,7 +183,8 @@ function getGrandTotal(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-    let obj = { strValue1: dfa, strValue2: urid };
+    let account_num = $("#ddlAccount").val();
+    let obj = { strValue1: dfa, strValue2: urid, strValue3: account_num };
     $.ajax({
         url: "/Accounting/JournalDatewithVendoreTotal",
         type: "GET",
@@ -192,5 +202,18 @@ function getGrandTotal(is_date) {
         error: function (msg) {
 
         }
+    });
+}
+
+function getChartofaccount() {
+    $.ajax({
+        url: "/Accounting/ChartofAccountsdropdown",
+        type: "Get",
+        success: function (data) {
+            $('#ddlAccount').append('<option value="">Please select account</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlAccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
     });
 }

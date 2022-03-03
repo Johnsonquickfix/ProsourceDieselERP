@@ -474,14 +474,16 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataTable AccountBalanceList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable AccountBalanceList(string account_num, string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
+            string condition = " group by inv_complete, label_complete";
+            string strSql = String.Empty;
             totalrows = 0;
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1";
+                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation FROM erp_accounting_bookkeeping where 1=1";
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
@@ -490,7 +492,15 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (thirdparty_code ='" + userstatus + "') ";
                 }
-                strSql += strWhr + " group by inv_complete, label_complete";
+                if (!String.IsNullOrEmpty(account_num))
+                {
+                    strSql = "SELECT inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, CONVERT(varchar,doc_date,101) docdate, label_operation FROM erp_accounting_bookkeeping where 1=1";
+                    strWhr += " and (inv_complete ='" + account_num + "') ";
+                    condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation order by doc_date desc";
+                }
+                
+                strSql += strWhr + condition;
+
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
                 /*string strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance FROM erp_accounting_bookkeeping where 1=1 ";
@@ -519,7 +529,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable AccountBalanceGrandTotal(string sMonths)
+        public static DataTable AccountBalanceGrandTotal(string sMonths, string account_num)
         {
             DataTable dtr = new DataTable();
             try
@@ -527,6 +537,10 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT Format((COALESCE(sum(case when senstag = 'C' then credit end),0)),'#,##0.00') credit,"
                                + " Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
                                + " Format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)),'#,##0.00') as balance FROM erp_accounting_bookkeeping where 1 = 1 and cast(doc_date as date) BETWEEN " + sMonths;
+                if(!String.IsNullOrEmpty(account_num))
+                {
+                    strSql += " and(inv_complete='" + account_num + "')";
+                }
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 
@@ -537,7 +551,7 @@ namespace LaylaERP.BAL
         }
 
         //Start journals
-        public static DataTable AccountJournalList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable AccountJournalList(string account_num,string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -554,6 +568,10 @@ namespace LaylaERP.BAL
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                if (account_num != null)
+                {
+                    strWhr += " and (inv_complete ='" + account_num + "') ";
                 }
                 strSql += strWhr + " order by datesort desc, id desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -637,7 +655,7 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static DataTable JournalDatewithVendoreTotal(string sMonths, string searchid, string productid)
+        public static DataTable JournalDatewithVendoreTotal(string sMonths, string searchid, string account_num)
         {
             DataTable dt = new DataTable();
             try
@@ -650,6 +668,10 @@ namespace LaylaERP.BAL
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                if (!string.IsNullOrEmpty(account_num))
+                {
+                    strWhr += " and inv_complete = '" + account_num + "'";
                 }
                 string strSql = "SELECT format(isnull(sum(debit),0),'#,##0.00') as debit, format(isnull(sum(credit),0), '#,##0.00') as credit, format(isnull(sum(credit)-sum(debit),0),'#,##0.00') as balance from erp_accounting_bookkeeping where 1 = 1";
                 strSql += strWhr;
@@ -1315,5 +1337,18 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static DataSet ChartofAccountsdropdown()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT account_number as ID, concat(label,' (',account_number,')') as label from erp_accounting_account";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
     }
 }

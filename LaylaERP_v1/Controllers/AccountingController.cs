@@ -390,7 +390,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = AccountingRepository.AccountBalanceList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = AccountingRepository.AccountBalanceList(model.strValue3, model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
@@ -403,7 +403,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.AccountBalanceGrandTotal(model.strValue1);
+                DataTable dt = AccountingRepository.AccountBalanceGrandTotal(model.strValue1, model.strValue2);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -416,7 +416,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = AccountingRepository.AccountJournalList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = AccountingRepository.AccountJournalList(model.strValue3,model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
@@ -828,6 +828,18 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
             }
+        }
+
+        public JsonResult ChartofAccountsdropdown(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.ChartofAccountsdropdown();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
         }
     }
 }

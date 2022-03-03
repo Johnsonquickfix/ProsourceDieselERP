@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";
+            ViewBag.pay_option = "[" + pay_method + "]";            
             return View();
         }
 
@@ -42,6 +42,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
+            /////clsAuthorizeNet.RefundTransaction("40083218602", "1111", "0323", 1);
             return View();
         }
 

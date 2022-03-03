@@ -677,7 +677,7 @@ function PaypalPaymentRefunds() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AuthorizeNetPaymentRefunds() {
     let order_total = parseFloat($('#orderTotal').text()) || 0.00, rfund_total = parseFloat($('.btnRefundOk').data('nettotal')) || 0.00;
-    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (order_total == rfund_total ? 0 : rfund_total);
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = rfund_total;
     let option = { order_id: oid, NetTotal: invoice_amt };
     swal.queue([{
         title: 'Authorize.Net Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,

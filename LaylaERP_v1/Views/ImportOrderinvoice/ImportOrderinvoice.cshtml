@@ -1,0 +1,59 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@{
+    ViewBag.Title = "ImportExcel";
+}
+
+<h2>Order Invoice Import</h2>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+
+    @using (Html.BeginForm("Index", "InportExcel", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+
+        @*<input type="file" name="postedFile" />
+            <input type="submit" value="Import" />*@
+
+        <div class="form-group">
+            <input type="file" id="dataFile" name="postedFile" />
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Import" class="btn btn-default" />
+        </div>
+
+        if (Model != null)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        @foreach (DataColumn col in Model.Columns)
+                        {
+                            <th>@col.ColumnName</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow row in Model.Rows)
+                    {
+                        <tr>
+                            @foreach (DataColumn col in Model.Columns)
+                            {
+                                <td>@row[col.ColumnName]</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</body>
+</html>
+

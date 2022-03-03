@@ -6,7 +6,9 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -26,6 +28,147 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult ImportOrderinvoice()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [ActionName("uploadpofile")]
+        public ActionResult ImportPoFile(HttpPostedFileBase importFile, string vendorid)
+        {
+            if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
+            long size = importFile.ContentLength;
+            string fileType = Path.GetExtension(importFile.FileName);
+            if (size < 2097152)
+            {
+                try
+                {
+                    var fileData = GetDataFromPoExcelFile(importFile.InputStream, vendorid);
+                    XmlDocument xmlDoc = CommonClass.ToXml(fileData);
+                    var dt = UploadXMLData("IDEST", xmlDoc);
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (dt.Rows[0]["Response"].ToString().Contains("Success"))
+                            return Json(new { Status = 1, Message = "Data Imported Successfully. " });
+                        else
+                            return Json(new { Status = 0, Message = "Excel invalid data format. " });
+                    }
+                    return Json(new { Status = 0, Message = "Excel invalid data format. " });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Status = 0, Message = ex.Message });
+                }
+            }
+            else { return Json(new { Status = 0, Message = "Not excel file or size of file is larger than 2MB" }); }
+        }
+
+        private List<ImportOrderinvoiceModel> GetDataFromPoExcelFile(Stream stream, string vendorid)
+        {
+            var poList = new List<ImportOrderinvoiceModel>();
+            try
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+                    {
+                        UseColumnDataType = false,
+                        ConfigureDataTable = delegate { return new ExcelDataTableConfiguration { UseHeaderRow = true }; }
+                    });
+
+                    if (dataSet.Tables.Count > 0)
+                    {
+                        var dataTable = dataSet.Tables[0];
+                        foreach (DataRow objDataRow in dataTable.Rows)
+                        {
+                            if (objDataRow.ItemArray.All(x => string.IsNullOrEmpty(x?.ToString()))) continue;
+                            poList.Add(new BAL.ImportOrderinvoiceModel()
+                            {
+                                document_id = objDataRow["Document"].ToString(),
+                                doc_date = objDataRow["DocDate"].ToString(),
+                                payer_id = objDataRow["Payer"].ToString(),
+                                payer_name = objDataRow["Payer Name"].ToString(),
+                                ref_doc = objDataRow["Ref doc"].ToString(),
+                                sales_doc = objDataRow["Sales Doc"].ToString(),
+                                item = objDataRow["Item"].ToString(),
+                                material_number = objDataRow["Material"].ToString(),
+                                material_description = objDataRow["Material Description"].ToString(),
+                                pint = objDataRow["Plnt"].ToString(),
+                                po_number = objDataRow["Purchase order number"].ToString(),
+                                bol = objDataRow["BoL"].ToString(),
+                                net_amount = objDataRow["Net amount"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Net amount"].ToString()) ? Convert.ToDecimal(objDataRow["Net amount"].ToString()) : 0) : 0,
+                                freight_charge = objDataRow["Freight Ch"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Freight Ch"].ToString()) ? Convert.ToDecimal(objDataRow["Freight Ch"].ToString()) : 0) : 0,
+                                sales_tax = objDataRow["Sales Tax"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Sales Tax"].ToString()) ? Convert.ToDecimal(objDataRow["Sales Tax"].ToString()) : 0) : 0,
+                                total_amount = objDataRow["Total Amout"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Total Amout"].ToString()) ? Convert.ToDecimal(objDataRow["Total Amout"].ToString()) : 0) : 0,
+                                cmir = objDataRow["CMIR"].ToString(),
+                                tracking_number = objDataRow["Tracking N"].ToString(),
+                                name = objDataRow["Name"].ToString(),
+                                street = objDataRow["Street"].ToString(),
+                                city = objDataRow["City"].ToString(),
+                                state = objDataRow["State"].ToString(),
+                                zipcode = objDataRow["Zipcode"].ToString(),
+                                destination_country = objDataRow["Dest Coun"].ToString(),
+                                cr_dr_memo_text = objDataRow["Credit Debit Memo Text"].ToString(),
+                                vendor_id = vendorid,
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return poList;
+        }
+
+        public class CommonClass
+        {
+            public static XmlDocument ToXml<T>(List<T> _ListObj)
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                XPathNavigator nav = xmlDoc.CreateNavigator();
+                using (XmlWriter writer = nav.AppendChild())
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("BulkData"));
+                    ser.Serialize(writer, _ListObj);
+                }
+                return xmlDoc;
+            }
+        }
+        public static DataTable UploadXMLData(string qFlag, XmlDocument xmlList)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@detailsXML ",xmlList.OuterXml),
+                    new SqlParameter("@QFlag",qFlag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_import_commerce_purchase_order_invoice", parameters);
+            }
+            catch (SqlException ex)
+            { throw ex; }
+            return dt;
+        }
+
+        public JsonResult GetImportPolList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = ImportOrderinvoiceRepository.GetImportPoList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
 
         [HttpPost]
         //[ValidateAntiForgeryToken]

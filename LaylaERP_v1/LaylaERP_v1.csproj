@@ -203,6 +203,7 @@
     <Compile Include="BAL\GiftCardRepository.cs" />
     <Compile Include="BAL\HrmsConfigurationRepository.cs" />
     <Compile Include="BAL\HrmsRepository.cs" />
+    <Compile Include="BAL\ImportOrderinvoiceRepository.cs" />
     <Compile Include="BAL\ImportPoRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\LeaveRepository.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Controllers\GiftcardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
+    <Compile Include="Controllers\ImportOrderinvoiceController.cs" />
     <Compile Include="Controllers\ImportPoController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
@@ -290,6 +292,7 @@
     <Compile Include="Models\GiftCardModel.cs" />
     <Compile Include="Models\HrmsConfigurationModel.cs" />
     <Compile Include="Models\HrmsModel.cs" />
+    <Compile Include="Models\ImportOrderinvoiceModel.cs" />
     <Compile Include="Models\ImportPoModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LeaveModel.cs" />
@@ -1190,6 +1193,7 @@
     <Content Include="Views\OrdersMySQL\OrdersHistory.cshtml" />
     <Content Include="Views\ImportPo\ImportPo.cshtml" />
     <Content Include="Views\Reports\NonInvoicedSalesPO.cshtml" />
+    <Content Include="Views\ImportOrderinvoice\ImportOrderinvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

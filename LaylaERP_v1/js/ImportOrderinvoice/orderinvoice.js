@@ -40,6 +40,7 @@
             });
         },
         aoColumns: [
+            { data: 'vendorname', title: 'Vendor', sWidth: "2%" },
             { data: 'document_id', title: 'Document', sWidth: "5%" },
             { data: 'podatesort', title: 'DocDate', sWidth: "5%", render: function (inv_num, type, full, meta) { return full.po_date; } },
             { data: 'payer_id', title: 'Payer', sWidth: "5%" },
@@ -62,10 +63,10 @@
             { data: 'street', title: 'Street', sWidth: "2%" },
             { data: 'city', title: 'City', sWidth: "2%" },
             { data: 'state', title: 'State', sWidth: "2%" },
-            { data: 'zipcode', title: 'Zipcode', sWidth: "2%" },
+            { data: 'zipcode', title: 'Zipcode', sWidth: "2%" }
             //{ data: 'destination_country', title: 'Dest Coun', sWidth: "2%" },
             //{ data: 'cr_dr_memo_text', title: 'Credit Debit Memo Text', sWidth: "2%" },
-            { data: 'vendorname', title: 'Vendor..', sWidth: "2%" }
+            
         ]
     });
 }

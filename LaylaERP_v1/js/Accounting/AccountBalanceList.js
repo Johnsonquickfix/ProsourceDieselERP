@@ -34,9 +34,9 @@ function AccountBalanceList(is_date) {
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     var vendor = $("#ddlVendor").val();
     let account_num = $("#ddlAccount").val();
-    var myvar = [];
-    if (account_num == "") { myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 1, 2] }] }
-    else { myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 3] }] }
+    var myvar = []; var print = [];
+    if (account_num == "") { print = [3,4,5,6]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 1, 2] }] }
+    else { print = [1,2,4,5]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 3, 6] }] }
 
     var obj = { strValue1: vendor, strValue2: dfa, strValue3: account_num };
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
@@ -110,7 +110,7 @@ function AccountBalanceList(is_date) {
                 text: '<i class="fas fa-file-csv"></i> Print',
                 footer: false,
                 exportOptions: {
-                    //columns: [1, 2, 3, 4, 5],
+                    columns: print,
                 },
                 filename: function () {
                     var d = new Date();

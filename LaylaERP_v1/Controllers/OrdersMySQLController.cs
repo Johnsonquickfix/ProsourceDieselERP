@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";
+            ViewBag.pay_option = "[" + pay_method + "]";            
             return View();
         }
 
@@ -42,6 +42,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
+            /////clsAuthorizeNet.RefundTransaction("40083218602", "1111", "0323", 1);
             return View();
         }
 
@@ -243,7 +244,7 @@
                                 else if (obj.product_type == "fee")
                                 {
                                     strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
+                                    strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
                                     strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.product_type));
                                 }
                                 else if (obj.product_type == "shipping")

@@ -607,7 +607,7 @@ function saveCO() {
                     $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
                     $('.billinfo').prop("disabled", true);
                     //swal('Success!', 'Order refunded successfully.', "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
-                    swal('Success!', 'Order refunded successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
                 else { swal('Error', data.message, "error").then((result) => { return false; }); }
             },

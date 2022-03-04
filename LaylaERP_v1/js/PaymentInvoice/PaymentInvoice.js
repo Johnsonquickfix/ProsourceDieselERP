@@ -330,7 +330,7 @@ function takepaymentpr() {
     });
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkallpr").prop('checked', false);
-    let status = 'PR'; //$('#ddlStatus').val();
+    let status = 'PO'; //$('#ddlStatus').val();
     console.log(id);
 
     if (id == "") {

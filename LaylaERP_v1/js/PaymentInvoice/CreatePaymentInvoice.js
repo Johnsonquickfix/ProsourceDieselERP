@@ -51,39 +51,79 @@ function filldropdown() {
 function getPurchaseOrderInfo() {
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val();
     console.log(status, id);
-
-    $('.page-heading').text('Payment Process').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
-    $('#line_items').empty();
-    $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+    if (status == 'PO') {
+        $('.page-heading').text('Payment Process').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+        $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+    }
+    else {
+        $('.page-heading').text('Payment Process').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceListSO">Back to List</a>');
+        $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceListSO">Back to List</a>');
+    }
+        $('#line_items').empty();
     var option = { strValue1: status, strValue2: id };
-    $.ajax({
-        url: "/PaymentInvoice/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
-        success: function (result) {
-            try {
-                let data = JSON.parse(result);
-                for (let i = 0; i < data['pod'].length; i++) {
-                    let itemHtml = '';
-                    if (data['pod'][i].rowid > 0) {
-                        itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
-                        itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
-                        itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
-                        itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';
-                        itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
-                        itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
-                        itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
-                        itemHtml += '</tr>';
-                        $('#line_items').append(itemHtml);
+    if (status == 'PO') {
+        $.ajax({
+            url: "/PaymentInvoice/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    for (let i = 0; i < data['pod'].length; i++) {
+                        let itemHtml = '';
+                        if (data['pod'][i].rowid > 0) {
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
+                            itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
+                            itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';
+                            itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            itemHtml += '</tr>';
+                            $('#line_items').append(itemHtml);
+                        }
                     }
                 }
-            }
-            catch (error) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (xhr, status, err) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }, async: false
-    });
+                catch (error) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }, async: false
+        });
+    }
+    else {
+        $.ajax({
+            url: "/PaymentInvoice/GetPurchaseOrderSOByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    for (let i = 0; i < data['pod'].length; i++) {
+                        let itemHtml = '';
+                        if (data['pod'][i].rowid > 0) {
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
+                            itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
+                            itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';
+                            itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            itemHtml += '</tr>';
+                            $('#line_items').append(itemHtml);
+                        }
+                    }
+                }
+                catch (error) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }, async: false
+        });
+    }
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); }); calculateFinal();
-    $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+    if (status == 'PO') {
+        $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+    }
+    else {
+        $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceListSO">Back to List</a><button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+    }
     // $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     $(".top-action").empty().append('<button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
     $('.billinfo').prop("disabled", true);
@@ -91,7 +131,13 @@ function getPurchaseOrderInfo() {
 $(document).on("click", ".btnEdit", function (t) {
     t.preventDefault(); $("#loader").show();
     $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
-    $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" title="Click for pay" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
+    let status = $("#hfstatus").val();
+    if (status == 'PO') {
+        $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" title="Click for pay" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
+    }
+    else {
+        $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceListSO">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" title="Click for pay" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
+    }
     $(".top-action").empty().append('<button type="button" title="Click for cancel" data-toggle="tooltip" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
     $("#loader").hide();
     isEdit(true);
@@ -129,6 +175,7 @@ function saveVendorPO() {
     let BankCheck = $("#txtBankCheck").val();
     let Comments = $("#txtComments").val();
     let _list = createItemsList();
+    let status = $("#hfstatus").val();
     //console.log(_list);
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
@@ -148,7 +195,12 @@ function saveVendorPO() {
                     $.post('/PaymentInvoice/TakePayment', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
+                            if (status == 'PO') {
+                                swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
+                            }
+                            else {
+                                swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PaymentInvoiceListSO'; });
+                            }
                           
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -163,12 +215,13 @@ function saveVendorPO() {
 
 function createItemsList() {
     let _list = [];
+    let status = $("#hfstatus").val();
     $('#line_items > tr').each(function (index, row) {
         let payment = 0.00, remaing = 0.00;
         payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         remaing = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
         if (payment != 0) {
-            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: 'PO', thirdparty_code: $(row).data('supplier') });
+            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier') });
         }
     });
     return _list;

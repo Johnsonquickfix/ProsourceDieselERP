@@ -35,8 +35,8 @@ function AccountBalanceList(is_date) {
     var vendor = $("#ddlVendor").val();
     let account_num = $("#ddlAccount").val();
     var myvar = []; var print = [];
-    if (account_num == "") { print = [3,4,5,6]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 1, 2] }] }
-    else { print = [1,2,4,5]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 3, 6] }] }
+    if (account_num == "") { print = [3,4,5,6]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 1, 2, 3] }] }
+    else { print = [1,2,4,5]; myvar = [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0, 4, 7] }] }
 
     var obj = { strValue1: vendor, strValue2: dfa, strValue3: account_num };
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
@@ -82,8 +82,9 @@ function AccountBalanceList(is_date) {
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
-            { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; }},
-            { data: 'label_operation', title: 'Label', sWidth: "15%", class: "text-left" },
+            { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; } },
+            { data: 'subledger_label', title: 'Label', sWidth: "15%", class: "text-left" },
+            { data: 'label_operation', title: 'Label Operation', sWidth: "15%", class: "text-left" },
             { data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
@@ -139,6 +140,8 @@ function GrandToatl(is_date) {
         data: obj,
         success: function (data) {
             var d = JSON.parse(data);
+            if (account_num != "") { $("#txtbalance").hide(); }
+            else { $("#txtbalance").show(); }
             if (d.length > 0) {
                 $("#txtdebit").text('$' + (d[0].debit));
                 $("#txtcredit").text('$' + (d[0].credit));

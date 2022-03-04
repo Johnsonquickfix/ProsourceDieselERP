@@ -46,6 +46,13 @@ function ChartOfAccountGrid() {
                     },
 
                     {
+                        'data': 'account_number', sWidth: "8%",
+                        'render': function (id, type, full, meta) {
+                            return ' <span title="Click here to account balance list" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model('+ id +');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
+                        }
+                    },
+
+                    {
                         'data': 'ID', sWidth: "8%",
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
@@ -136,5 +143,65 @@ function ChangeStatus(id, status) {
     })
 }
 
+function model(account_num) {
+    $('#AccountModal').modal('show');
+    AccountBalanceList(account_num);
+}
 
-
+function AccountBalanceList(account_num) {
+    //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    //var vendor = $("#ddlVendor").val();
+    //let account_num = $("#ddlAccount").val();
+    var obj = {strValue3: account_num };
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
+    var table_EL = $('#EmployeeListdata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]], scrollX: true, scrollY: ($(window).height() - 215),
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#EmployeeListdata_filter input').unbind();
+            $('#EmployeeListdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        },
+        /*sAjaxSource: "/Accounting/GetBalanceList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: urid });
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "account" : oSettings.aaSorting[0][0] == 2 ? "debit" : oSettings.aaSorting[0][0] == 3 ? "credit" : oSettings.aaSorting[0][0] == 4 ? "balance" : "id";
+                aoData.push({ name: "sSortColName", value: col });
+            }
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },*/
+        ajax: {
+            url: '/Accounting/ChartOfAccountBalanceList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+        },
+        aoColumns: [
+            { data: 'id', title: 'ID', sWidth: "5%" },
+            { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; } },
+            { data: 'label_operation', title: 'Label', sWidth: "15%", class: "text-left" },
+            //{ data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
+            { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+            { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+        ],
+    });
+}

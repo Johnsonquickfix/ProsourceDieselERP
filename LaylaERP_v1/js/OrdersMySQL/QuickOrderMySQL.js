@@ -766,7 +766,7 @@ function getOrderInfo() {
                         $('.payment-history').text('Customer IP: ' + data[0].ip_address);
                     $('#txtLogDate').val(data[0].date_created);
                     $('#ddlStatus').val(data[0].status.trim()).trigger('change'); $('#ddlUser').prop("disabled", true);
-                    $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
+                    $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + (isNullUndefAndSpace(data[0].customer_name) ? data[0].customer_name : data[0].b_first_name + ' ' + data[0].b_last_name) + '</option>');
                     ///billing_Details
                     var tPhone = data[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);

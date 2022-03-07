@@ -564,7 +564,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name, subledger_label FROM erp_accounting_bookkeeping eab"
+                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, (case WHEN senstag='D' and credit='0.000000' and debit='0.000000' then '0.00' when debit='0.000000' then NULL else debit end) as debit, (case WHEN senstag='C' and credit='0.000000' and debit='0.000000' then '0.00' when credit='0.000000' then NULL else credit end) as credit, label_operation, v.name, subledger_label FROM erp_accounting_bookkeeping eab"
                                 + " left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (userstatus != null)
                 {

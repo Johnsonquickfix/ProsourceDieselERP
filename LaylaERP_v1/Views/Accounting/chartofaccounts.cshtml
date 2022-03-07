@@ -80,6 +80,7 @@
                                 <th class="text-left">BS Tag</th>
                                 <th class="text-left">Account Category</th>
                                 <th>Activated</th>
+                                <th>View</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -139,10 +140,46 @@
         </div>
     </div>
 </section>
+<section>
+    <div class="modal fade bd-example-modal-lg" style="overflow:auto" id="AccountModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLongTitle">Account Balance</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary table-design not-fixed">
+                                <div class="box-body">
+                                    <table id="EmployeeListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">ID</th>
+                                                <th class="text-left">Date</th>
+                                                <th class="text-left">Label</th>
+                                                @*<th class="text-left">Acccounting Account</th>*@
+                                                <th class="text-left">Debit</th>
+                                                <th class="text-left">Credit</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <script>
 
 </script>
-
 
 <script src="@Url.Content("~/js/Accounting/ChartOfAccounts.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

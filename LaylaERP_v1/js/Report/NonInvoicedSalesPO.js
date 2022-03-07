@@ -49,7 +49,7 @@ function PurchaseOrderGrid() {
             $('.dataTables_filter input').unbind();
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
+                if (code == 13) { table.search(this.value).draw(); }
             });
         }, 
         ajax: {

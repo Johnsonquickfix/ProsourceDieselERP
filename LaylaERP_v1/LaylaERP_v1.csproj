@@ -203,6 +203,7 @@
     <Compile Include="BAL\GiftCardRepository.cs" />
     <Compile Include="BAL\HrmsConfigurationRepository.cs" />
     <Compile Include="BAL\HrmsRepository.cs" />
+    <Compile Include="BAL\ImportOrderinvoiceRepository.cs" />
     <Compile Include="BAL\ImportPoRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\LeaveRepository.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Controllers\GiftcardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
+    <Compile Include="Controllers\ImportOrderinvoiceController.cs" />
     <Compile Include="Controllers\ImportPoController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
@@ -290,6 +292,7 @@
     <Compile Include="Models\GiftCardModel.cs" />
     <Compile Include="Models\HrmsConfigurationModel.cs" />
     <Compile Include="Models\HrmsModel.cs" />
+    <Compile Include="Models\ImportOrderinvoiceModel.cs" />
     <Compile Include="Models\ImportPoModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LeaveModel.cs" />
@@ -757,6 +760,7 @@
     <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
+    <Content Include="js\ImportOrderinvoice\orderinvoice.js" />
     <Content Include="js\ImportPo\ImportPo.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\ForecastInventory.js" />
@@ -783,6 +787,7 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Poemail\Addemail.js" />
@@ -1190,6 +1195,8 @@
     <Content Include="Views\OrdersMySQL\OrdersHistory.cshtml" />
     <Content Include="Views\ImportPo\ImportPo.cshtml" />
     <Content Include="Views\Reports\NonInvoicedSalesPO.cshtml" />
+    <Content Include="Views\ImportOrderinvoice\ImportOrderinvoice.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoiceListSO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

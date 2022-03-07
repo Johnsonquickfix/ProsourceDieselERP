@@ -224,10 +224,15 @@ namespace LaylaERP.BAL
                     account = "4";
                     pcg = "INCOME";
                 }
-                else
+                else if(optType == "purchase")
                 {
                     account = "5";
                     pcg = "COGS";
+                }
+                else
+                {
+                    account = "9";
+                    pcg = "ASSETS";
                 }
                 string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account where  account_number like '" + account + "%' and pcg_type='" + pcg + "' order by account_number;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
@@ -483,7 +488,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation FROM erp_accounting_bookkeeping where 1=1";
+                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation, '' subledger_label FROM erp_accounting_bookkeeping where 1=1";
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
@@ -494,9 +499,9 @@ namespace LaylaERP.BAL
                 }
                 if (!String.IsNullOrEmpty(account_num))
                 {
-                    strSql = "SELECT inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, CONVERT(varchar,doc_date,101) docdate, label_operation FROM erp_accounting_bookkeeping where 1=1";
+                    strSql = "SELECT inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, CONVERT(varchar,doc_date,101) docdate, label_operation, subledger_label FROM erp_accounting_bookkeeping where 1=1";
                     strWhr += " and (inv_complete ='" + account_num + "') ";
-                    condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation order by doc_date desc";
+                    condition = " group by subledger_account, inv_complete, label_complete, rowid, doc_date, label_operation, subledger_label order by doc_date desc";
                 }
                 
                 strSql += strWhr + condition;
@@ -1350,5 +1355,32 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+        public static DataTable ChartOfAccountBalanceList(string account_num, string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            string condition = String.Empty;
+            string strSql = String.Empty;
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                if (!String.IsNullOrEmpty(account_num))
+                {
+                    strSql = "SELECT inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, CONVERT(varchar,doc_date,101) docdate, label_operation FROM erp_accounting_bookkeeping where 1=1";
+                    strWhr += " and (inv_complete ='" + account_num + "') ";
+                    condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation order by doc_date desc";
+                }
+
+                strSql += strWhr + condition;
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

@@ -609,6 +609,26 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable AccountJournalList(long account_num, long vendor_id, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    account_num > 0 ? new SqlParameter("@account_num", account_num) : new SqlParameter("@account_num", DBNull.Value),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@flag", "JOUREP"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_account_Journal_report", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         //End Journals
 
         public static DataTable AccountLedgerList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")

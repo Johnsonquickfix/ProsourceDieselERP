@@ -1408,7 +1408,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT  account_number, label  from erp_accounting_account  where pcg_type =  'BANK'";
+                string strquery = "SELECT  account_number, label  from erp_accounting_account  where pcg_type =  'BANK' and account_number not in (1,1010,1210)";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

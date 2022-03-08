@@ -32,6 +32,9 @@ function gettotal() {
         success: function (data) {
             var i = JSON.parse(data);
             console.log(i[0].total);
+            if (i[0].total == null)
+                $("#txttotalamt").val('0.00');
+            else
             $("#txttotalamt").val(i[0].total);
         },
         error: function (msg) { alert(msg); }
@@ -46,7 +49,8 @@ function NewBankEntry() {
     if (totalamt <= 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
     else if (bankfee <= 0) { swal('alert', 'Please enter bank transfer fee', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
-    else if (merchantfee < 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
+    else if (merchantfee <= 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
+    else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
     else {
         let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: totalamt, strValue5: bankfee, strValue6: merchantfee}
         //console.log(option, _order, _list); return;

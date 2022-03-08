@@ -42,18 +42,18 @@
 });
 
 function AccountJournalList(is_date) {
-    var urid = $("#ddlVendor").val();
+    var vrid = $("#ddlVendor").val();
 
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var ID = $("#hfid").val();
     var account_num = $("#ddlAccount").val();
-    var obj = { strValue1: urid, strValue2: dfa, strValue3: account_num }
+    var obj = { strValue1: sd, strValue2: ed, strValue3: account_num, strValue4: vrid }
     var table_EL = $('#JournalListdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
-        order: [[2, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        order: [[0, "desc"], [2, "asc"], [1, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -69,17 +69,17 @@ function AccountJournalList(is_date) {
             var api = this.api(), data;
             var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
 
-            let DebitTotal = api.column(7, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
-            let CreditTotal = api.column(8, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let DebitTotal = api.column(6, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(7, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
 
             $(api.column(0).footer()).html('Page Total');
-            $(api.column(7).footer()).html('$' + numberRenderer(DebitTotal));
-            $(api.column(8).footer()).html('$' + numberRenderer(CreditTotal));
+            $(api.column(6).footer()).html('$' + numberRenderer(DebitTotal));
+            $(api.column(7).footer()).html('$' + numberRenderer(CreditTotal));
             //console.log(DebitTotal, CreditTotal);
         },
         ajax: {
             url: '/Accounting/AccountJournalList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { return JSON.parse(data); }
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         /*
         sAjaxSource: "/Accounting/AccountJournalList",
@@ -101,25 +101,26 @@ function AccountJournalList(is_date) {
             });
         },*/
         aoColumns: [
-            { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
-            { data: 'code_journal', title: 'Journal', sWidth: "5%" },
-            { data: 'datesort', title: 'Date', sWidth: "10%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
+            //{ data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
+            { data: 'datesort', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
+            { data: 'code_journal', title: 'Journal', sWidth: "5%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.sort_no; } else return data; } },
             {
-                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "11%",
+                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
                 'render': function (inv_num, type, full, meta) {
                     if (full.code_journal == "AC") return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
                     else return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
                     //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
-            { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
+            //{ data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'subledger_label', title: 'Label', sWidth: "15%" },
-            { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
+            { data: 'label_operation', title: 'Operation Label', sWidth: "20%" },
+            { data: 'label', title: 'Account', sWidth: "15%" },
             { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
             { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '') },
         ],
-        "dom": 'lBftipr',
-        "buttons": [
+        dom: 'lBftipr',
+        buttons: [
             {
                 extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
                 filename: function () {
@@ -131,7 +132,7 @@ function AccountJournalList(is_date) {
                 extend: 'print',
                 //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
                 title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
-                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8], },
+                exportOptions: { columns: [0,1, 2, 3, 4, 5, 6, 7], },
                 filename: function () {
                     let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Account Journal' + e;

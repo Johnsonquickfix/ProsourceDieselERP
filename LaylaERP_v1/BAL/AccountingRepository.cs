@@ -200,7 +200,7 @@ namespace LaylaERP.BAL
                     "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
                     "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id  and pa.option_mode = '" + optType + "'" +
                     "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
-                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,eaa.label,pa.fk_account_number,p.post_type,p.post_title,p.post_parent,p.post_status order by p_id;";
+                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,eaa.label,pa.fk_account_number,p.post_type,p.post_title,p.post_parent,p.post_status order by p_id, id;";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
@@ -564,7 +564,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, iif(debit=0,NULL,debit) as debit, iif(credit=0,NULL,credit) as credit, label_operation, v.name, subledger_label FROM erp_accounting_bookkeeping eab"
+                string strSql = "SELECT eab.rowid as id, CONVERT(varchar,doc_date,112) as datesort, inv_num, PO_SO_ref, inv_complete, code_journal, CONVERT(varchar(12),doc_date,101) as datecreation, (case WHEN senstag='D' and credit='0.000000' and debit='0.000000' then '0.00' when debit='0.000000' then NULL else debit end) as debit, (case WHEN senstag='C' and credit='0.000000' and debit='0.000000' then '0.00' when credit='0.000000' then NULL else credit end) as credit, label_operation, v.name, subledger_label FROM erp_accounting_bookkeeping eab"
                                 + " left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (userstatus != null)
                 {
@@ -578,7 +578,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (inv_complete ='" + account_num + "') ";
                 }
-                strSql += strWhr + " order by datesort desc, id desc";
+                strSql += strWhr + " order by datesort desc, PO_SO_ref,code_journal desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
                 /*if (!string.IsNullOrEmpty(searchid))
@@ -602,6 +602,26 @@ namespace LaylaERP.BAL
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString()); */
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable AccountJournalList(long account_num, long vendor_id, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    account_num > 0 ? new SqlParameter("@account_num", account_num) : new SqlParameter("@account_num", DBNull.Value),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@flag", "JOUREP"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_account_Journal_report", parameters);
             }
             catch (Exception ex)
             {

@@ -38,11 +38,11 @@
                     if (obj.success)
                     {
                         string user_pass = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
-                        //if (!CheckPassword(UserPassword, user_pass))
-                        //{
-                        //    obj.success = false; obj.user_data = 0;
-                        //    obj.error_msg = "The password you entered for the username's is incorrect.";
-                        //}
+                        if (!CheckPassword(UserPassword, user_pass))
+                        {
+                            obj.success = false; obj.user_data = 0;
+                            obj.error_msg = "The password you entered for the username's is incorrect.";
+                        }
                     }
                 }
             }
@@ -130,21 +130,21 @@
             return obj;
         }
 
-        public static ResultModel UserUpdate(UserEditModel model)
+        public static ResultModel UserUpdate(LoginModel model)
         {
             ResultModel obj = new ResultModel();
             try
             {
                 string user_pass = string.Empty, user_new_pass = string.Empty;
-                if (!string.IsNullOrEmpty(model.current_pwd) && !string.IsNullOrEmpty(model.new_pwd))
-                { user_pass = EncryptedPwd(model.current_pwd); user_new_pass = EncryptedPwd(model.new_pwd); }
+                if (!string.IsNullOrEmpty(model.user_pass) && !string.IsNullOrEmpty(model.user_new_pass))
+                { user_pass = EncryptedPwd(model.user_pass); user_new_pass = EncryptedPwd(model.user_pass); }
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "URUPD"),
-                    new SqlParameter("@id", model.user_id),
+                    new SqlParameter("@id", model.id),
                     new SqlParameter("@user_pass", user_pass),
                     new SqlParameter("@user_new_pass", user_new_pass),
-                    new SqlParameter("@user_email", model.email),
+                    new SqlParameter("@user_email", model.user_email),
                     new SqlParameter("@display_name", model.display_name),
                     new SqlParameter("@first_name", model.first_name),
                     new SqlParameter("@last_name", model.last_name),
@@ -211,7 +211,6 @@
             //    } while (--count > 0);
             //}
             string _hash = string.Empty;
-            _hash = GetMD5Hash(salt + password);
             using (MD5 md5Hash = MD5.Create())
             {
                 _hash = BitConverter.ToString(md5Hash.ComputeHash(Encoding.UTF8.GetBytes(salt + password))).Replace("-", string.Empty).ToLower();
@@ -225,26 +224,6 @@
             string newHash = Encode64(_hash, 16);
 
             return output + newHash;
-        }
-        //private static string GetMd5Hash(byte[] data)
-        //{
-        //    StringBuilder sBuilder = new StringBuilder();
-        //    for (int i = 0; i < data.Length; i++)
-        //        sBuilder.Append(data[i].ToString("X2"));
-        //    return sBuilder.ToString();
-        //}
-        private static string GetMD5Hash(string input)
-        {
-            System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
-            byte[] bs = System.Text.Encoding.ASCII.GetBytes(input);
-            bs = x.ComputeHash(bs);
-            System.Text.StringBuilder s = new System.Text.StringBuilder();
-            foreach (byte b in bs)
-            {
-                s.Append(b.ToString("x2").ToLower());
-            }
-            string password = s.ToString();
-            return password;
         }
         static string Encode64(string input, int count)
         {
@@ -264,51 +243,6 @@
             } while (i < count);
 
             return sb.ToString();
-        }
-        public static byte[] getPassword(string str)
-        {
-            byte[] hash = (byte[])MD5Helper.md5(str, true);
-            int count = 1 << 13;
-            string _hash = ToHex(hash, true);
-            //do
-            //{
-            //_hash = ToHex(hash, true);
-            _hash = System.Text.Encoding.UTF8.GetString(hash);
-            //_hash = BitConverter.ToString(hash).Replace("-", "");
-            hash = (byte[])MD5Helper.md5(_hash, true);
-            _hash = System.Text.Encoding.UTF8.GetString(hash);
-            //} while (0 < --count);
-            return (byte[])hash;
-        }
-        public static string ToHex(byte[] bytes, bool upperCase)
-        {
-            //StringBuilder result = new StringBuilder(bytes.Length * 2);
-            string result = string.Empty;
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                result = result + Convert.ToChar(bytes[i]).ToString();
-            }
-
-            return result.ToString();
-        }
-        public static string Md5Sum(string strToEncrypt)
-        {
-            System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
-            byte[] bytes = ue.GetBytes(strToEncrypt);
-
-            // encrypt bytes
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] hashBytes = md5.ComputeHash(bytes);
-
-            // Convert the encrypted bytes back to a string (base 16)
-            string hashString = "";
-
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
-            }
-
-            return hashString.PadLeft(32, '0');
         }
     }
 }

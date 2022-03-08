@@ -578,7 +578,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (inv_complete ='" + account_num + "') ";
                 }
-                strSql += strWhr + " order by datesort desc, id desc";
+                strSql += strWhr + " order by datesort desc, PO_SO_ref,code_journal desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
                 /*if (!string.IsNullOrEmpty(searchid))

@@ -725,6 +725,7 @@
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
+    <Content Include="js\Accounting\Funddeposit.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\Accounting\ProfitLossAccount.js" />
     <Content Include="js\app.js" />
@@ -1197,6 +1198,7 @@
     <Content Include="Views\Reports\NonInvoicedSalesPO.cshtml" />
     <Content Include="Views\ImportOrderinvoice\ImportOrderinvoice.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceListSO.cshtml" />
+    <Content Include="Views\Accounting\FunddepositList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

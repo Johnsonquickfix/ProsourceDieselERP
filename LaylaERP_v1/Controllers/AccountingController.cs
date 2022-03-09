@@ -93,7 +93,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult FunddepositList()
+        {
+            return View();
+        }
+        
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -860,6 +864,46 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
             //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetAccount()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.AccountingRepository.GetAccount();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["account_number"].ToString(),
+                    Text = dt.Rows[i]["label"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetTotalAmountByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = AccountingRepository.GetTotalAmountByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult NewBankEntry(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {            
+               JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
     }
 }

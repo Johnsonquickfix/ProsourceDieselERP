@@ -556,7 +556,7 @@ function saveCO() {
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
-    
+
     if (totalPay >= net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
@@ -683,7 +683,7 @@ function PaypalPaymentRefunds() {
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
     let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
-    let opt_refund = { note_to_payer: "Defective product", invoice_id: 'INVOICE - ' + oid, amount: { currency_code: "USD", value: invoice_amt } }
+    let opt_refund = { note_to_payer: "Defective product", invoice_id: 'INVOICE - ' + oid + '-' + Date.now(), amount: { currency_code: "USD", value: invoice_amt } }
 
     let option = { strValue1: 'getToken' };
     swal.queue([{

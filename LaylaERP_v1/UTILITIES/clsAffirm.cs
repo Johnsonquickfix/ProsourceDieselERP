@@ -26,7 +26,7 @@
             //    client_secret = (dt.Rows[0]["podiumSecretKey"] != Convert.DBNull) ? dt.Rows[0]["podiumSecretKey"].ToString().Trim() : string.Empty;
             //    refresh_token = (dt.Rows[0]["podium_refresh_code"] != Convert.DBNull) ? dt.Rows[0]["podium_refresh_code"].ToString().Trim() : string.Empty;
             //}
-            var request_json = "{\"amount\": "+ amount.ToString() + "}";
+            var request_json = "{\"amount\": "+ (amount * 100).ToString() + "}";
             var content = new StringContent(request_json, Encoding.UTF8, "application/json");
             using (var client = new HttpClient())
             {

@@ -51,9 +51,9 @@ function getOrderInfo() {
                 $('#lblOrderNo').data('pay_giftCardRefundedAmount', data[0].GiftCardRefundedAmount);
                 $('#lblOrderNo').data('order_from', data[0].post_mime_type);
                 if (data[0].payment_method == 'ppec_paypal' && data[0].post_mime_type == 'shop_order_erp') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
-                if (data[0].payment_method == 'ppec_paypal' && data[0].post_mime_type != 'shop_order_erp') $('#lblOrderNo').data('pay_id', data[0].transaction_id);
+                else if (data[0].payment_method == 'ppec_paypal' && data[0].post_mime_type != 'shop_order_erp') $('#lblOrderNo').data('pay_id', data[0].transaction_id);
                 else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
-                else $('#lblOrderNo').data('pay_id', '');
+                else $('#lblOrderNo').data('pay_id', data[0].transaction_id);
 
                 if (data[0].payment_method.trim().length > 0)
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
@@ -556,7 +556,7 @@ function saveCO() {
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
-
+    
     if (totalPay >= net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
@@ -731,7 +731,8 @@ function AuthorizeNetPaymentRefunds() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Affirm Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AffirmPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let option = { order_id: oid, NetTotal: invoice_amt };
+    let invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let option = { order_id: oid, paypal_id: $('#lblOrderNo').data('pay_id').trim(), NetTotal: invoice_amt };
     swal.queue([{
         title: 'Monthly Payments (affirm) Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {

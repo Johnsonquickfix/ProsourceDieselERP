@@ -660,7 +660,7 @@
                 var result = clsAffirm.AffirmRefund(model.paypal_id, model.NetTotal);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    status = true; JSONresult = "Order placed successfully.";
+                    status = true; JSONresult = "Refund placed successfully.";
                     OrderNotesModel note_model = new OrderNotesModel();
                     note_model.post_ID = model.order_id;
                     //note_model.comment_content = "Authorize.Net Credit Card Charge Refund Issued: " + crdtype + " ending in " + CardNumber + " (expires " + ExpirationDatePrint + ") (Transaction ID " + result + "). ";

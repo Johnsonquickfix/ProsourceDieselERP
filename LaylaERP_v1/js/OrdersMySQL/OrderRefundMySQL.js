@@ -721,7 +721,7 @@ function AuthorizeNetPaymentRefunds() {
             $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
                 console.log('Authorize.Net ', response);
                 if (response.status) {
-                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
@@ -740,7 +740,7 @@ function AffirmPaymentRefunds() {
             $.post('/Orders/UpdateAffirmPaymentRefund', option).then(response => {
                 console.log('Monthly Payments (affirm) : ', response);
                 if (response.status) {
-                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
@@ -776,8 +776,8 @@ function GiftCardPaymentRefunds() {
             $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
                 console.log('Gift Card ', response);
                 if (response.status) {
-                    swal('Success!', 'Refund amount added in gift card successfully.', "success");
-                    getOrderNotesList(oid); getOrderInfo();
+                    //swal('Success!', 'Refund amount added in gift card successfully.', "success"); getOrderNotesList(oid); getOrderInfo();
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

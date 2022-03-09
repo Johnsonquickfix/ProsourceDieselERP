@@ -44,19 +44,19 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("userdetails")]
-        public IHttpActionResult Userdetails([FromUri] SearchModel model)
+        public IHttpActionResult Userdetails(LoginModel model)
         {
             ResultModel result = new ResultModel();
-            if (model.user_id == 0)
+            if (!model.id.HasValue)
             {
                 return BadRequest("Please provide valid details.");
             }
             try
             {
                 string msg = string.Empty;
-                var balResult = UsersRepositry.UserInfo(model.user_id);
+                var balResult = UsersRepositry.UserInfo(model.id.Value);
                 if (balResult == null)
                 {
                     return BadRequest();
@@ -69,32 +69,33 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("editaccountdetails")]
-        public IHttpActionResult UserdetailsUpdate(UserEditModel model)
+        public IHttpActionResult UserdetailsUpdate(LoginModel model)
         {
             ResultModel result = new ResultModel();
-            if (model.user_id == 0)
+            if (model.id == 0)
             {
-                return Ok(new { success = false, err_msg = "Please provide valid details." });
+                result.success = false; result.error_msg = "Please provide valid details.";
+                return Ok(result);
             }
-            if (!string.IsNullOrEmpty(model.new_pwd) && !string.IsNullOrEmpty(model.conf_pwd))
+            if (!string.IsNullOrEmpty(model.user_new_pass) && !string.IsNullOrEmpty(model.user_conf_pass))
             {
-                if (model.new_pwd != model.conf_pwd)
+                if (model.user_new_pass != model.user_conf_pass)
                 {
-                    return Ok(new { success = false, err_msg = "Error! confirm password field should be match with the password field." });
+                    result.success = false; result.error_msg = "Error! confirm password field should be match with the password field.";
+                    return Ok(result);
                 }
             }
             try
             {
+                string msg = string.Empty;
                 var balResult = UsersRepositry.UserUpdate(model);
-
                 if (balResult == null)
                 {
-                    //return BadRequest();
-                    return Ok(new { success = false, err_msg = "Error! something went wrong." });
+                    return BadRequest();
                 }
-                return Ok(new { success = balResult.success, err_msg = balResult.error_msg, user_data = balResult.user_data });
+                return Ok(balResult);
             }
             catch (Exception ex)
             {
@@ -102,7 +103,7 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("createuser")]
         public IHttpActionResult CreateUser(LoginModel model)
         {
@@ -126,18 +127,45 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getorders")]
-        public object GetOrders([FromUri] SearchModel model)
+        public object GetOrders(SearchModel model)
         {
             ResultModel result = new ResultModel();
-            if (model.user_id == 0)
+            if (model.user_id == 0 && model.order_id == 0)
             {
                 return BadRequest("Please provide valid details.");
             }
             try
             {
-                var balResult = CommonRepositry.GetOrders(model.user_id, model.offset, model.pagesize);
+                var balResult = CommonRepositry.GetOrders(model.user_id, model.offset);
+                if (balResult == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(balResult);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("getuserorderdetail")]
+        public object GetUserOrderDetail(SearchModel model)
+        {
+            ResultModel result = new ResultModel();
+            if (model.user_id == 0)
+            {
+                return BadRequest("Please provide valid user detail.");
+            }
+            try
+            {
+                var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
+                balResult.Tables[0].TableName = "order_data";
+                if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
+                if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
                 if (balResult == null)
                 {
                     return BadRequest();
@@ -151,52 +179,8 @@
         }
 
         [HttpGet]
-        [Route("getuserorderdetail")]
-        public object GetUserOrderDetail([FromUri] SearchModel model)
-        {
-            OrderDetailModel result = new OrderDetailModel();
-            if (model.user_id == 0)
-            {
-                return BadRequest("Please provide valid user detail.");
-            }
-            try
-            {
-                //var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
-                //balResult.Tables[0].TableName = "order_data";
-                //if (balResult.Tables.Count > 1) balResult.Tables[1].TableName = "order_items";
-                //if (balResult.Tables.Count > 2) balResult.Tables[2].TableName = "order_coupons";
-                //if (balResult == null)
-                //{
-                //    return BadRequest();
-                //}
-
-                var balResult = CommonRepositry.GetOrderDetail(model.user_id, model.order_id);
-                result.order_data = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[0]));
-                if (balResult.Tables.Count > 1) result.order_items = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[1]));
-                if (balResult.Tables.Count > 2) result.order_coupons = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(balResult.Tables[2]));
-
-                if (result.order_data.Count > 0)
-                {
-                    result.success = true;
-                    result.err_msg = "";
-                }
-                else
-                {
-                    result.success = false;
-                    result.err_msg = "Record not found.";
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-
-        [HttpGet]
         [Route("redeemedgiftcards")]
-        public IHttpActionResult GetUserGiftCard([FromUri] SearchModel model)
+        public IHttpActionResult GetUserGiftCard(SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
@@ -223,31 +207,23 @@
 
         [HttpGet]
         [Route("getaddress")]
-        public IHttpActionResult GetUserAddress([FromUri] SearchModel model)
+        public IHttpActionResult GetUserAddress(SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                //return BadRequest("Please provide valid details.");
-                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
-                return Ok(result);
+                return BadRequest("Please provide valid details.");
             }
             try
             {
-                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "URADS")));
-                if (balResult.Count > 0)
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "URADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
                 {
-                    result.user_data = balResult[0];
-                    result.success = true;
-                    result.error_msg = "";
-                }
-                else
-                {
-                    result.user_data = "{}";
                     result.success = false;
-                    result.error_msg = "Record not found.";
                 }
-
                 return Ok(result);
             }
             catch (Exception ex)
@@ -258,19 +234,24 @@
 
         [HttpGet]
         [Route("getbillingaddress")]
-        public IHttpActionResult GetUserBillingAddress([FromUri] SearchModel model)
+        public IHttpActionResult GetUserBillingAddress(SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                //return BadRequest("Please provide valid details.");
-                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
-                return Ok(result);
+                return BadRequest("Please provide valid details.");
             }
             try
             {
-                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "UBADS")));
-                return Ok(balResult[0]);
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "UBADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -280,32 +261,24 @@
 
         [HttpGet]
         [Route("getshippingaddress")]
-        public IHttpActionResult GetUsershippingAddress([FromUri] SearchModel model)
+        public IHttpActionResult GetUsershippingAddress(SearchModel model)
         {
             ResultModel result = new ResultModel();
             if (model.user_id == 0)
             {
-                //return BadRequest("Please provide valid details.");
-                result.user_data = "{}"; result.error_msg = "Please provide valid details.";
-                return Ok(result);
+                return BadRequest("Please provide valid details.");
             }
             try
             {
-                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.GetUserAddress(model.user_id, "USADS")));
-                return Ok(balResult[0]);
-                //if (balResult.Count > 0)
-                //{
-                //    result.user_data = balResult[0];
-                //    result.success = true;
-                //    result.error_msg = "";
-                //}
-                //else
-                //{
-                //    result.user_data = "{}";
-                //    result.success = false;
-                //    result.error_msg = "Record not found.";
-                //}
-                //return Ok(result);
+                var balResult = CommonRepositry.GetUserAddress(model.user_id, "USADS");
+                result.user_data = balResult;
+                result.success = balResult.Rows.Count > 0 ? true : false;
+                result.error_msg = "";
+                if (balResult == null)
+                {
+                    result.success = false;
+                }
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -313,115 +286,111 @@
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("updateshippingaddress")]
         public IHttpActionResult UpdateShippingAddress(UserShippingModel model)
         {
+            ResultModel result = new ResultModel();
+            result.success = false; result.user_data = 0;
             if (model.user_id == 0)
             {
-                return Ok(new { success = false, msg = "Error! Please provide user id.", userdata = "{}" });
+                result.error_msg = "Please provide user id."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_first_name))
             {
-                return Ok(new { success = false, msg = "Error! Please provide first_name.", userdata = "{}" }); 
+                result.error_msg = "Please provide first_name."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_last_name))
             {
-                return Ok(new { success = false, msg = "Error! Please provide last name.", userdata = "{}" }); 
+                result.error_msg = "Please provide last name."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_country))
             {
-                return Ok(new { success = false, msg = "Error! Please provide country.", userdata = "{}" }); 
+                result.error_msg = "Please provide country."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_address_1))
             {
-                return Ok(new { success = false, msg = "Error! Please provide shipping address.", userdata = "{}" });
+                result.error_msg = "Please provide shipping address."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_city))
             {
-                return Ok(new { success = false, msg = "Error! Please provide city.", userdata = "{}" });
+                result.error_msg = "Please provide city."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_state))
             {
-                return Ok(new { success = false, msg = "Error! Please provide state.", userdata = "{}" });
+                result.error_msg = "Please provide state."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.shipping_postcode))
             {
-                return Ok(new { success = false, msg = "Error! Please provide postcode.", userdata = "{}" });
+                result.error_msg = "Please provide postcode."; return Ok(result);
             }
 
             try
             {
-                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.UpdateShippingAddress(model)));
+                var balResult = CommonRepositry.UpdateShippingAddress(model);
                 if (balResult == null)
                 {
-                    return Ok(new { success = false, msg = "Error! something went wrong.", userdata = "{}" });
+                    return BadRequest();
                 }
-                return Ok(new { success = true, msg = "Shipping address updated successfully!", userdata = balResult[0] });
+                return Ok(balResult);
             }
             catch (Exception ex)
             {
-                //return InternalServerError(ex);
-                return Ok(new { success = false, msg = ex.Message, userdata = "{}" });
+                return InternalServerError(ex);
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("updatebillingaddress")]
         public IHttpActionResult UpdateBillingAddress(UserBillingModel model)
         {
+            ResultModel result = new ResultModel();
+            result.success = false; result.user_data = 0;
             if (model.user_id == 0)
             {
-                return Ok(new { success = false, msg = "Error! Please provide user id.", userdata = "{}" });
+                result.error_msg = "Please provide user id."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_first_name))
             {
-                return Ok(new { success = false, msg = "Error! Please provide first_name.", userdata = "{}" });
+                result.error_msg = "Please provide first_name."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_last_name))
             {
-                return Ok(new { success = false, msg = "Error! Please provide last name.", userdata = "{}" });
+                result.error_msg = "Please provide last name."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_country))
             {
-                return Ok(new { success = false, msg = "Error! Please provide country.", userdata = "{}" });
+                result.error_msg = "Please provide country."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_address_1))
             {
-                return Ok(new { success = false, msg = "Error! Please provide shipping address.", userdata = "{}" });
+                result.error_msg = "Please provide shipping address."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_city))
             {
-                return Ok(new { success = false, msg = "Error! Please provide city.", userdata = "{}" });
+                result.error_msg = "Please provide city."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_state))
             {
-                return Ok(new { success = false, msg = "Error! Please provide state.", userdata = "{}" });
+                result.error_msg = "Please provide state."; return Ok(result);
             }
             else if (string.IsNullOrEmpty(model.billing_postcode))
             {
-                return Ok(new { success = false, msg = "Error! Please provide postcode.", userdata = "{}" });
+                result.error_msg = "Please provide postcode."; return Ok(result);
             }
 
             try
             {
-                var balResult = JsonConvert.DeserializeObject<List<dynamic>>(JsonConvert.SerializeObject(CommonRepositry.UpdateBillingAddress(model)));
+                var balResult = CommonRepositry.UpdateBillingAddress(model);
                 if (balResult == null)
                 {
-                    return Ok(new { success = false, msg = "Error! something went wrong.", userdata = "{}" });
+                    return BadRequest();
                 }
-                return Ok(new { success = true, msg = "Billing address updated successfully!", userdata = balResult[0] });
-                //var balResult = CommonRepositry.UpdateBillingAddress(model);
-                //if (balResult == null)
-                //{
-                //    return BadRequest();
-                //}
-                //return Ok(balResult);
+                return Ok(balResult);
             }
             catch (Exception ex)
             {
-                //return InternalServerError(ex);
-                return Ok(new { success = false, msg = ex.Message, userdata = "{}" });
+                return InternalServerError(ex);
             }
         }
     }

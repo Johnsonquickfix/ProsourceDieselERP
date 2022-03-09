@@ -93,7 +93,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult FunddepositList()
+        {
+            return View();
+        }
+        
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -413,14 +417,20 @@ namespace LaylaERP.Controllers
         public JsonResult AccountJournalList(JqDataTableModel model)
         {
             string result = string.Empty;
-            int TotalRecord = 0;
             try
             {
-                DataTable dt = AccountingRepository.AccountJournalList(model.strValue3,model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DateTime fromdate = DateTime.Today, todate = DateTime.Today;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                long aid = 0, vid = 0;
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    aid = Convert.ToInt64(model.strValue3);
+                DataTable dt = AccountingRepository.AccountJournalList(aid, vid, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
-            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
             return Json(result, 0);
         }
 
@@ -582,7 +592,7 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
-        } 
+        }
 
         [HttpPost]
         public ActionResult AccountProfitLossList(string Year, string Month)
@@ -769,8 +779,8 @@ namespace LaylaERP.Controllers
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                if(dr["status"].ToString() == "1")
-                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString(),Selected = true  });
+                if (dr["status"].ToString() == "1")
+                    productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString(), Selected = true });
                 else
                     productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
             }
@@ -854,6 +864,59 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
             //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetAccount()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.AccountingRepository.GetAccount();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["account_number"].ToString(),
+                    Text = dt.Rows[i]["label"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetTotalAmountByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = AccountingRepository.GetTotalAmountByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult NewBankEntry(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {            
+               JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Banktransferlist(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            { 
+                DataTable dt = AccountingRepository.Banktransferlist(model.strValue1, model.strValue2);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            //  DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                 
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
         }
     }
 }

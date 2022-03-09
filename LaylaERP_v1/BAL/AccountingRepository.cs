@@ -578,7 +578,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (inv_complete ='" + account_num + "') ";
                 }
-                strSql += strWhr + " order by datesort desc, id desc";
+                strSql += strWhr + " order by datesort desc, PO_SO_ref,code_journal desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
                 /*if (!string.IsNullOrEmpty(searchid))
@@ -602,6 +602,26 @@ namespace LaylaERP.BAL
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString()); */
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable AccountJournalList(long account_num, long vendor_id, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    account_num > 0 ? new SqlParameter("@account_num", account_num) : new SqlParameter("@account_num", DBNull.Value),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@flag", "JOUREP"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_account_Journal_report", parameters);
             }
             catch (Exception ex)
             {
@@ -1382,5 +1402,86 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetAccount()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT  account_number, label  from erp_accounting_account  where pcg_type =  'BANK' and account_number not in (1,1010,1210)";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetTotalAmountByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select convert(numeric(18,2), sum(debit)- sum(credit)) total from erp_accounting_bookkeeping"
+                             + " WHERE inv_complete = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc)
+        {
+            var dt = new DataTable();
+            try
+            {
+                 
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@accno", accno),
+                    new SqlParameter("@transaccno", transaccno),
+                    new SqlParameter("@misleaccno", misleaccno),
+                    new SqlParameter("@total_ttc", total_ttc),
+                    new SqlParameter("@trans_ttc", trans_ttc),
+                    new SqlParameter("@misle_ttc", misle_ttc)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_banktransfer_iud", parameters);
+            }
+            catch (Exception ex)
+            {                 
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static DataTable Banktransferlist(string rowid, string accountno)
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                     new SqlParameter("@accountno", accountno),
+                     new SqlParameter("@rowid", rowid), 
+                     new SqlParameter("@flag", "sh") 
+                };
+                ds = SQLHelper.ExecuteDataTable("erp_Banktransfer_list", parameters);
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
     }
 }

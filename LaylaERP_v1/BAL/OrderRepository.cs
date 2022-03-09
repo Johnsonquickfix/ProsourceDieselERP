@@ -697,7 +697,7 @@
                 {
                     new SqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.id order_id,convert(varchar,os.post_date,101) date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,"
+                string strSQl = "select os.id order_id,convert(varchar,os.post_date,101) date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,os.post_mime_type,"
                             + " (select CONCAT(User_Login, ' (#',id,' - ', user_email, ')') from wp_users u where u.id = max(case meta_key when '_customer_user' then meta_value else '' end)) customer_name,os.post_status status,"
                             + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
@@ -710,7 +710,7 @@
                             + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
-                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
+                            + " max(case meta_key when '_transaction_id' then meta_value else '' end) transaction_id,max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
                             + "(select distinct order_item_type FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type='gift_card') as IsGift,"
                             + "(Select COALESCE(sum(amount),0)  from wp_woocommerce_gc_activity where type='refunded' and object_id in ( "
                             + "Select order_item_id from wp_woocommerce_order_items where order_id = @order_id and order_item_type = 'gift_card')) as GiftCardRefundedAmount,"
@@ -718,7 +718,7 @@
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " where os.id = @order_id "
-                            + " group by os.id,os.post_date,os.post_status,os.post_excerpt";
+                            + " group by os.id,os.post_date,os.post_status,os.post_excerpt,os.post_mime_type";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

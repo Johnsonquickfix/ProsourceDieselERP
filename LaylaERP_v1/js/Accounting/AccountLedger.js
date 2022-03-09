@@ -81,7 +81,7 @@ function AccountDataList(is_date) {
             url: '/Accounting/GetAccountLedgerDetailsList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        lengthMenu: [[20, 50, 100], [20, 50, 100]],
         footerCallback: function (row, data, start, end, display) {
             var api = this.api(), data;
 
@@ -138,7 +138,7 @@ function AccountDataList(is_date) {
             }
         ],
         columnDefs: [{ targets: [0], searchable: false }],
-        dom: 'Bfrtip',
+        dom: 'lBftipr',
         "buttons": [
             {
                 extend: 'csv',

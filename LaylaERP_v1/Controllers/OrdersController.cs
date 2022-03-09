@@ -657,17 +657,10 @@
             string JSONresult = string.Empty; bool status = false;
             try
             {
-                DataTable dt = OrderRepository.OrderPaymentDetails(model.order_id);
-                string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty, crdtype = string.Empty, ExpirationDatePrint = string.Empty;
-                if (dt.Rows.Count > 0)
-                {
-                    TransactionID = (dt.Rows[0]["affirm_charge_id"] != Convert.DBNull) ? dt.Rows[0]["affirm_charge_id"].ToString() : "";
-                }
-                //var result = clsAuthorizeNet.RefundTransaction("40080413310", "8888", "1223", 1);
-                var result = clsAffirm.AffirmRefund(TransactionID, model.NetTotal);
+                var result = clsAffirm.AffirmRefund(model.paypal_id, model.NetTotal);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    status = true; JSONresult = "Order placed successfully.";
+                    status = true; JSONresult = "Refund placed successfully.";
                     OrderNotesModel note_model = new OrderNotesModel();
                     note_model.post_ID = model.order_id;
                     //note_model.comment_content = "Authorize.Net Credit Card Charge Refund Issued: " + crdtype + " ending in " + CardNumber + " (expires " + ExpirationDatePrint + ") (Transaction ID " + result + "). ";

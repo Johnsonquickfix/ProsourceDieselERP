@@ -34,7 +34,7 @@ function getOrderInfo() {
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
-            var data = JSON.parse(result);
+            var data = JSON.parse(result); console.log(data);
             if (data.length > 0) {
                 if (data[0].is_edit == '1') {
                     if (data[0].status == 'wc-processing' || data[0].status == 'wc-completed')
@@ -49,9 +49,11 @@ function getOrderInfo() {
                 $('#lblOrderNo').data('pay_gift', data[0].IsGift);
                 $('#lblOrderNo').data('pay_giftCardAmount', data[0].giftCardAmount);
                 $('#lblOrderNo').data('pay_giftCardRefundedAmount', data[0].GiftCardRefundedAmount);
-                if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                $('#lblOrderNo').data('order_from', data[0].post_mime_type);
+                if (data[0].payment_method == 'ppec_paypal' && data[0].post_mime_type == 'shop_order_erp') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                else if (data[0].payment_method == 'ppec_paypal' && data[0].post_mime_type != 'shop_order_erp') $('#lblOrderNo').data('pay_id', data[0].transaction_id);
                 else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
-                else $('#lblOrderNo').data('pay_id', '');
+                else $('#lblOrderNo').data('pay_id', data[0].transaction_id);
 
                 if (data[0].payment_method.trim().length > 0)
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
@@ -554,7 +556,7 @@ function saveCO() {
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);
     if (net_total > bal && AvailableGiftCardAmount == 0) { swal('Alert!', 'Order amount cannot refund more than ' + bal + '.', "error"); return false; }
-    //return;
+    
     if (totalPay >= net_total) {
         $.ajax({
             type: "POST", contentType: "application/json; charset=utf-8",
@@ -565,7 +567,7 @@ function saveCO() {
                 console.log(data);
                 if (data.status == true) {
                     if (pay_gift == '') {
-                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                        if (pay_by == 'ppec_paypal') PaypalRefunds();
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else if (pay_by == 'affirm') AffirmPaymentRefunds();
@@ -575,7 +577,7 @@ function saveCO() {
                         if (AvailableGiftCardAmount == 0) {
                             let total = net_total - AvailableGiftCardAmount;
                             $('.btnRefundOk').data('nettotal', total);
-                            if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                            if (pay_by == 'ppec_paypal') PaypalRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                             else if (pay_by == 'affirm') AffirmPaymentRefunds();
@@ -593,7 +595,7 @@ function saveCO() {
                             //partial refund by gift card and gateway
 
                             $('.btnRefundOk').data('nettotal', total);
-                            if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                            if (pay_by == 'ppec_paypal') PaypalRefunds();
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                             else if (pay_by == 'affirm') AffirmPaymentRefunds();
@@ -643,7 +645,10 @@ function PodiumPaymentRefunds() {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function PaypalPaymentRefunds() {
+function PaypalRefunds() {
+    if ($('#lblOrderNo').data('order_from') == 'shop_order_erp') PaypalInvoiceRefunds(); else PaypalPaymentRefunds();
+}
+function PaypalInvoiceRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
@@ -673,6 +678,36 @@ function PaypalPaymentRefunds() {
         }
     }]);
 }
+function PaypalPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let date = new Date();
+    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
+    let opt_refund = { note_to_payer: "Defective product", invoice_id: 'INVOICE - ' + oid + '-' + Date.now(), amount: { currency_code: "USD", value: invoice_amt } }
+
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPayPalToken', option).then(response => {
+                let access_token = response.message;
+                let create_url = paypal_baseurl + '/v2/payments/captures/' + invoice_no + '/refund';
+                console.log(create_url, opt_refund, access_token);
+                $.ajax({
+                    type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    console.log(response);
+                    let option = { post_ID: oid, comment_content: 'PayPal Refund Issued for $' + invoice_amt + '. transaction ID = ' + response.refund_id, is_customer_note: '' };
+                    $.post('/Orders/OrderNoteAdd', option).then(response => {
+                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); }).always(function () { swal.hideLoading(); });
+            });
+        }
+    }]);
+}
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AuthorizeNetPaymentRefunds() {
@@ -686,7 +721,7 @@ function AuthorizeNetPaymentRefunds() {
             $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
                 console.log('Authorize.Net ', response);
                 if (response.status) {
-                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
@@ -696,7 +731,8 @@ function AuthorizeNetPaymentRefunds() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Affirm Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AffirmPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let option = { order_id: oid, NetTotal: invoice_amt };
+    let invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let option = { order_id: oid, paypal_id: $('#lblOrderNo').data('pay_id').trim(), NetTotal: invoice_amt };
     swal.queue([{
         title: 'Monthly Payments (affirm) Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
@@ -704,7 +740,7 @@ function AffirmPaymentRefunds() {
             $.post('/Orders/UpdateAffirmPaymentRefund', option).then(response => {
                 console.log('Monthly Payments (affirm) : ', response);
                 if (response.status) {
-                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
@@ -740,8 +776,8 @@ function GiftCardPaymentRefunds() {
             $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
                 console.log('Gift Card ', response);
                 if (response.status) {
-                    swal('Success!', 'Refund amount added in gift card successfully.', "success");
-                    getOrderNotesList(oid); getOrderInfo();
+                    //swal('Success!', 'Refund amount added in gift card successfully.', "success"); getOrderNotesList(oid); getOrderInfo();
+                    swal('Success!', 'Refunded order placed successfully.', "success").then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

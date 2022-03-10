@@ -103,7 +103,18 @@ function AccountJournalList(is_date) {
         aoColumns: [
             //{ data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'datesort', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
-            { data: 'code_journal', title: 'Journal', sWidth: "5%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.sort_no; } else return data; } },
+            {
+                data: 'code_journal', title: 'Journal', sWidth: "5%",
+                render: function (data, type, full) {
+                    if (type === "sort" || type === 'type') { return full.sort_no; }
+                    else if (full.doc_type == 'SO') return 'Sale Order';
+                    else if (full.doc_type == 'SR') return 'Refund Order';
+                    else if (full.doc_type == 'PO') return 'Purchase Order';
+                    else if (full.doc_type == 'PR') return 'Purchase Order Refund';
+                    else if (full.doc_type == 'FT') return 'Fund Transfer';
+                    else return full.doc_type;
+                }
+            },
             {
                 data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
                 'render': function (inv_num, type, full, meta) {

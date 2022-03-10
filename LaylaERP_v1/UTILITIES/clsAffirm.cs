@@ -17,15 +17,14 @@
         public static string AffirmRefund(string charge_id, decimal amount)
         {
             var result = string.Empty;
-            string public_api_key = "D7J2UM97ED9GWHG0", private_api_key = "axIXMr5R67kwYw3uWv2nZzr5XB01uMH3";
-            //string public_api_key = string.Empty, private_api_key = string.Empty;
-            //System.Data.DataTable dt = BAL.Users.AppSystemSetting();
-            //if (dt.Rows.Count > 0)
-            //{
-            //    client_id = (dt.Rows[0]["podiumAPIKey"] != Convert.DBNull) ? dt.Rows[0]["podiumAPIKey"].ToString().Trim() : string.Empty;
-            //    client_secret = (dt.Rows[0]["podiumSecretKey"] != Convert.DBNull) ? dt.Rows[0]["podiumSecretKey"].ToString().Trim() : string.Empty;
-            //    refresh_token = (dt.Rows[0]["podium_refresh_code"] != Convert.DBNull) ? dt.Rows[0]["podium_refresh_code"].ToString().Trim() : string.Empty;
-            //}
+            //string public_api_key = "D7J2UM97ED9GWHG0", private_api_key = "axIXMr5R67kwYw3uWv2nZzr5XB01uMH3";
+            string public_api_key = string.Empty, private_api_key = string.Empty;
+            System.Data.DataTable dt = BAL.Users.AppSystemSetting();
+            if (dt.Rows.Count > 0)
+            {
+                public_api_key = (dt.Rows[0]["affirm_api_key"] != Convert.DBNull) ? dt.Rows[0]["affirm_api_key"].ToString().Trim() : string.Empty;
+                private_api_key = (dt.Rows[0]["affirm_private_api_key"] != Convert.DBNull) ? dt.Rows[0]["affirm_private_api_key"].ToString().Trim() : string.Empty;
+            }
             var request_json = "{\"amount\": "+ (amount * 100).ToString() + "}";
             var content = new StringContent(request_json, Encoding.UTF8, "application/json");
             using (var client = new HttpClient())

@@ -1438,7 +1438,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc)
+        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc,string inv_numval, string flag)
         {
             var dt = new DataTable();
             try
@@ -1451,7 +1451,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@misleaccno", misleaccno),
                     new SqlParameter("@total_ttc", total_ttc),
                     new SqlParameter("@trans_ttc", trans_ttc),
-                    new SqlParameter("@misle_ttc", misle_ttc)
+                    new SqlParameter("@misle_ttc", misle_ttc),
+                    new SqlParameter("@inv_numval", inv_numval),
+                    new SqlParameter("@flag", flag)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_banktransfer_iud", parameters);
             }
@@ -1475,6 +1477,48 @@ namespace LaylaERP.BAL
                 };
                 ds = SQLHelper.ExecuteDataTable("erp_Banktransfer_list", parameters);
                 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataTable GetEditDataID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                SqlParameter[] parameters =
+                   {
+                     
+                     new SqlParameter("@inv_num", model.strVal),
+                      
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Banktransferdatabyid", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable Banktransfergrandtotal(string rowid, string accountno)
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                     new SqlParameter("@accountno", accountno),
+                     new SqlParameter("@rowid", rowid),
+                     new SqlParameter("@flag", "gt")
+                };
+                ds = SQLHelper.ExecuteDataTable("erp_Banktransfer_list", parameters);
+
             }
             catch (Exception ex)
             {

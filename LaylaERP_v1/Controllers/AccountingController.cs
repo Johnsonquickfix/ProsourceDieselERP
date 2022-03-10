@@ -900,7 +900,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {            
-               JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6));
+               JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6,model.SortCol, model.SortDir));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
@@ -917,6 +917,29 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
+        }
+        public JsonResult GetEditDataID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = AccountingRepository.GetEditDataID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult Banktransfergrandtotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.Banktransfergrandtotal(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

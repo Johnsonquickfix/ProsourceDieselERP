@@ -7,7 +7,8 @@ $(document).ready(function () {
     getfinaceyear();
     Banktransferlist(true);
     $(document).on("click", "#btntransfer", function (t) { t.preventDefault(); NewBankEntry(); });
-    $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); Banktransferlist(true); });
+    $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); Banktransferlist(true); getGrandTotal(true); });
+    getGrandTotal(true);
 })
 
 function getfinaceyear() {
@@ -64,7 +65,7 @@ function gettotal() {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i[0].total);
+            //console.log(i[0].total);
             if (i[0].total == null)
                 $("#txttotalamt").val('0.00');
             else
@@ -74,18 +75,24 @@ function gettotal() {
     });
 }
 function NewBankEntry() {
+    let acountid = $("#hfid").val() || 0;
+    let flag = 'I';
     let totalamt = $("#txttotalamt").val() || 0;
     let bankfee = $("#txtbankfee").val() || 0;
     let Account = parseInt($("#ddlAccount").val()) || 0;
     let merchantfee = $("#txtmerchantfee").val() || 0;
-    let transferAccount = parseInt($("#ddltransferAccount").val()) || 0;     
+    let transferAccount = parseInt($("#ddltransferAccount").val()) || 0;
+    if (acountid > 0) {
+        flag = 'U';
+        totalamt = '999999999999';
+    }
     if (totalamt <= 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
     else if (bankfee <= 0) { swal('alert', 'Please enter bank transfer fee', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
     else if (merchantfee <= 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
     else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
     else {
-        let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: totalamt, strValue5: bankfee, strValue6: merchantfee}
+        let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: '0', strValue5: bankfee, strValue6: merchantfee, SortCol: acountid, SortDir: flag}
         //console.log(option, _order, _list); return;
         swal.queue([{
             title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to funds deposited from merchant to bank?",
@@ -95,7 +102,10 @@ function NewBankEntry() {
                     $.post('/Accounting/NewBankEntry', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {                       
-                            swal('Success', 'Funds deposited from merchant to bank successfully.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); } );
+                            swal('Success', 'Funds deposited from merchant to bank successfully.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); getGrandTotal(true); } );
+                        }
+                        else if (result[0].Response == "update") {
+                            swal('Success', 'Funds deposited from merchant to bank successfully update.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); getGrandTotal(true); });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
@@ -106,9 +116,6 @@ function NewBankEntry() {
 }
 function Banktransferlist(isdate) {  
     let sd = $("#ddlfinaceyear").val();
-   // let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-  //  var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var account_num = $("#ddlAccountsearch").val();
     var obj = { strValue1: sd, strValue2: account_num }
     var table_EL = $('#banktansfer').DataTable({
@@ -141,68 +148,70 @@ function Banktransferlist(isdate) {
             url: '/Accounting/Banktransferlist', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
             dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
-        /*
-        sAjaxSource: "/Accounting/AccountJournalList",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
-            aoData.push({ name: "strValue2", value: dfa });
-            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            //var col = 'id';
-            //if (oSettings.aaSorting.length >= 0) {
-            //    var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : oSettings.aaSorting[0][0] == 9 ? "datesort" : "id";
-            //    aoData.push({ name: "sSortColName", value: col });
-            //}
-            oSettings.jqXHR = $.ajax({
-                dataType: 'json', type: "GET", url: sSource, data: aoData,
-                "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
-                }
-            });
-        },*/
+        
         aoColumns: [
-            //{ data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
-            //{ data: 'datesort', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
-            //{ data: 'code_journal', title: 'Journal', sWidth: "5%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.sort_no; } else return data; } },
-            //{
-            //    data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
-            //    'render': function (inv_num, type, full, meta) {
-            //        if (full.code_journal == "AC") return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
-            //        else return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
-            //        //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-            //    }
-            //},
-            //{ data: 'rowid', title: '#', sWidth: "5%" },
-         
+           
             { data: 'doc_date', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
             { data: 'sort_no', title: '##', sWidth: "5%" },
-            { data: 'inv_num', title: 'Accounting Doc', sWidth: "15%" },
+            { data: 'inv_num', title: 'Transaction Id', sWidth: "15%" },
             //{ data: 'label_operation', title: 'Operation Label', sWidth: "20%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.sort_no; } else return data; } },
             { data: 'label_operation', title: 'Operation Label', sWidth: "15%" },
                { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             //{ data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold' },
             { data: 'credit', title: 'Credit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            {
+                'data': 'inv_num', title: 'Action', sWidth: "2%", class: 'text-left',
+                'render': function (id, type, full, meta) {
+                    return '<a href="#" title="Click here to edit transfer transaction ." onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                }
+            }
         ],
-       // dom: 'lBftipr',
-        //buttons: [
-        //    {
-        //        extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
-        //        filename: function () {
-        //            let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
-        //            return 'Journals' + e;
-        //        },
-        //    },
-        //    {
-        //        extend: 'print',
-        //        //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
-        //        title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
-        //        exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7], },
-        //        filename: function () {
-        //            let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
-        //            return 'Account Journal' + e;
-        //        },
-        //        messageTop: function () { return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account journals</h3>'; },
-        //    }
-        //],
+      
+    });
+}
+function EditData(id) { 
+    $("#hfid").val(id);
+    var ID = id;
+    console.log($("#hfid").val());
+    var obj = { strVal: id }
+    $.ajax({
+        url: '/Accounting/GetEditDataID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var i = JSON.parse(data);
+            $('#ddlAccount').val(i[0].accountid).trigger('change');
+            $('#txtbankfee').val(i[0].Transferamount);
+            $('#txtmerchantfee').val(i[0].mercntfee);
+            $('#ddlAccount').attr("disabled", true);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (msg) { alert(msg); }
+    });
+}
+function getGrandTotal(is_date) {
+    let sd = $("#ddlfinaceyear").val();
+    var account_num = $("#ddlAccountsearch").val();
+    var obj = { strValue1: sd, strValue2: account_num }    
+    $.ajax({
+        url: "/Accounting/Banktransfergrandtotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: obj,
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                if (parseInt(d[0].debit).toFixed(2) > 0 || parseInt(d[0].debit).toFixed(2) == 0) {
+                    $("#txtdebit").text('$' + (d[0].debit)); $("#txtcredit").text('$' + (d[0].credit)); $("#txtbalance").text('$' + (d[0].balance))
+                }
+            }
+        },
+        error: function (msg) {
+
+        }
     });
 }

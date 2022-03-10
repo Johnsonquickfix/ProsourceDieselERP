@@ -224,6 +224,8 @@ namespace LaylaERP.Models
 
         public int fk_warehouse { get; set; }
 
+        public string amazon_public_key { get; set; }
+        public string amazon_private_key { get; set; }
     }
 
     public static class GlobalVariables

@@ -37,7 +37,7 @@ namespace LaylaERP.BAL
                 string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, SSL=@SSL, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
-                    " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code,podium_locationuid=@podium_locationuid, affirm_api_key = @affirm_api_key, affirm_private_api_key = @affirm_private_api_key where ID=@user_id";
+                    " TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey,podium_refresh_code=@podium_refresh_code,podium_code=@podium_code,podium_locationuid=@podium_locationuid, affirm_api_key = @affirm_api_key, affirm_private_api_key = @affirm_private_api_key, amazon_public_key = @amazon_public_key, amazon_private_key = @amazon_private_key where ID=@user_id";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),
@@ -69,7 +69,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@podium_locationuid",model.podium_locationuid),
                     new SqlParameter("@affirm_api_key",model.affirm_api_key),
                     new SqlParameter("@affirm_private_api_key",model.affirm_private_api_key),
-
+                    new SqlParameter("@amazon_public_key",model.amazon_public_key),
+                    new SqlParameter("@amazon_private_key",model.amazon_private_key),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }

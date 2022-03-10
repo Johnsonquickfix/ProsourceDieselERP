@@ -21,6 +21,7 @@
                     <li title="Click here to see amazon pay setting" data-toggle="tooltip"><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
                     <li title="Click here to see taxJar setting" data-toggle="tooltip"><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
                     <li title="Click here to see podium setting" data-toggle="tooltip"><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
+                    <li title="Click here to see Affirm key setting" data-toggle="tooltip"><a href="#tab_9" data-toggle="tab">Affirm Key</a></li>
                     <li title="Click here to see entity info" data-toggle="tooltip"><a href="#tab_8" data-toggle="tab">Entity info</a></li>
                 </ul>
                 <div class="tab-content">
@@ -190,19 +191,19 @@
                     </div>
                     <div class="tab-pane" id="tab_5">
                         <div class="form-group d-flex">
-                            <label for="inputEmail3" class="col-sm-2 control-label">API ID:</label>
+                            <label for="inputEmail3" class="col-sm-2 control-label">Client ID / Store ID:</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="AmazonAPIId" value="@ViewBag.AmazonAPIId">
                             </div>
                         </div>
                         <div class="form-group d-flex">
-                            <label for="inputEmail3" class="col-sm-2 control-label">User Name:</label>
+                            <label for="inputEmail3" class="col-sm-2 control-label">Client ID:</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="AmazonUser" value="@ViewBag.AmazonUser">
                             </div>
                         </div>
                         <div class="form-group d-flex">
-                            <label for="inputEmail3" class="col-sm-2 control-label">Password:</label>
+                            <label for="inputEmail3" class="col-sm-2 control-label">Merchant ID:</label>
                             <div class="col-sm-10">
                                 <input type="password" class="form-control" id="AmazonPwd" value="@ViewBag.AmazonPwd">
                             </div>
@@ -257,6 +258,20 @@
                             <label for="podiumLocationuid" class="col-sm-2 control-label">Location UID:</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="txtlocationuid" value="@ViewBag.podium_locationuid">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_9">
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Affirm API key</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AffirmAPIKey" value="@ViewBag.affirm_api_key">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Affirm PRIVATE API KEY</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AffirmPrivateAPIKey" value="@ViewBag.affirm_private_api_key">
                             </div>
                         </div>
                     </div>
@@ -470,7 +485,8 @@
         AdditionalNotes = $("#txtAdditionalNotes").val();
         po_emailval = $("#txtpoemail").val();
         base_url = $("#txtbaseurl").val();
-
+        AffirmAPIKey = $("#AffirmAPIKey").val();
+        AffirmPrivateAPIKey = $("#AffirmPrivateAPIKey").val();
 
         if ($(authorizenet).prop("checked")) {
             authorizenet = 1;
@@ -552,8 +568,9 @@
             logo_url: LogoUrl,
             additional_notes: AdditionalNotes,
             po_email: po_emailval,
-            base_url: base_url
-
+            base_url: base_url,
+            affirm_api_key: AffirmAPIKey,
+            affirm_private_api_key: AffirmPrivateAPIKey
         }
 
 

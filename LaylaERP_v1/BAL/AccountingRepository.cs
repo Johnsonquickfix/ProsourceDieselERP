@@ -1462,5 +1462,26 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable Banktransferlist(string rowid, string accountno)
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                    {
+                     new SqlParameter("@accountno", accountno),
+                     new SqlParameter("@rowid", rowid), 
+                     new SqlParameter("@flag", "sh") 
+                };
+                ds = SQLHelper.ExecuteDataTable("erp_Banktransfer_list", parameters);
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
     }
 }

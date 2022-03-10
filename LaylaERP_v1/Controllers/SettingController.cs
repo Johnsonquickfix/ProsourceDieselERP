@@ -50,6 +50,8 @@ namespace LaylaERP.Controllers
                 ViewBag.podium_code = DT.Tables[0].Rows[0]["podium_code"].ToString();
                 ViewBag.podium_refresh_code = DT.Tables[0].Rows[0]["podium_refresh_code"].ToString();
                 ViewBag.podium_locationuid = DT.Tables[0].Rows[0]["podium_locationuid"].ToString();
+                ViewBag.affirm_api_key = DT.Tables[0].Rows[0]["affirm_api_key"].ToString();
+                ViewBag.affirm_private_api_key = DT.Tables[0].Rows[0]["affirm_private_api_key"].ToString();
 
                 //ds.Tables[1].Rows[0]["podiumSecretKey"].ToString();
                 ViewBag.CompanyName = DT.Tables[1].Rows[0]["CompanyName"].ToString();

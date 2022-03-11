@@ -382,7 +382,7 @@ function CategoryWiseProducts() {
                             let regular_price = 0.00, price = 0.00;
                             strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                             strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
-                            strHTML += '<select class="form-control addnvar">';
+                            strHTML += '<select class="form-control addnvar" style="min-width: 250px;">';
                             $(variation_details).each(function (pvIndex, pvRow) {
                                 if (pvIndex == 0) regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
                                 if (isNullAndUndef(pvRow.vr_id)) {
@@ -396,10 +396,10 @@ function CategoryWiseProducts() {
                                 else strHTML += '<option value="0-0-0">No Variations</option>';
                             });
                             strHTML += '</select>';
-                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
-                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
-                            else strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '</span></div>';
-                            strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart">Add to Cart</a>';
+                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty" style="max-width: 80px;">';
+                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
+                            else strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '</span></div>';
+                            strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
                             strHTML += '</div>';
                             strHTML += '</div>';
                         }
@@ -438,7 +438,7 @@ function searchOrderModal() {
     modalHtml += '<div class="col-md-12">';
     modalHtml += '<div class="table-responsive">';
     modalHtml += '<table id="tblCusOrders" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
-    modalHtml += '<thead><tr><th style="width: 30%">No</th><th style="width: 35%">Billing Address</th><th style="width: 35%">Shipping Address</th></tr></thead>';
+    modalHtml += '<thead><tr><th style="width: 30%">Select Address</th><th style="width: 35%">Billing Address</th><th style="width: 35%">Shipping Address</th></tr></thead>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';
@@ -455,7 +455,7 @@ function bindCustomerOrders(id) {
             destroy: true, data: JSON.parse(response), order: [[0, "desc"]],
             columns: [
                 {
-                    data: 'customer_id', title: 'NO', sWidth: "30%",
+                    data: 'customer_id', title: 'Select Address', sWidth: "30%",
                     render: function (data, type, dtrow, meta) {
                         //return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         let row = JSON.parse(dtrow.meta_data);
@@ -809,7 +809,7 @@ function getOrderInfo() {
     else {
         $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
-        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
         CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
@@ -928,7 +928,7 @@ function getOrderItemList(oid) {
         });
         //console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt, zGiftCardRefundAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
-        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));

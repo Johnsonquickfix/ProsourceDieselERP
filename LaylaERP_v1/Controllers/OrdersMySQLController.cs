@@ -620,6 +620,7 @@
                 int res = DAL.MYSQLHelper.ExecuteNonQuery(strSQL, parameters);
                 if (res > 0)
                 {
+                    ImportOnlineOrders(new SearchModel());
                     JSONresult = "Order note added successfully."; b_status = true;
                 }
             }

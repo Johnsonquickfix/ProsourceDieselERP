@@ -336,18 +336,19 @@
                 <!-- /.box-body -->
                 <div class="box-footer" style="">
                     <div class="form-group">
-                        <label>Add note</label>
-                        <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
                         <label>Note type</label>
                         <div class="input-group">
-                            <select class="form-control select2 billnote" id="order_note_type" placeholder="Select Status" style="width: 100%;">
-                                <option value="">Private note</option>
+                            <select class="form-control select2" id="order_note_type" placeholder="Select Status" style="width: 100%;">
+                                <option value="0">Select</option>
+                                <option value="private">Private note</option>
                                 <option value="customer">Note to customer</option>
                             </select>
-                            <span class="input-group-btn"><button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote" data-toggle="tooltip" data-original-title="Add note">Add</button></span>
+                            <span class="input-group-btn"><button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote" disabled data-toggle="tooltip" data-original-title="Add note">Add</button></span>
                         </div>
+                    </div>
+                    <div class="form-group div_order_note" style="display: none;">
+                        <label>Add note</label>
+                        <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
                     </div>
                 </div>
                 <!-- /.box-footer-->

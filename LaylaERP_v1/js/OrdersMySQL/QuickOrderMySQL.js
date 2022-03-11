@@ -132,13 +132,19 @@
     /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
-        if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
+        if ($('#order_note_type').val() == '0') { swal('Error!', 'Please select order type.', "error").then((result) => { $('#order_note_type').select2('open'); return false; }); return false; }
+        else if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
         let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
-        $($btn).attr('disabled', 'disabled');
+        $($btn).attr('disabled', 'disabled'); $("#loader").show();
         $.post('/OrdersMySQL/OrderNoteAdd', option).then(response => {
-            if (response.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
+            if (response.status) { $('#order_note_type').val('0').trigger('change'); $('#add_order_note').val(''); $('#btnAddnote').prop("disabled", true); $('.div_order_note').hide(); getOrderNotesList(oid); }
             else swal('Alert!', result.message, "error");
-        }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $($btn).removeAttr('disabled'); });
+        }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); $($btn).removeAttr('disabled'); });
+    });
+    $(document).on("change", "#order_note_type", function (t) {
+        t.preventDefault();
+        if ($(this).val() == "0" || $(this).val() == "") { $('#btnAddnote').prop("disabled", true); $('.div_order_note').hide(); }
+        else { $('#btnAddnote').prop("disabled", false); $('.div_order_note').show(); }
     });
     $(document).on("click", "#btnPrintPdf", function (t) {
         t.preventDefault();
@@ -741,10 +747,10 @@ function initMap() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
-    $('.view-addmeta').empty(); $('.billinfo,.billnote').prop("disabled", true);
+    $('.view-addmeta').empty(); $('.billinfo,#order_note_type').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
+        $('#order_note_type').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
         $('#ddlStatus,#btnSearch').prop("disabled", true);
         $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
@@ -807,7 +813,7 @@ function getOrderInfo() {
         getItemShippingCharge(false);
     }
     else {
-        $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
+        $('#order_note_type').prop("disabled", false); $('.agentaddtocart').removeClass('hidden');
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
@@ -2260,7 +2266,7 @@ function PodiumPayment() {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
-                let _data = JSON.parse(response.message); let uid = _data.data.uid; 
+                let _data = JSON.parse(response.message); let uid = _data.data.uid;
                 let _postMeta = [
                     { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
                     { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }

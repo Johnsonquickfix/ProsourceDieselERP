@@ -42,7 +42,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
-            /////clsAuthorizeNet.RefundTransaction("40083218602", "1111", "0323", 1);
+            //clsAmazonPay.RefundTransaction("903483", "62654755-9e97-4b92-b926-5b1ae45ee9d6", 1);
             return View();
         }
 
@@ -510,7 +510,7 @@
                         new MySqlParameter("@order_item_type", model.item_type),
                         new MySqlParameter("@order_id", model.order_id)
                     };
-                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT SCOPE_IDENTITY();";
+                    strSQL = "INSERT INTO wp_woocommerce_order_items(order_item_name,order_item_type,order_id) SELECT @order_item_name,@order_item_type,@order_id; SELECT LAST_INSERT_ID();";
                     id = Convert.ToInt64(DAL.MYSQLHelper.ExecuteScalar(strSQL, parameters));
                     if (id > 0)
                     {
@@ -519,8 +519,8 @@
                     }
                 }
             }
-            catch { Json(new { status = false, order_item_id = 0 }, 0); }
-            return Json(new { status = true, order_item_id = id }, 0);
+            catch (Exception ex) {return Json(new { status = false, order_item_id = 0, message =ex.Message }, 0); }
+            return Json(new { status = true, order_item_id = id, message = "Add successfully." }, 0);
         }
         [HttpPost]
         public JsonResult RemoveFee(OrderOtherItemsModel model)

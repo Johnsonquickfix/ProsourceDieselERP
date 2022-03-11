@@ -1767,7 +1767,7 @@ function deleteAllCoupons(coupon_type) {
             .then((result) => {
                 if (result.value) {
                     //Remove Coupon
-                    $('#li_' + coupon_type.replaceAll(' ', '_')).remove();
+                    $('#li_' + coupon_type.replaceAll(' ', '_')).remove(); $('#billCoupon').empty();
                     let auto_code = [];
                     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
                     $("#order_line_items > tr.paid_item").each(function (index, tr) {

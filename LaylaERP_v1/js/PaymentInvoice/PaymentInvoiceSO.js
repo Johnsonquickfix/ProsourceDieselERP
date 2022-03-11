@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {  
+﻿$(document).ready(function () {
+    $(".subsubsub li a").click(function (e) {
+        $('.subsubsub li a').removeClass('current');
+        $(this).addClass('current');
+    });
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -12,12 +16,12 @@
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     },
         function (start, end, label) {
-          PurchaseOrderGrid();
+            $.when(PurchaseOrderGrid()).done(function () { PurchasefullyOrderGrid(); });
+        
         }
     );
-    PurchaseOrderGrid();
-
-
+   
+    $.when(PurchaseOrderGrid()).done(function () { PurchasefullyOrderGrid(); });
     $(document).on('click', "#btnChange", function () {
         takepayment();
     });
@@ -38,6 +42,30 @@
             row.child(formatPO(row.data())).show();
             tr.addClass('shown');
         }
+    });
+
+    // Add event listener for opening and closing details
+    $('#dtfullypaid tbody').on('click', '.pdetails-control', function () {
+        // console.log('svvvd');
+        var tr = $(this).closest('tr');
+        var row = $('#dtfullypaid').DataTable().row(tr);
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            //row.child(formatPartially(row.data())).show();
+            row.child(formatPO(row.data())).show();
+            tr.addClass('shown');
+        }
+    });
+
+    $('.nav-tabs li a').click(function () {
+        var data = $(this).attr("href");
+        $("#hfhref").val(data);
     });
 
 });
@@ -118,7 +146,54 @@ function formatPO(d) {
     return wrHTML;
 }
 
+function PurchasefullyOrderGrid() {
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
 
+    $('#dtfullypaid').DataTable({
+        destroy: true, bProcessing: true, bServerSide: true,
+        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        sAjaxSource: "/PaymentInvoice/GetPurchaseOrderListSO",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: 'SFPPO' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed });
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+        columns: [
+            
+            {
+                data: 'ref', title: 'PO No', sWidth: "12%", render: function (data, type, row) {
+                    //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to view payment ."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    // return '<a  title="Click here to view order preview" data-toggle="tooltip"> #' + row.ref + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ');"><i class="fas fa-search-plus"></i></a>';
+                }
+            },
+            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
+            { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'Status', title: 'Status', sWidth: "10%" }
+        ],
+         order: [[0, "desc"]]
+    });
+}
 
 //CheckBoxes
 $('#checkAll').click(function () {

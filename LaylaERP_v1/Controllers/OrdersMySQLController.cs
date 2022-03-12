@@ -26,7 +26,7 @@
             pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
-            ViewBag.pay_option = "[" + pay_method + "]";            
+            ViewBag.pay_option = "[" + pay_method + "]";
             return View();
         }
 
@@ -380,6 +380,7 @@
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_subtotal';", obj.total, obj.order_item_id));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key in ('_line_subtotal_tax','_line_tax');", obj.tax_amount, obj.order_item_id));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_total';", (obj.total - obj.discount), obj.order_item_id));
+                            strSql.Append(" update wp_woocommerce_order_itemmeta set meta_value='a:2:{s:5:\"total\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}s:8:\"subtotal\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}}' where order_item_id=" + obj.order_item_id.ToString() + " and meta_key='_line_tax_data';");
                         }
                         else if (obj.product_type == "coupon")
                         {
@@ -448,7 +449,8 @@
                 strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
-                strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
+                //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
+                strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
                 strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
                 strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
 
@@ -519,7 +521,7 @@
                     }
                 }
             }
-            catch (Exception ex) {return Json(new { status = false, order_item_id = 0, message =ex.Message }, 0); }
+            catch (Exception ex) { return Json(new { status = false, order_item_id = 0, message = ex.Message }, 0); }
             return Json(new { status = true, order_item_id = id, message = "Add successfully." }, 0);
         }
         [HttpPost]

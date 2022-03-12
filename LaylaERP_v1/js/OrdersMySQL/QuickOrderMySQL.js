@@ -132,13 +132,19 @@
     /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
-        if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
+        if ($('#order_note_type').val() == '0') { swal('Error!', 'Please select order type.', "error").then((result) => { $('#order_note_type').select2('open'); return false; }); return false; }
+        else if ($('#add_order_note').val() == '') { swal('Error!', 'Please enter order note.', "error").then((result) => { $('#add_order_note').focus(); return false; }); return false; }
         let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
-        $($btn).attr('disabled', 'disabled');
+        $($btn).attr('disabled', 'disabled'); $("#loader").show();
         $.post('/OrdersMySQL/OrderNoteAdd', option).then(response => {
-            if (response.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
+            if (response.status) { $('#order_note_type').val('0').trigger('change'); $('#add_order_note').val(''); $('#btnAddnote').prop("disabled", true); $('.div_order_note').hide(); getOrderNotesList(oid); }
             else swal('Alert!', result.message, "error");
-        }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $($btn).removeAttr('disabled'); });
+        }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); $($btn).removeAttr('disabled'); });
+    });
+    $(document).on("change", "#order_note_type", function (t) {
+        t.preventDefault();
+        if ($(this).val() == "0" || $(this).val() == "") { $('#btnAddnote').prop("disabled", true); $('.div_order_note').hide(); }
+        else { $('#btnAddnote').prop("disabled", false); $('.div_order_note').show(); }
     });
     $(document).on("click", "#btnPrintPdf", function (t) {
         t.preventDefault();
@@ -382,7 +388,7 @@ function CategoryWiseProducts() {
                             let regular_price = 0.00, price = 0.00;
                             strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                             strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
-                            strHTML += '<select class="form-control addnvar">';
+                            strHTML += '<select class="form-control addnvar" style="min-width: 250px;">';
                             $(variation_details).each(function (pvIndex, pvRow) {
                                 if (pvIndex == 0) regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
                                 if (isNullAndUndef(pvRow.vr_id)) {
@@ -396,10 +402,10 @@ function CategoryWiseProducts() {
                                 else strHTML += '<option value="0-0-0">No Variations</option>';
                             });
                             strHTML += '</select>';
-                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
-                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
-                            else strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '</span></div>';
-                            strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart">Add to Cart</a>';
+                            strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty" style="max-width: 80px;">';
+                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
+                            else strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '</span></div>';
+                            strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
                             strHTML += '</div>';
                             strHTML += '</div>';
                         }
@@ -438,7 +444,7 @@ function searchOrderModal() {
     modalHtml += '<div class="col-md-12">';
     modalHtml += '<div class="table-responsive">';
     modalHtml += '<table id="tblCusOrders" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
-    modalHtml += '<thead><tr><th style="width: 30%">No</th><th style="width: 35%">Billing Address</th><th style="width: 35%">Shipping Address</th></tr></thead>';
+    modalHtml += '<thead><tr><th style="width: 30%">Select Address</th><th style="width: 35%">Billing Address</th><th style="width: 35%">Shipping Address</th></tr></thead>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';
@@ -455,7 +461,7 @@ function bindCustomerOrders(id) {
             destroy: true, data: JSON.parse(response), order: [[0, "desc"]],
             columns: [
                 {
-                    data: 'customer_id', title: 'NO', sWidth: "30%",
+                    data: 'customer_id', title: 'Select Address', sWidth: "30%",
                     render: function (data, type, dtrow, meta) {
                         //return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         let row = JSON.parse(dtrow.meta_data);
@@ -741,10 +747,10 @@ function initMap() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
-    $('.view-addmeta').empty(); $('.billinfo,.billnote').prop("disabled", true);
+    $('.view-addmeta').empty(); $('.billinfo,#order_note_type').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
+        $('#order_note_type').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
         $('#ddlStatus,#btnSearch').prop("disabled", true);
         $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
@@ -807,9 +813,9 @@ function getOrderInfo() {
         getItemShippingCharge(false);
     }
     else {
-        $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
+        $('#order_note_type').prop("disabled", false); $('.agentaddtocart').removeClass('hidden');
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
-        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
         CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
@@ -928,7 +934,7 @@ function getOrderItemList(oid) {
         });
         //console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt, zGiftCardRefundAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
-        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -1761,7 +1767,7 @@ function deleteAllCoupons(coupon_type) {
             .then((result) => {
                 if (result.value) {
                     //Remove Coupon
-                    $('#li_' + coupon_type.replaceAll(' ', '_')).remove();
+                    $('#li_' + coupon_type.replaceAll(' ', '_')).remove(); $('#billCoupon').empty();
                     let auto_code = [];
                     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
                     $("#order_line_items > tr.paid_item").each(function (index, tr) {
@@ -2035,7 +2041,7 @@ function createItemsList() {
     //Add Tax
     let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
     let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = (is_freighttax === 'true') ? _taxRate : 0.0;
-    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate, total: parseFloat($('#salesTaxTotal').text()) || 0.00, shipping_tax_amount: shipping_tax_amount });
+    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', meta_data: sState + ' Tax', product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate, total: parseFloat($('#salesTaxTotal').text()) || 0.00, shipping_tax_amount: shipping_tax_amount });
     return itemsDetails;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2260,7 +2266,7 @@ function PodiumPayment() {
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
-                let _data = JSON.parse(response.message); let uid = _data.data.uid; 
+                let _data = JSON.parse(response.message); let uid = _data.data.uid;
                 let _postMeta = [
                     { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
                     { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }

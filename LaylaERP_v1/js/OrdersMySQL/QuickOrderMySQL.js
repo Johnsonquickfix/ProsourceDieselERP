@@ -388,7 +388,7 @@ function CategoryWiseProducts() {
                             let regular_price = 0.00, price = 0.00;
                             strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                             strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
-                            strHTML += '<select class="form-control addnvar" style="min-width: 270px;">';
+                            strHTML += '<select class="form-control addnvar" style="min-width: 325px; max-width:325px;">';
                             $(variation_details).each(function (pvIndex, pvRow) {
                                 if (pvIndex == 0) regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
                                 if (isNullAndUndef(pvRow.vr_id)) {

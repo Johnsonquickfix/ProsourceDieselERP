@@ -32,6 +32,11 @@ namespace LaylaERP.Controllers
             ViewBag.id = id;
             return View(model);
         }
+        public ActionResult AddFee()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult StateRecycleTax(FeeNTax model)
         {
@@ -142,6 +147,65 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        [HttpPost]
+        public JsonResult AddFee(Fee model)
+        {
+            try
+            {
+                int ID = FeeNTaxRepository.AddFee(model);
+                if (ID > 0)
+                {
+                    return Json(new { status = true, message = "Fee saved successfully.", url = "", id = ID }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+            }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }
+        }
+
+        public JsonResult GetFeeList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = FeeNTaxRepository.GetFeeList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult EditFee(Fee model)
+        {
+            try
+            {
+                if (model.rowid > 0)
+                {
+                    FeeNTaxRepository.EditFee(model);
+                    return Json(new { status = true, message = "Fee update successfully.", url = "", id = 0 }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+            }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }
+        }
+        [HttpPost]
+        public JsonResult SelectFee(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = FeeNTaxRepository.SelectFee(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT, Formatting.Indented);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }
 

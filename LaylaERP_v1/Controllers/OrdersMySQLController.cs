@@ -218,7 +218,8 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     //strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',len(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
-                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
+                    //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:'," + model.OrderPostStatus.order_id.ToString() + ",';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
+                    strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
                     strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
                     /// step 5 : wp_woocommerce_order_items
@@ -380,6 +381,7 @@
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_subtotal';", obj.total, obj.order_item_id));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key in ('_line_subtotal_tax','_line_tax');", obj.tax_amount, obj.order_item_id));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_total';", (obj.total - obj.discount), obj.order_item_id));
+                            //strSql.Append(" update wp_woocommerce_order_itemmeta set meta_value='a:2:{s:5:\"total\";a:1:{i:" + obj.order_item_id.ToString() + ";s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}s:8:\"subtotal\";a:1:{i:" + obj.order_item_id.ToString() + ";s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}}' where order_item_id=" + obj.order_item_id.ToString() + " and meta_key='_line_tax_data';");
                             strSql.Append(" update wp_woocommerce_order_itemmeta set meta_value='a:2:{s:5:\"total\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}s:8:\"subtotal\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}}' where order_item_id=" + obj.order_item_id.ToString() + " and meta_key='_line_tax_data';");
                         }
                         else if (obj.product_type == "coupon")
@@ -401,6 +403,7 @@
                         }
                         else if (obj.product_type == "tax")
                         {
+                            //strSql.Append(string.Format(" delete from wp_wc_order_tax_lookup where order_id = {0}; insert into wp_wc_order_tax_lookup(order_id,tax_rate_id,date_created,shipping_tax,order_tax,total_tax) select {0},{1},UTC_TIMESTAMP(),0,{2},{3}; ", model.OrderPostStatus.order_id, model.OrderPostStatus.order_id, obj.tax_amount, obj.tax_amount));
                             strSql.Append(string.Format(" update wp_woocommerce_order_items set order_item_name='{0}' where order_item_id={1}; ", obj.product_name, obj.order_item_id));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.meta_data, obj.order_item_id, "label"));
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.total, obj.order_item_id, "tax_amount"));
@@ -433,6 +436,7 @@
                         }
                         else if (obj.product_type == "tax")
                         {
+                            //strSql.Append(string.Format(" delete from wp_wc_order_tax_lookup where order_id = {0}; insert into wp_wc_order_tax_lookup(order_id,tax_rate_id,date_created,shipping_tax,order_tax,total_tax) select {0},{1},UTC_TIMESTAMP(),0,{2},{3}; ", model.OrderPostStatus.order_id, model.OrderPostStatus.order_id, obj.tax_amount, obj.tax_amount));
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.meta_data, model.OrderPostStatus.order_id, "tax"));
                             strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, model.OrderPostStatus.order_id, "tax"));
                             strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.tax_amount, model.OrderPostStatus.order_id, "tax"));

@@ -615,7 +615,7 @@ function AddBuyingt() {
     else if (currency == "") {
         swal('Alert', 'Please enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
-    else if (parseInt(currency) == 0) {
+    else if (parseFloat(currency) <= 0.00) {
         swal('Alert', 'Price can not be zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (parseInt(minpurchasequantity) <= 0) {

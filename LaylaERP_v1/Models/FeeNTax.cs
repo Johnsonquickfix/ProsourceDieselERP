@@ -25,4 +25,11 @@ namespace LaylaERP.Models
         public string taxableshow { get; set; }
         public string activeshow { get; set; }
     }
+    public class Fee
+    {
+        public int rowid { get; set; }
+        public string fee_name { get; set; }
+        public string fee_type { get; set; }
+        public int fee_amt_percentage { get; set; }
+    }
 }

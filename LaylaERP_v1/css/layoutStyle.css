@@ -3252,3 +3252,9 @@ td.fc-more-cell a.fc-more {
 table.product-tabless thead th, table.product-tabless tbody tr td {
     font-size: 12px !important;
 }
+
+#btnfileproduct {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+}

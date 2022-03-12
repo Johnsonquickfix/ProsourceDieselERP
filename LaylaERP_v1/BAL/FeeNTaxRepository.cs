@@ -222,5 +222,87 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+
+        public static int AddFee(Fee model)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag","I"),
+                    new SqlParameter("@fee_type", model.fee_type),
+                    new SqlParameter("@fee_name",model.fee_name),
+                    new SqlParameter("@fee_amt_percentage", model.fee_amt_percentage),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_fee_master_insert", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetFeeList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT rowid id, fee_name, (case when fee_type='PR' then '%' else '$'end) fee_type, fee_amt_percentage from erp_fee_master WHERE 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (fee_name like '%" + searchid + "%' OR fee_type like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM erp_fee_master WHERE 1=1" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int EditFee(Fee model)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag","U"),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@fee_type", model.fee_type),
+                    new SqlParameter("@fee_name",model.fee_name),
+                    new SqlParameter("@fee_amt_percentage", model.fee_amt_percentage),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_fee_master_insert", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable SelectFee(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT rowid, fee_name, fee_type, fee_amt_percentage from erp_fee_master WHERE rowid =" + strSearch + "");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
     }
 }

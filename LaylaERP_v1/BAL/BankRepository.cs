@@ -495,6 +495,22 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+        public static DataTable Banktransferlist(string accountno)
+        {
+            string sqlQuery = "select rowid,inv_num,sort_no,doc_date,CONVERT(varchar,doc_date,112) as datesort,CONVERT(varchar(12), doc_date, 101) as datecreation, inv_complete," +
+                              "label_operation,debit,credit, doc_type from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = '" + accountno + "'";
+            DataTable ds = new DataTable();
+            try
+            {
+                
+                ds = SQLHelper.ExecuteDataTable(sqlQuery);
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

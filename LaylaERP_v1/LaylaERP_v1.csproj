@@ -762,6 +762,7 @@
     <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
+    <Content Include="js\ImportOrderinvoice\CompareSalesPO.js" />
     <Content Include="js\ImportOrderinvoice\orderinvoice.js" />
     <Content Include="js\ImportPo\ImportPo.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
@@ -1201,6 +1202,7 @@
     <Content Include="Views\PaymentInvoice\PaymentInvoiceListSO.cshtml" />
     <Content Include="Views\Accounting\FunddepositList.cshtml" />
     <Content Include="Views\FeeNTax\AddFee.cshtml" />
+    <Content Include="Views\ImportOrderinvoice\CompareSalesPO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

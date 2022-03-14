@@ -388,7 +388,7 @@ function CategoryWiseProducts() {
                             let regular_price = 0.00, price = 0.00;
                             strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                             strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
-                            strHTML += '<select class="form-control addnvar" style="min-width: 250px;">';
+                            strHTML += '<select class="form-control addnvar" style="min-width: 335px; max-width:335px;">';
                             $(variation_details).each(function (pvIndex, pvRow) {
                                 if (pvIndex == 0) regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
                                 if (isNullAndUndef(pvRow.vr_id)) {
@@ -403,8 +403,8 @@ function CategoryWiseProducts() {
                             });
                             strHTML += '</select>';
                             strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty" style="max-width: 80px;">';
-                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
-                            else strHTML += '<div class="hub-pro-price" style="min-width: 120px;"><span>$' + price.toFixed(2) + '</span></div>';
+                            if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price" style="min-width: 130px;"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
+                            else strHTML += '<div class="hub-pro-price" style="min-width: 130px;"><span>$' + price.toFixed(2) + '</span></div>';
                             strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
                             strHTML += '</div>';
                             strHTML += '</div>';

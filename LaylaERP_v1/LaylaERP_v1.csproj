@@ -739,6 +739,7 @@
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\Events\Events.js" />
     <Content Include="js\Events\EventsList.js" />
+    <Content Include="js\FeeNTax\Fee.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Giftcard\GiftCardActivity.js" />
     <Content Include="js\Giftcard\GiftCardList.js" />
@@ -1199,6 +1200,7 @@
     <Content Include="Views\ImportOrderinvoice\ImportOrderinvoice.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceListSO.cshtml" />
     <Content Include="Views\Accounting\FunddepositList.cshtml" />
+    <Content Include="Views\FeeNTax\AddFee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

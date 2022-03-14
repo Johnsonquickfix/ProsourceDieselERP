@@ -190,7 +190,7 @@
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
+                string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,pm_gc.meta_value gift_card,"
                                 + " '[' + STRING_AGG(concat('{','\"vr_id\":', coalesce(ps.id,0), ',\"vr_title\":\"', coalesce(ps.post_title,'No Variations'),'\",\"_regular_price\":\"',pm_rp.meta_value,'\",\"_price\":\"',pm_sp.meta_value,'\",\"_gift_card\":\"',pm_gc.meta_value,'\"}'), ',') + ']' variation_details"
                                 + "        from wp_posts p"
                                 + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
@@ -202,7 +202,7 @@
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = coalesce(ps.id,p.id) and pm_sp.meta_key = '_price'"
                                 + " left outer join wp_postmeta pm_gc on pm_gc.post_id = coalesce(ps.id,p.id) and pm_gc.meta_key = '_gift_card'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
-                                + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title order by wp_t.term_order,wp_t.term_id;";
+                                + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title,pm_gc.meta_value order by wp_t.term_order,wp_t.term_id;";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

@@ -25,6 +25,7 @@
         <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
             <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
             <li><a href="#tab_4" data-toggle="tab"><span title="Pending entries" data-placement="bottom" data-toggle="tooltip">Pending Entries</span></a></li>
+            <li><a href="#tab_8" data-toggle="tab"><span title="Fund Transfer" data-placement="bottom" data-toggle="tooltip">Fund Transfer</span></a></li>
             <li><a href="#tab_7" data-toggle="tab"><span title="Linked files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
         </ul>
         <div class="tab-content">
@@ -359,8 +360,31 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="tab_6">
-                @*<h2 class="box-title">Account statements</h2>*@
+            <div class="tab-pane" id="tab_8">
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="table-responsive bank-table-wrapper"><input type="hidden" id="accounting_account"/>
+                                    <table id="FundTransferdata" class="table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Inv Num</th>
+                                                <th>Oper. Date</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                            </tr>
+                                        </thead>
+                                        @*<tfoot align="right">
+                                <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                            </tfoot>*@
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane" id="tab_7">
                 <div class="box box-primary">
@@ -525,7 +549,7 @@
                         $("#txtbankaddress").val(d[0].bank_address);
                         $("#txtaccountowner").val(d[0].owner_name);
                         $("#txtowneraddress").val(d[0].owner_address);
-                        $("#ddlaccounting").val(d[0].accounting_number).trigger('change');
+                        setTimeout(function () { $("#ddlaccounting").val(d[0].accounting_number).trigger('change') },500);
                         $("#ddljournal").val(d[0].fk_accountancy_journal).trigger('change');
                         $("#txtcurrency").val(d[0].currency_code);
                         $("#txtinitialamount").text('$' + (d[0].open_balance));

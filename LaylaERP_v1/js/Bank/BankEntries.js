@@ -15,6 +15,7 @@
             BankEntriesList(true);
     });
     BankEntriesList(false);
+    setTimeout(function () { FundTransferList(); }, 4000); //product dropdown
 });
 
 function BankEntriesList(is_date) {
@@ -245,7 +246,67 @@ function PendingEntriesBalance() {
     });
 }
 
+function FundTransferList() {
+    var ID = $("#ddlaccounting").val();
+    var obj = { strValue1: ID };
+    var table_EL = $('#FundTransferdata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#FundTransferdata_filter input').unbind();
+            $('#FundTransferdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        },
+        /*footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            console.log(data);
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
 
+            var DebitTotal = api.column(7).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            var CreditTotal = api.column(8).data().reduce(function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0);
+
+            $(api.column(0).footer()).html('Page Total');
+            $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
+            $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
+            console.log(DebitTotal);
+            console.log(CreditTotal);
+        }, */
+
+        ajax: {
+            url: '/Bank/FundTransferlist', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+        },
+        aoColumns: [
+            { data: 'doc_date', title: 'Date', sWidth: "10%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
+            { data: 'inv_num', title: 'Transcation Id', sWidth: "10%" },
+            { data: 'label_operation', title: 'Operation Level', sWidth: "10%" },
+            { data: 'debit', title: 'Debit($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'credit', title: 'Credit($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+
+        ],
+    });
+}
 /*
 function getGrandTotalFull() {
     $.ajax({

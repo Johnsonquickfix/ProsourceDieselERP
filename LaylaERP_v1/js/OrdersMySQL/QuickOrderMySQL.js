@@ -1158,7 +1158,7 @@ function AddFeeModal(rowid, orderitemid, feetitle, feeamt, feetype) {
     feeHtml += '<div class="row"><div class="col-md-12">Fee Title (Name)<span class="text-red">*</span><input class="form-control" type="input" id="txt_FeeTitle" placeholder="Fee Title" maxlength="100" autocomplete="true" value="' + feetitle.replace(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)|^\d+(?=\%)/g, '').replace(/^[`~!@#$%^&]/gi, '').trim() + '"></div></div>';
     feeHtml += '<div class="row">';
     feeHtml += '<div class="col-md-6">Fee Type<span class="text-red">*</span><select class="form-control select2" id="ddlFeeType" placeholder="Select Fee Type" style="width: 100%;"><option value="0" selected="selected">Select</option><option value="$">Dollar ($)</option><option value="%">Percent (%)</option></select></div>';
-    feeHtml += '<div class="col-md-6">Amount<span class="text-red">*</span><input class="form-control" type="number" id="txt_FeeAmt" name="txt_FeeAmt" placeholder="Amount" maxlength="15" autocomplete="true" value="' + feeamt + '"></div>';
+    feeHtml += '<div class="col-md-6">Amount/Percent<span class="text-red">*</span><input class="form-control" type="number" id="txt_FeeAmt" name="txt_FeeAmt" placeholder="Amount" maxlength="15" autocomplete="true" value="' + feeamt + '"></div>';
     feeHtml += '</div>';
 
     feeHtml += '</div>';

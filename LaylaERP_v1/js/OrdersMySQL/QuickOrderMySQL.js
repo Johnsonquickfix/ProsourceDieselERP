@@ -303,6 +303,7 @@ function NewOrderNo() {
     );
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
+        $('.agentaddtocart').removeClass('hidden');
         ajaxFunction('/OrdersMySQL/GenerateNewOrderNo', option, beforeSendFun, function (result) {
             let id = parseInt(result.id) || 0;
             if (id > 0) {

@@ -372,6 +372,7 @@ function GetCustomerByID(id) {
                             error: function (xhr, status, err) { }, cache: true
                         }
                     });
+                    $('#txtUserEmail').attr('readonly', true);
 
                 }
             },

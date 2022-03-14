@@ -631,11 +631,11 @@
             },
             //subtitle: { text: 'Irregular time data in Highcharts JS' },
             xAxis: { categories: _list_cat },
-            //yAxis: {
-            //    title: { text: 'Amount' },
-            //    labels: { formatter: function () { return this.value; } }
-            //},
-            yAxis: [{ // left y axis
+            yAxis: {
+                title: { text: 'Order Total' },
+            },
+
+            /*yAxis: [{ // left y axis
                 title: { text: null },
                 labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
                 showFirstLabel: false
@@ -645,7 +645,7 @@
                 title: { text: 'Order Total' },
                 labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
                 showFirstLabel: false
-            }],
+            }], */
 
 
             legend: {

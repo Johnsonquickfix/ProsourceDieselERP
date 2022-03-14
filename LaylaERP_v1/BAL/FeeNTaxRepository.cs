@@ -249,7 +249,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "SELECT rowid id, fee_name, (case when fee_type='PR' then '%' else '$'end) fee_type, fee_amt_percentage from erp_fee_master WHERE 1=1";
+                string strSql = "SELECT rowid id, fee_name, (case when fee_type='FP' then '$' else '%'end) fee_type, fee_amt_percentage from erp_fee_master WHERE 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (fee_name like '%" + searchid + "%' OR fee_type like '%" + searchid + "%')";

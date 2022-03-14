@@ -185,32 +185,32 @@
             $("#txtUserEmail").val('');
             swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
         }
-        //else {
+        else {
 
-        //    email = $("#txtUserEmail").val();
-        //    var obj = {
-        //        user_email: email
-        //    }
-        //    $.ajax({
-        //        url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
-        //        contentType: "application/json; charset=utf-8",
-        //        data: JSON.stringify(obj),
-        //        dataType: "json",
-        //        success: function (data) {
-        //            if (data.status == false) {
+            email = $("#txtUserEmail").val();
+            var obj = {
+                user_email: email
+            }
+            $.ajax({
+                url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == false) {
 
-        //            }
-        //            else {
-        //                $("#txtUserEmail").val("");
-        //                swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-        //            }
-        //        },
+                    }
+                    else {
+                        $("#txtUserEmail").val("");
+                        swal('Alert', 'Email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                    }
+                },
 
-        //        error: function (error) {
-        //            swal('Error!', 'something went wrong', 'error');
-        //        },
-        //    })
-        //}
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
 
     });
 

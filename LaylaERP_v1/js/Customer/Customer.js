@@ -413,7 +413,7 @@ function bindCustomerOrders(id) {
     //}).catch(err => { swal('Error!', err, 'error'); });
 
     if (id > 0) {
-        var option = { strValue1: id };
+        var option = { strValue1: $('#txtUserEmail').val() };
         $.ajax({
             url: "/Customer/GetCustomersAddresssList", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {

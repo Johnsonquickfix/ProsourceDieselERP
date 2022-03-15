@@ -295,6 +295,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult FundTransferlist(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
 
+                DataTable dt = BankRepository.Banktransferlist(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                //  DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
+
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
+        }
     }
 }

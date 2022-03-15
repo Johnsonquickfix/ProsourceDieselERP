@@ -123,8 +123,14 @@
     });
     /*end New order Popup function*/
     /*Start Return Items*/
-    $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
-    $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
+    $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); let i = Math.random().toString(36).substr(2, 9); AddFeeModal(i, 0, '', '', '0'); });
+    $(document).on("click", "#btnApplyFee", function (t) {
+        t.preventDefault(); let rowid = $(this).data('rowid'), orderitemid = parseInt($(this).data('orderitemid')) || 0, feeamt = parseFloat($('#txt_FeeAmt').val()) || 0.00;
+        if ($('#txt_FeeTitle').val() == '') { swal('Error!', 'Please enter fee title.', "error").then((result) => { $('#txt_FeeTitle').focus(); return false; }); return false; }
+        else if ($('#ddlFeeType').val() == '0') { swal('Error!', 'Please select fee type.', "error").then((result) => { $('#ddlFeeType').focus(); return false; }); return false; }
+        else if (feeamt == 0) { swal('Error!', 'Please enter fee amount.', "error").then((result) => { $('#txt_FeeAmt').focus(); return false; }); return false; }
+        else { ApplyFee(rowid, orderitemid, $('#txt_FeeTitle').val(), $('#ddlFeeType').val(), feeamt); }
+    });
     /*End Return Items*/
     /*Start Gift Card*/
     $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); GiftCardModal(); });
@@ -257,6 +263,11 @@
         }
     });
     /*start add order item meta*/
+
+    $(document).on("click", ".hub-accord h5", function (t) {
+        $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(250).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(250);
+    });
+    $(document).on("click", ".full-dropy", function (t) { $(this).find('.fa').toggleClass('fa-minus fa-plus'); });
 });
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -292,6 +303,7 @@ function NewOrderNo() {
     );
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
+        $('.agentaddtocart').removeClass('hidden');
         ajaxFunction('/OrdersMySQL/GenerateNewOrderNo', option, beforeSendFun, function (result) {
             let id = parseInt(result.id) || 0;
             if (id > 0) {
@@ -370,23 +382,26 @@ function GetSRTaxRate() {
     //calculateDiscountAcount();
 }
 function CategoryWiseProducts() {
-    let option = { strValue1: 'category' }, strHTML = ''; $("#category_items").empty();
-    $.ajax({
-        type: "get", url: '/Orders/GetCategoryWiseProducts', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
-        beforeSend: function () { $("#loader").show(); },
-        success: function (result) {
-            try {
-                result = JSON.parse(result);
-                result = groupArrayOfObjects(result, 'term_order');
-                $.each(result, function (key, pr) {
-                    strHTML = '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';
-                    strHTML += '<h5><span>' + pr[0].name.toUpperCase() + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
-                    strHTML += '<div class="hub-box-open">';
-                    $.each(pr, function (index, data) {
-                        try {
-                            let variation_details = JSON.parse(data.variation_details);
-                            let regular_price = 0.00, price = 0.00;
-                            strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
+    let strHTML = ''; $("#category_items").empty();
+    $.get('/Orders/GetCategoryWiseProducts', { strValue1: 'category' }).done(function (result) {
+        try {
+            result = JSON.parse(result);
+            result = groupArrayOfObjects(result, 'term_order');
+            $.each(result, function (key, pr) {
+                strHTML = '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';
+                strHTML += '<h5><span>' + pr[0].name.toUpperCase() + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
+                strHTML += '<div class="hub-box-open">';
+                $.each(pr, function (index, data) {
+                    try {
+                        let variation_details = JSON.parse(data.variation_details);
+                        let regular_price = 0.00, price = 0.00;
+                        strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
+                        if (data.gift_card == 'yes') {
+                            strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
+                            strHTML += '<a href="javascript:;" data-producttype="gift_card" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
+                            strHTML += '</div>';
+                        }
+                        else {
                             strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
                             strHTML += '<select class="form-control addnvar" style="min-width: 335px; max-width:335px;">';
                             $(variation_details).each(function (pvIndex, pvRow) {
@@ -405,22 +420,20 @@ function CategoryWiseProducts() {
                             strHTML += '<input min="1" class="form-control addnvar-qty billinfo" type="number" value="1" name="txt_ItemQty" placeholder="Qty" style="max-width: 80px;">';
                             if (price < regular_price && regular_price > 0) strHTML += '<div class="hub-pro-price" style="min-width: 130px;"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
                             else strHTML += '<div class="hub-pro-price" style="min-width: 130px;"><span>$' + price.toFixed(2) + '</span></div>';
-                            strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
-                            strHTML += '</div>';
+                            strHTML += '<a href="javascript:;" data-producttype="product" class="agentaddtocart btn btn-danger hidden" data-toggle="tooltip" data-original-title="Add to Cart" style="max-width:90px;">Add to Cart</a>';
                             strHTML += '</div>';
                         }
-                        catch (error) { }
-                    });
-                    strHTML += '</div>';
-                    strHTML += '</div>';
-                    $("#category_items").append(strHTML);
+                        strHTML += '</div>';
+                    }
+                    catch (error) { }
                 });
-            }
-            catch (error) { $("#loader").hide(); }
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, async: false
-    });
+                strHTML += '</div>';
+                strHTML += '</div>';
+                $("#category_items").append(strHTML);
+            });
+        }
+        catch (error) { $("#loader").hide(); }
+    }).fail(function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest, textStatus, errorThrown); $("#loader").hide(); swal('Alert!', errorThrown, "error"); });
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Customer Popup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -815,7 +828,7 @@ function getOrderInfo() {
     else {
         $('#order_note_type').prop("disabled", false); $('.agentaddtocart').removeClass('hidden');
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
-        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
         CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
@@ -898,7 +911,7 @@ function getOrderItemList(oid) {
                 let feetype = row.product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
                 feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
+                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(' + orderitemid + ',\'' + orderitemid + '\',\'' + row.product_name + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
                 feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
                 feeHtml += '</tr>';
@@ -934,7 +947,7 @@ function getOrderItemList(oid) {
         });
         //console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt, zGiftCardRefundAmt);
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
-        //$('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
+        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
         $('#billCoupon').append(couponHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -1132,67 +1145,61 @@ function DeleteNotes(id) {
         });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Fee ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function AddFeeModal(orderitemid, feevalue) {
-    ActivityLog('Edit fee (' + feevalue + ') in order id (' + $('#hfOrderNo').val() + ')', '/Product/AddNewProduct/');
+function AddFeeModal(rowid, orderitemid, feetitle, feeamt, feetype) {
+    //ActivityLog('Edit fee (' + feevalue + ') in order id (' + $('#hfOrderNo').val() + ')', '/Product/AddNewProduct/');
     var feeHtml = '<div class="modal-dialog">';
     feeHtml += '<div class="modal-content">';
     feeHtml += '<div class="modal-header">';
     feeHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-    feeHtml += '<h4 class="modal-title" id="myModalLabel">Add Fee</h4>';
+    feeHtml += '<h4 class="modal-title" id="myModalLabel">Add Fees</h4>';
     feeHtml += '</div>';
-    feeHtml += '<div class="modal-body">Enter a fixed amount or percentage to apply as a fee.';
-    feeHtml += '<input class="form-control" type="input" id="txt_FeeAmt" name="txt_FeeAmt" placeholder="Fee" maxlength="75" autocomplete="true" value="' + feevalue + '">';
-    feeHtml += '</div > ';
+    feeHtml += '<div class="modal-body">';
+
+    feeHtml += '<div class="row"><div class="col-md-12">Fee Title (Name)<span class="text-red">*</span><input class="form-control" type="input" id="txt_FeeTitle" placeholder="Fee Title" maxlength="100" autocomplete="true" value="' + feetitle.replace(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)|^\d+(?=\%)/g, '').replace(/^[`~!@#$%^&]/gi, '').trim() + '"></div></div>';
+    feeHtml += '<div class="row">';
+    feeHtml += '<div class="col-md-6">Fee Type<span class="text-red">*</span><select class="form-control select2" id="ddlFeeType" placeholder="Select Fee Type" style="width: 100%;"><option value="0" selected="selected">Select</option><option value="$">Dollar ($)</option><option value="%">Percent (%)</option></select></div>';
+    feeHtml += '<div class="col-md-6">Amount/Percent<span class="text-red">*</span><input class="form-control" type="number" id="txt_FeeAmt" name="txt_FeeAmt" placeholder="Amount" maxlength="15" autocomplete="true" value="' + feeamt + '"></div>';
+    feeHtml += '</div>';
+
+    feeHtml += '</div>';
     feeHtml += '<div class="modal-footer">';
-    feeHtml += '<button type="button" class="btn btn-danger" id="btnApplyFee" data-orderitemid="' + orderitemid + '">Add</button>';
+    feeHtml += '<button type="button" class="btn btn-danger pull-right" id="btnApplyFee" data-rowid="' + rowid + '" data-orderitemid="' + orderitemid + '">Add</button>';
     feeHtml += '</div>';
     feeHtml += '</div>';
     feeHtml += '</div>';
     $("#billModal").empty().html(feeHtml);
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_FeeAmt").focus();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#ddlFeeType").val(feetype); $("#txt_FeeTitle").focus();
 }
-function ApplyFee(orderitemid, feevalue) {
-    let feetype = feevalue.match(/%/g) != null ? '%' : '';
-    let startingNumber = parseFloat(feevalue.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
-    let product_name = feetype == '%' ? feevalue.replace(/fee$/, "fee") : startingNumber + ' fee';
+function ApplyFee(rowid, orderitemid, feetitle, feetype, feeamt) {
+    //let feetype = feetitle.match(/%/g) != null ? '%' : '';
+    //let startingNumber = parseFloat(feetitle.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+    //let product_name = feetype == '%' ? feetitle.replace(/fee$/, "fee") : startingNumber + ' fee';
+    let startingNumber = feeamt, product_name = feeamt + feetype + ' ' + feetitle;
     let oid = parseInt($('#hfOrderNo').val()) || 0, line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
-    let option = { order_item_id: orderitemid, order_id: oid, item_name: product_name, item_type: 'fee', amount: line_total };
-    ajaxFunction('/OrdersMySQL/AddFee', option, beforeSendFun, function (result) {
-        let feeHtml = '';
-        if (orderitemid > 0) {
-            $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
-            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-            feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
-            $('#trfeeid_' + orderitemid).empty().append(feeHtml);
-            ActivityLog('Fee updated (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/OrdersMySQL/OrdersHistory');
-        }
-        else {
-            let feeHtml = '';
-            feeHtml += '<tr id="trfeeid_' + result.order_item_id + '" data-orderitemid="' + result.order_item_id + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
-            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + result.order_item_id + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-            feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
-            feeHtml += '</tr>';
-            $('#order_fee_line_items').append(feeHtml);
-            ActivityLog('Fee added (' + startingNumber + ') in order id (' + $('#hfOrderNo').val() + ') ', '/OrdersMySQL/OrdersHistory');
-        }
-        $("#billModal").modal('hide'); calcFinalTotals();
 
-    }, completeFun, errorFun, false);
+    let feeHtml = '';
+    if ($('#trfeeid_' + rowid).length <= 0) {
+        feeHtml += '<tr id="trfeeid_' + rowid + '" data-orderitemid="' + orderitemid + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
+        feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + rowid + '\',' + orderitemid + ',\'' + product_name + '\',' + startingNumber + ',\'' + feetype + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
+        feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + rowid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
+        feeHtml += '</tr>';
+        $('#order_fee_line_items').append(feeHtml);
+    }
+    else {
+        $('#trfeeid_' + rowid).data('pname', product_name); $('#trfeeid_' + rowid).data('feeamt', startingNumber); $('#trfeeid_' + rowid).data('feetype', feetype);
+        feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + rowid + '\',' + orderitemid + ',\'' + product_name + '\',' + startingNumber + ',\'' + feetype + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
+        feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + rowid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
+        $('#trfeeid_' + rowid).empty().append(feeHtml);
+    }
+    $("#billModal").modal('hide'); calcFinalTotals();
 }
-function RemoveFee(orderitemid) {
+function RemoveFee(rowid) {
     swal({ title: '', text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
         .then((result) => {
-            if (result.value) {
-                let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
-                ajaxFunction('/OrdersMySQL/RemoveFee', option, beforeSendFun, function (result) {
-                    let feamount = $('#trfeeid_' + orderitemid).data('feeamt');
-                    if (result.status) { $('#trfeeid_' + orderitemid).remove(); calcFinalTotals(); ActivityLog('Fee id (' + orderitemid + ') with amount (' + feamount + ') Deleted in order id (' + $('#hfOrderNo').val() + ') ', '/Orders/minesofmoria/' + $('#hfOrderNo').val() + ''); }
-                    else { swal('Alert!', result.message, "error"); }
-                }, completeFun, errorFun, false);
-            }
+            if (result.value) { $('#trfeeid_' + rowid).remove(); calcFinalTotals(); }
         });
     return false;
 }

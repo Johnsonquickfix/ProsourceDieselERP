@@ -202,5 +202,31 @@ namespace LaylaERP.Controllers
                 Repo.UpdateUserMetaDataShippingAddress(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
+        [HttpGet]
+        public JsonResult GetCustomersAddresssList(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                //DataTable dt = CustomerRepository.SearchCustomerAddress(model.strValue1);
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+
+                string id = "0";
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = model.strValue1;
+                DataSet ds = CustomerRepository.SearchCustomerAddress(id);
+                result = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        public JsonResult Getrelatedcustomer(SearchModel model)
+        {
+            DataTable ds = CustomerRepository.Getrelatedcustomer(model.strValue1, model.strValue2);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
+        }
     }
+   
 }

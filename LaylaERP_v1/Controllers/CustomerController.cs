@@ -220,5 +220,13 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        public JsonResult Getrelatedcustomer(SearchModel model)
+        {
+            DataTable ds = CustomerRepository.Getrelatedcustomer(model.strValue1, model.strValue2);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
+        }
     }
+   
 }

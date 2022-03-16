@@ -375,6 +375,7 @@ function GetCustomerByID(id) {
                     });
                     $('#txtUserEmail').attr('readonly', true);
                     bindCustomerOrders(ID);
+                    relatedcustomer(ID);
                 }
             },
             error: function (msg) { alert(msg); },
@@ -443,4 +444,27 @@ function bindCustomerOrders(id) {
     }
 
 
+}
+
+function relatedcustomer(ID) {
+    var obj = { strValue1: $('#txtUserEmail').val(), strValue2: ID };
+   
+    $.ajax({
+        //url: "/Customer/Getrelatedcustomer",
+        //type: "Get",
+        //contentType: "application/json; charset=utf-8",
+        //dataType: 'JSON',
+        //data: JSON.stringify(obj),
+        url: "/Customer/Getrelatedcustomer", type: "Get", beforeSend: function () { $("#loader").show(); }, data: obj,
+        success: function (data) {
+            data = JSON.parse(data);
+            var opt = '<option value="0">Please select related customer</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].id + '">' + data[i].displayname + '</option>';
+            }
+            console.log(opt);
+            $('#ddlrelatedcustomer').html(opt);
+        }
+    });
+    $("#loader").hide();
 }

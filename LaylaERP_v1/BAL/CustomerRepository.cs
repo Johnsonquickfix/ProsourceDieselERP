@@ -335,6 +335,24 @@ namespace LaylaERP.Models
             }
             return dt;
         }
+        public static DataTable Getrelatedcustomer(string email,string id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+
+                string strSQl = "erp_getrelatedcustomer";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@email", email),
+                    new SqlParameter("@id", id)
+                };
+                DS = SQLHelper.ExecuteDataTable(strSQl, para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
     
 }

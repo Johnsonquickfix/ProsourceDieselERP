@@ -58,7 +58,12 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-
+                        <div id="divrelatedcustomer" class="form-group">
+                            <label for="exampleInputEmail1">Related  Customer</label> 
+                            <select class="form-control" id="ddlrelatedcustomer"> 
+                                 <option selected value=""></option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                             <label class="control-label " for="Address 1">Address</label><span style="color:red">*</span>
@@ -162,6 +167,8 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         $('#divaddress').hide();
+        $('#divrelatedcustomer').hide();
+        
 
         if (id != "" && id != "NewUser") {
             // console.log(id);
@@ -169,7 +176,8 @@
             //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
             $('#divaddress').show();
-          
+            $('#divrelatedcustomer').show();
+      
         }
 
 
@@ -207,6 +215,9 @@
 
 
     });
+
+
+
 
     function isEdit(val) {
         localStorage.setItem('isEdit', val ? 'yes' : 'no');

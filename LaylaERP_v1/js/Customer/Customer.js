@@ -458,7 +458,7 @@ function relatedcustomer(ID) {
         url: "/Customer/Getrelatedcustomer", type: "Get", beforeSend: function () { $("#loader").show(); }, data: obj,
         success: function (data) {
             data = JSON.parse(data);
-            var opt = '<option value="0">Please select related customer</option>';
+            var opt = '<option value="0">Related customer</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].id + '">' + data[i].displayname + '</option>';
             }

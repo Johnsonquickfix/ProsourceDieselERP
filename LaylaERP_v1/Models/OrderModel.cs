@@ -155,6 +155,11 @@
         public decimal shipping_tax_amount { get; set; }
         public decimal staterecycle_fee { get; set; }
         public bool staterecycle_istaxable { get; set; }
+        public List<OrderProductsMetaModel> order_itemmeta { get; set; }
+        public OrderProductsModel()
+        {
+            order_itemmeta = new List<OrderProductsMetaModel>();
+        }
     }
     public class OrderProductsMetaModel
     {

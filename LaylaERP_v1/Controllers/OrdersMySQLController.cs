@@ -352,6 +352,7 @@
             int resultG = 0;
             try
             {
+                StringBuilder strProductMeta = new StringBuilder("");
                 string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
                 string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray());
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
@@ -383,6 +384,11 @@
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='_line_total';", (obj.total - obj.discount), obj.order_item_id));
                             //strSql.Append(" update wp_woocommerce_order_itemmeta set meta_value='a:2:{s:5:\"total\";a:1:{i:" + obj.order_item_id.ToString() + ";s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}s:8:\"subtotal\";a:1:{i:" + obj.order_item_id.ToString() + ";s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}}' where order_item_id=" + obj.order_item_id.ToString() + " and meta_key='_line_tax_data';");
                             strSql.Append(" update wp_woocommerce_order_itemmeta set meta_value='a:2:{s:5:\"total\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}s:8:\"subtotal\";a:1:{i:0;s:" + obj.tax_amount.ToString().Length + ":\"" + obj.tax_amount.ToString() + "\";}}' where order_item_id=" + obj.order_item_id.ToString() + " and meta_key='_line_tax_data';");
+
+                            foreach (OrderProductsMetaModel pm_obj in obj.order_itemmeta)
+                            {
+                                strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}';", pm_obj.value, obj.order_item_id, pm_obj.key));
+                            }
                         }
                         else if (obj.product_type == "coupon")
                         {
@@ -419,6 +425,11 @@
                             strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
                             strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
                                     cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
+
+                            foreach (OrderProductsMetaModel pm_obj in obj.order_itemmeta)
+                            {
+                                strProductMeta.Append(string.Format(" union all select order_item_id,'{0}','{1}' from wp_wc_order_product_lookup where order_id={2} and product_id = 888864 and order_item_id not in ({3})", pm_obj.key, pm_obj.value, model.OrderPostStatus.order_id, str_oiid));
+                            }
                         }
                         else if (obj.product_type == "coupon")
                         {
@@ -460,6 +471,7 @@
                 //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
                 strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
                 strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
+                strSql.Append(strProductMeta);
                 strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1});", model.OrderPostStatus.order_id, str_oiid));
 
                 /// step 5 : wp_posts (Coupon used by)

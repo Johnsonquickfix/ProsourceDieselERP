@@ -48,6 +48,7 @@
         $("#checkAll").prop('checked', false);
     })
     dataGridLoad();
+   
 });
 
 function Singlecheck() {
@@ -335,7 +336,7 @@ function dataGridLoad() {
 }
 
 function GetCustomerByID(id) {
-
+  
     var ID = id;
     if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer"); }
     var obj =
@@ -373,11 +374,97 @@ function GetCustomerByID(id) {
                         }
                     });
                     $('#txtUserEmail').attr('readonly', true);
-
+                    bindCustomerOrders(ID);
+                    relatedcustomer(ID);
                 }
             },
             error: function (msg) { alert(msg); },
             async: false
         });
     $("#txtBillingPostCode").change();
+}
+
+ 
+
+function bindCustomerOrders(id) {
+    //let opt = { strValue1: parseInt(id) || 0 };
+    //$.post('/Customer/GetCustomersAddresssList', opt).then(response => {
+    //    console.log(response);
+    //    $('#tblCusOrders').dataTable({           
+    //        destroy: true, data: JSON.parse(response), 
+    //        columns: [
+                
+    //            {
+    //                data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
+    //                    let row = JSON.parse(dtrow.meta_data);
+    //                    //let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' +  dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+    //                    let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault == 1 ? ' <span class="label label-success">Default</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + ' ' + row._billing_country + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+    //                    return val;
+    //                }
+    //            },
+    //            {
+    //                data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
+    //                    let row = JSON.parse(dtrow.meta_data);
+    //                    let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + ' ' + row._shipping_country + '</address>';
+    //                    return val;
+    //                }
+    //            }
+    //        ]
+    //    });
+    //}).catch(err => { swal('Error!', err, 'error'); });
+
+    if (id > 0) {
+        var option = { strValue1: $('#txtUserEmail').val() };
+        $.ajax({
+            url: "/Customer/GetCustomersAddresssList", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    console.log(result);
+                    let itemHtml = '';
+                    if (data['pod'].length > 0) {
+                        for (let i = 0; i < data['pod'].length; i++) {
+                            itemHtml += '<tr id="tritemId_' + data['pod'][i].customer_id + '" data-key="' + data['pod'][i].customer_id + '">';
+                          //  itemHtml += '<td>' + data['pod'][i]._billing_first_name + ' ' + data['pod'][i]._billing_last_name + (isNullUndefAndSpace(data['pod'][i]._billing_company) ? '<br>' + data['pod'][i]._billing_company : '') + (isNullUndefAndSpace(data['pod'][i]._billing_address_1) ? '<br>' + data['pod'][i]._billing_address_1 : '') + (isNullUndefAndSpace(data['pod'][i]._billing_address_2) ? '<br>' + data['pod'][i]._billing_address_2 : '') + '<br>' + data['pod'][i]._billing_city + ', ' + data['pod'][i]._billing_state + ' ' + data['pod'][i]._billing_postcode + ' ' + data['pod'][i]._billing_country + '<br>Phone: ' + data['pod'][i]._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + data['pod'][i]._billing_email  + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].b_first_name + ' ' + data['pod'][i].b_last_name + ' ' + (data['pod'][i].b_company) + '<br>' + data['pod'][i].b_address_1 + ' ' + data['pod'][i].b_address_2+ '<br>'+ data['pod'][i].b_city + ' '+ data['pod'][i].b_state + ' ' + data['pod'][i].b_postcode + ' ' + data['pod'][i].b_country + '<br>Phone: ' + data['pod'][i].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + data['pod'][i].b_email + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].s_first_name + ' ' + data['pod'][i].s_last_name + ' ' + (data['pod'][i].s_company) + '<br>' + data['pod'][i].s_address_1 + ' ' + data['pod'][i].s_address_2 + '<br>' + data['pod'][i].s_city + ' ' + data['pod'][i].s_state + ' ' + data['pod'][i].s_postcode + ' ' + data['pod'][i].s_country +  '</td>';
+                            itemHtml += '</tr>';
+
+                        }
+                        $('#cus_address').empty().append(itemHtml);
+                    }
+                }
+                catch (error) {
+                    $("#loader").hide(); swal('Alert!', error, "error");
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+        });
+    }
+
+
+}
+
+function relatedcustomer(ID) {
+    var obj = { strValue1: $('#txtUserEmail').val(), strValue2: ID };
+   
+    $.ajax({
+        //url: "/Customer/Getrelatedcustomer",
+        //type: "Get",
+        //contentType: "application/json; charset=utf-8",
+        //dataType: 'JSON',
+        //data: JSON.stringify(obj),
+        url: "/Customer/Getrelatedcustomer", type: "Get", beforeSend: function () { $("#loader").show(); }, data: obj,
+        success: function (data) {
+            data = JSON.parse(data);
+            var opt = '<option value="0">Related customer</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].id + '">' + data[i].displayname + '</option>';
+            }
+            console.log(opt);
+            $('#ddlrelatedcustomer').html(opt);
+        }
+    });
+    $("#loader").hide();
 }

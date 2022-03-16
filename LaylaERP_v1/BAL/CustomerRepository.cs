@@ -308,6 +308,51 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
+        public static DataSet SearchCustomerAddress(string CustomerID)
+        {
+            DataSet dt = new DataSet();
+            try
+            {
+                //string strSql = "SELECT distinct pmu.meta_value customer_id, concat('{', STRING_AGG(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"'), ','), '}') as meta_data"
+                //            + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
+                //            + " inner join wp_postmeta pm on pm.post_id = pmu.post_id"
+                //            + " and pm.meta_key in ('_billing_first_name', '_billing_last_name', '_billing_company', '_billing_address_1', '_billing_address_2', '_billing_city', '_billing_state', '_billing_country', '_billing_postcode', '_billing_phone', '_billing_email', '_shipping_first_name', '_shipping_last_name', '_shipping_company', '_shipping_address_1', '_shipping_address_2', '_shipping_city', '_shipping_state', '_shipping_country', '_shipping_postcode')"
+                //            + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft'"
+                //            + " group by po.ID, pmu.meta_value";
+                //dt = SQLHelper.ExecuteDataSet(strSql);
+                string strSql = "SELECT distinct pmu.meta_value customer_id, max(case pm.meta_key when '_billing_first_name' then pm.meta_value else '' end) b_first_name,max(case pm.meta_key when '_billing_last_name' then pm.meta_value else '' end) b_last_name,"
+                          + " max(case pm.meta_key when '_billing_company' then pm.meta_value else '' end) b_company,max(case pm.meta_key when '_billing_address_1' then pm.meta_value else '' end) b_address_1,max(case pm.meta_key when '_billing_address_2' then pm.meta_value else '' end) b_address_2,max(case pm.meta_key when '_billing_postcode' then pm.meta_value else '' end) b_postcode,max(case pm.meta_key when '_billing_city' then pm.meta_value else '' end) b_city,"
+                          + " max(case pm.meta_key when '_billing_country' then pm.meta_value else '' end) b_country,max(case pm.meta_key when '_billing_state' then pm.meta_value else '' end) b_state,max(case pm.meta_key when '_billing_email' then pm.meta_value else '' end) b_email,max(case pm.meta_key when '_billing_phone' then pm.meta_value else '' end) b_phone,max(case pm.meta_key when '_shipping_first_name' then pm.meta_value else '' end) s_first_name,max(case pm.meta_key when '_shipping_last_name' then pm.meta_value else '' end) s_last_name,"
+                          + " max(case pm.meta_key when '_shipping_company' then pm.meta_value else '' end) s_company,max(case pm.meta_key when '_shipping_address_1' then pm.meta_value else '' end) s_address_1,max(case pm.meta_key when '_shipping_address_2' then pm.meta_value else '' end) s_address_2,max(case pm.meta_key when '_shipping_postcode' then pm.meta_value else '' end) s_postcode,max(case pm.meta_key when '_shipping_city' then pm.meta_value else '' end) s_city,max(case pm.meta_key when '_shipping_country' then pm.meta_value else '' end) s_country,max(case pm.meta_key when '_shipping_state' then pm.meta_value else '' end) s_state"
+                          + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_billing_email' and  pmu.meta_value = '" + CustomerID + "' "
+                          + " inner join wp_postmeta pm on pm.post_id = pmu.post_id   WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value ";
+                dt = SQLHelper.ExecuteDataSet(strSql);
+                dt.Tables[0].TableName = "po"; dt.Tables[0].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable Getrelatedcustomer(string email,string id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+
+                string strSQl = "erp_getrelatedcustomer";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@email", email),
+                    new SqlParameter("@id", id)
+                };
+                DS = SQLHelper.ExecuteDataTable(strSQl, para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
     
 }

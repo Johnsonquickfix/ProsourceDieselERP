@@ -8,11 +8,7 @@ body {
 }
 
 
-#userslist, table.table-blue {
-    border-top: none !important;
-    border-bottom: none !important;
-}
-
+/*#userslist, table.table-blue {border-top: none!important;border-bottom: none!important;}*/
 button#btnSearch {
     margin: 0 7px;
 }

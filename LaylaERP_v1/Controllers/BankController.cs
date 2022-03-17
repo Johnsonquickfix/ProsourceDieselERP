@@ -310,10 +310,24 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
 
-        public JsonResult BankFundTransfer(string bank, string inv_complete)
-        {
-            BankRepository.BankFundTransfer(bank, inv_complete);
-            return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
+        public JsonResult BankFundTransfer(string bank, string inv_complete, string inv_num)
+        {   var result = BankRepository.SelectFundTransfer(bank, inv_num);
+            if (result.Rows.Count > 0)
+            {
+                return Json(new { status = false, message = "Fund transfer already exist !", url = "" }, 0);
+            }
+            else
+            {
+                var dt = BankRepository.BankFundTransfer(bank, inv_complete, inv_num);
+                if (dt > 0)
+                {
+                    return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid details !", url = "" }, 0);
+                }
+            }
         }
     }
 }

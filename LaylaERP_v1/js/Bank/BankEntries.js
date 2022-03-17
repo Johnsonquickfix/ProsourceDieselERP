@@ -250,7 +250,7 @@ function FundTransferList() {
     var ID = $("#ddlaccounting").val();
     var obj = { strValue1: ID };
     var table_EL = $('#FundTransferdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -298,6 +298,12 @@ function FundTransferList() {
             dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
         },
         aoColumns: [
+            {
+                'data': 'inv_num', sWidth: "10%",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                }
+            },
             { data: 'doc_date', title: 'Date', sWidth: "10%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
             { data: 'inv_num', title: 'Transcation Id', sWidth: "10%" },
             { data: 'label_operation', title: 'Operation Level', sWidth: "10%" },
@@ -370,9 +376,14 @@ function getGrandTotal(is_date) {
 }*/
 
 function Bankfundtransfer() {
+    var id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        id += $(this).val() + ",";
+    });
+    id = id.replace(/,(?=\s*$)/, '');
     var ID = $("#hfid").val();
     var invcomplete = $("#ddlaccounting").val();
-    var obj = { bank: ID, inv_complete: invcomplete }
+    var obj = { bank: ID, inv_complete: invcomplete, inv_num: id }
     $.ajax({
         url: "/Bank/BankFundTransfer",
         type: "POST",
@@ -386,4 +397,23 @@ function Bankfundtransfer() {
 
         }
     });
+}
+
+$('#checkAll').click(function () {
+    var isChecked = $(this).prop("checked");
+    $('#FundTransferdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+});
+
+function Singlecheck() {
+    var isChecked = $('#CheckSingle').prop("checked");
+    var isHeaderChecked = $("#checkAll").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkAll").prop('checked', isChecked);
+    else {
+        $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkAll").prop('checked', isChecked);
+    }
 }

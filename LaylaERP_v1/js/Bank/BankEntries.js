@@ -368,3 +368,22 @@ function getGrandTotal(is_date) {
         }
     });
 }*/
+
+function Bankfundtransfer() {
+    var ID = $("#hfid").val();
+    var invcomplete = $("#ddlaccounting").val();
+    var obj = { bank: ID, inv_complete: invcomplete }
+    $.ajax({
+        url: "/Bank/BankFundTransfer",
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            swal('Success!', data.message, 'success');
+        },
+        error: function (msg) {
+
+        }
+    });
+}

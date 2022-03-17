@@ -5,13 +5,6 @@ body {
     color: #4f4f4f !important;
     font-size: 12px !important;
 }
-
-
-#userslist, table.table-blue {border-top: none!important;border-bottom: none!important;}
-button#btnSearch { margin: 0 7px;}
-.box-header{ overflow: hidden!important;}
-.product-acctount-section .a-relative {  /* width: 18px; */}
-
 #GiftModal {
     font-size: 15px;
 }

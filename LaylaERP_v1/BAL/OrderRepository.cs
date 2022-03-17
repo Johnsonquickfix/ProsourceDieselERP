@@ -136,6 +136,23 @@
             }
             return dt;
         }
+        public static DataTable ImportGiftCard(string postsJSON)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@json", postsJSON),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_gc_cards_import", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
         public static DataTable ExportOrders()
         {
             var dt = new DataTable();

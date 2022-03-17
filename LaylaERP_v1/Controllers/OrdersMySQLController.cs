@@ -80,6 +80,40 @@
             return Json(new { status }, 0);
         }
 
+        [HttpGet]
+        [Route("OrdersMySQL/giftcard-import")]
+        public JsonResult ImportGiftCard(SearchModel model)
+        {
+            bool status = false;
+            try
+            {
+                var result = string.Empty;
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/gc_data.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(result) && result != "null")
+                {
+                    OrderRepository.ImportGiftCard(result);
+                }
+
+                return Json(new { status = true }, 0);
+            }
+            catch { status = false; }
+            return Json(new { status }, 0);
+        }
+
         [HttpPost]
         public JsonResult SaveCustomerOrderRefund(OrderModel model)
         {

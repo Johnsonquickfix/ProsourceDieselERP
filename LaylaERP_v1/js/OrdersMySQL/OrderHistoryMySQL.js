@@ -68,14 +68,16 @@ $(document).ready(function () {
                     $.get('/OrdersMySQL/order-import', {}).then(response => {
                         if (response.status) { swal('Success', 'Orders updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload(); }
                         else swal('Error!', 'Something went wrong, please try again.', 'error');
-                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });;
+                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
+                    $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
                 });
             }
         }]);
     });
 });
 function UpdateOrders() {
-    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });;
+    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
+    $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
 }
 function GetMonths() {
     var d1 = new Date('01-01-2020');

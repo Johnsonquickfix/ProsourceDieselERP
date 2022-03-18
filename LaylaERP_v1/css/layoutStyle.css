@@ -5388,6 +5388,6 @@ table.product-tabless thead th, table.product-tabless tbody tr td {
 
 #btnfileproduct {
     margin: 0px;
-    display: flex;
+    display: flex; 
     align-items: center;
 }

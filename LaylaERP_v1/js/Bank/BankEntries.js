@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     EntriesBalanceForSpecificBank();
-    $('#txtOrderDate').daterangepicker({
+    $('#txtOrderDate, #txtOrderDate1').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -12,10 +12,11 @@
         startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
-            BankEntriesList(true);
+        BankEntriesList(true);
+        FundTransferList(true);
     });
     BankEntriesList(false);
-    setTimeout(function () { FundTransferList(); }, 4000); //product dropdown
+    setTimeout(function () { FundTransferList(true); }, 4000); //product dropdown
 });
 
 function BankEntriesList(is_date) {
@@ -246,9 +247,14 @@ function PendingEntriesBalance() {
     });
 }
 
-function FundTransferList() {
+function FundTransferList(is_date) {
+    let sd = $('#txtOrderDate1').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate1').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+
     var ID = $("#ddlaccounting").val();
-    var obj = { strValue1: ID };
+    var bank_id = $("#hfid").val();
+    var obj = { strValue1: ID, strValue2: bank_id, strValue3: dfa };
     var table_EL = $('#FundTransferdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,

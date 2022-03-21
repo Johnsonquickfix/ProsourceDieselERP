@@ -495,10 +495,16 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        public static DataTable Banktransferlist(string accountno)
+        public static DataTable Fundtransferlist(string accountno, string bank_id, string sMonth)
         {
+            string strWhr = string.Empty;
             string sqlQuery = "select rowid,inv_num,sort_no,doc_date,CONVERT(varchar,doc_date,112) as datesort,CONVERT(varchar(12), doc_date, 101) as datecreation, inv_complete," +
-                              "label_operation,debit,credit, doc_type from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = '" + accountno + "'";
+                              "label_operation,debit,credit, doc_type from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = '" + accountno + "' and inv_num not in (select subledger_account from erp_payment where fk_bank = " + bank_id + ")";
+            if(!string.IsNullOrEmpty(sMonth))
+            {
+                strWhr = " and doc_date between " + sMonth + "";
+            }
+            sqlQuery += strWhr;
             DataTable ds = new DataTable();
             try
             {

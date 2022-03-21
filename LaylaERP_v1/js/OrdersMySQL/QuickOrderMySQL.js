@@ -2208,7 +2208,7 @@ function saveCO() {
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     //let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
-    console.log(obj); return;
+    //console.log(obj); return;
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",

@@ -185,6 +185,17 @@ namespace LaylaERP_v1.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
+
+        public JsonResult updateinvoice(JqDataTableModel model)
+        {
+            ImportOrderinvoiceRepository.updateinvoice(model.strValue1);
+                
+               // if (model.updatedID > 0)
+                    return Json(new { status = true, message = "updated successfully!!", url = "" }, 0);
+                //else
+                //    return Json(new { status = true, message = "Product record updated successfully!!", url = "Manage" }, 0); 
+        }
+
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public ActionResult Index(HttpPostedFileBase postedFile,string vend)
@@ -329,6 +340,7 @@ namespace LaylaERP_v1.Controllers
             //return View(dt);
             return View();
         }
+
     }
 }
  

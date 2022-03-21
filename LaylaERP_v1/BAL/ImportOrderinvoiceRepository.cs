@@ -1,7 +1,9 @@
 ﻿using LaylaERP.DAL;
+using LaylaERP.UTILITIES;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -47,7 +49,7 @@ namespace LaylaERP_v1.BAL
             {
                 string strWhr = string.Empty;
                 string strSql = "SELECT cp.rowid,document_id, CONVERT(varchar,doc_date,112) podatesort, CONVERT(varchar,doc_date, 101) po_date, CONVERT(varchar,doc_date,112) poduedatesort,payer_id,payer_name,ref_doc,sales_doc,item,material_number,material_description,pint,po_number,bol,net_amount,freight_charge,sales_tax,total_amount,cmir,tracking_number,cp.name,street,city,state,zipcode,destination_country,cr_dr_memo_text,wv.name vendorname"
-                               + " from commerce_purchase_order_invoice_import cp left join wp_vendor wv on wv.rowid = cp.vendor_id WHERE 1=1";
+                               + " ,case when invoicestatus = 'Y' then 'Yes' else 'No' end as Applied from commerce_purchase_order_invoice_import cp left join wp_vendor wv on wv.rowid = cp.vendor_id WHERE 1=1";
 
                 if (filter == "1")
                 {
@@ -76,6 +78,25 @@ namespace LaylaERP_v1.BAL
             }
             return dt;
         }
-
+        public static int updateinvoice(string val)
+        {
+            try
+            {
+                string strsql = "erp_updateinvoice_invoicePOcsv";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@id", val)
+                    
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "ImportOrderinvoiceRepository/updateinvoice/" + 0 + "", "Update invoice");
+                throw Ex;
+            }
+        }
     }
 }

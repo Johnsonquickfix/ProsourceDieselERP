@@ -47,7 +47,7 @@
             { data: 'payer_name', title: 'Payer Name', sWidth: "5%" },
             { data: 'ref_doc', title: 'Ref doc', sWidth: "5%" },
             { data: 'sales_doc', title: 'Sales Doc', sWidth: "5%" },
-            { data: 'item', title: 'Item', sWidth: "5%" },
+    /*        { data: 'item', title: 'Item', sWidth: "5%" },*/
             //{ data: 'material_number', title: 'Material', sWidth: "5%" },
             { data: 'material_description', title: 'Material Description', sWidth: "5%" },
             { data: 'pint', title: 'Plnt', sWidth: "5%" },
@@ -63,10 +63,37 @@
             { data: 'street', title: 'Street', sWidth: "2%" },
             { data: 'city', title: 'City', sWidth: "2%" },
             { data: 'state', title: 'State', sWidth: "2%" },
-            { data: 'zipcode', title: 'Zipcode', sWidth: "2%" }
-            //{ data: 'destination_country', title: 'Dest Coun', sWidth: "2%" },
+            { data: 'zipcode', title: 'Zipcode', sWidth: "2%" },
+            { data: 'Applied', title: 'Applied', sWidth: "2%" },
             //{ data: 'cr_dr_memo_text', title: 'Credit Debit Memo Text', sWidth: "2%" },
 
         ]
     });
 }
+
+
+function updateinvoice() {    
+    var obj = { strValue1: 0 }
+    swal({ title: "", text: 'Would you like to update?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: '/ImportOrderinvoice/updateinvoice/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        if (data.status == true) {
+                            swal('Success!', data.message, 'success');
+                            ImportPoList();
+                        }
+                        else { swal('Alert!', data.message, 'error') }
+                    },
+                    complete: function () { $("#loader").hide(); },
+                    error: function (error) { swal('Error!', error.message, 'error'); },
+                })
+            }
+        });
+}
+    

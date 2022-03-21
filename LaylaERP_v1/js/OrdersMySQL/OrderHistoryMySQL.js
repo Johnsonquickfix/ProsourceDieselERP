@@ -591,5 +591,4 @@ function cancelpayment(data) {
 ///Send Gift Cards
 function SendGiftCards(id, email) {
     $.post('/OrdersMySQL/send-giftcard', { order_id: id }).then(response => { console.log('Send Gift Card..'); }).catch(err => { }).always(function () { });
-    sendInvoice(id, email);
 }

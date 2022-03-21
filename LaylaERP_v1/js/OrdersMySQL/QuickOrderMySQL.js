@@ -271,7 +271,9 @@
     $(document).on("click", ".hub-accord h5", function (t) {
         $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(250).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(250);
     });
-    $(document).on("click", ".full-dropy", function (t) { $(this).find('.fa').toggleClass('fa-minus fa-plus'); });
+    $(document).on("click", ".full-dropy", function (t) {
+        $(this).find('.fa').toggleClass('fa-minus fa-plus');
+    });
     $(document).on("click", "#btnAddGiftCardProduct", function (t) {
         t.preventDefault(); let pid = $(this).data('pid'), vid = $(this).data('vid'), p_name = $(this).data('name'); bindGiftCardProduct(p_name, pid, vid);
         //let rowid = $(this).data('rowid'), orderitemid = parseInt($(this).data('orderitemid')) || 0, feeamt = parseFloat($('#txt_FeeAmt').val()) || 0.00;
@@ -2242,7 +2244,8 @@ function updateCO() {
                 $.post('/OrdersMySQL/SaveCustomerOrder', obj).done(function (result) {
                     if (result.status) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Order updated successfully.', "success"); getOrderInfo(); $('[data-toggle="tooltip"]').tooltip();
+                        swal('Success', 'Order updated successfully.', "success");
+                        $.when(UpdateOrders()).done(function () { getOrderInfo(); $('[data-toggle="tooltip"]').tooltip(); });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
@@ -2250,6 +2253,10 @@ function updateCO() {
         }
     }]);
     return false;
+}
+function UpdateOrders() {
+    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
+    $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {

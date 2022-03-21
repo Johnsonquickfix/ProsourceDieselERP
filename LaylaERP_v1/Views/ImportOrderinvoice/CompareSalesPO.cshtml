@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="col-md-3">
-          
+            <button type="button" id="btnApprove" class="btn btn-danger" style="float:right;"><span title="Click here to generate invoice." data-placement="bottom" data-toggle="tooltip">Generate invoice</span></button>
         </div>
         <div class="col-md-3">
              
@@ -71,7 +71,8 @@
                                         <th>City</th>
                                         <th>State</th>
                                         <th>Zipcode</th>
-                                        <th>Zipcode</th>
+                                        <th>@*Zipcode*@</th>
+                                        @*<th>Zipcode</th>*@
                                     </tr>
                                 </thead>
                             </table>
@@ -93,9 +94,22 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide(); ImportPoList(); $(".select2").select2();
+        $("#btnApprove").hide();
         $('#ddltype').change(function () {
             ImportPoList();
+            let type = $('#ddltype').val();
+            if (type == 1) {
+                $("#btnApprove").show();
+            }
+            else {
+                $("#btnApprove").hide();
+            }
         });
+
+        $(document).on('click', "#btnApprove", function () {
+            updateinvoice();
+        });
+
     })
 
 </script>

@@ -2625,7 +2625,7 @@ namespace LaylaERP.BAL
                      new SqlParameter("@todate", to_date)
                 };
                     ds1 = SQLHelper.ExecuteDataSet("erp_Getorderforecast_List", parameters);
-                    if (ds1.Tables[0].Rows.Count > 0)
+                    if (ds1.Tables[0].Rows.Count >= 12)
                     {
                         ds1.Tables[0].DefaultView.RowFilter = "sr = " + Month1 + "";
                         decimal m1 = (decimal)ds1.Tables[0].DefaultView[0]["Total"];

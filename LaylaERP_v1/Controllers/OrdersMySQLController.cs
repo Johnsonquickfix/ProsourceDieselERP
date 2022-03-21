@@ -389,7 +389,8 @@
                 string _giftcard_to = string.Empty, _giftcard_from = string.Empty, _giftcard_from_mail = string.Empty, _giftcard_message = string.Empty, _giftcard_amt = string.Empty;
                 StringBuilder strProductMeta = new StringBuilder("");
                 string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
-                string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray());
+                //string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray());
+                string str_oiid = string.Join(",", model.OrderProducts.Select(x => x.order_item_id.ToString()).ToArray());
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 /// step 1 : wp_wc_order_stats
                 StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
@@ -426,7 +427,7 @@
                                 strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}';", pm_obj.value, obj.order_item_id, pm_obj.key));
                                 if (pm_obj.key.Equals("wc_gc_giftcard_to_multiple")) _giftcard_to = pm_obj.value;
                                 else if (pm_obj.key.Equals("wc_gc_giftcard_from")) _giftcard_from = pm_obj.value;
-                                else if (pm_obj.key.Equals("wc_gc_giftcard_message")) _giftcard_from = pm_obj.value;
+                                else if (pm_obj.key.Equals("wc_gc_giftcard_message")) _giftcard_message = pm_obj.value;
                                 else if (pm_obj.key.Equals("wc_gc_giftcard_amount")) _giftcard_amt = pm_obj.value;
                             }
                         }
@@ -471,7 +472,7 @@
                                 strProductMeta.Append(string.Format(" union all select order_item_id,'{0}','{1}' from wp_wc_order_product_lookup where order_id={2} and product_id = 888864 and order_item_id not in ({3})", pm_obj.key, pm_obj.value, model.OrderPostStatus.order_id, str_oiid));
                                 if (pm_obj.key.Equals("wc_gc_giftcard_to_multiple")) _giftcard_to = pm_obj.value;
                                 else if (pm_obj.key.Equals("wc_gc_giftcard_from")) _giftcard_from = pm_obj.value;
-                                else if (pm_obj.key.Equals("wc_gc_giftcard_message")) _giftcard_from = pm_obj.value;
+                                else if (pm_obj.key.Equals("wc_gc_giftcard_message")) _giftcard_message = pm_obj.value;
                                 else if (pm_obj.key.Equals("wc_gc_giftcard_amount")) _giftcard_amt = pm_obj.value;
                             }
                         }
@@ -526,18 +527,20 @@
 
                 result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 if (result > 0)
-                {                    
-                    strSql = new StringBuilder("");
+                {
+                    strSql = new StringBuilder("update wp_woocommerce_gc_cards set create_date = UNIX_TIMESTAMP(),expire_date = UNIX_TIMESTAMP(),is_active='off' where order_id = " + model.OrderPostStatus.order_id + " and order_item_id not in (select order_item_id from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864);");
+                    //strSql = new StringBuilder("delete from wp_woocommerce_gc_activity where gc_id in (select id from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ");");
+                    //strSql.Append(" delete from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ";");
                     foreach (var address in _giftcard_to.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        string _code = Guid.NewGuid().ToString().ToUpper().Replace("-","");
+                        string _code = Guid.NewGuid().ToString().ToUpper().Replace("-", "");
                         _code = _code.Substring(1, 4) + "-" + _code.Substring(4, 4) + "-" + _code.Substring(8, 4) + "-" + _code.Substring(12, 4);
 
-                        strSql.Append("insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active)");
-                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','on' from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864;");
+                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active)");
+                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off' from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864;");
 
                         strSql.Append("insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date)");
-                        strSql.Append(" Select 'issued',0,'"+ _giftcard_from_mail + "','" + model.OrderPostStatus.order_id + "',LAST_INSERT_ID(),'"+ _code + "','"+ _giftcard_amt + "',UNIX_TIMESTAMP();");
+                        strSql.Append(" Select 'issued',0,'" + _giftcard_from_mail + "','" + model.OrderPostStatus.order_id + "',LAST_INSERT_ID(),'" + _code + "','" + _giftcard_amt + "',UNIX_TIMESTAMP();");
                     }
                     DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
@@ -837,7 +840,7 @@
             {
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strSql_insert = string.Empty, Payment_method = string.Empty;
-                StringBuilder strSql = new StringBuilder();
+                StringBuilder strSql = new StringBuilder("Update wp_woocommerce_gc_cards set is_active='on', delivered=1,create_date = UNIX_TIMESTAMP() where order_id=" + model.order_id.ToString() + "; ");
                 foreach (OrderPostMetaModel obj in model.OrderPostMeta)
                 {
                     strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
@@ -863,6 +866,41 @@
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        [Route("OrdersMySQL/send-giftcard")]
+        public JsonResult SendGiftCardEMails(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                DataTable DT = DAL.MYSQLHelper.ExecuteDataTable("Select order_id,code,recipient,sender,sender_email,message,balance,delivered from wp_woocommerce_gc_cards where delivered = 1 and order_id= " + model.order_id);
+
+                foreach (DataRow dr in DT.Rows)
+                {
+                    GiftCardModel obj = new GiftCardModel
+                    {
+                        order_id = Convert.ToInt64(dr["order_id"]),
+                        code = dr["code"].ToString(),
+                        recipient = dr["recipient"].ToString(),
+                        sender = dr["sender"].ToString(),
+                        sender_email = dr["sender_email"].ToString(),
+                        message = dr["message"].ToString(),
+                        balance = Convert.ToDouble(dr["balance"]),
+                        delivered = dr["delivered"].ToString(),
+                    };
+                    status = true;
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", obj);
+                    result = SendEmail.SendEmails_outer(dr["recipient"].ToString(), "You have received a $" + obj.balance + " Gift Card from from " + obj.sender + "", renderedHTML, string.Empty);
+                    Response.Write(result);
+
+                }
+            }
+            catch(Exception ex) { status = false; result = ex.Message; }
+
+            return Json(new { status = status, message = result }, 0);
         }
     }
 }

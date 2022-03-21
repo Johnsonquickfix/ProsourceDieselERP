@@ -361,11 +361,13 @@
                 </div>
             </div>
             <div class="tab-pane" id="tab_8">
-                    <div class="box-header">
-                        <div class="col-md-3">
-                                <a href="#" class="btn btn-danger" id="btnSaveFundTransfer"><span title="Click here to fund transfer" data-placement="bottom" data-toggle="tooltip"><b>Fund transfer</b></span></a>
-                        </div>
-                    </div>
+                    <div class="box-header"><div class="form-inline">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input id="txtOrderDate1" data-auto-update-input="false" readonly="readonly" class="form-control">
+                                                </div>
+                         <a href="#" class="btn btn-danger" id="btnSaveFundTransfer"><span title="Click here to fund transfer" data-placement="bottom" data-toggle="tooltip"><b>Fund transfer</b></span></a>
+                    </div></div>
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
@@ -375,6 +377,7 @@
                                     <table id="FundTransferdata" class="table-blue table check-table table-bordered table-striped">
                                         <thead>
                                             <tr>
+                                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
                                                 <th>Date</th>
                                                 <th>Inv Num</th>
                                                 <th>Oper. Date</th>

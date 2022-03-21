@@ -225,9 +225,11 @@ function dataGridLoad(order_type) {
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
                     let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
-                    if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
+                    //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
+                    if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
                         if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
                         else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
                         //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                         else return pm_title;
                     }
@@ -341,7 +343,7 @@ function PaymentStatus(oid, pp_id, email) {
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
-
+                                        SendGiftCards(oid);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -416,6 +418,7 @@ function podiumPaymentStatus(oid, podium_id, email) {
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
+                                        SendGiftCards(oid);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -583,4 +586,9 @@ function cancelpayment(data) {
             }
         }]);
     }
+}
+
+///Send Gift Cards
+function SendGiftCards(id) {
+    $.post('/OrdersMySQL/send-giftcard', { order_id: id }).then(response => { console.log('Send Gift Card..'); }).catch(err => { }).always(function () { });
 }

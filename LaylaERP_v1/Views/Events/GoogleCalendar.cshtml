@@ -44,7 +44,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         //Global variables to access the calendar
-        var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar', calendarId = $(".page-title").data('email'), eventsList = [];
+        var clientId = 'AIzaSyB9Y-aA-ZqG-WWi_48LPwYw2UZPc61I6Sc', scopes = 'https://www.googleapis.com/auth/calendar.events', calendarId = $(".page-title").data('email'), eventsList = [];
         $("#loader").hide(); //printCalendar();
         $('#eventcalendar').fullCalendar({
             themeSystem: 'bootstrap4', height: "100%", weekNumbers: false, firstDay: 0, selectable: true, defaultView: 'month',

@@ -309,5 +309,11 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+
+        public JsonResult BankFundTransfer(string bank, string inv_complete)
+        {
+            BankRepository.BankFundTransfer(bank, inv_complete);
+            return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
+        }
     }
 }

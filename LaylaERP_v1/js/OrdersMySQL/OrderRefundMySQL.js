@@ -8,7 +8,7 @@
         t.preventDefault(); $('.billinfo').prop("disabled", true); getOrderInfo(); isEdit(false);
     });
     $(document).on("click", ".btnRefundOk", function (t) { t.preventDefault(); saveCO(); });
-    $(document).on("click", ".btntest", function (t) { t.preventDefault(); AuthorizeNetPaymentRefunds(); });
+    //$(document).on("click", ".btntest", function (t) { t.preventDefault(); AuthorizeNetPaymentRefunds(); });
 });
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Common ajax function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, errorFun) {
@@ -473,7 +473,8 @@ function createItemsList() {
             qty = qty + lastrefundqty;/// balance Quantity 
             grossAmount = grossAmount > 0 ? (grossAmount / qty) * refundqty : 0;
             discountAmount = 0;
-            taxAmount = grossAmount * tax_rate;
+            if ($(tr).data('pid') == '888864') taxAmount = 0;
+            else taxAmount = grossAmount * tax_rate;
             shippinAmount = shippinAmount > 0 ? shippinAmount * refundqty : 0;
             _itmes.push({
                 order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
@@ -571,6 +572,7 @@ function saveCO() {
                         else if (pay_by == 'podium') PodiumPaymentRefunds();
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else if (pay_by == 'affirm') AffirmPaymentRefunds();
+                        else if (pay_by == 'amazon_payments_advanced') AmazonPayPaymentRefunds();
                         else '';
                     }
                     else if (AvailableGiftCardAmount >= 0 && pay_gift == 'gift_card') {
@@ -581,6 +583,7 @@ function saveCO() {
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                             else if (pay_by == 'affirm') AffirmPaymentRefunds();
+                            else if (pay_by == 'amazon_payments_advanced') AmazonPayPaymentRefunds();
                             else '';
                         }
                         else if (AvailableGiftCardAmount >= net_total) {
@@ -599,6 +602,7 @@ function saveCO() {
                             else if (pay_by == 'podium') PodiumPaymentRefunds();
                             else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                             else if (pay_by == 'affirm') AffirmPaymentRefunds();
+                            else if (pay_by == 'amazon_payments_advanced') AmazonPayPaymentRefunds();
                             else '';
 
                         }

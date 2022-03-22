@@ -117,7 +117,12 @@ function PurchaseOrderGrid() {
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
-            { data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
+            //{ data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
+            {
+                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
+                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>';
+                }
+            },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
@@ -184,7 +189,12 @@ function PurchasefullyOrderGrid() {
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
-            { data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
+            //{ data: 'refordervendor', title: 'Invoice No', sWidth: "10%" },
+            {
+                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
+                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>';
+                }
+            },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },

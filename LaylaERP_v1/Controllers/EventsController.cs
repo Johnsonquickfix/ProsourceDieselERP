@@ -19,8 +19,9 @@
         {
             return View();
         }
-        public ActionResult AddNewEvents()
+        public ActionResult AddNewEvents(long id = 0)
         {
+            ViewBag.id = id;
             return View();
         }
         public ActionResult EventsList()

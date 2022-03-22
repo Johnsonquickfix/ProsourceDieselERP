@@ -42,7 +42,7 @@
         public ActionResult OrderRefund(long id = 0)
         {
             ViewBag.id = id;
-            //clsAmazonPay.RefundTransaction("903483", "62654755-9e97-4b92-b926-5b1ae45ee9d6", 1);
+            //clsAmazonPay.RefundTransaction("903483", "S01-4160531-1901199-C076358", 1);
             return View();
         }
 
@@ -861,7 +861,7 @@
                 if (res > 0)
                 {
                     JSONresult = "[{\"id\":903432,\"Response\":\"Success\"}]";
-                    //OrderRepository.OrderInvoiceMail(model.order_id);
+                    OrderRepository.OrderInvoiceMail(model.order_id);
                 }
             }
             catch { }

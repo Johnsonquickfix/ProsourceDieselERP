@@ -66,7 +66,7 @@
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ee.rowid id,event_label, convert(varchar,start_date,101) startdate,convert(varchar,end_date,101) enddate, related_company, (case when ee.status = 1 then 'Active' else 'Inactive' end) status, task, assigned_user, wv.name, related_contacts from erp_events ee"
+                string strSql = "SELECT ee.rowid id,event_label, convert(varchar,start_date,101) startdate,convert(varchar,end_date,101) enddate, related_company, (case when ee.status = 1 then 'Active' else 'Inactive' end) status, task,description,backgroundcolor, assigned_user, wv.name, related_contacts from erp_events ee"
                                + " left join wp_vendor wv on wv.rowid = ee.related_company where 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -98,7 +98,7 @@
             try
             {
                 SqlParameter[] pram = { new SqlParameter("@id", id) };
-                string strSql = "SELECT rowid,event_label,event_label,convert(varchar, start_date, 110) start_date,convert(varchar, end_date, 110) end_date,assigned_to,related_user,related_contacts,related_company,status,task,description,assigned_user FROM erp_events where rowid='" + id + "'";
+                string strSql = "SELECT rowid,event_label,event_label,convert(varchar, start_date, 110) start_date,convert(varchar, end_date, 110) end_date,assigned_to,related_user,related_contacts,related_company,status,task,description,assigned_user,backgroundcolor FROM erp_events where rowid='" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
                 dt = ds.Tables[0];
             }

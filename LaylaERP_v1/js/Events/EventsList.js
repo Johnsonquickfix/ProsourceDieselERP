@@ -9,7 +9,7 @@ function EventGrid() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [0] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        //columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [0] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -39,33 +39,22 @@ function EventGrid() {
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
                     var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
+                    console.log(dtOption); return fnCallback(dtOption);
                 }
             });
         },
         aoColumns: [
-            { data: 'id', title: 'ID', sWidth: "5%" },
-            { data: 'event_label', title: 'Label', sWidth: "10%", class: 'text-left' },
+            //{ data: 'id', title: 'ID', sWidth: "5%" },
             { data: 'startdate', title: 'Start Date', sWidth: "10%" },
             { data: 'enddate', title: 'End Date', sWidth: "10%" },
-            { data: 'task', title: 'Task', sWidth: "10%" },
             { data: 'assigned_user', title: 'Assigned To', sWidth: "10%" },
-            { data: 'name', title: 'Vendor name', sWidth: "10%" },
+            { data: 'task', title: 'Task', sWidth: "15%" },            
+            { data: 'description', title: 'Description', sWidth: "20%" },
+            { data: 'status', title: 'Status', sWidth: "7%" },
             {
-                data: 'related_contacts', title: 'Contact Number', sWidth: "15%", render: function (toFormat) {
-                    var tPhone = '';
-                    if (toFormat != null) {
-                        tPhone = toFormat.toString();
-                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
-                    }
-                    return tPhone
-                }
-            },
-            { data: 'status', title: 'Status', sWidth: "10%" },
-            {
-                'data': 'id', sWidth: "10%",
+                'data': 'id', sWidth: "7%",
                 'render': function (id, type, full, meta) {
-                    return '<span title="Click here to edit details" data-placement="bottom" data-toggle="tooltip"><a href="../Events/EditEvents/' + id + '" onclick="ActivityLog();"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    return '<span title="Click here to edit details" data-placement="bottom" data-toggle="tooltip"><a href="../Events/AddNewEvents/' + id + '" onclick="ActivityLog();"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                    
                 }
             }

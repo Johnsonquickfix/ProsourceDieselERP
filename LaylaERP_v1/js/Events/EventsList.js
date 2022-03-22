@@ -39,7 +39,7 @@ function EventGrid() {
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
                     var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    console.log(dtOption); return fnCallback(dtOption);
+                    return fnCallback(dtOption);
                 }
             });
         },

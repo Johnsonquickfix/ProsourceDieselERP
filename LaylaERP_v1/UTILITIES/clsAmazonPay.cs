@@ -1,254 +1,31 @@
 ﻿namespace LaylaERP.UTILITIES
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Web;
-    using AmazonPay;
-    using AmazonPay.CommonRequests;
-    using AmazonPay.StandardPaymentRequests;
-    using RestSharp;
+    using Amazon.Pay.API;
+    using Amazon.Pay.API.Types;
+    using Amazon.Pay.API.WebStore;
 
     public class clsAmazonPay
     {
-        private static string base_url = "https://mws.amazonservices.com";//Demo
-        private static string request_url = "OffAmazonPayments_Sandbox/2013-01-01/";//Demo
-        //private static string base_url = "https://mws.amazonservices.com/OffAmazonPayments/2013-01-01/";//Online
-        public static void RefundTransaction(long order_id, string amazon_capture_id, decimal refund_amount)
+        public static string RefundTransaction(string order_id, string amazon_capture_id, decimal refund_amount)
         {
-            string AWSAccessKeyId = "AKIAJE4IGB5OSLXYVEKA";
-            string SellerId = "A2G8SO21DNS4R0";
-            string Secret_Key = "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";
-            string PlatformId = "A1BVJDFFHQ7US4";
-            string Client_id = "amzn1.application-oa2-client.7ab5b60f08b54277b9eda5d573dca98d";
-            //var result = string.Empty;
-
-
-            RestClient client = new RestClient("https://mws.amazonservices.de");
-            client.DefaultParameters.Clear();
-            client.ClearHandlers();
-
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters.Add("AWSAccessKeyId", AWSAccessKeyId);
-            parameters.Add("Action", "Refund");
-            parameters.Add("AmazonCaptureId", amazon_capture_id);
-            parameters.Add("RefundAmount.Amount", refund_amount.ToString());
-            parameters.Add("RefundAmount.CurrencyCode", "USD");
-            parameters.Add("RefundReferenceId", "SO-" + order_id);
-            parameters.Add("SellerRefundNote", "");
-            parameters.Add("Timestamp", DateTime.UtcNow.ToString("s") + "Z");
-            parameters.Add("Version", "2013-01-01");
-            //parameters.Add("SignatureMethod", "HmacSHA256");
-            parameters.Add("SignatureVersion", "2");
-
-            RestRequest request = new RestRequest(request_url, Method.POST);
-            string signature = AmzLibrary.SignParameters(parameters, Secret_Key);
-            parameters.Add("Signature", signature);
-
-            foreach (KeyValuePair<string, string> keyValuePair in parameters)
+            string result = string.Empty;
+            string _privateKey = "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDRBkzTZiMcBZWzVZMmTAXmQZhyQhwYw5D4xptiPd+Dy3NPwnXamOiVr6BrzMmzL/aZan8omFgyAvm2iE/LIxGlCgUn4OsfW4h19RkJCR6vwJzoITMLCXD3mf+npM1B39pTnpWiusN6hT0UlYyGYEKcNWxP/G/6Grg77pXxlpVEUaAgsCEJddcVmMiGjG/Gpnzl705p9qptEuvFVTg/e3UjyzPoo8NHgL3c4U56DjW5t3z+XutsTauR+IJLNmHYP5FnXZ/fqUsKsNeeJG9WrF/WQUG9+hCgdZkYGveYobBp1evtFU2NgfIVQK8hRzZWFA8mJIxNLGlhoBiGQgrhiyxvAgMBAAECggEAQmygnGtwS9bggEl5BioRk98TjXfBywLW/p/KwDkOXykXv2h6IFoIS40wyyEcleNvl8hWmXV0TYxRg7akuNavpEVfZxFcVq41WtrlNlBeHpb0pfXq7R52dlDLhCBklAMJtBoIzlpQhY5y3yg5LHjJoi99+JstkIrOMkl6//eM/tToovzZmgGHk630EHLy8audJPeNQi+P7jZ+o/v2G4ce3zRNuYm91Kzd75xzPFehts0ZpZdPZexBHzAVr16ZcWufBHZ2oxvf/pV4EUIYhG/E1ruKtgwX9nUnrQh/lTQ4VXiNF/y2mnARyFKsQo3kpiyRONPxRJwwkVLNzF93ysO9oQKBgQDsC5eXIn341Q102js+bR+UKMkvhNjjva1CmDN/BwdqVwNH8MbfRKpfR7Qi1IjFZhX8QBHhssg94w7y8gNO0JMFrs4Xsu33ThdxsG6ReUFIf1SFBqJwmpfKWKpRld83cgWjLTkTXCxGR2NNAQr+OwKrVrwXgFjKX0imdhIRNXfmTwKBgQDise+qpNEqaskSp9YoMNCoTya4YGOfyJvmt3PlBfeUmINYaqcELJjdaxcFqq9+ygFjNZugkdQPXgDvUBmTqnTjYv1r5WHrc52f8CFD0IuIWKjOUsu93HcmKQhX0AIexdw2ehStZ3EqadUwjKMD0hywAoEFTGZnfGJ1LVWt1vrv4QKBgQDhgqGtDpLza/iTLvtyxKZq0hyDfZQI4GnrOaXZMknvWnoT/QDCxcNPjB2ZORwCG2nduQhcbIXKOmdJy9VFMxeDUmIrWhLnNoBHaZv497NbI+sHvDLtCYUDGHp/v4OmYRTptIbW7DSQYBuKsfhistX2A8NnYINztFygTCUus7p9GQKBgQCBGu1vteYZzi8tnMBuqz5qXImkv+B9A3cmcpxidn+F9UX4eOUdj3iPwYmfBJJmFw2rPsCfNe4bwmGt6WRnoNBpH9tMM5sMyQ+gItYPFRoiULvypVy7iG+jIANMX36VoAHGVMip6RueGB/+Qloktuj3pLVuGxDHJyO7sFH3a1QGgQKBgGskU/oveTJCslcQS22STBw5dtVU0njT2/cTG0ahcRKdQwT2rEWk+08pRh29hvKF054UeDT8AGXxSvIYjhecaI8QshHn4YYD0bN4KVdQAqHWejOoWzbYQ5e0r26sj9uhocMy5esCGxPHGHtQ1JG/2Qf26JOZ4HMCAwoaBkHSB8zf\n-----END PRIVATE KEY-----";
+            ApiConfiguration payConfig = new ApiConfiguration
+            (
+                region: Region.UnitedStates,
+                environment: Amazon.Pay.API.Types.Environment.Sandbox,
+                publicKeyId: "SANDBOX-AGLGP4TYYQIJWX6QFAHSKBCU",
+                privateKey: _privateKey
+            );
+            var client = new WebStoreClient(payConfig);
+            var refundRequest = new Amazon.Pay.API.WebStore.Refund.CreateRefundRequest(amazon_capture_id, refund_amount, Currency.USD);
+            var createRefund = client.CreateRefund(refundRequest, null);
+            // check if API call was successful
+            if (createRefund.Success)
             {
-                request.AddParameter(keyValuePair.Key, keyValuePair.Value);
+                result = createRefund.RefundId;
             }
-
-            IRestResponse result = client.Execute(request);
-
-            //var content = new FormUrlEncodedContent(parameters);
-
-            //using (var client = new HttpClient())
-            //{
-            //    client.BaseAddress = new Uri(base_url);
-            //    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
-            //    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-            //    var response = client.PostAsync("",content).Result;
-
-            //    if (response != null && response.IsSuccessStatusCode)
-            //    {
-            //        result = response.Content.ReadAsStringAsync().Result;
-            //    }
-            //}
-            //return result;
-        }
-        public static string RefundTransaction_old(long order_id, string TransactionID, decimal TransactionAmount)
-        {
-            string AWSAccessKeyId = "AKIAJE4IGB5OSLXYVEKA";
-            string SellerId = "A2G8SO21DNS4R0";
-            string Secret_Key = "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";
-            string PlatformId = "A1BVJDFFHQ7US4";
-            string Client_id = "client-id:amzn1.application-oa2-client.7ab5b60f08b54277b9eda5d573dca98d";
-
-            Configuration clientConfig = new Configuration();
-            clientConfig.WithMerchantId(SellerId)
-                .WithAccessKey(AWSAccessKeyId)
-                .WithSecretKey(Secret_Key)
-                .WithCurrencyCode(Regions.currencyCode.USD)
-                .WithClientId(Client_id)
-                .WithRegion(Regions.supportedRegions.us).WithSandbox(true)
-                .WithPlatformId(PlatformId)
-                //.WithCABundleFile("test")
-                //.WithApplicationName("Layla ERP")
-                //.WithApplicationVersion("1.0.0")
-                .WithProxyHost("")
-                .WithProxyPort(-1)
-                .WithAutoRetryOnThrottle(true);
-
-            //Dictionary<string, string> expectedParameters = new Dictionary<string, string>()
-            //{
-            //    {"Action","Refund"},
-            //    {"SellerId",SellerId},
-            //    {"AmazonCaptureId","test"},
-            //    {"RefundReferenceId","test"},
-            //    {"RefundAmount.Amount","10.05"},
-            //    {"RefundAmount.CurrencyCode","USD"},
-            //    {"SellerRefundNote","test"},
-            //    {"SoftDescriptor","test"},
-            //    {"MWSAuthToken","test"}
-            //};
-
-            // Test direct call to CalculateSignatureAndParametersToString
-            //Client client = new Client(clientConfig);
-            //client.SetTimeStamp("0000");
-
-            //MethodInfo method = GetMethod("CalculateSignatureAndParametersToString");
-            //method.Invoke(client, new object[] { expectedParameters }).ToString();
-
-            //MethodInfo method = client.GetType().GetMethod("CalculateSignatureAndParametersToString", BindingFlags.NonPublic | BindingFlags.Instance);
-            //method.Invoke(client, new object[] { expectedParameters }).ToString();
-            //IDictionary<string, string> expectedParamsDict = client.GetParameters();
-
-            // Test call to the API Refund
-            Client client = new Client(clientConfig);
-            client.SetTimeStamp("0000");
-            RefundRequest refund = new RefundRequest();
-            refund.WithAmazonCaptureId(TransactionID)
-                .WithAmount(TransactionAmount)
-                .WithCurrencyCode(Regions.currencyCode.USD)
-                .WithMerchantId(SellerId)
-                //.WithMWSAuthToken("test")
-                .WithRefundReferenceId("SO-" + order_id)
-                .WithSellerRefundNote("")
-                .WithSoftDescriptor("");
-            var result = client.Refund(refund);
-            //IDictionary<string, string> apiParametersDict = client.GetParameters();
-
-            //CollectionAssert.AreEqual(apiParametersDict, expectedParamsDict);
-            //var apiRequest = new ApiRequest(apiPath, HttpMethod.POST, refundRequest, headers);
-
-            //var result = CallAPI<RefundResponse>(apiRequest);
-
-
-            //return transId;
-            return "";
-        }
-    }
-
-    public static class AmzLibrary
-    {
-        private static string base_url = "https://mws.amazonservices.com/OffAmazonPayments_Sandbox/2013-01-01/";//Demo
-        //private static string base_url = "https://mws.amazonservices.com/OffAmazonPayments/2013-01-01/";//Online
-        public static string GetParametersAsString(IDictionary<String, String> parameters)
-        {
-            StringBuilder data = new StringBuilder();
-            foreach (String key in (IEnumerable<String>)parameters.Keys)
-            {
-                String value = parameters[key];
-                if (value != null)
-                {
-                    data.Append(key);
-                    data.Append('=');
-                    data.Append(UrlEncode(value, false));
-                    data.Append('&');
-                }
-            }
-            String result = data.ToString();
-            return result.Remove(result.Length - 1);
-        }
-
-        public static String SignParameters(IDictionary<String, String> parameters, String key)
-        {
-            String signatureVersion = parameters["SignatureVersion"];
-
-            KeyedHashAlgorithm algorithm = new HMACSHA1();
-
-            String stringToSign = null;
-            if ("2".Equals(signatureVersion))
-            {
-                String signatureMethod = "HmacSHA256";
-                algorithm = KeyedHashAlgorithm.Create(signatureMethod.ToUpper());
-                parameters.Add("SignatureMethod", signatureMethod);
-                stringToSign = CalculateStringToSignV2(parameters);
-            }
-            else
-            {
-                throw new Exception("Invalid Signature Version specified");
-            }
-
-            return Sign(stringToSign, key, algorithm);
-        }
-
-        private static String CalculateStringToSignV2(IDictionary<String, String> parameters)
-        {
-            StringBuilder data = new StringBuilder();
-            IDictionary<String, String> sorted = new SortedDictionary<String, String>(parameters, StringComparer.Ordinal);
-            //data.Append("POST");
-            data.Append("GET");
-            data.Append("\n");
-            Uri endpoint = new Uri(base_url);
-
-            data.Append(endpoint.Host);
-            if (endpoint.Port != 443 && endpoint.Port != 80) { data.Append(":").Append(endpoint.Port); }
-            data.Append("\n");
-            String uri = endpoint.AbsolutePath;
-            if (uri == null || uri.Length == 0) { uri = "/"; }
-            data.Append(UrlEncode(uri, true));
-            data.Append("\n");
-            foreach (KeyValuePair<String, String> pair in sorted)
-            {
-                if (pair.Value != null)
-                {
-                    data.Append(UrlEncode(pair.Key, false));
-                    data.Append("=");
-                    data.Append(UrlEncode(pair.Value, false));
-                    data.Append("&");
-                }
-
-            }
-
-            String result = data.ToString();
-            return result.Remove(result.Length - 1);
-        }
-
-        private static String UrlEncode(String data, bool path)
-        {
-            StringBuilder encoded = new StringBuilder();
-            String unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~" + (path ? "/" : "");
-
-            foreach (char symbol in System.Text.Encoding.UTF8.GetBytes(data))
-            {
-                if (unreservedChars.IndexOf(symbol) != -1)
-                {
-                    encoded.Append(symbol);
-                }
-                else
-                {
-                    encoded.Append("%" + String.Format("{0:X2}", (int)symbol));
-                }
-            }
-
-            return encoded.ToString();
-
-        }
-
-        private static String Sign(String data, String key, KeyedHashAlgorithm algorithm)
-        {
-            Encoding encoding = new UTF8Encoding();
-            algorithm.Key = encoding.GetBytes(key);
-            return Convert.ToBase64String(algorithm.ComputeHash(encoding.GetBytes(data.ToCharArray())));
+            return result;
         }
     }
 }

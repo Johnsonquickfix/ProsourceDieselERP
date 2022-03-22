@@ -54,6 +54,7 @@ namespace LaylaERP.Controllers
                                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                                     string strSql_insert = string.Empty;
                                     StringBuilder strSql = new StringBuilder(string.Format("update wp_posts set post_modified='{0}',post_modified_gmt='{1}' where id = {2};", cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), id));
+                                    strSql.Append(string.Format("update wp_woocommerce_gc_cards set is_active='on', delivered=1,create_date = UNIX_TIMESTAMP() where order_id={0};",id));
                                     strSql_insert += string.Format(" select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", id, "_podium_payment_uid", obj.data.payments[0].uid);
                                     strSql_insert += string.Format(" union all select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", id, "_podium_location_uid", obj.data.location.uid);
                                     strSql_insert += string.Format(" union all select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", id, "_podium_invoice_number", obj.data.invoiceNumber);
@@ -75,7 +76,7 @@ namespace LaylaERP.Controllers
                                 }
                                 if (id > 0)
                                 {
-                                    OrderRepository.OrderInvoiceMail(id);
+                                    OrderRepository.OrderInvoiceMail(id);                                
                                 }
                             }
                         }

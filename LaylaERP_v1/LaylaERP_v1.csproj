@@ -45,14 +45,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AmazonPay, Version=3.9.1.0, Culture=neutral, PublicKeyToken=74dc226be5eca88b, processorArchitecture=MSIL">
-      <HintPath>..\packages\AmazonPay.3.9.1\lib\net20\AmazonPay.dll</HintPath>
+    <Reference Include="Amazon.Pay.API.SDK, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e1073e8506c3469f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Amazon.Pay.API.SDK.2.5.1\lib\net45\Amazon.Pay.API.SDK.dll</HintPath>
     </Reference>
     <Reference Include="AuthorizeNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AuthorizeNet.2.0.2\lib\AuthorizeNet.dll</HintPath>
     </Reference>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
-      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.9\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
@@ -1204,6 +1204,8 @@
     <Content Include="Views\Accounting\FunddepositList.cshtml" />
     <Content Include="Views\FeeNTax\AddFee.cshtml" />
     <Content Include="Views\ImportOrderinvoice\CompareSalesPO.cshtml" />
+    <Content Include="UTILITIES\amzkey\keylive.pem" />
+    <Content Include="UTILITIES\amzkey\keysand.pem" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

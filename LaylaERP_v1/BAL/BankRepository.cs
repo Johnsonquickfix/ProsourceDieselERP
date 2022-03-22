@@ -495,10 +495,16 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        public static DataTable Banktransferlist(string accountno)
+        public static DataTable Fundtransferlist(string accountno, string bank_id, string sMonth)
         {
+            string strWhr = string.Empty;
             string sqlQuery = "select rowid,inv_num,sort_no,doc_date,CONVERT(varchar,doc_date,112) as datesort,CONVERT(varchar(12), doc_date, 101) as datecreation, inv_complete," +
-                              "label_operation,debit,credit, doc_type from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = '" + accountno + "'";
+                              "label_operation,debit,credit, doc_type from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = '" + accountno + "' and inv_num not in (select subledger_account from erp_payment where fk_bank = " + bank_id + ")";
+            if(!string.IsNullOrEmpty(sMonth))
+            {
+                strWhr = " and doc_date between " + sMonth + "";
+            }
+            sqlQuery += strWhr;
             DataTable ds = new DataTable();
             try
             {
@@ -529,22 +535,42 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        public static DataTable BankFundTransfer(string bank, string inv_complete)
+        public static int BankFundTransfer(string bank, string inv_complete, string inv_num)
         {
-            var dt = new DataTable();
+            //var dt = new DataTable();
+            string strQuery = "INSERT INTO erp_payment (ref, entity, datec, tms, datep, amount, fk_payment, accountancy_code , subledger_account, fk_bank, status)"
+                             + " SELECT '', 1 ,doc_date, doc_date, doc_date, debit, '1', inv_complete, inv_num, @bank , '0'"
+                             + " from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = @inv_complete and inv_num in ("+ inv_num + "); ";
             try
             {
                 SqlParameter[] parameters =
                 {
+                    new SqlParameter("@QFlag", "FT"),
                     new SqlParameter("@bank", bank),
-                    new SqlParameter("@inv_complete", inv_complete)
+                    new SqlParameter("@inv_complete", inv_complete),
+                    //new SqlParameter("@inv_num", inv_num)
                 };
 
-                dt = SQLHelper.ExecuteDataTable("erp_payment_fund_transfer", parameters);
+                int dt = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strQuery, parameters));
+                return dt;
             }
             catch (SqlException ex)
             { throw ex; }
-            return dt;
+            
+        }
+        public static DataTable SelectFundTransfer(string bank, string inv_num)
+        {
+            string sqlQuery = "select * from erp_payment where fk_bank= " + bank + " and subledger_account in(" + inv_num + ")";
+            DataTable ds = new DataTable();
+            try
+            {
+                ds = SQLHelper.ExecuteDataTable(sqlQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
     }
 }

@@ -343,7 +343,7 @@ function PaymentStatus(oid, pp_id, email) {
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
-                                        SendGiftCards(oid);
+                                        SendGiftCards(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -418,7 +418,7 @@ function podiumPaymentStatus(oid, podium_id, email) {
                                     data = JSON.parse(data);
                                     if (data[0].Response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
-                                        SendGiftCards(oid);
+                                        SendGiftCards(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -589,6 +589,6 @@ function cancelpayment(data) {
 }
 
 ///Send Gift Cards
-function SendGiftCards(id) {
+function SendGiftCards(id, email) {
     $.post('/OrdersMySQL/send-giftcard', { order_id: id }).then(response => { console.log('Send Gift Card..'); }).catch(err => { }).always(function () { });
 }

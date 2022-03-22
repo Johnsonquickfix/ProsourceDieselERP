@@ -301,7 +301,7 @@ namespace LaylaERP.Controllers
             try
             {
 
-                DataTable dt = BankRepository.Banktransferlist(model.strValue1);
+                DataTable dt = BankRepository.Fundtransferlist(model.strValue1, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
                 //  DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
 
@@ -310,10 +310,17 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
 
-        public JsonResult BankFundTransfer(string bank, string inv_complete)
+        public JsonResult BankFundTransfer(string bank, string inv_complete, string inv_num)
         {
-            BankRepository.BankFundTransfer(bank, inv_complete);
-            return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
+            var dt = BankRepository.BankFundTransfer(bank, inv_complete, inv_num);
+            if (dt > 0)
+            {
+                return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details !", url = "" }, 0);
+            }
         }
     }
 }

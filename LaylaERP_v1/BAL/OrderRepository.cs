@@ -1004,8 +1004,9 @@
                                 + " max(case meta_key when '_wc_authorize_net_cim_credit_card_card_type' then meta_value else '' end) authorize_net_cim_credit_card_card_type,"
                                 + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when '_paypal_status' then meta_value else '' end) paypal_status,"
                                 + " max(case meta_key when '_podium_uid' then meta_value else '' end) podium_uid,max(case meta_key when '_podium_status' then meta_value else '' end) podium_status,"
-                                + " max(case meta_key when '_transaction_id' then meta_value else '' end) transaction_id,max(case meta_key when '_wc_gateway_affirm_charge_id' then meta_value else '' end) affirm_charge_id"
-                                + " FROM wp_postmeta WHERE post_id = @order_id and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
+                                + " max(case meta_key when '_transaction_id' then meta_value else '' end) transaction_id,max(case meta_key when '_wc_gateway_affirm_charge_id' then meta_value else '' end) affirm_charge_id,"
+                                + " max(case meta_key when 'amazon_capture_id' then meta_value else '' end) amazon_capture_id"
+                                + " FROM wp_postmeta WHERE post_id = @order_id and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%' or meta_key like 'amazon%')"
                                 + " group by post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }

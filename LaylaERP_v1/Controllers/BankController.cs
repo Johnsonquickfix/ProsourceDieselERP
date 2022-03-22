@@ -312,9 +312,11 @@ namespace LaylaERP.Controllers
 
         public JsonResult BankFundTransfer(string bank, string inv_complete, string inv_num)
         {
-            var dt = BankRepository.BankFundTransfer(bank, inv_complete, inv_num);
+            var dt = 1;
+            //var dt = BankRepository.BankFundTransfer(bank, inv_complete, inv_num);
             if (dt > 0)
             {
+                //BankRepository.FundTransferInvoice(bank, inv_complete);
                 return Json(new { status = true, message = "Fund transfer successfully !", url = "" }, 0);
             }
             else

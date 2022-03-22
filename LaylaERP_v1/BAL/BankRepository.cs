@@ -538,8 +538,8 @@ namespace LaylaERP.BAL
         public static int BankFundTransfer(string bank, string inv_complete, string inv_num)
         {
             //var dt = new DataTable();
-            string strQuery = "INSERT INTO erp_payment (ref, entity, datec, tms, datep, amount, fk_payment, accountancy_code , subledger_account, fk_bank, status)"
-                             + " SELECT '', 1 ,doc_date, doc_date, doc_date, debit, '1', inv_complete, inv_num, @bank , '0'"
+            string strQuery = "INSERT INTO erp_payment (ref, entity, datec, tms, datep, amount, fk_payment, num_payment, accountancy_code , subledger_account, fk_bank, status)"
+                             + " SELECT '', 1 ,doc_date, doc_date, doc_date, debit, '1', inv_num, inv_complete, inv_num, @bank , '0'"
                              + " from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = @inv_complete and inv_num in ("+ inv_num + "); ";
             try
             {
@@ -571,6 +571,27 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return ds;
+        }
+
+        public static int FundTransferInvoice(string bank, string inv_complete)
+        {
+            //var dt = new DataTable();
+            string strQuery = "INSERT into erp_payment_invoice (fk_payment, fk_invoice, amount, type, thirdparty_code)"
+                             + " SELECT rowid, subledger_account, amount, 'PO' type, '' thirdparty from erp_payment where fk_bank = @bank and accountancy_code = @inv_complete and rowid not in (select fk_payment from erp_payment_invoice)";
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@bank", bank),
+                    new SqlParameter("@inv_complete", inv_complete),
+                };
+
+                int dt = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strQuery, parameters));
+                return dt;
+            }
+            catch (SqlException ex)
+            { throw ex; }
+
         }
     }
 }

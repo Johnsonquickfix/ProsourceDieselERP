@@ -390,19 +390,24 @@ function Bankfundtransfer() {
     var ID = $("#hfid").val();
     var invcomplete = $("#ddlaccounting").val();
     var obj = { bank: ID, inv_complete: invcomplete, inv_num: id }
-    $.ajax({
-        url: "/Bank/BankFundTransfer",
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            swal('Success!', data.message, 'success');
-        },
-        error: function (msg) {
+    if (id == "") { swal('Alert', 'Please select fund from list', 'error'); }
+    else {
+        $.ajax({
+            url: "/Bank/BankFundTransfer",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                swal('Success!', data.message, 'success');
+                FundTransferList(true);
+                BankEntriesList(false);
+            },
+            error: function (msg) {
 
-        }
-    });
+            }
+        });
+    }
 }
 
 $('#checkAll').click(function () {
@@ -416,7 +421,7 @@ function Singlecheck() {
     if (isChecked == false && isHeaderChecked)
         $("#checkAll").prop('checked', isChecked);
     else {
-        $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+        $('#FundTransferdata tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false)
                 isChecked = false;
         });

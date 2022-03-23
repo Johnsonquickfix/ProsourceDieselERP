@@ -89,8 +89,12 @@ namespace LaylaERP.Controllers
                                             balance = Convert.ToDouble(dataRow["balance"]),
                                             delivered = dataRow["delivered"].ToString(),
                                         };
-                                        String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", obj);
-                                        SendEmail.SendEmails_outer(dr["recipient"].ToString(), "You have received a $" + _obj.balance + " Gift Card from from " + _obj.sender + "", renderedHTML, string.Empty);
+                                        try
+                                        {
+                                            String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", _obj);
+                                            SendEmail.SendEmails_outer(dataRow["recipient"].ToString(), "You have received a $" + _obj.balance + " Gift Card from from " + _obj.sender + "", renderedHTML, string.Empty);
+                                        }
+                                        catch { }
                                     }
                                 }
                                 if (id > 0)

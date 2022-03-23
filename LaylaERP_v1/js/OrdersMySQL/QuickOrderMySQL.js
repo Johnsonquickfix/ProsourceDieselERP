@@ -2520,6 +2520,9 @@ function PaypalPayment(ppemail) {
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
                 let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
+                if (pay_by != '' || pay_by != 'PayPal') {
+                    create_url = paypal_baseurl + '/v2/invoicing/invoices', action_method = 'POST'; option_pp.id = '';
+                }
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
@@ -2555,7 +2558,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);
         },
         success: function (senddata, textStatus, jqXHR) {
-            console.log(senddata);
+            //console.log(senddata);
             let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', {BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
             let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
             $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {

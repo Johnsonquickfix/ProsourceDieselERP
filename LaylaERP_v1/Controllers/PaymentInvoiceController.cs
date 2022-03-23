@@ -144,6 +144,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpGet]
+        public JsonResult GetTypePayment()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = PaymentInvoiceRepository.GetTypePayment();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
         [HttpPost]
         public JsonResult TakePayment(SearchModel model)
         {
@@ -161,6 +173,25 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public JsonResult Newcheckdeposit(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Check Deposit Bank", "/PaymentInvoice/Newcheckdeposit/" + id + "" + ", " + Net.BrowserInfo);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.Newcheckdeposit(id, "POP", u_id, orderXML, orderdetailsXML));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
+
         //[HttpPost]
         //public JsonResult TakePayment(PaymentInvoiceModel model)
         //{

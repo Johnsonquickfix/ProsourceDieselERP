@@ -187,6 +187,20 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataSet GetTypePayment()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select id,PaymentType text from wp_PaymentType order by id;"
+                          + " SELECT account_number id, label + '-' + account_number text from erp_accounting_account eaa where pcg_type in ('EXPENSE','INCOME');";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
 
         public long TakePayment(PaymentInvoiceModel model)
         {
@@ -476,6 +490,30 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             { throw ex; }
+            return dt;
+        }
+
+        public static DataTable Newcheckdeposit(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_check_deposit_iud", parameters);
+            }
+            catch (Exception ex)
+            {                
+               UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/Newcheckdeposit/" + Pkey + "", "Check Deposit Bank");                 
+                throw new Exception(ex.Message);
+            }
             return dt;
         }
     }

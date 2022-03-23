@@ -33,6 +33,12 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult AddnewCheck(long id = 0)
+        {
+            clsUserDetails model = new clsUserDetails();
+            ViewBag.id = id;
+            return View(model);
+        }
 
         [HttpGet]
         public JsonResult GetCheckDepositList(JqDataTableModel model)

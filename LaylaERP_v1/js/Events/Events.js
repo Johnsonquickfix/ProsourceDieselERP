@@ -8,7 +8,7 @@
     $(document).on("click", "#color-chooser > li > a", function (e) {
         e.preventDefault(); var currColor = '#ff851b'; //Red by default
         // Save color
-        currColor = rgb2hex($(this).css('color')); console.log(currColor);
+        currColor = rgb2hex($(this).css('color')); 
         $('#color-chooser').find('i').removeClass('fa-check-square'); $('#color-chooser').find('i').addClass('fa-square');
         $(this).find('i').removeClass('fa-square'); $(this).find('i').addClass('fa-check-square');
         // Add color effect to button
@@ -35,7 +35,7 @@ function GetEventById() {
         url: "/Events/GetEventsById/" + id, type: "GET", contentType: "application/json; charset=utf-8", dataType: 'JSON',
         data: JSON.stringify({}), beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            var d = JSON.parse(data); console.log(d);
+            var d = JSON.parse(data); 
             if (d.length > 0) {
                 $("#btnSave").text('Update'); $(".lbl-title").text('Update Events');
                 $("#hfid").val(d[0].rowid);

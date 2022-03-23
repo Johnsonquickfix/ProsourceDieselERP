@@ -786,6 +786,7 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
+    <Content Include="js\PaymentInvoice\AddnewCheck.js" />
     <Content Include="js\PaymentInvoice\CheckDepositList.js" />
     <Content Include="js\PaymentInvoice\CheckDepositPrint.js" />
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
@@ -1206,6 +1207,7 @@
     <Content Include="Views\ImportOrderinvoice\CompareSalesPO.cshtml" />
     <Content Include="UTILITIES\amzkey\keylive.pem" />
     <Content Include="UTILITIES\amzkey\keysand.pem" />
+    <Content Include="Views\CheckDeposit\AddnewCheck.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

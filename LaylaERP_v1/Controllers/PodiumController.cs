@@ -36,7 +36,7 @@ namespace LaylaERP.Controllers
                                 long id = Convert.ToInt64(dr["id"].ToString());
                                 string str_note = obj.data.customerName;
 
-                                if (_DBType == "MSSQL")
+                                //if (_DBType == "MSSQL")
                                 {
                                     string str = "[{ post_id: " + id.ToString() + ", meta_key: '_podium_payment_uid', meta_value: '" + obj.data.payments[0].uid + "' }, { post_id: " + id.ToString() + ", meta_key: '_podium_location_uid', meta_value: '" + obj.data.location.uid + "' },"
                                             + "{ post_id: " + id.ToString() + ", meta_key: '_podium_invoice_number', meta_value: '" + obj.data.invoiceNumber + "' }, { post_id: " + id.ToString() + ", meta_key: '_podium_status', meta_value: 'PAID' }]";
@@ -49,7 +49,7 @@ namespace LaylaERP.Controllers
 
                                     OrderRepository.AddOrdersPost(id, "UPP", 0, str_note, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML);
                                 }
-                                else if (_DBType == "MYSQL")
+                                if (_DBType == "MYSQL")
                                 {
                                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                                     string strSql_insert = string.Empty;
@@ -73,6 +73,29 @@ namespace LaylaERP.Controllers
                                     strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Payment completed through Podium by " + obj.data.customerName + " on " + cDate.ToString("MM-dd-yyyy HH:mm:ss")));
 
                                     DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+
+                                    DataTable DT = DAL.MYSQLHelper.ExecuteDataTable("Select order_id,code,recipient,sender,sender_email,message,balance,delivered from wp_woocommerce_gc_cards where delivered = 1 and order_id= " + id);
+
+                                    foreach (DataRow dataRow in DT.Rows)
+                                    {
+                                        GiftCardModel _obj = new GiftCardModel
+                                        {
+                                            order_id = Convert.ToInt64(dataRow["order_id"]),
+                                            code = dataRow["code"].ToString(),
+                                            recipient = dataRow["recipient"].ToString(),
+                                            sender = dataRow["sender"].ToString(),
+                                            sender_email = dataRow["sender_email"].ToString(),
+                                            message = dataRow["message"].ToString(),
+                                            balance = Convert.ToDouble(dataRow["balance"]),
+                                            delivered = dataRow["delivered"].ToString(),
+                                        };
+                                        try
+                                        {
+                                            String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", _obj);
+                                            SendEmail.SendEmails_outer(dataRow["recipient"].ToString(), "You have received a $" + _obj.balance + " Gift Card from from " + _obj.sender + "", renderedHTML, string.Empty);
+                                        }
+                                        catch { }
+                                    }
                                 }
                                 if (id > 0)
                                 {

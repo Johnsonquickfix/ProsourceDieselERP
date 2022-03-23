@@ -323,12 +323,12 @@ namespace LaylaERP.BAL
                                 + " INNER JOIN erp_payment_invoice epi on epi.fk_payment=ep.rowid"
                                 + " INNER JOIN wp_vendor wv on wv.code_vendor=ep.thirdparty_code"
                                 + " where eba.rowid = '"+id+"'"; */
-                string strSql = "SELECT eba.rowid as bank, ep.rowid as id, wpt.PaymentType as paymenttype, eba.account_number as bankaccount, iif (epi.type = 'SO',epi.amount,'0')as debit, iif (epi.type = 'PO',epi.amount,'0') as credit,"
+                string strSql = "SELECT eba.rowid as bank, ep.rowid as id, wpt.PaymentType as paymenttype, eba.account_number as bankaccount, iif (epi.type = 'SO' or epi.type = 'FT',epi.amount,'0')as debit, iif (epi.type = 'PO',epi.amount,'0') as credit,"
                                //+ "eba.initial_balance + sum(iif (epi.type = 'SO',epi.amount,'0') - iif (epi.type = 'PO',epi.amount,'0')) over (order by ep.datep rows between unbounded preceding and current row) as balance,"
-                               + " (Select eba.initial_balance + sum(iif(epi1.type = 'SO', epi1.amount, '0') - iif(epi1.type = 'PO', epi1.amount, '0')) from erp_payment ep1 inner JOIN erp_payment_invoice epi1 on epi1.fk_payment = ep1.rowid where ep1.fk_bank = eba.rowid and ep1.datep <= ep.datep and ((ep1.fk_payment = 3 and ep1.status = 2) or (ep1.fk_payment in (1,2)))) as balance,"
+                               + " (Select eba.initial_balance + sum(iif(epi1.type = 'SO' or epi1.type = 'FT', epi1.amount, '0') - iif(epi1.type = 'PO', epi1.amount, '0')) from erp_payment ep1 inner JOIN erp_payment_invoice epi1 on epi1.fk_payment = ep1.rowid where ep1.fk_bank = eba.rowid and ep1.datep <= ep.datep and ((ep1.fk_payment = 3 and ep1.status = 2) or (ep1.fk_payment in (1,2,4)))) as balance,"
                                + " convert(varchar(12),ep.datep,101) as operation_date, ep.num_payment as num_payment, wv.name as vendor, convert(varchar(12),ep.datec,101) as value_date from erp_payment ep"
                                + " left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment"
-                               + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2)))";
+                               + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2,4)))";
 
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -346,7 +346,7 @@ namespace LaylaERP.BAL
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
                 strSql += "; SELECT (Count(ep.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ep.rowid) TotalRecord " +
                     "from erp_payment ep " +
-                    "left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code WHERE eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2)))" + strWhr.ToString();
+                    "left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code WHERE eba.rowid = '" + id + "' and ((ep.fk_payment = 3 and ep.status = 2) or (ep.fk_payment in (1,2,4)))" + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -539,7 +539,7 @@ namespace LaylaERP.BAL
         {
             //var dt = new DataTable();
             string strQuery = "INSERT INTO erp_payment (ref, entity, datec, tms, datep, amount, fk_payment, num_payment, accountancy_code , subledger_account, fk_bank, status)"
-                             + " SELECT '', 1 ,doc_date, doc_date, doc_date, debit, '1', inv_num, inv_complete, inv_num, @bank , '0'"
+                             + " SELECT '', 1 , GETDATE(), GETDATE(), GETDATE(), debit, '4', inv_num, inv_complete, inv_num, @bank , '0'"
                              + " from erp_accounting_bookkeeping where doc_type = 'FT' and inv_complete = @inv_complete and inv_num in ("+ inv_num + "); ";
             try
             {
@@ -577,7 +577,7 @@ namespace LaylaERP.BAL
         {
             //var dt = new DataTable();
             string strQuery = "INSERT into erp_payment_invoice (fk_payment, fk_invoice, amount, type, thirdparty_code)"
-                             + " SELECT rowid, subledger_account, amount, 'PO' type, '' thirdparty from erp_payment where fk_bank = @bank and accountancy_code = @inv_complete and rowid not in (select fk_payment from erp_payment_invoice)";
+                             + " SELECT rowid, subledger_account, amount, 'FT' type, '' thirdparty from erp_payment where fk_bank = @bank and accountancy_code = @inv_complete and rowid not in (select fk_payment from erp_payment_invoice)";
             try
             {
                 SqlParameter[] parameters =

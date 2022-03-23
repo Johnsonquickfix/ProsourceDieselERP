@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    $('.page-heading').text('New Check Deposit (To Bank)').append('<a title="Back to list" data-toggle="tooltip" data-placement="right"  class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
-    $('.footer-finalbutton').empty().append(' <button type="button" title="Click for send to bank" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Send to Bank</button>');
+    $('.page-heading').text('New Check Deposit Entry').append('<a title="Back to list" data-toggle="tooltip" data-placement="right"  class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
+    $('.footer-finalbutton').empty().append(' <button type="button" title="Click for send to bank" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i>Process</button>');
     filldropdown();
     filltype();
    // $('.billinfo').prop("disabled", true);
@@ -79,14 +79,14 @@ function newcheckdeposit() {
         let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option);
         swal.queue([{
-            title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to pay for the $' + parseFloat($("#txtChkAmount").val()) + ' amount?',
+            title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to process for the $' + parseFloat($("#txtChkAmount").val()) + ' amount?',
             showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve) {
                     $.post('/PaymentInvoice/Newcheckdeposit', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {                            
-                            swal('Success', 'Check deposit successfully!!', 'success').then((result) => { location.href = 'CheckDepositList'; });  
+                            swal('Success', 'Check deposit process successfully!!', 'success').then((result) => { location.href = 'CheckDepositList'; });
                             //swal('Success', 'Check deposit successfully!!', 'success') ;
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }

@@ -5,6 +5,12 @@
     filltype();
    // $('.billinfo').prop("disabled", true);
     //isEdit(true);
+
+    $("#txtChkAmount").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
 })
 
 //function isEdit(val) {

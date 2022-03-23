@@ -2473,7 +2473,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
         _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     });
     let paupal_xml = {
-        //id: inv_id, status: "DRAFT",
+        id: $('#lblOrderNo').data('pay_id').trim(), status: "DRAFT",
         detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: note, payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
@@ -2511,7 +2511,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
 }
 function PaypalPayment(ppemail) {
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
-    let option_pp = createPaypalXML(oid, pp_no, ppemail)
+    let option_pp = createPaypalXML(oid, pp_no, ppemail);    
     console.log('Start PayPal Payment Processing...');
     swal.queue([{
         title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
@@ -2520,12 +2520,15 @@ function PaypalPayment(ppemail) {
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
                 let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
+                if (pay_by != '' || pay_by != 'PayPal') {
+                    create_url = paypal_baseurl + '/v2/invoicing/invoices', action_method = 'POST'; option_pp.id = '';
+                }
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
                 $.ajax({
                     type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(data => {
-                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
+                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; //console.log(sendURL, data, action_method);
                     $("txtbillemail").data('surl', sendURL);
                     if (action_method == 'POST') { SendPaypalInvoice(oid, pp_no, access_token, sendURL); }
                     else {
@@ -2555,7 +2558,7 @@ function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);
         },
         success: function (senddata, textStatus, jqXHR) {
-            console.log(senddata);
+            //console.log(senddata);
             let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', {BR}Please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + id[id.length - 2].toString().substring(4).replace(/\-/g, '');
             let opt = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
             $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
@@ -2686,7 +2689,7 @@ function successModal(paymode, id, is_mail, is_back) {
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
     toDataURL('https://quickfix16.com/wp-content/themes/layla-white/images/logo.png', function (dataUrl) {
-        console.log('RESULT:', dataUrl);
+        //console.log('RESULT:', dataUrl);
         $('#imgLogoprint').attr("src", dataUrl);
     });
     //var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#billModal .modal-body').html() }

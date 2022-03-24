@@ -1111,19 +1111,15 @@ function removeItemsInTable(id) {
 function calcFinalTotals() {
     //calculateStateRecyclingFee();
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
-    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zGiftAmt = 0.00, zTotal = 0.00;
+    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zGiftCardAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zGiftAmt = 0.00, zTotal = 0.00;
     $("#order_line_items > tr").each(function (index, tr) {
-        let rQty = (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
-        zQty += rQty;
-        zGAmt = zGAmt + parseFloat($(tr).find(".TotalAmount").data("amount"));
+        let rQty = (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00), rGAmt = (parseFloat($(tr).find(".TotalAmount").data("amount")) || 0.00), rTDiscount = (parseFloat($(tr).find(".RowDiscount").text()) || 0.00);
+        zQty += rQty; zGAmt = zGAmt + rGAmt; zTDiscount = zTDiscount + rTDiscount;
+        if ($(this).data('pid') != "888864") zTotalTax = zTotalTax + ((rGAmt - rTDiscount) * tax_rate);
         if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0) zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
-        zTDiscount = zTDiscount + parseFloat($(tr).find(".RowDiscount").text());
-        //zTotalTax = zTotalTax + parseFloat($(tr).find(".TotalAmount").data("taxamount"));
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
-        //console.log(zShippingAmt, rQty, $(tr).find(".TotalAmount").data("shippingamt"));        
     });
     if (is_freighttax) zTotalTax = zTotalTax + (zShippingAmt * tax_rate);
-    zTotalTax = zTotalTax + ((zGAmt - zTDiscount) * tax_rate);
     zStateRecyclingAmt = parseFloat($("#stateRecyclingFeeTotal").text()) || 0.00;
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zDiscQty.toFixed(0));
     $("#SubTotal").text(zGAmt.toFixed(2)); $("#discountTotal").text(zTDiscount.toFixed(2)); $("#salesTaxTotal").text(zTotalTax.toFixed(2));
@@ -2470,7 +2466,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
         let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
         let discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;//parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
-        _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+        if ($(this).data('pid') == "888864") _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+        else _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     });
     let paupal_xml = {
         id: $('#lblOrderNo').data('pay_id').trim(), status: "DRAFT",
@@ -2511,7 +2508,7 @@ function createPaypalXML(oid, pp_no, pp_email) {
 }
 function PaypalPayment(ppemail) {
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
-    let option_pp = createPaypalXML(oid, pp_no, ppemail);    
+    let option_pp = createPaypalXML(oid, pp_no, ppemail);
     console.log('Start PayPal Payment Processing...');
     swal.queue([{
         title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
@@ -2520,7 +2517,7 @@ function PaypalPayment(ppemail) {
             $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
                 let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
                 let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
-                if (pay_by != '' || pay_by != 'PayPal') {
+                if (pay_by != '' && pay_by != 'ppec_paypal') {
                     create_url = paypal_baseurl + '/v2/invoicing/invoices', action_method = 'POST'; option_pp.id = '';
                 }
                 //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);

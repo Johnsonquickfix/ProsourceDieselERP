@@ -564,6 +564,7 @@
                         $("#ddljournal").val(d[0].fk_accountancy_journal).trigger('change');
                         $("#txtcurrency").val(d[0].currency_code);
                         $("#txtinitialamount").text('$' + (d[0].open_balance));
+                        $("#accounting_account").val(d[0].accounting_number);
                         BankLinkedFiles();
 
                     }

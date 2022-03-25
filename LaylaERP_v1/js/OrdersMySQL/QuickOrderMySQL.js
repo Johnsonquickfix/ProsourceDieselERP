@@ -2225,7 +2225,7 @@ function saveCO() {
     return false;
 }
 function updateCO() {
-    PaypalPayment($("#txtbillemail").val()); return false;
+    
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();

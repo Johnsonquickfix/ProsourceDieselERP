@@ -64,14 +64,14 @@
     //        { data: 'city', title: 'City', sWidth: "2%" },
     //        { data: 'state', title: 'State', sWidth: "2%" },
     //        { data: 'zipcode', title: 'Zipcode', sWidth: "2%" },
-    //        { data: 'Applied', title: 'Applied', sWidth: "2%" },
+       
     //        //{ data: 'cr_dr_memo_text', title: 'Credit Debit Memo Text', sWidth: "2%" },
             { data: 'vendorname', title: 'Vendor', sWidth: "13%" },
             { data: 'document_id', title: 'Document', sWidth: "13%" },
             { data: 'podatesort', title: 'DocDate', sWidth: "13%", render: function (inv_num, type, full, meta) { return full.po_date; } },
             /* { data: 'payer_id', title: 'Payer', sWidth: "5%" },*/
             { data: 'payer_name', title: 'Payer Name', sWidth: "13%" },
-            { data: 'ref_doc', title: 'Ref doc', sWidth: "13%" },
+            /*{ data: 'ref_doc', title: 'Ref doc', sWidth: "13%" },*/
             { data: 'sales_doc', title: 'Sales Doc', sWidth: "9%" },
             //{ data: 'item', title: 'Item', sWidth: "5%" },
             //{ data: 'material_number', title: 'Material', sWidth: "5%" },
@@ -83,6 +83,8 @@
             { data: 'freight_charge', title: 'Freight Ch', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'sales_tax', title: 'Sales Tax', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'total_amount', title: 'Total Amout', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+
+            { data: 'Applied', title: 'Applied', sWidth: "2%" }
 
         ]
     });

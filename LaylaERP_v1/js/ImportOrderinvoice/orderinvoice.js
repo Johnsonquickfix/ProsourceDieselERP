@@ -5,7 +5,7 @@
     var table_EL = $('#EmailListdata').DataTable({
 
         columnDefs: [{ "orderable": true, "targets": 1 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true, scrollX:true ,
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,   
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -40,30 +40,30 @@
             });
         },
         aoColumns: [
-            { data: 'vendorname', title: 'Vendor', sWidth: "2%" },
-            { data: 'document_id', title: 'Document', sWidth: "5%" },
-            { data: 'podatesort', title: 'DocDate', sWidth: "5%", render: function (inv_num, type, full, meta) { return full.po_date; } },
-            { data: 'payer_id', title: 'Payer', sWidth: "5%" },
-            { data: 'payer_name', title: 'Payer Name', sWidth: "5%" },
-            { data: 'ref_doc', title: 'Ref doc', sWidth: "5%" },
-            { data: 'sales_doc', title: 'Sales Doc', sWidth: "5%" },
-            { data: 'item', title: 'Item', sWidth: "5%" },
+            { data: 'vendorname', title: 'Vendor', sWidth: "13%" },
+            { data: 'document_id', title: 'Document', sWidth: "13%" },
+            { data: 'podatesort', title: 'DocDate', sWidth: "13%", render: function (inv_num, type, full, meta) { return full.po_date; } },
+           /* { data: 'payer_id', title: 'Payer', sWidth: "5%" },*/
+            { data: 'payer_name', title: 'Payer Name', sWidth: "13%" },
+            { data: 'ref_doc', title: 'Ref doc', sWidth: "13%" },
+            { data: 'sales_doc', title: 'Sales Doc', sWidth: "9%" },
+            //{ data: 'item', title: 'Item', sWidth: "5%" },
             //{ data: 'material_number', title: 'Material', sWidth: "5%" },
-            { data: 'material_description', title: 'Material Description', sWidth: "5%" },
-            { data: 'pint', title: 'Plnt', sWidth: "5%" },
-            { data: 'po_number', title: 'Purchase order number', sWidth: "5%" },
-            { data: 'bol', title: 'BoL', sWidth: "2%" },
-            { data: 'net_amount', title: 'Net amount', sWidth: "2%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'freight_charge', title: 'Freight Ch', sWidth: "2%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'sales_tax', title: 'Sales Tax', sWidth: "2%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'total_amount', title: 'Total Amout', sWidth: "2%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'material_description', title: 'Material Description', sWidth: "13%" },
+          /*  { data: 'pint', title: 'Plnt', sWidth: "5%" },*/
+            { data: 'po_number', title: 'Purchase order number', sWidth: "13%" },
+            /*{ data: 'bol', title: 'BoL', sWidth: "13%" },*/
+            { data: 'net_amount', title: 'Net amount', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'freight_charge', title: 'Freight Ch', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'sales_tax', title: 'Sales Tax', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'total_amount', title: 'Total Amout', sWidth: "13%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             //{ data: 'cmir', title: 'CMIR', sWidth: "2%" },
             //{ data: 'tracking_number', title: 'Tracking N', sWidth: "2%" },
-            { data: 'name', title: 'Name', sWidth: "2%" },
-            { data: 'street', title: 'Street', sWidth: "2%" },
-            { data: 'city', title: 'City', sWidth: "2%" },
-            { data: 'state', title: 'State', sWidth: "2%" },
-            { data: 'zipcode', title: 'Zipcode', sWidth: "2%" }
+            //{ data: 'name', title: 'Name', sWidth: "2%" },
+            //{ data: 'street', title: 'Street', sWidth: "2%" },
+            //{ data: 'city', title: 'City', sWidth: "2%" },
+            //{ data: 'state', title: 'State', sWidth: "2%" },
+            //{ data: 'zipcode', title: 'Zipcode', sWidth: "2%" }
             //{ data: 'destination_country', title: 'Dest Coun', sWidth: "2%" },
             //{ data: 'cr_dr_memo_text', title: 'Credit Debit Memo Text', sWidth: "2%" },
             

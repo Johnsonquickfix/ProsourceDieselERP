@@ -16,7 +16,8 @@
         FundTransferList(true);
     });
     BankEntriesList(false);
-    setTimeout(function () { FundTransferList(true); }, 4000); //product dropdown
+    setTimeout(function () { FundTransferList(true) }, 2000);//product dropdown
+    PendingEntriesBalance();
 });
 
 function BankEntriesList(is_date) {
@@ -133,7 +134,7 @@ function EntriesBalanceForSpecificBank() {
             if (d.length > 0) {
                 $("#txtentriesdebit").text('$' + parseFloat(d[0].debit).toFixed(2));
                 $("#txtentriescredit").text('$' + parseFloat(d[0].credit).toFixed(2));
-                $("#txtbalance").text('$' + parseFloat(d[0].balance).toFixed(2));
+                $("#txtbalance").text('$' + (d[0].balance));
             }
         },
         error: function (msg) {
@@ -222,7 +223,6 @@ function PendingEntriesList() {
     });
 }
 
-PendingEntriesBalance();
 function PendingEntriesBalance() {
     var ID = $("#hfid").val();
     var obj = { id: ID }
@@ -252,7 +252,7 @@ function FundTransferList(is_date) {
     let ed = $('#txtOrderDate1').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
 
-    var ID = $("#ddlaccounting").val();
+    var ID = $("#accounting_account").val();
     var bank_id = $("#hfid").val();
     var obj = { strValue1: ID, strValue2: bank_id, strValue3: dfa };
     var table_EL = $('#FundTransferdata').DataTable({

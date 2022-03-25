@@ -70,4 +70,10 @@ namespace LaylaERP.Models
 
     }
 
+    public class TranscationType
+    {
+        public int rowid { get; set; }
+        public int account_type { get; set; }
+        public string transaction_type { get; set; }
+    }
 }

@@ -1526,6 +1526,56 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+        public static int AddTranscationType(TranscationType model)
+        {
+            try
+            {
+                SqlParameter[] parm =
+                {
+                new SqlParameter("@qflag",'I'),
+                new SqlParameter("@transaction_type", model.transaction_type),
+                new SqlParameter("@account_type", model.account_type)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_transaction_type_sp", parm));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static DataTable GetTransactionTypeList(string ID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
 
+                string strSql = "select ett.rowid id ,(CASE WHEN ett.transaction_type=1 THEN 'Bill' WHEN ett.transaction_type=2 THEN 'Expense' WHEN ett.transaction_type=3 THEN 'Check' WHEN ett.transaction_type=4 THEN 'Pay Down Credit Card' WHEN ett.transaction_type=5 THEN 'Vendor Credit' WHEN ett.transaction_type=6 THEN 'Bill Payment (check)' else '' end) transaction_type,"
+                                + " eaa.label account_type from erp_transaction_type ett Left join erp_accounting_account eaa on eaa.account_number = ett.account_type where 1 = 1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    //strWhr += " and (J.code like '%" + searchid + "%' OR N.Nature like '%" + searchid + "%' OR J.label like '%" + searchid + "%')";
+                }
+                //if (userstatus != null)
+                //{
+                //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                //}
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(ett.rowid)/" + pagesize.ToString() + ") TotalPage,Count(ett.rowid) TotalRecord from erp_transaction_type ett Left join erp_accounting_account eaa on eaa.account_number = ett.account_type where 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

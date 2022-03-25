@@ -37,7 +37,7 @@
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: '5%' },
-            { data: 'transaction_type', title: 'Transcation Type', sWidth: '10%' },
+            { data: 'transaction_type', title: 'Transaction Type', sWidth: '10%' },
             { data: 'account_type', title: 'Account Type', sWidth:'10%' },
             /*{
                 'data': 'id', sWidth: "8%",
@@ -57,7 +57,7 @@ function AddTranscationType() {
     let accounttype = $("#ddlaccount").val();
 
     if (transcationtype == "-1") {
-        swal('Alert', 'Please select transcation type', 'error').then(function () { swal.close(); $('#ddltranscation').focus(); });
+        swal('Alert', 'Please select transaction type', 'error').then(function () { swal.close(); $('#ddltranscation').focus(); });
     }
     else if (accounttype == "-1") {
         swal('Alert', 'Please select account type', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); });

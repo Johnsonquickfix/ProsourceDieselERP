@@ -2225,6 +2225,7 @@ function saveCO() {
     return false;
 }
 function updateCO() {
+    
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
@@ -2449,8 +2450,8 @@ function updatePayment(oid, taskUid) {
 function createPaypalXML(oid, pp_no, pp_email) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00; let note = $('#txtCustomerNotes').val(); note = (note != '' ? note : 'Layla Invoice.');
-    let custom_label = (srf_total != 0 ? 'State Recycling Fee' : ''); custom_label += (fee_total != 0 ? ', Other Fee' : ''); custom_label += (gc_total != 0 ? ' & Gift Card' : '');
+    let gc_total = parseFloat($('#giftCardTotal').text()) || 0.00, note = $('#txtCustomerNotes').val(); note = (note != '' ? note : 'Layla Invoice.');
+    let custom_label = 'Other Charges', _items = []; fee_total = fee_total + srf_total - gc_total;
     if (srf_total != 0 && fee_total != 0 && gc_total != 0) custom_label = 'State Recycling Fee, Other Fee & Gift Card';
     else if (srf_total != 0 && fee_total != 0 && gc_total == 0) custom_label = 'State Recycling Fee & Other Fee';
     else if (srf_total != 0 && fee_total == 0 && gc_total == 0) custom_label = 'State Recycling Fee';
@@ -2458,16 +2459,22 @@ function createPaypalXML(oid, pp_no, pp_email) {
     else if (srf_total == 0 && fee_total == 0 && gc_total != 0) custom_label = 'Gift Card';
     else if (srf_total != 0 && fee_total == 0 && gc_total != 0) custom_label = 'State Recycling Fee & Gift Card';
     else custom_label = 'Other Fee';
+    let paypal_seller_email = $('#lblOrderNo').data('paypal_seller');
     //console.log(srf_total, fee_total, gc_total);
-    let _items = []; fee_total = fee_total + srf_total - gc_total;
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
         let discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;//parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
-        if ($(this).data('pid') == "888864") _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
-        else _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+        if ($("#order_line_items > tr.gift_item").length > 0) {
+            custom_label = 'Other Charges'; fee_total = fee_total + taxAmount;
+            if ($(this).data('pid') == "888864") _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+            else _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+        }
+        else {
+            _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+        }
     });
     let paupal_xml = {
         id: $('#lblOrderNo').data('pay_id').trim(), status: "DRAFT",
@@ -2475,7 +2482,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
-            email_address: "sb-ywzys7367265@business.example.com",
+            email_address: paypal_seller_email,
+            //email_address: "sb-ywzys7367265@business.example.com",
             //email_address: "david.quick.fix1-facilitator@gmail.com",
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
             website: "www.laylasleep.com",
@@ -2499,10 +2507,9 @@ function createPaypalXML(oid, pp_no, pp_email) {
         items: _items,
         configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
         amount: {
-            breakdown: {
-                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
-            }
-        }
+            breakdown: { discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } } }
+        },
+        payment_method: { payee_preferred: "UNRESTRICTED" }
     }
     return paupal_xml;
 }

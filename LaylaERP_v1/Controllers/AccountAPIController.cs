@@ -106,6 +106,10 @@
                                 op.PaypalSecret = ds.Tables[1].Rows[0]["PaypalSecret"].ToString();
                             else
                                 op.PaypalSecret = string.Empty;
+                            if (ds.Tables[1].Rows[0]["PaypalSellerAccount"] != DBNull.Value)
+                                op.PaypalSellerAccount = ds.Tables[1].Rows[0]["PaypalSellerAccount"].ToString();
+                            else
+                                op.PaypalSellerAccount = string.Empty;
                             if (ds.Tables[1].Rows[0]["AuthorizeAPILogin"] != DBNull.Value)
                                 op.AuthorizeAPILogin = ds.Tables[1].Rows[0]["AuthorizeAPILogin"].ToString();
                             else

@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Order";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 @*datatables CSS*@
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -53,7 +54,7 @@
             <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
             <input type="hidden" id="hfTaxRate" value="0" data-srfee="0" />
             <input type="hidden" id="hfFreighttaxable" value="false" />
-            <h4 class="box-title" id="lblOrderNo" data-pay_option="@ViewBag.pay_option" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
+            <h4 class="box-title" id="lblOrderNo" data-paypal_seller="@user.PaypalSellerAccount" data-pay_option="@ViewBag.pay_option" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
             <div class="radtype_span">
                 <h5 class="payment-history"></h5>
             </div>

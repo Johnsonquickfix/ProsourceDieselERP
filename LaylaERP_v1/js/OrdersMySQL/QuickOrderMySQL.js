@@ -2475,7 +2475,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
-            email_address: "sb-ywzys7367265@business.example.com",
+            email_address: "sb-b6zsk7337458@business.example.com",
+            //email_address: "sb-ywzys7367265@business.example.com",
             //email_address: "david.quick.fix1-facilitator@gmail.com",
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
             website: "www.laylasleep.com",
@@ -2502,7 +2503,8 @@ function createPaypalXML(oid, pp_no, pp_email) {
             breakdown: {
                 discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
             }
-        }
+        },
+        payment_method: { payee_preferred: "UNRESTRICTED" }
     }
     return paupal_xml;
 }

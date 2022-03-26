@@ -23,7 +23,14 @@ namespace LaylaERP.Models
         public int on_product_id { get; set; }
         public int free_product_id { get; set; }
         public int free_quantity { get; set; }
+    }
 
-
+    public class ProductReturnModel
+    {
+        public int rowid { get; set; }
+        public int productid { get; set; }
+        public int returndays { get; set; }
+        public int warrantydays { get; set; }
+        public string remarks {get; set;}
     }
 }

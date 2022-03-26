@@ -165,7 +165,7 @@ function ResetBox() {
 
 function accountingAccount() {
     $.ajax({
-        url: '/Bank/GetAccountingAccount/',
+        url: '/Accounting/GetAccountingAccount/',
         type: 'GET',
         success: function (data) {
             var opt = '<option value="-1">Please select account</option>';

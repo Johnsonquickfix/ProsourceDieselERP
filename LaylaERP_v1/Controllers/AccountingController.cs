@@ -987,12 +987,22 @@ namespace LaylaERP.Controllers
             if(model.rowid > 0)
             {
                 AccountingRepository.UpdateTranscationType(model);
-                return Json(new { status = true, message ="Transaction type update successfully.", url="" });
+                return Json(new { status = true, message ="Transaction type update successfully.", url = "", id = model.rowid },0);
             }
             else
             {
-                return Json(new { status = false, message ="Error", url ="" });
+                return Json(new { status = false, message ="Something went wrong.", url ="", id = 0 }, 0);
             }
+        }
+        public JsonResult GetAccountingAccount(SearchModel model)
+        {
+            DataSet ds = AccountingRepository.GetAccountingAccount();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
         }
     }
 }

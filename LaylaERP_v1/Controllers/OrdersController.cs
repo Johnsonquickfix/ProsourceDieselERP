@@ -512,6 +512,18 @@
             catch { status = false; }
             return Json(new { status }, 0);
         }
+        [HttpGet]
+        [Route("order/order-fee")]
+        public JsonResult GetFeeList(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = JsonConvert.SerializeObject(OrderRepository.GetFeeList(), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
         [HttpPost]
         public JsonResult GetCustomersOrderList(JqDataTableModel model)
         {

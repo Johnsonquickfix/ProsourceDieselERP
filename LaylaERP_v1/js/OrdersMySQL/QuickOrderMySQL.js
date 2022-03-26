@@ -580,74 +580,56 @@ function addCustomerModal(cus_name) {
 
     let myHtml = '';
     myHtml += '<div class="row">';
-    myHtml += '<div class="col-md-4" >';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group">First Name<span class="text-red">*</span><input type="text" id="txtCusFirstName" class="form-control" placeholder="First Name"/></div>';
+    myHtml += '</div >';
 
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="User Name">User Name/Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
-    myHtml += '</div>';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group">Last Name<span class="text-red">*</span><input type="text" id="txtCusLastName" class="form-control" placeholder="Last Name"/></div>';
+    myHtml += '</div >';
+    myHtml += '</div >';
 
-    //myHtml += '<div class="form-group">';
-    //myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
-    //myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
-    //myHtml += '</div>';
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group">User Name/Email<span class="text-red">*</span><input type="text" id="txtCusNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
+    myHtml += '</div >';
 
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="First Name">First Name<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusFirstName" class="form-control" placeholder="First Name" /></div>';
-    myHtml += '</div>';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group">Contact No.<span class="text-red">*</span><input type="tel" id="txtCusBillingMobile" class="form-control" placeholder="Contact No." maxlength="11"/></div>';
+    myHtml += '</div >';
+    myHtml += '</div >';
 
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Last Name">Last Name<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusLastName" class="form-control" placeholder="Last Name" /></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtCusBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
-    myHtml += '</div>';
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">Country<span class="text-red">*</span><select class="form-control select2" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
     myHtml += '</div >';
 
     myHtml += '<div class="col-md-4">';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address" /></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 1">Address Line 2</label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address Line 2" /></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="City">City<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtCusBillingCity" class="form-control" placeholder="City"/></div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
+    myHtml += '<div class="form-group"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address"/></div>';
+    myHtml += '</div >';
 
     myHtml += '<div class="col-md-4">';
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="State">State<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingState"></select></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Zip Code">Zip Code<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingPostCode" class="form-control" placeholder="Zip Code" /></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Country">Country<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control select2" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
-    myHtml += '</div>';
-
-    myHtml += '</div>';
+    myHtml += '<div class="form-group">Address Line 2<input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address Line 2"/></div>';
     myHtml += '</div >';
+    myHtml += '</div >';
+
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">Zip Code<span class="text-red">*</span><input type="text" id="txtCusBillingPostCode" class="form-control" placeholder="Zip Code"/></div>';
+    myHtml += '</div >';
+
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">City<span class="text-red">*</span><input type="tel" id="txtCusBillingCity" class="form-control" placeholder="City"/></div>';
+    myHtml += '</div >';
+
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">State<span class="text-red">*</span><select class="form-control select2" id="ddlCusBillingState"></select></div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
 
     $('#billModal .modal-body').append(myHtml); BindStateCounty("ddlCusBillingState", { id: 'US' });
     $("#ddlCusBillingCountry,#ddlCusBillingState").select2({ dropdownParent: "#billModal" });
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); //$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusFirstName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); //$("#ddlCusBillingState,#ddlCusBillingCountry").select2();
     //let newEl = document.getElementById('txtCusBillingAddress1');
     //setupAutocomplete(newEl);
 }
@@ -667,18 +649,18 @@ function saveCustomer() {
 
     let rex_email = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
 
-    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
+    if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtCusFirstName').focus(); }) }
+    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtCusLastName').focus(); }) }
+    else if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
     else if (Email != "" && !rex_email.test(Email)) { swal('alert', 'Please enter valid email.', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
     //else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
-    else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtCusFirstName').focus(); }) }
-    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtCusLastName').focus(); }) }
     else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtCusBillingMobile').focus(); }) }
+    else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCusBillingCountry').focus(); }) }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtCusBillingAddress1').focus(); }) }
+    else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCusBillingPostCode').focus(); }) }
     else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCusBillingCity').focus(); }) }
     else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').select(); }) }
     else if (BillingState == "0") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlCusBillingState').focus(); }) }
-    else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCusBillingPostCode').focus(); }) }
-    else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCusBillingCountry').focus(); }) }
     else {
         var obj = {
             ID: 0, user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,

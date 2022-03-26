@@ -726,8 +726,10 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(p.doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label_complete)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
-                + " where 1 = 1 ";
+                //string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label_complete)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
+                //+ " where 1 = 1 ";
+                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
+                + " inner join erp_accounting_account eac on eac.account_number = p.inv_complete where 1 = 1 ";
                 strSql += strWhr + string.Format(" group by inv_complete  order by inv_complete");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }

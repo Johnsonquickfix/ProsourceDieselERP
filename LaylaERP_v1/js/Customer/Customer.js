@@ -98,7 +98,7 @@ function AddCustomer() {
     SBillingCountry = $("#txtshpBillingCountry").val();
     SBillingState = $("#txtshpBillingState").val();
     SBillingCity = $("#txtshpBillingCity").val();
-    SBillingPhone = $("#txtshpBillingPhone").val();
+   SBillingPhone = "0";
     //if (NickName == "") {
     //    swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     //}
@@ -141,9 +141,9 @@ function AddCustomer() {
     else if (SLastName == "") {
         swal('Alert', 'Please enter shipping last name', 'error').then(function () { swal.close(); $('#txtshpLastName').focus(); })
     }
-    else if (SBillingPhone == "") {
-        swal('Alert', 'Please enter shipping contact number', 'error').then(function () { swal.close(); $('#txtshpBillingPhone').focus(); })
-    }
+    //else if (SBillingPhone == "") {
+    //    swal('Alert', 'Please enter shipping contact number', 'error').then(function () { swal.close(); $('#txtshpBillingPhone').focus(); })
+    //}
     else if (SBillingAddress1 == "") {
         swal('Alert', 'Please enter shipping address', 'error').then(function () { swal.close(); $('#txtshpBillingAddress1').focus(); })
     }
@@ -426,7 +426,7 @@ function GetCustomerByID(id) {
                     $("#txtshpBillingState").select2('').empty().select2({ data: [{ name: d[0].S_StateFullName, id: d[0].shipping_state, text: d[0].S_StateFullName }] })
                     //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
                     $("#txtshpBillingCity").val(d[0].shipping_city);
-                    $("#txtshpBillingPhone").val(d[0].shipping_phone);
+                   // $("#txtshpBillingPhone").val(d[0].shipping_phone);
                     $("#txtshpBillingState").select2({
                         allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                         ajax: {
@@ -579,7 +579,7 @@ function filladdress() {
                 $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].b_StateFullName, id: d[0].b_state, text: d[0].b_StateFullName }] })
                // $("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].b_state, text: d[0].b_state }] });
                 $("#txtBillingCity").val(d[0].b_city);
-                $("#txtBillingPhone").val(d[0].b_phone);
+                $("#txtBillingPhone").val(d[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"));
                 $("#txtBillingState").select2({
                     allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
@@ -596,7 +596,7 @@ function filladdress() {
                 $("#txtshpBillingCountry").val(d[0].s_country);
                 $("#txtshpBillingState").select2('').empty().select2({ data: [{ name: d[0].s_StateFullName, id: d[0].s_state, text: d[0].s_StateFullName }] })
                 $("#txtshpBillingCity").val(d[0].s_city);
-                $("#txtshpBillingPhone").val(d[0].s_phone);
+               // $("#txtshpBillingPhone").val(d[0].s_phone);
                 $("#txtshpBillingState").select2({
                     allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {

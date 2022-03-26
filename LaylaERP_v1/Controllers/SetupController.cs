@@ -32,6 +32,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ProductReturnDays()
+        {
+            return View();
+        }
 
         public JsonResult GetProduct()
         {

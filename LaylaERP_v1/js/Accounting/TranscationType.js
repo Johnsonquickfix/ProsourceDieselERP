@@ -165,10 +165,10 @@ function ResetBox() {
 
 function accountingAccount() {
     $.ajax({
-        url: '/Bank/GetAccountingAccount/',
+        url: '/Accounting/GetAccountingAccount/',
         type: 'GET',
         success: function (data) {
-            var opt = '<option value="-1">Please select account</option>';
+            var opt = '<option value="-1">Please select account type</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }

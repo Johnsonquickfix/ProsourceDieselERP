@@ -1612,5 +1612,18 @@ namespace LaylaERP.BAL
             }
             catch(Exception ex){ throw ex; }
         }
+
+        public static DataSet GetAccountingAccount()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select account_number ID, concat(label,' - ',account_number) label from erp_accounting_account order by rowid;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

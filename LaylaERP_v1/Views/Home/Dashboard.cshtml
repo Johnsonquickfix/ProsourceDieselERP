@@ -4,6 +4,12 @@
 }
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
 <script src="~/Content/highcharts/highcharts.js"></script>
 <script src="~/Content/highcharts/series-label.js"></script>
 <script src="~/Content/highcharts/data.js"></script>
@@ -168,8 +174,44 @@
             </div>
         </div>
         <!-- /.nav-tabs-custom -->
-        <!-- Chat box -->
-        <!-- /.box (chat box) -->
+        <!-- On-Hand Inventory box -->
+        <div class="box box-primary">
+            <div class="box-header">
+                <i class="fa fa-cart-plus"></i>
+                <h3 class="box-title">On-Hand Inventory</h3>
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse" data-toggle="tooltip" title="Click here to show / close widgets.">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="remove" data-toggle="tooltip" title="Click here to close the widgets.">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="tbOnHandInventory" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="hidden">Parent ID</th>
+                                    <th>SKU</th>
+                                    <th>Product Name</th>
+                                    <th class="text-right">Units in Stock</th>
+                                    <th class="text-right">Units in POs</th>
+                                    <th class="text-right">Sale Units</th>
+                                    <th class="text-right">Available Units</th>
+                                    <th class="text-right">Damage Units</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box (On-Hand Inventory) -->
         <!-- quick email widget -->
         <div class="box box-primary">
             <div class="box-header">
@@ -344,11 +386,7 @@
         dateRange('#DateRange2');
         $('#DateRange2').val('');
         $('#DateRange2').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
-        gettotalOrder();
-        getTotalSales();
-        gettotalCustomer();
-        getCompletedOrder();
-        loadData();
+        $.when(gettotalOrder(), getTotalSales(), gettotalCustomer(), getCompletedOrder()).then(function () { loadData(); bindOnHandInventory(); });
 
         gettotal('#DateRange');
         $('#DateRange').change(function () { loadData(); gettotal('#DateRange'); });
@@ -368,11 +406,7 @@
         //High chart start
         Search();
         $(function () {
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
-                }
-            });
+            Highcharts.setOptions({ lang: { thousandsSep: ',' } });
         }) //High chart end
 
     });
@@ -532,6 +566,66 @@
             });
         }
     }
+    function bindOnHandInventory() {
+        console.log('Load ');
+        let sd = moment().format('MM-DD-YYYY'), ed = moment().format('MM-DD-YYYY');
+        if ($('#DateRange2').val != '') {
+            sd = $('#DateRange2').data('daterangepicker').startDate.format('MM-DD-YYYY');
+            ed = $('#DateRange2').data('daterangepicker').endDate.format('MM-DD-YYYY');
+        }
+        let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed }; console.log(obj);
+        $('#tbOnHandInventory').DataTable({
+            searching: false, lengthChange: false, bProcessing: true, bAutoWidth: false,
+            language: {
+                lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+                infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            },
+            destroy: true, ajax: {
+                url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+                dataSrc: function (data) { console.log(data, obj); return JSON.parse(data); }
+            },
+            lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+            columns: [
+                { data: 'p_id', title: 'Parent ID', sWidth: "8%" },
+                { data: 'sku', title: 'SKU', sWidth: "8%" },
+                { data: 'post_title', title: 'Product Name', sWidth: "28%" },
+                {
+                    data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                        if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                    }
+                },
+                {
+                    data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                        if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
+                    }
+                },
+                {
+                    data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                        if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
+                    }
+                },
+                {
+                    data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                        if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
+                    }
+                },
+                {
+                    data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                        //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                        if (row.post_parent > 0) return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                    }
+                },
+            ],
+            columnDefs: [{ targets: [0], visible: false, searchable: false }]
+        });
+
+
+
+        //$.post("/Home/GetOrderList", $("#saveForm").serialize(), function (response) {
+        //    $("#tbOnHandInventory").html(response);
+
+        //});
+    }
 </script>
 
 @*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
@@ -599,21 +693,12 @@
         if (account == "0") { }
         else {
             $.ajax({
-                type: 'POST',
-                url: '/Home/GetSalesOrderChart',
-                data: { from_date: sd, to_date: ed },
-                dataType: 'json',
-                beforeSend: function () {
-                    $("#loader").show();
-                },
+                type: 'POST', url: '/Home/GetSalesOrderChart',
+                data: { from_date: sd, to_date: ed }, dataType: 'json',
+                beforeSend: function () { $("#loader").show(); },
                 success: function (result) {
-                    console.log(result);
                     _list_cat = $.map(result, function (v) { return v.first_name; });// Enumerable.from(result).select("$.billing_city").toArray();
-                    _list = [
-                        { name: 'Order Total', data: $.map(result, function (v) { return parseFloat(v.billing_city); }) }
-
-                    ];
-
+                    _list = [{ name: 'Order Total', data: $.map(result, function (v) { return parseFloat(v.billing_city); }) }];
                     bindChart();
                 },
                 error: function (Result) { alert("Error"); },
@@ -683,4 +768,3 @@
     }
 </script>
 <!--High sales chart end-->
-

@@ -115,7 +115,9 @@
     $("#billModal").on("change", "#txtCusBillingPostCode", function (t) {
         t.preventDefault(); let _zip = $(this).val();
         if ($("#ddlCusBillingCountry").val() == 'CA') return false;
-        GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip);
+        $.when($("#loader").show()).then(function () {
+            GetCityByZip(_zip, $("#txtCusBillingCity"), $("#ddlCusBillingState"), $("#ddlCusBillingCountry"), $("#txtCusBillingPostCode")); $("#txtCusBillingPostCode").val(_zip);
+        }).always(function () { $("#loader").hide(); });
     });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
@@ -271,9 +273,7 @@
     $(document).on("click", ".hub-accord h5", function (t) {
         $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(250).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(250);
     });
-    $(document).on("click", ".full-dropy", function (t) {
-        $(this).find('.fa').toggleClass('fa-minus fa-plus');
-    });
+    $(document).on("click", ".full-dropy", function (t) { $(this).find('.fa').toggleClass('fa-minus fa-plus'); });
     $(document).on("click", "#btnAddGiftCardProduct", function (t) {
         t.preventDefault(); let pid = $(this).data('pid'), vid = $(this).data('vid'), p_name = $(this).data('name'); bindGiftCardProduct(p_name, pid, vid);
         //let rowid = $(this).data('rowid'), orderitemid = parseInt($(this).data('orderitemid')) || 0, feeamt = parseFloat($('#txt_FeeAmt').val()) || 0.00;
@@ -2207,7 +2207,7 @@ function saveCO() {
     return false;
 }
 function updateCO() {
-    
+
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();

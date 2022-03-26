@@ -401,6 +401,7 @@
             gettotal('#DateRange2');
             drawChart(fromdate, todate); //Google sales chart
             Search(fromdate, todate); //High chart sales
+            bindOnHandInventory();
         });
         $('#sendEmail').click(function () { emails(); });
         //High chart start
@@ -567,13 +568,12 @@
         }
     }
     function bindOnHandInventory() {
-        console.log('Load ');
         let sd = moment().format('MM-DD-YYYY'), ed = moment().format('MM-DD-YYYY');
         if ($('#DateRange2').val != '') {
             sd = $('#DateRange2').data('daterangepicker').startDate.format('MM-DD-YYYY');
             ed = $('#DateRange2').data('daterangepicker').endDate.format('MM-DD-YYYY');
         }
-        let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed }; console.log(obj);
+        let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed }; 
         $('#tbOnHandInventory').DataTable({
             searching: false, lengthChange: false, bProcessing: true, bAutoWidth: false,
             language: {

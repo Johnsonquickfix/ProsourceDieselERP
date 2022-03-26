@@ -45,87 +45,102 @@
                                                 <input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" />
                                             </div>
                                         </div>
+
+
+                                        <div class="form-group">
+                                            <label class="control-label"  for="First Name">First Name</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="text" tabindex="1"  id="txtFirstName" class="form-control" placeholder="First Name" />
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <label class="control-label " for="Email">User Name/Email</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="control-label " for="First Name">First Name</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" />
+                                                <input type="email" tabindex="3"  id="txtUserEmail" class="form-control" placeholder="Email" />
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label " for="Last Name">Last Name</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Contact No.">Contact Number</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        @*<div  class="form-group">
-                                            <label for="exampleInputEmail1">Related  Customer</label>
-                                            <select class="form-control" id="ddlrelatedcustomer">
-                                                <option selected value=""></option>
-                                            </select>
-                                        </div>*@
-                                        <div class="form-group">
-                                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                            <label class="control-label " for="Address 1">Address</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Address 2">Address Line 2</label>
-                                            <div class="">
-                                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address Line 2" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="City">City</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        @*<div class="form-group">
-                                <label class="control-label " for="State/Country">State</label>
-                                <div class="">
-                                    <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
-                                </div>
-                            </div>*@
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">State</label><span style="color:red">*</span>
-                                            <select class="form-control" id="txtBillingState">
-                                                <option selected value=""></option>
+                                            <label for="exampleInputEmail1">Country</label><span style="color:red">*</span>
+                                            <select tabindex="5" class="form-control select1" id="txtBillingCountry">
+                                                <option value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label " for="Post/Zip Code">Zip Code</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Zip Code" />
+                                                <input type="text" tabindex="8"  id="txtBillingPostCode" class="form-control" placeholder="Zip Code" />
+                                            </div>
+                                        </div>
+                                       
+                                        
+                                    </div>
+                                    <div class="col-md-4">
+                                        @*<div  class="form-group">
+            <label for="exampleInputEmail1">Related  Customer</label>
+            <select class="form-control" id="ddlrelatedcustomer">
+                <option selected value=""></option>
+            </select>
+        </div>*@
+                                        <div class="form-group">
+                                            <label class="control-label " for="Last Name">Last Name</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="text" tabindex="2" id="txtLastName" class="form-control" placeholder="Last Name" />
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Country</label><span style="color:red">*</span>
-                                            <select class="form-control select1" id="txtBillingCountry">
-                                                <option value="US">US - United States</option>
-                                                <option value="CA">CA - Canada</option>
-                                            </select>
+                                            <label class="control-label " for="Contact No.">Contact Number</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="tel" tabindex="4"  id="txtBillingPhone" class="form-control" placeholder="Contact No." />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                            <label class="control-label " for="Address 1">Address</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="text" tabindex="6" id="txtBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                      
+                                        <div class="form-group">
+                                            <label class="control-label " for="City">City</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="tel" tabindex="9"  id="txtBillingCity" class="form-control" placeholder="City" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="col-md-4">
+                                        @*<div class="form-group">
+            <label class="control-label " for="State/Country">State</label>
+            <div class="">
+                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
+
+            </div>
+        </div>*@
+                                        <div class="form-group">
+                                            <label class="control-label ">-</label>
+                                            <label class="form-control"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">-</label>
+                                            <label class="form-control"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="Address 2">Address Line 2</label>
+                                            <div class="">
+                                                <input type="text" tabindex="7" id="txtBillingAddress2" class="form-control" placeholder="Address Line 2" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">State</label><span style="color:red">*</span>
+                                            <select tabindex="10" class="form-control" id="txtBillingState">
+                                                <option selected value=""></option>
+                                            </select>
+                                        </div>
+
+
+                                    </div>
+                                    </div>
 
                             </div>
                             <div class="tab-pane" id="tab_2">
@@ -147,16 +162,24 @@
                                         <div class="form-group">
                                             <label class="control-label " for="First Name">First Name</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="text" id="txtshpFirstName" class="form-control" placeholder="First Name" />
+                                                <input type="text" tabindex="1" id="txtshpFirstName" class="form-control" placeholder="First Name" />
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label " for="Last Name">Last Name</label><span style="color:red">*</span>
+                                            <label for="exampleInputEmail1">Country</label><span style="color:red">*</span>
+                                            <select tabindex="3" class="form-control select1" id="txtshpBillingCountry">
+                                                <option value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="Post/Zip Code">Zip Code</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="text" id="txtshpLastName" class="form-control" placeholder="Last Name" />
+                                                <input type="text" tabindex="6" id="txtshpBillingPostCode" class="form-control" placeholder="Zip Code" />
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                       
+                                        <div style="display:none" class="form-group">
                                             <label class="control-label " for="Contact No.">Contact Number</label><span style="color:red">*</span>
                                             <div class="">
                                                 <input type="tel" id="txtshpBillingPhone" class="form-control" placeholder="Contact No." />
@@ -164,49 +187,49 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label " for="Last Name">Last Name</label><span style="color:red">*</span>
+                                            <div class="">
+                                                <input type="text" tabindex="2" id="txtshpLastName" class="form-control" placeholder="Last Name" />
+                                            </div>
+                                        </div>
 
                                         <div class="form-group">
                                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                             <label class="control-label " for="Address 1">Address</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="text" id="txtshpBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
+                                                <input tabindex="4" type="text" id="txtshpBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Address 2">Address Line 2</label>
-                                            <div class="">
-                                                <input type="text" id="txtshpBillingAddress2" class="form-control" placeholder="Address Line 2" />
-                                            </div>
-                                        </div>
+                                       
                                         <div class="form-group">
                                             <label class="control-label " for="City">City</label><span style="color:red">*</span>
                                             <div class="">
-                                                <input type="tel" id="txtshpBillingCity" class="form-control" placeholder="City" />
+                                                <input type="tel" tabindex="7" id="txtshpBillingCity" class="form-control" placeholder="City" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="exampleshpInputEmail1">State</label><span style="color:red">*</span>
-                                            <select class="form-control" id="txtshpBillingState">
-                                                <option selected value=""></option>
-                                            </select>
+                                            <label class="control-label " for="Address 2">-</label>
+                                            <label class="form-control " for="Address 2">-</label>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Post/Zip Code">Zip Code</label><span style="color:red">*</span>
-                                            <div class="">
-                                                <input type="text" id="txtshpBillingPostCode" class="form-control" placeholder="Zip Code" />
+                                            <div class="form-group">
+                                                <label class="control-label " for="Address 2">Address Line 2</label>
+                                                <div class="">
+                                                    <input type="text" tabindex="5" id="txtshpBillingAddress2" class="form-control" placeholder="Address Line 2" />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Country</label><span style="color:red">*</span>
-                                            <select class="form-control select1" id="txtshpBillingCountry">
-                                                <option value="US">US - United States</option>
-                                                <option value="CA">CA - Canada</option>
-                                            </select>
+                                            <div class="form-group">
+                                                <label for="exampleshpInputEmail1">State</label><span style="color:red">*</span>
+                                                <select tabindex="8" class="form-control" id="txtshpBillingState">
+                                                    <option selected value=""></option>
+                                                </select>
+                                            </div>
+
+
                                         </div>
                                     </div>
-                                </div>
                             </div>
 
                         </div>
@@ -559,11 +582,11 @@
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
-    document.getElementById('txtshpBillingPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtshpBillingPhone');
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        phoneNumber.value = phoneFormat(phoneNumber.value);
-    });
+    //document.getElementById('txtshpBillingPhone').addEventListener('keyup', function (evt) {
+    //    var phoneNumber = document.getElementById('txtshpBillingPhone');
+    //    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    //    phoneNumber.value = phoneFormat(phoneNumber.value);
+    //});
 
 
     function phoneFormat(input) {

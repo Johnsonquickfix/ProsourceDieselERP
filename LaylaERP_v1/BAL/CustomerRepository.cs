@@ -169,6 +169,26 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
+        public void UpdatecustomerMetaData(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "erp_customer_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "UM"),
+                    new SqlParameter("@user_id", id),
+                    new SqlParameter("@meta_key", varFieldsName ?? (object)DBNull.Value),
+                    new SqlParameter("@meta_value",  varFieldsValue ?? (object)DBNull.Value),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Coustomer/UpdateMetaData/" + id + "", "Update Meta Data Details");
+                throw Ex;
+            }
+        }
         public static DataTable CustomerList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -335,6 +355,33 @@ namespace LaylaERP.Models
             }
             return dt;
         }
+        public static DataSet fillCustomersAddresssList(string email)
+        {
+            DataSet dt = new DataSet();
+            try
+            {
+                //string strSql = "SELECT distinct po.ID customer_id, max(case pm.meta_key when '_billing_first_name' then pm.meta_value else '' end) b_first_name,max(case pm.meta_key when '_billing_last_name' then pm.meta_value else '' end) b_last_name,"
+                //          + " max(case pm.meta_key when '_billing_company' then pm.meta_value else '' end) b_company,max(case pm.meta_key when '_billing_address_1' then pm.meta_value else '' end) b_address_1,max(case pm.meta_key when '_billing_address_2' then pm.meta_value else '' end) b_address_2,max(case pm.meta_key when '_billing_postcode' then pm.meta_value else '' end) b_postcode,max(case pm.meta_key when '_billing_city' then pm.meta_value else '' end) b_city,"
+                //          + " max(case pm.meta_key when '_billing_country' then pm.meta_value else '' end) b_country,max(case pm.meta_key when '_billing_state' then pm.meta_value else '' end) b_state,max(case pm.meta_key when '_billing_email' then pm.meta_value else '' end) b_email,max(case pm.meta_key when '_billing_phone' then pm.meta_value else '' end) b_phone,max(case pm.meta_key when '_shipping_first_name' then pm.meta_value else '' end) s_first_name,max(case pm.meta_key when '_shipping_last_name' then pm.meta_value else '' end) s_last_name,"
+                //          + " max(case pm.meta_key when '_shipping_company' then pm.meta_value else '' end) s_company,max(case pm.meta_key when '_shipping_address_1' then pm.meta_value else '' end) s_address_1,max(case pm.meta_key when '_shipping_address_2' then pm.meta_value else '' end) s_address_2,max(case pm.meta_key when '_shipping_postcode' then pm.meta_value else '' end) s_postcode,max(case pm.meta_key when '_shipping_city' then pm.meta_value else '' end) s_city,max(case pm.meta_key when '_shipping_country' then pm.meta_value else '' end) s_country,max(case pm.meta_key when '_shipping_state' then pm.meta_value else '' end) s_state"
+                //          + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_billing_email' and  pmu.meta_value = '" + CustomerID + "' "
+                //          + " inner join wp_postmeta pm on pm.post_id = pmu.post_id   WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value ";
+                // dt = SQLHelper.ExecuteDataSet(strSql);
+                string strSQl = "erp_getrelatedAddresss";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@search", email),
+                    new SqlParameter("@qflag", "FILL")
+                };
+                dt = SQLHelper.ExecuteDataSet(strSQl, para);
+                dt.Tables[0].TableName = "po"; dt.Tables[0].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable Getrelatedcustomer(string email,string id)
         {
             DataTable DS = new DataTable();
@@ -353,6 +400,29 @@ namespace LaylaERP.Models
             { throw ex; }
             return DS;
         }
+        public static DataTable CustomerAddressByID(string search)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para =
+                 {
+                    new SqlParameter("@search", search),
+                    new SqlParameter("@qflag", "SRCH")
+                };
+                string strSql = "erp_getrelatedAddresss";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
     
 }

@@ -482,13 +482,13 @@ namespace LaylaERP.BAL
         public static DataTable AccountBalanceList(string account_num, string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
-            string condition = " group by inv_complete, label_complete";
+            string condition = " group by inv_complete, label_complete, aa.label";
             string strSql = String.Empty;
             totalrows = 0;
             try
             {
                 string strWhr = string.Empty;
-                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation, '' subledger_label FROM erp_accounting_bookkeeping where 1=1";
+                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', aa.label) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation, '' subledger_label FROM erp_accounting_bookkeeping ab inner join erp_accounting_account aa on aa.account_number = ab.inv_complete where 1=1";
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;

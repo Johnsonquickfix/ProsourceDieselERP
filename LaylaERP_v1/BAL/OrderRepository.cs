@@ -445,6 +445,19 @@
             return result;
         }
 
+        public static DataTable GetFeeList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { };
+                string strSQl = "select rowid,fee_name,fee_type,fee_amt_percentage from erp_fee_master";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
         public static long AddOrderFee(OrderOtherItemsModel obj)
         {
             long result = 0;

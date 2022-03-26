@@ -729,6 +729,7 @@
     <Content Include="js\Accounting\Funddeposit.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\Accounting\ProfitLossAccount.js" />
+    <Content Include="js\Accounting\TranscationType.js" />
     <Content Include="js\app.js" />
     <Content Include="js\Bank\Bank.js" />
     <Content Include="js\Bank\BankEntries.js" />
@@ -1208,6 +1209,7 @@
     <Content Include="UTILITIES\amzkey\keylive.pem" />
     <Content Include="UTILITIES\amzkey\keysand.pem" />
     <Content Include="Views\CheckDeposit\AddnewCheck.cshtml" />
+    <Content Include="Views\Accounting\NewTranscationType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

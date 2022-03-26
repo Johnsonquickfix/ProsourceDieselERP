@@ -97,6 +97,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult NewTranscationType()
+        {
+            return View();
+        }
         
         public JsonResult GetNatureofJournal(SearchModel model)
         {
@@ -940,6 +944,31 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult AddTranscationType(TranscationType model)
+        {
+            int ID = AccountingRepository.AddTranscationType(model);
+            if(ID > 0)
+            {
+                return Json(new { status = true, message = "Transcation type saved successfully", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Transcation type saved successfully", url = "", id = 0 }, 0);
+            }
+        }
+        public JsonResult GetTranscationType(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = AccountingRepository.GetTransactionTypeList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
     }
 }

@@ -38,6 +38,7 @@
         public string LoginToken { get; set; }
         public string PaypalClientId { get; set; }
         public string PaypalSecret { get; set; }
+        public string PaypalSellerAccount { get; set; }
         public string AuthorizeAPILogin { get; set; }
         public string AuthorizeTransKey { get; set; }
         public string AuthorizeKey { get; set; }

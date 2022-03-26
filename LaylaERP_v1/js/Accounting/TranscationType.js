@@ -37,9 +37,9 @@
         },
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: '5%' },
-            { data: 'transaction_type', title: 'Transaction Type', sWidth: '10%' },
-            { data: 'account_type', title: 'Account Type', sWidth:'10%' },
-            /*{
+            { data: 'transaction_type', title: 'Transaction Type', sWidth: '10%', className: 'text-left' },
+            { data: 'account_type', title: 'Account Type', sWidth: '10%'},
+            {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
                     //if ($("#hfEdit").val() == "1") {
@@ -47,7 +47,7 @@
                     //}
                     //else { return "No permission" }
                 }
-            }, */
+            },
         ]
     });
 }
@@ -94,20 +94,17 @@ function AddTranscationType() {
 function EditSelect(id) {
     var obj = { strValue1: id }
     $.ajax({
-        url: '/Accounting/GetAccountFiscalYearById/',
+        url: '/Accounting/TranscationTypeById/',
         datatype: 'json',
         type: 'Post',
         contentType: "application/json;charset=utf-8",
         data: JSON.stringify(obj),
         success: function (data) {
             var jobj = JSON.parse(data);
-            console.log(jobj[0].label);
-            $("#hfid").val(jobj[0].id);
-            $('#txtlabel').val(jobj[0].label);
-            $('#txtstartdate').val(jobj[0].date_start);
-            $('#txtenddate').val(jobj[0].date_end);
-            jobj[0].status == true ? $("#chkstatus").prop("checked", true) : $("#chkstatus").prop("checked", false);
-
+            $("#hfid").val(jobj[0].rowid);
+            $('#ddltranscation').val(jobj[0].transaction_type).trigger('change');
+            $('#ddlaccount').val(jobj[0].account_type).trigger('change');
+            
             $("#btnAdd").hide();
             $("#btnUpdate").show();
 
@@ -118,31 +115,21 @@ function EditSelect(id) {
     })
 }
 
-function UpdateFiscalYear() {
+function UpdateTranscationType() {
     let id = $("#hfid").val();
-    let label = $("#txtlabel").val();
-    let datestart = $("#txtstartdate").val();
-    let dateend = $("#txtenddate").val();
-    let status = $("#chkstatus").prop("checked") ? 1 : 0;
-    if (label == "") {
-        swal('Alert', 'Please enter label', 'error').then(function () { swal.close(); $('#txtlabel').focus(); });
+    let transcationtype = $("#ddltranscation").val();
+    let accounttype = $("#ddlaccount").val();
+
+    if (transcationtype == "-1") {
+        swal('Alert', 'Please select transaction type', 'error').then(function () { swal.close(); $('#ddltranscation').focus(); });
     }
-    else if (datestart == "") {
-        swal('Alert', 'Please enter start date', 'error').then(function () { swal.close(); $('#txtstartdate').focus(); });
-    }
-    else if (dateend == "") {
-        swal('Alert', 'Please enter end date', 'error').then(function () { swal.close(); $('#txtenddate').focus(); });
+    else if (accounttype == "-1") {
+        swal('Alert', 'Please select account type', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); });
     }
     else {
-        var obj = {
-            rowid: id,
-            label: label,
-            status: status,
-            date_start: datestart,
-            date_end: dateend,
-        }
+        var obj = {rowid: id,account_type: accounttype, transaction_type: transcationtype};
         $.ajax({
-            url: '/Accounting/UpdateAccountFiscalYear/', dataType: 'json', type: 'Post',
+            url: '/Accounting/UpdateTranscationType/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
@@ -151,7 +138,7 @@ function UpdateFiscalYear() {
                 if (data.status == true) {
                     swal('Success', data.message, 'success');
                     ResetBox();
-                    FiscalYearList();
+                    TranscationTypeList();
 
                     $("#btnUpdate").hide();
                     $("#btnAdd").show();
@@ -160,8 +147,7 @@ function UpdateFiscalYear() {
                     swal('Alert!', data.message, 'error');
                 }
             },
-            complete: function () {
-                $("#loader").hide();
+            complete: function () {$("#loader").hide();
                 isEdit(false);
             },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },

@@ -482,13 +482,13 @@ namespace LaylaERP.BAL
         public static DataTable AccountBalanceList(string account_num, string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
-            string condition = " group by inv_complete, label_complete";
+            string condition = " group by inv_complete, label_complete, aa.label";
             string strSql = String.Empty;
             totalrows = 0;
             try
             {
                 string strWhr = string.Empty;
-                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation, '' subledger_label FROM erp_accounting_bookkeeping where 1=1";
+                strSql = "SELECT inv_complete as id, concat(inv_complete,'-', aa.label) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, '' docdate, '' label_operation, '' subledger_label FROM erp_accounting_bookkeeping ab inner join erp_accounting_account aa on aa.account_number = ab.inv_complete where 1=1";
                 if (sMonths != null)
                 {
                     strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
@@ -726,8 +726,10 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and cast(p.doc_date as date) BETWEEN " + sMonths;
                 }
-                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label_complete)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
-                + " where 1 = 1 ";
+                //string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label_complete)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
+                //+ " where 1 = 1 ";
+                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(max(inv_complete),' : ',max(label)) Acctext,inv_complete rowid,Cast(CONVERT(DECIMAL(10,2),sum(debit)) as nvarchar) debit ,Cast(CONVERT(DECIMAL(10,2),sum(credit)) as nvarchar) credit from erp_accounting_bookkeeping p "
+                + " inner join erp_accounting_account eac on eac.account_number = p.inv_complete where 1 = 1 ";
                 strSql += strWhr + string.Format(" group by inv_complete  order by inv_complete");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
@@ -1576,6 +1578,39 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable TranscationTypeById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT rowid, transaction_type, account_type  FROM erp_transaction_type where rowid ='" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch(SqlException ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int UpdateTranscationType(TranscationType model)
+        {
+            try
+            {
+                SqlParameter[] parm =
+                {
+                new SqlParameter("@qflag",'U'),
+                new SqlParameter("@rowid", model.rowid),
+                new SqlParameter("@transaction_type", model.transaction_type),
+                new SqlParameter("@account_type", model.account_type)
+                };
+                int result = SQLHelper.ExecuteNonQuery("erp_transaction_type_sp", parm);
+                return result;
+            }
+            catch(Exception ex){ throw ex; }
         }
     }
 }

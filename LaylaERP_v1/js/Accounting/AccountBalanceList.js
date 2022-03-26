@@ -44,7 +44,7 @@ function AccountBalanceList(is_date) {
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         columnDefs: myvar, order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[20, 50], [20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -85,7 +85,7 @@ function AccountBalanceList(is_date) {
             { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; } },
             { data: 'subledger_label', title: 'Label', sWidth: "15%", class: "text-left" },
             { data: 'label_operation', title: 'Label Operation', sWidth: "15%", class: "text-left" },
-            { data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
+            { data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left text-bold" },
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'balance', title: 'Balance ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },

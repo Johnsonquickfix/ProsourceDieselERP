@@ -970,5 +970,29 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+
+        public JsonResult TranscationTypeById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.TranscationTypeById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch(Exception ex) { throw ex; }
+            return Json(JSONResult, 0);
+        }
+        public JsonResult UpdateTranscationType(TranscationType model)
+        {
+            if(model.rowid > 0)
+            {
+                AccountingRepository.UpdateTranscationType(model);
+                return Json(new { status = true, message ="Transaction type update successfully.", url="" });
+            }
+            else
+            {
+                return Json(new { status = false, message ="Error", url ="" });
+            }
+        }
     }
 }

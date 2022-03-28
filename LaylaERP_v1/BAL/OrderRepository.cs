@@ -875,6 +875,10 @@
                             productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
                         else
                             productsModel.total = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = string.Empty;
                     }
                     else if (productsModel.product_type == "shipping")
                     {

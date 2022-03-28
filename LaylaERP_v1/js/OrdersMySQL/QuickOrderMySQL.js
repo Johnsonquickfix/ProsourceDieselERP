@@ -931,7 +931,8 @@ function getOrderItemList(oid) {
                 $("#shippingTotal").data("orderitemid", orderitemid);
             }
             else if (row.product_type == 'gift_card') {
-                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '"" data-orderitemid="' + orderitemid + '">';
+                _meta = JSON.parse(row.meta_data); console.log(row.meta_data, _meta);
+                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '" data-id="' + (_meta != null ? parseInt(_meta.giftcard_id) : '0') + '" data-orderitemid="' + orderitemid + '">';
                 giftcardHtml += '<a href="javascript:void(0);">';
                 giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
                 giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + row.product_name.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete gift card"><i class="fa fa-times"></i></button></div>';
@@ -1353,7 +1354,7 @@ function ApplyGiftCard() {
             if (data[0].giftcard_amount > 0) {
                 if (_total <= 0) { swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
                 else if (_total > 0 && _total >= data[0].giftcard_amount) {
-                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
+                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-id="' + data[0].id + '" data-orderitemid="0">';
                     giftcardHtml += '<a href="javascript:void(0);">';
                     giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
                     giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
@@ -1363,7 +1364,7 @@ function ApplyGiftCard() {
                 }
                 else if (_total > 0 && data[0].giftcard_amount >= _total) {
                     data[0].giftcard_amount = _total;
-                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-orderitemid="0">';
+                    let giftcardHtml = '<li id="li_' + data[0].code.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + data[0].code.toString().toUpperCase() + '" data-id="' + data[0].id + '" data-orderitemid="0">';
                     giftcardHtml += '<a href="javascript:void(0);">';
                     giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[0].code + '</span>';
                     giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + data[0].giftcard_amount.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + data[0].code.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
@@ -2096,7 +2097,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift }
+        { post_id: oid, meta_key: '_gift_amount', meta_value: _gift, post_id: oid, meta_key: 'total_gcamt', meta_value: _gift }
     );
     if (_total == 0 && _gift > 0) { postMetaxml.push({ post_id: oid, meta_key: '_payment_method', meta_value: 'giftcard' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Gift Card' }); };
     if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
@@ -2140,7 +2141,7 @@ function createItemsList() {
     //Add Gift Card
     $('#billGiftCard li').each(function (index, li) {
         let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
-        if (gift_amt > 0) _list.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
+        if (gift_amt > 0) _list.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_id: $(li).data('id'), product_name: $(li).data('pn'), product_type: 'gift_card', total: gift_amt });
     });
     //Add Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {

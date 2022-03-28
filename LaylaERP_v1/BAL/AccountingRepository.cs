@@ -1579,5 +1579,51 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable TranscationTypeById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT rowid, transaction_type, account_type  FROM erp_transaction_type where rowid ='" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch(SqlException ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int UpdateTranscationType(TranscationType model)
+        {
+            try
+            {
+                SqlParameter[] parm =
+                {
+                new SqlParameter("@qflag",'U'),
+                new SqlParameter("@rowid", model.rowid),
+                new SqlParameter("@transaction_type", model.transaction_type),
+                new SqlParameter("@account_type", model.account_type)
+                };
+                int result = SQLHelper.ExecuteNonQuery("erp_transaction_type_sp", parm);
+                return result;
+            }
+            catch(Exception ex){ throw ex; }
+        }
+
+        public static DataSet GetAccountingAccount()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select account_number ID, concat(label,' - ',account_number) label from erp_accounting_account order by rowid;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

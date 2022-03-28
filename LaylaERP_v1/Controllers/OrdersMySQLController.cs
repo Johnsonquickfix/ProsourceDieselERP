@@ -404,6 +404,7 @@
                 {
                     strSql.Append(string.Format(" update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", obj.meta_value, obj.post_id, obj.meta_key));
                     if (obj.meta_key.Equals("_billing_email")) _giftcard_from_mail = obj.meta_value;
+                    strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT '{0}' id, '{1}' _key, '{2}' _value) tb WHERE _key not in (SELECT meta_key FROM wp_postmeta WHERE post_id = '{3}'); ", obj.post_id, obj.meta_key, obj.meta_value, obj.post_id));
                 }
 
                 /// step 3 : wp_woocommerce_order_items
@@ -438,6 +439,9 @@
                         else if (obj.product_type == "gift_card")
                         {
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.total, obj.order_item_id, "amount"));
+
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_activity set amount = '{0}',date =UNIX_TIMESTAMP() where gc_id = '{1}' and object_id = '{2}'; ", obj.total, obj.product_id, obj.order_item_id));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate='{0}' where id = {1}; ", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.product_id));
                         }
                         else if (obj.product_type == "fee")
                         {
@@ -501,6 +505,16 @@
                             strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, model.OrderPostStatus.order_id, "tax"));
                             strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.tax_amount, model.OrderPostStatus.order_id, "tax"));
                             strSql.Append(string.Format(" union all select order_item_id,'freighttax_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.shipping_tax_amount, model.OrderPostStatus.order_id, "tax"));
+                        }
+                        else if (obj.product_type == "gift_card")
+                        {
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'gift_card_debited','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", "yes", model.OrderPostStatus.order_id, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'giftcard_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.product_id, model.OrderPostStatus.order_id, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'code','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.product_name, model.OrderPostStatus.order_id, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.total, model.OrderPostStatus.order_id, obj.product_type));
+
+                            strSql.Append(string.Format(" insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date) select 'used','{0}','{1}',order_item_id,'{2}','{3}','{4}',UNIX_TIMESTAMP() from wp_woocommerce_order_items where order_id = {5} and order_item_type = 'gift_card' and order_item_name = '{6}'; ", 0, _giftcard_from_mail, obj.product_id, obj.product_name, obj.total, model.OrderPostStatus.order_id, obj.product_name));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate='{0}' where id = {1}; ", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.product_id));                            
                         }
                     }
                 }

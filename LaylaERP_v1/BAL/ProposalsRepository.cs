@@ -64,5 +64,26 @@
             }
             return ds;
         }
+        // generate invoice for Vendor Sales PO
+        public static int generateinvoice(string ID)
+        {
+            try
+            {               
+                string strsql = String.Empty;
+                int result = 0;                 
+                    strsql = "update commerce_purchase_enquiry set ref_ext = REPLACE(ref, 'PO','PI'),billed = 1 where  rowid in(" + ID + ")";
+                    //SqlParameter[] para =
+                    //{
+                    //new SqlParameter("@meta_value", ',' + ID)
+                    //};
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));  
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Proposals/generateinvoice/" + ID + "", "Generate invoice ");
+                throw Ex;
+            }
+        }
     }
 }

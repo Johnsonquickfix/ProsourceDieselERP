@@ -11,7 +11,7 @@ function ChartofaccountGrid() {
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bAutoWidth: false, searching: true,
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[20, 50], [20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

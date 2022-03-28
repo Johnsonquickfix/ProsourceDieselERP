@@ -550,68 +550,135 @@ function relatedcustomer(ID) {
 }
 
 
-function filladdress() {
+function filladdress(id) {
     var option = { strValue1: $('#ddlrelatedcustomerEmail').val() };
+    let relemail = 0;
+    relemail = parseInt($('#ddlrelatedcustomerEmail').val()) || 0;
     //let ID = $("#ddlrelatedcustomerEmail").val();
    // var obj = { strValue1: ID }
-    $.ajax({
-        //url: "/Customer/CustomerAddressByID/" + ID,
-        //type: "GET",
-        //contentType: "application/json; charset=utf-8",
-        //dataType: 'JSON',
-        //data: obj,
-        url: "/Customer/CustomerAddressByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
-        success: function (data) {
-
-            var d = JSON.parse(data);
-     
-            //debugger
-            if (d.length > 0) {
-                //$("#txtUserEmail").val(d[0].user_email);
-                //$("#txtUserNickName").val(d[0].user_nicename);
-                //$("#txtFirstName").val(d[0].first_name);
-                //$("#txtLastName").val(d[0].last_name);
-                $("#txtBillingAddress1").val(d[0].b_address_1);
-               
-                $("#txtBillingAddress2").val(d[0].b_address_2);
-                $("#txtBillingPostCode").val(d[0].b_postcode);
-                $("#txtBillingCountry").val(d[0].b_country);
-                $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].b_StateFullName, id: d[0].b_state, text: d[0].b_StateFullName }] })
-               // $("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].b_state, text: d[0].b_state }] });
-                $("#txtBillingCity").val(d[0].b_city);
-                $("#txtBillingPhone").val(d[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"));
-                $("#txtBillingState").select2({
-                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                    ajax: {
-                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
+    if (relemail == 0) {
+        var ID = id;
+        var obj =
+            $.ajax({
+                url: "/Customer/GetCustomerByID/" + ID,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var d = JSON.parse(data);
+                    //console.log(d);
+                    //debugger
+                    if (d.length > 0) {
+                       // $("#txtUserEmail").val(d[0].user_email);
+                        //$("#txtUserNickName").val(d[0].user_nicename);
+                       // $("#txtFirstName").val(d[0].first_name);
+                      //  $("#txtLastName").val(d[0].last_name);
+                        $("#txtBillingAddress1").val(d[0].billing_address_1);
+                        $("#txtBillingAddress2").val(d[0].billing_address_2);
+                        $("#txtBillingPostCode").val(d[0].billing_postcode);
+                        $("#txtBillingCountry").val(d[0].billing_country);
+                        $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].StateFullName, id: d[0].billing_state, text: d[0].StateFullName }] })
+                        //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
+                        $("#txtBillingCity").val(d[0].billing_city);
+                        $("#txtBillingPhone").val(d[0].billing_phone);
+                        $("#txtBillingState").select2({
+                            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                            ajax: {
+                                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
+                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                                error: function (xhr, status, err) { }, cache: true
+                            }
+                        });
+                        $("#txtshpFirstName").val(d[0].shipping_first_name);
+                        $("#txtshpLastName").val(d[0].shipping_last_name);
+                        $("#txtshpBillingAddress1").val(d[0].shipping_address_1);
+                        $("#txtshpBillingAddress2").val(d[0].shipping_address_2);
+                        $("#txtshpBillingPostCode").val(d[0].shipping_postcode);
+                        $("#txtshpBillingCountry").val(d[0].shipping_country);
+                        $("#txtshpBillingState").select2('').empty().select2({ data: [{ name: d[0].S_StateFullName, id: d[0].shipping_state, text: d[0].S_StateFullName }] })
+                        //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
+                        $("#txtshpBillingCity").val(d[0].shipping_city);
+                        // $("#txtshpBillingPhone").val(d[0].shipping_phone);
+                        $("#txtshpBillingState").select2({
+                            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                            ajax: {
+                                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtshpBillingCountry").val() }; return JSON.stringify(obj); },
+                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                                error: function (xhr, status, err) { }, cache: true
+                            }
+                        });
+                        //$('#txtUserEmail').attr('readonly', true); 
                     }
-                });
+                },
+                error: function (msg) { alert(msg); },
+                async: false
+            });
+        $("#txtBillingPostCode").change();
+        $("#txtshpBillingPostCode").change();
+    }
+    else {
+        $.ajax({
+            //url: "/Customer/CustomerAddressByID/" + ID,
+            //type: "GET",
+            //contentType: "application/json; charset=utf-8",
+            //dataType: 'JSON',
+            //data: obj,
+            url: "/Customer/CustomerAddressByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (data) {
 
-                $("#txtshpBillingAddress1").val(d[0].s_address_1);
-                $("#txtshpBillingAddress2").val(d[0].s_address_2);
-                $("#txtshpBillingPostCode").val(d[0].s_postcode);
-                $("#txtshpBillingCountry").val(d[0].s_country);
-                $("#txtshpBillingState").select2('').empty().select2({ data: [{ name: d[0].s_StateFullName, id: d[0].s_state, text: d[0].s_StateFullName }] })
-                $("#txtshpBillingCity").val(d[0].s_city);
-               // $("#txtshpBillingPhone").val(d[0].s_phone);
-                $("#txtshpBillingState").select2({
-                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                    ajax: {
-                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtshpBillingCountry").val() }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });             
-            }
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (msg) { alert(msg); },
-        async: false
-    });
-    $("#txtBillingPostCode").change();
-    $("#txtshpBillingPostCode").change();
+                var d = JSON.parse(data);
+
+                //debugger
+                if (d.length > 0) {
+                    //$("#txtUserEmail").val(d[0].user_email);
+                    //$("#txtUserNickName").val(d[0].user_nicename);
+                    //$("#txtFirstName").val(d[0].first_name);
+                    //$("#txtLastName").val(d[0].last_name);
+                    $("#txtBillingAddress1").val(d[0].b_address_1);
+
+                    $("#txtBillingAddress2").val(d[0].b_address_2);
+                    $("#txtBillingPostCode").val(d[0].b_postcode);
+                    $("#txtBillingCountry").val(d[0].b_country);
+                    $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].b_StateFullName, id: d[0].b_state, text: d[0].b_StateFullName }] })
+                    // $("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].b_state, text: d[0].b_state }] });
+                    $("#txtBillingCity").val(d[0].b_city);
+                    $("#txtBillingPhone").val(d[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"));
+                    $("#txtBillingState").select2({
+                        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                        ajax: {
+                            url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtBillingCountry").val() }; return JSON.stringify(obj); },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                            error: function (xhr, status, err) { }, cache: true
+                        }
+                    });
+
+                    $("#txtshpBillingAddress1").val(d[0].s_address_1);
+                    $("#txtshpBillingAddress2").val(d[0].s_address_2);
+                    $("#txtshpBillingPostCode").val(d[0].s_postcode);
+                    $("#txtshpBillingCountry").val(d[0].s_country);
+                    $("#txtshpBillingState").select2('').empty().select2({ data: [{ name: d[0].s_StateFullName, id: d[0].s_state, text: d[0].s_StateFullName }] })
+                    $("#txtshpBillingCity").val(d[0].s_city);
+                    // $("#txtshpBillingPhone").val(d[0].s_phone);
+                    $("#txtshpBillingState").select2({
+                        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                        ajax: {
+                            url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#txtshpBillingCountry").val() }; return JSON.stringify(obj); },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
+                            error: function (xhr, status, err) { }, cache: true
+                        }
+                    });
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
+        $("#txtBillingPostCode").change();
+        $("#txtshpBillingPostCode").change();
+    }
 }

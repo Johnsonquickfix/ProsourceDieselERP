@@ -45,7 +45,7 @@ function LoadGrid() {
     let ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, //scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -64,7 +64,7 @@ function LoadGrid() {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid }, { name: "strValue4", value: '0' });
 
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-            console.log(aoData);
+           // console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
@@ -74,12 +74,12 @@ function LoadGrid() {
             });
         },
         aoColumns: [
-            //{
-            //    'data': 'id', sWidth: "5%   ",
-            //    'render': function (data, type, full, meta) {
-            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-            //    }
-            //},
+            {
+                'data': 'id', sWidth: "5%   ",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                }
+            },
             {
                 'data': 'ref', sWidth: "15%", title: 'PO No',
                 'render': function (id, type, full, meta) {
@@ -180,4 +180,72 @@ function LoadGridIPO() {
             { data: 'Status', title: 'Status', sWidth: "8%" }
         ]
     });
+}
+
+//CheckBoxes
+$('#checkAll').click(function () {
+   
+    var isChecked = $(this).prop("checked");
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+});
+
+function Singlecheck() {
+    var isChecked = $('#CheckSingle').prop("checked");
+    var isHeaderChecked = $("#checkAll").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkAll").prop('checked', isChecked);
+
+    else {
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkAll").prop('checked', isChecked);
+    }
+}
+
+$("#btngenerateinvoice").click(function () {
+    var ID = ""; 
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        ID += $(this).val() + ",";
+
+    });
+    ID = ID.replace(/,(?=\s*$)/, '');
+    if (ID == "") { swal('Alert', 'Please select PO from list', 'error'); } 
+    else {
+        //if (new_role != "") {
+            swal({
+                title: '', text: "Do you want to generate invoice. ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    //ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
+                    generateinvoice(ID);
+                }
+            })
+        //}
+    }
+})
+function generateinvoice(ID) {
+    var obj = {
+        strValue1: ID    }
+    $.ajax({
+        url: '/proposals/generateinvoice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                swal('Success', data.message, 'success');
+                $.when(LoadGrid()).done(function () {
+                   LoadGridIPO(), $('.nav-tabs a[href="#tabPO_02"]').tab('show');  });
+            }
+            else {
+                swal('Alert!', data.message, 'error');
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
 }

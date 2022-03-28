@@ -87,5 +87,22 @@
             catch { }
             return Json(JSONresult, 0);
         }
+
+        // generate invoice for Vendor Sales PO
+        [HttpPost]
+        public JsonResult generateinvoice(SearchModel model)
+        {
+            string strID = model.strValue1;
+            if (strID != "")
+            {
+                ProposalsRepository.generateinvoice(strID);
+                return Json(new { status = true, message = "Invoice generate successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
     }
 }

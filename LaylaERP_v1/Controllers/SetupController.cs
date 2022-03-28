@@ -332,5 +332,59 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult AddProductReturn(ProductReturnModel model)
+        {
+            int ID = SetupRepostiory.AddProductReturn(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Product return days successfully", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult UpdateProductReturn(ProductReturnModel model)
+        {
+            if (model.rowid > 0)
+            {
+                SetupRepostiory.UpdateProductReturn(model);
+                return Json(new { status = true, message = "Update product return days successfully", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult GetTransactionTypeList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = SetupRepostiory.GetTransactionTypeList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetProductReturnById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = SetupRepostiory.GetProductReturnById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult,0);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "SELECT COALESCE(ps.id,p.id) id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                string strSQl = "SELECT COALESCE(ps.id,p.id) id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,') '),''), ' #',ps.id) as text"
                                 + " FROM wp_posts as p"
                                 + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                 + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
@@ -458,6 +458,96 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static int AddProductReturn(ProductReturnModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@productid", model.productid),
+                    new SqlParameter("@returndays", model.returndays),
+                    new SqlParameter("@warrantydays", model.warrantydays),
+                    new SqlParameter("@remarks", model.remarks),
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar("erp_product_return_days_sp", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static int UpdateProductReturn(ProductReturnModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@productid", model.productid),
+                    new SqlParameter("@returndays", model.returndays),
+                    new SqlParameter("@warrantydays", model.warrantydays),
+                    new SqlParameter("@remarks", model.remarks),
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery("erp_product_return_days_sp", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetTransactionTypeList(string ID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid, post_title, returndays, warrantydays, remarks FROM erp_product_return_days eprd Left join wp_posts wp on wp.id = eprd.productid where 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    //strWhr += " and (J.code like '%" + searchid + "%' OR N.Nature like '%" + searchid + "%' OR J.label like '%" + searchid + "%')";
+                }
+                //if (userstatus != null)
+                //{
+                //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                //}
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_product_return_days eprd Left join wp_posts wp on wp.id = eprd.productid where 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetProductReturnById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT rowid, productid, returndays, warrantydays, remarks FROM erp_product_return_days where rowid =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

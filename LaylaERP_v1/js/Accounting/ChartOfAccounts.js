@@ -17,6 +17,7 @@ function ChartOfAccountGrid() {
                 scrollX: true,
                 data: JSON.parse(data),
                 columnDefs: [{ 'visible': false, 'targets': [0] }],
+                responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
                 "columns": [
                     { data: 'ID', title: 'Account Code', sWidth: "10%" },
                     { data: 'account_number', title: 'Account Number', sWidth: "10%", sType: 'numeric' },

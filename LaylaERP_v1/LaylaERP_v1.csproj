@@ -250,6 +250,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\OrdersMySQLController.cs" />
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
+    <Compile Include="Controllers\PaymentSettlementController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\PoemailController.cs" />
     <Compile Include="Controllers\ProductBulkEditController.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="UTILITIES\clsAffirm.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
+    <Compile Include="UTILITIES\clsFedex.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsPodium.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />
@@ -1212,6 +1214,8 @@
     <Content Include="Views\CheckDeposit\AddnewCheck.cshtml" />
     <Content Include="Views\Accounting\NewTranscationType.cshtml" />
     <Content Include="Views\Setup\ProductReturnDays.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderAuthorizeNet.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderAuthorizeNetList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -172,7 +172,7 @@
             var ds = new DataSet();
             try
             {
-                SqlParameter[] parameters = { 
+                SqlParameter[] parameters = {
                     new SqlParameter("@flag", "UORDER"),
                     new SqlParameter("@id", id)
                 };
@@ -875,6 +875,10 @@
                             productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
                         else
                             productsModel.total = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = string.Empty;
                     }
                     else if (productsModel.product_type == "shipping")
                     {
@@ -1588,5 +1592,34 @@
             { throw ex; }
             return obj;
         }
+
+        #region order_payment_settlement
+        public static DataSet GetUnsettledOrder(string payment_method)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@payment_method", payment_method), new SqlParameter("@flag", "UNSETTLED") };
+                ds = SQLHelper.ExecuteDataSet("erp_payment_settlement_vendor_search", parameters);
+            }
+            catch (Exception ex) { throw ex; }
+            return ds;
+        }
+
+        public static DataTable UpdateUnsettledOrder(string postsJSON)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@json", postsJSON), new SqlParameter("@flag", "UPDATE") };
+                dt = SQLHelper.ExecuteDataTable("erp_payment_settlement_vendor_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+        #endregion
     }
 }

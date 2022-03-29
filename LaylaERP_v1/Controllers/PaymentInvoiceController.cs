@@ -168,7 +168,7 @@ namespace LaylaERP.Controllers
                 u_id = CommanUtilities.Provider.GetCurrent().UserID;
                 System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
                 System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
-                JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.AddNewPurchase(id, "POP", u_id, orderXML, orderdetailsXML));
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewPurchase(id, "POP", u_id, orderXML, orderdetailsXML));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

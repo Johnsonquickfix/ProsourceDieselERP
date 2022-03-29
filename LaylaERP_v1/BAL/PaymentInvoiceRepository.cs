@@ -516,5 +516,28 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable AddNewPurchase(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_salespurchase_order_iud", parameters);
+            }
+            catch (Exception ex)
+            {                 
+                UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePayment/" + Pkey + "", "Payment taken from invoice");                 
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
     }
 }

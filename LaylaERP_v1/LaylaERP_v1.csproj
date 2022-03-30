@@ -795,6 +795,7 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PaymentInvoicePrintSO.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />

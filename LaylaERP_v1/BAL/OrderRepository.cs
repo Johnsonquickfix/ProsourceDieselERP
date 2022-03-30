@@ -1620,6 +1620,37 @@
             }
             return dt;
         }
+
+        public static DataTable AuthorizeNetOrderList(DateTime? fromdate, DateTime? todate, string payment_method, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    !string.IsNullOrEmpty(payment_method) ? new SqlParameter("@payment_method", payment_method) : new SqlParameter("@payment_method", DBNull.Value),
+                    !string.IsNullOrEmpty(search) ? new SqlParameter("@search", search) : new SqlParameter("@search", DBNull.Value),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "SETTLED")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_payment_settlement_vendor_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         #endregion
     }
 }

@@ -84,7 +84,7 @@
                 preConfirm: function () {
                     return new Promise(function (resolve) {
                         swal.showLoading();
-                        $.get('/paymentsettlement/order-authorize-net', {}).then(response => {
+                        $.get('/paymentsettlement/order-authorize-net-sync', {}).then(response => {
                             swal('Success', 'Authorize.Net Transactions updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();
                         }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
                     });

@@ -18,7 +18,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        [Route("paymentsettlement/order-authorize-net")]
+        [Route("paymentsettlement/order-authorize-net-sync")]
         public ActionResult OrderAuthorizeNet()
         {
             try
@@ -85,7 +85,7 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
-        [Route("paymentsettlement/order-Podium")]
+        [Route("paymentsettlement/order-podium-sync")]
         public ActionResult OrderPodium()
         {
             try

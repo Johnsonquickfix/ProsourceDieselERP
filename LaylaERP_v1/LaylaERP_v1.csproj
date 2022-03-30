@@ -1217,6 +1217,8 @@
     <Content Include="Views\Setup\ProductReturnDays.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderAuthorizeNet.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderAuthorizeNetList.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderPodium.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderPodiumList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

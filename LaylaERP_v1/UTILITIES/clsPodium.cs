@@ -52,7 +52,7 @@ namespace LaylaERP.UTILITIES
             var result = string.Empty;
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://api.podium.com/v4/invoices/" + podium_uid + "?locationUid=6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7");
+                client.BaseAddress = new Uri("https://api.podium.com/v4/invoices/" + podium_uid + "?locationUid="+ locationUid);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                 var response = client.GetAsync("").Result;

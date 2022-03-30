@@ -84,5 +84,36 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
+
+        [Route("paymentsettlement/order-Podium")]
+        public ActionResult OrderPodium()
+        {
+            try
+            {
+                string orders_json = string.Empty, order_refund_json = string.Empty;
+                DataSet ds = OrderRepository.GetUnsettledOrder("podium");
+                string access_token = clsPodium.GetToken();
+
+                string str_meta = string.Empty, transaction_id = string.Empty;
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    transaction_id = (dr["transaction_id"] != Convert.DBNull) ? dr["transaction_id"].ToString() : "";
+                    var result = clsPodium.GetPodiumInvoiceDetails(access_token, transaction_id);
+                    dynamic obj = JsonConvert.DeserializeObject<dynamic>(result);
+                    str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"order_id\" : \"" + ((dr["id"] != Convert.DBNull) ? dr["id"].ToString() : "") + "\", \"payment_mode\" : \"podium\", \"transaction_id\" : \"" + transaction_id + "\", \"payment_amount\" : \"" + ((int)obj.data.paymentNet) / 100.00 + "\", \"payment_fee\" : \"0\", \"settlement_date\" : \"" + obj.data.payments[0].settledAt + "\", \"payment_stauts\" : \"" + obj.data.payments[0].status + "\"}";
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    OrderRepository.UpdateUnsettledOrder("[" + str_meta + "]");
+                }
+            }
+            catch { }//(Exception ex) { Console.WriteLine("Error: " + ex.Message); }
+            return View();
+        }
+        // GET: PaymentSettlement
+        public ActionResult OrderPodiumList()
+        {
+            return View();
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace LaylaERP_v1.BAL
 
                 if (filter == "1")
                 {
-                    strWhr += " and cp.rowid in (Select cpoi.rowid from commerce_purchase_enquiry p inner join  commerce_purchase_enquiry_detail  cped on cped.fk_purchase = p.rowid inner join commerce_purchase_order_invoice_import cpoi on cpoi.po_number = convert(varchar, fk_projet) + '-' + cped.ref and convert(numeric(18,2),cpoi.total_amount) = convert(numeric(18,2),cped.total_ht))";
+                    strWhr += " and cp.rowid in (Select cpoi.rowid from commerce_purchase_enquiry p inner join  commerce_purchase_enquiry_detail  cped on cped.fk_purchase = p.rowid inner join commerce_purchase_order_invoice_import cpoi on cpoi.po_number = convert(varchar, fk_projet) + '-' + cped.ref and convert(numeric(18,2),cpoi.total_amount) = convert(numeric(18,2),cped.total_ht) and cpoi.vendor_id = p.fk_supplier)";
                 }
                 if (filter == "2")
                 {

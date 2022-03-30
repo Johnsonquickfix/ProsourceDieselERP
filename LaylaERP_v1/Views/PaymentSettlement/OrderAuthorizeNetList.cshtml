@@ -100,7 +100,7 @@
         let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
         if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
         table_oh = $('#dtdata').DataTable({
-            oSearch: { "sSearch": searchText }, //columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+            oSearch: { "sSearch": searchText }, order: [[0, "desc"]], //columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
             lengthMenu: [[10, 20, 50], [10, 20, 50]],
             destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             language: {
@@ -156,7 +156,7 @@
                 { data: 'transaction_id', title: 'Trans. ID', sWidth: "10%" },
                 { data: 'settlement_date', title: 'Settle Date', sWidth: "10%" },
                 { data: 'payment_amount', title: 'Settle Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
-                { data: 'payment_fee', title: 'Fee', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
+                //{ data: 'payment_fee', title: 'Fee', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
                 {
                     data: 'payment_stauts', title: 'Settlement State', sWidth: "10%", render: function (data, type, row) {
                         if (data == 'settledSuccessfully') return '<span class="badge bg-success">Settled</span>';

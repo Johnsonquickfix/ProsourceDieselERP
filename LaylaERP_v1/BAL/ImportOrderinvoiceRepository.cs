@@ -53,7 +53,8 @@ namespace LaylaERP_v1.BAL
 
                 if (filter == "1")
                 {
-                    strWhr += " and cp.rowid in (Select cpoi.rowid from commerce_purchase_enquiry p inner join  commerce_purchase_enquiry_detail  cped on cped.fk_purchase = p.rowid inner join commerce_purchase_order_invoice_import cpoi on cpoi.po_number = convert(varchar, fk_projet) + '-' + cped.ref and convert(numeric(18,2),cpoi.total_amount) = convert(numeric(18,2),cped.total_ht) and cpoi.vendor_id = p.fk_supplier inner join erp_payment_settlement_vendor psv on psv.order_id = p.fk_projet and delivery_status = 1 and payment_stauts in ('paid','settledSuccessfully') )";
+                    // strWhr += " and cp.rowid in (Select cpoi.rowid from commerce_purchase_enquiry p inner join  commerce_purchase_enquiry_detail  cped on cped.fk_purchase = p.rowid inner join commerce_purchase_order_invoice_import cpoi on cpoi.po_number = convert(varchar, fk_projet) + '-' + cped.ref and convert(numeric(18,2),cpoi.total_amount) = convert(numeric(18,2),cped.total_ht) and cpoi.vendor_id = p.fk_supplier inner join erp_payment_settlement_vendor psv on psv.order_id = p.fk_projet and delivery_status = 1 and payment_stauts in ('paid','settledSuccessfully') )";
+                    strWhr += " and cp.rowid in (Select cpoi.rowid from commerce_purchase_enquiry p inner join  commerce_purchase_enquiry_detail  cped on cped.fk_purchase = p.rowid inner join commerce_purchase_order_invoice_import cpoi on cpoi.po_number = convert(varchar, fk_projet) + '-' + cped.ref and convert(numeric(18,2),cpoi.total_amount) = convert(numeric(18,2),cped.total_ht) and cpoi.vendor_id = p.fk_supplier )";
                 }
                 if (filter == "2")
                 {

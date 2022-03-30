@@ -394,8 +394,7 @@
                 {
                     new SqlParameter("@strGiftCard", strGiftCard)
                 };
-                string strSQl = "Select id, code,order_id,order_item_id,recipient,sender,sender_email,message,balance,remaining as giftcard_amount,'add_giftcard' as type " +
-                    "from wp_woocommerce_gc_cards where code=@strGiftCard and is_active='on';";
+                string strSQl = "Select id, code,order_id,order_item_id,recipient,sender,sender_email,message,balance,remaining as giftcard_amount,'add_giftcard' as type from wp_woocommerce_gc_cards where code=@strGiftCard and is_active='on';";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

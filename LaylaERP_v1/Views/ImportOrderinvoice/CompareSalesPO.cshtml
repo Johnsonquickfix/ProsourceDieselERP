@@ -26,7 +26,7 @@
     <div class="row index_col_row">
         <div class="col-md-3">
             <div class="form-group">
-                <label>Filter</label> 
+          
                 <select id="ddltype" class="form-control select2" style="width: 100%;">
                     <option value="0" selected="selected">Select</option>
                     <option value="1">Comparing vendor sales PO</option>
@@ -35,12 +35,18 @@
             </div>
         </div>
         <div class="col-md-3">
-            <button type="button" id="btnApprove" class="btn btn-danger" style="float:right;"><span title="Click here to generate invoice." data-placement="bottom" data-toggle="tooltip">Generate invoice</span></button>
+            <div class="form-group">
+            
+                <button type="submit" id="btnreload" name="filter_action" class="button" style="float:left;"><span title="Click here to reload" data-placement="bottom" data-toggle="tooltip">Reload</span></button>
+            </div>
         </div>
         <div class="col-md-3">
-             
+            <div class="form-group">
+        
+                <button type="button" id="btnApprove" class="btn btn-danger" style="float:right;"><span title="Click here to generate invoice." data-placement="bottom" data-toggle="tooltip">Generate invoice</span></button>
+            </div>
         </div>
-    </div>
+        </div>
     <!-- end top-->
     <div class="row">
         <div class="col-md-12">
@@ -114,7 +120,9 @@
         $(document).on('click', "#btnApprove", function () {
             updateinvoice();
         });
-
+        $(document).on('click', "#btnreload", function () {
+            ImportPoList();
+        });
     })
 
 </script>

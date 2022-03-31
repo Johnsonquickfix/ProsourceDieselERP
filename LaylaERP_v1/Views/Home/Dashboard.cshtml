@@ -579,7 +579,7 @@
         }
         let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed };
         $('#tbohi').DataTable({
-            destroy: true, searching: true, lengthChange: false, bProcessing: true, bAutoWidth: false,
+            destroy: true, searching: true, lengthChange: true, bProcessing: true, bAutoWidth: false, bSort: false, lengthMenu: [[10, 20, 50], [10, 20, 50]],
             //language: {
             //    lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
             //    infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',

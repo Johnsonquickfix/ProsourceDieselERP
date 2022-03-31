@@ -1219,6 +1219,9 @@
     <Content Include="Views\PaymentSettlement\OrderAuthorizeNetList.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderPodium.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderPodiumList.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderAffirmList.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderAmazonPayList.cshtml" />
+    <Content Include="Views\PaymentSettlement\OrderPaypalList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

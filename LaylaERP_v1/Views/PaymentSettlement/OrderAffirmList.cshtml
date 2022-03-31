@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Podium Transactions";
+    ViewBag.Title = "Affirm Transactions";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
@@ -29,7 +29,7 @@
 </div>
 
 <div class="page-title">
-    <h2 class="page-heading">Podium Transactions</h2>
+    <h2 class="page-heading">Affirm Transactions</h2>
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
         <button type="button" class="btn btn-danger" id="btnSync" data-toggle="tooltip" title="" data-placement="left" data-original-title="Get new orders"><i class="fas fa-sync"></i> Update Transactions</button>
     </div>
@@ -82,12 +82,12 @@
         $(document).on("click", "#btnSync", function (t) {
             t.preventDefault(); let option = {};
             swal.queue([{
-                title: 'Do you want sync Podium transactions settlement?', confirmButtonText: 'Yes, do it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
+                title: 'Do you want sync Affirm transactions settlement?', confirmButtonText: 'Yes, do it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
                 preConfirm: function () {
                     return new Promise(function (resolve) {
                         swal.showLoading();
-                        $.get('/paymentsettlement/order-podium-sync', {}).then(response => {
-                            swal('Success', 'Podium Transactions updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();
+                        $.get('/paymentsettlement/order-affirm-sync', {}).then(response => {
+                            swal('Success', 'Affirm Transactions updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();
                         }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
                     });
                 }
@@ -116,7 +116,7 @@
                     if (code == 13) { table_oh.search(this.value).draw(); }
                 });
             },
-            sAjaxSource: "/paymentsettlement/podium-transactions",
+            sAjaxSource: "/paymentsettlement/affirm-transactions",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {
                 aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
                 if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
@@ -170,3 +170,4 @@
         });
     }
 </script>
+

@@ -623,7 +623,7 @@
             swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
         else if (strength < 5) {
-            swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+            swal('Alert', 'Passwords must be have number, one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
         else if (ConfirmPassword == "") {
             console.log(strength);

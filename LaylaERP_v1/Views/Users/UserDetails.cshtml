@@ -126,7 +126,7 @@
                                 <input type="text" class="form-control" id="txtAddress" value="@Model.address" placeholder="Enter Your Address ">
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Address 1</label>
+                                <label for="exampleInputEmail1">Address Line 2</label>
                                 <input type="text" class="form-control" id="txtAddress2" value="@Model.address2" placeholder="Enter Your Address 1">
 
                             </div>
@@ -724,14 +724,14 @@
                 swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
             }
             else if (strength < 5) {
-                swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+                swal('Alert', 'Passwords must be have number, one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
             }
             else if (ConfirmPassword == "") {
                 console.log(strength);
                 swal('Alert', 'Please enter confirm password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else if (Password !== ConfirmPassword) {
-                swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+                swal('Alert', 'Confirm password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
             else {
                 $("#txtPostCode").change();

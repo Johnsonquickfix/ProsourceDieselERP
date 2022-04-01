@@ -43,6 +43,20 @@
             </div>
         </div>
     </div>
+   
+    <div class="col-md-3">
+        <div class="form-group left">
+            <div class="input-group left">
+                <label for="userid">Upload (Excel file)</label>
+                <input type="file" class="form-control" id="importEstFile" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <button type="button" id="btnEstUpload" class="btn btn-danger"><span title="Click here to upload." data-placement="bottom" data-toggle="tooltip">Upload</span></button>
+        </div>
+    </div>
 </div>
 <section class="content section-content neworder-section table-design">
     <div class="row">
@@ -92,6 +106,25 @@
                     });
                 }
             }]);
+        });
+        $(document).on("click", "#btnEstUpload", function () {
+            let files = $("#importEstFile").get(0).files;           
+            let formData = new FormData();
+            formData.append('importFile', files[0]);    
+                $.ajax({
+                    url: '/ImportOrderinvoice/uploadaffirmfile/', data: formData, type: 'POST', contentType: false, processData: false,
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        if (data.Status === 1) {
+                            swal("Success!", data.Message, "success"); dataGridLoad();
+                            $("#importEstFile").val(null);
+
+                        }
+                        else { swal("Error!", data.Message, "error"); }
+                    },
+                    error: function (errormessage) { $("#loader").hide(); swal("Alert!", "Something went wrong .", "error"); },
+                    complete: function () { $("#loader").hide(); }
+                }); 
         });
     });
 

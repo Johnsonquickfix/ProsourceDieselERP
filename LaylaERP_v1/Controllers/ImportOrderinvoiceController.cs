@@ -341,6 +341,94 @@ namespace LaylaERP_v1.Controllers
             return View();
         }
 
+        ///Order Affirm Imort
+        [HttpPost]
+        [ActionName("uploadaffirmfile")]
+        public ActionResult ImportaffirmFile(HttpPostedFileBase importFile, string vendorid)
+        {
+            if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
+            long size = importFile.ContentLength;
+            string fileType = Path.GetExtension(importFile.FileName);
+            if (size < 2097152)
+            {
+                try
+                {
+                    var fileData = GetDataFromaffirmExcelFile(importFile.InputStream, vendorid);
+                    XmlDocument xmlDoc = CommonClass.ToXml(fileData);
+                    var dt = UploadaffirmXMLData("IDEST", xmlDoc);
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (dt.Rows[0]["Response"].ToString().Contains("Success"))
+                            return Json(new { Status = 1, Message = "Data Imported Successfully. " });
+                        else
+                            return Json(new { Status = 0, Message = "Excel invalid data format. " });
+                    }
+                    return Json(new { Status = 0, Message = "Excel invalid data format. " });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Status = 0, Message = ex.Message });
+                }
+            }
+            else { return Json(new { Status = 0, Message = "Not excel file or size of file is larger than 2MB" }); }
+        }
+        private List<ImportOrderaffirmModel> GetDataFromaffirmExcelFile(Stream stream, string vendorid)
+        {
+            var poList = new List<ImportOrderaffirmModel>();
+            try
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+                    {
+                        UseColumnDataType = false,
+                        ConfigureDataTable = delegate { return new ExcelDataTableConfiguration { UseHeaderRow = true }; }
+                    });
+
+                    if (dataSet.Tables.Count > 0)
+                    {
+                        var dataTable = dataSet.Tables[0];
+                        foreach (DataRow objDataRow in dataTable.Rows)
+                        {
+                            if (objDataRow.ItemArray.All(x => string.IsNullOrEmpty(x?.ToString()))) continue;
+                            poList.Add(new BAL.ImportOrderaffirmModel()
+                            {
+                                order_id = objDataRow["order_id"].ToString(),
+                                transaction_id = objDataRow["transaction_id"].ToString(),
+                                charge_created_date = objDataRow["charge_created_date"].ToString(),
+                                event_type = objDataRow["event_type"].ToString(),
+                                charge_id = objDataRow["charge_id"].ToString(), 
+                                total_settled = objDataRow["total_settled"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["total_settled"].ToString()) ? Convert.ToDecimal(objDataRow["total_settled"].ToString()) : 0) : 0,
+                                fees = objDataRow["fees"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["fees"].ToString()) ? Convert.ToDecimal(objDataRow["fees"].ToString()) : 0) : 0,
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return poList;
+        }
+        public static DataTable UploadaffirmXMLData(string qFlag, XmlDocument xmlList)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@detailsXML ",xmlList.OuterXml),
+                    new SqlParameter("@QFlag",qFlag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_import_affirm_order", parameters);
+            }
+            catch (SqlException ex)
+            { throw ex; }
+            return dt;
+        }
+
     }
 }
  

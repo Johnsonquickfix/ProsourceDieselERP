@@ -293,6 +293,7 @@
     <Compile Include="Models\GiftCardModel.cs" />
     <Compile Include="Models\HrmsConfigurationModel.cs" />
     <Compile Include="Models\HrmsModel.cs" />
+    <Compile Include="Models\ImportOrderaffirmModel.cs" />
     <Compile Include="Models\ImportOrderinvoiceModel.cs" />
     <Compile Include="Models\ImportPoModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />

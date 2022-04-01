@@ -434,7 +434,7 @@
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.total, obj.order_item_id, "amount"));
 
                             strSql.Append(string.Format(" Update wp_woocommerce_gc_activity set amount = '{0}',date =UNIX_TIMESTAMP() where gc_id = '{1}' and object_id = '{2}'; ", obj.total, obj.product_id, obj.order_item_id));
-                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate='{0}' where id = {1}; ", cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.product_id));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {0}; ", obj.product_id));
                         }
                         else if (obj.product_type == "fee")
                         {
@@ -507,7 +507,7 @@
                             strSql.Append(string.Format(" union all select order_item_id,'amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.total, model.OrderPostStatus.order_id, obj.product_type));
 
                             strSql.Append(string.Format(" insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date) select 'used','{0}','{1}',order_item_id,'{2}','{3}','{4}',UNIX_TIMESTAMP() from wp_woocommerce_order_items where order_id = {5} and order_item_type = 'gift_card' and order_item_name = '{6}'; ", 0, _giftcard_from_mail, obj.product_id, obj.product_name, obj.total, model.OrderPostStatus.order_id, obj.product_name));
-                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {1}; ", obj.product_id));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {0}; ", obj.product_id));
                         }
                     }
                 }

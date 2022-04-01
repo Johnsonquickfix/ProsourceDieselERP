@@ -207,6 +207,7 @@
     <Compile Include="BAL\ImportPoRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\LeaveRepository.cs" />
+    <Compile Include="BAL\OrderQuoteRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\PaymentInvoiceRepository.cs" />
     <Compile Include="BAL\PoemailRepository.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Controllers\ImportPoController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
+    <Compile Include="Controllers\OrderQuoteController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\OrdersMySQLController.cs" />
     <Compile Include="Controllers\PaymentInvoiceController.cs" />
@@ -1223,6 +1225,8 @@
     <Content Include="Views\PaymentSettlement\OrderAffirmList.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderAmazonPayList.cshtml" />
     <Content Include="Views\PaymentSettlement\OrderPaypalList.cshtml" />
+    <Content Include="Views\OrderQuote\History.cshtml" />
+    <Content Include="Views\OrderQuote\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

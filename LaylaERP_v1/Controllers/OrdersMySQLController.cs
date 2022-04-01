@@ -233,12 +233,46 @@
                     /// step 3 : wp_woocommerce_order_items
                     foreach (OrderProductsModel obj in model.OrderProducts)
                     {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.product_name, obj.product_type, n_orderid));
                         if (obj.product_type == "line_item")
                         {
-                            strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.product_name, "line_item", n_orderid));
                             strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount) ");
                             strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','-{5}','-{6}','-{7}','{8}','-{9}','{10}','{11}'; ", n_orderid, obj.product_id, obj.variation_id, obj.order_item_id, //model.OrderPostStatus.customer_id,
                                     cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), 0, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
+                        }
+                        else if (obj.product_type == "gift_card")
+                        {
+                            //strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", code, obj.product_type, n_orderid));
+                            //strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, n_orderid, obj.product_type));
+                            //strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.product_type));
+
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'gift_card_credited','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", "yes", n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'giftcard_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.product_id, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'code','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.product_name, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.order_item_id, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select order_item_id,'amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.total, n_orderid, obj.product_type));
+
+                            strSql.Append(string.Format(" insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date) select 'refunded','{0}','{1}',order_item_id,'{2}','{3}','{4}',UNIX_TIMESTAMP() from wp_woocommerce_order_items where order_id = {5} and order_item_type = 'gift_card' and order_item_name = '{6}'; ", 0, "", obj.product_id, obj.product_name, obj.total, n_orderid, obj.product_name));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {0}; ", obj.product_id));
+                        }
+                        else if (obj.product_type == "fee")
+                        {
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.product_type));
+                        }
+                        else if (obj.product_type == "shipping")
+                        {
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, n_orderid, obj.product_type));
+                            strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.product_type));
+                        }
+                        else if (obj.product_type == "tax")
+                        {
+                            strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.product_name, n_orderid));
+                            strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.total, n_orderid));
+                            strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.tax_amount, n_orderid));
+                            strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax';", obj.order_item_id, n_orderid));
                         }
                     }
                     /// step 4 : wp_woocommerce_order_itemmeta
@@ -256,47 +290,6 @@
                     strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
                     strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
-                    /// step 5 : wp_woocommerce_order_items
-
-                    string ID = Guid.NewGuid().ToString("N");
-                    string gid = ID.Substring(0, 4) + "-" + ID.Substring(4, 4) + "-" + ID.Substring(8, 4) + "-" + ID.Substring(12, 4);
-                    string code = gid.ToUpper();
-                    foreach (OrderProductsModel obj in model.OrderProducts)
-                    {
-                        if (obj.total != 0)
-                        {
-                            if (obj.product_type != "line_item")
-                            {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.product_name, obj.product_type, n_orderid));
-
-                                if (obj.product_type == "gift_card")
-                                {
-                                    strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", code, obj.product_type, n_orderid));
-
-                                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.product_type));
-                                }
-                                else if (obj.product_type == "fee")
-                                {
-                                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.total, n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.product_type));
-                                }
-                                else if (obj.product_type == "shipping")
-                                {
-                                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.total, n_orderid, obj.product_type));
-                                    strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.product_type));
-                                }
-                                else if (obj.product_type == "tax")
-                                {
-                                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.product_name, n_orderid));
-                                    strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.total, n_orderid));
-                                    strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax'", obj.tax_amount, n_orderid));
-                                    strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='tax';", obj.order_item_id, n_orderid));
-                                }
-                            }
-                        }
-                    }
 
                     result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
@@ -441,7 +434,7 @@
                             strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.total, obj.order_item_id, "amount"));
 
                             strSql.Append(string.Format(" Update wp_woocommerce_gc_activity set amount = '{0}',date =UNIX_TIMESTAMP() where gc_id = '{1}' and object_id = '{2}'; ", obj.total, obj.product_id, obj.order_item_id));
-                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate='{0}' where id = {1}; ", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.product_id));
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {0}; ", obj.product_id));
                         }
                         else if (obj.product_type == "fee")
                         {
@@ -514,7 +507,7 @@
                             strSql.Append(string.Format(" union all select order_item_id,'amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.total, model.OrderPostStatus.order_id, obj.product_type));
 
                             strSql.Append(string.Format(" insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date) select 'used','{0}','{1}',order_item_id,'{2}','{3}','{4}',UNIX_TIMESTAMP() from wp_woocommerce_order_items where order_id = {5} and order_item_type = 'gift_card' and order_item_name = '{6}'; ", 0, _giftcard_from_mail, obj.product_id, obj.product_name, obj.total, model.OrderPostStatus.order_id, obj.product_name));
-                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate='{0}' where id = {1}; ", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.product_id));                            
+                            strSql.Append(string.Format(" Update wp_woocommerce_gc_cards set remaining=(select sum(case type when 'issued' then amount when 'refunded' then amount when 'used' then -amount else 0 end) from wp_woocommerce_gc_activity gc_act where gc_id = wp_woocommerce_gc_cards.id) , modifieddate=current_timestamp() where id = {0}; ", obj.product_id));
                         }
                     }
                 }
@@ -550,8 +543,8 @@
                         string _code = Guid.NewGuid().ToString().ToUpper().Replace("-", "");
                         _code = _code.Substring(1, 4) + "-" + _code.Substring(4, 4) + "-" + _code.Substring(8, 4) + "-" + _code.Substring(12, 4);
 
-                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active)");
-                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off' from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864;");
+                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active,modifieddate)");
+                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off',current_timestamp() from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864;");
 
                         strSql.Append("insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date)");
                         strSql.Append(" Select 'issued',0,'" + _giftcard_from_mail + "','" + model.OrderPostStatus.order_id + "',LAST_INSERT_ID(),'" + _code + "','" + _giftcard_amt + "',UNIX_TIMESTAMP();");
@@ -912,7 +905,7 @@
 
                 }
             }
-            catch(Exception ex) { status = false; result = ex.Message; }
+            catch (Exception ex) { status = false; result = ex.Message; }
 
             return Json(new { status = status, message = result }, 0);
         }

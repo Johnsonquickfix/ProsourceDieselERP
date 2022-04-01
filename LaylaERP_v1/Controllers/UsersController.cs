@@ -509,7 +509,7 @@ namespace LaylaERP.Controllers
         public JsonResult CreatePassword(clsUserDetails model)
         {
 
-            int length = 16;
+            int length = 8;
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890*$-+?_&=!%{}/";
             StringBuilder res = new StringBuilder();
             Random rnd = new Random();

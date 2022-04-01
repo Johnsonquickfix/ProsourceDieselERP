@@ -426,7 +426,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_order_tax', meta_value: '-' + tax }, { post_id: oid, meta_key: '_order_total', meta_value: '-' + total },
         { post_id: oid, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
         { post_id: oid, meta_key: '_refund_amount', meta_value: total }, { post_id: oid, meta_key: '_refunded_payment', meta_value: '1' },
-        { post_id: oid, meta_key: '_refund_giftcard_amount', meta_value: pay_giftCardAmount }
+        { post_id: oid, meta_key: '_refund_giftcard_amount', meta_value: 0 }
     );
     return postMetaxml;
 }
@@ -486,16 +486,14 @@ function createItemsList() {
             });
         }
         else if (refundamt > 0) {
-            if (taxAmount > 0 && tax_rate > 0)
-                grossAmount = ((refundamt * 100) / ((tax_rate * 100) + 100)).toFixed(2);
+            if (taxAmount > 0 && tax_rate > 0) { grossAmount = ((refundamt * 100) / ((tax_rate * 100) + 100)).toFixed(2); }
             else if (taxAmount > 0 && tax_rate == 0) {
                 tax_rate = parseFloat(((taxAmount / ((grossAmount - discountAmount) * 0.01)) / 100).toFixed(4));
                 grossAmount = ((refundamt * 100) / ((tax_rate * 100) + 100)).toFixed(2);
             }
-            else if (taxAmount == 0 && tax_rate == 0) {
-                tax_rate = 0.00; grossAmount = refundamt;
-            }
+            else if (taxAmount == 0 && tax_rate == 0) { tax_rate = 0.00; grossAmount = refundamt; }
             discountAmount = 0, taxAmount = (refundamt - grossAmount).toFixed(2), shippinAmount = 0;
+            if ($(tr).data('pid') == '888864') { taxAmount = 0, grossAmount = refundamt; }
             _itmes.push({
                 order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
                 product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
@@ -557,14 +555,16 @@ function createItemsList() {
     return _itmes;
 }
 function saveCO() {
+    let _items = createItemsList(), postMeta = createPostMeta(), postStatus = createPostStatus();
     let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''),
         pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00), GiftCardRefundedAmount = ($('#lblOrderNo').data('pay_giftCardRefundedAmount') || 0.00),
         AvailableGiftCardAmount = pay_giftCardAmount - GiftCardRefundedAmount, orderTotal = $("#orderTotal").text().replace('$', '');
-    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please enter refund amount / quantity.', "error"); return false; }
+    if (_items.length <= 0) { swal('Alert!', 'Please enter refund amount / quantity.', "error"); return false; }
     //let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
-    let obj = { order_id: oid, OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus };
-    //console.log(obj); return false;
+    let obj = { order_id: oid, OrderPostMeta: postMeta, OrderProducts: _items, OrderPostStatus: postStatus };
+    let v = _items.filter(item => item.product_type == 'gift_card').reduce(function (result, i) { return result + i.total; }, 0);
+    postMeta.filter(item => item.meta_key == '_refund_giftcard_amount').forEach(function (i) { i.meta_value = v });
+    //console.log(obj, v); return false;
     let totalPay = parseFloat(parseFloat(AvailableGiftCardAmount) + parseFloat(orderTotal)).toFixed(2);
     let bal = parseFloat($('#netPaymentTotal').text()) || 0.00;
     //console.log(totalPay, net_total, bal, AvailableGiftCardAmount);

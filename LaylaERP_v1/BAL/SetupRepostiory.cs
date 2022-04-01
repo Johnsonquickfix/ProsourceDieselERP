@@ -549,5 +549,20 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable SelectProductId(int id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT productid FROM erp_product_return_days where productid =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

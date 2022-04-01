@@ -335,15 +335,23 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddProductReturn(ProductReturnModel model)
         {
-            int ID = SetupRepostiory.AddProductReturn(model);
-            if (ID > 0)
+            DataTable dt = SetupRepostiory.SelectProductId(model.productid);
+            if (dt.Rows.Count > 0)
             {
-
-                return Json(new { status = true, message = "Product return days successfully", url = "" }, 0);
+                return Json(new { status = false, message = "Product already exists.", url = "" }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                int ID = SetupRepostiory.AddProductReturn(model);
+                if (ID > 0)
+                {
+
+                    return Json(new { status = true, message = "Product return days successfully", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
             }
         }
         public JsonResult UpdateProductReturn(ProductReturnModel model)

@@ -167,49 +167,6 @@ function EditSelect(id) {
     })
 }
 
-function UpdateTranscationType() {
-    let id = $("#hfid").val();
-    let transcationtype = $("#ddlproduct").val();
-    let accounttype = $("#ddlaccount").val();
-
-    if (transcationtype == "-1") {
-        swal('Alert', 'Please select transaction type', 'error').then(function () { swal.close(); $('#ddltranscation').focus(); });
-    }
-    else if (accounttype == "-1") {
-        swal('Alert', 'Please select account type', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); });
-    }
-    else {
-        var obj = { rowid: id, account_type: accounttype, transaction_type: transcationtype };
-        $.ajax({
-            url: '/Accounting/UpdateTranscationType/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Success', data.message, 'success');
-                    ResetBox();
-                    ProductReturnList();
-
-                    $("#btnUpdate").hide();
-                    $("#btnAdd").show();
-                }
-                else {
-                    swal('Alert!', data.message, 'error');
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-                isEdit(false);
-            },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
-
-    }
-
-}
-
 function ResetBox() {
     $("#hfid").val("");
     $("#ddlproduct").val('-1').trigger('change');
@@ -271,6 +228,8 @@ function UpdateProductReturn() {
                     swal('Success', data.message, 'success');
                     ResetBox();
                     ProductReturnList();
+                    $("#btnUpdate").hide();
+                    $("#btnAdd").show();
                 }
                 else {
                     swal('Alert!', data.message, 'error');

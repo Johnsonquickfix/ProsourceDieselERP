@@ -52,7 +52,7 @@ namespace LaylaERP.Models
         public string origintype { get; set; }
         public string fk_entrepottarget { get; set; }
         public int product_price { get; set; }
-
+        public long tran_id { get; set; }
         //new 
         public string mydate { get; set; }
 

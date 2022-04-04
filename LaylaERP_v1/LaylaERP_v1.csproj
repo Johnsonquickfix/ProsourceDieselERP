@@ -849,6 +849,7 @@
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\DamageProduct.js" />
     <Content Include="js\Warehouse\updatewarehouse.js" />
     <Content Include="js\Warehouse\vendorwarehouselist.js" />
     <Content Include="js\Warehouse\warehouselist.js" />
@@ -1227,6 +1228,7 @@
     <Content Include="Views\PaymentSettlement\OrderPaypalList.cshtml" />
     <Content Include="Views\OrderQuote\History.cshtml" />
     <Content Include="Views\OrderQuote\Index.cshtml" />
+    <Content Include="Views\Warehouse\DamageProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

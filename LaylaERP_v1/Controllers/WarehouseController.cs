@@ -33,7 +33,10 @@ namespace LaylaERP.Controllers
             ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
-
+        public ActionResult DamageProduct()
+        {
+            return View();
+        }
         public JsonResult GetWarehouse(SearchModel model)
         {
 
@@ -452,16 +455,6 @@ namespace LaylaERP.Controllers
                 });
             }
             return Json(warehouselist, JsonRequestBehavior.AllowGet);
-
-            //string JSONresult = string.Empty;
-            //try
-            //{
-            //    DataTable DT = WarehouseRepository.GetProductForWarehouse(warehouseid, model.strValue5);
-            //    JSONresult = JsonConvert.SerializeObject(DT);
-            //}
-            //catch { }
-            //return Json(JSONresult, 0);
-
         }
 
         public JsonResult GetProductStock(int warehouseid, int productid)
@@ -627,12 +620,11 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddDamagestock(WarehouseModel model)
         {
-            //int ID = 1;
             int ID = WarehouseRepository.AddDamagestock(model);
             if (ID > 0)
             {
 
-                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Data saved successfully!!", url = "" }, 0);
             }
             else
             {
@@ -670,10 +662,9 @@ namespace LaylaERP.Controllers
 
         public JsonResult UpdateDamagestock(WarehouseModel model)
         {
-            if (model.searchid > 0)
+            if (model.tran_id > 0)
             {
                 WarehouseRepository.UpdateDamagestock(model);
-                ModelState.Clear();
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else
@@ -754,5 +745,68 @@ namespace LaylaERP.Controllers
 
         }
 
+        public JsonResult GetVendor()
+        {
+            DataSet ds = WarehouseRepository.GetVendor();
+            List<SelectListItem> vendorlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                vendorlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+
+            }
+            return Json(vendorlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetWarehouserByVendor(string rowid)
+        {
+            DataSet ds = WarehouseRepository.GetWarehouserByVendor(rowid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                warehouselist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["WarehouseID"].ToString() });
+
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetProductPrice(int productid)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetProductPrice(productid);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public JsonResult GetDamageStockList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetDamageStockList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetDamageProductById(string strValue1)
+        {
+            string result = string.Empty;
+            try 
+            {
+                DataTable dt = WarehouseRepository.GetDamageProductById(strValue1);
+                result = JsonConvert.SerializeObject(dt);
+                return Json(result, 0);
+            }
+            catch(Exception ex) { throw ex; }
+        }
     }
 }

@@ -664,26 +664,22 @@ namespace LaylaERP.BAL
             {
                 //string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
                 //                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                //                    + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
-                //                    + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                //                    + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                //                    + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                //                    + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                //                    + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + warehouseid + "'"
-                //                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%"+ strSearch + "%'"
+                //                    + " left join wp_postmeta psr1 on psr1.post_id = post.ID"
+                //                    + " left join wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                //                    + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                    + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                //                    + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                //                    + " left join product_warehouse pw on pw.fk_product = ps.ID "
+                //                    + " WHERE pw.fk_warehouse = '" + warehouseid + "' and post.post_type = 'product' AND post.post_status = 'publish' "
                 //                    + " ORDER BY post.ID";
-                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
-                                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                                    + " left join wp_postmeta psr1 on psr1.post_id = post.ID"
-                                    + " left join wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                                    + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                    + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                                    + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                                    + " left join product_warehouse pw on pw.fk_product = ps.ID "
-                                    + " WHERE pw.fk_warehouse = '" + warehouseid + "' and post.post_type = 'product' AND post.post_status = 'publish' "
-                                    + " ORDER BY post.ID";
 
-                //string strquery = "select p.id as pr_id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price, COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price,  COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price,  (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_warehouse pw on pw.fk_product = p.ID  left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product  left join product_stock_register psr on psr.product_id = pw.fk_product where pw.fk_warehouse = '" + warehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
+                string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
+                                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
+                                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
+                                   + " left join product_warehouse pw on pw.fk_product = ps.ID  WHERE pw.fk_warehouse = " + warehouseid + " and p.post_type = 'product' AND p.post_status = 'publish'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -846,16 +842,18 @@ namespace LaylaERP.BAL
 
         public static int AddDamagestock(WarehouseModel model)
         {
+            string strsql = string.Empty;
             int Timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
             {
-                string strsql = "INSERT into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial,tran_id) " +
-                    "values(@datem,@fk_product,@fk_entrepot,@value,3,@label,@price,0,@eatby,@sellby,@serial,@tran_id); SELECT LAST_INSERT_ID();";
-                string strsql1 = "INSERT into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
-                    " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag)";
-
+                //string strsql = "INSERT into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial,tran_id, trans_from) " +
+                //    "values(@datem,@fk_product,@fk_entrepot,@value,3,@label,@price,0,@eatby,@sellby,@serial,@tran_id, 0); SELECT SCOPE_IDENTITY();";
+                //string strsql1 = "INSERT into product_stock_register_damage(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
+                //    " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag)";
+                
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag","I"),
                     new SqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
                     new SqlParameter("@fk_product", model.fk_product),
                     new SqlParameter("@fk_entrepot", model.fk_entrepot),
@@ -868,8 +866,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@tran_id",Timestamp),
                     new SqlParameter("@tran_type","DM"),
                     new SqlParameter("@flag","I"),
+                    new SqlParameter("@vendor_id", model.vendor_id)
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql+strsql1, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_damage_product_sp", para));
                 return result;
             }
             catch (Exception Ex)
@@ -913,35 +912,23 @@ namespace LaylaERP.BAL
         }
 
         public static int UpdateDamagestock(WarehouseModel model)
-        {
-            
+        { 
             try
             {
-                
-                string strsql = "UPDATE wp_stock_mouvement set " +
-                    "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
-                     " where rowid in(" + model.searchid + ");";
-                string strsql1 = "UPDATE product_stock_register set " +
-                                    "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
-                                    " where tran_id = " + model.searchtransid + " and warehouse_id=" + model.fk_entrepot + ";";
-
-
                 SqlParameter[] para =
                {
-                    //additional info
+                    new SqlParameter("@qflag","U"),
                     new SqlParameter("@fk_product", model.fk_product),
                     new SqlParameter("@fk_entrepot", model.fk_entrepot),
                     new SqlParameter("@value", model.value),
                     new SqlParameter("@price", model.price),
                     new SqlParameter("@label", model.label),
                     new SqlParameter("@eatby", model.eatby),
-                    new SqlParameter("@sellby", DateTime.UtcNow),
                     new SqlParameter("@serial", model.serial),
-                   
-
+                    new SqlParameter("@tran_id", model.tran_id),
+                    new SqlParameter("@vendor_id", model.vendor_id)
             };
-               
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql + strsql1, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_damage_product_sp", para));
                 return result;
             }
             catch (Exception Ex)
@@ -1092,5 +1079,101 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataSet GetVendor()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT rowid, name from wp_vendor order by rowid");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetWarehouserByVendor(string rowid)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT WarehouseID, VendorID, ww.ref as name FROM wp_VendorWarehouse wv inner join wp_warehouse ww on ww.rowid = wv.WarehouseID where wv.VendorID = '" + rowid + "'");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataTable GetProductPrice(int productid)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
+                                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
+                                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
+                                   +" WHERE ps.id = " + productid + " and p.post_type = 'product' AND p.post_status = 'publish'";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetDamageStockList(string ID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity from product_stock_register_damage psrd"
+                               + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
+                               + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
+                               + " left join wp_posts p on p.id = psrd.product_id"
+                               + " left join wp_vendor v on v.rowid = wsm.vendor_id WHERE 1 = 1 and wsm.type_mouvement = 3";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (wsm.tran_id like '%" + searchid + "%' OR p.post_title like '%" + searchid + "%' OR ww.ref like '%" + searchid + "%')";
+                }
+                //if (userstatus != null)
+                //{
+                //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                //}
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(wsm.tran_id)/" + pagesize.ToString() + ") TotalPage,Count(wsm.tran_id) TotalRecord from product_stock_register_damage psrd inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetDamageProductById(string tran_id)
+        {
+            DataTable dt = new DataTable();
+            string strSql = string.Empty;
+            try
+            {
+                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial from product_stock_register_damage psrd"
+                       + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
+                       + " left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 and psrd.tran_id ='" + tran_id + "'";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

@@ -558,5 +558,24 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+        public static DataSet GetProposalsdetailsPrint(long id, string flag = "GETPNT")
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", flag), new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_Proposals_printdetails_search", para);
+                ds.Tables[0].TableName = "po";
+                if (ds.Tables.Count > 1) ds.Tables[1].TableName = "pod";
+                if (ds.Tables.Count > 2) ds.Tables[2].TableName = "sod";
+                if (ds.Tables.Count > 3) ds.Tables[3].TableName = "com";
+                if (ds.Tables.Count > 4) ds.Tables[4].TableName = "popd";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

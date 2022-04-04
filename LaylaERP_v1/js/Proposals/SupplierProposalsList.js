@@ -89,7 +89,7 @@ function LoadGrid() {
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
-                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     return str_inv;
                 }
             },
@@ -160,7 +160,7 @@ function LoadGridIPO() {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
                     //let str_inv = (id.substr(7) > 0 ? ' <a href="#" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     //return str_inv;
-                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' ;
+                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' ;
                 }
             },
             {
@@ -208,14 +208,16 @@ $("#btngenerateinvoice").click(function () {
     var ID = ""; 
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         ID += $(this).val() + ",";
-
     });
-    ID = ID.replace(/,(?=\s*$)/, '');
+    ID = ID.replace(/,(?=\s*$)/, ''); 
+   // var vacDays = ID.split(",");
+    var commaCount = ID.split(",").length; 
     if (ID == "") { swal('Alert', 'Please select PO from list', 'error'); } 
     else {
         //if (new_role != "") {
+        
             swal({
-                title: '', text: "Do you want to generate invoice. ?", type: 'warning', showCancelButton: true,
+                title: '', text: "Are you sure you want to generate one invoice for " + commaCount +" orders ?", type: 'warning', showCancelButton: true,
                 confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.value) {

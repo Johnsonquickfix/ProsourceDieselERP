@@ -70,13 +70,15 @@
             try
             {               
                 string strsql = String.Empty;
-                int result = 0;                 
-                    strsql = "update commerce_purchase_enquiry set ref_ext = REPLACE(ref, 'PO','PI'),billed = 1 where  rowid in(" + ID + ")";
-                    //SqlParameter[] para =
-                    //{
-                    //new SqlParameter("@meta_value", ',' + ID)
-                    //};
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));  
+                int result = 0;
+                //strsql = "update commerce_purchase_enquiry set ref_ext = REPLACE(ref, 'PO','PI'),billed = 1 where  rowid in(" + ID + ")";
+                //strsql = "update commerce_purchase_enquiry set ref_ext =  concat('PI',convert(varchar(4), @getdate, 12),'-',right(concat('00000',(coalesce(max(right(ref_ext,5)),0) + 1)),5)) ,billed = 1 where  rowid in(" + ID + ")";
+                strsql = "erp_updateinvoice_salespo";
+                SqlParameter[] para =
+                {
+                new SqlParameter("@id", ID)
+                };
+                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));  
                 return result;
             }
             catch (Exception Ex)

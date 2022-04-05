@@ -783,6 +783,7 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Marketing\NewAutoGenerate.js" />
+    <Content Include="js\OrderQuote\AddQuote.js" />
     <Content Include="js\OrdersMySQL\OrderHistoryMySQL.js" />
     <Content Include="js\OrdersMySQL\OrderRefundMySQL.js" />
     <Content Include="js\OrdersMySQL\QuickOrderMySQL.js" />

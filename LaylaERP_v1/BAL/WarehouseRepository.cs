@@ -866,7 +866,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@tran_id",Timestamp),
                     new SqlParameter("@tran_type","DM"),
                     new SqlParameter("@flag","I"),
-                    new SqlParameter("@vendor_id", model.vendor_id)
+                    new SqlParameter("@vendor_id", model.vendor_id),
+                    new SqlParameter("@order_id", model.order_id),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_damage_product_sp", para));
                 return result;
@@ -926,7 +927,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@eatby", model.eatby),
                     new SqlParameter("@serial", model.serial),
                     new SqlParameter("@tran_id", model.tran_id),
-                    new SqlParameter("@vendor_id", model.vendor_id)
+                    new SqlParameter("@vendor_id", model.vendor_id),
+                    new SqlParameter("@order_id", model.order_id)
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_damage_product_sp", para));
                 return result;
@@ -1164,7 +1166,7 @@ namespace LaylaERP.BAL
             string strSql = string.Empty;
             try
             {
-                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial from product_stock_register_damage psrd"
+                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial, order_id from product_stock_register_damage psrd"
                        + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                        + " left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 and psrd.tran_id ='" + tran_id + "'";
                 dt = SQLHelper.ExecuteDataTable(strSql);

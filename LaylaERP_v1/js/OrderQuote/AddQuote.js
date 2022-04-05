@@ -1612,7 +1612,7 @@ function ApplyFee(rowid, orderitemid, feetitle, feetype, feeamt) {
     //let startingNumber = parseFloat(feetitle.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
     //let product_name = feetype == '%' ? feetitle.replace(/fee$/, "fee") : startingNumber + ' fee';
     let startingNumber = feeamt, product_name = feeamt + feetype + ' ' + feetitle;
-    let line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
+    let line_total = 0, zGAmt = (parseFloat($("#SubTotal").text()) || 0.00) - (parseFloat($("#discountTotal").text()) || 0.00);
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
 
     let feeHtml = '';
@@ -1620,7 +1620,7 @@ function ApplyFee(rowid, orderitemid, feetitle, feetype, feeamt) {
         feeHtml += '<tr id="trfeeid_' + rowid + '" data-orderitemid="' + orderitemid + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
         feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + rowid + '\',' + orderitemid + ',\'' + product_name + '\',' + startingNumber + ',\'' + feetype + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
         feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + rowid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
+        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total.toFixed(2) + '</td><td></td>';
         feeHtml += '</tr>';
         $('#order_fee_line_items').append(feeHtml);
     }
@@ -1628,7 +1628,7 @@ function ApplyFee(rowid, orderitemid, feetitle, feetype, feeamt) {
         $('#trfeeid_' + rowid).data('pname', product_name); $('#trfeeid_' + rowid).data('feeamt', startingNumber); $('#trfeeid_' + rowid).data('feetype', feetype);
         feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + rowid + '\',' + orderitemid + ',\'' + product_name + '\',' + startingNumber + ',\'' + feetype + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
         feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + rowid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td>';
+        feeHtml += '<td>' + product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + line_total.toFixed(2) + '</td><td></td>';
         $('#trfeeid_' + rowid).empty().append(feeHtml);
     }
     $("#myModal").modal('hide'); calcFinalTotals();
@@ -1638,7 +1638,7 @@ function RemoveFee(rowid) {
     return false;
 }
 function CalculateFee() {
-    let zFeeAmt = 0.00, zGmtAmt = parseFloat($("#SubTotal").text()) || 0;
+    let zFeeAmt = 0.00, zGmtAmt = (parseFloat($("#SubTotal").text()) || 0.00) - (parseFloat($("#discountTotal").text()) || 0.00);
     $("#order_fee_line_items > tr").each(function (index, tr) {
         zFeeAmt += ($(tr).data('feetype') == '%') ? (zGmtAmt * (parseFloat($(tr).data('feeamt')) / 100)) : parseFloat($(tr).data('feeamt'));
     });
@@ -1693,9 +1693,54 @@ function ApplyGiftCard() {
             $("#myModal").modal('hide');
         }
         else { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-    }).catch(err => { swal('Error!', err, 'error'); }).always(function () { });
-    calcFinalTotals();
+    }).catch(err => { swal('Error!', err, 'error'); }).always(function () { calcFinalTotals();});    
 }
 function deleteAllGiftCard(GiftCode) {
     swal({ title: '', text: 'Would you like to remove this Gift Card?', type: "question", showCancelButton: true }).then((result) => { if (result.value) { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); } });
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function ValidateData() {
+    if ($('#txtbillfirstname').val() == '') { swal('Error!', 'Please Enter Billing First Name.', "error").then((result) => { $('#txtbillfirstname').focus(); return false; }); return false; }
+    else if ($('#txtbilllastname').val() == '') { swal('Error!', 'Please Enter Billing Last Name.', "error").then((result) => { $('#txtbilllastname').focus(); return false; }); return false; }
+    else if ($('#txtbilladdress1').val() == '') { swal('Error!', 'Please Enter Billing Address.', "error").then((result) => { $('#txtbilladdress1').focus(); return false; }); return false; }
+    else if ($('#txtbillzipcode').val() == '') { swal('Error!', 'Please Enter Billing Post Code.', "error").then((result) => { $('#txtbillzipcode').focus(); return false; }); return false; }
+    else if ($('#txtbillcity').val() == '') { swal('Error!', 'Please Enter Billing City.', "error").then((result) => { $('#txtbillcity').focus(); return false; }); return false; }
+    else if ($('#ddlbillcountry').val() == '') { swal('Error!', 'Please Select Billing Country.', "error").then((result) => { $('#ddlbillcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlbillstate').val() == '' || $('#ddlbillstate').val() == '0') { swal('Error!', 'Please Select Billing State.', "error").then((result) => { $('#ddlbillstate').select2('open'); return false; }); return false; }
+    else if ($('#txtbillemail').val() == '') { swal('Error!', 'Please Select Billing EMail Address.', "error").then((result) => { $('#txtbillemail').focus(); return false; }); return false; }
+    else if ($('#txtshipfirstname').val() == '') { swal('Error!', 'Please Enter Shipping First Name.', "error").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
+    else if ($('#txtshiplastname').val() == '') { swal('Error!', 'Please Enter Shipping Last Name.', "error").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
+    else if ($('#txtshipaddress1').val() == '') { swal('Error!', 'Please Enter Shipping Address.', "error").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
+    else if ($('#txtshipzipcode').val() == '') { swal('Error!', 'Please Enter Shipping Post Code.', "error").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Error!', 'Please Enter Shipping City.', "error").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }
+    else if ($('#ddlshipcountry').val() == '') { swal('Error!', 'Please Select Shipping Country.', "error").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Error!', 'Please Select Shipping State.', "error").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
+    return true;
+}
+function SaveData() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    if (!ValidateData()) { $("#loader").hide(); return false };
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
+
+    if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
+    //console.log(obj);
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/OrdersMySQL/SaveCustomerOrder', obj).done(function (result) {
+                    if (result.status) {
+                        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                        swal('Success', 'Order updated successfully.', "success");
+                        $.when(UpdateOrders()).done(function () { getOrderInfo(); $('[data-toggle="tooltip"]').tooltip(); });
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+    return false;
 }

@@ -202,61 +202,39 @@ function getQuoteInfo() {
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
-        ajaxFunction('/OrderQuote/GetQuoteDetails', { strValue1: oid }, beforeSendFun, function (result) {
+        $.get('/OrderQuote/GetQuoteDetails', { id: oid }).done(function (result) {
             try {
-                var data = JSON.parse(result); //console.log(data);
-                if (data.length > 0) {
-                    $('#lblOrderNo').data('pay_by', data[0].payment_method);
-                    if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
-                    else if (data[0].payment_method == 'podium') $('#lblOrderNo').data('pay_id', data[0].podium_id);
-                    else $('#lblOrderNo').data('pay_id', '');
-
-                    if (data[0].payment_method.trim().length > 0)
-                        $('.payment-history').text('Payment via ' + data[0].payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
-                    else
-                        $('.payment-history').text('Customer IP: ' + data[0].ip_address);
-                    $('#txtLogDate').val(data[0].date_created);
-                    $('#ddlStatus').val(data[0].status.trim()).trigger('change');
-                    if (isNullUndefAndSpace(data[0].customer_name)) $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
-                    else $("#ddlUser").empty().append('<option value="1" selected>' + data[0].b_first_name + ' ' + data[0].b_last_name + '</option>');
+                let data = JSON.parse(result); console.log(data);
+                $.each(data['Table'], function (i, row) {
+                    $('#lblOrderNo').data('pay_by', row.payment_method); $('#lblOrderNo').data('pay_id', row.transaction_id);
+                    $('#txtLogDate').val(row.date_created);
+                    $('#ddlStatus').val(row.quote_status.trim()).trigger('change');
+                    //if (data[0].payment_method.trim().length > 0)
+                    //    $('.payment-history').text('Payment via ' + data[0].payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
+                    //else
+                    //    $('.payment-history').text('Customer IP: ' + data[0].ip_address);
+                    $("#ddlUser").empty().append('<option value="' + row.customer_id + '" selected>' + row.customer_name + '</option>');
                     ///billing_Details
-                    var tPhone = data[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
-                    $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
-                    $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(tPhone);
-                    $('#txtbillcompany').val(data[0].b_company); $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
+                    let tPhone = row.billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+                    $('#txtbillfirstname').val(row.billing_first_name); $('#txtbilllastname').val(row.billing_last_name); $('#txtbilladdress1').val(row.billing_address_1); $('#txtbilladdress2').val(row.billing_address_2);
+                    $('#txtbillzipcode').val(row.billing_postcode); $('#txtbillcity').val(row.billing_city); $('#txtbillemail').val(row.billing_email); $('#txtbillphone').val(tPhone);
+                    $('#txtbillcompany').val(row.billing_company); $('#ddlbillcountry').val(row.billing_country.trim()).trigger('change'); $('#ddlbillstate').val(row.billing_state.trim()).trigger('change');
 
                     ///shipping_Details
-                    $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
-                    $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
-                    $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
-                    $('#txtCustomerNotes').val(data[0].post_excerpt);
+                    $('#txtshipfirstname').val(row.shipping_first_name); $('#txtshiplastname').val(row.shipping_last_name); $('#txtshipaddress1').val(row.shipping_address_1); $('#txtshipaddress2').val(row.shipping_address_2);
+                    $('#txtshipcompany').val(row.shipping_company); $('#txtshipzipcode').val(row.shipping_postcode); $('#txtshipcity').val(row.shipping_city);
+                    $('#ddlshipcountry').val(row.shipping_country.trim()).trigger('change'); $('#ddlshipstate').val(row.shipping_state.trim()).trigger('change');
+                    $('#txtCustomerNotes').val(row.remark);
 
-                    if (data[0].is_edit == '1') {
-                        if (data[0].is_shiped > 0) {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
-                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger" id="btnSendMail" data-toggle="tooltip" title="Send Order invoice in Mail"><i class="fas fa-envelope"></i> Send Mail</button>');
-                            $('.box-tools-header').append(' <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
-                        }
-                        else {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                        }
-                    }
-                    else {
-                        $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
-                    }
-                    //bind Product
-                    getOrderItemList(oid);
-                    getOrderNotesList(oid);
-                }
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+
+                    getQuoteItemList(data['Table1'])
+                });
             }
-            catch (error) {
-                $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
-            }
-        }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, false);
-        getItemShippingCharge(false);
+            catch (error) { $("#loader").hide(); swal('Alert!', "Something went wrong on loading quote.", "error"); }
+        }).catch(err => { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); getItemShippingCharge(false); });
+
     }
     else {
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
@@ -264,6 +242,136 @@ function getQuoteInfo() {
         $('.page-heading').text('Order Quote'); $('#btnSearch').prop("disabled", false); searchCustomerModal();
         //CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
+}
+function getQuoteItemList(_list) {
+    let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '', giftcardHtml = '';
+    let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardRefundAmt = 0.00;
+    $.each(_list, function (i, row) {
+        console.log(row);
+        let orderitemid = parseInt(row.order_item_id) || 0;
+        if (row.product_type == 'line_item') {
+            let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.meta_data);
+            let giftcard_amount = parseFloat(_meta.wc_gc_giftcard_amount) || 0.00;
+            if (giftcard_amount > 0) itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="gift_item" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
+            else itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
+
+            if (row.is_free) {
+                itemHtml += '<td class="text-center item-action"></td><td>' + row.product_name + '</td><td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+            }
+            else if (giftcard_amount > 0) {
+                itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                itemHtml += '<td>' + row.product_name + '<div class="view-giftmeta" style="word-wrap: break-word;"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + giftcard_amount + '</div></td>';
+                itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+            }
+            else {
+                itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                itemHtml += '<td>' + row.product_name + '<div class="view-addmeta" style="word-wrap: break-word;">';
+                $.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
+                itemHtml += '</div></td>';
+                itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+            }
+            itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
+            itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
+            itemHtml += '<td class="text-right linetotal">' + (row.total - row.discount).toFixed(2) + '</td>';
+            itemHtml += '<td class="text-right RowTax">' + row.tax_amount.toFixed(2) + '</td>';
+            itemHtml += '</tr>';
+            zQty = zQty + (parseFloat(row.quantity) || 0.00);
+            zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
+            zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
+            zTDiscount = zTDiscount + row.discount;
+        }
+        else if (row.product_type == 'coupon') {
+            let cou_amt = parseFloat(row.discount) || 0.00;
+            let coupon_list = auto_coupon.filter(element => element.post_title == row.product_name);
+            for (var j = 0; j < coupon_list.length; j++) {
+                couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
+                couponHtml += '<a href="javascript:void(0);">';
+                couponHtml += '<i class="fa fa-gift"></i>';
+                couponHtml += '<span>' + coupon_list[j].title + '</span>';
+                couponHtml += '<div class="pull-right">';
+
+                if (coupon_list[j].type == 'add_coupon') {
+                    couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
+                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + coupon_list[j].post_title.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete coupon"> <i class="fa fa-times"></i>';
+                    couponHtml += '</button>';
+                }
+                else {
+                    couponHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
+                }
+                couponHtml += '</div>';
+                couponHtml += '</a>';
+                couponHtml += '</li>';
+            }
+            if (coupon_list.length == 0) {
+                let cpn_info = JSON.parse(row.meta_data);
+                let cpn_name = row.product_name;
+                couponHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + row.product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                couponHtml += '<a href="javascript:void(0);">';
+                couponHtml += '<i class="fa fa-gift"></i><span>' + cpn_name.toString().toLowerCase() + '</span>';
+                couponHtml += '<div class="pull-right">$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + row.product_name.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete coupon"><i class="fa fa-times"></i></button></div>';
+                couponHtml += '</a>';
+                couponHtml += '</li>';
+            }
+            //zTDiscount = zTDiscount + cou_amt;
+        }
+        else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
+            recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
+            recyclingfeeHtml += '<td class="text-center item-action"><i class="fa fa-plus-circle"></i></td>';
+            recyclingfeeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
+            recyclingfeeHtml += '</tr>';
+            zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(row.total) || 0.00);
+            $("#stateRecyclingFeeTotal").data("orderitemid", orderitemid);
+        }
+        else if (row.product_type == 'fee' && row.product_name != 'State Recycling Fee') {
+            let startingNumber = (row.product_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
+            let feetype = row.product_name.match(/%/g) != null ? '%' : '';
+            let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
+            feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-success  billinfo" onclick="AddFeeModal(' + orderitemid + ',\'' + orderitemid + '\',\'' + row.product_name + '\');" data-toggle="tooltip" title="Edit fee"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr p-0 text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');" data-toggle="tooltip" title="Delete fee"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
+            feeHtml += '</tr>';
+            zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
+        }
+        else if (row.product_type == 'shipping') {
+            shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
+            shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
+            shippingHtml += '<td>Shipping</td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td>';
+            shippingHtml += '</tr>';
+            zShippingAmt = zShippingAmt + (parseFloat(row.total) || 0.00);
+            $("#shippingTotal").data("orderitemid", orderitemid);
+        }
+        else if (row.product_type == 'gift_card') {
+            _meta = JSON.parse(row.meta_data);
+            giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.product_name.toString() + '" data-id="' + (_meta != null ? parseInt(_meta.giftcard_id) : '0') + '" data-orderitemid="' + orderitemid + '" data-amount="' + row.total.toFixed(2) + '">';
+            giftcardHtml += '<a href="javascript:void(0);">';
+            giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
+            giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + row.product_name.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete gift card"><i class="fa fa-times"></i></button></div>';
+            giftcardHtml += '</a>';
+            giftcardHtml += '</li>';
+            zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
+        }
+        else if (row.product_type == 'tax') { $("#salesTaxTotal").data("orderitemid", orderitemid); }
+        else if (row.product_name == "gift_card") { zGiftCardRefundAmt += row.total; }
+    });
+    console.log(zQty, zTDiscount, zShippingAmt, zTotalTax, zStateRecyclingAmt, zFeeAmt, zGiftCardAmt, zGiftCardRefundAmt);
+    $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
+    $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
+    $('#billCoupon').append(couponHtml);
+    //Calculate Final
+    $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
+    $("#SubTotal").text(zGAmt.toFixed(2));
+    $("#discountTotal").text(zTDiscount.toFixed(2));
+    $("#shippingTotal").text(zShippingAmt.toFixed(2));
+    $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
+    $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
+    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));
+    $("#refundedTotal").text(zRefundAmt.toFixed(2)); $("#refundedByGiftCard").text(zGiftCardRefundAmt.toFixed(2));
+    $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt) + zRefundAmt).toFixed(2));
+    if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
+    $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
 }
 function getOrderItemList(oid) {
     let option = { strValue1: oid };

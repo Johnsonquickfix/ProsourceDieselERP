@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Web;
 
-
     public class OrderModel
     {
         public long order_id { get; set; }
@@ -221,5 +220,11 @@
         public string invoice_number { get; set; }
         public string payment_status { get; set; }
         public string order_note { get; set; }
+    }
+    public class OrderQuoteModel
+    {
+        public long id { get; set; }
+        public string quote_header { get; set; }
+        public string quote_product { get; set; }
     }
 }

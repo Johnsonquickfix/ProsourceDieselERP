@@ -59,6 +59,7 @@
     });
     $.when(CategoryWiseProducts()).done(function () { getQuoteInfo(); });
     $(document).on("click", ".full-dropy", function (t) { $(this).find('.fa').toggleClass('fa-minus fa-plus'); });
+    $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); SaveData(); ActivityLog('Quote No (' + $('#hfOrderNo').val() + ') proceed for customer approval.', '/OrderQuote/Index/' + $('#hfOrderNo').val() + ''); });
     /*end load function*/
     /*Start product*/
     $(document).on("change", ".addnvar,.addnvar-qty", function (t) {
@@ -201,8 +202,7 @@ function getQuoteInfo() {
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
-        var opt = { strValue1: oid };
-        ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
+        ajaxFunction('/OrderQuote/GetQuoteDetails', { strValue1: oid }, beforeSendFun, function (result) {
             try {
                 var data = JSON.parse(result); //console.log(data);
                 if (data.length > 0) {
@@ -1693,7 +1693,7 @@ function ApplyGiftCard() {
             $("#myModal").modal('hide');
         }
         else { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-    }).catch(err => { swal('Error!', err, 'error'); }).always(function () { calcFinalTotals();});    
+    }).catch(err => { swal('Error!', err, 'error'); }).always(function () { calcFinalTotals(); });
 }
 function deleteAllGiftCard(GiftCode) {
     swal({ title: '', text: 'Would you like to remove this Gift Card?', type: "question", showCancelButton: true }).then((result) => { if (result.value) { $('#li_' + GiftCode.replaceAll(' ', '_')).remove(); calcFinalTotals(); } });
@@ -1718,24 +1718,91 @@ function ValidateData() {
     else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Error!', 'Please Select Shipping State.', "error").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
     return true;
 }
+function QuoteHeader(id) {
+    let obj = {
+        quote_no: id, customer_id: parseInt($('#ddlUser').val()) || 0, billing_email: $('#txtbillemail').val(), billing_phone: $('#txtbillphone').val().replace(/[^\d]/g, ''),
+        billing_first_name: $('#txtbillfirstname').val(), billing_last_name: $('#txtbilllastname').val(), billing_company: $('#txtbillcompany').val(), billing_address_1: $('#txtbilladdress1').val(),
+        billing_address_2: $('#txtbilladdress2').val(), billing_city: $('#txtbillcity').val(), billing_state: $('#ddlbillstate').val(), billing_country: $('#ddlbillcountry').val(), billing_postcode: $('#txtbillzipcode').val(),
+        shipping_first_name: $('#txtshipfirstname').val(), shipping_last_name: $('#txtshiplastname').val(), shipping_company: $('#txtshipcompany').val(), shipping_address_1: $('#txtshipaddress1').val(),
+        shipping_address_2: $('#txtshipaddress2').val(), shipping_city: $('#txtshipcity').val(), shipping_state: $('#ddlshipstate').val(), shipping_country: $('#ddlshipcountry').val(), shipping_postcode: $('#txtshipzipcode').val(),
+        remark: $('#txtCustomerNotes').val(), gross_total: parseFloat($('#SubTotal').text()) || 0.00, discount: parseFloat($('#discountTotal').text()) || 0.00, shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
+        fee_total: (parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00) + (parseFloat($('#feeTotal').text()) || 0.00), tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
+        giftcard_total: parseFloat($('#giftCardTotal').text()) || 0.00, net_total: parseFloat($('#orderTotal').text()) || 0.00, payment_method: ''
+    };
+    return obj;
+}
+function QuoteProducts(id) {
+    let _list = [], _itemmeta = [];
+    //Add Product /Gift Card Product
+    $('#order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
+        //let grossAmount = parseFloat($(tr).find(".TotalAmount").data('amount')) || 0.00;
+        let grossAmount = (qty * rate), discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
+        let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00, shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
+        let rNetAmt = grossAmount - discountAmount + taxAmount;
+        _itemmeta = [];
+        if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
+        _list.push({
+            quote_no: id, item_sequence: index, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify(_itemmeta)
+        });
+    });
+    //Add State Recycling Fee
+    _list.push({
+        quote_no: id, item_sequence: _list.length + 1, item_type: 'fee', product_id: 0, variation_id: 0, item_name: 'State Recycling Fee', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($('#hfTaxRate').data('srfee')) || 0), item_meta: ''
+    });
+    //Add Fee
+    $('#order_fee_line_items > tr').each(function (index, tr) {
+        _list.push({
+            quote_no: id, item_sequence: _list.length + 1, item_type: 'fee', product_id: 0, variation_id: 0, item_name: $(tr).data('pname'), product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($(tr).find(".TotalAmount").text()) || 0), item_meta: ''
+        });
+    });
+    //Add Shipping
+    _list.push({
+        quote_no: id, item_sequence: _list.length + 1, item_type: 'shipping', product_id: 0, variation_id: 0, item_name: '', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($('#shippingTotal').text()) || 0), item_meta: ''
+    });
+    //Add Tax
+    let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+    let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = (is_freighttax === 'true') ? _taxRate : 0.0;
+    _list.push({
+        quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: _taxRate, net_total: (parseFloat($('#salesTaxTotal').text()) || 0), item_meta: ''
+    });
+    //Add Coupon
+    $('#billCoupon li').each(function (index, li) {
+        let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
+        if (cou_amt > 0) {
+            _list.push({
+                quote_no: id, item_sequence: _list.length + 1, item_type: 'coupon', product_id: 0, variation_id: 0, item_name: $(li).data('coupon'), product_qty: 1, product_rate: cou_amt, gross_total: cou_amt, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: cou_amt, item_meta: ''
+            });
+        }
+    });
+    //Add Gift Card
+    $('#billGiftCard li').each(function (index, li) {
+        let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
+        if (gift_amt > 0) {
+            _list.push({
+                quote_no: id, item_sequence: _list.length + 1, item_type: 'gift_card', product_id: 0, variation_id: 0, item_name: $(li).data('pn'), product_qty: 1, product_rate: gift_amt, gross_total: gift_amt, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: gift_amt, item_meta: ''
+            });
+        }
+    });
+    return _list;
+}
 function SaveData() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
-    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
-
-    if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
-    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
-    //console.log(obj);
+    let quote = QuoteHeader(oid), _list = QuoteProducts(oid);
+    if (_list.length <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+    let obj = { id: oid, quote_header: JSON.stringify(quote), quote_product: JSON.stringify(_list) };
+    //console.log(obj); return false;
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
-        showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order quote?", showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                $.post('/OrdersMySQL/SaveCustomerOrder', obj).done(function (result) {
-                    if (result.status) {
+                $.post('/OrderQuote/CreateQuote', obj).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].response) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Order updated successfully.', "success");
-                        $.when(UpdateOrders()).done(function () { getOrderInfo(); $('[data-toggle="tooltip"]').tooltip(); });
+                        swal('Success', 'Order Quote saved successfully.', "success");
+                        $('#hfOrderNo').val(result[0].id); getQuoteInfo(); $('[data-toggle="tooltip"]').tooltip();
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

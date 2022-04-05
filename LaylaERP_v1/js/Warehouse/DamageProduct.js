@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $("#btnUpdate").hide();
+    $("#btnUpdate").hide(); $('.select2').select2();
     $("#btnReset").click(function () { resetdamagestock(); })
     GetDamageVendor();
 
@@ -29,8 +29,10 @@ function AddDamagestock() {
     ////m += 1;  // JavaScript months are 0-11
     //var y = formattedDate.getFullYear();
     //var stockdate = y + "-" + m + "-" + d;
-
-    if (vendorid == 0 || vendorid == null) {
+    if (orderid == "") {
+        swal('Alert', 'Please enter  order/purchase/return id', 'error').then(function () { swal.close(); $('#txtorderid').focus(); });
+    }
+    else if (vendorid == 0 || vendorid == null) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendorDamage').focus(); });
     }
     else if (warehouseid == 0 || warehouseid == null) {
@@ -80,7 +82,7 @@ function AddDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     resetdamagestock();
                     StockDamageGrid();
                 }
@@ -233,11 +235,12 @@ function StockDamageGrid() {
         },
         aoColumns: [
             { data: 'id', title: 'Ref', sWidth: "5%" },
-            { data: 'date', title: 'Date', sWidth: "15%", },
+            { data: 'order_id', title: 'Order/Purchase/Return ID', sWidth: "15%" },
             { data: 'product', title: 'Product', sWidth: "20%" },
-            { data: 'vendor', title: 'Vendor', sWidth: "15%" },
+            { data: 'vendor', title: 'Vendor', sWidth: "10%" },
             { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
             { data: 'label', title: 'Return reason', sWidth: "15%" },
+            { data: 'date', title: 'Date', sWidth: "10%", },
             { data: 'quantity', title: 'Qty', sWidth: "10%" },
             {
                 'data': 'id', sWidth: "8%",
@@ -294,7 +297,10 @@ function UpdateDamagestock() {
     var tranid = $("#hfid").val();
     var orderid = $("#txtorderid").val();
 
-    if (vendorid == 0 || vendorid == null) {
+    if (orderid == "") {
+        swal('Alert', 'Please enter  order/purchase/return id', 'error').then(function () { swal.close(); $('#txtorderid').focus(); });
+    }
+    else if (vendorid == 0 || vendorid == null) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendorDamage').focus(); });
     }
     else if (warehouseid == 0 || warehouseid == null) {
@@ -344,7 +350,7 @@ function UpdateDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     resetdamagestock();
                     StockDamageGrid();
                 }

@@ -1131,7 +1131,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity from product_stock_register_damage psrd"
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
                                + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
                                + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                                + " left join wp_posts p on p.id = psrd.product_id"

@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $("#btnUpdate").hide();
+    $("#btnUpdate").hide(); $('.select2').select2();
     $("#btnReset").click(function () { resetdamagestock(); })
     GetDamageVendor();
 
@@ -21,6 +21,7 @@ function AddDamagestock() {
     var price = $("#txtdamageprice").val();
     var unit = $("#txtdamageunit").val();
     var label = $("#txtdamagelabel").val();
+    var orderid = $("#txtorderid").val();
     //var formattedDate = new Date(eatby);
     //var d = formattedDate.getDate();
     ////var m = formattedDate.getMonth();
@@ -28,8 +29,10 @@ function AddDamagestock() {
     ////m += 1;  // JavaScript months are 0-11
     //var y = formattedDate.getFullYear();
     //var stockdate = y + "-" + m + "-" + d;
-
-    if (vendorid == 0 || vendorid == null) {
+    if (orderid == "") {
+        swal('Alert', 'Please enter  order/purchase/return id', 'error').then(function () { swal.close(); $('#txtorderid').focus(); });
+    }
+    else if (vendorid == 0 || vendorid == null) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendorDamage').focus(); });
     }
     else if (warehouseid == 0 || warehouseid == null) {
@@ -68,6 +71,7 @@ function AddDamagestock() {
             value: unit,
             label: label,
             price: price,
+            order_id: orderid,
         }
         $.ajax({
             url: '/Warehouse/AddDamagestock/', dataType: 'json', type: 'Post',
@@ -78,7 +82,7 @@ function AddDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     resetdamagestock();
                     StockDamageGrid();
                 }
@@ -171,7 +175,7 @@ $('#ddlDamageProduct').change(function () {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         success: function (data) {
-            if (data.length > 0) { data = JSON.parse(data); $('#txtdamageprice').val(data[0].sale_price);}
+            if (data.length > 0) { data = JSON.parse(data); $('#txtdamageprice').val(parseFloat(data[0].cost_price).toFixed(2)); }
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
@@ -231,11 +235,12 @@ function StockDamageGrid() {
         },
         aoColumns: [
             { data: 'id', title: 'Ref', sWidth: "5%" },
-            { data: 'date', title: 'Date', sWidth: "15%", },
+            { data: 'order_id', title: 'Order/Purchase/Return ID', sWidth: "15%" },
             { data: 'product', title: 'Product', sWidth: "20%" },
-            { data: 'vendor', title: 'Vendor', sWidth: "15%" },
+            { data: 'vendor', title: 'Vendor', sWidth: "10%" },
             { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
-            { data: 'label', title: 'Label of movement', sWidth: "15%" },
+            { data: 'label', title: 'Return reason', sWidth: "15%" },
+            { data: 'date', title: 'Date', sWidth: "10%", },
             { data: 'quantity', title: 'Qty', sWidth: "10%" },
             {
                 'data': 'id', sWidth: "8%",
@@ -261,6 +266,7 @@ function EditSelect(id) {
         success: function (data) {
             var jobj = JSON.parse(data);
             $("#hfid").val(jobj[0].tran_id);
+            $("#txtorderid").val(jobj[0].order_id);
             $('#txtdamagelabel').val(jobj[0].label);
             $('#ddlVendorDamage').val(jobj[0].vendor_id).trigger('change');
             setTimeout(function () { $('#ddlWarehouseDamage').val(jobj[0].warehouse_id).trigger('change'); }, 3000);
@@ -289,8 +295,12 @@ function UpdateDamagestock() {
     var unit = $("#txtdamageunit").val();
     var label = $("#txtdamagelabel").val();
     var tranid = $("#hfid").val();
+    var orderid = $("#txtorderid").val();
 
-    if (vendorid == 0 || vendorid == null) {
+    if (orderid == "") {
+        swal('Alert', 'Please enter  order/purchase/return id', 'error').then(function () { swal.close(); $('#txtorderid').focus(); });
+    }
+    else if (vendorid == 0 || vendorid == null) {
         swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendorDamage').focus(); });
     }
     else if (warehouseid == 0 || warehouseid == null) {
@@ -329,6 +339,7 @@ function UpdateDamagestock() {
             label: label,
             price: price,
             tran_id: tranid,
+            order_id: orderid,
         }
         $.ajax({
             url: '/Warehouse/UpdateDamagestock/', dataType: 'json', type: 'Post',
@@ -339,7 +350,7 @@ function UpdateDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success', data.message, 'success');
                     resetdamagestock();
                     StockDamageGrid();
                 }

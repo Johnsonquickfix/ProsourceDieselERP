@@ -866,7 +866,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@tran_id",Timestamp),
                     new SqlParameter("@tran_type","DM"),
                     new SqlParameter("@flag","I"),
-                    new SqlParameter("@vendor_id", model.vendor_id)
+                    new SqlParameter("@vendor_id", model.vendor_id),
+                    new SqlParameter("@order_id", model.order_id),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_damage_product_sp", para));
                 return result;
@@ -926,7 +927,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@eatby", model.eatby),
                     new SqlParameter("@serial", model.serial),
                     new SqlParameter("@tran_id", model.tran_id),
-                    new SqlParameter("@vendor_id", model.vendor_id)
+                    new SqlParameter("@vendor_id", model.vendor_id),
+                    new SqlParameter("@order_id", model.order_id)
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_damage_product_sp", para));
                 return result;
@@ -1107,13 +1109,15 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
-                                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
-                                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
-                                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
-                                   +" WHERE ps.id = " + productid + " and p.post_type = 'product' AND p.post_status = 'publish'";
+                //string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
+                //                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
+                //                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                //                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                //                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
+                //                   +" WHERE ps.id = " + productid + " and p.post_type = 'product' AND p.post_status = 'publish'";
+
+                string strquery = "SELECT purchase_price, cost_price from product_purchase_items where fk_product=" + productid + "";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -1129,7 +1133,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity from product_stock_register_damage psrd"
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
                                + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
                                + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                                + " left join wp_posts p on p.id = psrd.product_id"
@@ -1164,7 +1168,7 @@ namespace LaylaERP.BAL
             string strSql = string.Empty;
             try
             {
-                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial from product_stock_register_damage psrd"
+                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial, order_id from product_stock_register_damage psrd"
                        + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                        + " left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 and psrd.tran_id ='" + tran_id + "'";
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -1174,6 +1178,25 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable DamageProductReport(string sMonth)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
+                                + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
+                                + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
+                                + " left join wp_posts p on p.id = psrd.product_id"
+                                + " left join wp_vendor v on v.rowid = wsm.vendor_id WHERE 1 = 1 and wsm.type_mouvement = 3";
+                DT = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return DT;
         }
     }
 }

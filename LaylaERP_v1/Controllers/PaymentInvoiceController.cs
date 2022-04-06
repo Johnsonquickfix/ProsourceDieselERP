@@ -22,7 +22,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PaymentInvoiceSO()
+        {
+            return View();
+        }
         public ActionResult PaymentInvoiceListSO()
+        {
+            return View();
+        }
+        public ActionResult PaymentSOInvoiceList()
         {
             return View();
         }
@@ -228,6 +236,80 @@ namespace LaylaERP.Controllers
             return Json(new { en_id = UTILITIES.CryptorEngine.Encrypt(model.strValue1), com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
 
+        [HttpGet]
+        public JsonResult GetPurchaseSOOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.GetPurchaseSOOrderList(model.strValue1, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+
+        [HttpGet]
+        public JsonResult GetPaymentInvoiceSOByID(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataSet ds = new DataSet();
+                ds = PaymentInvoiceRepository.GetPaymentInvoiceSOByID(model.strValue2);
+                //if (model.strValue1 == "PO")
+                //    ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
+                //else
+                //    ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
+
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+
+        [HttpPost]
+        public JsonResult TakePaymentSO(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Payment", "/PaymentInvoice/TakePaymentSO/" + id + "" + ", " + Net.BrowserInfo);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewSOPayment(id, "POP", u_id, orderXML, orderdetailsXML));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetPaymentDataListSO(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable dt = PaymentInvoiceRepository.GetPaymentDataListSO(id);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
 
         //[HttpPost]
         //public JsonResult TakePayment(PaymentInvoiceModel model)

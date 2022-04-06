@@ -577,5 +577,101 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static DataTable GetPurchaseSOOrderList(string flag, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", flag)
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_noninvoicedsalespopayment_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetPaymentInvoiceSOByID(string po_ids)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@searchcriteria", po_ids),
+                    new SqlParameter("@flag", "PIVID")
+                };
+
+                ds = SQLHelper.ExecuteDataSet("erp_noninvoicedsalespayment_search", parameters);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataTable AddNewSOPayment(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_salespurchase_payment_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePaymentSO/" + Pkey + "", "Payment taken from invoice");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+        public static DataTable GetPaymentDataListSO(long po_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                
+                   SqlParameter[] parameters =
+                {
+                    new SqlParameter("@poid", po_id),
+                    new SqlParameter("@flag", "PINYD")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_noninvoicedsalespayment_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

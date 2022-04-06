@@ -175,7 +175,7 @@ $('#ddlDamageProduct').change(function () {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         success: function (data) {
-            if (data.length > 0) { data = JSON.parse(data); $('#txtdamageprice').val(data[0].sale_price);}
+            if (data.length > 0) { data = JSON.parse(data); $('#txtdamageprice').val(parseFloat(data[0].cost_price).toFixed(2)); }
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });

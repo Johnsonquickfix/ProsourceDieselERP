@@ -812,12 +812,12 @@ namespace LaylaERP.Controllers
             }
             catch(Exception ex) { throw ex; }
         }
-        public JsonResult DamageProductReport()
+        public JsonResult DamageProductReport(string sMonth)
         {
             string JSONResult = string.Empty;
             try
             {
-                DataTable dt = WarehouseRepository.DamageProductReport();
+                DataTable dt = WarehouseRepository.DamageProductReport(sMonth);
                 JSONResult = JsonConvert.SerializeObject(dt, Formatting.Indented);
                 return Json(JSONResult, 0);
             }

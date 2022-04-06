@@ -1109,13 +1109,15 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
-                                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
-                                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
-                                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
-                                   +" WHERE ps.id = " + productid + " and p.post_type = 'product' AND p.post_status = 'publish'";
+                //string strquery = "SELECT COALESCE(ps.id,p.id) pr_id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title,"
+                //                   + " p.post_title, ps.post_title, psr.meta_value sale_price, pr.meta_value reg_price FROM wp_posts as p"
+                //                   + " left join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                //                   + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                   + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                //                   + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, p.id) and psr.meta_key = '_sale_price'"
+                //                   +" WHERE ps.id = " + productid + " and p.post_type = 'product' AND p.post_status = 'publish'";
+
+                string strquery = "SELECT purchase_price, cost_price from product_purchase_items where fk_product=" + productid + "";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -1178,7 +1180,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable DamageProductReport()
+        public static DataTable DamageProductReport(string sMonth)
         {
             DataTable DT = new DataTable();
             try

@@ -1177,5 +1177,24 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable DamageProductReport()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
+                                + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
+                                + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
+                                + " left join wp_posts p on p.id = psrd.product_id"
+                                + " left join wp_vendor v on v.rowid = wsm.vendor_id WHERE 1 = 1 and wsm.type_mouvement = 3";
+                DT = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return DT;
+        }
     }
 }

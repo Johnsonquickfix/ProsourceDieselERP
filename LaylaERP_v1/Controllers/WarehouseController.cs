@@ -37,6 +37,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult DamageStockReport()
+        {
+            return View();
+        }
         public JsonResult GetWarehouse(SearchModel model)
         {
 
@@ -807,6 +811,17 @@ namespace LaylaERP.Controllers
                 return Json(result, 0);
             }
             catch(Exception ex) { throw ex; }
+        }
+        public JsonResult DamageProductReport()
+        {
+            string JSONResult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.DamageProductReport();
+                JSONResult = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                return Json(JSONResult, 0);
+            }
+            catch(Exception e) { throw e; }
         }
     }
 }

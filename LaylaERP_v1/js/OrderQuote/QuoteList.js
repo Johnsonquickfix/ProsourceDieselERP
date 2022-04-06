@@ -24,7 +24,6 @@ $(document).ready(function () {
         $(this).val(''); let order_type = $('#hfOrderType').val();
         $.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
     });
-    //GetMonths();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
         ajax: {
@@ -36,12 +35,7 @@ $(document).ready(function () {
     });
     var urlParams = new URLSearchParams(window.location.search);
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
-    $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname), UpdateOrders()).done(function () {
-        if (order_type.length > 0) {
-            $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type);
-        }
-        dataGridLoad(order_type);
-    });
+    $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname)).done(function () { $('#hfOrderType').val(""); dataGridLoad(""); });
     //$("#loader").hide();
     $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
@@ -58,90 +52,53 @@ $(document).ready(function () {
     $('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
-    $(document).on("click", "#btnUpdateOrder", function (t) {
-        t.preventDefault(); let option = {};
-        swal.queue([{
-            title: 'Do you want update orders?', confirmButtonText: 'Yes, do it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
-            preConfirm: function () {
-                return new Promise(function (resolve) {
-                    swal.showLoading();
-                    $.get('/OrdersMySQL/order-import', {}).then(response => {
-                        if (response.status) { swal('Success', 'Orders updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload(); }
-                        else swal('Error!', 'Something went wrong, please try again.', 'error');
-                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
-                    $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
-                });
-            }
-        }]);
-    });
 });
-function UpdateOrders() {
-    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
-    $.get('/OrdersMySQL/giftcard-import', {}).then(response => { }).catch(err => { }).always(function () { });
-}
-function GetMonths() {
-    var d1 = new Date('01-01-2020');
-    var d2 = new Date();
-    var ydiff = d2.getYear() - d1.getYear();
-    var mdiff = d2.getMonth() - d1.getMonth();
-    var diff = (ydiff * 12 + mdiff);
-
-    $("#filter-by-date").html('<option value="0">All dates</option>');
-    for (i = 0; i <= diff; i++) {
-        //console.log(d2);
-        if (i == 0)
-            d2.setMonth(d2.getMonth());
-        else
-            d2.setMonth(d2.getMonth() - 1);
-        $("#filter-by-date").append('<option value="' + moment(d2).format("YYYYMM") + '">' + moment(d2).format("MMM YY") + '</option>');
-    }
-    $("#filter-by-date").select2();
-}
 ///Get Order Counts
 function GetOrderDetails() {
-    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
-    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
-    let opt = { strValue1: sd, strValue2: ed };
+    let _html = '<li class="all" data-toggle="tooltip" title="Click search all Quote."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>'
+    let option = { strValue1: sd, strValue2: ed };
     $.ajax({
-        type: "POST", url: '/order/order-counts', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        type: "POST", url: '/quote/quote-counts', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         success: function (result) {
-            var data = JSON.parse(result);
-            if (data.length > 0) {
-                $('#all').find(".count").text(number_format(data[0].allorder));
-                $('#mine').find(".count").text(number_format(data[0].mine));
-                $('#draft').find(".count").text(number_format(data[0].drafts));
-                $('#wc-pending').find(".count").text(number_format(data[0].pending));
-                $('#wc-processing').find(".count").text(number_format(data[0].processing));
-                $('#wc-on-hold').find(".count").text(number_format(data[0].onhold));
-                $('#wc-completed').find(".count").text(number_format(data[0].completed));
-                $('#wc-cancelled').find(".count").text(number_format(data[0].cancelled));
-                $('#wc-refunded').find(".count").text(number_format(data[0].refunded));
-                $('#wc-failed').find(".count").text(number_format(data[0].failed));
-                $('#wc-cancelnopay').find(".count").text(number_format(data[0].cancelnopay));
-                $('#wc-pendingpodiuminv').find(".count").text(number_format(data[0].pendingpodiuminv));
-                $('#wc-podium').find(".count").text(number_format(data[0].podium));
-                $('#wc-podiumrefund').find(".count").text(number_format(data[0].podiumrefund));
-            }
+            result = JSON.parse(result); console.log(result);
+            $.each(result, function (i, row) {
+                _html += '<li class="' + row.quote_status + '" data-toggle="tooltip" title="Click search ' + row.quote_status_desc + ' Quote."><a id="all" href="javascript:void(0);">' + row.quote_status_desc + ' (<span class="count">' + row.total_quote + '</span></a>) |</li>'
+            });
+            //if (data.length > 0) {
+            //    $('#all').find(".count").text(number_format(data[0].allorder));
+            //    $('#mine').find(".count").text(number_format(data[0].mine));
+            //    $('#draft').find(".count").text(number_format(data[0].drafts));
+            //    $('#wc-pending').find(".count").text(number_format(data[0].pending));
+            //    $('#wc-processing').find(".count").text(number_format(data[0].processing));
+            //    $('#wc-on-hold').find(".count").text(number_format(data[0].onhold));
+            //    $('#wc-completed').find(".count").text(number_format(data[0].completed));
+            //    $('#wc-cancelled').find(".count").text(number_format(data[0].cancelled));
+            //    $('#wc-refunded').find(".count").text(number_format(data[0].refunded));
+            //    $('#wc-failed').find(".count").text(number_format(data[0].failed));
+            //    $('#wc-cancelnopay').find(".count").text(number_format(data[0].cancelnopay));
+            //    $('#wc-pendingpodiuminv').find(".count").text(number_format(data[0].pendingpodiuminv));
+            //    $('#wc-podium').find(".count").text(number_format(data[0].podium));
+            //    $('#wc-podiumrefund').find(".count").text(number_format(data[0].podiumrefund));
+            //}
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
+    $('#ulQuoteCount').empty().append(_html);
+    $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
 }
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function dataGridLoad(order_type) {
-    //var urlParams = new URLSearchParams(window.location.search);
-    //let searchText = urlParams.get('name') ? urlParams.get('name') : '';
     let searchText = localStorage.getItem('_search');
-    var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
-    if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
+    let cus_id = (parseInt($('#ddlUser').val()) || 0);
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
-    let dfa = "'" + sd + "' and '" + ed + "'";
     let _id = parseInt($('#hfOrderType').data('userid')) || 0, _editable = parseInt($('#hfOrderType').data('iseditable')) || 0;
     table_oh = $('#dtdata').DataTable({
-        oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        oSearch: { "sSearch": searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -154,7 +111,7 @@ function dataGridLoad(order_type) {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/order/order-list",
+        sAjaxSource: "/quote/quote-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: (cus_id > 0 ? cus_id : '') }, { name: "strValue4", value: order_type });
@@ -162,6 +119,7 @@ function dataGridLoad(order_type) {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
+                    console.log(data);
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     localStorage.setItem('_search', '');
                     return fnCallback(dtOption);
@@ -169,24 +127,9 @@ function dataGridLoad(order_type) {
             });
         },
         columns: [
-            {
-                'data': 'id', sWidth: "7%   ", 'render': function (id, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(id).html() + '"><label></label>';
-                }
-            },
-            {
-                data: 'id', title: 'OrderID', sWidth: "8%",
-                render: function (id, type, full, meta) {
-                    if (full.post_mime_type == 'shop_order_erp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
-                    else return '#' + id;
-                }
-
-            },
-            {
-                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    return row.first_name + ' ' + row.last_name;
-                }
-            },
+            { data: 'quote_no', title: 'Quote No', sWidth: "8%" },
+            { data: 'quote_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.quote_date_sort; } else return data; } },
+            { data: 'customer_name', title: 'Name', sWidth: "14%" },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
                     let phone = isNullUndefAndSpace(id) ? id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") : id;
@@ -194,97 +137,50 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
+            { data: 'net_total', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
             {
-                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
-                    let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
-                    amt += refund_gc_amt != 0 ? '<br>Refunded by gift card : $' + refund_gc_amt.toFixed(2) : '';
-                    return amt;
-                }
-            },
-            {
-                data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
-                    if (data == 'wc-pending') return 'Pending payment';
-                    else if (data == 'wc-processing') return 'Processing';
+                data: 'quote_status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
+                    if (data == 'wc-draft') return 'Create Quote';
+                    else if (data == 'wc-approved') return 'Approved';
+                    else if (data == 'wc-rejected') return 'Rejected';
                     else if (data == 'wc-on-hold') return 'On hold';
-                    else if (data == 'wc-completed') return 'Completed';
                     else if (data == 'wc-cancelled') return 'Cancelled';
-                    else if (data == 'wc-refunded') return 'Refunded';
-                    else if (data == 'wc-failed') return 'Failed';
-                    else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
                     else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
                     else if (data == 'wc-podium') return 'Order via Podium';
                     else if (data == 'wc-podiumrefund') return 'Podium Refunded';
-                    else if (data == 'draft') return 'draft';
+                    else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
                     else return '-';
                 }
             },
             {
-                data: 'post_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, row) { return row.date_created; }
-            },
-            {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
-                    let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
-                    //if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                    if (row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') {
-                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        //else if (row.payment_method == 'podium' ) return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
-                        //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                        else return pm_title;
-                    }
-                    else return pm_title;
+                data: 'payment_method', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
+                    if (id == 'amazon_payments_advanced') return 'Amazon Pay';
+                    else if (id == 'authorize_net_cim_credit_card') return 'Authorize Net';
+                    else if (id == 'podium') return 'Podium';
+                    else if (id == 'ppec_paypal') return 'PayPal';
+                    else return '-';
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    let refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;;
-                    refund_amt = refund_amt + refund_gc_amt;
+                data: 'quote_no', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     if ($("#hfEdit").val() == "1") {
                         if (_editable == 1) {
-                            if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
-                            else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo" onclick="ActivityLog(\'Refund order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo" onclick="ActivityLog(\'Refund order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"></i></a>';
-                            else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
-                            else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit quote" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
                         }
                         else if (_editable == 0 && _id == row.customer_id) {
-                            if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else if ((row.status == 'wc-pending' || row.status == 'wc-pendingpodiuminv') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
-                            else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt == 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order" onclick="ActivityLog(\'Refund order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else if ((row.status == 'wc-processing' || row.status == 'wc-on-hold') && refund_amt != 0) return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order" onclick="ActivityLog(\'Refund order id (' + id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + id + '\'); return true;"><i class="fa fa-undo"></i></a>';
-                            else if (row.status == 'wc-completed') return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>';
-                            else return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"  onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
+                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order"  onclick="ActivityLog(\'View/Edit quote id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
                         }
                         else {
-                            return '<a href="minesofmoria/' + id + '" onclick="ActivityLog(\'Edit order id (' + id + ') in order history.\',\'/Orders/OrdersHistory/' + id + '\'); return true;" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            return '<a href="index/' + id + '" onclick="ActivityLog(\'Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
                         }
                     }
                     else { return "No Permission"; }
-                    //if (row.shipped_items == 0)
-                    //    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>'
-                    //else
-                    //    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }
         ]
     });
-}
-
-function CheckAll() {
-    var isChecked = $('#checkall').prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-}
-function Singlecheck(chk) {
-    var isChecked = $(chk).prop("checked"), isHeaderChecked = $("#checkall").prop("checked");
-    if (isChecked == false && isHeaderChecked) $("#checkall").prop('checked', isChecked);
-    else {
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-            if ($(this).prop("checked") == false) isChecked = false;
-        });
-        $("#checkall").prop('checked', isChecked);
-    }
 }
 
 function orderStatus() {

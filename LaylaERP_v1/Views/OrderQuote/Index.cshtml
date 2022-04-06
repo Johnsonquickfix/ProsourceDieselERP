@@ -40,6 +40,7 @@
     input[type=number]::-webkit-outer-spin-button {
         opacity: 1;
     }
+
     .box.box-primary {
         border-top-color: #ff4100;
     }
@@ -53,7 +54,8 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Order Quote</h2>
+    <h2 class="page-heading">Quote Order</h2>
+    <div class="active text-right page-heading-action" style="margin-left:auto;min-width:280px;"></div>
 </div>
 <section class="content section-content quickorder-section">
     <div class="box box-primary create-user-primary mb-35">
@@ -83,7 +85,7 @@
                         <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;" disabled>
                             <option value="wc-draft" selected="selected">Create Quote</option>
                             <option value="wc-approved">Approved</option>
-                            <option value="wc-rejected">rejected</option>
+                            <option value="wc-rejected">Rejected</option>
                             <option value="wc-on-hold">On hold</option>
                             <option value="wc-cancelled">Cancelled</option>
                             @*<option value="wc-pending" selected="selected">Pending payment</option>*@

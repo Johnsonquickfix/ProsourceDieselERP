@@ -208,8 +208,8 @@ function getQuoteInfo() {
     $('.view-addmeta').empty(); $('.billinfo').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden');
-        $('.page-heading').text('Edit Order Quote ').append('<a class="btn btn-danger" href="/OrderQuote/History" data-toggle="tooltip" data-placement="right" title="Back to List">Back to List</a>');
+        $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
+        $('.page-heading-action').empty().append('<a class="btn btn-danger" href="/OrderQuote/History" data-toggle="tooltip" data-placement="left" title="Back to List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
@@ -250,7 +250,7 @@ function getQuoteInfo() {
     else {
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
-        $('.page-heading').text('Order Quote'); $('#btnSearch').prop("disabled", false); searchCustomerModal();
+        $('.page-heading').text('Quote Order'); $('#btnSearch').prop("disabled", false); searchCustomerModal();
         //CheckPermissions("#btnCheckout", "", "", window.location.pathname);
     }
 }
@@ -1756,14 +1756,14 @@ function SaveData() {
     let obj = { id: oid, quote_header: JSON.stringify(quote), quote_product: JSON.stringify(_list) };
     //console.log(obj); return false;
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order quote?", showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your Quote Order?", showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
                 $.post('/OrderQuote/CreateQuote', obj).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Order Quote saved successfully.', "success");
+                        swal('Success', 'Quote Order saved successfully.', "success");
                         $('#hfOrderNo').val(result[0].id); getQuoteInfo(); $('[data-toggle="tooltip"]').tooltip();
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

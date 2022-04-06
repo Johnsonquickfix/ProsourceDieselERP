@@ -57,7 +57,7 @@
     $(document).on("click", ".hub-accord h5", function (t) {
         $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(250).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(250);
     });
-    $.when(CategoryWiseProducts()).done(function () { getQuoteInfo(); });
+    $.when(getQuoteInfo()).done(function () { CategoryWiseProducts(); });
     $(document).on("click", ".full-dropy", function (t) { $(this).find('.fa').toggleClass('fa-minus fa-plus'); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); SaveData(); ActivityLog('Quote No (' + $('#hfOrderNo').val() + ') proceed for customer approval.', '/OrderQuote/Index/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", ".btnEditOrder", function (t) {

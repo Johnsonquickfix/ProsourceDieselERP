@@ -37,57 +37,45 @@ $(document).ready(function () {
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
     $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname)).done(function () { $('#hfOrderType').val(""); dataGridLoad(""); });
     //$("#loader").hide();
-    $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-pending').click(function () { var order_type = "wc-pending"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-processing').click(function () { var order_type = "wc-processing"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-on-hold').click(function () { var order_type = "wc-on-hold"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-completed').click(function () { var order_type = "wc-completed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-cancelnopay').click(function () { var order_type = "wc-cancelnopay"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-pendingpodiuminv').click(function () { var order_type = "wc-pendingpodiuminv"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
+    //$('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-pending').click(function () { var order_type = "wc-pending"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-processing').click(function () { var order_type = "wc-processing"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-on-hold').click(function () { var order_type = "wc-on-hold"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-completed').click(function () { var order_type = "wc-completed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-cancelnopay').click(function () { var order_type = "wc-cancelnopay"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-pendingpodiuminv').click(function () { var order_type = "wc-pendingpodiuminv"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
+    //$('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
 });
 ///Get Order Counts
 function GetOrderDetails() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
-    let _html = '<li class="all" data-toggle="tooltip" title="Click search all Quote."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>'
+    let _html = '',_total=0;
     let option = { strValue1: sd, strValue2: ed };
     $.ajax({
         type: "POST", url: '/quote/quote-counts', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         success: function (result) {
-            result = JSON.parse(result); console.log(result);
+            result = JSON.parse(result); 
             $.each(result, function (i, row) {
                 _html += '<li class="' + row.quote_status + '" data-toggle="tooltip" title="Click search ' + row.quote_status_desc + ' Quote."><a id="all" href="javascript:void(0);">' + row.quote_status_desc + ' (<span class="count">' + row.total_quote + '</span></a>) |</li>'
+                _total += row.total_quote;
             });
-            //if (data.length > 0) {
-            //    $('#all').find(".count").text(number_format(data[0].allorder));
-            //    $('#mine').find(".count").text(number_format(data[0].mine));
-            //    $('#draft').find(".count").text(number_format(data[0].drafts));
-            //    $('#wc-pending').find(".count").text(number_format(data[0].pending));
-            //    $('#wc-processing').find(".count").text(number_format(data[0].processing));
-            //    $('#wc-on-hold').find(".count").text(number_format(data[0].onhold));
-            //    $('#wc-completed').find(".count").text(number_format(data[0].completed));
-            //    $('#wc-cancelled').find(".count").text(number_format(data[0].cancelled));
-            //    $('#wc-refunded').find(".count").text(number_format(data[0].refunded));
-            //    $('#wc-failed').find(".count").text(number_format(data[0].failed));
-            //    $('#wc-cancelnopay').find(".count").text(number_format(data[0].cancelnopay));
-            //    $('#wc-pendingpodiuminv').find(".count").text(number_format(data[0].pendingpodiuminv));
-            //    $('#wc-podium').find(".count").text(number_format(data[0].podium));
-            //    $('#wc-podiumrefund').find(".count").text(number_format(data[0].podiumrefund));
-            //}
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
-    $('#ulQuoteCount').empty().append(_html);
-    $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
+    $('#ulQuoteCount').empty().append('<li class="" data-toggle="tooltip" title="Click search all Quote."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">' + _total + '</span></a>) |</li>').append(_html);
+    $(".subsubsub li a").click(function (e) {
+        $('.subsubsub li a').removeClass('current'); $(this).addClass('current');
+        let order_type = $(this).parent().prop('className'); $('#hfOrderType').val(order_type); dataGridLoad(order_type);
+    });
 }
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function dataGridLoad(order_type) {
@@ -119,7 +107,6 @@ function dataGridLoad(order_type) {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
-                    console.log(data);
                     let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     localStorage.setItem('_search', '');
                     return fnCallback(dtOption);
@@ -127,7 +114,7 @@ function dataGridLoad(order_type) {
             });
         },
         columns: [
-            { data: 'quote_no', title: 'Quote No', sWidth: "8%" },
+            { data: 'quote_no', title: 'Quote Code', sWidth: "8%" },
             { data: 'quote_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.quote_date_sort; } else return data; } },
             { data: 'customer_name', title: 'Name', sWidth: "14%" },
             {
@@ -137,10 +124,10 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
-            { data: 'net_total', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
+            { data: 'net_total', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             {
                 data: 'quote_status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
-                    if (data == 'wc-draft') return 'Create Quote';
+                    if (data == 'wc-draft') return 'Quote';
                     else if (data == 'wc-approved') return 'Approved';
                     else if (data == 'wc-rejected') return 'Rejected';
                     else if (data == 'wc-on-hold') return 'On hold';

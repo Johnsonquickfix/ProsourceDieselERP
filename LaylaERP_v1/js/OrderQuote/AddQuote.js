@@ -210,7 +210,7 @@ function getQuoteInfo() {
     if (oid > 0) {
         $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
         $('.page-heading-action').empty().append('<a class="btn btn-danger" href="/OrderQuote/History" data-toggle="tooltip" data-placement="left" title="Back to List">Back to List</a>');
-        $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
+        $('#lblOrderNo').text('Quote Code #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
         $.get('/OrderQuote/GetQuoteDetails', { id: oid }).done(function (result) {

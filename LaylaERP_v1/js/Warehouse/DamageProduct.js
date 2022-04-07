@@ -192,6 +192,7 @@ function resetdamagestock() {
     $("#txtdamageprice").val('');
     $("#txtdamageunit").val('');
     $("#hfdamagetransid").val('');
+    $("#txtorderid").val('');
     $("#btnAdd").show();
     $("#btnUpdate").hide();
 }

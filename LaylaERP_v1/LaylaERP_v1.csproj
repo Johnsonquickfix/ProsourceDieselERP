@@ -854,6 +854,7 @@
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
     <Content Include="js\Warehouse\DamageProduct.js" />
+    <Content Include="js\Warehouse\DamageProductReport.js" />
     <Content Include="js\Warehouse\updatewarehouse.js" />
     <Content Include="js\Warehouse\vendorwarehouselist.js" />
     <Content Include="js\Warehouse\warehouselist.js" />
@@ -1235,6 +1236,7 @@
     <Content Include="Views\Warehouse\DamageProduct.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceSO.cshtml" />
+    <Content Include="Views\Warehouse\DamageStockReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

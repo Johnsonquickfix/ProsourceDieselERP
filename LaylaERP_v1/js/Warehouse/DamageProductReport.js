@@ -63,7 +63,7 @@ function DamageProductGrid(is_date) {
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> CSV',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5],
+                    columns: [1, 2, 3, 4, 5, 6, 7],
                 },
                 filename: function () {
                     var d = new Date();
@@ -79,7 +79,7 @@ function DamageProductGrid(is_date) {
                 text: '<i class="fas fa-file-csv"></i> Print',
                 footer: false,
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5],
+                    columns: [1, 2, 3, 4, 5, 6, 7],
                 },
                 filename: function () {
                     var d = new Date();

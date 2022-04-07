@@ -1189,7 +1189,7 @@ namespace LaylaERP.BAL
                                 + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
                                 + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                                 + " left join wp_posts p on p.id = psrd.product_id"
-                                + " left join wp_vendor v on v.rowid = wsm.vendor_id WHERE 1 = 1 and wsm.type_mouvement = 3";
+                                + " left join wp_vendor v on v.rowid = wsm.vendor_id WHERE 1 = 1 and wsm.type_mouvement = 3 and cast(tran_date as date) between " + sMonth + "";
                 DT = SQLHelper.ExecuteDataTable(strSql);
             }
             catch(Exception ex)

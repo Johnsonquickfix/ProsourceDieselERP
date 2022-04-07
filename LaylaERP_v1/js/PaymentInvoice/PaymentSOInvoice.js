@@ -117,6 +117,7 @@ function PurchaseOrderGrid() {
                 }
             },
             { data: 'date_creation', title: 'Invoice Date', sWidth: "10%" },
+            { data: 'date_livraison', title: 'Due Date', sWidth: "10%" },
             //{ data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
             //{
             //    data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
@@ -189,6 +190,7 @@ function PurchasefullyOrderGrid() {
                 }
             },
             { data: 'date_creation', title: 'Invoice Date', sWidth: "10%" },
+            { data: 'date_livraison', title: 'Due Date', sWidth: "10%" },
             //{ data: 'refordervendor', title: 'Invoice No', sWidth: "10%" },
             //{
             //    data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {

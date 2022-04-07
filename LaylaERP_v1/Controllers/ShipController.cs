@@ -186,10 +186,14 @@ namespace LaylaERP.Controllers
                     }
                    DataTable dt = ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
                     // My sql wp_posts data update
-                    string id = dt.Rows[0]["id"].ToString();
-                    string wpstatus = dt.Rows[0]["wpstatus"].ToString(); 
-                    StringBuilder strSql = new StringBuilder("Update wp_posts set post_status = '"+ wpstatus + "'  where order_id=" + id + "; ");
-                     DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                    long id = Convert.ToInt64( dt.Rows[0]["id"].ToString());
+                    string wpstatus = dt.Rows[0]["wpstatus"].ToString();
+                    
+                    //StringBuilder strSql = new StringBuilder("Update wp_posts set post_status = '"+ wpstatus + "'  where order_id=" + id + "; ");
+                    // DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+
+                    StringBuilder strSql = new StringBuilder(string.Format("update wp_posts set post_status = '{0}' where id = {1};", wpstatus, id));
+                    DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString()); 
                 }
                 else
                 {

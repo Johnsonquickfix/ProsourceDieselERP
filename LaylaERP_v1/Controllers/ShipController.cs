@@ -184,7 +184,12 @@ namespace LaylaERP.Controllers
                         shipped_items = (shipped_items.Length > 0 ? shipped_items + ", " : "") + node["Name"].InnerText + " (" + node["SKU"].InnerText + ") x " + node["Quantity"].InnerText;
                         shipped_qty += int.Parse(node["Quantity"].InnerText);
                     }
-                    ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
+                   DataTable dt = ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
+                    // My sql wp_posts data update
+                    string id = dt.Rows[0]["id"].ToString();
+                    string wpstatus = dt.Rows[0]["wpstatus"].ToString(); 
+                    StringBuilder strSql = new StringBuilder("Update wp_posts set post_status = '"+ wpstatus + "'  where order_id=" + id + "; ");
+                     DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
                 else
                 {

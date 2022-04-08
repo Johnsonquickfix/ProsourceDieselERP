@@ -1133,7 +1133,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register psrd"
                                + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
                                + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                                + " left join wp_posts p on p.id = psrd.product_id"
@@ -1168,7 +1168,7 @@ namespace LaylaERP.BAL
             string strSql = string.Empty;
             try
             {
-                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial, order_id from product_stock_register_damage psrd"
+                strSql = "SELECT wsm.tran_id, product_id, psrd.warehouse_id, v.rowid, CONVERT(varchar,tran_date,110) date, label, quantity, wsm.vendor_id, price, CONVERT(varchar,eatby, 110), serial, order_id from product_stock_register psrd"
                        + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                        + " left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 and psrd.tran_id ='" + tran_id + "'";
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -1185,7 +1185,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register_damage psrd"
+                string strSql = "SELECT wsm.tran_id id, product_id, ww.ref warehouse, p.post_title product, v.name vendor, CONVERT(varchar,tran_date,101) date, label, quantity, order_id from product_stock_register psrd"
                                 + " inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id"
                                 + " left join wp_warehouse ww on ww.rowid = psrd.warehouse_id"
                                 + " left join wp_posts p on p.id = psrd.product_id"

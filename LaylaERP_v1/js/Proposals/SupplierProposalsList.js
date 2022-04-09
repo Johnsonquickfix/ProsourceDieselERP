@@ -217,7 +217,7 @@ $("#btngenerateinvoice").click(function () {
         //if (new_role != "") {
         
             swal({
-                title: '', text: "Are you sure you want to generate one invoice for " + commaCount +" orders ?", type: 'warning', showCancelButton: true,
+                title: '', text: "Are you sure you want to generate an invoice for (" + commaCount +") orders?", type: 'warning', showCancelButton: true,
                 confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.value) {

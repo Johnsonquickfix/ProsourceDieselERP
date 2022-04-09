@@ -87,5 +87,25 @@
                 throw Ex;
             }
         }
+        public static DataTable generatesalespoinvoice(string ID)
+        {
+            try
+            {
+                string strsql = String.Empty;
+                int result = 0; 
+                strsql = "erp_updatesalesinvoice_salespo";
+                SqlParameter[] para =
+                {
+                new SqlParameter("@id", ID)
+                };
+                DataTable dt = SQLHelper.ExecuteDataTable(strsql, para);
+                return dt;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Proposals/generateinvoice/" + ID + "", "Generate invoice ");
+                throw Ex;
+            }
+        }
     }
 }

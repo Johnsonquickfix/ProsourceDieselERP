@@ -232,15 +232,24 @@ function generateinvoice(ID) {
     var obj = {
         strValue1: ID    }
     $.ajax({
-        url: '/proposals/generateinvoice/', dataType: 'json', type: 'Post',
+        url: '/proposals/generatesalespoinvoice/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Success', data.message, 'success');
+                if (data.type == 'All') {
+                    swal('Success', data.message, 'success');
+                    $('.nav-tabs a[href="#tabPO_02"]').tab('show');
+                }
+                else {
+                    swal('Alert!', data.message, 'info');
+                    if (data.type == 'Miss')
+                    $('.nav-tabs a[href="#tabPO_02"]').tab('show');
+                }
+
                 $.when(LoadGrid()).done(function () {
-                   LoadGridIPO(), $('.nav-tabs a[href="#tabPO_02"]').tab('show');  });
+                   LoadGridIPO()  });
             }
             else {
                 swal('Alert!', data.message, 'error');

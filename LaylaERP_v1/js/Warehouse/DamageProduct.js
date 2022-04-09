@@ -382,6 +382,7 @@ function fileupload() {
             success: function (data) {
                 if (data.status == true) {
                     swal('Success', data.message, 'success');
+                    FileUploadList();
                 }
                 else { swal('Alert!', data.message, 'error'); }
             },

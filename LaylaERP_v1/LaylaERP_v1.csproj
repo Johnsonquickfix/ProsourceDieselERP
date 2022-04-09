@@ -1243,6 +1243,7 @@
   <ItemGroup>
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
   </ItemGroup>
   <ItemGroup>

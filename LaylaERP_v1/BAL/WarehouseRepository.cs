@@ -1148,7 +1148,7 @@ namespace LaylaERP.BAL
                 //}
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
-                strSql += "; SELECT (Count(wsm.tran_id)/" + pagesize.ToString() + ") TotalPage,Count(wsm.tran_id) TotalRecord from product_stock_register_damage psrd inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 " + strWhr.ToString();
+                strSql += "; SELECT (Count(wsm.tran_id)/" + pagesize.ToString() + ") TotalPage,Count(wsm.tran_id) TotalRecord from product_stock_register psrd inner join wp_stock_mouvement wsm on wsm.tran_id = psrd.tran_id left join wp_warehouse ww on ww.rowid = psrd.warehouse_id left join wp_posts p on p.id = psrd.product_id left join wp_vendor v on v.rowid = wsm.vendor_id where 1 = 1 and wsm.type_mouvement = 3 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1197,6 +1197,43 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return DT;
+        }
+
+        public static int DamageFileUpload(string model_pdf1, long tran_id)
+        {
+            string sqlquery = string.Empty;
+            try
+            {
+                sqlquery = "UPDATE wp_stock_mouvement SET model_pdf = @model_pdf WHERE tran_id = @tran_id";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@model_pdf", model_pdf1),
+                    new SqlParameter("@tran_id", tran_id)
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(sqlquery, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable DamageFileList(int tran_id)
+        {
+            DataTable dt = new DataTable();
+            string StrQuery = string.Empty;
+            try
+            {
+                StrQuery = "SELECT model_pdf FROM wp_stock_mouvement WHERE tran_id = " + tran_id + " AND model_pdf IS NOT NULL";
+                dt = SQLHelper.ExecuteDataTable(StrQuery);
+                return dt;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
         }
     }
 }

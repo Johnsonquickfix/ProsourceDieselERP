@@ -1239,6 +1239,7 @@
     <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
     <Content Include="Views\Warehouse\DamageProductList.cshtml" />
     <Content Include="Views\Warehouse\UpdateDamageProduct.cshtml" />
+    <Content Include="Views\EmailNotifications\QuoteOrderMail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

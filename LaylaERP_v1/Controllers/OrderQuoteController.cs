@@ -99,5 +99,21 @@
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult SendApprovalMail(OrderQuoteModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "QuoteOrderMail", model);
+
+                result = SendEmail.SendEmails(model.quote_header, "Your order #" + model.id + " has been received", renderedHTML);
+            }
+            catch (Exception ex) { status = false; result = ex.Message; }
+            return Json(new { status = status, message = result }, 0);
+        }
     }
 }

@@ -1,0 +1,196 @@
+﻿@using System.Data
+@model DataSet
+@{
+    Layout = null;
+    decimal ga = 0, dis = 0, shipamt = 0, tax = 0, srfamt = 0, fee = 0, gcamt = 0;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
+    <title>Layla Customer Quote Invoice</title>
+</head>
+<body id="main-body" style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
+    <div style=" background-color:#fff; box-shadow:0px 0px 4px #ddd; max-width:600px; margin:auto;">
+        <div style="text-align: center; padding:25px 10px 10px 10px;"><a style="text-decoration:none;" href=""><img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" /></a></div>
+        <div style="padding:0 15px 15px 15px;">
+            <h5 style=" font-family:Arial, Helvetica, sans-serif; margin-bottom: 5px; margin-top: 10px; font-size:20px; color:#4f4f4f;">Thank you for showing interest in us. It is your order proposal.<br /> Please approve it for further processing and payment.</h5>
+            @*<div style="color:#ff4100; font-style:italic; margin-bottom: 7px;">We will notify you when your order ships.</div>*@
+            <div style="font-size: 18px;">
+                Your quote code:
+                @foreach (DataRow row in Model.Tables[0].Rows)
+                {
+                    <strong id="lblorder">
+                        @row["quote_no"].ToString()
+                    </strong>
+                    <span style="display:block;">
+                        <a href="@row["base_url"].ToString()/quote/accept?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Approve</a>
+                        <a href="@row["base_url"].ToString()/quote/reject?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px; border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); " target="_blank" rel="noreferrer">Disapprove</a>
+                    </span>
+                }
+
+
+            </div>
+
+            <div style="background-color:#f6f7f9; margin:0 15px;">
+                <div style="max-width:320px; margin:auto; padding:15px 0;">
+                    @foreach (DataRow row in Model.Tables[0].Rows)
+                    {
+                        <div style=" float:left; width:50%; max-width:150px; margin-right:5px; text-align:left;" id="sp_ad">
+                            <h6 style="font-size:15px; line-height:20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Ship to:</h6>
+                            <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;" id="s_fn">@row["billing_first_name"] @row["billing_last_name"]</strong></p>
+                            @if (!string.IsNullOrEmpty(@row["billing_company"].ToString()))
+                            {<p style="margin: 5px 0;" id="s_com">@row["billing_company"]</p>}
+                            @if (!string.IsNullOrEmpty(@row["billing_address_1"].ToString()))
+                            {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["billing_address_1"]</p>}
+                            @if (!string.IsNullOrEmpty(@row["billing_address_2"].ToString()))
+                            {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["billing_address_2"]</p>}
+                            <p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["billing_city"], @row["billing_state"] @row["billing_postcode"] @row["billing_country"]</p>
+                        </div>
+                        <div style="float:left; width:50%; max-width:150px; margin-left:5px; text-align:left;" id="bill_ad">
+                            <h6 style="font-size:15px; line-height: 20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Bill to:</h6>
+                            <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;">@row["shipping_first_name"] @row["shipping_last_name"]</strong></p>
+                            @if (!string.IsNullOrEmpty(@row["shipping_company"].ToString()))
+                            {<p style="margin: 5px 0;" id="s_com">@row["shipping_company"]</p>}
+                            @if (!string.IsNullOrEmpty(@row["shipping_address_1"].ToString()))
+                            {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["shipping_address_1"]</p>}
+                            @if (!string.IsNullOrEmpty(@row["shipping_address_2"].ToString()))
+                            {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["shipping_address_2"]</p>}
+                            <p style="margin: 1px 0; font-weight:300; line-height: 18px;">@row["shipping_city"], @row["shipping_state"] @row["shipping_postcode"] @row["shipping_country"]</p>
+                        </div>
+                    }
+
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+
+            <div style="background-color: #f6f6f6; margin: 0 15px;" id="o_items">
+                <div>
+                    <h2 style="margin-bottom:20px; font-size:18px; text-align:center; margin-top:0px; padding:15px; background-color:#4f4f4f; color:#fff">Quote Details</h2>
+                </div>
+                @if (Model.Tables[1] != null)
+                {
+                    foreach (DataRow row in Model.Tables[1].Rows)
+                    {
+                        if (row["item_type"].ToString().Trim() == "line_item")
+                        {
+                            <div style="padding: 15px 10px; border-bottom: 1px solid #c8c8c8;">
+                                <div style="max-width:300px; display: inline-block; background-color:#fff; padding:10px; border:1px solid #ddd;">
+                                    <img style="width:100%; margin:0;" src="@row["product_img"]" />
+                                </div>
+                                <div style="font-size:16px;">
+                                    <h5 style="font-size: 16px; margin: 10px 0;">@row["item_name"]</h5>
+                                    <div style="margin-bottom:8px;"><span>Quantity:</span> <strong>@row["product_qty"]</strong></div>
+                                    <div><span>Total:</span> <strong>@String.Format("${0:0.00}", @row["gross_total"])</strong></div>
+                                </div>
+                            </div>
+                            ga = ga + ((@row["gross_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["gross_total"].ToString()) : 0);
+                            dis = dis + ((@row["discount"] != Convert.DBNull) ? Convert.ToDecimal(@row["discount"].ToString()) : 0);
+                            tax = tax + ((@row["tax_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["tax_total"].ToString()) : 0);
+                        }
+                        else if (row["item_type"].ToString().Trim() == "shipping")
+                        {
+                            shipamt = shipamt + ((@row["net_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["net_total"].ToString()) : 0);
+                        }
+                        else if (row["item_type"].ToString().Trim() == "fee" && row["item_name"].ToString().Trim() == "State Recycling Fee")
+                        {
+                            srfamt = srfamt + ((@row["net_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["net_total"].ToString()) : 0);
+                        }
+                        else if (row["item_type"].ToString().Trim() == "fee" && row["item_name"].ToString().Trim() != "State Recycling Fee")
+                        {
+                            fee = fee + ((@row["net_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["net_total"].ToString()) : 0);
+                        }
+                        else if (row["item_type"].ToString().Trim() == "gift_card")
+                        {
+                            gcamt = gcamt + ((@row["net_total"] != Convert.DBNull) ? Convert.ToDecimal(@row["net_total"].ToString()) : 0);
+                        }
+                    }
+                }
+            </div>
+            <div style="margin:0 15px 20px; padding:15px 0; border-bottom:1px solid #ddd; background-color:#f6f6f6;">
+                <div style="margin:0 auto;">
+                    <span style="display: block;">
+                        <strong style="width:200px; display:inline-block; text-align:left;">Sub-Total:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", ga)</span>
+                    </span>
+                    <span style="display:block;">
+                        @if (dis > 0)
+                        {
+                            <strong style="width:200px; display:inline-block; text-align:left;">Discount:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:-0.00}", dis)</span>
+                        }
+                        else
+                        {
+                            <strong style="width:200px; display:inline-block; text-align:left;">Discount:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", dis)</span>
+                        }
+                    </span>
+                    <span style="display:block;">
+                        <strong style="width:200px; display:inline-block; text-align:left;">Shipping:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", shipamt)</span>
+                    </span>
+                    <span style="display:block;">
+                        <strong style="width:200px; display:inline-block; text-align:left;">Sale Tax:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", tax)</span>
+                    </span>
+                    <span style="display:block;">
+                        <strong style="width:200px; display:inline-block; text-align:left;">State Recycling Fee:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", srfamt)</span>
+                    </span>
+                    <span style="display:block;">
+                        <strong style="width:200px; display:inline-block; text-align:left;">Fee:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:0.00}", fee)</span>
+                    </span>
+                    @if (gcamt > 0)
+                    {
+                        <span style="display:block;">
+                            <strong style="width:200px; display:inline-block; text-align:left;">Gift Card:</strong><span style="width:100px; display: inline-block; text-align: right;">@String.Format("${0:-0.00}", gcamt)</span>
+                        </span>
+                    }
+                    <span style="display:block;">
+                        <strong style="width: 200px; display: inline-block; text-align: left; font-size: 22px;">Total:</strong><span style="width: 100px; display: inline-block; text-align: right; font-size: 20px;"><strong>@String.Format("${0:0.00}", (ga + shipamt + tax + srfamt + fee - (dis + gcamt)))</strong></span>
+                    </span>
+
+                </div>
+            </div>
+            <div>
+                <ul style="padding:0 15px; margin:0;">
+                    <li style="list-style:none; margin-bottom:20px; margin-left:0;  width:47%; float:left; padding:10px 2px; border-radius: 3px; border:1px solid #ddd;">
+                        <a style="text-decoration:none;" href="http://v2.zopim.com/widget/livechat.html?key=GNFx4Up7Iivqtqu4bIG8HnTTR2CwGeaA&utm_campaign=MAP%3A%20Topper%20-%20Shipping%20Delay%20Version%20%28HXbiAm%29&utm_medium=email&utm_source=2019%20-%20Topper%20MAP&_ke=eyJrbF9lbWFpbCI6ICJncmVnZ0BsYXlsYXNsZWVwLmNvbSIsICJrbF9jb21wYW55X2lkIjogIkxGUVRKSyJ9"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-chat-icon.png" alt="Layla Chat" /></a>
+                        <span style="margin-top: 5px; display:block; line-height: 20px;">M-F 7AM-4PM MST<br />S-S 8AM-5PM MST</span>
+                    </li>
+                    <li style="list-style:none; margin-bottom:20px; margin-left:0; width:47%; float:right; padding:10px 2px; border-radius: 3px;border:1px solid #ddd;">
+                        <a style="text-decoration:none;" href="tel:855-358-1676"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-phone-icon.png" alt="Layla Phone" /></a>
+                        <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="tel:855-358-1676">855-358-1676</a><br /> 24 HOURS</span>
+                    </li>
+                    <li style="list-style:none; margin-bottom:20px; margin-left:0; width:100%; float:left; padding:10px 0; border-radius: 3px;border:1px solid #ddd;">
+                        <a style="text-decoration:none;" href="mailto:support@laylasleep.com"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-mail-icon.png" alt="Layla Mail" /></a>
+                        <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="mailto:support@laylasleep.com">support@laylasleep.com</a></span>
+                    </li>
+                </ul>
+            </div>
+            <div style="clear:both;"></div>
+            <div style="margin-top:20px; padding:15px;">
+                <a href="//refer.laylasleep.com" target="_blank"><img style="margin:0; width:100%;" style="width:100%;" src="https://laylasleep.com/wp-content/themes/layla-white/images/share-reward.jpg" alt="Layla Offers" /></a>
+            </div>
+            <div style="margin:0; background-color:#404042;">
+                <ul style="padding:0; margin:0;">
+                    <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                        <a style="display:block;" href="https://www.facebook.com/laylasleep">
+                            <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-fb.png" alt="Layla On Facebook" />
+                        </a>
+                    </li>
+                    <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                        <a style="display:block;" href="https://twitter.com/laylasleep">
+                            <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-twit.png" alt="Layla On Twitter" />
+                        </a>
+                    </li>
+                    <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                        <a style="display:block;" href="https://www.instagram.com/laylasleep/">
+                            <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-insta.png" alt="Layla On Insta" />
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- jQuery -->
+        <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    </div>
+</body>
+</html>

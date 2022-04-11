@@ -50,6 +50,26 @@
             }
             return ds;
         }
+        public static DataTable QuoteApproval(long id,string quotestatus, string row_key)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@search", row_key),                    
+                    new SqlParameter("@quote_status", quotestatus),
+                    new SqlParameter("@flag", "QUOTMA"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_order_quote_search", parameters);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return dt;
+        }
         public static DataTable QuoteCounts(DateTime? fromdate, DateTime? todate, long UserID)
         {
             DataTable dt = new DataTable();

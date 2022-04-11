@@ -322,7 +322,7 @@ function getQuoteItemList(_list) {
             recyclingfeeHtml += '</tr>';
             zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(row.net_total) || 0.00);
         }
-        else if (row.item_type == 'fee' && row.product_name != 'State Recycling Fee') {
+        else if (row.item_type == 'fee' && row.item_name != 'State Recycling Fee') {
             let startingNumber = (row.item_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
             let feetype = row.item_name.match(/%/g) != null ? '%' : '';
             let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.net_total);
@@ -1763,8 +1763,11 @@ function SaveData() {
                     result = JSON.parse(result);
                     if (result[0].response) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Quote Order saved successfully.', "success");
-                        $('#hfOrderNo').val(result[0].id); getQuoteInfo(); $('[data-toggle="tooltip"]').tooltip();
+                        $('#hfOrderNo').val(result[0].id);;
+                        $.when(getQuoteInfo()).done(function () {
+                            $('[data-toggle="tooltip"]').tooltip();
+                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error");});
+                        });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

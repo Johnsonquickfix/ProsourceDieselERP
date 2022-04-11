@@ -116,8 +116,8 @@ namespace LaylaERP.Controllers
 
         public ActionResult QuoteOrderMail(OrderQuoteModel model)
         {
-            ViewBag.id = model.id;
-            return View(model);
+            DataSet ds = OrderQuoteRepository.GetOrdersQuote(model.id);
+            return View(ds);
         }
     }
 }

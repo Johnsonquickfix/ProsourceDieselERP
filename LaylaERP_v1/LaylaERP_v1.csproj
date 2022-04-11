@@ -1240,6 +1240,8 @@
     <Content Include="Views\Warehouse\DamageProductList.cshtml" />
     <Content Include="Views\Warehouse\UpdateDamageProduct.cshtml" />
     <Content Include="Views\EmailNotifications\QuoteOrderMail.cshtml" />
+    <Content Include="Views\OrderQuote\QuoteApproval.cshtml" />
+    <Content Include="Views\OrderQuote\QuoteDisapprove.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

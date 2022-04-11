@@ -11,6 +11,7 @@
     $("#btnUpdate").click(function () { UpdateDamagestock(); })
     $("#btnupload").click(function () { fileupload(); })
     StockDamageGrid();
+
 })
 
 function AddDamagestock() {

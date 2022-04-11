@@ -1233,7 +1233,6 @@ namespace LaylaERP.BAL
             {
                 throw ex;
             }
-
         }
     }
 }

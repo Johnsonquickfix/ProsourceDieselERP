@@ -100,6 +100,80 @@
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
 
+        [Route("quote/accept")]
+        public ActionResult QuoteApproval(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                long user_id = 0, quote_id = 0;
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    user_id = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    quote_id = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    quote_id = 0;
+                if (user_id > 0 && quote_id > 0)
+                {
+                    DataTable dt = OrderQuoteRepository.QuoteApproval(quote_id, "wc-approved", key);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["response"].ToString();
+                        ViewBag.id = id;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
+        [Route("quote/reject")]
+        public ActionResult QuoteDisapprove(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                long user_id = 0, quote_id = 0;
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    user_id = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    quote_id = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    quote_id = 0;
+                if (user_id > 0 && quote_id > 0)
+                {
+                    DataTable dt = OrderQuoteRepository.QuoteApproval(quote_id, "wc-rejected", key);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["response"].ToString();
+                        ViewBag.id = obj.RowID;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
         [HttpPost]
         public JsonResult SendApprovalMail(OrderQuoteModel model)
         {

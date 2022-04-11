@@ -19,17 +19,21 @@
         <div style="padding:0 15px 15px 15px;">
             <h5 style=" font-family:Arial, Helvetica, sans-serif; margin-bottom: 5px; margin-top: 10px; font-size:20px; color:#4f4f4f;">Thank you for showing interest in us. It is your order proposal.<br /> Please approve it for further processing and payment.</h5>
             @*<div style="color:#ff4100; font-style:italic; margin-bottom: 7px;">We will notify you when your order ships.</div>*@
-        <div style="font-size: 18px;">
-            Your quote code: <strong id="lblorder">
+            <div style="font-size: 18px;">
+                Your quote code:
                 @foreach (DataRow row in Model.Tables[0].Rows)
-                {@row["quote_no"].ToString()}
-                </ strong ></ div >
-            </strong>
-            <span style="display:block;">
-                <a href="https://dev.laylaerp.com/purchaseorder/po-accept?key%3D02082022061400%26id%3Dm6Ky1%2BSvPkU%3D%26uid%3D0qNofCEHzek%3D&amp;source=gmail-html&amp;ust=1649586136671000&amp;usg=AOvVaw0xNRFl0TTEtJn_d6R3zAA-" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Approve</a>
-                <a href="https://dev.laylaerp.com/purchaseorder/po-reject?key%3D02082022061400%26id%3Dm6Ky1%2BSvPkU%3D%26uid%3D0qNofCEHzek%3D&amp;source=gmail-html&amp;ust=1649586136671000&amp;usg=AOvVaw0isz4cXc8ZzEcsfpAYM-WL" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px; border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); " target="_blank" rel="noreferrer">Disapprove</a>
-            </span>
-        </div>
+                {
+                    <strong id="lblorder">
+                        @row["quote_no"].ToString()
+                    </strong>
+                    <span style="display:block;">
+                        <a href="@row["base_url"].ToString()/quote/accept?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Approve</a>
+                        <a href="@row["base_url"].ToString()/quote/reject?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px; border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); " target="_blank" rel="noreferrer">Disapprove</a>
+                    </span>
+                }
+
+
+            </div>
 
             <div style="background-color:#f6f7f9; margin:0 15px;">
                 <div style="max-width:320px; margin:auto; padding:15px 0;">
@@ -142,7 +146,7 @@
                     <span style="display:block;">
                         <strong style="width: 200px; display: inline-block; text-align: left; font-size: 22px;">Total:</strong><span style="width: 100px; display: inline-block; text-align: right; font-size: 20px;"><strong>@String.Format("${0:0.00}", (ga + shipamt + tax + srfamt + fee - (dis + gcamt)))</strong></span>
                     </span>
-                    
+
                 </div>
             </div>
             <div>

@@ -1763,11 +1763,10 @@ function SaveData() {
                     result = JSON.parse(result);
                     if (result[0].response) {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                        swal('Success', 'Quote Order saved successfully.', "success");
                         $('#hfOrderNo').val(result[0].id);;
                         $.when(getQuoteInfo()).done(function () {
                             $('[data-toggle="tooltip"]').tooltip();
-                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id }).then(response => { }).catch(err => { });
+                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error");});
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

@@ -107,10 +107,11 @@
             bool status = false;
             try
             {
+                DataSet ds = OrderQuoteRepository.GetOrdersQuote(model.id);
                 status = true;
-                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "QuoteOrderMail", model);
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "QuoteOrderMail", ds);
 
-                result = SendEmail.SendEmails(model.quote_header, "Your order #" + model.id + " has been received", renderedHTML);
+                result = SendEmail.SendEmails_outer(model.quote_header, "Your order #" + model.id + " has been received", renderedHTML, string.Empty);
             }
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);

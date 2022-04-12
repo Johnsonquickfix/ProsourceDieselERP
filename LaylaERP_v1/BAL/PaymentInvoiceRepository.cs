@@ -673,5 +673,53 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataSet gettransactiontype()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select ett.rowid ID ,(CASE WHEN ett.transaction_type=1 THEN 'Bill' WHEN ett.transaction_type=2 THEN 'Expense' WHEN ett.transaction_type=3 THEN 'Check' WHEN ett.transaction_type=4 THEN 'Pay Down Credit Card' WHEN ett.transaction_type=5 THEN 'Vendor Credit' WHEN ett.transaction_type=6 THEN 'Bill Payment (check)' else '' end) Name from erp_transaction_type ett ;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet getpaymenttype()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select account_number ID,label Name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE','EXPENSE');";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable NewMiscBill(long Pkey, string qFlag, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag), 
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_miscbill_iud", parameters);
+            }
+            catch (Exception ex)
+            {                 
+                    UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoiceRepository/NewMiscBill/" + Pkey + "", "New Purchase Order");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
     }
 }

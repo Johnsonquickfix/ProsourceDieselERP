@@ -28,6 +28,14 @@
         }
         else { $('.releasedate').empty(); }
     });
+    $(document).on("blur", "#txtbillzipcode", function (t) {
+        t.preventDefault();
+        if ($("#ddlbillcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); }
+    });
+    $(document).on("blur", "#txtshipzipcode", function (t) {
+        t.preventDefault();
+        if ($("#ddlshipcountry").val() == 'US') { $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
+    });
     $('#myModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#myModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -205,7 +213,7 @@ function CategoryWiseProducts() {
     }).fail(function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest, textStatus, errorThrown); $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () { $("#loader").hide(); });
 }
 function getQuoteInfo() {
-    $('.view-addmeta').empty(); $('.billinfo').prop("disabled", true);
+    $('.view-addmeta,#divAlert').empty(); $('.billinfo').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
         $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
@@ -237,9 +245,16 @@ function getQuoteInfo() {
                 $('#ddlshipcountry').val(row.shipping_country.trim()).trigger('change'); $('#ddlshipstate').val(row.shipping_state.trim()).trigger('change');
                 $('#txtCustomerNotes').val(row.remark);
 
-                $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-
+                if (row.quote_status.trim() == 'wc-draft') {
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                }
+                else {
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
+                    if (row.quote_status.trim() == 'wc-approved') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
+                }
                 getQuoteItemList(data['Table1'])
             });
             //}
@@ -1766,7 +1781,7 @@ function SaveData() {
                         $('#hfOrderNo').val(result[0].id);;
                         $.when(getQuoteInfo()).done(function () {
                             $('[data-toggle="tooltip"]').tooltip();
-                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error");});
+                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error"); });
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -1775,4 +1790,57 @@ function SaveData() {
         }
     }]);
     return false;
+}
+
+///Accept Podium Payment
+function PodiumPayment() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let bill_email = $("#txtbillemail").val();
+    let bill_to = $('input[name="podiumchannel"]:checked').val();
+    let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
+    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let gc_total = (parseFloat($('#giftCardTotal').text()) || 0.00) - (fee_total < 0 ? fee_total : 0);
+    if (fee_total > 0) { let rgc_amt = fee_total <= gc_total ? fee_total : gc_total; fee_total = fee_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (srf_total > 0) { let rgc_amt = srf_total <= gc_total ? srf_total : gc_total; srf_total = srf_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (Shipping_total > 0) { let rgc_amt = Shipping_total <= gc_total ? Shipping_total : gc_total; Shipping_total = Shipping_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    if (st_total > 0) { let rgc_amt = st_total <= gc_total ? st_total : gc_total; st_total = st_total - rgc_amt; gc_total = gc_total - rgc_amt; }
+    let _lineItems = [];
+    $('#order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
+        let rgc_amt = (grossAmount - discount) <= gc_total ? (grossAmount - discount) : gc_total; gc_total = gc_total - rgc_amt;
+        if ((grossAmount - discount - rgc_amt) > 0)
+            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount - rgc_amt) * 100 });
+        //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+    });
+    if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
+    if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
+    if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
+    if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
+
+    let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
+    //let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: _locationUid };
+    let opt_inv = { strValue1: bill_to, strValue2: bill_name, strValue3: 'INV-' + oid, strValue4: JSON.stringify(_lineItems), strValue5: pay_by.includes('podium') ? inv_id : '' };
+    console.log(opt_inv);
+    console.log('Start Podium Payment Processing...');
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
+                let _data = JSON.parse(response.message); let uid = _data.data.uid;
+                let _postMeta = [
+                    { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
+                    { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
+                ];
+                let opt = { OrderPostMeta: _postMeta }; console.log(opt);
+                $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
+                    swal('Success!', response.message, 'success');
+                    if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', uid, false, true); }
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
 }

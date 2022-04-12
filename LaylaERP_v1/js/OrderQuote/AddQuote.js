@@ -205,7 +205,7 @@ function CategoryWiseProducts() {
     }).fail(function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest, textStatus, errorThrown); $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () { $("#loader").hide(); });
 }
 function getQuoteInfo() {
-    $('.view-addmeta').empty(); $('.billinfo').prop("disabled", true);
+    $('.view-addmeta,#divAlert').empty(); $('.billinfo').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
         $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
@@ -237,9 +237,16 @@ function getQuoteInfo() {
                 $('#ddlshipcountry').val(row.shipping_country.trim()).trigger('change'); $('#ddlshipstate').val(row.shipping_state.trim()).trigger('change');
                 $('#txtCustomerNotes').val(row.remark);
 
-                $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-
+                if (row.quote_status.trim() == 'wc-draft') {
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                }
+                else {
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
+                    if (row.quote_status.trim() == 'wc-approved') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
+                }
                 getQuoteItemList(data['Table1'])
             });
             //}
@@ -1766,7 +1773,7 @@ function SaveData() {
                         $('#hfOrderNo').val(result[0].id);;
                         $.when(getQuoteInfo()).done(function () {
                             $('[data-toggle="tooltip"]').tooltip();
-                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error");});
+                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error"); });
                         });
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

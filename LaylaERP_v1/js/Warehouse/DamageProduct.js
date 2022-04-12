@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-    $("#btnUpdate").hide(); $('.select2').select2();
+    $('.select2').select2();
     $("#btnReset").click(function () { resetdamagestock(); })
     GetDamageVendor();
 
@@ -9,7 +9,9 @@
     }).datepicker('setDate','now');
     $("#btnAdd").click(function () { AddDamagestock(); });
     $("#btnUpdate").click(function () { UpdateDamagestock(); })
+    $("#btnupload").click(function () { fileupload(); })
     StockDamageGrid();
+
 })
 
 function AddDamagestock() {
@@ -82,9 +84,8 @@ function AddDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success', data.message, 'success');
+                    swal('Success!', data.message, 'success').then((result) => { location.href = '../DamageProductList'; });
                     resetdamagestock();
-                    StockDamageGrid();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -193,8 +194,6 @@ function resetdamagestock() {
     $("#txtdamageunit").val('');
     $("#hfdamagetransid").val('');
     $("#txtorderid").val('');
-    $("#btnAdd").show();
-    $("#btnUpdate").hide();
 }
 
 function StockDamageGrid() {
@@ -247,7 +246,8 @@ function StockDamageGrid() {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<span title="Click here to edit." data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    //return '<span title="Click here to edit." data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                    return '<span title="Click here to edit bank details" data-placement="bottom" data-toggle="tooltip"><a href="../Warehouse/UpdateDamageProduct/' + id + '" onclick="ActivityLog(\'Edit bank account\',\'Bank/financialaccount/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                     //}
                     //else { return "No permission" }
                 }
@@ -277,9 +277,6 @@ function EditSelect(id) {
             $("#txtdamageprice").val(jobj[0].price);
             $("#txtdamageunit").val(jobj[0].quantity);
             $("#hfdamagetransid").val(jobj[0].tran_id);
-
-            $("#btnAdd").hide();
-            $("#btnUpdate").show();
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
@@ -351,9 +348,8 @@ function UpdateDamagestock() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Success', data.message, 'success');
+                    swal('Success!', data.message, 'success').then((result) => { location.href = '../DamageProductList'; });
                     resetdamagestock();
-                    StockDamageGrid();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -364,4 +360,74 @@ function UpdateDamagestock() {
         })
 
     }
+}
+
+function fileupload() {
+    tranid = $("#hfid").val();
+    var file = document.getElementById("ImageFile").files[0];
+    var formData = new FormData();
+    formData.append("ImageFile", file);
+    formData.append("tran_id", tranid);
+
+    if (tranid == 0) {
+        swal('Alert', 'Transcation id not found', 'error').then(function () { swal.close(); });
+    }
+    else {
+        $.ajax({
+            type: "POST",
+            url: '/Warehouse/DamageFileUpload/',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Success', data.message, 'success');
+                    FileUploadList();
+                }
+                else { swal('Alert!', data.message, 'error'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+}
+function FileUploadList() {
+    var ID = $("#hfid").val();
+    var obj = { tran_id: ID };
+    var table_EL = $('#AccountCategoryListdata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#AccountCategoryListdata_filter input').unbind();
+            $('#AccountCategoryListdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        },
+        ajax: {
+            url: '/Warehouse/DamageFileList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+        },
+        aoColumns: [
+            {
+                'data': 'model_pdf', sWidth: "25%",
+                'render': function (FileName, type, full, meta) {
+                    return '<span title="Click here to download/view document" data-placement="bottom" data-toggle="tooltip"><a target="popup" href="../../Content/DamageProductFiles/' + FileName + '" onclick="ActivityLog(\'View/download bank linked file ' + FileName + '\',\'/Bank/financialaccount/' + ID + '\');">' + FileName + ' <i class="fas fa-search-plus"></i></a></span>';
+                }
+            },
+        ],
+        //"dom": 'lBftipr',
+    });
 }

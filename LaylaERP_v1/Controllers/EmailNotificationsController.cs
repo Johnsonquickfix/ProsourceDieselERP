@@ -84,7 +84,7 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
-                
+
         public ActionResult NewOrder(OrderModel model)
         {
             return View(model);
@@ -112,6 +112,12 @@ namespace LaylaERP.Controllers
                 return writer.ToString();
 
             }
+        }
+
+        public ActionResult QuoteOrderMail(OrderQuoteModel model)
+        {
+            DataSet ds = OrderQuoteRepository.GetOrdersQuote(model.id);
+            return View(ds);
         }
     }
 }

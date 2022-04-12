@@ -37,6 +37,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult DamageProductList()
+        {
+            return View();
+        }
+        public ActionResult UpdateDamageProduct()
+        {
+            return View();
+        }
         public ActionResult DamageStockReport()
         {
             return View();
@@ -822,6 +830,62 @@ namespace LaylaERP.Controllers
                 return Json(JSONResult, 0);
             }
             catch(Exception e) { throw e; }
+        }
+
+        public ActionResult DamageFileUpload(int tran_id, HttpPostedFileBase ImageFile)
+        {
+            try
+            {
+                WarehouseModel model = new WarehouseModel();
+                if (ImageFile != null)
+                {
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".XLSX" || FileExtension == ".XLS" || FileExtension == ".PDF" || FileExtension == ".DOC" || FileExtension == ".DOCX" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".JPEG")
+                    {
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+                        string UploadPath = Path.Combine(Server.MapPath("~/Content/DamageProductFiles"));
+                        UploadPath = UploadPath + "\\";
+                        model.ImagePath = UploadPath + FileName;
+                        var ImagePath = "~/Content/DamageProductFiles/" + FileName;
+                        ImageFile.SaveAs(model.ImagePath);
+                        if (tran_id > 0)
+                        {
+                            WarehouseRepository.DamageFileUpload(FileName, tran_id);
+                            return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public ActionResult DamageFileList(int tran_id)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            dt = WarehouseRepository.DamageFileList(tran_id);
+            JSONResult = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            return Json(JSONResult, 0);
         }
     }
 }

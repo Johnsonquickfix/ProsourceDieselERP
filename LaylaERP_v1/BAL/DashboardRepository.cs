@@ -15,6 +15,7 @@ namespace LaylaERP.BAL
     public class DashboardRepository
     {
         public static List<Export_Details> exportorderlist = new List<Export_Details>();
+        public static List<Export_Details> QuoteList = new List<Export_Details>();
         public static int Total_Orders(string from_date, string to_date)
         {
             int totalorders = 0;
@@ -645,6 +646,42 @@ namespace LaylaERP.BAL
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
                         uobj.billing_city = ds1.Tables[0].Rows[i]["Total"].ToString();
                     exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetSalesQuoteChart(string from_date, string to_date)
+        {
+            try
+            {
+                QuoteList.Clear();
+                DataSet ds1 = new DataSet();
+                string strWhr = string.Empty;
+                string datebetween = string.Empty;
+                string query = string.Empty;
+                CultureInfo us = new CultureInfo("en-US");
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                else
+                {
+                    datebetween = " convert(date,quote_date) >= convert(date,dateadd(DAY,-7,getdate()))";
+                }
+                query = "SELECT SUM(net_total)Total, convert(varchar(6), quote_date, 107) quote_date FROM erp_order_quote WHERE "+datebetween+" group by convert(varchar(6), quote_date, 107)";
+                ds1 = SQLHelper.ExecuteDataSet(query);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["quote_date"].ToString()))
+                        uobj.last_name = ds1.Tables[0].Rows[i]["quote_date"].ToString();
+
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                        uobj.billing_country = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    QuoteList.Add(uobj);
                 }
             }
             catch (Exception ex) { throw ex; }

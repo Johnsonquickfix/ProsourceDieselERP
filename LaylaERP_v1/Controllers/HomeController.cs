@@ -573,5 +573,11 @@
             var list = DashboardRepository.exportorderlist;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetSalesQuoteChart(string from_date, string to_date)
+        {
+            DashboardRepository.GetSalesQuoteChart(from_date, to_date);
+            var list = DashboardRepository.QuoteList;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
     }
 }

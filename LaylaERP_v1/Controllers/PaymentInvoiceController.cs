@@ -34,6 +34,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PayMiscBills()
+        {
+            return View();
+        }
         [HttpGet]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
@@ -309,6 +313,47 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public JsonResult gettransactiontype(SearchModel model)
+        {
+            DataSet ds = BAL.PaymentInvoiceRepository.gettransactiontype();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+        public JsonResult getpaymenttypefill(SearchModel model)
+        {
+            DataSet ds = BAL.PaymentInvoiceRepository.getpaymenttype();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult NewMiscBill(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+               // u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.NewMiscBill(id, "I", orderXML, orderdetailsXML));
+
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
 
         //[HttpPost]

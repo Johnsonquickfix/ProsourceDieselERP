@@ -805,6 +805,7 @@
     <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />
     <Content Include="js\PaymentInvoice\PaymentSOInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
+    <Content Include="js\PaymentInvoice\PayMiscBills.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Poemail\Addemail.js" />
     <Content Include="js\Product\AddnewProduct.js" />
@@ -1237,6 +1238,7 @@
     <Content Include="Views\Warehouse\DamageStockReport.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceSO.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
+    <Content Include="Views\PaymentInvoice\PayMiscBills.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -686,5 +686,64 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
+
+        public static DataTable GetQuoteDetails()
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                string strSql = "SELECT COUNT(quote_no) Total FROM erp_order_quote;";
+                ds = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataTable GetQuoteApproved()
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                string strSql = "SELECT COUNT(quote_status) Approved FROM erp_order_quote where quote_status = 'wc-approved';";
+                ds = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataTable GetQuoteRejected()
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                string strSql = "SELECT COUNT(quote_status) Rejected FROM erp_order_quote where quote_status = 'wc-rejected';";
+                ds = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static DataTable GetQuoteRemain()
+        {
+            DataTable ds = new DataTable();
+            try
+            {
+                string strSql = "SELECT COUNT(quote_status) Remain FROM erp_order_quote where quote_status = 'wc-draft';";
+                ds = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

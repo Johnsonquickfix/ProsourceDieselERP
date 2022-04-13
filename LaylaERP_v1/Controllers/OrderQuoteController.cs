@@ -122,6 +122,19 @@
                     {
                         ViewBag.status = dt.Rows[0]["response"].ToString();
                         ViewBag.id = id;
+
+                        if (Convert.ToBoolean(dt.Rows[0]["status"]))
+                        {
+                            string result = string.Empty;
+                            try
+                            {
+                                result = clsPodium.CreatePodiumInvoice(dt.Rows[0]["billing_email"].ToString().Trim(), dt.Rows[0]["customer_name"].ToString().Trim(),"INV-"+ quote_id, dt.Rows[0]["lineitems"].ToString().Trim(), dt.Rows[0]["transaction_id"].ToString().Trim());
+
+                                //OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_id, 0, result);
+
+                            }
+                            catch (Exception ex) { }
+                        }
                     }
                     else
                     {

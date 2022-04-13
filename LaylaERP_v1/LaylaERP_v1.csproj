@@ -1236,6 +1236,9 @@
     <Content Include="Views\EmailNotifications\QuoteOrderMail.cshtml" />
     <Content Include="Views\OrderQuote\QuoteApproval.cshtml" />
     <Content Include="Views\OrderQuote\QuoteDisapprove.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoiceSO.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
+    <Content Include="Views\PaymentInvoice\PayMiscBills.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

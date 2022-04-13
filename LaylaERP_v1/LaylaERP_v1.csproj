@@ -783,6 +783,8 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Marketing\NewAutoGenerate.js" />
+    <Content Include="js\OrderQuote\AddQuote.js" />
+    <Content Include="js\OrderQuote\QuoteList.js" />
     <Content Include="js\OrdersMySQL\OrderHistoryMySQL.js" />
     <Content Include="js\OrdersMySQL\OrderRefundMySQL.js" />
     <Content Include="js\OrdersMySQL\QuickOrderMySQL.js" />
@@ -797,10 +799,13 @@
     <Content Include="js\PaymentInvoice\CheckDepositPrint.js" />
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\CreatePaymentInvoicePO.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoicePrintSO.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />
+    <Content Include="js\PaymentInvoice\PaymentSOInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
+    <Content Include="js\PaymentInvoice\PayMiscBills.js" />
     <Content Include="js\PaymentInvoice\PurchaseSales.js" />
     <Content Include="js\Poemail\Addemail.js" />
     <Content Include="js\Product\AddnewProduct.js" />
@@ -1236,6 +1241,9 @@
     <Content Include="Views\EmailNotifications\QuoteOrderMail.cshtml" />
     <Content Include="Views\OrderQuote\QuoteApproval.cshtml" />
     <Content Include="Views\OrderQuote\QuoteDisapprove.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoiceSO.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
+    <Content Include="Views\PaymentInvoice\PayMiscBills.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

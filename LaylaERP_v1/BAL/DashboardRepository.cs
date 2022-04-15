@@ -687,12 +687,20 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
-        public static DataTable GetQuoteDetails()
+        public static DataTable GetQuoteDetails(string from_date, string to_date)
         {
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
             DataTable ds = new DataTable();
             try
             {
-                string strSql = "SELECT COUNT(quote_no) Total FROM erp_order_quote;";
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                string strSql = "SELECT COUNT(quote_no) Total FROM erp_order_quote WHERE 1=1 " + datebetween + ";";
                 ds = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -701,12 +709,20 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetQuoteApproved()
+        public static DataTable GetQuoteApproved(string from_date, string to_date)
         {
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
             DataTable ds = new DataTable();
             try
             {
-                string strSql = "SELECT COUNT(quote_status) Approved FROM erp_order_quote where quote_status = 'wc-approved';";
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                string strSql = "SELECT COUNT(quote_status) Approved FROM erp_order_quote where quote_status = 'wc-approved' " + datebetween + ";";
                 ds = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -716,12 +732,20 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        public static DataTable GetQuoteRejected()
+        public static DataTable GetQuoteRejected(string from_date, string to_date)
         {
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
             DataTable ds = new DataTable();
             try
             {
-                string strSql = "SELECT COUNT(quote_status) Rejected FROM erp_order_quote where quote_status = 'wc-rejected';";
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                string strSql = "SELECT COUNT(quote_status) Rejected FROM erp_order_quote where quote_status = 'wc-rejected' " + datebetween + ";";
                 ds = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -731,12 +755,20 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        public static DataTable GetQuoteRemain()
+        public static DataTable GetQuoteRemain(string from_date, string to_date)
         {
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
             DataTable ds = new DataTable();
             try
             {
-                string strSql = "SELECT COUNT(quote_status) Remain FROM erp_order_quote where quote_status = 'wc-draft';";
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                string strSql = "SELECT COUNT(quote_status) Remain FROM erp_order_quote where quote_status = 'wc-draft' " + datebetween + ";";
                 ds = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

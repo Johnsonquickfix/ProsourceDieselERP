@@ -580,47 +580,47 @@
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetQuoteDetails()
+        public JsonResult GetQuoteDetails(string from_date, string to_date)
         {
             string result = string.Empty;
             try
             {
-                DataTable ds = DashboardRepository.GetQuoteDetails();
+                DataTable ds = DashboardRepository.GetQuoteDetails(from_date, to_date);
                 result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
 
         }
-        public JsonResult GetQuoteApproved()
+        public JsonResult GetQuoteApproved(string from_date, string to_date)
         {
             string result = string.Empty;
             try
             {
-                DataTable ds = DashboardRepository.GetQuoteApproved();
+                DataTable ds = DashboardRepository.GetQuoteApproved(from_date, to_date);
                 result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
 
         }
-        public JsonResult GetQuoteRejected()
+        public JsonResult GetQuoteRejected(string from_date, string to_date)
         {
             string result = string.Empty;
             try
             {
-                DataTable ds = DashboardRepository.GetQuoteRejected();
+                DataTable ds = DashboardRepository.GetQuoteRejected(from_date, to_date);
                 result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
         }
-        public JsonResult GetQuoteRemain()
+        public JsonResult GetQuoteRemain(string from_date, string to_date)
         {
             string result = string.Empty;
             try
             {
-                DataTable ds = DashboardRepository.GetQuoteRemain();
+                DataTable ds = DashboardRepository.GetQuoteRemain(from_date, to_date);
                 result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }

@@ -721,5 +721,39 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataSet Getmiscbillprint(long id, string flag = "GETPNT")
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@flag", flag), new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_misc_printdetails", para);
+                ds.Tables[0].TableName = "po";
+                if (ds.Tables.Count > 1) ds.Tables[1].TableName = "pod";                
+                if (ds.Tables.Count > 2) ds.Tables[2].TableName = "com";
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataTable GetvendorAddress(long id)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                };
+                DT = SQLHelper.ExecuteDataTable("select concat(address,'', '',fk_state,'', '',town,'' ,zip, '',fk_country) addressvn from wp_vendor where rowid = @id ", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
     }
 }

@@ -1,10 +1,12 @@
 ﻿$(document).ready(function () {
     $('#divvendo').hide();
     $('#divcus').hide();
-    $('#divaddress').hide();
+    //$('#divaddress').hide();
+    $('#divaddresstype').hide();
    // gettransactiontype();
    // getpaymenttype();
    // getVendor(); 
+   // getInvoicePrintDetails(15);
     $.when(getVendor(), gettransactiontype()).done(function () { getpaymenttype(); });
 
     $('#txtcreateDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
@@ -35,25 +37,33 @@
             $('#divcus').show();
             $('#divaddress').show();
             $('#divvendo').hide();
-            $('#divinstaion').hide();
+            $('#divinstaion').hide();            
+            $('#divaddresstype').hide();
         }
         if (Coustomertype == 'V') {
             $('#divvendo').show();
             $('#divcus').hide();
             $('#divinstaion').hide();
-            $('#divaddress').hide();
+            $('#divaddress').show();
+            $('#divaddresstype').hide();
+
         }
         if (Coustomertype == 'I') {
             $('#divinstaion').show();
             $('#divvendo').hide();
             $('#divcus').hide();
             $('#divaddress').hide();
+            $('#divaddresstype').show();
+            //$('#txtcustmeraddress').hide();
         }
 
     });
 
     $(document).on("click", "#btnSave", function (t) { t.preventDefault(); savemiscbill(); });
     $("#ddlcoustomer").change(function () { setTimeout(function () { CustomerAddress($("#ddlcoustomer").val()); }, 50); return false; });
+    $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); }, 50); return false; });
+    $("#txtshippingfee").change(function () { calculateFinal() });
+    $("#txtotherfee").change(function () { calculateFinal() });
 });
 var itxtCnt = 0;
 var i = 1;
@@ -169,14 +179,28 @@ function CustomerAddress(id) {
     }
      
 }
+function vendorAddress(id) {
+    //$("#ddlUser").val()
+    let option = { strValue1: parseInt(id) || 0 };
+    if (option.strValue1 > 0) {
+        ajaxFunc('/PaymentInvoice/GetvendorAddress', option, function () { }, function (result) {
+            var data = JSON.parse(result);
+            
+            $('#txtcustmeraddress').text(data[0].addressvn);
+         
+        })
+    }
+
+}
 
 function calculateFinal() {
-    let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00;
+    let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00, rshipAmt = 0.00, rothrAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_Quantitye]").val()) || 0.00;
+       
         rDisPer =  0.00;
         rTax1 = parseFloat($(row).find("[name=txt_Tax]").val()) || 0.00;
         rTax2 =   0.00;
@@ -187,8 +211,10 @@ function calculateFinal() {
        tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
         $(row).find(".row-total").text(formatCurrency(rNetAmt));
     });
-    
-
+    rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00;
+    //console.log(tNetAmt, rshipAmt, rothrAmt);
+    rothrAmt = parseFloat($("#txtotherfee").val()) || 0.00;
+    tNetAmt = tNetAmt + rshipAmt + rothrAmt;
   //  $(".thQuantity").text(tQty.toFixed(0));
 
     $("#thQuantity").text(tQty.toFixed(0)); $("#thQuantity").data('total', tQty.toFixed(0));
@@ -196,8 +222,8 @@ function calculateFinal() {
     $("#SubTotal").text(formatCurrency(tGrossAmt)); $("#SubTotal").data('total', tGrossAmt.toFixed(2));
     //$("#discountTotal").text(formatCurrency(tDisAmt)); $("#discountTotal").data('total', tDisAmt.toFixed(2));
     $("#salesTaxTotal").text(formatCurrency(tTax_Amt1)); $("#salesTaxTotal").data('total', tTax_Amt1.toFixed(2));
-    //$("#shippingTotal").text(formatCurrency(tTax_Amt2)); $("#shippingTotal").data('total', tTax_Amt2.toFixed(2));
-    //$("#otherTotal").text(formatCurrency(tOther_Amt)); $("#otherTotal").data('total', tOther_Amt.toFixed(2));
+    $("#shippingTotal").text(formatCurrency(rshipAmt)); $("#shippingTotal").data('total', rshipAmt.toFixed(2));
+    $("#otherTotal").text(formatCurrency(rothrAmt)); $("#otherTotal").data('total', rothrAmt.toFixed(2));
     $("#orderTotal").html(formatCurrency(tNetAmt)); $("#orderTotal").data('total', tNetAmt.toFixed(2));
     //let paid_amt = parseFloat($('#paidTotal').data('paid')) || 0.00;
     //$('#unpaidTotal').text(formatCurrency(tNetAmt - paid_amt))
@@ -214,19 +240,22 @@ function formatCurrency(total) {
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
-        let rproduct = '', rdiscription = '';
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
+        let rproduct = '', rdiscription = '',rsku = '';
+        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00, rshipAmt = 0.00, rothrAmt = 0.00;
         rproduct = $(row).find("[name=txt_Service]").val();
         rdiscription = $(row).find("[name=txt_Description]").val();
+        rsku = $(row).find("[name=txt_sku]").val();
         rPrice = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_Quantitye]").val()) || 0.00;        
         rTax1 = parseFloat($(row).find("[name=txt_Tax]").val()) || 0.00;
+        rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00; 
+        rothrAmt = parseFloat($("#txtotherfee").val()) || 0.00;
         rGrossAmt = rPrice * rQty;
        // rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
        // rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
         _rang += 1;
         _list.push({
-            product: rproduct, discription: rdiscription,
+            product: rproduct, discription: rdiscription, sku: rsku, shippingfee: rshipAmt, otherfee: rothrAmt,
             qty: rQty, rate: rPrice, total_ttc: rGrossAmt, tax: rTax1
              
         });
@@ -245,22 +274,29 @@ function savemiscbill() {
      
     let coustomerid = parseInt($("#ddlcoustomer").val()) || 0;
     let vendorid = parseInt($("#ddlvendordata").val()) || 0;
+    let addressval = $('#txtcustmeraddress').text();
+    let instaintionvaladdress = $("#txtinstaintionaddress").val();
     let instaintionval = $("#txtinstaintion").val();
     let date = $("#txtcreateDate").val();
-
+    let caddress = '';
     let paymenttype = parseInt($("#ddlPaymentType").val()) || 0;
+    let rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00;
+    let rothrAmt = parseFloat($("#txtotherfee").val()) || 0.00;
 
     if (Coustomertype == 'C') {
         vendorid = 0;
         instaintionval = '';
+        caddress = addressval;
     }
     else if (Coustomertype == 'V') {
         coustomerid = 0;
         instaintionval = '';
+        caddress = addressval;
     }
     else {
         coustomerid = 0;
         vendorid = 0;
+        caddress = instaintionvaladdress;
     }
     let _list = createItemsList();
 
@@ -269,12 +305,12 @@ function savemiscbill() {
     else if (Coustomertype == 0) { swal('alert', 'Please select coustomer type', 'error').then(function () { swal.close(); $('#ddlCoustomertype').focus(); }) }
     else if (paymenttype == 0) { swal('alert', 'Please select bill type.', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
-    else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error") }
+    else if (_list.length == 0) { swal('Alert!', 'Please add product.', "error") }
     else {
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let _order = {
             fk_transactiontype: transactiontype, customertype: Coustomertype, fk_customer: coustomerid, fk_vendor: vendorid, instation: instaintionval, date_creation: date, fk_paymenttype: paymenttype,
-            payaccount: payaccounttype,
+            payaccount: payaccounttype, fk_address: caddress, shippingfee: rshipAmt, otherfee: rothrAmt,
             totqty: parseInt($("#thQuantity").data('total')), total_rate: parseFloat($("#SubTotal").data('total')),
             total_tax: parseFloat($("#salesTaxTotal").data('total')), total_ttc: parseFloat($("#orderTotal").data('total'))
         }
@@ -289,7 +325,8 @@ function savemiscbill() {
                         result = JSON.parse(result);
                         if (result[0].Response == "success") {
                              
-                            swal('Success', 'Misc Bills saved successfully.', "success");
+                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
+
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }

@@ -32,6 +32,26 @@
             }
             return dt;
         }
+        public static DataTable UpdatePodiumDetails(string flag, long id, long user_id, string order_quote)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@user_id", user_id),
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@quote_json", order_quote),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_order_quote_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
         public static DataSet GetOrdersQuote(long id)
         {
             var ds = new DataSet();
@@ -50,7 +70,7 @@
             }
             return ds;
         }
-        public static DataTable QuoteApproval(long id,string quotestatus, string row_key)
+        public static DataTable QuoteApproval(long id, string quotestatus, string row_key)
         {
             var dt = new DataTable();
             try
@@ -58,7 +78,7 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@id", id),
-                    new SqlParameter("@search", row_key),                    
+                    new SqlParameter("@search", row_key),
                     new SqlParameter("@quote_status", quotestatus),
                     new SqlParameter("@flag", "QUOTMA"),
                 };

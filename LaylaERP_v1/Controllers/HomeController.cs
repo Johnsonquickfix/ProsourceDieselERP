@@ -573,5 +573,58 @@
             var list = DashboardRepository.exportorderlist;
             return Json(list.ToList(), JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetSalesQuoteChart(string from_date, string to_date)
+        {
+            DashboardRepository.GetSalesQuoteChart(from_date, to_date);
+            var list = DashboardRepository.QuoteList;
+            return Json(list.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetQuoteDetails()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable ds = DashboardRepository.GetQuoteDetails();
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+
+        }
+        public JsonResult GetQuoteApproved()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable ds = DashboardRepository.GetQuoteApproved();
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+
+        }
+        public JsonResult GetQuoteRejected()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable ds = DashboardRepository.GetQuoteRejected();
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public JsonResult GetQuoteRemain()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable ds = DashboardRepository.GetQuoteRemain();
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

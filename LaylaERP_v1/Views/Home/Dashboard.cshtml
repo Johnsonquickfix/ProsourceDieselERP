@@ -196,18 +196,18 @@
                     <div class="col-sm-12">
                         <table id="tbohi" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%"></table>
                         @*<table id="tbohi" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-left" width="10%">SKU</th>
-                                    <th class="text-left" width="40%">Product Name</th>
-                                    <th class="text-right" width="10%">Units in Stock</th>
-                                    <th class="text-right" width="10%">Units in POs</th>
-                                    <th class="text-right" width="10%">Sale Units</th>
-                                    <th class="text-right" width="10%">Available Units</th>
-                                    <th class="text-right" width="10%">Damage Units</th>
-                                </tr>
-                            </thead>
-                        </table>*@
+                                <thead>
+                                    <tr>
+                                        <th class="text-left" width="10%">SKU</th>
+                                        <th class="text-left" width="40%">Product Name</th>
+                                        <th class="text-right" width="10%">Units in Stock</th>
+                                        <th class="text-right" width="10%">Units in POs</th>
+                                        <th class="text-right" width="10%">Sale Units</th>
+                                        <th class="text-right" width="10%">Available Units</th>
+                                        <th class="text-right" width="10%">Damage Units</th>
+                                    </tr>
+                                </thead>
+                            </table>*@
                     </div>
                 </div>
             </div>
@@ -248,6 +248,77 @@
                     <i class="fa fa-arrow-circle-right"></i>
                 </button>
             </div>
+        </div>
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <i class="fa fa-cart-plus"></i>
+                <h3 class="box-title">Quote Status</h3>
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <!-- button with a dropdown -->
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse" data-toggle="tooltip" title="Click here to show / close widgets.">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="remove" data-toggle="tooltip" title="Click here to remove widgets.">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body p-0">
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3 id="lbltotalQuote"></h3>
+                            <p>Received Quotes</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 id="lblquoteapproved"></h3>
+                            <p>Approved Quotes</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 id="lblquoteremain"></h3>
+                            <p>Remaining Quotes</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3 id="lblquoterejected"></h3>
+                            <p>Rejected Quotes</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+
         </div>
     </section>
     <!-- /.Left col -->
@@ -330,48 +401,32 @@
                 @Html.Partial("../Shared/_Calendar_Event")
             </div>
             <!-- /.box-body -->
-            <div class="box-footer text-black">
-                @*<div class="row">
-                        <div class="col-sm-6">
-                            <!-- Progress bars -->
-                            <div class="clearfix">
-                                <span class="pull-left">Task #1</span>
-                                <small class="pull-right">90%</small>
-                            </div>
-                            <div class="progress xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 90%;"></div>
-                            </div>
 
-                            <div class="clearfix">
-                                <span class="pull-left">Task #2</span>
-                                <small class="pull-right">70%</small>
-                            </div>
-                            <div class="progress xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 70%;"></div>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-6">
-                            <div class="clearfix">
-                                <span class="pull-left">Task #3</span>
-                                <small class="pull-right">60%</small>
-                            </div>
-                            <div class="progress xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 60%;"></div>
-                            </div>
+        </div>
+        <!-- /.box -->
 
-                            <div class="clearfix">
-                                <span class="pull-left">Task #4</span>
-                                <small class="pull-right">40%</small>
-                            </div>
-                            <div class="progress xs">
-                                <div class="progress-bar progress-bar-primary" style="width: 40%;"></div>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                    </div>*@
-                <!-- /.row -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <i class="fa fa-cart-plus"></i>
+                <h3 class="box-title">Quote Sales</h3>
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <!-- button with a dropdown -->
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse" data-toggle="tooltip" title="Click here to show / close widgets.">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="remove" data-toggle="tooltip" title="Click here to remove widgets.">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
             </div>
+            <!-- /.box-header -->
+            <div class="box-body p-0">
+                <div id="container_chart1"></div>
+            </div>
+            <!-- /.box-body -->
+
         </div>
         <!-- /.box -->
 
@@ -403,16 +458,18 @@
             gettotal('#DateRange2');
             drawChart(fromdate, todate); //Google sales chart
             Search(fromdate, todate); //High chart sales
+            QuoteGraph(fromdate, todate); //Quote chart sales
             bindOnHandInventory();
         });
         $('#sendEmail').click(function () { emails(); });
         //High chart start
-        Search();
+        Search(); QuoteGraph();
         $(function () {
             Highcharts.setOptions({ lang: { thousandsSep: ',' } });
         }) //High chart end
         var type = $("#hfroletype").val();
-        if (type.toUpperCase() == "ADMINISTRATOR" || type.toUpperCase() == "INVENTORYMANAGER") { $('#divonhandinventory').show();
+        if (type.toUpperCase() == "ADMINISTRATOR" || type.toUpperCase() == "INVENTORYMANAGER") {
+            $('#divonhandinventory').show();
         } else { $('#divonhandinventory').hide(); }
     });
     function dateRange(dtr) {
@@ -771,3 +828,165 @@
     }
 </script>
 <!--High sales chart end-->
+
+<script type="text/javascript">
+    function QuoteGraph(sd, ed) {
+        $("#loader").show();
+        var account = "1";
+        if (account == "0") { }
+        else {
+            $.ajax({
+                type: 'POST', url: '/Home/GetSalesQuoteChart',
+                data: { from_date: sd, to_date: ed }, dataType: 'json',
+                beforeSend: function () { $("#loader").show(); },
+                success: function (result) {
+                    _list_cat = $.map(result, function (v) { return v.last_name; });// Enumerable.from(result).select("$.billing_city").toArray();
+                    _list = [{ name: 'Quote Total', data: $.map(result, function (v) { return parseFloat(v.billing_country); }) }];
+                    bindChartQuote();
+                },
+                error: function (Result) { alert("Error"); },
+                complete: function () { $("#loader").hide(); }
+            });
+        }
+
+    }
+
+    function bindChartQuote() {
+        Highcharts.chart('container_chart1', {
+            chart: { type: 'column' },
+            title: {
+                text: ''
+            },
+            //subtitle: { text: 'Irregular time data in Highcharts JS' },
+            xAxis: { categories: _list_cat },
+            yAxis: {
+                title: { text: 'Quote Total' },
+            },
+
+            /*yAxis: [{ // left y axis
+                title: { text: null },
+                labels: { align: 'left', x: 3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
+
+
+            }, { // right y axis                linkedTo: 0,                gridLineWidth: 0,                opposite: true,
+                title: { text: 'Order Total' },
+                labels: { align: 'right', x: -3, y: 16, format: '{value:,.0f}' },
+                showFirstLabel: false
+            }], */
+
+
+            legend: {
+                align: 'left',
+                verticalAlign: 'top',
+                borderWidth: 0
+
+                //labelFormatter: function () {
+                //    if (this.name != 'Discount') {
+                //        return this.name;
+                //    }
+                //    else {
+                //        return this.enabled = false ;
+                //    }
+                //}
+            },
+
+            tooltip: { crosshairs: true, shared: true },
+            //  plotOptions: { spline: { marker: { radius: 4, lineColor: '#666666', lineWidth: 1 } } },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: false,
+                        format: '{point.y:,.2f}'
+                    }
+                }
+            },
+            colors: ['#F74D17', '#62F717', '#BB98B1', '#95A993', '#464E4E', '#BABB98', '#33FFEC', '#079AFA', '#0EA9F6'],
+            series: _list
+
+
+        });
+        $('.highcharts-credits').remove();
+    }
+</script>
+<!--High sales chart end-->
+<script>
+    TotalQuote(true);
+
+    function TotalQuote(dtr) {
+        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
+        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
+        var obj = {  };
+        $.ajax({
+            url: '/Home/GetQuoteDetails/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var i = JSON.parse(data);
+                console.log(data);
+                $("#lbltotalQuote").text(i[0].Total);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    QuoteApproved();
+    function QuoteApproved(dtr) {
+        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
+        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
+        var obj = {};
+        $.ajax({
+            url: '/Home/GetQuoteApproved/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var i = JSON.parse(data);
+                console.log(data);
+                $("#lblquoteapproved").text(i[0].Approved);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    QuoteRejected();
+    function QuoteRejected(dtr) {
+        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
+        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
+        var obj = {};
+        $.ajax({
+            url: '/Home/GetQuoteRejected/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var i = JSON.parse(data);
+                console.log(data);
+                $("#lblquoterejected").text(i[0].Rejected);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    QuoteRemain();
+    function QuoteRemain(dtr) {
+        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
+        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
+        var obj = {};
+        $.ajax({
+            url: '/Home/GetQuoteRemain/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var i = JSON.parse(data);
+                console.log(data);
+                $("#lblquoteremain").text(i[0].Remain);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+</script>

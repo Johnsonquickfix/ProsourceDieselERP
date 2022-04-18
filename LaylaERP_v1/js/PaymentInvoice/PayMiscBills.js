@@ -6,7 +6,7 @@
    // gettransactiontype();
    // getpaymenttype();
    // getVendor(); 
-   // getInvoicePrintDetails(15);
+    // getInvoicePrintDetails(22);
     $.when(getVendor(), gettransactiontype()).done(function () { getpaymenttype(); });
 
     $('#txtcreateDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
@@ -33,7 +33,7 @@
     $('#ddlCoustomertype').change(function (t) {
         let Coustomertype = $("#ddlCoustomertype").val();
         if (Coustomertype == "C") {
-            console.log(Coustomertype);
+           // console.log(Coustomertype);
             $('#divcus').show();
             $('#divaddress').show();
             $('#divvendo').hide();
@@ -325,7 +325,8 @@ function savemiscbill() {
                         result = JSON.parse(result);
                         if (result[0].Response == "success") {
                              
-                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
+                            //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
+                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id);});
 
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }

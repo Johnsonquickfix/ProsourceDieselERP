@@ -79,6 +79,7 @@
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getQuoteInfo(); isEdit(false); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); SaveData(); ActivityLog('Edit Quote No (' + $('#hfOrderNo').val() + ') in order history', '/OrderQuote/Index'); });
+    $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); PrintQuote(); });
     /*end load function*/
     /*Start product*/
     $(document).on("change", ".addnvar,.addnvar-qty", function (t) {
@@ -223,7 +224,7 @@ function getQuoteInfo() {
         $('#btnCheckout').remove();
         $.get('/OrderQuote/GetQuoteDetails', { id: oid }).done(function (result) {
             //try {
-            let data = JSON.parse(result); console.log(data);
+            let data = JSON.parse(result);
             $.each(data['Table'], function (i, row) {
                 $('#lblOrderNo').data('pay_by', row.payment_method); $('#lblOrderNo').data('pay_id', row.transaction_id);
                 $('#txtLogDate').val(row.date_created);
@@ -253,7 +254,9 @@ function getQuoteInfo() {
                     $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                     $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                     if (row.quote_status.trim() == 'wc-approved') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer.</div>'); }
-                    else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-pendingpodiuminv') { $('#divAlert').empty().append('<div class="alert alert-success alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer and created payment invoice.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-podium') { $('#divAlert').empty().append('<div class="alert alert-success alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because payment has been done.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
                 }
                 getQuoteItemList(data['Table1'])
             });
@@ -273,7 +276,6 @@ function getQuoteItemList(_list) {
     let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '', giftcardHtml = '';
     let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardRefundAmt = 0.00;
     $.each(_list, function (i, row) {
-        console.log(row);
         if (row.item_type == 'line_item') {
             let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.item_meta);
             let giftcard_amount = parseFloat(_meta.wc_gc_giftcard_amount) || 0.00;
@@ -1792,55 +1794,93 @@ function SaveData() {
     return false;
 }
 
-///Accept Podium Payment
-function PodiumPayment() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let bill_email = $("#txtbillemail").val();
-    let bill_to = $('input[name="podiumchannel"]:checked').val();
-    let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
-    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
-    let gc_total = (parseFloat($('#giftCardTotal').text()) || 0.00) - (fee_total < 0 ? fee_total : 0);
-    if (fee_total > 0) { let rgc_amt = fee_total <= gc_total ? fee_total : gc_total; fee_total = fee_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (srf_total > 0) { let rgc_amt = srf_total <= gc_total ? srf_total : gc_total; srf_total = srf_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (Shipping_total > 0) { let rgc_amt = Shipping_total <= gc_total ? Shipping_total : gc_total; Shipping_total = Shipping_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    if (st_total > 0) { let rgc_amt = st_total <= gc_total ? st_total : gc_total; st_total = st_total - rgc_amt; gc_total = gc_total - rgc_amt; }
-    let _lineItems = [];
-    $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
-        let rgc_amt = (grossAmount - discount) <= gc_total ? (grossAmount - discount) : gc_total; gc_total = gc_total - rgc_amt;
-        if ((grossAmount - discount - rgc_amt) > 0)
-            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount - rgc_amt) * 100 });
-        //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
-    });
-    if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
-    if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
-    if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
-    if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function PrintQuote() {
+    let modalHtml = '';
+    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-body no-padding" ></div>';
+    modalHtml += '<div class="modal-footer">';
+    modalHtml += '<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">OK</button>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#myModal").empty().html(modalHtml);
 
-    let pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-    //let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: _locationUid };
-    let opt_inv = { strValue1: bill_to, strValue2: bill_name, strValue3: 'INV-' + oid, strValue4: JSON.stringify(_lineItems), strValue5: pay_by.includes('podium') ? inv_id : '' };
-    console.log(opt_inv);
-    console.log('Start Podium Payment Processing...');
-    let option = { strValue1: 'getToken' };
-    swal.queue([{
-        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-        onOpen: () => {
-            swal.showLoading();
-            $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
-                let _data = JSON.parse(response.message); let uid = _data.data.uid;
-                let _postMeta = [
-                    { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
-                    { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
-                ];
-                let opt = { OrderPostMeta: _postMeta }; console.log(opt);
-                $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
-                    swal('Success!', response.message, 'success');
-                    if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', uid, false, true); }
-                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
-            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-        }
-    }]);
+    let myHtml = '';
+    myHtml += '<div style="margin:0;padding:0;color: #4f4f4f;font-family: Arial, sans-serif;">';
+    myHtml += '<table id="tbprint" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
+    myHtml += '<tr>';
+    myHtml += '<td align="center" style="padding:0;">';
+    myHtml += '<table role="presentation" style="width:602px;border-collapse:collapse;border-spacing:0;text-align:left;">';
+    myHtml += '<tr>';
+    myHtml += '<td align="center" style="padding: 10px 15px; background-color: #f8f8f8;">';
+    myHtml += '<table role="presentation" style="width:100%;">';
+    myHtml += '<tr>';
+    myHtml += '<td><img alt="Layla Logo" src="#" id="imgLogoprint"></td>';
+    myHtml += '<td align="right">';
+    myHtml += '<h1 style="font-size: 42px; margin:0px; font-style: italic; color: #4f4f4f">Thank you.</h1>';
+    myHtml += '<h2 style="font-size: 20px; margin:0px; color: #4f4f4f">Your quote has been received</h2>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '<tr class="thankyou-for-your-order">';
+    myHtml += '<td class="order-detail-box" style="padding: 15px 10px 10px; border-bottom: 1px solid #c8c8c8;">';
+    myHtml += '<table class="order_details order-detail-ul" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">';
+    myHtml += '<tr>';
+    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px;"> quote code:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#hfOrderNo').val() + '</strong></td>';
+    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#txtDate').val() + '</strong></td>';
+    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + $('#orderTotal').text() + '</strong></td>';
+    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $("#ddlStatus option:selected").text() + '</strong></td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '<tr><td ><h2 style="font-size:20px; margin:25px 0px 10px 0px;">Quote details</h2></td></tr>';
+    myHtml += '<tr>';
+    myHtml += '<td >';
+
+    myHtml += '<table id="tblorder_details" class="shop_table order_details" style="border: 1px solid rgba(0, 0, 0, 0.1);margin: 0 -1px 24px 0;text-align: left;width: 100%; border-collapse: separate; border-radius: 5px;">';
+    myHtml += '<thead><tr><th class=" product-name" style="font-weight: 700;padding: 9px 12px;">Product</th><th class="product-total" style="font-weight: 700;padding: 9px 12px;">Total</th></tr></thead>';
+    myHtml += '<tbody></tbody>';
+    myHtml += '<tfoot>';
+    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#SubTotal').text() + '</span></td></tr>';
+    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + $('#discountTotal').text() + '</span></td></tr>';
+    myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#shippingTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';
+    if (parseFloat($('#giftCardTotal').text()) > 0)
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#giftCardTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#orderTotal').text() + '</span></td></tr>';
+    myHtml += '</tfoot>';
+    myHtml += '</table>';
+
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += ' <tr>';
+    myHtml += '<td class="checkout-call" style="background: #41414b; padding: 30px 15px; font-size: 20px; color: #fff; font-weight: 600; text-align: center;">';
+    myHtml += 'Give us a call <a style="color:#fff;text-decoration: none;" href="tel:855-358-1676">855-358-1676</a>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</div>';
+
+    $('#myModal .modal-body').append(myHtml);
+
+    myHtml = '';
+    $('#order_line_items > tr').each(function (index, tr) {
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount.toFixed(2) + '</span></td></tr>';
+    });
+    $('#tblorder_details tbody').append(myHtml);
+
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    toDataURL('https://quickfix16.com/wp-content/themes/layla-white/images/logo.png', function (dataUrl) { $('#imgLogoprint').attr("src", dataUrl); });
 }

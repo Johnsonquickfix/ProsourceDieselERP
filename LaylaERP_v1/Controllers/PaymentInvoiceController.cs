@@ -38,6 +38,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PayMiscBillList()
+        {
+            return View();
+        }
         [HttpGet]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
@@ -389,6 +393,28 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        [HttpGet]
+        [Route("paymentInvoice/paymiscList")]
+        public JsonResult paymiscList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                int statusid = 0;
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    statusid = Convert.ToInt32(model.strValue3);
+                DataTable dt = PaymentInvoiceRepository.paymiscList(fromdate, todate, statusid, model.strValue4, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
         //[HttpPost]
         //public JsonResult TakePayment(PaymentInvoiceModel model)

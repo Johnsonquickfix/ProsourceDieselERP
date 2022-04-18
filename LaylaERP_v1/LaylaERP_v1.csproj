@@ -800,6 +800,7 @@
     <Content Include="js\PaymentInvoice\CreateCheckDepositInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoicePO.js" />
+    <Content Include="js\PaymentInvoice\MiscBillPrint.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoicePrintSO.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />

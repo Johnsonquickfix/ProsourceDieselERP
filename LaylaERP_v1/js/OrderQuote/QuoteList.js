@@ -114,7 +114,7 @@ function dataGridLoad(order_type) {
             });
         },
         columns: [
-            { data: 'quote_no', title: 'Quote Code', sWidth: "8%" },
+            { data: 'quote_no', title: 'Quote Code', sWidth: "8%", render: function (id, type, row, meta) { return '<a href="javascript:void(0);" onclick="PrintQuote(' + id + ',\'' + row.quote_date + '\',\'' + row.quote_status + '\');" data-toggle="tooltip" title="Show/Print Quote">' + id + '</a>'; } },
             { data: 'quote_date', title: 'Creation Date', sWidth: "12%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.quote_date_sort; } else return data; } },
             { data: 'customer_name', title: 'Name', sWidth: "14%" },
             {
@@ -241,145 +241,114 @@ function podiumPaymentStatus(oid, podium_id, email) {
     }]);
 }
 
-function sendInvoice(id, email) {
-    var opt_mail = { order_number: id, option_name: 'wc_email_customer_processing_order', recipients: email, site_title: 'Lyala', site_address: 'us', site_url: '' }
-    $.post('/EmailNotifications/SendMailNotification', opt_mail).done(function (response) { console.log(response); });
-}
-///cancel order
-function cancelorder(id) {
-    swal({ title: '', text: 'Do you want to cancel this order?', type: "question", showCancelButton: true })
-        .then((result) => {
-            if (result.value) {
-                let obj = { order_id: id }
-                $.post('/OrdersMySQL/OrderCancel', obj).done(function (data) {
-                    console.log(data);
-                    data = JSON.parse(data);
-                    if (data[0].response == "success") { cancelpayment(data[0]); ActivityLog('Cancel order id (' + id + ') in order history', '/OrdersMySQL/OrdersHistory'); }
-                    else { swal('Error', data[0].payment_method_title, "error"); }
-                });
-            }
-        });
-    return false;
-}
-function cancelpayment(data) {
-    console.log(data);
-    let invoice_amt = parseFloat(data.total_sales) || 0.00;
-    if (data.payment_method == "ppec_paypal") {
-        if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
-            swal.queue([{
-                title: 'PayPal Invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-                onOpen: () => {
-                    swal.showLoading();
-                    $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.paypal_id + '/cancel';
-                        let opt_cnl = { subject: "Invoice Cancelled", note: "Cancelling the invoice", send_to_invoicer: true, send_to_recipient: true, additional_recipients: [data.billing_email] }
-                        $.ajax({
-                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                        }).then(response => {
-                            swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-                }
-            }]);
-        }
-        else if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
-            swal.queue([{
-                title: 'PayPal payment refund processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-                onOpen: () => {
-                    swal.showLoading();
-                    $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = paypal_baseurl + '/v2/invoicing/invoices/' + data.paypal_id + '/refunds';
-                        let date = new Date();
-                        let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
-                        let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
-                        $.ajax({
-                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
-                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                        }).then(response => {
-                            swal('Success!', 'Order cancelled successfully.', "success");
-                            let option = { post_ID: data.post_id, comment_content: 'PayPal Refund Issued for $' + invoice_amt + '. transaction ID = ' + response.refund_id, is_customer_note: '' };
-                            $.post('/Orders/OrderNoteAdd', option).then(response => {
-                                swal('Success!', 'Order refunded successfully.', "success");
-                                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                            }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+//Print Quote
+function PrintQuote(id, quote_date, quote_status) {
+    let modalHtml = '';
+    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-body no-padding" ></div>';
+    modalHtml += '<div class="modal-footer">';
+    modalHtml += '<button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">OK</button>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#myModal").empty().html(modalHtml);
 
-                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-                }
-            }]);
-        }
-    }
-    else if (data.payment_method == "podium") {
-        if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
-            swal.queue([{
-                title: 'Podium invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-                onOpen: () => {
-                    swal.showLoading();
-                    $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.podium_uid + '/cancel';
-                        let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
-                        $.ajax({
-                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                        }).then(response => {
-                            swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-                }
-            }]);
-        }
-        else if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
-            swal.queue([{
-                title: 'Podium payment refund processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-                onOpen: () => {
-                    swal.showLoading();
-                    $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
-                        let opt_refund = { reason: 'requested_by_customer', locationUid: _locationUid, amount: invoice_amt * 100, paymentUid: data.payment_uid, note: '' };
-                        $.ajax({
-                            type: 'post', url: podium_baseurl + '/v4/invoices/' + data.payid + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
-                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + response.message); }
-                        }).then(result => {
-                            let option = { post_ID: data.post_id, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
-                            $.post('/Orders/OrderNoteAdd', option).then(response => {
-                                swal('Success!', 'Order refunded successfully.', "success");
-                                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                            }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-                }
-            }]);
-        }
-    }
-    else if (data.payment_method == "authorize_net_cim_credit_card") {
-        if (data.post_status == "wc-processing" || data.post_status == "wc-on-hold") {
-            swal.queue([{
-                title: 'Authorize.Net payment processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-                onOpen: () => {
-                    swal.showLoading();
-                    let option = { order_id: data.post_id, NetTotal: invoice_amt };
-                    $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
-                        console.log('Authorize.Net ', response);
-                        if (response.status) {
-                            swal('Alert!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                        }
-                    }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                }
-            }]);
-        }
-    }
-    else if (data.payment_method == "giftcard") {
-        swal.queue([{
-            title: 'Refund order processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-            onOpen: () => {
-                swal.showLoading();
-                swal('Alert!', 'Order cancelled successfully.', "success");
-                $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
+    let _header = [], _detail = [];
+    $.ajaxSetup({ async: false })
+    $.get('/OrderQuote/GetQuoteDetails', { id: id }).done(function (result) {
+        let data = JSON.parse(result); _header = data['Table']; _detail = data['Table1'];
+    }).catch(err => { swal('Alert!', errorThrown, "error"); }).always(function () { });
+
+    let myHtml = '';
+    myHtml += '<div style="margin:0;padding:0;color: #4f4f4f;font-family: Arial, sans-serif;">';
+    myHtml += '<table id="tbprint" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">';
+    myHtml += '<tr>';
+    myHtml += '<td align="center" style="padding:0;">';
+    myHtml += '<table role="presentation" style="width:602px;border-collapse:collapse;border-spacing:0;text-align:left;">';
+    myHtml += '<tr>';
+    myHtml += '<td align="center" style="padding: 10px 15px; background-color: #f8f8f8;">';
+    myHtml += '<table role="presentation" style="width:100%;">';
+    myHtml += '<tr>';
+    myHtml += '<td><img alt="Layla Logo" src="#" id="imgLogoprint"></td>';
+    myHtml += '<td align="right">';
+    myHtml += '<h1 style="font-size: 42px; margin:0px; font-style: italic; color: #4f4f4f">Thank you.</h1>';
+    myHtml += '<h2 style="font-size: 20px; margin:0px; color: #4f4f4f">Your quote has been received</h2>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '<tr class="thankyou-for-your-order">';
+    myHtml += '<td class="order-detail-box" style="padding: 15px 10px 10px; border-bottom: 1px solid #c8c8c8;">';
+    myHtml += '<table class="order_details order-detail-ul" role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">';
+    $.each(_header, function (i, row) {
+        myHtml += '<tr>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px;"> quote code:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + id + '</strong></td>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + quote_date + '</strong></td>';
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + row.net_total.toFixed(2) + '</strong></td>';
+        //myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + quote_status + '</strong></td>';
+        if (quote_status == 'wc-draft') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Quote</strong></td>';
+        else if (quote_status == 'wc-approved') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Approved</strong></td>';
+        else if (quote_status == 'wc-rejected') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Rejected</strong></td>';
+        else if (quote_status == 'wc-on-hold') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">On hold</strong></td>';
+        else if (quote_status == 'wc-cancelled') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Cancelled</strong></td>';
+        else if (quote_status == 'wc-pendingpodiuminv') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Pending Podium Invoice</strong></td>';
+        else if (quote_status == 'wc-podium') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Order via Podium</strong></td>';
+        else if (quote_status == 'wc-podiumrefund') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Podium Refunded</strong></td>';
+        else if (quote_status == 'wc-cancelnopay') myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">Cancelled - No Payment</strong></td>';
+        else myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Status:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">-</strong></td>';
+        myHtml += '</tr>';
+    });
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '<tr><td ><h2 style="font-size:20px; margin:25px 0px 10px 0px;">Quote details</h2></td></tr>';
+    myHtml += '<tr>';
+    myHtml += '<td >';
+    let _fee = 0.00, _sr_fee = 0.00;
+    $.each(_header, function (i, row) {
+        myHtml += '<table id="tblorder_details" class="shop_table order_details" style="border: 1px solid rgba(0, 0, 0, 0.1);margin: 0 -1px 24px 0;text-align: left;width: 100%; border-collapse: separate; border-radius: 5px;">';
+        myHtml += '<thead><tr><th class=" product-name" style="font-weight: 700;padding: 9px 12px;">Product</th><th class="product-total" style="font-weight: 700;padding: 9px 12px;">Total</th></tr></thead>';
+        myHtml += '<tbody>'
+        $.each(_detail, function (j, c_row) {
+            if (c_row.item_type == 'line_item') {
+                myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + c_row.item_name + '</span><strong class="product-quantity"> × ' + c_row.product_qty.toFixed(0) + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + c_row.gross_total.toFixed(2) + '</span></td></tr>';
             }
-        }]);
-    }
+            else if (c_row.item_type == 'fee' && c_row.item_name == 'State Recycling Fee') { _sr_fee += c_row.net_total; }
+            else if (c_row.item_type == 'fee' && c_row.item_name != 'State Recycling Fee') { _fee += c_row.net_total; }
+        });
+        myHtml += '</tbody>';
+        myHtml += '<tfoot>';
+        myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Subtotal:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + row.gross_total.toFixed(2) + '</span></td></tr>';
+        myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Discount:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-<span>$' + row.discount.toFixed(2) + '</span></td></tr>';
+        myHtml += '<tr><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Shipping:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + row.shipping_total.toFixed(2) + '</td></tr>';
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + row.tax_total.toFixed(2) + '</td></tr>';
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + _sr_fee.toFixed(2) + '</td></tr>';
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + _fee.toFixed(2) + '</td></tr>';
+        if (parseFloat(row.giftcard_total) > 0)
+            myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Gift Card:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + row.giftcard_total.toFixed(2) + '</td></tr>';
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + row.net_total.toFixed(2) + '</span></td></tr>';
+        myHtml += '</tfoot>';
+        myHtml += '</table>';
+    });
+
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += ' <tr>';
+    myHtml += '<td class="checkout-call" style="background: #41414b; padding: 30px 15px; font-size: 20px; color: #fff; font-weight: 600; text-align: center;">';
+    myHtml += 'Give us a call <a style="color:#fff;text-decoration: none;" href="tel:855-358-1676">855-358-1676</a>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</td>';
+    myHtml += '</tr>';
+    myHtml += '</table>';
+    myHtml += '</div>';
+
+    $('#myModal .modal-body').append(myHtml);
+
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    toDataURL('https://quickfix16.com/wp-content/themes/layla-white/images/logo.png', function (dataUrl) { $('#imgLogoprint').attr("src", dataUrl); });
 }
 

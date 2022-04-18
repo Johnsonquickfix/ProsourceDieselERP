@@ -128,9 +128,10 @@
                             string result = string.Empty;
                             try
                             {
-                                result = clsPodium.CreatePodiumInvoice(dt.Rows[0]["billing_email"].ToString().Trim(), dt.Rows[0]["customer_name"].ToString().Trim(),"INV-"+ quote_id, dt.Rows[0]["lineitems"].ToString().Trim(), dt.Rows[0]["transaction_id"].ToString().Trim());
-
-                                //OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_id, 0, result);
+                                result = clsPodium.CreatePodiumInvoice(dt.Rows[0]["billing_email"].ToString().Trim(), dt.Rows[0]["customer_name"].ToString().Trim(), "INV-" + quote_id, dt.Rows[0]["lineitems"].ToString().Trim(), dt.Rows[0]["transaction_id"].ToString().Trim());
+                                dynamic _json = JsonConvert.DeserializeObject<dynamic>(result);
+                                string str_json = "{\"quote_no\" : " + quote_id.ToString() + ",\"payment_method\" : \"podium\",\"transaction_id\" : \""+ _json.data.location.uid + "\",\"payment_status\" : \"SENT\",\"quote_status\" : \"wc-pendingpodiuminv\"}";
+                                OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_id, 0, str_json);
 
                             }
                             catch (Exception ex) { }

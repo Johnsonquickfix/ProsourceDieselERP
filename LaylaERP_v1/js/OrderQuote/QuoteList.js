@@ -57,12 +57,12 @@ $(document).ready(function () {
 function GetOrderDetails() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     if ($('#txtOrderDate').val() == '') { sd = ''; ed = '' };
-    let _html = '',_total=0;
+    let _html = '', _total = 0;
     let option = { strValue1: sd, strValue2: ed };
     $.ajax({
         type: "POST", url: '/quote/quote-counts', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         success: function (result) {
-            result = JSON.parse(result); 
+            result = JSON.parse(result);
             $.each(result, function (i, row) {
                 _html += '<li class="' + row.quote_status + '" data-toggle="tooltip" title="Click search ' + row.quote_status_desc + ' Quote."><a id="all" href="javascript:void(0);">' + row.quote_status_desc + ' (<span class="count">' + row.total_quote + '</span></a>) |</li>'
                 _total += row.total_quote;
@@ -143,7 +143,8 @@ function dataGridLoad(order_type) {
                 data: 'payment_method', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
                     if (id == 'amazon_payments_advanced') return 'Amazon Pay';
                     else if (id == 'authorize_net_cim_credit_card') return 'Authorize Net';
-                    else if (id == 'podium') return 'Podium';
+                    else if (id == 'podium' && row.payment_status == 'PAID') return 'Podium';
+                    else if (id == 'podium' && row.payment_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.quote_no + ',\'' + row.transaction_id + '\',\'' + row.billing_email + '\');">Podium</a>';
                     else if (id == 'ppec_paypal') return 'PayPal';
                     else return '-';
                 }
@@ -200,83 +201,6 @@ function orderStatus() {
     }]);
 }
 
-//Check PayPal Payment Status.
-function PaymentStatus(oid, pp_id, email) {
-    let option = { strValue1: 'getToken' };
-    $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
-        let access_token = result.message;
-        let create_url = paypal_baseurl + '/v1/invoicing/invoices/' + pp_id;
-        $.ajax({
-            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-            },
-            success: function (data) {
-                let status = data.status;
-                if (status == 'PAID') {
-                    swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
-                        preConfirm: function () {
-                            return new Promise(function (resolve) {
-                                let _paystatus = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
-                                let opt = { order_id: oid, b_first_name: '', payment_method: 'ppec_paypal', OrderPostMeta: _paystatus };
-                                $.post('/OrdersMySQL/UpdatePodiumPaymentAccept', opt).done(function (data) {
-                                    console.log(data);
-                                    data = JSON.parse(data);
-                                    if (data[0].Response == "Success") {
-                                        swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
-                                        SendGiftCards(oid, email);
-                                    }
-                                    else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
-                                    resolve();
-                                });
-                            });
-                        }
-                    }]);
-                }
-                else {
-                    swal(status, 'Request sent for payment.', 'info');
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-            complete: function () { $("#loader").hide(); ActivityLog('Check payment status for order id (' + oid + ') in order history', '/Orders/OrdersHistory'); }, async: false
-        });
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        swal('Alert!', 'Something went wrong, please try again.', "error");
-    });
-}
-function PaypalPaymentCancel(ppemail) {
-    console.log('Start PayPal Payment Cancel.');
-    swal.queue([{
-        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
-        onOpen: () => {
-            swal.showLoading();
-            $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
-                let access_token = response.message, pay_by = $('#lblOrderNo').data('pay_by').trim(), inv_id = $('#lblOrderNo').data('pay_id').trim();
-                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 && pay_by.includes('paypal') ? '/' + inv_id : ''), action_method = (inv_id.length > 0 && pay_by.includes('paypal') ? 'PUT' : 'POST');
-                //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
-                $.ajax({
-                    type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
-                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                }).then(data => {
-                    console.log('Invoice has been Created.'); let sendURL = data.href + '/send'; console.log(sendURL, data, action_method);
-                    $("txtbillemail").data('surl', sendURL);
-                    if (action_method == 'POST') { SendPaypalInvoice(oid, pp_no, access_token, sendURL); }
-                    else {
-                        let mail_body = 'Hi ' + $("#txtbillfirstname").val() + ' ' + $("#txtbilllastname").val() + ', please use this secure link to make your payment. Thank you! ' + paypal_baseurl_pay + '/invoice/p/#' + inv_id.toString().substring(4).replace(/\-/g, '');
-                        let option_pu = { b_email: $("#txtbillemail").val(), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }] };
-                        $.post('/Orders/UpdatePaymentInvoiceID', option_pu).then(result => {
-                            swal('Success!', result.message, 'success'); $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                            successModal('PayPal', inv_id, true, true);
-                        }).catch(err => { console.log(err); swal('Error!', err, 'error'); swal.hideLoading(); });
-                    }
-                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
-            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
-        }
-    }]);
-}
-
 //Check podium Payment Status.
 function podiumPaymentStatus(oid, podium_id, email) {
     let option = { strValue1: podium_id };
@@ -290,18 +214,19 @@ function podiumPaymentStatus(oid, podium_id, email) {
                 if (status == 'PAID') {
                     let payment_uid = response.data.payments[0].uid, location_uid = response.data.location.uid, invoiceNumber = response.data.invoiceNumber;
                     let order_note = response.data.customerName;
-                    let _paystatus = [{ post_id: oid, meta_key: '_podium_payment_uid', meta_value: payment_uid }, { post_id: oid, meta_key: '_podium_location_uid', meta_value: location_uid },
-                    { post_id: oid, meta_key: '_podium_invoice_number', meta_value: invoiceNumber }, { post_id: oid, meta_key: '_podium_status', meta_value: 'PAID' }];
+                    let _paystatus = [{ meta_key: '_podium_payment_uid', meta_value: payment_uid }, { meta_key: '_podium_location_uid', meta_value: location_uid },
+                    { meta_key: '_podium_invoice_number', meta_value: invoiceNumber }, { meta_key: '_podium_status', meta_value: 'PAID' }];
                     swal.queue([{
                         title: status, confirmButtonText: 'Yes, Update it!', text: "Your payment received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
-                                let opt = { order_id: oid, b_first_name: order_note, payment_method: 'podium', OrderPostMeta: _paystatus };
-                                $.post('/OrdersMySQL/UpdatePodiumPaymentAccept', opt).done(function (data) {
-                                    data = JSON.parse(data);
-                                    if (data[0].Response == "Success") {
+                                let option = {
+                                    id: oid, quote_header: JSON.stringify({ quote_no: oid, payment_method: 'podium', transaction_id: podium_id, payment_status: 'PAID', quote_status: 'wc-podium', payment_meta: JSON.stringify(_paystatus) })
+                                };
+                                $.post('/quote/payment-update', option).done(function (data) {
+                                    data = JSON.parse(data); console.log(data, option);
+                                    if (data[0].response == "Success") {
                                         swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
-                                        SendGiftCards(oid, email);
                                     }
                                     else { swal.insertQueueStep({ title: 'Error', text: data.message, type: 'error' }); }
                                     resolve();
@@ -311,22 +236,9 @@ function podiumPaymentStatus(oid, podium_id, email) {
                     }]);
                 }
                 else { swal.hideLoading(); swal(status, 'Request sent for payment.', 'info'); }
-            }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
+            }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
-}
-function order_Split(order_id, email) {
-    var obj = { order_id: parseInt(order_id) || 0 };
-    $.ajax({
-        type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/Orders/SplitOrderByStatus", // Controller/View
-        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { },
-        success: function (result) {
-            if (result.status) { console.log(result); sendInvoice(order_id, email) }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
 }
 
 function sendInvoice(id, email) {
@@ -471,7 +383,3 @@ function cancelpayment(data) {
     }
 }
 
-///Send Gift Cards
-function SendGiftCards(id, email) {
-    $.post('/OrdersMySQL/send-giftcard', { order_id: id }).then(response => { console.log('Send Gift Card..'); }).catch(err => { }).always(function () { });
-}

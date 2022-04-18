@@ -272,7 +272,7 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3 id="lbltotalQuote"></h3>
-                            <p>Received Quotes</p>
+                            <p>Total</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -285,7 +285,7 @@
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3 id="lblquoteapproved"></h3>
-                            <p>Approved Quotes</p>
+                            <p>Approved</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -297,7 +297,7 @@
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3 id="lblquoteremain"></h3>
-                            <p>Remaining Quotes</p>
+                            <p>Pending</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -309,7 +309,7 @@
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3 id="lblquoterejected"></h3>
-                            <p>Rejected Quotes</p>
+                            <p>Rejected</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -460,10 +460,14 @@
             Search(fromdate, todate); //High chart sales
             QuoteGraph(fromdate, todate); //Quote chart sales
             bindOnHandInventory();
+            TotalQuote(fromdate, todate);
+            QuoteApproved(fromdate, todate);
+            QuoteRejected(fromdate, todate);
+            QuoteRemain(fromdate, todate);
         });
         $('#sendEmail').click(function () { emails(); });
         //High chart start
-        Search(); QuoteGraph();
+        Search(); QuoteGraph(); TotalQuote(); QuoteApproved(); QuoteRejected(); QuoteRemain();
         $(function () {
             Highcharts.setOptions({ lang: { thousandsSep: ',' } });
         }) //High chart end
@@ -912,12 +916,8 @@
 </script>
 <!--High sales chart end-->
 <script>
-    TotalQuote(true);
-
-    function TotalQuote(dtr) {
-        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
-        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
-        var obj = {  };
+    function TotalQuote(fromdate, todate) {
+        var obj = { from_date: fromdate, to_date: todate };
         $.ajax({
             url: '/Home/GetQuoteDetails/',
             type: 'post',
@@ -932,11 +932,8 @@
             error: function (msg) { alert(msg); }
         });
     }
-    QuoteApproved();
-    function QuoteApproved(dtr) {
-        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
-        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
-        var obj = {};
+    function QuoteApproved(fromdate, todate) {
+        var obj = { from_date: fromdate, to_date: todate };
         $.ajax({
             url: '/Home/GetQuoteApproved/',
             type: 'post',
@@ -951,11 +948,8 @@
             error: function (msg) { alert(msg); }
         });
     }
-    QuoteRejected();
-    function QuoteRejected(dtr) {
-        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
-        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
-        var obj = {};
+    function QuoteRejected(fromdate, todate) {
+        var obj = { from_date: fromdate, to_date: todate };
         $.ajax({
             url: '/Home/GetQuoteRejected/',
             type: 'post',
@@ -970,11 +964,8 @@
             error: function (msg) { alert(msg); }
         });
     }
-    QuoteRemain();
-    function QuoteRemain(dtr) {
-        //var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
-        //var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
-        var obj = {};
+    function QuoteRemain(fromdate, todate) {
+        var obj = { from_date: fromdate, to_date: todate };
         $.ajax({
             url: '/Home/GetQuoteRemain/',
             type: 'post',

@@ -38,10 +38,32 @@ function printbillmodal(is_inv) {
     modalHtml += '</div>';
     modalHtml += '</div>';
     $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
-    //console.log('show');
+    //console.log('show');  
 }
- 
- 
+
+function printbillmodalprint(is_inv) {
+    let backurl = '/PaymentInvoice/PayMiscBills/';
+    let inv_title = is_inv ? 'Invoice' : 'Bill';
+    let modalHtml = '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header"><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
+    modalHtml += '<div class="modal-body no-padding modal-body-fixHeight"><div class="text-center"><h3>Loading...</h3></div></div>';
+    modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-success pull-left btnprintinvoice"><i class="fa fa-print"></i> Print</button ><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
+    //modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
+    //console.log('show');  
+}
+function getBillPrintDetails(id) {
+    if (id > 0) {
+        printbillmodalprint(false);
+        $.ajaxSetup({ async: false });
+        $.get('/PaymentInvoice/miscbill-print', { strValue1: id }).done(function (result) {
+            print_Uniqueinvoicedetails(id, result, false);
+        }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+    }
+}
 
 function getInvoicePrintDetails(id) {
     if (id > 0) {

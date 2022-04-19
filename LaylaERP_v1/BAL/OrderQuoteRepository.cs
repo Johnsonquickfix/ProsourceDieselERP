@@ -257,7 +257,7 @@
                     {
                         strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["net_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["net_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
+                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
 
                         //foreach (OrderProductsMetaModel pm_obj in obj.order_itemmeta)
                         //{

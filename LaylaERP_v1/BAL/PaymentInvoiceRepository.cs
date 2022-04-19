@@ -748,7 +748,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@id", id),
                 };
-                DT = SQLHelper.ExecuteDataTable("select concat(address,'', '',fk_state,'', '',town,'' ,zip, '',fk_country) addressvn from wp_vendor where rowid = @id ", parameters);
+                DT = SQLHelper.ExecuteDataTable("select concat(address,' ', ' ',fk_state,' ', ' ',town,' ' ,zip, ' ',fk_country) addressvn from wp_vendor where rowid = @id ", parameters);
             }
             catch (Exception ex)
             { throw ex; }
@@ -788,6 +788,22 @@ namespace LaylaERP.BAL
             return dt;
 
 
+        }
+
+        public static DataSet GetBillDetailByID(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_miscbilldatabyid", para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
 
 

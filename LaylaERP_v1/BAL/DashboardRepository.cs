@@ -768,7 +768,29 @@ namespace LaylaERP.BAL
                     DateTime todate = DateTime.Parse(to_date, us);
                     datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
                 }
-                string strSql = "SELECT COUNT(quote_status) Remain FROM erp_order_quote where quote_status = 'wc-draft' " + datebetween + ";";
+                string strSql = "SELECT COUNT(quote_status) Remain FROM erp_order_quote where quote_status in ('wc-draft','wc-pendingpodiuminv') " + datebetween + ";";
+                ds = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataTable GetQuoteComplete(string from_date, string to_date)
+        {
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
+            DataTable ds = new DataTable();
+            try
+            {
+                if (from_date != null)
+                {
+                    DateTime fromdate = DateTime.Parse(from_date, us);
+                    DateTime todate = DateTime.Parse(to_date, us);
+                    datebetween = " and convert(date,quote_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,quote_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
+                }
+                string strSql = "SELECT COUNT(quote_status) Complete FROM erp_order_quote where quote_status = 'wc-podium' " + datebetween + ";";
                 ds = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

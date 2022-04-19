@@ -83,7 +83,7 @@ function bindItems() {
     itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + i + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                    // itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + itxtCnt + '"  name="txt_Service" placeholder="Product/Service"></td>';
-    itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
+    //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + itxtCnt + '"  name="txt_sku" placeholder="Vendor SKU"></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + itxtCnt + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Price."></td>';
@@ -166,8 +166,8 @@ function getbillInfodetails(oid) {
                            // itemHtml += '<td>' + data['pod'][i].description + '<br>Tag/Lot/Serial No. :- ' + data['pod'][i].product_serialno + '</td><td>' + data['pod'][i].product_sku + '</td>';
 
                         itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].product + '" placeholder="Vendor SKU"></td>';
+                       // itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
+                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Vendor SKU"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
@@ -304,7 +304,7 @@ function getpaymenttype() {
         url: "/PaymentInvoice/getpaymenttypefill",
         type: "Get",
         success: function (data) {
-            $('#ddlPaymentType').append('<option value="0">Select Payment Type</option>');
+            $('#ddlPaymentType').append('<option value="0">Select Bill Type</option>');
             for (var i = 0; i < data.length; i++) {
                 $('#ddlPaymentType').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
             }
@@ -417,7 +417,8 @@ function createItemsList() {
         let rproduct = '', rdiscription = '',rsku = '';
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00, rshipAmt = 0.00, rothrAmt = 0.00;
         rproduct = $(row).find("[name=txt_Service]").val();
-        rdiscription = $(row).find("[name=txt_Description]").val();
+        /*rdiscription = $(row).find("[name=txt_Description]").val();*/
+        rdiscription = '';
         rsku = $(row).find("[name=txt_sku]").val();
         rPrice = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_Quantitye]").val()) || 0.00;        

@@ -3,6 +3,7 @@
     using LaylaERP.DAL;
     using LaylaERP.UTILITIES;
     using MySql.Data.MySqlClient;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -220,9 +221,7 @@
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_country", dr["shipping_country"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_postcode", dr["shipping_postcode"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_address_index", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_key", "wc_order_"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method", dr["payment_method"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method_title", "Podium"));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_key", "wc_order_"));                    
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_created_via", "checkout"));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_customer_ip_address", ""));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_customer_user_agent", ""));
@@ -238,7 +237,18 @@
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_gift_amount", dr["giftcard_total"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "total_gcamt", dr["giftcard_total"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_id", dr["created_by"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}' ; ", order_id, "employee_name", ""));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_name", ""));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method", dr["payment_method"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method_title", "Podium"));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'; ", order_id, "_podium_uid", dr["transaction_id"]));
+
+                    if (dr["payment_meta"] != DBNull.Value)
+                    {
+                        dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["payment_meta"].ToString());
+                        foreach (var inputAttribute in _json) {
+                            strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select {0},'{1}','{2}';", order_id, inputAttribute.meta_key.Value.ToString(), inputAttribute.meta_value.Value.ToString()));
+                        }
+                    }
                 }
                 foreach (DataRow dr in ds.Tables[1].Rows)
                 {

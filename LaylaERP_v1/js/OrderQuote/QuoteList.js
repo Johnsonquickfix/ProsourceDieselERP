@@ -149,6 +149,7 @@ function dataGridLoad(order_type) {
                     else return '-';
                 }
             },
+            { data: 'order_id', title: 'Order ID', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '#') },
             {
                 data: 'quote_no', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     if ($("#hfEdit").val() == "1") {

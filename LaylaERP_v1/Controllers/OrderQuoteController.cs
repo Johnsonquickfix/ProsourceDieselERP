@@ -214,7 +214,16 @@
             {
                 JSONresult = JsonConvert.SerializeObject(OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", model.id, 0, model.quote_header));
                 string host = Request.ServerVariables["HTTP_ORIGIN"];
-                OrderQuoteRepository.CreateOrder(model.id, host);
+                long id = OrderQuoteRepository.CreateOrder(model.id, host);
+                if (id > 0)
+                {
+                    if (OrderQuoteRepository.UpdateOrder(model.id) > 0)
+                    {
+                        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", model.id);
+
+                        var result = DAL.SQLHelper.ExecuteNonQuery(strSql);
+                    }
+                }
             }
             catch { }
             return Json(JSONresult, 0);

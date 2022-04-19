@@ -1743,7 +1743,7 @@ function QuoteProducts(id) {
     let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
     let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = (is_freighttax === 'true') ? _taxRate : 0.0;
     _list.push({
-        quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: _taxRate, net_total: (parseFloat($('#salesTaxTotal').text()) || 0), item_meta: ''
+        quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: _taxRate, net_total: (parseFloat($('#salesTaxTotal').text()) || 0), item_meta: sState + ' Tax'
     });
     //Add Coupon
     $('#billCoupon li').each(function (index, li) {

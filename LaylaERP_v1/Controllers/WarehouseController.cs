@@ -887,5 +887,16 @@ namespace LaylaERP.Controllers
             JSONResult = JsonConvert.SerializeObject(dt, Formatting.Indented);
             return Json(JSONResult, 0);
         }
+        public JsonResult GetProductStockList(int ID)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetProductStockList(ID);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

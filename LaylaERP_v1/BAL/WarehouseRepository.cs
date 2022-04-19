@@ -637,6 +637,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                 new SqlParameter("@warehouseid", getwarehouseid),
+                new SqlParameter("@flag", "P"),
                 };
                 //string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE((psi.purchase_price),0) buy_price,"
                 //                 + " COALESCE((max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end)),0) reg_price, "
@@ -1233,6 +1234,47 @@ namespace LaylaERP.BAL
             {
                 throw ex;
             }
+        }
+        public static DataTable GetNewProductStock(string productid, string warehouse, string supplierid, DateTime fromdate, DateTime todate)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag","PRSTK"),
+                    new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@warehouseid", warehouse),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_stock_register", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetProductStockList(int id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@flag","PS"),
+                    new SqlParameter("@warehouseid", id),
+                };
+                string strquery = "warehouseproductlist";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery, para);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

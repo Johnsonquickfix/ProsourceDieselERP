@@ -130,7 +130,7 @@
                             {
                                 result = clsPodium.CreatePodiumInvoice(dt.Rows[0]["billing_email"].ToString().Trim(), dt.Rows[0]["customer_name"].ToString().Trim(), "INV-" + quote_id, dt.Rows[0]["lineitems"].ToString().Trim(), dt.Rows[0]["transaction_id"].ToString().Trim());
                                 dynamic _json = JsonConvert.DeserializeObject<dynamic>(result);
-                                string str_json = "{\"quote_no\" : " + quote_id.ToString() + ",\"payment_method\" : \"podium\",\"transaction_id\" : \""+ _json.data.uid + "\",\"payment_status\" : \"SENT\",\"quote_status\" : \"wc-pendingpodiuminv\"}";
+                                string str_json = "{\"quote_no\" : " + quote_id.ToString() + ",\"payment_method\" : \"podium\",\"transaction_id\" : \"" + _json.data.uid + "\",\"payment_status\" : \"SENT\",\"quote_status\" : \"wc-pendingpodiuminv\"}";
                                 OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_id, 0, str_json);
 
                             }
@@ -204,7 +204,7 @@
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);
         }
-        
+
         [Route("quote/payment-update")]
         [HttpPost]
         public JsonResult UpdatePodiumPaymentAccept(OrderQuoteModel model)
@@ -213,6 +213,17 @@
             try
             {
                 JSONresult = JsonConvert.SerializeObject(OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", model.id, 0, model.quote_header));
+                string host = Request.ServerVariables["HTTP_ORIGIN"];
+                long id = OrderQuoteRepository.CreateOrder(model.id, host);
+                if (id > 0)
+                {
+                    if (OrderQuoteRepository.UpdateOrder(model.id) > 0)
+                    {
+                        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", model.id);
+
+                        var result = DAL.SQLHelper.ExecuteNonQuery(strSql);
+                    }
+                }
             }
             catch { }
             return Json(JSONresult, 0);

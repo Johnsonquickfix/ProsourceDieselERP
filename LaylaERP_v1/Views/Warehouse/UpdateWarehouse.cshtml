@@ -31,9 +31,10 @@
         <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Warehouse basic information" data-placement="bottom" data-toggle="tooltip">Warehouse</span></a></li>
         <li><a href="#tab_2" data-toggle="tab"><span title="Warehouse additional Contact/Address" data-placement="bottom" data-toggle="tooltip">Additional Info</span></a></li>
         @*<li><a href="#tab_3" data-toggle="tab"><span title="Warehouse Correct Stock" data-placement="bottom" data-toggle="tooltip">Correct Stock</span></a></li>
-            <li><a href="#tab_4" data-toggle="tab"><span title="Warehouse Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>
-            <li><a href="#tab_8" data-toggle="tab"><span title="Warehouse Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>*@
+        <li><a href="#tab_4" data-toggle="tab"><span title="Warehouse Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>
+        <li><a href="#tab_8" data-toggle="tab"><span title="Warehouse Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>*@
         <li><a href="#tab_5" data-toggle="tab"><span title="Warehouse product list" data-placement="bottom" data-toggle="tooltip">Product List</span></a></li>
+        <li><a href="#tab_9" data-toggle="tab"><span title="Warehouse product stock" data-placement="bottom" data-toggle="tooltip">Product stock</span></a></li>
         <li><a href="#tab_6" data-toggle="tab"><span title="Warehouse vendor list" data-placement="bottom" data-toggle="tooltip">Vendor List</span></a></li>
         <li><a href="#tab_7" data-toggle="tab"><span title="Warehouse linked files" data-placement="bottom" data-toggle="tooltip">Linked Files</span></a></li>
     </ul>
@@ -357,353 +358,6 @@
 
         </div>
         <!-- tab end-->
-        <div class="tab-pane" id="tab_3">
-            <div class="createuser-section section_wrapper">
-                <div class="create-user-box">
-                    <!-- /.col -->
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <input type="hidden" id="hfstockid" class="form-control" />
-                                    <input type="hidden" id="txtTransid" class="form-control" />
-                                    @*<input type="text" id="txtdoc" class="form-control" />*@
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
-                                        <select class="form-control select1" id="ddlProduct" style="width:100%;">
-                                            <option value="0">--Select Product--</option>
-                                        </select>
-                                    </div>
-                                    @*<div class="form-group">
-                                            <label for="exampleInputEmail1">Stock</label>
-                                            <input type="text" id="txtstock" class="form-control" />
-                                        </div>*@
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
-                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label for="exampleInputEmail1">Transfer number of units<span style="color:red">*</span></label>
-                                        <input type="text" id="txtunit" class="form-control" placeholder="Enter Number of unit">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
-                                        <input type="text" id="txtserial" placeholder="Enter Lot/Serial number" class="form-control">
-                                    </div>
-
-
-
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock Correction date<span style="color:red">*</span></label>
-                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Stock Correction date" /><span class="even-space"></span>
-                                    </div>
-
-                                    <!--<div class="form-group">
-                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
-
-                                        <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>-->
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
-                                        <input type="text" id="txtlabel" class="form-control" placeholder="Enter Label of movement">
-                                    </div>
-
-                                    <div class="box-footer">
-                                        <div class="text-right">
-                                            <a href="#" class="btn btn-danger" id="btnStock"><span title="Click here to add correct stock" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnStockUpdate"><span title="Click here to update correct stock" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnStockCancel"><span title="Click here to reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
-                                            @*<input type="button" class="btn btn-danger" name="action" id="btnRefresh" value="Refresh" />*@
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Ref</th>
-                                                <th>Date</th>
-                                                <th>Product</th>
-                                                @*<th>Warehouse</th>*@
-                                                <th>Label of movement</th>
-                                                <th>Qty</th>
-                                                @*<th>Unit Price</th>*@
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <!-- /.nav-tabs-custom -->
-                    <!-- /.col -->
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="tab-pane" id="tab_4">
-
-            <div class="createuser-section section_wrapper">
-                <div class="create-user-box">
-                    <!-- /.col -->
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <div class="form-group">
-                                        <input type="hidden" id="txtTransid1" class="form-control" />
-                                        <input type="hidden" class="form-control" id="hfprice">
-                                        <input type="hidden" class="form-control" id="hftransferstockid">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
-                                        <select id="ddltransferProduct" class="form-control select1" style="width:100%;">
-                                            <option value="0">--Select Product--</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Current Stock</label>
-                                        <input type="text" id="txtstock1" class="form-control" readonly />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Target Warehouse<span style="color:red">*</span></label>
-                                        <select id="ddltargetwarehouse" class="form-control">
-                                            <option value="0">--Select Warehouse--</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Transfer number of units<span style="color:red">*</span></label>
-                                        <input type="text" class="form-control" placeholder="Enter number of units" id="txttransferunit">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
-                                        <input type="text" id="txttransferserial" placeholder="Enter Lot/Serial number" class="form-control">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock Transfer date<span style="color:red">*</span></label>
-
-                                        <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Stock Transfer Date" /><span class="even-space"></span>
-                                    </div>
-
-                                    <!-- <div class="form-group">
-
-                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
-
-                                        <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>-->
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
-                                        <input type="text" id="txttransferlabel" placeholder="Enter label of movement" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Movement or inventory code<span style="color:red">*</span></label>
-                                        <input type="text" id="txttransferinvtcode" placeholder="Enter movement or inventory code" class="form-control">
-                                    </div>
-
-                                    <div class="box-footer">
-                                        <div class="text-right">
-                                            <a href="#" class="btn btn-danger" id="btnTranferStock"><span title="Click here to add transfer stock" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnTransferStockUpdate"><span title="Click here to update transfer stock" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnTransferStockCancel"><span title="Click here to reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <table id="dttransferstock" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Ref</th>
-                                                <th>Date</th>
-                                                <th>Warehouse</th>
-                                                <th>Product</th>
-                                                <th>Label of movement</th>
-                                                <th>Qty</th>
-                                                @*<th>Unit Price</th>*@
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- /.nav-tabs-custom -->
-                    <!-- /.col -->
-
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tab-pane" id="tab_8">
-            <div class="createuser-section section_wrapper">
-                <div class="create-user-box">
-                    <!-- /.col -->
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <input type="hidden" id="hfdamagestockid" class="form-control" />
-                                    <input type="hidden" id="hfdamagetransid" class="form-control" />
-                                    @*<input type="text" id="txtdoc" class="form-control" />*@
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
-                                        <select class="form-control select1" id="ddlDamageProduct" style="width:100%;">
-                                            <option value="0">--Select Product--</option>
-                                        </select>
-                                    </div>
-                                    @*<div class="form-group">
-                                            <label for="exampleInputEmail1">Stock</label>
-                                            <input type="text" id="txtstock" class="form-control" />
-                                        </div>*@
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
-                                        <input type="text" id="txtdamageprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label for="exampleInputEmail1">Damage number of units<span style="color:red">*</span></label>
-                                        <input type="text" id="txtdamageunit" class="form-control" placeholder="Enter Number of unit">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
-                                        <input type="text" id="txtdamageserial" placeholder="Enter Lot/Serial number" class="form-control">
-                                    </div>
-
-
-
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock Damage date<span style="color:red">*</span></label>
-                                        <input class="form-control" type="text" id="txtdamageeatbydate" placeholder="Stock Damage date" /><span class="even-space"></span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
-                                        <input type="text" id="txtdamagelabel" class="form-control" placeholder="Enter Label of movement">
-                                    </div>
-
-                                    <div class="box-footer">
-                                        <div class="text-right">
-                                            <a href="#" class="btn btn-danger" id="btnDamageStock"><span title="Click here to add damage stock" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnDamageStockUpdate"><span title="Click here to update damage stock" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
-                                            <a href="#" class="btn btn-danger" id="btnDamageStockCancel"><span title="Click here to reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
-
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="box box-primary">
-                                <div class="box-body">
-                                    <table id="dtdamagestock" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Ref</th>
-                                                <th>Date</th>
-                                                <th>Product</th>
-                                                @*<th>Warehouse</th>*@
-                                                <th>Label of movement</th>
-                                                <th>Qty</th>
-                                                @*<th>Unit Price</th>*@
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <!-- /.nav-tabs-custom -->
-                    <!-- /.col -->
-
-                </div>
-            </div>
-
-        </div>
-
-
-
-
 
         <div class="tab-pane" id="tab_5">
             <div class="user-top-section">
@@ -719,7 +373,7 @@
                         <table id="product" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
                             <thead>
                                 <tr>
-                                    @*<th class="text-left" style="width:25%">Warehouse Name</th>*@
+                                    <th class="text-left" style="width:25%">ID</th>
                                     <th class="text-left" style="width:25%">Product Name</th>
                                     <th class="text-left" style="width:25%">Regular Price</th>
                                     <th class="text-left" style="width:25%">Sale Price</th>
@@ -733,16 +387,36 @@
             </div>
         </div>
 
+        <div class="tab-pane" id="tab_9">
+            <div class="userrole_section section_wrapper appearance-menu-section">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <table id="banktansfer" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width:25%">ID</th>
+                                    <th class="text-left" style="width:25%">Product Name</th>
+                                    <th class="text-left" style="width:25%">In stock</th>
+                                    <th class="text-left" style="width:25%">Sales unit</th>
+                                    <th class="text-left" style="width:25%">Damage unit</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tab-pane" id="tab_6">
 
             @*<div class="user-top-section">
-                    <div class="tablenav top tablenav-top2">
-                        <div class="alignleft actions bulkactions">
-                            <select class="form-control" id="ddlWarehouse"></select>
-                        </div>
-                        <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control" id="ddlWarehouse"></select>
                     </div>
-                </div>*@
+                    <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
+                </div>
+            </div>*@
 
             <div class="userrole_section section_wrapper appearance-menu-section">
 
@@ -819,48 +493,48 @@
                 </div>
             </div>
             @*<div id="linkWarehouse">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box-body">
-                                <label class="control-label col-sm-1">Warehouse</label>
-                                <div class="form-group col-sm-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <label class="control-label col-sm-1">Warehouse</label>
+                            <div class="form-group col-sm-6">
 
-                                    <select class="form-control" id="ddlWarehouseList"></select>
-                                </div>
-
-                                <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
-
+                                <select class="form-control" id="ddlWarehouseList"></select>
                             </div>
+
+                            <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+
                         </div>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
-                                                <thead>
-                                                    <tr style="text-align:center;">
-                                                        <th>Vendor Name</th>
-                                                        <th>Warehouse</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                            <thead>
+                                                <tr style="text-align:center;">
+                                                    <th>Vendor Name</th>
+                                                    <th>Warehouse</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="box-footer">
-                        <div class="text-right">
-                            @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
-                        </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
                     </div>
-                </div>*@
+                </div>
+            </div>*@
         </div>
 
 
@@ -870,34 +544,8 @@
 <script>
     var strength = 1;
     $(document).ready(function () {
-        //var d = $("#txttransfereatbydate").text(dout.toString('yyyy-M-d'));
-        //alert(d);
         $("#loader").hide();
-        $("#btnStockUpdate").hide();
-        $("#btnTransferStockUpdate").hide();
-        $("#btnDamageStockUpdate").hide();
         $("#btnUpdateinfo").hide();
-
-        $("#btnStockCancel").click(function () {
-            $("#btnStock").show();
-            $("#btnStockUpdate").hide();
-            //$("#btnStockCancel").hide();
-
-            reset();
-        });
-
-        $("#btnTransferStockCancel").click(function () {
-            $("#btnTranferStock").show();
-            $("#btnTransferStockUpdate").hide();
-            //$("#btnStockCancel").hide();
-            resettransferstock();
-        });
-
-        $("#btnDamageStockCancel").click(function () {
-            $("#btnDamageStock").show();
-            $("#btnDamageStockUpdate").hide();
-            resetdamagestock();
-        });
 
         $("#btnResetinfo").click(function () {
             resetaddressinfo();
@@ -912,40 +560,8 @@
 
         });
 
-        $(document).on('click', "#btnStock", function () {
-
-            Addcurrentstock();
-        });
-
-        $(document).on('click', "#btnTranferStock", function () {
-
-            AddTransferStock();
-        });
-
-        $(document).on('click', "#btnStockUpdate", function () {
-
-            Updatecorrectstock();
-        });
-
-        $(document).on('click', "#btnTransferStockUpdate", function () {
-
-            UpdateTransferStock();
-        });
-
         $(document).on('click', "#btnRefresh", function () {
-
             ProductWarehouseGrid();
-
-        });
-
-        $(document).on('click', "#btnDamageStock", function () {
-
-            AddDamagestock();
-
-        });
-
-        $(document).on('click', "#btnDamageStockUpdate", function () {
-            Updatedamagestock();
         });
 
         $('#ddlProduct').change(function () {
@@ -962,7 +578,6 @@
             EditWarehouseinfo();
         });
 
-        datecode();
 
         //$.get('/Warehouse/GetProduct', function (data) {
         //    var items = "";
@@ -1338,15 +953,6 @@
             format: 'mm-dd-yyyy',
         });
     });
-
-    function datecode() {
-        var dt2 = new Date();
-        var dt3 = ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + ("0" + (dt2.getDate())).slice(-2) + '-' + dt2.getFullYear();
-
-        document.getElementById("txteatbydate").value = dt3;
-        document.getElementById("txttransfereatbydate").value = dt3;
-    }
-
 </script>
 <script>
     function getTargetWarehoue() {

@@ -626,5 +626,16 @@
             catch { }
             return Json(result, 0);
         }
+        public JsonResult GetQuoteComplete(string from_date, string to_date)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable ds = DashboardRepository.GetQuoteComplete(from_date, to_date);
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

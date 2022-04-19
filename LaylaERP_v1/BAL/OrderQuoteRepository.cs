@@ -194,7 +194,7 @@
                     customer_id = dr["customer_id"] != DBNull.Value ? Convert.ToInt64(dr["customer_id"]) : 0;
                     _giftcard_from_mail = dr["billing_email"] != DBNull.Value ? dr["billing_email"].ToString() : "";
                     /// step 1 : wp_wc_order_stats
-                    strSql.Append(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", 0, dr["gross_total"].ToString(), dr["tax_total"].ToString(), dr["shipping_total"].ToString(), dr["net_total"].ToString(), "wc-processing", dr["customer_id"].ToString(), order_id));
+                    strSql.Append(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", dr["item_qty"], dr["gross_total"].ToString(), dr["tax_total"].ToString(), dr["shipping_total"].ToString(), dr["net_total"].ToString(), "wc-processing", dr["customer_id"].ToString(), order_id));
 
                     /// step 2 : wp_postmeta 
                     strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value)");

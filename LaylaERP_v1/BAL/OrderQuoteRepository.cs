@@ -146,5 +146,34 @@
             }
             return dt;
         }
+        public static long CreateOrder(long quote_no, string host)
+        {
+            long id = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)"
+                                + "select '1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + cUTFDate.ToString("yyyy-MM-dd HH:mm:ss") + "','','Order &ndash; " + cUTFDate.ToString("MMMM dd, yyyy @ HH:mm tt") + "','','auto-draft',"
+                                + "'open','closed','','order-" + CommonDate.UtcDate().ToString("MMM-dd-yyyy-HHmm-tt") + "','','','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + cUTFDate.ToString("yyyy-MM-dd HH:mm:ss") + "',"
+                                + "'','0','" + host + "/~rpsisr/woo/post_type=shop_order&p=','0','shop_order','shop_order_erp','0' ; ";
+
+                strSql += "insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)";
+                strSql += "SELECT LAST_INSERT_ID(),'0','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','" + cUTFDate.ToString("yyyy-MM-dd HH:mm:ss") + "','0','0','0','0','0','0','auto-draft','0' ; SELECT LAST_INSERT_ID();";
+
+                id = Convert.ToInt64(DAL.MYSQLHelper.ExecuteScalar(strSql));
+                if (id > 0)
+                {
+                    strSql = string.Format("update erp_order_quote set order_id = {0},order_id = 'auto-draft',modified_date = '{1}',modified_date_gmt = '{2}' where quote_no = {3};", id, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), quote_no);
+                    strSql += string.Format("insert into erp_order_quote_action (quote_no,action_date,quote_status,remark) select quote_no,'{0}',quote_status,'Create Order #{1}' from erp_order_quote where quote_no = {1};", cDate.ToString("yyyy-MM-dd HH:mm:ss"), id, quote_no);
+
+                    var result = DAL.SQLHelper.ExecuteNonQuery(strSql);
+                }
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return id;
+        }
     }
 }

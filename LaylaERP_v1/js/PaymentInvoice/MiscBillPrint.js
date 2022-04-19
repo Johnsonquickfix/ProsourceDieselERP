@@ -112,12 +112,7 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
 
 
 
-    //myHtml += '        <td style="vertical-align: text-top;padding:0;width: ' + va_cp + '%">';
-    //myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
-    //myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
-    //myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
-    //myHtml += '            </p>';
-    //myHtml += '        </td>';
+  
 
     myHtml += '                            <td style="padding:0; vertical-align: top; width:50.1%" align="right">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
@@ -137,12 +132,12 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
         myHtml += '                                    <tr>';
         myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Transaction Type:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].transaction_t + '</td>';
         myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Customer Type:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].customertype + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Address:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].fk_address + '</td>';
-    myHtml += '                                    </tr>';
+    //myHtml += '                                    <tr>';
+    //myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Customer Type:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].customertype + '</td>';
+    //myHtml += '                                    </tr>';
+    //myHtml += '                                    <tr>';
+    //myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Address:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].fk_address + '</td>';
+    //myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Payment Type:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].paymenttype + '</td>';
     myHtml += '                                    </tr>';
@@ -159,11 +154,14 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
     myHtml += '            </tr >';
     myHtml += '<tr>';
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
-    myHtml += '    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">';
+    myHtml += '    <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '    <tr>';
-
-  
-
+    myHtml += '        <td style="padding:0;">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['po'][0].customertype +' :</h3>';
+    myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
+    myHtml += '               ' + data['po'][0].displayname +  '<br>' + data['po'][0].fk_address ;
+    myHtml += '            </p>';
+    myHtml += '        </td>';
     myHtml += '     </tr>';
     myHtml += '     </table>';
     myHtml += '</td >';

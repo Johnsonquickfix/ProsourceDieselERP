@@ -236,8 +236,8 @@
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_tax", dr["tax_total"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_total", dr["net_total"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_gift_amount", dr["giftcard_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}' ; ", order_id, "total_gcamt", dr["giftcard_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}' ; ", order_id, "employee_id", dr["created_by"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "total_gcamt", dr["giftcard_total"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_id", dr["created_by"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}' ; ", order_id, "employee_name", ""));
                 }
                 foreach (DataRow dr in ds.Tables[1].Rows)

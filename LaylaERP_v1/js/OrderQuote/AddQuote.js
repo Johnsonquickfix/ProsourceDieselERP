@@ -277,7 +277,7 @@ function getQuoteItemList(_list) {
     let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardRefundAmt = 0.00;
     $.each(_list, function (i, row) {
         if (row.item_type == 'line_item') {
-            let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.item_meta);
+            let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.item_meta); console.log(row,_meta,_meta.length);
             let giftcard_amount = parseFloat(_meta.wc_gc_giftcard_amount) || 0.00;
             if (giftcard_amount > 0) itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="gift_item" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.item_name + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.item_meta + '\'>';
             else itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.item_name + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.item_meta + '\'>';
@@ -294,7 +294,7 @@ function getQuoteItemList(_list) {
             else {
                 itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 itemHtml += '<td>' + row.item_name + '<div class="view-addmeta" style="word-wrap: break-word;">';
-                $.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
+                //$.each(_meta, function (name, value) { itemHtml += '<b>' + name.replace('_system_', '') + '</b> : ' + value + '<br>'; });
                 itemHtml += '</div></td>';
                 itemHtml += '<td class="text-right">' + row.product_rate.toFixed(2) + '</td><td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.product_qty + '" name="txt_ItemQty" placeholder="Qty"></td>';
             }

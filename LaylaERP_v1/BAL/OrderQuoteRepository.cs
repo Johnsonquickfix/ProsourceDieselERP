@@ -259,7 +259,7 @@
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
                                 cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
 
-                        if (dr["item_meta"] != DBNull.Value)
+                        if (dr["item_meta"] != DBNull.Value && dr["product_id"].ToString() == "888864")
                         {
                             dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["item_meta"].ToString());
                             foreach (var inputAttribute in _json)

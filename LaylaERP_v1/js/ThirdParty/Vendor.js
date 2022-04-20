@@ -1885,7 +1885,7 @@ function PurchaseOrderGrid() {
             { data: 'date_creation_s', title: 'Order Date', sWidth: "10%", render: function (id, type, full, meta) { return full.date_creation; } },
             {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
-                    let str_inv = (id.substr(7) > 0 ? ' <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    let str_inv = (id.substr(7) > 0 ? '<a href="#">'+ id+ '</a> <a title="Click here to view invoice preview" data-toggle="tooltip"  href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa-search-plus"></i></a>' : '');
                     return str_inv;
                 }
             },

@@ -294,10 +294,22 @@
                 </div>
                 <div class="col-lg-3 col-sm-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-warning">
+                    <div class="small-box bg-yellow">
                         <div class="inner">
                             <h3 id="lblquoteremain"></h3>
                             <p>Pending</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-teal-active">
+                        <div class="inner">
+                            <h3 id="lblquotecomplete"></h3>
+                            <p>Completed</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -318,7 +330,6 @@
                 </div>
             </div>
             <!-- /.box-body -->
-
         </div>
     </section>
     <!-- /.Left col -->
@@ -464,10 +475,11 @@
             QuoteApproved(fromdate, todate);
             QuoteRejected(fromdate, todate);
             QuoteRemain(fromdate, todate);
+            QuoteComplete(fromdate, todate);
         });
         $('#sendEmail').click(function () { emails(); });
         //High chart start
-        Search(); QuoteGraph(); TotalQuote(); QuoteApproved(); QuoteRejected(); QuoteRemain();
+        Search(); QuoteGraph(); TotalQuote(); QuoteApproved(); QuoteRejected(); QuoteRemain(); QuoteComplete();
         $(function () {
             Highcharts.setOptions({ lang: { thousandsSep: ',' } });
         }) //High chart end
@@ -976,6 +988,22 @@
                 var i = JSON.parse(data);
                 console.log(data);
                 $("#lblquoteremain").text(i[0].Remain);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    function QuoteComplete(fromdate, todate) {
+        var obj = { from_date: fromdate, to_date: todate };
+        $.ajax({
+            url: '/Home/GetQuoteComplete/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var i = JSON.parse(data);
+                console.log(data);
+                $("#lblquotecomplete").text(i[0].Complete);
             },
             error: function (msg) { alert(msg); }
         });

@@ -194,7 +194,7 @@
                     customer_id = dr["customer_id"] != DBNull.Value ? Convert.ToInt64(dr["customer_id"]) : 0;
                     _giftcard_from_mail = dr["billing_email"] != DBNull.Value ? dr["billing_email"].ToString() : "";
                     /// step 1 : wp_wc_order_stats
-                    strSql.Append(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", 0, dr["gross_total"].ToString(), dr["tax_total"].ToString(), dr["shipping_total"].ToString(), dr["net_total"].ToString(), "wc-processing", dr["customer_id"].ToString(), order_id));
+                    strSql.Append(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", dr["item_qty"], dr["gross_total"].ToString(), dr["tax_total"].ToString(), dr["shipping_total"].ToString(), dr["net_total"].ToString(), "wc-processing", dr["customer_id"].ToString(), order_id));
 
                     /// step 2 : wp_postmeta 
                     strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value)");
@@ -257,7 +257,7 @@
                     {
                         strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["net_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["net_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
+                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
 
                         //foreach (OrderProductsMetaModel pm_obj in obj.order_itemmeta)
                         //{

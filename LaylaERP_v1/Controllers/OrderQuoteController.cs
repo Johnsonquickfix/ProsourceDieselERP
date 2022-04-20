@@ -223,6 +223,7 @@
 
                         var result = DAL.SQLHelper.ExecuteNonQuery(strSql);
                     }
+                    OrderRepository.OrderInvoiceMail(id);
                 }
             }
             catch { }

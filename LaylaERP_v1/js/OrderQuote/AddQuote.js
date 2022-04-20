@@ -310,13 +310,13 @@ function getQuoteItemList(_list) {
         }
         else if (row.item_type == 'coupon') {
             let cou_amt = parseFloat(row.net_total) || 0.00;
-            let coupon_list = auto_coupon.filter(element => element.post_title == row.item_name);
+            let coupon_list = auto_coupon.filter(element => element.post_title.toLowerCase() == row.item_name.toLowerCase());
             $.each(coupon_list, function (j, rCou) {
                 couponHtml += '<li id="li_' + rCou.post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (rCou.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + rCou.post_title.toString().toLowerCase() + '" data-couponamt= "' + rCou.coupon_amount + '" data-disctype= "' + rCou.discount_type + '" data-rqprdids= "' + rCou.product_ids + '" data-excludeids= "' + rCou.exclude_product_ids + '" data-type= "' + rCou.type + '">';
                 couponHtml += '<a href="javascript:void(0);">';
                 couponHtml += '<i class="fa fa-gift"></i><span>' + rCou.title + '</span>';
                 couponHtml += '<div class="pull-right">';
-                if (coupon_list[j].type == 'add_coupon') { couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + rCou.post_title.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete coupon"> <i class="fa fa-times"></i></button>'; }
+                if (rCou.type == 'add_coupon') { couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + rCou.post_title.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete coupon"> <i class="fa fa-times"></i></button>'; }
                 else { couponHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>'; }
                 couponHtml += '</div>';
                 couponHtml += '</a>';
@@ -324,7 +324,7 @@ function getQuoteItemList(_list) {
             });
             if (coupon_list.length == 0) {
                 let cpn_name = row.item_name, cpn_info = row.item_meta.length > 0 ? JSON.parse(row.item_meta) : '{}';
-                couponHtml += '<li id="li_' + cpn_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + row.product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon">';
+                couponHtml += '<li id="li_' + cpn_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + row.item_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon">';
                 couponHtml += '<a href="javascript:void(0);">';
                 couponHtml += '<i class="fa fa-gift"></i><span>' + cpn_name.toString().toLowerCase() + '</span>';
                 couponHtml += '<div class="pull-right">$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + cpn_name.toString().toLowerCase().replaceAll(' ', '_') + '\');" data-toggle="tooltip" title="Delete coupon"><i class="fa fa-times"></i></button></div>';
@@ -358,8 +358,8 @@ function getQuoteItemList(_list) {
             zShippingAmt = zShippingAmt + (parseFloat(row.net_total) || 0.00);
         }
         else if (row.item_type == 'gift_card') {
-            _meta = JSON.parse(row.item_meta);
-            giftcardHtml += '<li id="li_' + row.item_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.item_name.toString() + '" data-id="' + (_meta != null ? parseInt(_meta.giftcard_id) : '0') + '" data-amount="' + row.net_total.toFixed(2) + '">';
+            //_meta = JSON.parse(row.item_meta);
+            giftcardHtml += '<li id="li_' + row.item_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-pn="' + row.item_name.toString() + '" data-id="' + row.product_id + '" data-amount="' + row.net_total.toFixed(2) + '">';
             giftcardHtml += '<a href="javascript:void(0);">';
             giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.item_name + '</span>';
             giftcardHtml += '<div class="pull-right">$<span id="gift_amt">' + row.net_total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllGiftCard(\'' + row.item_name.toString().toLowerCase() + '\');" data-toggle="tooltip" title="Delete gift card"><i class="fa fa-times"></i></button></div>';
@@ -1719,10 +1719,10 @@ function QuoteProducts(id) {
         let grossAmount = (qty * rate), discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00, shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         let rNetAmt = grossAmount - discountAmount + taxAmount;
-        _itemmeta = [];
-        if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
+        //_itemmeta = [];
+        //if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
         _list.push({
-            quote_no: id, item_sequence: index, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify(_itemmeta)
+            quote_no: id, item_sequence: index, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data'))
         });
     });
     //Add State Recycling Fee
@@ -1759,7 +1759,7 @@ function QuoteProducts(id) {
         let gift_amt = parseFloat($(this).find("#gift_amt").text()) || 0.00;
         if (gift_amt > 0) {
             _list.push({
-                quote_no: id, item_sequence: _list.length + 1, item_type: 'gift_card', product_id: 0, variation_id: 0, item_name: $(li).data('pn'), product_qty: 1, product_rate: gift_amt, gross_total: gift_amt, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: gift_amt, item_meta: ''
+                quote_no: id, item_sequence: _list.length + 1, item_type: 'gift_card', product_id: parseInt($(li).data('id')) || 0, variation_id: 0, item_name: $(li).data('pn'), product_qty: 1, product_rate: gift_amt, gross_total: gift_amt, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: gift_amt, item_meta: ''
             });
         }
     });
@@ -1778,7 +1778,7 @@ function SaveData() {
             return new Promise(function (resolve) {
                 $.post('/OrderQuote/CreateQuote', obj).done(function (result) {
                     result = JSON.parse(result);
-                    if (result[0].response) {
+                    if (result[0].response == "Success") {
                         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                         $('#hfOrderNo').val(result[0].id);;
                         $.when(getQuoteInfo()).done(function () {
@@ -1786,7 +1786,7 @@ function SaveData() {
                             $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error"); });
                         });
                     }
-                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                    else { swal('Error', result[0].response, "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
             });
         }

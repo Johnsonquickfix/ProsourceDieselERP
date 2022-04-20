@@ -85,7 +85,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 JSONresult = JsonConvert.SerializeObject(OrderQuoteRepository.AddOrdersQuote(model.id, om.UserID, model.quote_header, model.quote_product));
             }
-            catch { }
+            catch (Exception ex) { return Json("[{\"response\":\"" + ex.Message + ".\",\"id\":0}]", JsonRequestBehavior.AllowGet); }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -223,6 +223,7 @@
 
                         var result = DAL.SQLHelper.ExecuteNonQuery(strSql);
                     }
+                    OrderRepository.OrderInvoiceMail(id);
                 }
             }
             catch { }

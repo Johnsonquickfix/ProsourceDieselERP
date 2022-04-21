@@ -2930,5 +2930,64 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static void GetQuoteDetails(string from_date, string to_date, string Empid)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql = "SELECT concat(um.meta_value,' ',umm.meta_value) Employee, quote_no,CONVERT(VARCHAR,quote_date,110)quote_date, gross_total Total,net_total subtotal, discount Discount, tax_total Tax, fee_total Fee FROM erp_order_quote eoq"
+                             + " left join wp_usermeta um on um.user_id = eoq.created_by and um.meta_key = 'first_name'"
+                             + " left join wp_usermeta umm on umm.user_id = eoq.created_by and umm.meta_key = 'last_name'";
+                if(Empid != "0")
+                {
+                    ssql += " WHERE created_by=@id";
+                }
+                DataSet ds1 = new DataSet();
+                if (from_date != "" && to_date != "")
+                {
+
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "OL"),
+                    new SqlParameter("@fromdate", from_date),
+                    new SqlParameter("@id", Empid),
+                    new SqlParameter("@todate", to_date)
+                };
+                    ds1 = SQLHelper.ExecuteDataSet(ssql, parameters);
+
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.display_name = ds1.Tables[0].Rows[i]["quote_no"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["Employee"].ToString();
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["quote_date"].ToString()))
+                            uobj.billing_city = ds1.Tables[0].Rows[i]["quote_date"].ToString();
+
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                            uobj.Discount = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        else
+                            uobj.Discount = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                            uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        else
+                            uobj.tax = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                            uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                        else
+                            uobj.total = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["subtotal"].ToString()))
+                            uobj.subtotal = "$" + (ds1.Tables[0].Rows[i]["subtotal"].ToString());
+                        else
+                            uobj.subtotal = "";
+                        if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                            uobj.fee = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                        else
+                            uobj.fee = "";
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
     }
 }

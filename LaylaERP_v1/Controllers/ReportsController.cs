@@ -202,6 +202,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult SalesAgentQuoteSales()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -1006,7 +1010,13 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
 
-
+        public ActionResult GetQuoteDetails(string Month, string Year, string Empid)
+        {
+            ReportsRepository.GetQuoteDetails(Month, Year, Empid);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
     }
 
 }

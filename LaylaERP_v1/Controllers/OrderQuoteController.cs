@@ -272,5 +272,48 @@
             }
             return View();
         }
+        [Route("quote/podium-payment-sync")]
+        public ActionResult PodiumPaymentReceipt()
+        {
+            try
+            {
+                DataTable dt = DAL.SQLHelper.ExecuteDataTable("select quote_no,quote_status,transaction_id,payment_status from erp_order_quote where quote_status = 'wc-pendingpodiuminv' and payment_status = 'SENT';");
+                string access_token = clsPodium.GetToken();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (dr["transaction_id"] != DBNull.Value)
+                    {
+                        var result = clsPodium.GetPodiumInvoiceDetails(access_token, dr["transaction_id"].ToString());
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(result);
+                        try
+                        {
+                            string status = obj.data.status;
+                            long quote_no = Convert.ToInt64(dr["quote_no"]);
+                            if (status.ToUpper() == "PAID")
+                            {
+                                string str = "[{ meta_key: '_podium_payment_uid', meta_value: '" + obj.data.payments[0].uid + "' }, { meta_key: '_podium_location_uid', meta_value: '" + obj.data.location.uid + "' },"
+                                        + "{ meta_key: '_podium_invoice_number', meta_value: '" + obj.data.invoiceNumber + "' }, { meta_key: '_podium_status', meta_value: 'PAID' }]";
+
+                                OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_no, 0, str);
+
+                                string host = Request.ServerVariables["HTTP_ORIGIN"];
+                                long id = OrderQuoteRepository.CreateOrder(quote_no, host);
+                                if (id > 0)
+                                {
+                                    if (OrderQuoteRepository.UpdateOrder(quote_no) > 0)
+                                    {
+                                        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", quote_no);
+                                        DAL.SQLHelper.ExecuteNonQuery(strSql);
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return View();
+        }
     }
 }

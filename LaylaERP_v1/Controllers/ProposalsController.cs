@@ -114,11 +114,11 @@
             {
                 DataTable dt = ProposalsRepository.generatesalespoinvoice(strID);
                 if (dt.Rows[0]["Response"].ToString() == "Success")
-                    return Json(new { status = true, message = "Invoice generate successfully!!", type = "All" }, 0);
+                    return Json(new { status = true, message = "Invoice generate successfully!", type = "All" }, 0);
                 else if (dt.Rows[0]["Response"].ToString() == "None")
-                    return Json(new { status = true, message = "Not any compare sales po for generate invoice!!", type = "None" }, 0);
+                    return Json(new { status = true, message = "No vendor sales PO is not matching for generating an invoice!", type = "None" }, 0);
                 else
-                    return Json(new { status = true, message = "Sales Po not compare  for generate invoice is - '" + dt.Rows[0]["datapo"].ToString() + "' ", type = "Miss" }, 0);
+                    return Json(new { status = true, message = "Some vendor sales PO (" + dt.Rows[0]["datapo"].ToString() + ") is not matching with our criteria to generate an invoice.", type = "Miss" }, 0);
             }
             else
             {

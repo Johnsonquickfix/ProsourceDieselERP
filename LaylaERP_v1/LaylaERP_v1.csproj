@@ -1247,6 +1247,7 @@
     <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
     <Content Include="Views\PaymentInvoice\PayMiscBills.cshtml" />
     <Content Include="Views\PaymentInvoice\PayMiscBillList.cshtml" />
+    <Content Include="Views\OrderQuote\QuoteOrderMail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

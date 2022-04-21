@@ -233,7 +233,7 @@
         [Route("quote/quote-order-mail")]
         public ActionResult QuoteOrderMail()
         {
-            string ids = string.Empty, gc_ids = string.Empty;
+            string ids = "0", gc_ids = "0";
             DataSet ds = DAL.SQLHelper.ExecuteDataSet("select quote_no,order_id,order_status,order_mail,order_gc_mail,modified_date_gmt from erp_order_quote where order_status = 'wc-processing' and order_mail = 0; Select oq.quote_no,gc.order_id,gc.code,gc.recipient,gc.sender,gc.sender_email,message,balance,delivered from wp_woocommerce_gc_cards gc inner join erp_order_quote oq on oq.order_id = gc.order_id and oq.order_gc_mail = 0 where delivered = 0;");
             foreach (DataRow dr in ds.Tables[0].Rows)
             {

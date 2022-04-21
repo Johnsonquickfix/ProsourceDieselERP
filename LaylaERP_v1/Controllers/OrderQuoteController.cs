@@ -229,5 +229,48 @@
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [Route("quote/quote-order-mail")]
+        public ActionResult QuoteOrderMail()
+        {
+            string ids = string.Empty, gc_ids = string.Empty;
+            DataSet ds = DAL.SQLHelper.ExecuteDataSet("select quote_no,order_id,order_status,order_mail,order_gc_mail,modified_date_gmt from erp_order_quote where order_status = 'wc-processing' and order_mail = 0; Select oq.quote_no,gc.order_id,gc.code,gc.recipient,gc.sender,gc.sender_email,message,balance,delivered from wp_woocommerce_gc_cards gc inner join erp_order_quote oq on oq.order_id = gc.order_id and oq.order_gc_mail = 0 where delivered = 0;");
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                try
+                {
+                    OrderRepository.OrderInvoiceMail(Convert.ToInt64(dr["order_id"]));
+                    ids += (string.IsNullOrEmpty(ids) ? "" : ",") + dr["quote_no"].ToString();
+                }
+                catch { }
+            }
+            foreach (DataRow dataRow in ds.Tables[1].Rows)
+            {
+                GiftCardModel _obj = new GiftCardModel
+                {
+                    order_id = Convert.ToInt64(dataRow["order_id"]),
+                    code = dataRow["code"].ToString(),
+                    recipient = dataRow["recipient"].ToString(),
+                    sender = dataRow["sender"].ToString(),
+                    sender_email = dataRow["sender_email"].ToString(),
+                    message = dataRow["message"].ToString(),
+                    balance = Convert.ToDouble(dataRow["balance"]),
+                    delivered = dataRow["delivered"].ToString(),
+                };
+                try
+                {
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", _obj);
+                    SendEmail.SendEmails_outer(dataRow["recipient"].ToString(), "You have received a $" + _obj.balance + " Gift Card from from " + _obj.sender + "", renderedHTML, string.Empty);
+                }
+                catch { }
+                gc_ids += (string.IsNullOrEmpty(gc_ids) ? "" : ",") + dataRow["quote_no"].ToString();
+            }
+            if (!string.IsNullOrEmpty(ids))
+            {
+                string strSql = string.Format("update erp_order_quote set order_mail = 1 where quote_no in ({0});update erp_order_quote set order_gc_mail = 1 where quote_no in ({1});", ids, gc_ids);
+                DAL.SQLHelper.ExecuteNonQuery(strSql);
+            }
+            return View();
+        }
     }
 }

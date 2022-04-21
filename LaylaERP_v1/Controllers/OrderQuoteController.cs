@@ -297,15 +297,15 @@
                                 OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_no, 0, str);
 
                                 string host = Request.ServerVariables["HTTP_ORIGIN"];
-                                //long id = OrderQuoteRepository.CreateOrder(quote_no, host);
-                                //if (id > 0)
-                                //{
-                                //    if (OrderQuoteRepository.UpdateOrder(quote_no) > 0)
-                                //    {
-                                //        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", quote_no);
-                                //        DAL.SQLHelper.ExecuteNonQuery(strSql);
-                                //    }
-                                //}
+                                long id = OrderQuoteRepository.CreateOrder(quote_no, host);
+                                if (id > 0)
+                                {
+                                    if (OrderQuoteRepository.UpdateOrder(quote_no) > 0)
+                                    {
+                                        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", quote_no);
+                                        DAL.SQLHelper.ExecuteNonQuery(strSql);
+                                    }
+                                }
                             }
                         }
                         catch { }

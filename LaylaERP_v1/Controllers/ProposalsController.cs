@@ -104,5 +104,27 @@
             }
 
         }
+
+        // generate invoice for Vendor Sales PO
+        [HttpPost]
+        public JsonResult generatesalespoinvoice(SearchModel model)
+        {
+            string strID = model.strValue1;
+            if (strID != "")
+            {
+                DataTable dt = ProposalsRepository.generatesalespoinvoice(strID);
+                if (dt.Rows[0]["Response"].ToString() == "Success")
+                    return Json(new { status = true, message = "Invoice generate successfully!!", type = "All" }, 0);
+                else if (dt.Rows[0]["Response"].ToString() == "None")
+                    return Json(new { status = true, message = "Not any compare sales po for generate invoice!!", type = "None" }, 0);
+                else
+                    return Json(new { status = true, message = "Sales Po not compare  for generate invoice is - '" + dt.Rows[0]["datapo"].ToString() + "' ", type = "Miss" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
     }
 }

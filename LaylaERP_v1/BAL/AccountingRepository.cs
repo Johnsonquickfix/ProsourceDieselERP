@@ -1625,5 +1625,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable AccountBalanceTotal(string id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strSQl = "SELECT Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
+                                + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
+                                + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "";
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

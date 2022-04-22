@@ -47,7 +47,7 @@ function AccountJournalList(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2).display;
     var ID = $("#hfid").val();
     var account_num = $("#ddlAccount").val();
     var obj = { strValue1: sd, strValue2: ed, strValue3: account_num, strValue4: vrid }
@@ -143,7 +143,7 @@ function AccountJournalList(is_date) {
                 extend: 'print',
                 //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
                 title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
-                exportOptions: { columns: [0,1, 2, 3, 4, 5, 6, 7], },
+                exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7], },
                 filename: function () {
                     let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Account Journal' + e;

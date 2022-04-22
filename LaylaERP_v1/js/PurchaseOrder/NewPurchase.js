@@ -344,7 +344,7 @@ function AddProductModal(proc_type, row_num) {
     else {
         prodHtml += '<div class="row">';
         prodHtml += '<div class="col-md-6">Service Type<span class="text-red">*</span>';
-        prodHtml += '<select class="form-control" id="ddl_service_type" placeholder="Select Service Type"><option value="1">Shipping</option><option value="2">Tax</option><option value="3">other Fee</option></select>';
+        prodHtml += '<select class="form-control" id="ddl_service_type" placeholder="Select Service Type"><option value="1">Shipping</option><option value="2">Tax</option><option value="3">Other Fee</option></select>';
         prodHtml += '</div>';
         prodHtml += '<div class="col-md-6">Description<span class="text-red">*</span>';
         prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';

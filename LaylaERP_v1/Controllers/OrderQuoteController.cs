@@ -85,7 +85,7 @@
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 JSONresult = JsonConvert.SerializeObject(OrderQuoteRepository.AddOrdersQuote(model.id, om.UserID, model.quote_header, model.quote_product));
             }
-            catch { }
+            catch (Exception ex) { return Json("[{\"response\":\"" + ex.Message + ".\",\"id\":0}]", JsonRequestBehavior.AllowGet); }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -228,6 +228,92 @@
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [Route("quote/quote-order-mail")]
+        public ActionResult QuoteOrderMail()
+        {
+            string ids = "0", gc_ids = "0";
+            DataSet ds = DAL.SQLHelper.ExecuteDataSet("select quote_no,order_id,order_status,order_mail,order_gc_mail,modified_date_gmt from erp_order_quote where order_status = 'wc-processing' and order_mail = 0; Select oq.quote_no,gc.order_id,gc.code,gc.recipient,gc.sender,gc.sender_email,message,balance,delivered from wp_woocommerce_gc_cards gc inner join erp_order_quote oq on oq.order_id = gc.order_id and oq.order_gc_mail = 0 where delivered = 0;");
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                try
+                {
+                    OrderRepository.OrderInvoiceMail(Convert.ToInt64(dr["order_id"]));
+                    ids += (string.IsNullOrEmpty(ids) ? "" : ",") + dr["quote_no"].ToString();
+                }
+                catch { }
+            }
+            foreach (DataRow dataRow in ds.Tables[1].Rows)
+            {
+                GiftCardModel _obj = new GiftCardModel
+                {
+                    order_id = Convert.ToInt64(dataRow["order_id"]),
+                    code = dataRow["code"].ToString(),
+                    recipient = dataRow["recipient"].ToString(),
+                    sender = dataRow["sender"].ToString(),
+                    sender_email = dataRow["sender_email"].ToString(),
+                    message = dataRow["message"].ToString(),
+                    balance = Convert.ToDouble(dataRow["balance"]),
+                    delivered = dataRow["delivered"].ToString(),
+                };
+                try
+                {
+                    String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "SendGiftcard", _obj);
+                    SendEmail.SendEmails_outer(dataRow["recipient"].ToString(), "You have received a $" + _obj.balance + " Gift Card from from " + _obj.sender + "", renderedHTML, string.Empty);
+                }
+                catch { }
+                gc_ids += (string.IsNullOrEmpty(gc_ids) ? "" : ",") + dataRow["quote_no"].ToString();
+            }
+            if (!string.IsNullOrEmpty(ids))
+            {
+                string strSql = string.Format("update erp_order_quote set order_mail = 1 where quote_no in ({0});update erp_order_quote set order_gc_mail = 1 where quote_no in ({1});", ids, gc_ids);
+                DAL.SQLHelper.ExecuteNonQuery(strSql);
+            }
+            return View();
+        }
+        [Route("quote/podium-payment-sync")]
+        public ActionResult PodiumPaymentReceipt()
+        {
+            try
+            {
+                DataTable dt = DAL.SQLHelper.ExecuteDataTable("select quote_no,quote_status,transaction_id,payment_status from erp_order_quote where quote_status = 'wc-pendingpodiuminv' and payment_status = 'SENT';");
+                string access_token = clsPodium.GetToken();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (dr["transaction_id"] != DBNull.Value)
+                    {
+                        var result = clsPodium.GetPodiumInvoiceDetails(access_token, dr["transaction_id"].ToString());
+                        dynamic obj = JsonConvert.DeserializeObject<dynamic>(result);
+                        try
+                        {
+                            string status = obj.data.status;
+                            long quote_no = Convert.ToInt64(dr["quote_no"]);
+                            if (status.ToUpper() == "PAID")
+                            {
+                                string str = "{\"quote_no\": " + quote_no + ", \"payment_method\": \"podium\", \"transaction_id\": \"" + dr["transaction_id"].ToString() + "\", \"payment_status\": \"PAID\", \"quote_status\": \"wc-podium\", \"payment_meta\" : \"[{ 'meta_key': '_podium_payment_uid','meta_value': '" + obj.data.payments[0].uid + "'},{'meta_key':'_podium_location_uid','meta_value':'" + obj.data.location.uid + "'},"
+                                        + "{ 'meta_key': '_podium_invoice_number', 'meta_value': '" + obj.data.invoiceNumber + "'}, {'meta_key': '_podium_status', 'meta_value': 'PAID'}]\"}";
+
+                                OrderQuoteRepository.UpdatePodiumDetails("UPTRNS", quote_no, 0, str);
+
+                                string host = Request.ServerVariables["HTTP_ORIGIN"];
+                                long id = OrderQuoteRepository.CreateOrder(quote_no, host);
+                                if (id > 0)
+                                {
+                                    if (OrderQuoteRepository.UpdateOrder(quote_no) > 0)
+                                    {
+                                        string strSql = string.Format("update erp_order_quote set order_status = 'wc-processing',modified_date = getdate(),modified_date_gmt = GETUTCDATE() where quote_no = {0};", quote_no);
+                                        DAL.SQLHelper.ExecuteNonQuery(strSql);
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return View();
         }
     }
 }

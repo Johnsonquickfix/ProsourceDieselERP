@@ -186,7 +186,7 @@
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 long order_id = 0, customer_id = 0;
                 string _giftcard_to = string.Empty, _giftcard_from = string.Empty, _giftcard_from_mail = string.Empty, _giftcard_message = string.Empty, _giftcard_amt = string.Empty;
-                StringBuilder strSql = new StringBuilder("");
+                StringBuilder strSql = new StringBuilder(""); StringBuilder strProductMeta = new StringBuilder("");
                 DataSet ds = GetOrdersQuote(quote_no);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -259,6 +259,19 @@
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
                                 cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
 
+                        if (dr["item_meta"] != DBNull.Value && dr["product_id"].ToString() == "888864")
+                        {
+                            dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["item_meta"].ToString());
+                            foreach (var inputAttribute in _json)
+                            {
+                                // strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select {0},'{1}','{2}';", order_id, inputAttribute.meta_key.Value.ToString(), inputAttribute.meta_value.Value.ToString()));
+                                strProductMeta.Append(string.Format(" union all select order_item_id,'{0}','{1}' from wp_wc_order_product_lookup where order_id={2} and product_id = 888864", inputAttribute.Name, inputAttribute.Value, order_id));
+                                if (inputAttribute.Name.Equals("wc_gc_giftcard_to_multiple")) _giftcard_to = inputAttribute.Value;
+                                else if (inputAttribute.Name.Equals("wc_gc_giftcard_from")) _giftcard_from = inputAttribute.Value;
+                                else if (inputAttribute.Name.Equals("wc_gc_giftcard_message")) _giftcard_message = inputAttribute.Value;
+                                else if (inputAttribute.Name.Equals("wc_gc_giftcard_amount")) _giftcard_amt = inputAttribute.Value;
+                            }
+                        }
                         //foreach (OrderProductsMetaModel pm_obj in obj.order_itemmeta)
                         //{
                         //    strProductMeta.Append(string.Format(" union all select order_item_id,'{0}','{1}' from wp_wc_order_product_lookup where order_id={2} and product_id = 888864 and order_item_id not in ({3})", pm_obj.key, pm_obj.value, model.OrderPostStatus.order_id, str_oiid));
@@ -313,7 +326,7 @@
                 //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
                 strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id= " + order_id);
                 strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0}", order_id));
-                //strSql.Append(strProductMeta);
+                strSql.Append(strProductMeta);
                 strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0};", order_id));
 
                 /// step 5 : wp_posts (Coupon used by)
@@ -323,25 +336,25 @@
                 strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", "wc-processing", cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), "", order_id));
 
                 result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //if (result > 0)
-                //{
-                //    strSql = new StringBuilder("update wp_woocommerce_gc_cards set create_date = UNIX_TIMESTAMP(),expire_date = UNIX_TIMESTAMP(),is_active='off' where order_id = " + model.OrderPostStatus.order_id + " and order_item_id not in (select order_item_id from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864);");
-                //    //strSql = new StringBuilder("delete from wp_woocommerce_gc_activity where gc_id in (select id from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ");");
-                //    //strSql.Append(" delete from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ";");
-                //    foreach (var address in _giftcard_to.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
-                //    {
-                //        string _code = Guid.NewGuid().ToString().ToUpper().Replace("-", "");
-                //        _code = _code.Substring(1, 4) + "-" + _code.Substring(4, 4) + "-" + _code.Substring(8, 4) + "-" + _code.Substring(12, 4);
+                if (result > 0)
+                {
+                    strSql = new StringBuilder("update wp_woocommerce_gc_cards set create_date = UNIX_TIMESTAMP(),expire_date = UNIX_TIMESTAMP(),is_active='off' where order_id = " + order_id + " and order_item_id not in (select order_item_id from wp_wc_order_product_lookup where order_id=" + order_id + " and product_id = 888864);");
+                    //strSql = new StringBuilder("delete from wp_woocommerce_gc_activity where gc_id in (select id from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ");");
+                    //strSql.Append(" delete from wp_woocommerce_gc_cards where order_id = " + model.OrderPostStatus.order_id + ";");
+                    foreach (var address in _giftcard_to.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string _code = Guid.NewGuid().ToString().ToUpper().Replace("-", "");
+                        _code = _code.Substring(1, 4) + "-" + _code.Substring(4, 4) + "-" + _code.Substring(8, 4) + "-" + _code.Substring(12, 4);
 
-                //        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active,modifieddate)");
-                //        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off',current_timestamp() from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and product_id = 888864;");
+                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active,modifieddate)");
+                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off',current_timestamp() from wp_wc_order_product_lookup where order_id=" + order_id + " and product_id = 888864;");
 
-                //        strSql.Append("insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date)");
-                //        strSql.Append(" Select 'issued',0,'" + _giftcard_from_mail + "','" + model.OrderPostStatus.order_id + "',LAST_INSERT_ID(),'" + _code + "','" + _giftcard_amt + "',UNIX_TIMESTAMP();");
-                //    }
-                //    DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                //}
-                
+                        strSql.Append("insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date)");
+                        strSql.Append(" Select 'issued',0,'" + _giftcard_from_mail + "','" + order_id + "',LAST_INSERT_ID(),'" + _code + "','" + _giftcard_amt + "',UNIX_TIMESTAMP();");
+                    }
+                    DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                }
+
             }
             catch (Exception Ex) { throw Ex; }
             return result;

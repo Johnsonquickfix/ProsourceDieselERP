@@ -93,7 +93,7 @@
 
 function updateinvoice() {    
     var obj = { strValue1: 0 }
-    swal({ title: "", text: 'Would you like to update?', type: "question", showCancelButton: true })
+    swal({ title: "", text: 'Would you like to generate an invoice?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
                 $.ajax({

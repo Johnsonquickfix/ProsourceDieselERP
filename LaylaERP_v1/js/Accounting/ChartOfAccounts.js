@@ -49,7 +49,7 @@ function ChartOfAccountGrid() {
                     {
                         'data': 'account_number', sWidth: "8%",
                         'render': function (id, type, full, meta) {
-                            return ' <span title="Click here to account balance list" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model('+ id +');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
+                            return ' <span title="Click here to account balance list" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model(' + id +');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
                         }
                     },
 
@@ -147,6 +147,7 @@ function ChangeStatus(id, status) {
 function model(account_num) {
     $('#AccountModal').modal('show');
     AccountBalanceList(account_num);
+    total(account_num);
 }
 
 function AccountBalanceList(account_num) {
@@ -205,4 +206,23 @@ function AccountBalanceList(account_num) {
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
         ],
     });
+}
+
+function total(account_num) {
+    var obj = { strValue1: account_num }
+    $.ajax({
+        url: '/Accounting/AccountBalanceTotal',
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application / json; charset=utf - 8',
+        data: obj,
+        success: function (data) {
+            let jobj = JSON.parse(data);
+            $("#lblcredit").text(jobj[0].credit);
+            $("#lbldebit").text(jobj[0].debit);
+            $("#lblbalance").text(jobj[0].balance);
+        },
+        complete: function () { },
+        error: function (error) { },
+    })
 }

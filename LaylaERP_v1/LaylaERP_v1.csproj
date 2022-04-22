@@ -841,6 +841,7 @@
     <Content Include="js\Report\PartialRefund.js" />
     <Content Include="js\Report\PoApproved.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
+    <Content Include="js\Report\SalesRepresentativeQuoteReport.js" />
     <Content Include="js\Report\Searchcouponorders.js" />
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
@@ -1249,6 +1250,7 @@
     <Content Include="Views\PaymentInvoice\PayMiscBillList.cshtml" />
     <Content Include="Views\OrderQuote\QuoteOrderMail.cshtml" />
     <Content Include="Views\OrderQuote\PodiumPaymentReceipt.cshtml" />
+    <Content Include="Views\Reports\SalesAgentQuoteSales.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -802,8 +802,10 @@
     <Content Include="js\PaymentInvoice\CreatePaymentInvoicePO.js" />
     <Content Include="js\PaymentInvoice\MiscBillPrint.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
+    <Content Include="js\PaymentInvoice\PaymentInvoiceMiscBill.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoicePrintSO.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoiceSO.js" />
+    <Content Include="js\PaymentInvoice\PaymentMiscBill.js" />
     <Content Include="js\PaymentInvoice\PaymentSOInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentStatusList.js" />
     <Content Include="js\PaymentInvoice\PayMiscBillList.js" />
@@ -1247,6 +1249,8 @@
     <Content Include="Views\PaymentInvoice\PaymentSOInvoiceList.cshtml" />
     <Content Include="Views\PaymentInvoice\PayMiscBills.cshtml" />
     <Content Include="Views\PaymentInvoice\PayMiscBillList.cshtml" />
+    <Content Include="Views\PaymentInvoice\PayBillsMisc.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoiceMiscBill.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

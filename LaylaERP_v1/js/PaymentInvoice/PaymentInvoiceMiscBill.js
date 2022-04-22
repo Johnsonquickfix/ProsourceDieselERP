@@ -104,10 +104,10 @@ function calculateFinal() {
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00
-        remaing = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
+        remaing  = parseFloat($(row).find("[name=txt_itemprice]").val().trim()) || 0.00;
         payment = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
-        //console.log(remaing.toFixed(2), payment.toFixed(2));
-        if (remaing.toFixed(2) > payment.toFixed(2)) {
+        //console.log(payment.toFixed(2), remaing.toFixed(2));
+        if (remaing > payment) {
             swal('Alert!', "you can't receive greater payment form  remaining payment", "error");
             parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
             $(row).find("[name=txt_itemprice]").focus();
@@ -149,7 +149,7 @@ function saveVendorPO() {
             showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve) {
-                    $.post('/PaymentInvoice/TakePaymentSO', option).done(function (result) {
+                    $.post('/PaymentInvoice/TakePaymentMisc', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
                             swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PayBillsMisc'; });

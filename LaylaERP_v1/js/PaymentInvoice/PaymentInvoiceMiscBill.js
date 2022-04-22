@@ -177,7 +177,7 @@ function createItemsList() {
             status = "UN";
         }
         if (payment != 0) {
-            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier') });
+            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier') });
         }
     });
     return _list;

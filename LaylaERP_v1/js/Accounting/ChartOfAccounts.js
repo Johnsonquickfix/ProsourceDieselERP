@@ -205,6 +205,20 @@ function AccountBalanceList(account_num) {
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
         ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account' + e;
+                },
+            },
+            ],
     });
 }
 
@@ -221,6 +235,10 @@ function total(account_num) {
             $("#lblcredit").text(jobj[0].credit);
             $("#lbldebit").text(jobj[0].debit);
             $("#lblbalance").text(jobj[0].balance);
+            $("#lblcredit1").text(jobj[0].credit);
+            $("#lbldebit1").text(jobj[0].debit);
+            $("#lblbalance1").text(jobj[0].balance);
+            $("#exampleModalLongTitle").text(jobj[0].label);
         },
         complete: function () { },
         error: function (error) { },

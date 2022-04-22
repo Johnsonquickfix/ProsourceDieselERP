@@ -609,7 +609,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable AccountJournalList(long account_num, string vendor_code, DateTime fromdate, DateTime todate)
+        public static DataTable AccountJournalList(long account_num, long vendor_id, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -619,7 +619,6 @@ namespace LaylaERP.BAL
                     account_num > 0 ? new SqlParameter("@account_num", account_num) : new SqlParameter("@account_num", DBNull.Value),
                     new SqlParameter("@fromdate", fromdate),
                     new SqlParameter("@todate", todate),
-                    new SqlParameter("@thirdparty_code", vendor_code),
                     new SqlParameter("@flag", "JOUREP"),
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_account_Journal_report", parameters);
@@ -1631,7 +1630,7 @@ namespace LaylaERP.BAL
             DataTable DS = new DataTable();
             try
             {
-                string strSQl = "SELECT Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
+                string strSQl = "SELECT max(label_complete) label, Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
                                 + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
                                 + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "";
                 DS = SQLHelper.ExecuteDataTable(strSQl);

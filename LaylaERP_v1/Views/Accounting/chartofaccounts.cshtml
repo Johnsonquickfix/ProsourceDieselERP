@@ -145,46 +145,61 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalLongTitle">Account Balance</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box box-primary table-design not-fixed">
-                                <div class="box-body">
-                                    <table id="EmployeeListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-left">ID</th>
-                                                <th class="text-left">Date</th>
-                                                <th class="text-left">Label</th>
-                                                @*<th class="text-left">Acccounting Account</th>*@
-                                                <th class="text-left">Debit</th>
-                                                <th class="text-left">Credit</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <br />
-                                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-left"></th>
-                                                <th class="text-left"></th>
-                                                <th class="text-left">Debit <h3 id="lbldebit"></h3></th>
-                                                <th class="text-left">Credit <h3 id="lblcredit"></h3></th>
-                                                <th class="text-left">Balance <h3 id="lblbalance"></h3></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                    <div class="inline">
+                        <h4 class="modal-title" id="exampleModalLongTitle"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th class="text-left"></th>
+                                <th class="text-left"></th>
+                                <th class="text-left">Debit <h3 id="lbldebit"></h3></th>
+                                <th class="text-left">Credit <h3 id="lblcredit"></h3></th>
+                                <th class="text-left">Balance <h3 id="lblbalance"></h3></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary table-design not-fixed">
+                                    <div class="box-body">
+                                        <table id="EmployeeListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left">ID</th>
+                                                    <th class="text-left">Date</th>
+                                                    <th class="text-left">Label</th>
+                                                    @*<th class="text-left">Acccounting Account</th>*@
+                                                    <th class="text-left">Debit</th>
+                                                    <th class="text-left">Credit</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <br />
+                                        <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left"></th>
+                                                    <th class="text-left"></th>
+                                                    <th class="text-left">Debit <h3 id="lbldebit1"></h3></th>
+                                                    <th class="text-left">Credit <h3 id="lblcredit1"></h3></th>
+                                                    <th class="text-left">Balance <h3 id="lblbalance1"></h3></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 </section>

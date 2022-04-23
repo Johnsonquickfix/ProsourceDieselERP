@@ -731,7 +731,8 @@ namespace LaylaERP.BAL
                 ds.Tables[0].TableName = "po";
                 if (ds.Tables.Count > 1) ds.Tables[1].TableName = "pod";                
                 if (ds.Tables.Count > 2) ds.Tables[2].TableName = "com";
-               
+                if (ds.Tables.Count > 3) ds.Tables[3].TableName = "popd";
+
             }
             catch (Exception ex)
             {

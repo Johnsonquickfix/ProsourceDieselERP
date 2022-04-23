@@ -146,6 +146,7 @@ function ChangeStatus(id, status) {
 
 function model(account_num) {
     $('#AccountModal').modal('show');
+    name(account_num);
     AccountBalanceList(account_num);
     total(account_num);
 }
@@ -238,6 +239,22 @@ function total(account_num) {
             $("#lblcredit1").text(jobj[0].credit);
             $("#lbldebit1").text(jobj[0].debit);
             $("#lblbalance1").text(jobj[0].balance);
+        },
+        complete: function () { },
+        error: function (error) { },
+    })
+}
+
+function name(account_num) {
+    var obj = { strValue1: account_num }
+    $.ajax({
+        url: '/Accounting/AccountName',
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application / json; charset=utf - 8',
+        data: obj,
+        success: function (data) {
+            let jobj = JSON.parse(data);
             $("#exampleModalLongTitle").text(jobj[0].label);
         },
         complete: function () { },

@@ -1639,5 +1639,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataTable AccountName(string id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strSQl = "SELECT concat(account_number,' : ', label) label FROM erp_accounting_account WHERE account_number=" + id + "";
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

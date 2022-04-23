@@ -255,7 +255,7 @@ function name(account_num) {
         data: obj,
         success: function (data) {
             let jobj = JSON.parse(data);
-            $("#exampleModalLongTitle").text(jobj[0].label);
+            $("#exampleModalLongTitle").text("Account: " + jobj[0].label);
         },
         complete: function () { },
         error: function (error) { },

@@ -1645,7 +1645,7 @@ namespace LaylaERP.BAL
             DataTable DS = new DataTable();
             try
             {
-                string strSQl = "SELECT concat(account_number,' : ', label) label FROM erp_accounting_account WHERE account_number=" + id + "";
+                string strSQl = "SELECT account_number, label FROM erp_accounting_account WHERE account_number=" + id + "";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

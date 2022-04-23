@@ -428,10 +428,10 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);
-                long aid = 0;
+                long aid = 0, vid = 0;
                 if (!string.IsNullOrEmpty(model.strValue3))
                     aid = Convert.ToInt64(model.strValue3);
-                DataTable dt = AccountingRepository.AccountJournalList(aid, model.strValue4, fromdate, todate);
+                DataTable dt = AccountingRepository.AccountJournalList(aid, vid, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
@@ -1015,6 +1015,16 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
         }
-
+        public JsonResult AccountName(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.AccountName(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(JSONResult, 0);
+        }
     }
 }

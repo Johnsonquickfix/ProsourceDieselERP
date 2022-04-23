@@ -146,6 +146,7 @@ function ChangeStatus(id, status) {
 
 function model(account_num) {
     $('#AccountModal').modal('show');
+    name(account_num);
     AccountBalanceList(account_num);
     total(account_num);
 }
@@ -205,6 +206,20 @@ function AccountBalanceList(account_num) {
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
             { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
         ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account' + e;
+                },
+            },
+            ],
     });
 }
 
@@ -218,9 +233,29 @@ function total(account_num) {
         data: obj,
         success: function (data) {
             let jobj = JSON.parse(data);
-            $("#lblcredit").text(jobj[0].credit);
-            $("#lbldebit").text(jobj[0].debit);
-            $("#lblbalance").text(jobj[0].balance);
+            $("#lblcredit").text("$"+jobj[0].credit);
+            $("#lbldebit").text("$" +jobj[0].debit);
+            $("#lblbalance").text("$" +jobj[0].balance);
+            $("#lblcredit1").text("$" +jobj[0].credit);
+            $("#lbldebit1").text("$" +jobj[0].debit);
+            $("#lblbalance1").text("$" +jobj[0].balance);
+        },
+        complete: function () { },
+        error: function (error) { },
+    })
+}
+
+function name(account_num) {
+    var obj = { strValue1: account_num }
+    $.ajax({
+        url: '/Accounting/AccountName',
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application / json; charset=utf - 8',
+        data: obj,
+        success: function (data) {
+            let jobj = JSON.parse(data);
+            $("#exampleModalLongTitle").text("Account: " + jobj[0].label);
         },
         complete: function () { },
         error: function (error) { },

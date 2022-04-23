@@ -233,12 +233,12 @@ function total(account_num) {
         data: obj,
         success: function (data) {
             let jobj = JSON.parse(data);
-            $("#lblcredit").text(jobj[0].credit);
-            $("#lbldebit").text(jobj[0].debit);
-            $("#lblbalance").text(jobj[0].balance);
-            $("#lblcredit1").text(jobj[0].credit);
-            $("#lbldebit1").text(jobj[0].debit);
-            $("#lblbalance1").text(jobj[0].balance);
+            $("#lblcredit").text("$"+jobj[0].credit);
+            $("#lbldebit").text("$" +jobj[0].debit);
+            $("#lblbalance").text("$" +jobj[0].balance);
+            $("#lblcredit1").text("$" +jobj[0].credit);
+            $("#lbldebit1").text("$" +jobj[0].debit);
+            $("#lblbalance1").text("$" +jobj[0].balance);
         },
         complete: function () { },
         error: function (error) { },

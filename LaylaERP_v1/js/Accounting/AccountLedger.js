@@ -245,15 +245,28 @@ function formatPartially(d) {
             let datect = '';
             if (result.length == 0) { wrHTML += '<tbody class="line_items_' + d.rowid + '"><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
+                //console.log(row.PO_SO_ref.substring(0, 2));
                 Totaldebit = row.totalDebit; Totalcredit = row.totalcredit; Totalbaolance = row.totalbal; account = row.inv_complete;
                 datect = row.datecrt;
                 wrHTML += '<tr class="paid_item"><td style="width:10%; text-align:left;">' + row.inv_num + '</td>';
                 wrHTML += '<td style="width:5%; text-align:left;">' + row.code_journal + '</td>';
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.doc_date + '</td>';
-                if (row.code_journal == "AC")
-                    wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
-                else
+                if (row.code_journal == "AC" || row.code_journal == "BQ") {                    
+                    if (row.code_journal == "AC")
+                        wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
+                    else if (row.PO_SO_ref.substring(0, 2) == "PO")
+                        wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
+                    else
+                        wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + row.PO_SO_ref.toString() + '\', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
+                }
+                else if (row.code_journal == "OD") {
+                    
+                    wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getBillPrintDetails(' + row.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></span></td>';
+                }
+                else {
                     wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#"  onclick="PurchaseSalesPrint(' + row.inv_num + ',\'' + datect + '\');"><i class="fas fa - search - plus"></i>' + row.PO_SO_ref + '</a></td></span>';
+
+                }
                 //console.log(row.datecrt);
                 wrHTML += '<td style="width:46%; text-align:left;">' + row.label_operation + '</td>';
                 if (row.debit != '')

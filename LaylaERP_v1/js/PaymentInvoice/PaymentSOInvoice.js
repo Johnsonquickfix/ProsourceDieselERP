@@ -186,7 +186,7 @@ function PurchasefullyOrderGrid() {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     //return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to view payment ."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.refordervendor + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    return '<a href="javascript:void(0);" class="pdetailspo-control" data-toggle="tooltip" title="Click here to view order preview."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.refordervendor + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to view order preview."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.refordervendor + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     // return '<a  title="Click here to view order preview" data-toggle="tooltip"> #' + row.ref + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },
@@ -237,7 +237,7 @@ function takepayment() {
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
     let status = 'SO'// $('#ddlStatus').val();
-    console.log(id);
+  //  console.log(id);
     if (id == "") {
         swal('Alert', 'Please select a PO', 'error');
     }

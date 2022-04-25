@@ -434,7 +434,7 @@ function getPurchaseOrderInfo() {
     $('#divAlert').empty();
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
-        $('#ddlVendor,.billinfo,.orderfiles').prop("disabled", true); $(".order-files").removeClass('hidden');
+        $('#ddlVendor,.billinfo').prop("disabled", true); $(".order-files").removeClass('hidden'); $('.orderfiles').prop("disabled", false)
         $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         $('#line_items,#product_line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');

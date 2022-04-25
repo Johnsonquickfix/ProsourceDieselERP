@@ -152,8 +152,8 @@ function calculateFinal() {
         remaing = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         payment = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
         //console.log(remaing.toFixed(2), payment.toFixed(2));
-        if (remaing.toFixed(2) > payment.toFixed(2)) {
-            swal('Alert!', "you can't receive greater payment form  remaining payment", "error");
+        if (remaing > payment) {
+            swal('Alert!', "you can't receive greater payment form remaining payment", "error");
             parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
             $(row).find("[name=txt_itemprice]").focus();
 

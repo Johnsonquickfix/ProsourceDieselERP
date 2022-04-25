@@ -86,24 +86,24 @@ function ChartOfAccountGrid() {
                             return 'Chart_of_accounts' + e;
                         },
                     },
-                    {
-                        extend: 'print',
-                        title:'',
-                        className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> Print',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5 , 6, 7, 8],
-                            //modifier: { page: 'current' }
-                        },
-                        filename: function () {
-                            var d = new Date();
-                            var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
-                            return 'Chart_of_accounts' + e;
-                        },
-                        messageTop: function () {
-                            return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>';
-                        },
-                    }
+                    //{
+                    //    extend: 'print',
+                    //    title:'',
+                    //    className: 'button',
+                    //    text: '<i class="fas fa-file-csv"></i> Print',
+                    //    exportOptions: {
+                    //        columns: [1, 2, 3, 4, 5 , 6, 7, 8],
+                    //        //modifier: { page: 'current' }
+                    //    },
+                    //    filename: function () {
+                    //        var d = new Date();
+                    //        var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    //        return 'Chart_of_accounts' + e;
+                    //    },
+                    //    messageTop: function () {
+                    //        return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>';
+                    //    },
+                    //}
                 ],
             });
         },
@@ -211,6 +211,16 @@ function AccountBalanceList(account_num) {
         "buttons": [
             {
                 extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account' + e;
+                },
+            },
+            {
+                extend: 'print',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> CSV',
                 filename: function () {

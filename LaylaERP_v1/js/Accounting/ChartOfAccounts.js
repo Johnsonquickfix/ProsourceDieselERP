@@ -86,24 +86,24 @@ function ChartOfAccountGrid() {
                             return 'Chart_of_accounts' + e;
                         },
                     },
-                    //{
-                    //    extend: 'print',
-                    //    title:'',
-                    //    className: 'button',
-                    //    text: '<i class="fas fa-file-csv"></i> Print',
-                    //    exportOptions: {
-                    //        columns: [1, 2, 3, 4, 5 , 6, 7, 8],
-                    //        //modifier: { page: 'current' }
-                    //    },
-                    //    filename: function () {
-                    //        var d = new Date();
-                    //        var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
-                    //        return 'Chart_of_accounts' + e;
-                    //    },
-                    //    messageTop: function () {
-                    //        return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>';
-                    //    },
-                    //}
+                    {
+                        extend: 'print',
+                        title:'',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> Print',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5 , 6, 7, 8],
+                            //modifier: { page: 'current' }
+                        },
+                        filename: function () {
+                            var d = new Date();
+                            var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                            return 'Chart_of_accounts' + e;
+                        },
+                        messageTop: function () {
+                            return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Chart of accounts</h3>';
+                        },
+                    }
                 ],
             });
         },
@@ -146,18 +146,34 @@ function ChangeStatus(id, status) {
 
 function model(account_num) {
     $('#AccountModal').modal('show');
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+        AccountBalanceList(account_num, true)
+    });
+
     name(account_num);
-    AccountBalanceList(account_num);
+    setTimeout(function () { AccountBalanceList(account_num, true) }, 1000);
     total(account_num);
 }
 
-function AccountBalanceList(account_num) {
-    //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-    //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    //let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+function AccountBalanceList(account_num, is_date) {
+    let j = $("#exampleModalLongTitle").text();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     //var vendor = $("#ddlVendor").val();
     //let account_num = $("#ddlAccount").val();
-    var obj = {strValue3: account_num };
+    var obj = {strValue2: dfa, strValue3: account_num };
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
@@ -222,11 +238,15 @@ function AccountBalanceList(account_num) {
             {
                 extend: 'print',
                 className: 'button',
-                text: '<i class="fas fa-file-csv"></i> CSV',
+                title: '',
+                text: '<i class="fas fa-file-csv"></i> Print',
                 filename: function () {
                     var d = new Date();
                     var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Account' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">' + j + '</h3>';
                 },
             },
             ],

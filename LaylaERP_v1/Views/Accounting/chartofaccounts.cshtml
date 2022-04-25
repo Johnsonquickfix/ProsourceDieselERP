@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Chart of Accounts";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -145,8 +146,12 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="inline">
+                    <div class="form-inline">
                         <h4 class="modal-title" id="exampleModalLongTitle"></h4>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
                     </div>
                     <table class="inventory-table table check-table table-bordered table-striped dataTable">
                         <thead>
@@ -200,7 +205,7 @@
                     </div>
                 </div>
         </div>
-    </div>
+    </div></div>
 </section>
 
 <script>

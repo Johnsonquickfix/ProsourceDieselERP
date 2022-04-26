@@ -51,6 +51,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult PaymentChecklist()
+        {
+            return View();
+        }
+
         [HttpGet]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
@@ -532,6 +537,41 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult GetcheckList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.GetcheckList(model.strValue1, Convert.ToInt32(model.strValue4), fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetPaymentcheckdetails(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable dt = PaymentInvoiceRepository.GetPaymentcheckdetails(id);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
 
         //[HttpPost]
         //public JsonResult TakePayment(PaymentInvoiceModel model)

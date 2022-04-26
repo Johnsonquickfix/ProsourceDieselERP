@@ -80,12 +80,12 @@ function misclistList() {
                     return data;
                 }
             },
-            {
-                data: 'total_rate', title: 'Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
-                    let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
-                    return num;
-                }
-            },
+            //{
+            //    data: 'total_rate', title: 'Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
+            //        let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
+            //        return num;
+            //    }
+            //},
             
             {
                 data: 'total_ttc', title: 'Total Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {

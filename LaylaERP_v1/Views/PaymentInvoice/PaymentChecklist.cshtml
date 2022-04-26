@@ -35,12 +35,22 @@
                                 <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
                             </div>
                         </div>
-                        <div style="display:none" class="alignleft actions">
-
+                        <div class="alignleft actions">
+                            <label class="control-label">Account to Credit<span style="color:red;"> *</span></label>
+                            <div class="input-group">
+                                <select id="ddlaccount" class="form-control select2 billinfo">
+                                    <option value="">Please Select Account</option>
+                                </select>
+                              
+                            </div>
                         </div>
                         @*<div class="alignright actions bulkactions">
-                                <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Go for payment">Go For Payment</button>
-                            </div>*@
+            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Go for payment">Go For Payment</button>
+        </div>*@
+                    <div class="form-group d-flex">
+                        <button type="button" id="btnsearch" data-toggle="tooltip" title="Search account by selection criteria." onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+
+                    </div>
                     </div>
                 </div>
             </div>
@@ -62,6 +72,7 @@
                                                 <th>ID</th>
                                                 <th>ID</th>
                                                 <th>ID</th>
+                                                <th>Check No.</th>
                                                 <th>Check No.</th>
                                                 <th>Date</th>
                                                 <th>Amount</th>

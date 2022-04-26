@@ -550,7 +550,7 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue3))
                     todate = Convert.ToDateTime(model.strValue3);
 
-                DataTable dt = PaymentInvoiceRepository.GetcheckList(model.strValue1, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = PaymentInvoiceRepository.GetcheckList(model.strValue1, Convert.ToInt32(model.strValue4), fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

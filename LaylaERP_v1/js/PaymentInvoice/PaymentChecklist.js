@@ -19,6 +19,7 @@
         }
     );
     FillGrid();
+    filldropdown();
     // Add event listener for opening and closing details
     $('#dtdata tbody').on('click', '.pdetailspo-control', function () {
         // console.log('svvvd');
@@ -38,14 +39,35 @@
     }); 
 });
 
+function filldropdown() {
+    $.ajax({
+        url: "/PaymentInvoice/GetPaymentType",
+        type: "Get", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let dt = JSON.parse(data); 
+
+            $("#ddlaccount").html('<option value="0">Select Account</option>');
+            for (i = 0; i < dt['Table1'].length; i++) { $("#ddlaccount").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }
+    });
+
+
+}
+function Search() {
+    FillGrid();
+}
+
 function FillGrid() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
+    var account = $('#ddlaccount').val();
     $('#dtdata').DataTable({
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[50, 100, 200, 300], [50, 100, 200, 300]],
+        responsive: true, lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -56,7 +78,7 @@ function FillGrid() {
         },
         sAjaxSource: "/PaymentInvoice/GetcheckList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: 'SERPB' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed });
+            aoData.push({ name: "strValue1", value: 'SERPB' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: account });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -79,6 +101,7 @@ function FillGrid() {
                 }
             },
             { data: 'num_payment', title: 'Check No.', sWidth: "10%" },
+            { data: 'label', title: 'Account Name', sWidth: "10%" },
             { data: 'amount', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             //{ data: 'ref', title: 'Bill No', sWidth: "10%" },
             { data: 'date_creation', title: 'Bill Date', sWidth: "10%" },

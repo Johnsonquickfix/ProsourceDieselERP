@@ -81,7 +81,7 @@ function PurchaseOrderGrid() {
             {
                 data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
                     let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
-                    if (full.fk_user_amendment > 0) return num + ' <i class="fas fa-exclamation-triangle" title="' + full.user_amendment + '" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return num;
+                    if (full.fk_user_amendment > 0) return num + ' <i class="fas fa-user" title="' + full.user_amendment + '" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return num;
                 }
             },
             { data: 'date_livraison_s', title: 'Planned date of delivery', sWidth: "10%", render: function (id, type, full, meta) { if (full.past_due == "Past Due") return full.date_livraison + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>'; else return full.date_livraison; } },

@@ -1392,7 +1392,10 @@ namespace LaylaERP.BAL
                     strWhr += " and (inv_complete ='" + account_num + "') ";
                     condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation order by doc_date desc";
                 }
-
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
                 strSql += strWhr + condition;
 
                 dt = SQLHelper.ExecuteDataTable(strSql);

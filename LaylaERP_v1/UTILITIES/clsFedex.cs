@@ -8,7 +8,7 @@
         public static string GetToken()
         {
             string result = string.Empty;
-            string client_id = "l7f2a2d1689c5343e7994343d6f75cea49", client_secret = "9b2177da8d684d33a6ad663e2893caf7", grant_type = "client_credentials";
+            string client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be", grant_type = "client_credentials", shipping_account = "740561073";
             //string client_id = string.Empty, client_secret = string.Empty, refresh_token = string.Empty;
             //System.Data.DataTable dt = BAL.Users.AppSystemSetting();
             //if (dt.Rows.Count > 0)
@@ -21,9 +21,9 @@
             var client = new RestClient("https://apis-sandbox.fedex.com/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddParameter("grant_type", grant_type, ParameterType.QueryString);
-            request.AddParameter("client_id", client_id, ParameterType.QueryString);
-            request.AddParameter("client_secret", client_secret, ParameterType.QueryString);
+            request.AddParameter("grant_type", grant_type);
+            request.AddParameter("client_id", client_id);
+            request.AddParameter("client_secret", client_secret);
             // 'input' refers to JSON Payload
             //request.AddParameter("undefined", "{}", ParameterType.RequestBody);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;

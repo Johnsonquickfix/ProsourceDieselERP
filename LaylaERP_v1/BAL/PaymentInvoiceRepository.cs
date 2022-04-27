@@ -922,7 +922,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetcheckList(string flag,int account, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetcheckList(string flag,int account,int status , DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -938,6 +938,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
                     new SqlParameter("@account", account),
+                      new SqlParameter("@status", status),
                     new SqlParameter("@flag", flag)
                 };
 

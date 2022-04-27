@@ -64,6 +64,7 @@ function FillGrid() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlaccount').val();
+    var status = $('#ddlstatus').val();
     $('#dtdata').DataTable({
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
@@ -78,7 +79,7 @@ function FillGrid() {
         },
         sAjaxSource: "/PaymentInvoice/GetcheckList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: 'SERPB' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: account });
+            aoData.push({ name: "strValue1", value: 'SERPB' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: account }, { name: "strValue5", value: status });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -107,11 +108,39 @@ function FillGrid() {
             { data: 'date_creation', title: 'Bill Date', sWidth: "10%" },
             
             { data: 'comments', title: 'Comments', sWidth: "10%" },
+            { data: 'checkstatus', title: 'Status', sWidth: "10%" },
            
              
  
         ],
-        columnDefs: [{visible: false, targets: [0], searchable: false, orderable: false }], order: [[0, "desc"]]
+       
+        columnDefs: [{ visible: false, targets: [0], searchable: false, orderable: false }], order: [[0, "desc"]],
+        dom: 'lBftipr',
+        buttons: [
+            {
+                extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8],
+             
+                },
+                filename: function () {
+                    let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Check_Register_' + e;
+                },
+            },
+             
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
+                exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8], },
+                filename: function () {
+                    let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Check_Register' + e;
+                },
+                messageTop: function () { return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Check Register</h3>'; },
+            }
+        ],
     });
 }
 function formatPO(d) {

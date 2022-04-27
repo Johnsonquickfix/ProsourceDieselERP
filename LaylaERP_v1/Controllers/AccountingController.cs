@@ -101,7 +101,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        
+        public ActionResult AccountList()
+        {
+            return View();
+        }
+        public ActionResult AccountReport()
+        {
+            return View();
+        }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -1021,6 +1029,17 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = AccountingRepository.AccountName(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(JSONResult, 0);
+        }
+        public JsonResult AccountReportList()
+        {
+            string JSONResult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.AccountReport();
                 JSONResult = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

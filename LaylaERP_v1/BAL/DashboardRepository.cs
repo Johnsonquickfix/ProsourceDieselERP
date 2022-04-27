@@ -671,7 +671,7 @@ namespace LaylaERP.BAL
                 {
                     datebetween = " convert(date,quote_date) >= convert(date,dateadd(DAY,-7,getdate()))";
                 }
-                query = "SELECT SUM(net_total)Total, convert(varchar(6), quote_date, 107) quote_date FROM erp_order_quote WHERE "+datebetween+" group by convert(varchar(6), quote_date, 107)";
+                query = "SELECT SUM(net_total)Total, convert(varchar(6), quote_date, 107) quote_date FROM erp_order_quote WHERE "+datebetween+ " group by convert(varchar(6), quote_date, 107), convert(varchar,quote_date, 112) order by convert(varchar,quote_date, 112) desc";
                 ds1 = SQLHelper.ExecuteDataSet(query);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {

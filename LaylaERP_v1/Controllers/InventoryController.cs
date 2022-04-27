@@ -33,6 +33,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ProductInventoryReport()
+        {
+            return View();
+        }
         public JsonResult GetVarientList(InventoryModel model)
         {
             string result = string.Empty;
@@ -280,6 +284,18 @@ namespace LaylaERP.Controllers
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
+            return Json(result, 0);
+        }
+
+        public JsonResult InventoryReportProduct()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = InventoryRepository.ProductInventoryReport();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch{ }
             return Json(result, 0);
         }
     }

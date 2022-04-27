@@ -30,6 +30,7 @@
 <div class="page-title">
     <h2 class="page-heading">Authorize.Net Transactions</h2>
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
+        <button type="button" class="btn btn-danger" id="btnShipSync" data-toggle="tooltip" title="" data-placement="left" data-original-title="Ship Status update"><i class="fas fa-sync"></i> Update Ship Status</button>
         <button type="button" class="btn btn-danger" id="btnSync" data-toggle="tooltip" title="" data-placement="left" data-original-title="Get new orders"><i class="fas fa-sync"></i> Update Transactions</button>
     </div>
 </div>
@@ -87,6 +88,21 @@
                         swal.showLoading();
                         $.get('/paymentsettlement/order-authorize-net-sync', {}).then(response => {
                             swal('Success', 'Authorize.Net Transactions updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();
+                        }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
+                    });
+                }
+            }]);
+        });
+        $(document).on("click", "#btnShipSync", function (t) {
+            t.preventDefault(); let option = {};
+            swal.queue([{
+                title: 'Do you want sync Authorize.Net transactions settlement?', confirmButtonText: 'Yes, do it!', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: true, showCloseButton: false, showCancelButton: true,
+                preConfirm: function () {
+                    return new Promise(function (resolve) {
+                        swal.showLoading();
+                        $.post('/paymentsettlement/order-ship-status-sync', {}).then(response => {
+                            swal('Success', response.status, 'success');
+                            //swal('Success', 'Authorize.Net Transactions updated successfully.', 'success'); $('#dtdata').DataTable().ajax.reload();
                         }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
                     });
                 }

@@ -5,6 +5,7 @@
 
     public class clsFedex
     {
+        private static string base_url = "https://apis-sandbox.fedex.com";
         public static string GetToken()
         {
             string result = string.Empty;
@@ -18,15 +19,30 @@
             //    refresh_token = (dt.Rows[0]["podium_refresh_code"] != Convert.DBNull) ? dt.Rows[0]["podium_refresh_code"].ToString().Trim() : string.Empty;
             //}
 
-            var client = new RestClient("https://apis-sandbox.fedex.com/oauth/token");
+            var client = new RestClient(base_url + "/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.AddParameter("grant_type", grant_type);
             request.AddParameter("client_id", client_id);
             request.AddParameter("client_secret", client_secret);
-            // 'input' refers to JSON Payload
-            //request.AddParameter("undefined", "{}", ParameterType.RequestBody);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                result = response.Content;
+            }
+            return result;
+        }
+        public static string ShipTrack(string access_token, string trackingNumber)
+        {
+            var result = string.Empty;
+            var client = new RestClient(base_url + "/track/v1/trackingnumbers");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Authorization", "Bearer " + access_token);
+            request.AddHeader("X-locale", "en_US");
+            request.AddHeader("Content-Type", "application/json");
+            var body = "{\"trackingInfo\": [{\"trackingNumberInfo\": {\"trackingNumber\": \"" + trackingNumber + "\"}}],\"includeDetailedScans\": true}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {

@@ -1388,9 +1388,10 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
                 if (!String.IsNullOrEmpty(account_num))
                 {
-                    strSql = "SELECT inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE(sum(case when senstag = 'C' then credit end), 0)) credit, (COALESCE(sum(case when senstag = 'D' then debit end), 0)) debit, ((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0))) as balance, CONVERT(varchar,doc_date,101) docdate, label_operation FROM erp_accounting_bookkeeping where 1=1";
+                    strSql = "SELECT code_journal, inv_num, PO_SO_ref, inv_complete as id, CONVERT(varchar,doc_date,112) as datesort, concat(inv_complete,'-', label_complete) as account,(COALESCE((case when senstag = 'C' then credit end), 0)) credit, (COALESCE((case when senstag = 'D' then debit end), 0)) debit, CONVERT(varchar,doc_date,101) docdate, label_operation FROM erp_accounting_bookkeeping where 1=1";
                     strWhr += " and (inv_complete ='" + account_num + "') ";
-                    condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation order by doc_date desc";
+                    condition = "order by doc_date desc";
+                    //condition = " group by inv_complete, label_complete, rowid, doc_date, label_operation, PO_SO_ref, code_journal, inv_num order by doc_date desc";
                 }
                 if (sMonths != null)
                 {

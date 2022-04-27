@@ -13,33 +13,33 @@
 <input type="hidden" id="hfEdit" value="" />
 <div class="page-title">
     <h2>Chart of Accounts<span class="text-gray"></span></h2>
-        @*<a class="btn no-btn">Back to List</a>*@&nbsp;&nbsp;<a class="btn btn-danger" href="AddAccount" id="AddChartOfAccount" onclick="return ActivityLog('Create new Account in Chart of Accounts.','/Accounting/chartofaccounts');"><span title="Click here to add chart of accounts" data-placement="bottom" data-toggle="tooltip">Add an Account</span></a>
+    @*<a class="btn no-btn">Back to List</a>*@&nbsp;&nbsp;<a class="btn btn-danger" href="AddAccount" id="AddChartOfAccount" onclick="return ActivityLog('Create new Account in Chart of Accounts.','/Accounting/chartofaccounts');"><span title="Click here to add chart of accounts" data-placement="bottom" data-toggle="tooltip">Add an Account</span></a>
 </div>
 <section class="content section-content journal-section table-design">
     @*<div class="row">
-        <div class="col-sm-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <form class="form-inline">
-                        <div class="form-group mb-2">
-                            <label class="control-label">Select active chart of accounts: </label>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2">
-                            <select class="form-control" id="ddlaccountsetting">
-                                <option value="">--Select Account--</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-danger" id="btnSearch">Change and Load</button>
-                    </form>
+            <div class="col-sm-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <form class="form-inline">
+                            <div class="form-group mb-2">
+                                <label class="control-label">Select active chart of accounts: </label>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2">
+                                <select class="form-control" id="ddlaccountsetting">
+                                    <option value="">--Select Account--</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger" id="btnSearch">Change and Load</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
                 <div class="box-body">
-                    
+
                     <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                         <thead>
                             @*<tr>
@@ -175,8 +175,8 @@
                                                 <tr>
                                                     <th class="text-left">ID</th>
                                                     <th class="text-left">Date</th>
+                                                    <th class="text-left">Accounting Doc</th>
                                                     <th class="text-left">Label</th>
-                                                    @*<th class="text-left">Acccounting Account</th>*@
                                                     <th class="text-left">Debit</th>
                                                     <th class="text-left">Credit</th>
                                                 </tr>
@@ -199,13 +199,14 @@
                                 </div>
                             </div>
                             @*<div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>*@
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>*@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div></div>
+    </div>
 </section>
 
 <script>
@@ -214,3 +215,7 @@
 
 <script src="@Url.Content("~/js/Accounting/ChartOfAccounts.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PaymentInvoice/PurchaseSales.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PaymentInvoice/MiscBillPrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/PaymentInvoice/PaymentInvoicePrintSO.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

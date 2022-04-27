@@ -296,7 +296,8 @@
                 }
                 else
                 {
-                    model = clsTaxJar.GetTaxes(model);
+                    //model = clsTaxJar.GetTaxes(model);
+                    model = clsAvalara.GetTaxes(model);
                     OrderRepository.SaveTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip, model.rate, model.freight_taxable);
                 }
             }

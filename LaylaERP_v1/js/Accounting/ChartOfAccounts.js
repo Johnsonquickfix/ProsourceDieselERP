@@ -217,6 +217,27 @@ function AccountBalanceList(account_num, is_date) {
         aoColumns: [
             { data: 'id', title: 'ID', sWidth: "5%" },
             { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; } },
+            {
+                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
+                'render': function (inv_num, type, full, meta) {
+                    if (full.code_journal == "AC" || full.code_journal == "BQ") {
+
+                        if (full.code_journal == "AC")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+
+                        else if (full.PO_SO_ref.substring(0, 2) == "PO")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        else
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + full.PO_SO_ref.toString() + '\', false);"><i class="fas fa-search-plus"></i></a></span>';
+                    }
+                    else if (full.code_journal == "OD") {
+                        return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getBillPrintDetails(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                    }
+                    else {
+                        return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
+                    }
+                }
+            },
             { data: 'label_operation', title: 'Label', sWidth: "15%", class: "text-left" },
             //{ data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },

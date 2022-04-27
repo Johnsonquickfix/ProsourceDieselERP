@@ -320,6 +320,7 @@
     <Compile Include="UTILITIES\clsAffirm.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
+    <Compile Include="UTILITIES\clsAvalara.cs" />
     <Compile Include="UTILITIES\clsFedex.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsPodium.cs" />

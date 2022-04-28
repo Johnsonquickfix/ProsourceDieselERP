@@ -897,6 +897,7 @@ function saveVendorPO() {
                     //getMasters();
                     getPurchaseOrderInfo(); 
                     getPurchasehistory();
+                    getinvoicehistory();
                     //$('#ddlwarehouse').val($('#hftext').val()).trigger('change');
                     $("#txtshippingfee").val('0');
                     $("#txtotherfee").val('0');
@@ -1006,8 +1007,10 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].description + '</td>';
                             itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';
+                           /* itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';*/
                             itemHtml += '<td>' + formatCurrency(data['pod'][i].amount) + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].localtax1) + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].localtax2) + '</td>';
                             itemHtml += '<td>' + formatCurrency(data['pod'][i].total_avgcost) + '</td>';
                             itemHtml += '</tr>';
 

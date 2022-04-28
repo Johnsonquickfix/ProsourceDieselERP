@@ -228,6 +228,7 @@
     <Compile Include="Controllers\AccountingController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
+    <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
@@ -728,6 +729,7 @@
     <Content Include="js\Accounting\AccountJournalList.js" />
     <Content Include="js\Accounting\AccountLedger.js" />
     <Content Include="js\Accounting\AccountLedgerList.js" />
+    <Content Include="js\Accounting\AccountReport.js" />
     <Content Include="js\Accounting\Balancesheet.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
@@ -777,6 +779,7 @@
     <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Inventory\NewInventory.js" />
+    <Content Include="js\Inventory\ProductInventoryReport.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
     <Content Include="js\jquery.mask.js" />
     <Content Include="js\linq.js" />
@@ -1258,6 +1261,9 @@
     <Content Include="Views\PaymentInvoice\PayBillsMisc.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceMiscBill.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentChecklist.cshtml" />
+    <Content Include="Views\AvalaraTaxOrder\CreateOrder.cshtml" />
+    <Content Include="Views\Accounting\AccountReport.cshtml" />
+    <Content Include="Views\Inventory\ProductInventoryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

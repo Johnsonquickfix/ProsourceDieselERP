@@ -62,5 +62,23 @@
             taxJarModel.freight_taxable = false;
             return taxJarModel;
         }
+        public static string CreateOrder(string username, string password, string data)
+        {
+            string result = string.Empty;
+            var client = new RestClient(base_url + "/api/v2/transactions/create");
+            var request = new RestRequest(Method.POST);
+            var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
+            request.AddHeader("Authorization", "Basic " + base64String);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            request.AddParameter("application/json", data, ParameterType.RequestBody);
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                result = response.Content;
+            }
+            return result;
+        }
     }
 }

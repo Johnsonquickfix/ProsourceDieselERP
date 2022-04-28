@@ -369,5 +369,29 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+        public static DataTable ProductInventoryReport()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "select p.id,p.post_type,p.post_title,s.meta_value sku,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,"
+                                + " (select coalesce(sum(case pwr_o.flag when 'R' then pwr_o.quantity when 'T' then pwr_o.quantity when 'I' then - pwr_o.quantity else 0 end),0) from vw_product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O') op_stock,"
+                                + " coalesce(sum(case when pwr.tran_type not in ('DM', 'SR') and pwr.flag = 'R' then quantity when pwr.tran_type not in ('DM', 'SO') and pwr.flag = 'I' then - quantity else 0 end),0) stock,"
+                                + " coalesce(sum(case when pwr.tran_type = 'PO' and pwr.flag = 'O' then quantity when pwr.tran_type = 'PO' and pwr.flag = 'T' then quantity when pwr.tran_type = 'PR' and pwr.flag = 'R' then - quantity else 0 end),0) UnitsinPO,"
+                                + " coalesce(sum(case when pwr.tran_type = 'SO' and pwr.flag = 'I' then quantity when pwr.tran_type = 'SR' and pwr.flag = 'R' then - quantity else 0 end),0) SaleUnits,"
+                                + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage,"
+                                + " (select upper(string_agg(ui.name, ',')) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) category, ''physical"
+                                + "  FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku'"
+                                + " left outer join vw_product_stock_register pwr on pwr.product_id = p.id"
+                                + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,p.post_type,p.post_title,s.meta_value,p.post_parent order by p_id, id";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

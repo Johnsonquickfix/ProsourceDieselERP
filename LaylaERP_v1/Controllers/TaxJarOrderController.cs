@@ -19,7 +19,7 @@ namespace LaylaERP.Controllers
             try
             {
                 string orders_json = string.Empty, order_refund_json = string.Empty;
-                DataSet ds = OrderRepository.GetCompleteOrdersList(out orders_json, out order_refund_json);
+                DataSet ds = OrderRepository.GetCompleteOrdersList("COMPL", out orders_json, out order_refund_json);
                 string TaxjarAPIId = string.Empty;
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {

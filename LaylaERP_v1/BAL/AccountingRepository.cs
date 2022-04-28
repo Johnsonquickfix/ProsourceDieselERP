@@ -1656,5 +1656,21 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable AccountReport()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_account_report", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

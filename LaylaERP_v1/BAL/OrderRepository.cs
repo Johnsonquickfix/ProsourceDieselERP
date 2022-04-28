@@ -551,12 +551,12 @@
             { throw ex; }
             return dt;
         }
-        public static DataSet GetCompleteOrdersList(out string orders, out string order_refund)
+        public static DataSet GetCompleteOrdersList(string flag, out string orders, out string order_refund)
         {
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] parameters = { new SqlParameter("@orders", SqlDbType.NVarChar, -1), new SqlParameter("@order_refund", SqlDbType.NVarChar, -1), new SqlParameter("@flag", "COMPL") };
+                SqlParameter[] parameters = { new SqlParameter("@orders", SqlDbType.NVarChar, -1), new SqlParameter("@order_refund", SqlDbType.NVarChar, -1), new SqlParameter("@flag", flag) };
                 parameters[0].Direction = ParameterDirection.Output; parameters[1].Direction = ParameterDirection.Output;
                 ds = SQLHelper.ExecuteDataSet("wp_posts_order_search", parameters);
                 orders = parameters[0].Value.ToString();

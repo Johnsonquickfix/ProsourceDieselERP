@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "AccountReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<section class="content section-content neworder-section">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-title">
+                <h2 class="page-heading">
+                    Account List
+                </h2>
+            </div>
+        </div>
+    </div>
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header" id="on-hand-inventory">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Account</th>
+                                        <th>Type</th>
+                                        <th>Detail Type</th>
+                                        <th>Description</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@Url.Content("~/js/Accounting/AccountReport.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

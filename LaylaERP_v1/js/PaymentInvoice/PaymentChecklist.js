@@ -68,7 +68,7 @@ function FillGrid() {
     $('#dtdata').DataTable({
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        responsive: true, lengthMenu: [[20, 30, 50, 100], [20, 30, 50, 100]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

@@ -387,7 +387,7 @@ namespace LaylaERP.BAL
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
                 string strSql = "select fk_purchase from commerce_purchase_receive_order"
                                 + " where fk_purchase = @po_id;"
-                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount,convert(numeric(18,2), cprod.discount) discount  from commerce_purchase_receive_order_detail  cprod"
+                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount,convert(numeric(18,2), cprod.discount) discount,isnull(convert(numeric(18,2), cprod.total_avgcost),0.00) total_avgcost  from commerce_purchase_receive_order_detail  cprod"
                                 + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
                                 + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
@@ -444,9 +444,9 @@ namespace LaylaERP.BAL
                 strupdate.Append(string.Format("update commerce_purchase_order set fk_status = '{0}' where rowid = '{1}'; ", model.fk_status, model.IDRec));
                 strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = '{0}',fk_warehouse = '{1}' where fk_purchase = '{2}' ", model.fk_status, model.WarehouseID, model.IDRec));
                 SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());
-                strsqlins = "insert into commerce_purchase_receive_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_purchase,fk_warehouse) "
-                        + string.Format("select concat('PR" + strPOYearMonth + "-',RIGHT(CONCAT('00000', max(right(ref,5))+1), 5)) ref,'','{0}','{1}','{2}','0','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}' from commerce_purchase_receive_order;select SCOPE_IDENTITY();",
-                                model.VendorBillNo, model.VendorID, model.fk_status, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.IDRec, model.WarehouseID);
+                strsqlins = "insert into commerce_purchase_receive_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_purchase,fk_warehouse,total_avgcost) "
+                        + string.Format("select concat('PR" + strPOYearMonth + "-',RIGHT(CONCAT('00000', max(right(ref,5))+1), 5)) ref,'','{0}','{1}','{2}','0','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}' from commerce_purchase_receive_order;select SCOPE_IDENTITY();",
+                                model.VendorBillNo, model.VendorID, model.fk_status, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.IDRec, model.WarehouseID, model.total_avgcost);
 
                 model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsqlins, para));
                 //}
@@ -467,10 +467,10 @@ namespace LaylaERP.BAL
                     if (obj.date_end == "0000/00/00")
                         obj.date_end = null;
 
-                    strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
-                    strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}';",
+                    strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_avgcost) ";
+                    strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}','{24}';",
                         model.RowID, model.IDRec, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.Recqty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
-                        obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
+                        obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2,obj.total_avgcost);
 
                     //}
                 }

@@ -35,6 +35,7 @@ namespace LaylaERP.Models
         public double total_ttc { get; set; }
         public long IDRec { get; set; }
         public int fk_status { get; set; }
+        public double total_avgcost { get; set; }
         public List<PurchaseReceiceOrderProductsModel> PurchaseOrderProducts { get; set; }
     }
 
@@ -71,5 +72,6 @@ namespace LaylaERP.Models
         public string date_end { get; set; }
         public decimal Remqty { get; set; }
         public decimal ItemRemqty { get; set; }
+        public double total_avgcost { get; set; }
     }
 }

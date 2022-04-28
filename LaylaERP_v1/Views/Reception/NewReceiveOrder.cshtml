@@ -142,6 +142,7 @@
                                     <th class="text-right" style="display:none">Tax</th>
                                     <th class="text-right" style="display:none">Shipping</th>
                                     <th class="text-right" style="width: 10%">Total</th>
+                                    <th class="text-right" style="width: 10%">Avg.</th>
                                 </tr>
                             </thead>
                             <tbody id="line_items"></tbody>
@@ -188,6 +189,7 @@
                                     <th class="text-left" style="width: 15%">Received(Qty)</th>
                                     <th class="text-left" style="width: 15%">Discount</th>
                                     <th class="text-left" style="width: 20%">Amount</th>
+                                    <th class="text-left" style="width: 20%">Avg.</th>
                                 </tr>
                             </thead>
                             <tbody id="product_history"></tbody>
@@ -195,13 +197,13 @@
 
                     </div>
                     @*<div class="box-header with-border">
-                    <h3 class="box-title">Files</h3>
-                </div>
-                <div class="box-body">
-                    <ul class="nav nav-pills nav-stacked" id="billfiles">
-                        <li>None</li>
-                    </ul>
-                </div>*@
+                        <h3 class="box-title">Files</h3>
+                    </div>
+                    <div class="box-body">
+                        <ul class="nav nav-pills nav-stacked" id="billfiles">
+                            <li>None</li>
+                        </ul>
+                    </div>*@
                 </div>
             </div>
 
@@ -270,8 +272,33 @@
 
 
         </div>
+        
         <div class="col-sm-6 order-box-total">
             <div class="box box-primary">
+                <div class="row">
+                     
+                    <div class="col-sm-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-sm-10 control-label text-left">Shipping/Freight</label>
+                                <div>
+                                    <input min="0" autocomplete="off" value="0" class="text-right form-control billinfofo number " type="number" id="txtshippingfee" placeholder="Shipping Fee" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-sm-10 control-label text-left">Tax</label>
+                                <div>
+                                    <input min="0" autocomplete="off" value="0" class="text-right form-control billinfofo number " type="number" id="txtotherfee" placeholder="Other Tax" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-header with-border">
                     <h3 class="box-title">Total(s)</h3>
                 </div>
@@ -289,16 +316,23 @@
                                 <span id="discountTotal">0.00</span>
                             </div>
                         </div>
-                        <div style="display:none" class="form-group">
-                            <label class="col-sm-10 control-label">Amount tax</label>
+                        <div style="display:none" class="form-group ">
+                            <label class="col-sm-10 control-label">Avg. Cost</label>
                             <div class="col-sm-2 controls text-right">
-                                $<span id="salesTaxTotal">0.00</span>
+                                <span id="avgcost">0.00</span>
                             </div>
                         </div>
-                        <div style="display:none" class="form-group">
-                            <label class="col-sm-10 control-label">Shipping</label>
+
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Shipping/Freight</label>
                             <div class="col-sm-2 controls text-right">
                                 $<span id="shippingTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="salesTaxTotal">0.00</span>
                             </div>
                         </div>
                         <div class="form-group">

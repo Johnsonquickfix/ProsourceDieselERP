@@ -50,7 +50,37 @@ function InventoryReport() {
             { data: 'op_stock', title: 'Qty On Hand', sWidth: "10%", class: "text-left" },
             { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-left" },
             { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-left" },
-            { data: 'physical', title: 'Physical count', sWidth: "10%", class: "text-left" },
+            //{ data: 'physical', title: 'Physical count', sWidth: "10%", class: "text-left" },
+        ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Physical Inventory Sheet' + e;
+                },
+            },
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: false,
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Physical Inventory Sheet' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Physical Inventory Sheet</h3>';
+                },
+            }
         ],
     });
 }

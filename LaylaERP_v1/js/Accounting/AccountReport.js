@@ -48,8 +48,38 @@ function AccountReport() {
             { data: 'account', title: 'Account', sWidth: "20%", class: "text-left" },
             { data: 'type', title: 'Type', sWidth: "10%", class: "text-left" },
             { data: 'detail', title: 'Detail Type', sWidth: "10%", class: "text-left" },
-            { data: 'description', title: 'Description', sWidth: "10%", class: "text-left" },
+            { data: 'account_category', title: 'Description', sWidth: "10%", class: "text-left" },
             { data: 'balance', title: 'Balance', sWidth: "10%", class: "text-left", render: $.fn.dataTable.render.number(',', '.', 2, '')},
+        ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account List' + e;
+                },
+            },
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: false,
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account List' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Account List</h3>';
+                },
+            }
         ],
     });
 }

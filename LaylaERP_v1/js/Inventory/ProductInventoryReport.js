@@ -50,7 +50,6 @@ function InventoryReport() {
             { data: 'op_stock', title: 'Qty On Hand', sWidth: "10%", class: "text-left" },
             { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-left" },
             { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-left" },
-            //{ data: 'physical', title: 'Physical count', sWidth: "10%", class: "text-left" },
         ],
 
         "dom": 'lBftipr',

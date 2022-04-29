@@ -241,6 +241,7 @@
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method", dr["payment_method"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method_title", "Podium"));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'; ", order_id, "_podium_uid", dr["transaction_id"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_tax_api", dr["tax_api"]));
 
                     if (dr["payment_meta"] != DBNull.Value)
                     {
@@ -287,9 +288,9 @@
                     }
                     else if (dr["item_type"].ToString().Trim() == "fee")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' ", "taxable", order_id, dr["item_type"]));
-                        strSql.Append(string.Format(" union all select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' ", dr["net_total"], order_id, dr["item_type"]));
-                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", dr["tax_total"], order_id, dr["item_type"]));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}' ", "taxable", order_id, dr["item_type"], dr["item_name"]));
+                        strSql.Append(string.Format(" union all select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}' ", dr["net_total"], order_id, dr["item_type"], dr["item_name"]));
+                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", dr["tax_total"], order_id, dr["item_type"], dr["item_name"]));
                     }
                     else if (dr["item_type"].ToString().Trim() == "shipping")
                     {
@@ -297,10 +298,10 @@
                     }
                     else if (dr["item_type"].ToString().Trim() == "tax")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", dr["item_meta"], order_id, "tax"));
-                        strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", dr["net_total"], order_id, "tax"));
-                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", dr["tax_total"], order_id, "tax"));
-                        strSql.Append(string.Format(" union all select order_item_id,'freighttax_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", dr["shipping_total"], order_id, "tax"));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'", dr["item_meta"], order_id, "tax", dr["item_name"]));
+                        strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'", dr["net_total"], order_id, "tax", dr["item_name"]));
+                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'", dr["tax_total"], order_id, "tax", dr["item_name"]));
+                        strSql.Append(string.Format(" union all select order_item_id,'freighttax_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}';", dr["shipping_total"], order_id, "tax", dr["item_name"]));
                     }
                     else if (dr["item_type"].ToString().Trim() == "gift_card")
                     {

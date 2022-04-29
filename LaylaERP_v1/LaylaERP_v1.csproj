@@ -836,6 +836,7 @@
     <Content Include="js\Reception\POInventorySheet.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Reception\RestPOSheet.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\CancelRefund.js" />
     <Content Include="js\Report\ForecastInventory.js" />
@@ -1266,6 +1267,7 @@
     <Content Include="Views\Accounting\AccountReport.cshtml" />
     <Content Include="Views\Inventory\ProductInventoryReport.cshtml" />
     <Content Include="Views\Reception\POInventorySheet.cshtml" />
+    <Content Include="Views\Reception\RestPOSheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

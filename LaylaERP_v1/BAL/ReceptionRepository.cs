@@ -803,6 +803,25 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable Getrestposheet(string flag)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+
+                    new SqlParameter("@flag", "SERCH"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_restposheet_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
 
     }
 

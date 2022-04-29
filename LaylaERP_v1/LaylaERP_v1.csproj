@@ -833,6 +833,7 @@
     <Content Include="js\PurchaseOrder\PurchasePrint.js" />
     <Content Include="js\Proposals\SupplierProposalsList.js" />
     <Content Include="js\Reception\NewReceive.js" />
+    <Content Include="js\Reception\POInventorySheet.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
@@ -1264,6 +1265,7 @@
     <Content Include="Views\AvalaraTaxOrder\CreateOrder.cshtml" />
     <Content Include="Views\Accounting\AccountReport.cshtml" />
     <Content Include="Views\Inventory\ProductInventoryReport.cshtml" />
+    <Content Include="Views\Reception\POInventorySheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -392,6 +392,18 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
+        public static DataTable InventoryValuationReport()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

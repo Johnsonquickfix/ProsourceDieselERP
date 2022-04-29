@@ -70,7 +70,7 @@
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); SaveData(); ActivityLog('Quote No (' + $('#hfOrderNo').val() + ') proceed for customer approval.', '/OrderQuote/Index/' + $('#hfOrderNo').val() + ''); });
     $(document).on("click", ".btnEditOrder", function (t) {
         t.preventDefault(); $("#loader").show(); //$('#ddlStatus').prop("disabled", true); 
-        $('#ddlStatus,.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
+        $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
@@ -222,7 +222,7 @@ function getQuoteInfo() {
     $('.view-addmeta,#divAlert').empty(); $('.billinfo').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('#btnSearch').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
+        $('#btnSearch,#ddlUser,#btnSearchCusAdd').prop("disabled", true); $('.agentaddtocart').addClass('hidden'); $('.page-heading').text('Edit Quote');
         $('.page-heading-action').empty().append('<a class="btn btn-danger" href="/OrderQuote/History" data-toggle="tooltip" data-placement="left" title="Back to List">Back to List</a>');
         $('#lblOrderNo').text('Quote Code #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
@@ -271,7 +271,7 @@ function getQuoteInfo() {
 
     }
     else {
-        $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
+        $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', ''); $('#btnSearch,#ddlUser,#btnSearchCusAdd').prop("disabled", false);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
         $('.page-heading').text('Quote Order'); $('#btnSearch').prop("disabled", false); searchCustomerModal();
         //CheckPermissions("#btnCheckout", "", "", window.location.pathname);
@@ -307,7 +307,7 @@ function getQuoteItemList(_list) {
             itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.product_rate + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.gross_total + '" data-taxamount="' + row.tax_total + '" data-shippingamt="' + row.shipping_total + '">' + row.gross_total.toFixed(2) + '</td>';
             itemHtml += '<td class="text-right RowDiscount" data-disctype="" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
             itemHtml += '<td class="text-right linetotal">' + (row.gross_total - row.discount).toFixed(2) + '</td>';
-            itemHtml += '<td class="text-right RowTax">' + row.tax_total.toFixed(2) + '</td>';
+            itemHtml += '<td class="text-right RowTax">' + row.tax_total.toFixed(4) + '</td>';
             itemHtml += '</tr>';
             zQty = zQty + (parseFloat(row.product_qty) || 0.00);
             zGAmt = zGAmt + (parseFloat(row.gross_total) || 0.00);
@@ -1463,12 +1463,7 @@ function calculateDiscountAcount() {
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".linetotal").text((zGrossAmount - zDisAmt).toFixed(2));
         $(row).find(".RowTax").text(zTotalTax.toFixed(4)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
-        let sr_fee = parseFloat($(row).data("srfee")) || 0.00, sristaxable = $(row).data("sristaxable");
-        if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_sr_rate)
-        else zStateRecyclingAmt += (zQty * sr_fee);
     });
-    $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
-    $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
     let is_sales = $("#billCoupon").find("[data-coupon='sales20off']").length;
     //Calculate discount
     $('#billCoupon li.items').each(function (index, li) {
@@ -1549,9 +1544,14 @@ function calcFinalTotals() {
         if ($(this).data('pid') != "888864") zTotalTax = zTotalTax + ((rGAmt - rTDiscount) * tax_rate);
         if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0) zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
+        /// Calculate State Recycling Fee
+        let sr_fee = parseFloat($(tr).data("srfee")) || 0.00, sristaxable = $(tr).data("sristaxable");
+        if (sristaxable) zStateRecyclingAmt += (rQty * sr_fee) + (rQty * sr_fee * tax_sr_rate)
+        else zStateRecyclingAmt += (rQty * sr_fee);
     });
     if (is_freighttax) zTotalTax = zTotalTax + (zShippingAmt * tax_rate);
-    zStateRecyclingAmt = parseFloat($("#stateRecyclingFeeTotal").text()) || 0.00;
+    $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
+    $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zDiscQty.toFixed(0));
     $("#SubTotal").text(zGAmt.toFixed(2)); $("#discountTotal").text(zTDiscount.toFixed(2));
     //$("#salesTaxTotal").text(zTotalTax.toFixed(2));
@@ -1767,7 +1767,7 @@ function QuoteProducts(id) {
         //_itemmeta = [];
         //if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
         _list.push({
-            quote_no: id, item_sequence: index, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data'))
+            quote_no: id, item_sequence: index + 1, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data'))
         });
     });
     //Add State Recycling Fee

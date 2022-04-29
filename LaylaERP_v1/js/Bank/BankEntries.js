@@ -97,7 +97,7 @@ function BankEntriesList(is_date) {
             { data: 'paymenttype', title: 'Payment Type', sWidth: "10%" },
             { data: 'num_payment', title: 'Number', sWidth: "10%" },
             { data: 'vendor', title: 'Vendor Name', sWidth: "10%" },
-            { data: 'bankaccount', title: 'Bank Account', sWidth: "10%" },
+            { data: 'fk_invoceso', title: 'Invoice', sWidth: "10%" },
             { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'balance', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },

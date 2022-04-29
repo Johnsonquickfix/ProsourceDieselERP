@@ -1594,7 +1594,7 @@ function FinalTotalControl(tax_list) {
     }
     else {
         $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.type + ' ' + (value.rate * 100).toFixed(2) + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
         });
     }
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
@@ -1785,7 +1785,7 @@ function QuoteProducts(id) {
         quote_no: id, item_sequence: _list.length + 1, item_type: 'shipping', product_id: 0, variation_id: 0, item_name: '', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($('#shippingTotal').text()) || 0), item_meta: ''
     });
     //Add Tax
-    let is_freighttax = $('#hfFreighttaxable').val(); 
+    let is_freighttax = $('#hfFreighttaxable').val();
     $('#order_final_total .tax-total').each(function (index, li) {
         let shipping_tax_amount = (is_freighttax === 'true') ? parseFloat($(li).data('percent')) || 0 : 0.0;
         _list.push({

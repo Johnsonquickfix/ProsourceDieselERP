@@ -240,8 +240,8 @@
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_name", ""));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method", dr["payment_method"]));
                     strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method_title", "Podium"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'; ", order_id, "_podium_uid", dr["transaction_id"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_tax_api", dr["tax_api"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_podium_uid", dr["transaction_id"]));
+                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'; ", order_id, "_tax_api", dr["tax_api"]));
 
                     if (dr["payment_meta"] != DBNull.Value)
                     {

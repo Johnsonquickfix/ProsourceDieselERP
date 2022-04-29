@@ -429,7 +429,6 @@ function calculateStateRecyclingFee() {
     $("#order_line_items > tr").each(function () {
         if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_ItemQty]").val()) || 0.00); }
     });
-
     if (ship_state == "CA") { zStateRecyclingAmt = matCount * 10.5; }
     else if (ship_state == "CT") { zStateRecyclingAmt = (matCount * 11.75) + (matCount * 11.75 * tax_rate); }
     else if (ship_state == "RI") { zStateRecyclingAmt = (matCount * 16) + (matCount * 16 * tax_rate); }

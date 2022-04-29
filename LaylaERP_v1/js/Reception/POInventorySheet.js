@@ -17,7 +17,7 @@ function FillGrid(is_date) {
             $('#JournalListdata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table_EL.search(this.value).draw(); }
-            });
+            }); 
         },
       
         ajax: {

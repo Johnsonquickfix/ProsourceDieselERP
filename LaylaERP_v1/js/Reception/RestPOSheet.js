@@ -28,7 +28,7 @@ function FillGrid(is_date) {
         aoColumns: [
             /*{ data: 'fk_purchase', title: 'ID', sWidth: "8%" }, */
             {
-                'data': 'ref', sWidth: "25%", title: 'PO No', class: 'text-left',
+                'data': 'ref', sWidth: "25%", title: 'PO No', class: 'text-left', 
                 'render': function (id, type, full, meta) {
                  
                     return '<a >' + id + '</a> <a href="#" class: "text-left" onclick="getPurchaseOrderPrint(' + full.fk_purchase + ', false);"><i class="fas fa-search-plus"></i></a>';

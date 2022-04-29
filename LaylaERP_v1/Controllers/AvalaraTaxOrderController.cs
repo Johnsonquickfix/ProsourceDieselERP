@@ -6,6 +6,7 @@
     using System;
     using System.Data;
     using System.Net;
+    using System.Text;
     using System.Web.Mvc;
 
     public class AvalaraTaxOrderController : Controller
@@ -15,7 +16,7 @@
         {
             try
             {
-                string orders_json = string.Empty, order_refund_json = string.Empty;
+                string orders_json = string.Empty, order_refund_json = string.Empty, order_ids = string.Empty;
                 DataSet ds = OrderRepository.GetCompleteOrdersList("OAVAL", out orders_json, out order_refund_json);
                 string username = string.Empty, password = string.Empty;
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -35,7 +36,7 @@
                         try
                         {
                             clsAvalara.CreateOrder(username, password, inputAttribute.ToString());
-
+                            order_ids += (order_ids.Length > 0 ? ", " : "") + transaction_id;
                             //client.DeleteOrder(transaction_id);
                             //client.CreateOrder(inputAttribute);
                             str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
@@ -91,6 +92,13 @@
                 //        }
                 //    }
                 //}
+                if (!string.IsNullOrEmpty(order_ids))
+                {
+                    DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                    StringBuilder strSql = new StringBuilder(string.Format("update wp_postmeta set meta_value = '{0}' where post_id in ({1}) and meta_key = '_taxjar_last_sync';", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_ids));
+                    strSql.Append(string.Format("insert into wp_postmeta(post_id,meta_key,meta_value) select post_id,'_taxjar_last_sync' meta_key,'{0}' meta_value from wp_postmeta where post_id in ({1}) and post_id not in (select p.post_id from wp_postmeta p where p.post_id in ({1}) and meta_key = '_taxjar_last_sync') and meta_key = '_order_total';", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_ids));
+                    DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString());
+                }
                 //if (!string.IsNullOrEmpty(str_meta))
                 //{
                 //    System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");

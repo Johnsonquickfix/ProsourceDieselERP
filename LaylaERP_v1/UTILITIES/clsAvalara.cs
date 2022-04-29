@@ -36,7 +36,7 @@
         public static TaxJarModel GetTaxes(TaxJarModel taxJarModel)
         {
             string username = "peterb@quickwebsitefix.com", password = "Presto55555!";
-            decimal totalRate = 0;
+            //decimal totalRate = 0;
             var client = new RestClient(base_url + "/api/v2/taxrates/byaddress");
             var request = new RestRequest(Method.GET);
             var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
@@ -53,13 +53,15 @@
             {
                 //result = response.Content;
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                totalRate = obj.totalRate;
+                //totalRate = obj.totalRate;
+                taxJarModel.order_total_amount = 0;
+                taxJarModel.taxable_amount = 0;
+                taxJarModel.amount_to_collect = 0;
+                taxJarModel.rate = obj.totalRate;
+                taxJarModel.freight_taxable = false;
+                taxJarModel.tax_meta = obj.rates.ToString();
             }
-            taxJarModel.order_total_amount = 0;
-            taxJarModel.taxable_amount = 0;
-            taxJarModel.amount_to_collect = 0;
-            taxJarModel.rate = totalRate;
-            taxJarModel.freight_taxable = false;
+            
             return taxJarModel;
         }
         public static string CreateOrder(string username, string password, string data)

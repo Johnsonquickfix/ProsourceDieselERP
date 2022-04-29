@@ -288,13 +288,13 @@
         {
             try
             {
-                DataTable dt = OrderRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
-                if (dt.Rows.Count > 0)
-                {
-                    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
-                    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
-                }
-                else
+                //DataTable dt = OrderRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                //    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
+                //}
+                //else
                 {
                     //model = clsTaxJar.GetTaxes(model);
                     model = clsAvalara.GetTaxes(model);

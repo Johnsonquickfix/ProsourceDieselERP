@@ -147,7 +147,12 @@ function GetTaxRate() {
     if (tax_states.includes(s_state)) {
         var opt = { to_zip: $("#txtshipzipcode").val(), to_street: $("#txtshipaddress1").val(), to_city: $("#txtshipcity").val(), to_state: s_state, to_country: $("#ddlshipcountry").val(), amount: sub_total, shipping: ship_total };
         if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) { $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false); }
-        else { ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) { $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false); }
+        else {
+            ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) {
+                let tax_meta = (res.tax_meta != '' && res.tax_meta != null) ? JSON.parse(res.tax_meta) : [];
+                $('#hfTaxRate').data('meta_data', tax_meta); $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable);
+            }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false);
+        }
     }
     else { $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
     //calculateDiscountAcount();
@@ -226,7 +231,7 @@ function getQuoteInfo() {
             //try {
             let data = JSON.parse(result);
             $.each(data['Table'], function (i, row) {
-                $('#lblOrderNo').data('pay_by', row.payment_method); $('#lblOrderNo').data('pay_id', row.transaction_id);
+                $('#lblOrderNo').data('pay_by', row.payment_method); $('#lblOrderNo').data('pay_id', row.transaction_id); $('#lblOrderNo').data('tax_api', row.tax_api);
                 $('#txtLogDate').val(row.date_created);
                 $('#ddlStatus').val(row.quote_status.trim()).trigger('change');
                 //if (data[0].payment_method.trim().length > 0)
@@ -275,9 +280,10 @@ function getQuoteInfo() {
 function getQuoteItemList(_list) {
     let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '', giftcardHtml = '';
     let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardRefundAmt = 0.00;
+    let _tax = [];
     $.each(_list, function (i, row) {
         if (row.item_type == 'line_item') {
-            let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.item_meta); console.log(row,_meta,_meta.length);
+            let PKey = row.product_id + '_' + row.variation_id; _meta = JSON.parse(row.item_meta); //console.log(row, _meta, _meta.length);
             let giftcard_amount = parseFloat(_meta.wc_gc_giftcard_amount) || 0.00;
             if (giftcard_amount > 0) itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="gift_item" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.item_name + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.item_meta + '\'>';
             else itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.item_name + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.item_meta + '\'>';
@@ -367,16 +373,20 @@ function getQuoteItemList(_list) {
             giftcardHtml += '</li>';
             zGiftCardAmt = zGiftCardAmt + (parseFloat(row.net_total) || 0.00);
         }
+        else if (row.item_type == 'tax') {
+            _tax.push({ quote_no: row.quote_no, name: row.item_name, label: row.item_meta, rate: row.tax_total, amount: row.net_total });
+        }
     });
     $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
     $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Fee">Fees</button> ');
     $('#billCoupon').append(couponHtml);
     //Calculate Final
+    FinalTotalControl(_tax);
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
     $("#SubTotal").text(zGAmt.toFixed(2));
     $("#discountTotal").text(zTDiscount.toFixed(2));
     $("#shippingTotal").text(zShippingAmt.toFixed(2));
-    $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    //$("#salesTaxTotal").text(zTotalTax.toFixed(2));
     $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
     $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
     $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));
@@ -385,6 +395,7 @@ function getQuoteItemList(_list) {
     if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
 }
+
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge(isFinalcal) {
     let p_ids = [], v_ids = [];
@@ -418,7 +429,6 @@ function calculateStateRecyclingFee() {
     $("#order_line_items > tr").each(function () {
         if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_ItemQty]").val()) || 0.00); }
     });
-
     if (ship_state == "CA") { zStateRecyclingAmt = matCount * 10.5; }
     else if (ship_state == "CT") { zStateRecyclingAmt = (matCount * 11.75) + (matCount * 11.75 * tax_rate); }
     else if (ship_state == "RI") { zStateRecyclingAmt = (matCount * 16) + (matCount * 16 * tax_rate); }
@@ -740,7 +750,7 @@ function getItemList(pid, vid, Qty) {
                 }
             }
             _list.push({
-                PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2),
+                PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate),
                 shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable, order_id: parseInt($('#hfOrderNo').val()) || 0, meta_data: pr.meta_data
             });
         });
@@ -766,7 +776,7 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + pr.reg_price + '"data-salerate="' + pr.sale_rate + '" data-discount="' + pr.discount + '" data-amount="' + pr.total + '" data-taxamount="' + pr.tax_amount + '" data-shippingamt="' + pr.shipping_amount + '">' + pr.total.toFixed(2) + '</td>';
                     layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + pr.discount_type + '" data-couponamt="0">' + pr.discount.toFixed(2) + '</td>';
                     layoutHtml += '<td class="text-right linetotal">' + (pr.total - pr.discount).toFixed(2) + '</td>';
-                    layoutHtml += '<td class="text-right RowTax">' + pr.tax_amount + '</td>';
+                    layoutHtml += '<td class="text-right RowTax">' + pr.tax_amount.toFixed(4) + '</td>';
                     layoutHtml += '</tr>';
                 }
                 else {
@@ -1452,7 +1462,7 @@ function calculateDiscountAcount() {
         $(row).find(".RowDiscount").text(zDisAmt); $(row).find(".TotalAmount").data("discount", zDisAmt); $(row).find(".RowDiscount").data("lastdiscount", 0.00);
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".linetotal").text((zGrossAmount - zDisAmt).toFixed(2));
-        $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+        $(row).find(".RowTax").text(zTotalTax.toFixed(4)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
         let sr_fee = parseFloat($(row).data("srfee")) || 0.00, sristaxable = $(row).data("sristaxable");
         if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_sr_rate)
         else zStateRecyclingAmt += (zQty * sr_fee);
@@ -1513,7 +1523,7 @@ function calculateDiscountAcount() {
                 $(row).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(row).find(".linetotal").text((zGrossAmount - zDisAmt).toFixed(2));
                 //Taxation                     
                 zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
-                $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+                $(row).find(".RowTax").text(zTotalTax.toFixed(4)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(4));
             }
         });
         //update Coupon Amount
@@ -1530,6 +1540,7 @@ function calculateDiscountAcount() {
 }
 function calcFinalTotals() {
     //calculateStateRecyclingFee();
+    FinalTotalControl([]);
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
     let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zGiftCardAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zGiftAmt = 0.00, zTotal = 0.00;
     $("#order_line_items > tr").each(function (index, tr) {
@@ -1542,7 +1553,15 @@ function calcFinalTotals() {
     if (is_freighttax) zTotalTax = zTotalTax + (zShippingAmt * tax_rate);
     zStateRecyclingAmt = parseFloat($("#stateRecyclingFeeTotal").text()) || 0.00;
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zDiscQty.toFixed(0));
-    $("#SubTotal").text(zGAmt.toFixed(2)); $("#discountTotal").text(zTDiscount.toFixed(2)); $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    $("#SubTotal").text(zGAmt.toFixed(2)); $("#discountTotal").text(zTDiscount.toFixed(2));
+    //$("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    //Tax Calculate
+    $('#order_final_total .tax-total').each(function (index, li) {
+        let _taxpercent = parseFloat($(li).data('percent')) || 0;
+        let _Tax = ((zGAmt - zTDiscount) * _taxpercent);
+        if (is_freighttax) _Tax = _Tax + (zShippingAmt * _taxpercent);
+        $(li).text(_Tax.toFixed(4)); $(li).data('amount', _Tax.toFixed(4));
+    });
     $("#shippingTotal").text(zShippingAmt.toFixed(2)); $('#order_shipping_line_items').find(".TotalAmount").text(zShippingAmt.toFixed(2));
     CalculateFee();
     zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00; zTotal = (zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt);
@@ -1559,6 +1578,32 @@ function calcFinalTotals() {
     $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2));
     let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
     $('[data-toggle="tooltip"]').tooltip();
+}
+function FinalTotalControl(tax_list) {
+    let _html = '<div class="form-group"><label class="col-sm-10 control-label">Sub-Total(<span id="totalQty">0</span>)</label><div class="col-sm-2 controls text-right">$<span id="SubTotal">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Total Savings</label><div class="col-sm-2 controls text-right">$<span id="discountTotal">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping</label><div class="col-sm-2 controls text-right">$<span id="shippingTotal" data-orderitemid="0">0.00</span></div></div>';
+    //_html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping Tax</label<div class="col-sm-2 controls text-right">$<span id="shippingTaxTotal">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">State Recycling Fee</label><div class="col-sm-2 controls text-right">$<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Fee</label><div class="col-sm-2 controls text-right">$<span id="feeTotal">0.00</span></div></div>';
+    // Add Tax
+    if (tax_list.length > 0) {
+        $.each(tax_list, function (index, value) {
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.label + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+        });
+    }
+    else {
+        $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+        });
+    }
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
+    _html += '<div class="form-group"><label class="col-sm-10 control-label">Order Total</label><div class="col-sm-2 controls text-right"><strong>$<span id="orderTotal">0.00</span></strong></div></div>';
+    // Refund 
+    _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Refunded</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedTotal">0.00</span></strong></div></div>';
+    _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
+    _html += '<div class="form-group refund-total hidden"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
+    $('#order_final_total').empty().append(_html);
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Fee ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1706,7 +1751,7 @@ function QuoteHeader(id) {
         shipping_address_2: $('#txtshipaddress2').val(), shipping_city: $('#txtshipcity').val(), shipping_state: $('#ddlshipstate').val(), shipping_country: $('#ddlshipcountry').val(), shipping_postcode: $('#txtshipzipcode').val(),
         remark: $('#txtCustomerNotes').val(), gross_total: parseFloat($('#SubTotal').text()) || 0.00, discount: parseFloat($('#discountTotal').text()) || 0.00, shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
         fee_total: (parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00) + (parseFloat($('#feeTotal').text()) || 0.00), tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
-        giftcard_total: parseFloat($('#giftCardTotal').text()) || 0.00, net_total: parseFloat($('#orderTotal').text()) || 0.00, payment_method: ''
+        giftcard_total: parseFloat($('#giftCardTotal').text()) || 0.00, net_total: parseFloat($('#orderTotal').text()) || 0.00, payment_method: '', tax_api: 'avatax'
     };
     return obj;
 }
@@ -1740,11 +1785,18 @@ function QuoteProducts(id) {
         quote_no: id, item_sequence: _list.length + 1, item_type: 'shipping', product_id: 0, variation_id: 0, item_name: '', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($('#shippingTotal').text()) || 0), item_meta: ''
     });
     //Add Tax
-    let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-    let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = (is_freighttax === 'true') ? _taxRate : 0.0;
-    _list.push({
-        quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: _taxRate, net_total: (parseFloat($('#salesTaxTotal').text()) || 0), item_meta: sState + ' Tax'
+    let is_freighttax = $('#hfFreighttaxable').val(); 
+    $('#order_final_total .tax-total').each(function (index, li) {
+        let shipping_tax_amount = (is_freighttax === 'true') ? parseFloat($(li).data('percent')) || 0 : 0.0;
+        _list.push({
+            quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: $(li).data('name'), product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: parseFloat($(li).data('percent')) || 0, net_total: parseFloat($(li).data('amount')) || 0, item_meta: $(li).data('label')
+        });
     });
+    //let _taxRate = parseFloat($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+    //let is_freighttax = $('#hfFreighttaxable').val(); let shipping_tax_amount = (is_freighttax === 'true') ? _taxRate : 0.0;
+    //_list.push({
+    //    quote_no: id, item_sequence: _list.length + 1, item_type: 'tax', product_id: 0, variation_id: 0, item_name: sCountry + '-' + sState + '-' + sState + ' TAX-1', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: shipping_tax_amount, fee_total: 0, tax_total: _taxRate, net_total: (parseFloat($('#salesTaxTotal').text()) || 0), item_meta: sState + ' Tax'
+    //});
     //Add Coupon
     $('#billCoupon li').each(function (index, li) {
         let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;

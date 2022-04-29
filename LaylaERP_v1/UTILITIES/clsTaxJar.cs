@@ -68,6 +68,7 @@
             taxJarModel.amount_to_collect = Taxes.AmountToCollect;
             taxJarModel.rate = Taxes.Rate;
             taxJarModel.freight_taxable = Taxes.FreightTaxable;
+            taxJarModel.tax_meta = "[{\"rate\": "+ Taxes.Rate.ToString() + ", \"name\": '"+ taxJarModel.to_country + "-" + taxJarModel.to_state + "-" + taxJarModel.to_state + " TAX-1', \"type\": '" + taxJarModel.to_state + " Tax'}]";
             return taxJarModel;
         }
     }
@@ -85,5 +86,6 @@
         public decimal amount_to_collect { get; set; }
         public decimal rate { get; set; }
         public bool freight_taxable { get; set; }
+        public string tax_meta { get; set; }
     }
 }

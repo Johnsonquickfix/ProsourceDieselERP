@@ -47,6 +47,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult POInventorySheet()
+        {
+            return View();
+        }
+
         public JsonResult Getwarehouse(SearchModel model)
         {
             DataSet ds = BAL.ReceptionRepository.Getwarehouse(model.strValue1);
@@ -501,6 +506,25 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        } 
+        public JsonResult Getinventorysheet(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                //DateTime fromdate = DateTime.Today, todate = DateTime.Today;
+                //if (!string.IsNullOrEmpty(model.strValue1))
+                //    fromdate = Convert.ToDateTime(model.strValue1);
+                //if (!string.IsNullOrEmpty(model.strValue2))
+                //    todate = Convert.ToDateTime(model.strValue2);
+                //long aid = 0, vid = 0;
+                //if (!string.IsNullOrEmpty(model.strValue3))
+                //    aid = Convert.ToInt64(model.strValue3);
+                DataTable dt = ReceptionRepository.Getinventorysheet(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
         }
 
 

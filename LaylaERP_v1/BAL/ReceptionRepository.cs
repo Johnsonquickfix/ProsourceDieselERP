@@ -782,6 +782,27 @@ namespace LaylaERP.BAL
             return ds;
         }
 
+        
+
+        public static DataTable Getinventorysheet(string flag)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+ 
+                    new SqlParameter("@flag", "SERCH"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_poinventorysheet_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
 
     }
 

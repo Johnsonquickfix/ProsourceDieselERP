@@ -1594,7 +1594,7 @@ function FinalTotalControl(tax_list) {
     }
     else {
         $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + ' ' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
         });
     }
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
@@ -1756,7 +1756,9 @@ function QuoteHeader(id) {
     return obj;
 }
 function QuoteProducts(id) {
-    let _list = [], _itemmeta = [];
+    let _list = [], _taxes = []; _taxdata = { total: {}, subtotal: {} };
+    $('#order_final_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('label'), percent: parseFloat($(li).data('percent')) || 0 }); });
+
     //Add Product /Gift Card Product
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
@@ -1764,10 +1766,14 @@ function QuoteProducts(id) {
         let grossAmount = (qty * rate), discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00, shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         let rNetAmt = grossAmount - discountAmount + taxAmount;
-        //_itemmeta = [];
+        _taxdata = { total: {}, subtotal: {} };
+        $.each(_taxes, function (i, r) {
+            _taxdata.total[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4);
+        });
         //if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
         _list.push({
-            quote_no: id, item_sequence: index + 1, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data'))
+            quote_no: id, item_sequence: index + 1, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data')),
+            tax_data: serialize(_taxdata)
         });
     });
     //Add State Recycling Fee
@@ -1785,7 +1791,7 @@ function QuoteProducts(id) {
         quote_no: id, item_sequence: _list.length + 1, item_type: 'shipping', product_id: 0, variation_id: 0, item_name: '', product_qty: 0, product_rate: 0, gross_total: 0, discount: 0, shipping_total: 0, fee_total: 0, tax_total: 0, net_total: (parseFloat($('#shippingTotal').text()) || 0), item_meta: ''
     });
     //Add Tax
-    let is_freighttax = $('#hfFreighttaxable').val(); 
+    let is_freighttax = $('#hfFreighttaxable').val();
     $('#order_final_total .tax-total').each(function (index, li) {
         let shipping_tax_amount = (is_freighttax === 'true') ? parseFloat($(li).data('percent')) || 0 : 0.0;
         _list.push({

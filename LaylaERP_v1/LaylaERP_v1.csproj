@@ -778,6 +778,7 @@
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\ForecastInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\Inventory\InventoryValuation.js" />
     <Content Include="js\Inventory\NewInventory.js" />
     <Content Include="js\Inventory\ProductInventoryReport.js" />
     <Content Include="js\Inventory\VendorInventory.js" />
@@ -1268,6 +1269,7 @@
     <Content Include="Views\Inventory\ProductInventoryReport.cshtml" />
     <Content Include="Views\Reception\POInventorySheet.cshtml" />
     <Content Include="Views\Reception\RestPOSheet.cshtml" />
+    <Content Include="Views\Inventory\InventoryValuation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -673,7 +673,7 @@ function getPurchaseOrderInfo() {
                             itemHtml += '<td style="display:none" class="text-right tax-amount" data-tax1="' + "0" + '" data-tax2="' + "0" + '">' + "0" + '</td>';
                             itemHtml += '<td style="display:none" class="text-right ship-amount">' + "0" + '</td>';
                             itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-avg">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td style="display:none" class="text-right row-avg">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#line_items').append(itemHtml);
                         }
@@ -695,7 +695,7 @@ function getPurchaseOrderInfo() {
                             itemHtml += '<td style="display:none" class="text-right tax-amount">' + "0" + '</td>';
                             itemHtml += '<td  style="display:none" class="text-right ship-amount">' + "0" + '</td>';
                             itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-avg">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td style="display:none" class="text-right row-avg">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#product_line_items').append(itemHtml);
                         }
@@ -1009,9 +1009,9 @@ function getPurchasehistory() {
                             itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
                            /* itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';*/
                             itemHtml += '<td>' + formatCurrency(data['pod'][i].amount) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].localtax1) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].localtax2) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].total_avgcost) + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].shipping) + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].tax) + '</td>';
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].avgcast.toFixed(2)) + '</td>';
                             itemHtml += '</tr>';
 
                         }

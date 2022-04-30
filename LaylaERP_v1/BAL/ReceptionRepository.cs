@@ -385,11 +385,12 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
-                string strSql = "select fk_purchase from commerce_purchase_receive_order"
-                                + " where fk_purchase = @po_id;"
-                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount,convert(numeric(18,2), cprod.discount) discount,isnull(convert(numeric(18,2), cprod.total_avgcost),0.00) total_avgcost,cpro.localtax1,cpro.localtax2  from commerce_purchase_receive_order_detail  cprod"
-                                + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
-                                + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
+                //string strSql = "select fk_purchase from commerce_purchase_receive_order"
+                //                + " where fk_purchase = @po_id;"
+                //                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty,convert(numeric(18,2), cprod.total_ttc) amount,convert(numeric(18,2), cprod.discount) discount,isnull(convert(numeric(18,2), cprod.total_avgcost),0.00) total_avgcost,cpro.localtax1,cpro.localtax2  from commerce_purchase_receive_order_detail  cprod"
+                //                + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
+                //                + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
+                string strSql = "erp_receivehistoryid";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }

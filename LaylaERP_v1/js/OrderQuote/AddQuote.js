@@ -1594,7 +1594,7 @@ function FinalTotalControl(tax_list) {
     }
     else {
         $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + ' ' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name.replaceAll(' ', '-') + '-' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
         });
     }
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
@@ -1757,7 +1757,7 @@ function QuoteHeader(id) {
 }
 function QuoteProducts(id) {
     let _list = [], _taxes = []; _taxdata = { total: {}, subtotal: {} };
-    $('#order_final_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('label'), percent: parseFloat($(li).data('percent')) || 0 }); });
+    $('#order_final_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('name'), percent: parseFloat($(li).data('percent')) || 0 }); });
 
     //Add Product /Gift Card Product
     $('#order_line_items > tr').each(function (index, tr) {
@@ -1829,7 +1829,7 @@ function SaveData() {
     let quote = QuoteHeader(oid), _list = QuoteProducts(oid);
     if (_list.length <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     let obj = { id: oid, quote_header: JSON.stringify(quote), quote_product: JSON.stringify(_list) };
-    //console.log(obj); return false;
+    //console.log(obj, _list); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your Quote Order?", showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {

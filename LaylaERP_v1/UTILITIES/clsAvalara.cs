@@ -53,6 +53,10 @@
             {
                 //result = response.Content;
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                foreach (var att in obj.rates)
+                {
+                    att.name = "AVATAX-" + taxJarModel.to_state + "-" + att.type.Value.ToString() + "-Tax";
+                }
                 //totalRate = obj.totalRate;
                 taxJarModel.order_total_amount = 0;
                 taxJarModel.taxable_amount = 0;
@@ -61,7 +65,7 @@
                 taxJarModel.freight_taxable = false;
                 taxJarModel.tax_meta = obj.rates.ToString();
             }
-            
+
             return taxJarModel;
         }
         public static string CreateOrder(string username, string password, string data)

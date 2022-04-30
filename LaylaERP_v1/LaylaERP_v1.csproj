@@ -854,6 +854,7 @@
     <Content Include="js\Report\SalesRepresentativeQuoteReport.js" />
     <Content Include="js\Report\Searchcouponorders.js" />
     <Content Include="js\Report\Walmartreport.js" />
+    <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />

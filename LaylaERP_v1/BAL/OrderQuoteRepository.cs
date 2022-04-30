@@ -259,7 +259,8 @@
                         strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
                                 cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
-
+                        //Insert tax data in serialize format
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax_data','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", dr["tax_data"], order_id, dr["item_type"], dr["item_name"]));
                         if (dr["item_meta"] != DBNull.Value && dr["product_id"].ToString() == "888864")
                         {
                             dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["item_meta"].ToString());
@@ -324,8 +325,7 @@
                 strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id={0}", order_id));
-                //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',order_id,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + model.OrderPostStatus.order_id + " and order_item_id not in (" + str_oiid + ")");
-                strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id= " + order_id);
+                //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:0;s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id= " + order_id);
                 strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(strProductMeta);
                 strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id={0};", order_id));

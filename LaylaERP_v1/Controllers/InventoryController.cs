@@ -291,12 +291,12 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
 
-        public JsonResult InventoryReportProduct()
+        public JsonResult InventoryReportProduct(string sMonth)
         {
             string result = string.Empty;
             try
             {
-                DataTable dt = InventoryRepository.ProductInventoryReport();
+                DataTable dt = InventoryRepository.ProductInventoryReport(sMonth);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch{ }

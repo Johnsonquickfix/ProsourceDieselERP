@@ -71,5 +71,41 @@ function InventoryReport() {
                 }
             },
         ],
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Inventory Valuation' + e;
+                },
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7],
+                },
+            },
+            {
+                extend: 'print',
+                //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
+                title: '',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                footer: false,
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Inventory valuation' + e;
+                },
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7],
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Inventory Valuation</h3>';
+                },
+            }
+        ],
+
     });
 }

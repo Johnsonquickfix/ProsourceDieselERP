@@ -1,8 +1,27 @@
-﻿$(document).ready(function () { InventoryReport();})
+﻿$(document).ready(function () {
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
+    }, function (start, end, label) {
+        InventoryReport(true);
+    });
+    InventoryReport(true);
+})
 
-function InventoryReport() {
+function InventoryReport(is_date) {
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     var ID = $("#hfid").val();
-    var obj = { id: ID };
+    var obj = { id: ID, sMonth: dfa };
     //var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],

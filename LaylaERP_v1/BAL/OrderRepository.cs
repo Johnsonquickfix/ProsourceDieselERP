@@ -891,6 +891,8 @@
                         productsModel.tax_amount = (sdr["tax"] != Convert.DBNull) ? decimal.Parse(sdr["tax"].ToString()) : 0;
                         productsModel.shipping_tax_amount = (sdr["shipping_amount"] != Convert.DBNull) ? decimal.Parse(sdr["shipping_amount"].ToString()) : 0;
                         productsModel.staterecycle_istaxable = productsModel.shipping_tax_amount > 0 ? true : false;
+                        productsModel.total = (sdr["line_total"] != Convert.DBNull) ? decimal.Parse(sdr["line_total"].ToString()) : 0;
+                        productsModel.meta_data = (sdr["label"] != Convert.DBNull) ? sdr["label"].ToString() : "";
                     }
                     else if (productsModel.product_type == "refund")
                     {

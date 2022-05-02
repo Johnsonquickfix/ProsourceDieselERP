@@ -35,11 +35,11 @@
                         ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                         try
                         {
-                            clsAvalara.CreateOrder(username, password, inputAttribute.ToString());
+                            var dyn_o = JsonConvert.DeserializeObject<dynamic>(clsAvalara.CreateOrder(username, password, inputAttribute.ToString()));
                             order_ids += (order_ids.Length > 0 ? ", " : "") + transaction_id;
                             //client.DeleteOrder(transaction_id);
                             //client.CreateOrder(inputAttribute);
-                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
+                            //str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_tax_calculated', meta_value: 'yes' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_destination_address', meta_value: 'a:0:{}' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_exemption', meta_value: '' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_origin_address', meta_value: 'a:0:{}' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_status', meta_value: '"+ dyn_o.status + "' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_tax_date', meta_value: '" + dyn_o.date + "' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_code', meta_value: '" + dyn_o.code + "' }";
                         }
                         catch (Exception e)
                         {
@@ -95,8 +95,8 @@
                 if (!string.IsNullOrEmpty(order_ids))
                 {
                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                    StringBuilder strSql = new StringBuilder(string.Format("update wp_postmeta set meta_value = '{0}' where post_id in ({1}) and meta_key = '_taxjar_last_sync';", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_ids));
-                    strSql.Append(string.Format("insert into wp_postmeta(post_id,meta_key,meta_value) select post_id,'_taxjar_last_sync' meta_key,'{0}' meta_value from wp_postmeta where post_id in ({1}) and post_id not in (select p.post_id from wp_postmeta p where p.post_id in ({1}) and meta_key = '_taxjar_last_sync') and meta_key = '_order_total';", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), order_ids));
+                    StringBuilder strSql = new StringBuilder(string.Format("update wp_postmeta set meta_value = '{0}' where post_id in ({1}) and meta_key = '_wc_avatax_status';", "posted", order_ids));
+                    strSql.Append(string.Format("insert into wp_postmeta(post_id,meta_key,meta_value) select post_id,'_wc_avatax_status' meta_key,'{0}' meta_value from wp_postmeta where post_id in ({1}) and post_id not in (select p.post_id from wp_postmeta p where p.post_id in ({1}) and meta_key = '_wc_avatax_status') and meta_key = '_order_total';", "posted", order_ids));
                     DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString());
                 }
                 //if (!string.IsNullOrEmpty(str_meta))

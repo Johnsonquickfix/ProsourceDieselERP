@@ -56,7 +56,7 @@ function InventoryReport() {
             { data: 'sku', title: 'SKU', sWidth: "10%", class: "text-left" },
             { data: 'post_title', title: 'Product', sWidth: "20%", class: "text-left" },
             {
-                data: 'recqty', title: 'Qty', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'recqty', title: 'Rec.Qty', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.recqty; else return '';
                 }
             },

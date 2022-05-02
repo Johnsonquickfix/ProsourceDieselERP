@@ -16,8 +16,10 @@
         <div class="col-md-12">
             <div class="page-title">
                 <h2 class="page-heading">Inventory Valuation</h2> <br />
-                <span>As of&nbsp;</span><span class="sub-heading" id="currentdatetime">
-                </span>
+                    <div>
+                        <span> As of &nbsp;</span><span class="sub-heading" id="currentdatetime">
+                        </span>
+                    </div>
                 <div class="active" style="margin-left:auto;min-width:280px;">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -60,7 +62,7 @@
 <script>
     setInterval(function () {
         let d = new Date();
-        let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        let options = { year: 'numeric', month: 'long', day: 'numeric' };
         let localTime = d.getTime();
         let localOffset = d.getTimezoneOffset() * 60000;
         let utc = localTime + localOffset;

@@ -57,6 +57,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult POInventoryValuation()
+        {
+            return View();
+        }
+
         public JsonResult Getwarehouse(SearchModel model)
         {
             DataSet ds = BAL.ReceptionRepository.Getwarehouse(model.strValue1);
@@ -535,7 +540,17 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
-
+        public JsonResult InventoryValuationReport()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReceptionRepository.InventoryValuationReport();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
 
     }
 }

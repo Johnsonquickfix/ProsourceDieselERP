@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "ProductInventoryReport";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -16,6 +17,12 @@
                 <h2 class="page-heading">
                     Physical Inventory Sheet
                 </h2>
+                <div class="active" style="margin-left:auto;min-width:280px;">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                    </div>
+                </div>
             </div>
         </div>
     </div>    

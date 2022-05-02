@@ -401,6 +401,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-10 control-label">Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">State Recycling Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-10 control-label">Shipping</label>
                             <div class="col-sm-2 controls text-right">
                                 $<span id="shippingTotal" data-orderitemid="0">0.00</span>
@@ -418,18 +430,7 @@
                                 $<span id="salesTaxTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-10 control-label">State Recycling Fee</label>
-                            <div class="col-sm-2 controls text-right">
-                                $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-10 control-label">Fee</label>
-                            <div class="col-sm-2 controls text-right">
-                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Gift Card</label>
                             <div class="col-sm-2 controls text-right">
@@ -474,6 +475,7 @@
 <div class="modal in printable " id="billModal" role="dialog" aria-hidden="true"></div>
 
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="~/js/serializePHP.js" asp-append-version="true"></script>
 <script type="text/javascript" src="~/Content/jspdf/jspdf.debug.js"></script>
 <script type="text/javascript" src="~/Content/jspdf/html2canvas.js"></script>
 @*<script src="~/Content/jspdf/jspdf.min.js"></script>*@

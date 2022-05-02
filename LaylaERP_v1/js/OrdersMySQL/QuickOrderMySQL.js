@@ -972,7 +972,7 @@ function getOrderItemList(oid) {
         //$("#salesTaxTotal").text(zTotalTax.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2)); $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
-        $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2));
+        $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt).toFixed(2)); $("#orderTotal").data('tax', zTotalTax.toFixed(2))
         $("#refundedTotal").text(zRefundAmt.toFixed(2)); $("#refundedByGiftCard").text(zGiftCardRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt) + zRefundAmt).toFixed(2));
         if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
@@ -1143,7 +1143,7 @@ function calcFinalTotals() {
         else { $(li).find('#gift_amt').text(_orderTotal); zGiftAmt += 0; }
     });
 
-    $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2));
+    $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2)); $("#orderTotal").data('tax',zTotalTax.toFixed(2));
     let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
     $('[data-toggle="tooltip"]').tooltip();
 }
@@ -2423,7 +2423,7 @@ function PodiumPayment() {
     let bill_email = $("#txtbillemail").val();
     let bill_to = $('input[name="podiumchannel"]:checked').val();
     let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
-    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($("#orderTotal").data('tax')) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
     let gc_total = (parseFloat($('#giftCardTotal').text()) || 0.00) - (fee_total < 0 ? fee_total : 0);
     if (fee_total > 0) { let rgc_amt = fee_total <= gc_total ? fee_total : gc_total; fee_total = fee_total - rgc_amt; gc_total = gc_total - rgc_amt; }
     if (srf_total > 0) { let rgc_amt = srf_total <= gc_total ? srf_total : gc_total; srf_total = srf_total - rgc_amt; gc_total = gc_total - rgc_amt; }

@@ -548,7 +548,7 @@ function createItemsList() {
 
             _itmes.push({
                 order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid, product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
-                quantity: refundqty, sale_rate: rate, total: grossAmount + taxAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0,
+                quantity: refundqty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0,
                 meta_data: serialize(_taxdata)
             });
         }

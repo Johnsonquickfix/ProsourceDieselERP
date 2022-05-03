@@ -66,7 +66,7 @@ function InventoryReport(is_date) {
             { data: 'id', title: 'Id', sWidth: "5%", },
             { data: 'post_title', title: 'Product', sWidth: "20%", class: "text-left" },
             { data: 'sku', title: 'SKU', sWidth: "10%", class: "text-left" },
-            { data: 'op_stock', title: 'Qty On Hand', sWidth: "10%", class: "text-left" },
+            { data: 'stock', title: 'Qty On Hand', sWidth: "10%", class: "text-left" },
             { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-left" },
             { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-left" },
         ],

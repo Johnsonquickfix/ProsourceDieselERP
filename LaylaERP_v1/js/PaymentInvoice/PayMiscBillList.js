@@ -93,6 +93,12 @@ function misclistList() {
                      return num;
                 }
             },
+            {
+                data: 'due_date_s', title: 'Due date', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
+                }
+            },
             
         ]
     });

@@ -21,6 +21,7 @@
 <!-- Main content -->
 <section>
     <div class="box box-primary">
+        
         <div class="box-body">
             <div class="form-horizontal create-new-customer" id="parent">
                 <div class="row">
@@ -34,83 +35,103 @@
                             </div>
                         </div>
                     </div>
-                    <div  class="col-md-4">
-                        <label class="control-label" id="lblbillNo" data-id="0"></label>
-                    </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Transaction Type<span class="text-red">*</span></label>
-                                <div class="">
-                                    <select class="form-control select2 billinfoval" id="ddltransactiontype"></select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Pay Account<span class="text-red">*</span></label>
-                                <div class="">
-                                    <select class="form-control select2 billinfoval" id="ddlpayaccounttype">
-                                        <option value="0" selected="">Select Pay Account</option>
-                                        <option value="C">Card</option>
-                                        <option value="B">Bank Transfer</option>
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="col-md-4">
 
-
+                        <div class="form-group">
+                            <label class="control-label " for="Payment Terms">Customer Type</label>
+                            <div class="">
+                                <select class="form-control select2 billinfoval" id="ddlCoustomertype">
+                                    <option value="0" selected="">Select Customer Type</option>
+                                    <option value="C">Customer</option>
+                                    <option value="V">Vendor</option>
+                                    <option value="I">Institution</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label " for="Payment Terms">Customer Type</label>
-                                <div class="">
-                                    <select class="form-control select2 billinfoval" id="ddlCoustomertype">
-                                        <option value="0" selected="">Select Customer Type</option>
-                                        <option value="C">Customer</option>
-                                        <option value="V">Vendor</option>
-                                        <option value="I">Institution</option>
-                                    </select>
-                                </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Bill Type<span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfoval" id="ddlPaymentType"></select>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">Name</label>
-                                <div id="divcus" class="">
+                        </div>
 
-                                    <select class="form-control select2 billinfoval" id="ddlcoustomer" placeholder="Filter by registered customer" style="width: 100%;">
-                                    </select>
-                                </div>
-                                <div id="divvendo" class="">
-                                    <select class="form-control select2 billinfoval" id="ddlvendordata" style="width: 100%;"></select>
-                                </div>
-                                <div id="divinstaion" style="display:none" class="">
-                                    <input type="text" id="txtinstaintion" class="form-control billinfoval" placeholder="institution" />
-                                </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Transaction Type<span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfoval" id="ddltransactiontype"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Name</label>
+                            <div id="divcus" class="">
+
+                                <select class="form-control select2 billinfoval" id="ddlcoustomer" placeholder="Filter by registered customer" style="width: 100%;">
+                                </select>
+                            </div>
+                            <div id="divvendo" class="">
+                                <select class="form-control select2 billinfoval" id="ddlvendordata" style="width: 100%;"></select>
+                            </div>
+                            <div id="divinstaion" style="display:none" class="">
+                                <input type="text" id="txtinstaintion" class="form-control billinfoval" placeholder="institution" />
                             </div>
 
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Bill Type<span class="text-red">*</span></label>
-                                <div class="">
-                                    <select class="form-control select2 billinfoval" id="ddlPaymentType"></select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div id="divaddress" class="">
-                                    <label class="control-label">Address</label>
-                                    <br />
-                                    <label id="txtcustmeraddress" class="control-label" />
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="txtdueDate" class="form-control billinfovalff" placeholder="Due Date (MM/DD/YYYY)" autocomplete="off" />
 
-                                </div>
-                                <div id="divaddresstype" class="">
-                                    <label class="control-label">Address</label>
-                                    <br />
-                                    <input type="text" id="txtinstaintionaddress" class="form-control billinfoval" placeholder="Address" />
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Pay Account<span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfoval" id="ddlpayaccounttype">
+                                    <option value="0" selected="">Select Pay Account</option>
+                                    <option value="C">Card</option>
+                                    <option value="B">Bank Transfer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div id="divaddress" class="">
+                                <label class="control-label">Address</label>
+                                <br />
+                                <label id="txtcustmeraddress" class="control-label" />
+
+                            </div>
+                            <div id="divaddresstype" class="">
+                                <label class="control-label">Address</label>
+                                <br />
+                                <input type="text" id="txtinstaintionaddress" class="form-control billinfoval" placeholder="Address" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label" id="lblbillNo" data-id="0"></label>
+                    </div>
+                    </div>
+                </div>
         </div>
+    </div>
         <!--table start-->
         <div class="row mb-35">
             <div class="col-sm-12">

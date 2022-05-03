@@ -97,6 +97,7 @@
                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                     StringBuilder strSql = new StringBuilder(string.Format("update wp_postmeta set meta_value = '{0}' where post_id in ({1}) and meta_key = '_wc_avatax_status';", "posted", order_ids));
                     strSql.Append(string.Format("insert into wp_postmeta(post_id,meta_key,meta_value) select post_id,'_wc_avatax_status' meta_key,'{0}' meta_value from wp_postmeta where post_id in ({1}) and post_id not in (select p.post_id from wp_postmeta p where p.post_id in ({1}) and meta_key = '_wc_avatax_status') and meta_key = '_order_total';", "posted", order_ids));
+                    strSql.Append(string.Format("update wp_posts set post_modified = '{0}', post_modified_gmt = '{1}' where id in ({2});",  cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), order_ids));
                     DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString());
                 }
                 //if (!string.IsNullOrEmpty(str_meta))

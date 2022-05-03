@@ -16,6 +16,11 @@
     let today = new Date();  
     $('#txtcreateDate').val(today.toLocaleDateString("en-US"));
 
+    $('#txtdueDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+    var date = new Date();
+    date.setDate(date.getDate() + 15);
+    $('#txtdueDate').val(date.toLocaleDateString("en-US"));
+
     $(".select2").select2();
     var itxtCnt = 0;
     var i = 1;
@@ -137,7 +142,8 @@ function getbillInfodetails(oid) {
                         $('#ddlPaymentType').val(data['po'][i].fk_paymenttype).trigger('change'); 
                         $('#txtinstaintionaddress').val(data['po'][i].fk_address);
                         $('#txtcustmeraddress').text(data['po'][i].fk_address);
-                         if (!data['po'][i].date_creation.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].date_creation); 
+                        if (!data['po'][i].date_creation.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].date_creation);
+                        if (!data['po'][i].due_date.includes('00/00/0000')) $('#txtdueDate').val(data['po'][i].due_date);
                         $("#ddlcoustomer").select2('').empty().select2({ data: [{ name: data['po'][i].displayname, id: data['po'][i].fk_customer, text: data['po'][i].displayname }] })
                          $("#ddlcoustomer").select2({
                             allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -454,6 +460,7 @@ function savemiscbill() {
     let instaintionvaladdress = $("#txtinstaintionaddress").val();
     let instaintionval = $("#txtinstaintion").val();
     let date = $("#txtcreateDate").val();
+    let duedate = $("#txtdueDate").val(); 
     let caddress = '';
     let paymenttype = parseInt($("#ddlPaymentType").val()) || 0;
     let rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00;
@@ -476,16 +483,18 @@ function savemiscbill() {
     }
     let _list = createItemsList();
 
-    if (date == "") { swal('alert', 'Please select create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) }
+    if (date == "") { swal('alert', 'Please enter create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) } 
     else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
     else if (Coustomertype == 0) { swal('alert', 'Please select coustomer type', 'error').then(function () { swal.close(); $('#ddlCoustomertype').focus(); }) }
     else if (paymenttype == 0) { swal('alert', 'Please select bill type.', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
+    else if (duedate == "") { swal('alert', 'Please enter due date ', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
+    else if (date >= duedate) { swal('alert', 'Please enter a due date greater than create date', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
     else if (_list.length == 0) { swal('Alert!', 'Please add product.', "error") }
     else {
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let _order = {
-            rowid: id, fk_transactiontype: transactiontype, customertype: Coustomertype, fk_customer: coustomerid, fk_vendor: vendorid, instation: instaintionval, date_creation: date, fk_paymenttype: paymenttype,
+            rowid: id, fk_transactiontype: transactiontype, customertype: Coustomertype, fk_customer: coustomerid, fk_vendor: vendorid, instation: instaintionval, date_creation: date, due_date: duedate, fk_paymenttype: paymenttype,
             payaccount: payaccounttype, fk_address: caddress, shippingfee: rshipAmt, otherfee: rothrAmt,
             totqty: parseInt($("#thQuantity").data('total')), total_rate: parseFloat($("#SubTotal").data('total')),
             total_tax: parseFloat($("#salesTaxTotal").data('total')), total_ttc: parseFloat($("#orderTotal").data('total'))

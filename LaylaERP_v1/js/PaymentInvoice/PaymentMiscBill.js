@@ -132,7 +132,13 @@ function MiscBillGrid() {
             { data: 'customertype', title: 'Bill Type', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
+            { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            {
+                data: 'due_date_s', title: 'Due date', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
+                }
+            }
             /* { data: 'Status', title: 'Status', sWidth: "10%" }*/
         ],
         columnDefs: [{ targets: [0], searchable: false, orderable: false }], order: [[1, "desc"]]
@@ -206,7 +212,13 @@ function MiscBillFullyGrid() {
             { data: 'customertype', title: 'Bill Type', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
+            { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            {
+                data: 'due_date_s', title: 'Due date', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
+                }
+            },
             /*{ data: 'Status', title: 'Status', sWidth: "10%" }*/
         ],
         order: [[0, "desc"]]

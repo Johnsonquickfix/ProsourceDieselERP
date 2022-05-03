@@ -62,7 +62,7 @@ function InventoryReport() {
             },
             {
                 data: 'asset_value', title: 'Asset Value', sWidth: "10%", class: "text-left", render: function (data, type, row) {
-                    if (row.post_parent > 0) return (row.asset_value * row.qty).toFixed(2); else return '';
+                    if (row.post_parent > 0) return (row.asset_value).toFixed(2); else return '';
                 }
             },
             {

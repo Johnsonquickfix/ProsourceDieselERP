@@ -17,7 +17,9 @@
             <div class="page-title">
                 <h2 class="page-heading">
                     PO Inventory Valuation
-                </h2>
+                </h2><br />
+                <span> As of &nbsp;</span><span class="sub-heading" id="currentdatetime">
+                </span>
             </div>
         </div>
     </div>
@@ -52,7 +54,22 @@
     </div>
 </section>
 <script src="@Url.Content("~/js/Reception/POInventoryValuation.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
+<script>
+    setInterval(function () {
+        let d = new Date();
+        let options = { year: 'numeric', month: 'long', day: 'numeric' };
+        let localTime = d.getTime();
+        let localOffset = d.getTimezoneOffset() * 60000;
+        let utc = localTime + localOffset;
+        let target_offset = -7;//PST from UTC 7 hours behind right now, will need to fix for daylight
+        let los_angles = utc + (3600000 * target_offset);
+        nd = new Date(los_angles);
+        let current_day = nd.getDay();
+        let hours = nd.getHours();
+        let mins = nd.getMinutes();
+        document.getElementById("currentdatetime").innerHTML = nd.toLocaleString('en-US', options);
+    }, 1000);
+</script>
 
  
 

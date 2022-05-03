@@ -835,6 +835,7 @@
     <Content Include="js\Proposals\SupplierProposalsList.js" />
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\POInventorySheet.js" />
+    <Content Include="js\Reception\POInventoryValuation.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Reception\RestPOSheet.js" />
@@ -1271,6 +1272,7 @@
     <Content Include="Views\Reception\POInventorySheet.cshtml" />
     <Content Include="Views\Reception\RestPOSheet.cshtml" />
     <Content Include="Views\Inventory\InventoryValuation.cshtml" />
+    <Content Include="Views\Reception\POInventoryValuation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

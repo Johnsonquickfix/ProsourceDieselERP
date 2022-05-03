@@ -146,7 +146,7 @@ function GetTaxRate() {
     let s_state = $("#ddlshipstate").val(), sub_total = parseFloat($("#ddlshipstate").val()) || 100, ship_total = parseFloat($("#shippingTotal").val()) || 0.00;
     if (tax_states.includes(s_state)) {
         var opt = { to_zip: $("#txtshipzipcode").val(), to_street: $("#txtshipaddress1").val(), to_city: $("#txtshipcity").val(), to_state: s_state, to_country: $("#ddlshipcountry").val(), amount: sub_total, shipping: ship_total };
-        if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) { $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false); }
+        if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false); }
         else {
             ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) {
                 let tax_meta = (res.tax_meta != '' && res.tax_meta != null) ? JSON.parse(res.tax_meta) : [];
@@ -154,7 +154,7 @@ function GetTaxRate() {
             }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false);
         }
     }
-    else { $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
+    else { $('#hfTaxRate').data('meta_data', []); $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
     //calculateDiscountAcount();
 }
 function GetSRTaxRate() {

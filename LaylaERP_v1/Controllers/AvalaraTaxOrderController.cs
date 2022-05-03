@@ -37,8 +37,6 @@
                         {
                             var dyn_o = JsonConvert.DeserializeObject<dynamic>(clsAvalara.CreateOrder(username, password, inputAttribute.ToString()));
                             order_ids += (order_ids.Length > 0 ? ", " : "") + transaction_id;
-                            //client.DeleteOrder(transaction_id);
-                            //client.CreateOrder(inputAttribute);
                             //str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_tax_calculated', meta_value: 'yes' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_destination_address', meta_value: 'a:0:{}' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_exemption', meta_value: '' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_origin_address', meta_value: 'a:0:{}' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_status', meta_value: '"+ dyn_o.status + "' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_tax_date', meta_value: '" + dyn_o.date + "' },{ post_id: " + transaction_id + ", meta_key: '_wc_avatax_code', meta_value: '" + dyn_o.code + "' }";
                         }
                         catch (Exception e)
@@ -60,38 +58,25 @@
                         //}
                     }
                 }
-                //if (!string.IsNullOrEmpty(order_refund_json))
-                //{
-                //    var dyn_or = JsonConvert.DeserializeObject<dynamic>(order_refund_json);
-                //    foreach (var inputAttribute in dyn_or.orders)
-                //    {
-                //        string StatusCode = "";
-                //        string transaction_id = inputAttribute.transaction_id.Value.ToString();
-                //        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-                //        try
-                //        {
-                //            client.ShowRefund(transaction_id);
-                //            //client.DeleteRefund(transaction_id);
-                //        }
-                //        catch (TaxjarException e)
-                //        {
-                //            StatusCode = e.TaxjarError.StatusCode;
-                //            // 406 Not Acceptable – transaction_id is missing
-                //            //e.TaxjarError.Error;
-                //            //e.TaxjarError.Detail;
-                //            //e.TaxjarError.StatusCode;
-                //        }
-                //        if (StatusCode.Contains("404"))
-                //        {
-                //            try
-                //            {
-                //                var order = client.CreateRefund(inputAttribute);
-                //                str_meta += (str_meta.Length > 0 ? ", " : "") + "{ post_id: " + transaction_id + ", meta_key: '_taxjar_last_sync', meta_value: '' }";
-                //            }
-                //            catch (Exception ex) { }
-                //        }
-                //    }
-                //}
+                if (!string.IsNullOrEmpty(order_refund_json))
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(order_refund_json);
+                    foreach (var inputAttribute in dyn.orders)
+                    {
+                        //string StatusCode = "";
+                        string transaction_id = inputAttribute.transaction_id.Value.ToString();
+                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                        try
+                        {
+                            var dyn_o = JsonConvert.DeserializeObject<dynamic>(clsAvalara.CreateOrder(username, password, inputAttribute.ToString()));
+                            order_ids += (order_ids.Length > 0 ? ", " : "") + transaction_id;
+                        }
+                        catch (Exception e)
+                        {
+                           
+                        }
+                    }
+                }
                 if (!string.IsNullOrEmpty(order_ids))
                 {
                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();

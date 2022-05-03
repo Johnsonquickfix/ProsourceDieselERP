@@ -180,6 +180,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-10 control-label">Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">State Recycling Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-10 control-label">Shipping</label>
                             <div class="col-sm-2 controls text-right">
                                 $<span id="shippingTotal" data-orderitemid="0">0.00</span>
@@ -197,18 +209,7 @@
                                 $<span id="salesTaxTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-10 control-label">State Recycling Fee</label>
-                            <div class="col-sm-2 controls text-right">
-                                $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-10 control-label">Fee</label>
-                            <div class="col-sm-2 controls text-right">
-                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Gift Card</label>
                             <div class="col-sm-2 controls text-right">
@@ -250,7 +251,7 @@
         </div>
     </div>
 </section>
-
+<script src="~/js/serializePHP.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Orders/OrderCoupons.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/OrdersMySQL/OrderRefundMySQL.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 

@@ -1672,5 +1672,48 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetDataByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para = { new SqlParameter("@strVal", model.strVal), };
+                string strSql = "erp_getbankreconciliationbyid";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetBankReconciliationprocess(DateTime? fromdate, DateTime? todate, string ids)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@id", ids),
+                    new SqlParameter("@flag", "SERCH")
+                };
+
+                ds = SQLHelper.ExecuteDataSet("erp_bankreconciliationprocess_search", parameters);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

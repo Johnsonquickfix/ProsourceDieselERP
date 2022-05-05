@@ -374,6 +374,7 @@ namespace LaylaERP.Controllers
 
         }
 
+
         [HttpPost]
         public JsonResult NewMiscBill(SearchModel model)
         {
@@ -571,6 +572,18 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public JsonResult getbankaccount(SearchModel model)
+        {
+            DataSet ds = BAL.PaymentInvoiceRepository.getbankaccount();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
         }
 
         //[HttpPost]

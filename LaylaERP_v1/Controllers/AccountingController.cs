@@ -109,6 +109,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult BankReconciliation()
+        {
+            return View();
+        }
+        
+        public ActionResult BankReconciliationprocess()
+        {
+            return View();
+        }
 
         public JsonResult GetNatureofJournal(SearchModel model)
         {
@@ -1044,6 +1053,38 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
+        }
+
+        public JsonResult GetDataByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = AccountingRepository.GetDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpGet]
+        public JsonResult GetBankReconciliationprocess(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime? fromdate = null; DateTime? todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    todate = Convert.ToDateTime(model.strValue4);
+                DataSet ds = new DataSet();
+                ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue2);
+
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

@@ -974,7 +974,18 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
+        public static DataSet getbankaccount()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select account_number ID,label Name from erp_accounting_account where pcg_type in ('BANK');";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
 
     }
 }

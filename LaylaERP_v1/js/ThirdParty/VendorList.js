@@ -17,7 +17,7 @@ function VendorGrid() {
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false, scrollY: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        lengthMenu: [[20, 50], [20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             obj.Search = aoData[50].value;

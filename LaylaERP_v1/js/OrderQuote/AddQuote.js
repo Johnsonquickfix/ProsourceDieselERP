@@ -1545,7 +1545,7 @@ function calcFinalTotals() {
         if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0) zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
         /// Calculate State Recycling Fee
-        let sr_fee = parseFloat($(tr).data("srfee")) || 0.00, sristaxable = $(tr).data("sristaxable");
+        let sr_fee = parseFloat($(tr).data("srfee")) || 0.00, sristaxable = $(tr).data("sristaxable"), tax_sr_rate= 0;
         if (sristaxable) zStateRecyclingAmt += (rQty * sr_fee) + (rQty * sr_fee * tax_sr_rate)
         else zStateRecyclingAmt += (rQty * sr_fee);
     });

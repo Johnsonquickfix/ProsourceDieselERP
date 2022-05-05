@@ -731,6 +731,8 @@
     <Content Include="js\Accounting\AccountLedgerList.js" />
     <Content Include="js\Accounting\AccountReport.js" />
     <Content Include="js\Accounting\Balancesheet.js" />
+    <Content Include="js\Accounting\BankReconciliation.js" />
+    <Content Include="js\Accounting\BankReconciliationprocess.js" />
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
@@ -1273,6 +1275,8 @@
     <Content Include="Views\Reception\RestPOSheet.cshtml" />
     <Content Include="Views\Inventory\InventoryValuation.cshtml" />
     <Content Include="Views\Reception\POInventoryValuation.cshtml" />
+    <Content Include="Views\Accounting\BankReconciliation.cshtml" />
+    <Content Include="Views\Accounting\BankReconciliationprocess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

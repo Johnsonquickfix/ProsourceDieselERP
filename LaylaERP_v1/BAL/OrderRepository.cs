@@ -414,14 +414,14 @@
                     new SqlParameter("@tostreet", tostreet),
                     new SqlParameter("@tozip", tozip)
                 };
-                string strSQl = "SELECT top 1 tocountry,tostate,tocity,tostreet,tozip,coalesce(rate,0) rate,freight_taxable FROM taxrates where [time] > DATEADD(MINUTE, -60,GETUTCDATE()) and lower(tocountry) = lower(@tocountry) and lower(tostate) = lower(@tostate) and lower(tocity) = lower(@tocity) and lower(tostreet) = lower(@tostreet) and tozip = @tozip order by [time] desc;";
+                string strSQl = "SELECT top 1 tocountry,tostate,tocity,tostreet,tozip,coalesce(rate,0) rate,freight_taxable,data FROM taxrates where [time] > DATEADD(MINUTE, -60,GETUTCDATE()) and lower(tocountry) = lower(@tocountry) and lower(tostate) = lower(@tostate) and lower(tocity) = lower(@tocity) and lower(tostreet) = lower(@tostreet) and tozip = @tozip order by [time] desc;";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
             { throw ex; }
             return dt;
         }
-        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable)
+        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable,string tax_data)
         {
             int result = 0;
             try
@@ -434,9 +434,10 @@
                     new SqlParameter("@tostreet", tostreet),
                     new SqlParameter("@tozip", tozip),
                     new SqlParameter("@rate", rate),
-                    new SqlParameter("@freight_taxable", freight_taxable)
+                    new SqlParameter("@freight_taxable", freight_taxable),
+                     new SqlParameter("@tax_data", tax_data)
                 };
-                string strSQl = "INSERT INTO taxrates (tocountry,tostate,tocity,tostreet,tozip,rate,freight_taxable) VALUES (@tocountry,@tostate,@tocity,@tostreet,@tozip,@rate,@freight_taxable);delete from taxrates where [time] < DATEADD(MINUTE, -60,GETUTCDATE());";
+                string strSQl = "INSERT INTO taxrates (tocountry,tostate,tocity,tostreet,tozip,rate,freight_taxable,data) VALUES (@tocountry,@tostate,@tocity,@tostreet,@tozip,@rate,@freight_taxable,@tax_data);delete from taxrates where [time] < DATEADD(MINUTE, -60,GETUTCDATE());";
                 result = SQLHelper.ExecuteNonQuery(strSQl, parameters);
             }
             catch (Exception ex)

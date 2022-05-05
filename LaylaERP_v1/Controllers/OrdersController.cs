@@ -277,7 +277,7 @@
                 else
                 {
                     JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
-                    OrderRepository.SaveTaxRate(model.strValue5, model.strValue4, model.strValue3, model.strValue2, "0", JSONresult, false);
+                    OrderRepository.SaveTaxRate(model.strValue5, model.strValue4, model.strValue3, model.strValue2, "0", JSONresult, false, string.Empty);
                 }
             }
             catch { JSONresult = 0; }
@@ -288,17 +288,24 @@
         {
             try
             {
-                //DataTable dt = OrderRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
-                //if (dt.Rows.Count > 0)
-                //{
-                //    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
-                //    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
-                //}
-                //else
+                DataTable dt = OrderRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
+                if (dt.Rows.Count > 0)
+                {
+                    model.order_total_amount = 0;
+                    model.taxable_amount = 0;
+                    model.amount_to_collect = 0;
+                    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false;
+                    model.tax_meta = (dt.Rows[0]["data"] != Convert.DBNull) ? dt.Rows[0]["data"].ToString() : "[]";
+
+                    //model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                    //model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
+                }
+                else
                 {
                     //model = clsTaxJar.GetTaxes(model);
                     model = clsAvalara.GetTaxes(model);
-                    OrderRepository.SaveTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip, model.rate, model.freight_taxable);
+                    OrderRepository.SaveTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip, model.rate, model.freight_taxable, model.tax_meta);
                 }
             }
             catch { }

@@ -59,7 +59,7 @@ function isEdit(val) {
 function getbankreconcilationInfo() {
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val(), hfendbail = $("#hfendbail").val(), stdate = $("#hfenddate").val();
     console.log(status, id, hfendbail, stdate);
-   // $('.page-heading').text('Payment Process').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a>');
+    $('.page-heading').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/Accounting/BankReconciliation">Back to List</a>');
     //$('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a>');
 
     $('#line_items').empty();

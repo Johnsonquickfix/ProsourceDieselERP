@@ -34,13 +34,13 @@ function FillGrid(is_date) {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        initComplete: function () {
-            $('#JournalListdata_filter input').unbind();
-            $('#JournalListdata_filter input').bind('keyup', function (e) {
-                var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
-            });
-        },
+        //initComplete: function () {
+        //    $('#JournalListdata_filter input').unbind();
+        //    $('#JournalListdata_filter input').bind('keyup', function (e) {
+        //        var code = e.keyCode || e.which;
+        //        if (code == 13) { table_EL.search(this.value).draw(); }
+        //    });
+        //},
 
         ajax: {
             url: '/Reports/Getpastduemiscbill', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
@@ -52,7 +52,7 @@ function FillGrid(is_date) {
                 data: 'ref', sWidth: "10%", title: 'Bill No',
                 render: function (id, type, full, meta) {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to bill view" data-toggle="tooltip" href="PayMiscBills/' + full.rowid + '">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);" data-toggle="tooltip">' + id + '</a>';
                     //return '<a title="Click here to bill view" data-toggle="tooltip" href="#">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
                     //}
                     //else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }

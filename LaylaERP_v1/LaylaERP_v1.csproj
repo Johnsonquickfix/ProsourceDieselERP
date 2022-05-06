@@ -852,6 +852,7 @@
     <Content Include="js\Report\orderforecast.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
+    <Content Include="js\Report\PastDueMiscBills.js" />
     <Content Include="js\Report\PoApproved.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Report\SalesRepresentativeQuoteReport.js" />
@@ -1277,6 +1278,7 @@
     <Content Include="Views\Reception\POInventoryValuation.cshtml" />
     <Content Include="Views\Accounting\BankReconciliation.cshtml" />
     <Content Include="Views\Accounting\BankReconciliationprocess.cshtml" />
+    <Content Include="Views\Reports\PastDueMiscBills.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

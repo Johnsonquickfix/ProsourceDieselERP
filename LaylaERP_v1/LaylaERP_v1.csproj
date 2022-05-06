@@ -1278,6 +1278,7 @@
     <Content Include="Views\Reception\POInventoryValuation.cshtml" />
     <Content Include="Views\Accounting\BankReconciliation.cshtml" />
     <Content Include="Views\Accounting\BankReconciliationprocess.cshtml" />
+    <Content Include="Views\Reports\PastDueMiscBills.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

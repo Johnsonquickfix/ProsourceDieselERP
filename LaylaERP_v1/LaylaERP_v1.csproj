@@ -852,6 +852,7 @@
     <Content Include="js\Report\orderforecast.js" />
     <Content Include="js\Report\OrderTypeList.js" />
     <Content Include="js\Report\PartialRefund.js" />
+    <Content Include="js\Report\PastDueMiscBills.js" />
     <Content Include="js\Report\PoApproved.js" />
     <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Report\SalesRepresentativeQuoteReport.js" />

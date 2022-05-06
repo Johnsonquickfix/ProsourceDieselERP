@@ -826,7 +826,7 @@
                 }
                 else
                 {
-                    JSONresult = "[{\"post_id\":903432,\"response\":\"fail\",\"post_status\":\"draft\",\"payment_method\":\"\",\"payment_method_title\":\"Order can not be cancelled because it is in process.\",\"podium_uid\":\"\",\"paypal_id\":\"\",\"billing_email\":\"\",\"payment_uid\":\"\",\"total_sales\":\"0\"}]";
+                    JSONresult = "[{\"post_id\":"+ model.order_id.ToString() + ",\"response\":\"fail\",\"post_status\":\"draft\",\"payment_method\":\"\",\"payment_method_title\":\"Order can not be cancelled because it is in process.\",\"podium_uid\":\"\",\"paypal_id\":\"\",\"billing_email\":\"\",\"payment_uid\":\"\",\"total_sales\":\"0\"}]";
                 }
 
 

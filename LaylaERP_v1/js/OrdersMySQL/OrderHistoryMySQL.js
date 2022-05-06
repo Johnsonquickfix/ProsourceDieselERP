@@ -467,7 +467,6 @@ function cancelorder(id) {
     return false;
 }
 function cancelpayment(data) {
-    console.log(data);
     let invoice_amt = parseFloat(data.total_sales) || 0.00;
     if (data.payment_method == "ppec_paypal") {
         if (data.post_status == "wc-pending" || data.post_status == "wc-pendingpodiuminv") {
@@ -522,17 +521,21 @@ function cancelpayment(data) {
                 title: 'Podium invoice cancel.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
                 onOpen: () => {
                     swal.showLoading();
-                    $.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
-                        let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.podium_uid + '/cancel';
-                        let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
-                        $.ajax({
-                            type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
-                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                        }).then(response => {
-                            swal('Success!', 'Order cancelled successfully.', "success");
-                            $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
-                        }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
-                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+                    $.get('/Setting/cancel-podium-invoice', { strValue1: data.podium_uid }).then(response => {
+                        console.log(response);swal('Success!', 'Order cancelled successfully.', "success");
+                        $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
+                    //$.get('/Setting/GetPodiumToken', { strValue1: 'getToken' }).then(response => {
+                    //    let access_token = response.message, _url = podium_baseurl + '/v4/invoices/' + data.podium_uid + '/cancel';
+                    //    let opt_cnl = { locationUid: _locationUid, note: 'Invoice has been canceled.' };
+                    //    $.ajax({
+                    //        type: 'post', url: _url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+                    //        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                    //    }).then(response => {
+                    //        swal('Success!', 'Order cancelled successfully.', "success");
+                    //        $.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
+                    //    }).fail(function (XMLHttpRequest, textStatus, errorThrown) { swal.hideLoading(); console.log(XMLHttpRequest); swal('Error!', errorThrown, "error"); });
+                    //}).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
                 }
             }]);
         }

@@ -281,6 +281,20 @@ namespace LaylaERP.Controllers
             catch { result = ""; }
             return Json(result, 0);
         }
+        [HttpGet]
+        [Route("Setting/cancel-podium-invoice")]
+        public JsonResult CancelPodiumInvoice(SearchModel model)
+        {
+            string result = string.Empty;
+            bool b_status = false;
+            try
+            {
+                result = clsPodium.CancelPodiumInvoice(model.strValue1);
+                b_status = true;
+            }
+            catch { b_status = false; result = ""; }
+            return Json(new { status = b_status, message = result }, 0);
+        }
         //For Order Shipping Rule
 
         [HttpPost]

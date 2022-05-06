@@ -2989,5 +2989,26 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
+
+        public static DataTable Getpastduemiscbill(DateTime? fromdate, DateTime? todate, string flag)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                      fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH")
+                    
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_pastduemiscbill_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

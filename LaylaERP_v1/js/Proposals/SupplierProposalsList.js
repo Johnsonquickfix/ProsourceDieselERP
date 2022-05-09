@@ -108,7 +108,7 @@ function LoadGrid() {
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
             {
-                data: 'fedex_charges', sWidth: "10%", title: 'Shipping Charge', class: 'text-right',
+                data: 'fedex_charges', sWidth: "10%", title: 'Shipping Fedex', class: 'text-right',
                 render: function (id, type, full, meta) {
                     return '<a href="javascript:void(0);" title="Click here to get fedex charge." data-toggle="tooltip" onClick="FedexRate(' + full.id + ',\'dtdata\');">$' + (parseFloat(full.fedex_charges) || 0.00).toFixed(2) + '</a>';
                 }
@@ -184,7 +184,7 @@ function LoadGridIPO() {
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
             {
-                data: 'fedex_charges', sWidth: "10%", title: 'Shipping Charge', class: 'text-right',
+                data: 'fedex_charges', sWidth: "10%", title: 'Shipping Fedex', class: 'text-right',
                 render: function (id, type, full, meta) {
                     return '<a href="javascript:void(0);" title="Click here to get fedex charge." data-toggle="tooltip" onClick="FedexRate(' + full.id + ',\'dtdataIPO\');">$' + (parseFloat(full.fedex_charges) || 0.00).toFixed(2) + '</a>';
                 }

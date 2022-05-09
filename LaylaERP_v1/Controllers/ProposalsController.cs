@@ -156,17 +156,24 @@
                     {
                         string transaction_id = inputAttribute.transaction_id.Value.ToString();
                         var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, inputAttribute.ToString()));
-                        str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+                        if (result != null)
+                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
                     }
                 }
                 if (!string.IsNullOrEmpty(str_meta))
                 {
                     ProposalsRepository.UpdateFedexRate("[" + str_meta + "]");
                     _status = true;
+                    JSONresult = "Record updated successfully.";
+                }
+                else
+                {
+                    _status = false;
+                    JSONresult = "Any record not found.";
                 }
             }
-            catch (Exception ex) { Json(new { status = _status, message = ex.Message }, 0); }
-            return Json(new { status = _status, message = "Record updated successfully." }, 0);
+            catch (Exception ex) { JSONresult = ex.Message; _status = false; }
+            return Json(new { status = _status, message = JSONresult }, 0);
         }
         // GET: fedex shiong charge update cron job
         [Route("proposals/ship-rate-sync")]

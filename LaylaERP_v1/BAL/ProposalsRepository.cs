@@ -114,7 +114,7 @@
             {
                 SqlParameter[] parameters = {
                     new SqlParameter("@fedexorders", SqlDbType.NVarChar, -1),
-                    id.HasValue ? new SqlParameter("@id", id.Value) : new SqlParameter("@id", id.Value), 
+                    id.HasValue ? new SqlParameter("@id", id.Value) : new SqlParameter("@id", DBNull.Value), 
                     new SqlParameter("@flag", "FEDEX") 
                 };
                 parameters[0].Direction = ParameterDirection.Output;

@@ -192,7 +192,8 @@
                     {
                         string transaction_id = inputAttribute.transaction_id.Value.ToString();
                         var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, inputAttribute.ToString()));
-                        str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+                        if (result != null)
+                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
                     }
                 }
                 if (!string.IsNullOrEmpty(str_meta))
@@ -200,7 +201,7 @@
                     ProposalsRepository.UpdateFedexRate("[" + str_meta + "]");
                 }
             }
-            catch { }
+            catch (Exception ex) { }
             return View();
         }
     }

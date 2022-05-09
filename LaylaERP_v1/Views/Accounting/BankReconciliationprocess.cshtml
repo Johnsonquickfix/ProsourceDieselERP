@@ -24,10 +24,13 @@
         </div>
 </div>
 <div>
-    
-        Statement ending date
-        <label class="control-label" id="lblendingdata" data-id="0">0</label>
-     
+
+    Last statement ending date
+    <label class="control-label" id="lblendingdata" data-id="0">0</label>
+
+   -- Ending date
+    <label class="control-label" id="lbldateending" data-id="0">0</label>
+
 </div>
 <section class="content section-content neworder-section table-design">
 
@@ -40,6 +43,7 @@
                     <input type="hidden" id="hfqueryids" />
                     <input type="hidden" id="hfendbail" />
                     <input type="hidden" id="hfenddate" />
+                    <input type="hidden" id="hfaccid" />
                     <div class="col-md-2">
                         <div class="form-group">
                             $<label class="control-label" id="lblstatementendingbal" data-id="0">0</label>
@@ -49,7 +53,7 @@
                     </div>
                     <div class="col-md-1">
                         <div class="form-group">
-                           <h2> - </h2>  
+                            <h2> - </h2>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -66,9 +70,10 @@
                             <br />
                             DIFFERENCE
                         </div>
-                    </div>
 
-                </div>
+                    </div>
+                  
+                    </div>
 
                 <div class="row">
                     <div class="col-md-2">
@@ -102,10 +107,14 @@
                             DEPOSITS
                         </div>
                     </div>
+                    <div class="col-md-1">
+                        <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
+                            <input type="submit" value="Final" id="btnfinal" class="btn btn-danger " />
+                        </div>
+                    </div>
+                    </div>
 
                 </div>
-
-                    </div>
                 </div>
     </div> 
     <div class="row">
@@ -127,7 +136,8 @@
                                     <th style="width: 10%">Payee</th>
                                     <th style="width: 10%">Memo</th>
                                     <th class="text-right" style="width: 10%">Payment</th>
-                                    <th class="text-right" style="width: 10%">Deposit</th> 
+                                    <th class="text-right" style="width: 10%">Deposit</th>
+                                    <th style="width: 10%">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="line_items"></tbody>

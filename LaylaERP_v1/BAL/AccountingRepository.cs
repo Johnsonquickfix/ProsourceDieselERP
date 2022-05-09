@@ -1693,7 +1693,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataSet GetBankReconciliationprocess(DateTime? fromdate, DateTime? todate, string ids)
+        public static DataSet GetBankReconciliationprocess(DateTime? fromdate, DateTime? todate, string ids, string Acids)
         {
             DataSet ds = new DataSet();
             try
@@ -1702,7 +1702,7 @@ namespace LaylaERP.BAL
                 {
                     fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
-                    new SqlParameter("@id", ids),
+                    new SqlParameter("@id", ids),new SqlParameter("@Acids", Acids),
                     new SqlParameter("@flag", "SERCH")
                 };
 

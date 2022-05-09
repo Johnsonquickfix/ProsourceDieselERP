@@ -11,18 +11,20 @@
                 }
             }
         }
-        if (queryString["edate"] != null && queryString["id"] != null && queryString["endbailance"] != null && queryString["stdate"] != null && queryString["accountname"] != null) {
+        if (queryString["edate"] != null && queryString["id"] != null && queryString["endbailance"] != null && queryString["stdate"] != null && queryString["accountname"] != null && queryString["acountID"] != null) {
             $("#hfstatus").val(queryString["edate"]);
             $("#hfqueryids").val(queryString["id"]);
             $("#hfendbail").val(queryString["endbailance"]);
             $("#hfenddate").val(queryString["stdate"]);
-            console.log($("#hfstatus").val(), $("#hfqueryids").val(), $("#hfendbail").val(), $("#hfenddate").val());
+           // console.log($("#hfstatus").val(), $("#hfqueryids").val(), $("#hfendbail").val(), $("#hfenddate").val());
             // getPurchaseOrderInfo(queryString["status"], queryString["id"]);  accountname
             $('#lblendingdata').text(queryString["stdate"]);
             $('#lblstatementendingbal').text(queryString["endbailance"]);
             $('#lblaccountname').text(queryString["accountname"]);
            /// $('#lblbeginningbalance').text("0");
             //$('#lblbeginningbalance').text("0");
+            $("#hfaccid").val(queryString["acountID"]);
+            $('#lbldateending').text(queryString["edate"]);
            getbankreconcilationInfo();
         }
     });
@@ -57,13 +59,13 @@ function isEdit(val) {
 //}
 
 function getbankreconcilationInfo() {
-    let status = $("#hfstatus").val(), id = $("#hfqueryids").val(), hfendbail = $("#hfendbail").val(), stdate = $("#hfenddate").val();
+    let status = $("#hfstatus").val(), id = $("#hfqueryids").val(), hfendbail = $("#hfendbail").val(), stdate = $("#hfenddate").val(), accid = $("#hfaccid").val();
     console.log(status, id, hfendbail, stdate);
     $('.page-heading').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/Accounting/BankReconciliation">Back to List</a>');
     //$('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a>');
 
     $('#line_items').empty();
-    var option = { strValue1: status, strValue2: id, strValue3: hfendbail, strValue4: stdate };
+    var option = { strValue1: status, strValue2: id, strValue3: hfendbail, strValue4: stdate, strValue5: accid };
     $.ajax({
         url: "/Accounting/GetBankReconciliationprocess", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
         success: function (result) {
@@ -79,6 +81,12 @@ function getbankreconcilationInfo() {
                     diffrent = endbal - data['po'][i].clerdamt.toFixed(2);
                     console.log(diffrent);
                     $('#lbldiffrence').text(diffrent.toFixed(2));
+                    if (diffrent.toFixed(2) == 0.00) {
+                        $('#btnfinal').show();
+                    }
+                    else {
+                        $('#btnfinal').hide();
+                    }
 
                 }
                 for (let i = 0; i < data['pod'].length; i++) {
@@ -94,6 +102,7 @@ function getbankreconcilationInfo() {
 
                         itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].credit.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right row-total">$' + data['pod'][i].debit.toFixed(2) + '</td>';
+                        itemHtml += '<td>' + data['pod'][i].statusmatch + '</td>';
                         //itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
                         //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
                         itemHtml += '</tr>';

@@ -1079,7 +1079,7 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue4))
                     todate = Convert.ToDateTime(model.strValue4);
                 DataSet ds = new DataSet();
-                ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue2);
+                ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue2, model.strValue5);
 
                 JSONresult = JsonConvert.SerializeObject(ds);
             }

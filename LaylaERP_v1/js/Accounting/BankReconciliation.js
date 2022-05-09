@@ -48,12 +48,13 @@ function getdata() {
                 $('#lblbeginningbalance').data('id', i[0].bank_ending_balance);
                 $('#lblbeginningbalance').text(i[0].bank_ending_balance);
                 $('#lblbillNo').data('id', i[0].rowid);
-               
+                $("#hfvalconform").val(i[0].bank_reconciliation);
+                
                 $('#lblendingdata').data('id', i[0].ending_date);
                 $('#lblendingdata').text(i[0].ending_date);
             }
             else {
-
+                $("#hfvalconform").val("0");
                 $('#lblbeginningbalance').text("0");
                     $('#lblendingdata').text("01/31/2022");
             }            
@@ -73,14 +74,14 @@ function reconciling() {
     endingdatetex = $("#txtEndingDate").val();
     endingbal = $("#txtEndingbalance").val();
     accountname = $("#ddlaccount option:selected").text();
-     
+    bankreon = $("#hfvalconform").val();
     let id = parseInt($('#lblbillNo').data('id')) || 0;
     //console.log(id);
     let sd = $("#txtEndingDate").val();
     if (acountID == 0) {
         swal('Alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); });
     }
-    else if (endingbal == '' || endingbal == 0) {
+    else if (endingbal == '') {
         swal('Alert', 'Please enter ending balance.', 'error').then(function () { swal.close(); $('#txtEndingbalance').focus(); });
     }
     else if (endingdatetex == '') {
@@ -88,7 +89,10 @@ function reconciling() {
     }
     else if (endingdata >= endingdatetex) {
         swal('Alert', 'Already reconciliation done for this date.Please enter another date.', 'error').then(function () { swal.close(); $('#txtEndingDate').focus(); });
-    }     
+    }
+    //else if (bankreon == 1) {
+    //    swal('Alert', 'Already reconciliation done.', 'error').then(function () { swal.close(); $('#txtEndingDate').focus(); });
+    //}
     else {
         var obj = {
             //ID: ID,
@@ -123,10 +127,10 @@ function reconciling() {
             //_gift_card_template_default_use_image: Recipientemail,
             //post_status: pdstatus
         }
-        var checkstr = confirm('Want to reconciling?');
+        var checkstr = confirm('Do you want to reconcile?');
         if (checkstr == true) {
 
-            var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname;
+            var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname + "&acountID=" + acountID ;
             window.location.href = url;
             //$.ajax({
             //    url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',

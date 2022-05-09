@@ -65,7 +65,7 @@
                 long id = 0;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     id = Convert.ToInt64(model.strValue1);
-                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id,"GETPO");
+                DataSet ds = ProposalsRepository.GetSupplierProposalsDetails(id, "GETPO");
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
@@ -125,6 +125,83 @@
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
+        }
+
+        [HttpGet]
+        [Route("proposals/getship-rate")]
+        public JsonResult GetShippingRate(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            bool _status = false;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                string orders_json = string.Empty;
+                DataTable dt = ProposalsRepository.GetFedexJSONforRate(id, out orders_json);
+
+                string client_id = string.Empty, client_secret = string.Empty;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    client_id = dr["client_id"].ToString().Trim();
+                    client_secret = dr["client_secret"].ToString().Trim();
+                }
+                var access_token = clsFedex.GetToken(client_id, client_secret);
+                string str_meta = string.Empty;
+                if (!string.IsNullOrEmpty(orders_json))
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(orders_json);
+                    foreach (var inputAttribute in dyn.orders)
+                    {
+                        string transaction_id = inputAttribute.transaction_id.Value.ToString();
+                        var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, inputAttribute.ToString()));
+                        str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+                    }
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    ProposalsRepository.UpdateFedexRate("[" + str_meta + "]");
+                    _status = true;
+                }
+            }
+            catch (Exception ex) { Json(new { status = _status, message = ex.Message }, 0); }
+            return Json(new { status = _status, message = "Record updated successfully." }, 0);
+        }
+        // GET: fedex shiong charge update cron job
+        [Route("proposals/ship-rate-sync")]
+        public ActionResult FedexShippingRate()
+        {
+            try
+            {
+                string orders_json = string.Empty;
+                DataTable dt = ProposalsRepository.GetFedexJSONforRate(null, out orders_json);
+
+                string client_id = string.Empty, client_secret = string.Empty;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    client_id = dr["client_id"].ToString().Trim();
+                    client_secret = dr["client_secret"].ToString().Trim();
+                }
+                var access_token = clsFedex.GetToken(client_id, client_secret);
+                string str_meta = string.Empty;
+                if (!string.IsNullOrEmpty(orders_json))
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(orders_json);
+                    foreach (var inputAttribute in dyn.orders)
+                    {
+                        string transaction_id = inputAttribute.transaction_id.Value.ToString();
+                        var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, inputAttribute.ToString()));
+                        str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+                    }
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    ProposalsRepository.UpdateFedexRate("[" + str_meta + "]");
+                }
+            }
+            catch { }
+            return View();
         }
     }
 }

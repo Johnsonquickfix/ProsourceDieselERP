@@ -107,5 +107,39 @@
                 throw Ex;
             }
         }
+        public static DataTable GetFedexJSONforRate(long? id, out string orders)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = {
+                    new SqlParameter("@fedexorders", SqlDbType.NVarChar, -1),
+                    id.HasValue ? new SqlParameter("@id", id.Value) : new SqlParameter("@id", id.Value), 
+                    new SqlParameter("@flag", "FEDEX") 
+                };
+                parameters[0].Direction = ParameterDirection.Output;
+                dt = SQLHelper.ExecuteDataTable("erp_Proposals_search", parameters);
+                orders = parameters[0].Value.ToString();
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable UpdateFedexRate(string JSONdata)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "FEDEXAMT"),
+                    new SqlParameter("@fedexorders", JSONdata),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_Proposals_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

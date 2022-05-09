@@ -1,5 +1,6 @@
 ﻿namespace LaylaERP.UTILITIES
 {
+    using Newtonsoft.Json;
     using RestSharp;
     using System.Net;
 
@@ -25,6 +26,42 @@
             request.AddParameter("grant_type", grant_type);
             request.AddParameter("client_id", client_id);
             request.AddParameter("client_secret", client_secret);
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                result = response.Content;
+            }
+            return result;
+        }
+        public static string GetToken(string client_id, string client_secret)
+        {
+            string access_token = string.Empty;
+            var client = new RestClient(base_url + "/oauth/token");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddParameter("grant_type", "client_credentials");
+            request.AddParameter("client_id", client_id);
+            request.AddParameter("client_secret", client_secret);
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                access_token = obj.access_token;
+            }
+            return access_token;
+        }
+        public static string ShipRates(string access_token, string JSONdata)
+        {
+            var result = string.Empty;
+            var client = new RestClient(base_url + "/rate/v1/rates/quotes");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("X-locale", "en_US");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("grant_type", "client_credentials");
+            request.AddHeader("Authorization", "Bearer " + access_token);
+            request.AddParameter("application/json", JSONdata, ParameterType.RequestBody);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             IRestResponse response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)

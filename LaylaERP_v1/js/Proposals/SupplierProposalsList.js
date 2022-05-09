@@ -64,7 +64,7 @@ function LoadGrid() {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed }, { name: "strValue3", value: vid }, { name: "strValue4", value: '0' });
 
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
-           // console.log(aoData);
+            // console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
@@ -107,6 +107,12 @@ function LoadGrid() {
             },
             { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             //{ data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            {
+                data: 'fedex_charges', sWidth: "10%", title: 'Shipping Charge', class: 'text-right',
+                render: function (id, type, full, meta) {
+                    return '<a href="javascript:void(0);" title="Click here to get fedex charge." data-toggle="tooltip" onClick="FedexRate(' + full.id + ');">$' + (parseFloat(full.fedex_charges) || 0.00).toFixed(2) + '</a>';
+                }
+            },
             { data: 'Status', title: 'Status', sWidth: "8%" }
         ]
     });
@@ -125,7 +131,7 @@ function LoadGridIPO() {
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         drawCallback: function () { // this gets rid of duplicate headers
-            $('.dataTables_scrollBody thead tr').css({ visibility: 'collapse'  });
+            $('.dataTables_scrollBody thead tr').css({ visibility: 'collapse' });
         },
         initComplete: function () { $('.dataTables_scrollBody thead tr').css({ visibility: 'collapse' }); },
         sAjaxSource: "/proposals/proposals-list",
@@ -160,7 +166,7 @@ function LoadGridIPO() {
                 data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
                     //let str_inv = (id.substr(7) > 0 ? ' <a href="#" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
                     //return str_inv;
-                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' ;
+                    return ' <a href="javascript:void(0);" title="Click here to view invoice  preview" data-toggle="tooltip" onclick="getInvoicePrintDetails(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>';
                 }
             },
             {
@@ -184,7 +190,7 @@ function LoadGridIPO() {
 
 //CheckBoxes
 $('#checkAll').click(function () {
-   
+
     var isChecked = $(this).prop("checked");
     $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 });
@@ -205,32 +211,33 @@ function Singlecheck() {
 }
 
 $("#btngenerateinvoice").click(function () {
-    var ID = ""; 
+    var ID = "";
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         ID += $(this).val() + ",";
     });
-    ID = ID.replace(/,(?=\s*$)/, ''); 
-   // var vacDays = ID.split(",");
-    var commaCount = ID.split(",").length; 
-    if (ID == "") { swal('Alert', 'Please select PO from list', 'error'); } 
+    ID = ID.replace(/,(?=\s*$)/, '');
+    // var vacDays = ID.split(",");
+    var commaCount = ID.split(",").length;
+    if (ID == "") { swal('Alert', 'Please select PO from list', 'error'); }
     else {
         //if (new_role != "") {
-        
-            swal({
-                title: '', text: "Are you sure you want to generate an invoice for (" + commaCount +") orders?", type: 'warning', showCancelButton: true,
-                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.value) {
-                    //ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
-                    generateinvoice(ID);
-                }
-            })
+
+        swal({
+            title: '', text: "Are you sure you want to generate an invoice for (" + commaCount + ") orders?", type: 'warning', showCancelButton: true,
+            confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+                //ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
+                generateinvoice(ID);
+            }
+        })
         //}
     }
 })
 function generateinvoice(ID) {
     var obj = {
-        strValue1: ID    }
+        strValue1: ID
+    }
     $.ajax({
         url: '/proposals/generatesalespoinvoice/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -245,11 +252,12 @@ function generateinvoice(ID) {
                 else {
                     swal('Alert!', data.message, 'info');
                     if (data.type == 'Miss')
-                    $('.nav-tabs a[href="#tabPO_02"]').tab('show');
+                        $('.nav-tabs a[href="#tabPO_02"]').tab('show');
                 }
 
                 $.when(LoadGrid()).done(function () {
-                   LoadGridIPO()  });
+                    LoadGridIPO()
+                });
             }
             else {
                 swal('Alert!', data.message, 'error');
@@ -259,4 +267,33 @@ function generateinvoice(ID) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
+}
+
+function FedexRate(id) {
+    swal.queue([{
+        title: status, confirmButtonText: 'Yes', text: "Do you want to get Fedex charges?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.get('/proposals/getship-rate', { strValue1: parseInt(id) || 0 }).then(response => {
+                    console.log(response);
+                    if (response.status) {
+                        swal.insertQueueStep({ title: 'Success', text: 'Status updated successfully.', type: 'success' }); $('#dtdata').DataTable().ajax.reload();//order_Split(oid, email); 
+                    }
+                    else { swal.insertQueueStep({ title: 'Error', text: response.message, type: 'error' }); }
+                    resolve();
+                }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
+            });
+        }
+    }]);
+    //swal.queue([{
+    //    title: 'Fedex Rate.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+    //    onOpen: () => {
+    //        swal.showLoading();
+    //        $.get('/proposals/getship-rate', { strValue1: parseInt(id) || 0 }).then(response => {
+    //            console.log(response);
+    //            //swal('Success!', 'Order cancelled successfully.', "success");
+    //            //$.when(GetOrderDetails()).done(function () { table_oh.ajax.reload(null, false); });
+    //        }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
+    //    }
+    //}]);
 }

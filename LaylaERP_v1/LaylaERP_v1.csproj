@@ -207,6 +207,7 @@
     <Compile Include="BAL\ImportPoRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\LeaveRepository.cs" />
+    <Compile Include="BAL\MiscellaneousBillRepository.cs" />
     <Compile Include="BAL\OrderQuoteRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\PaymentInvoiceRepository.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Controllers\ImportPoController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
+    <Compile Include="Controllers\MiscellaneousBillController.cs" />
     <Compile Include="Controllers\OrderQuoteController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\OrdersMySQLController.cs" />
@@ -1280,6 +1282,8 @@
     <Content Include="Views\Accounting\BankReconciliationprocess.cshtml" />
     <Content Include="Views\Reports\PastDueMiscBills.cshtml" />
     <Content Include="Views\Proposals\FedexShippingRate.cshtml" />
+    <Content Include="Views\MiscellaneousBill\AutoBillConfig.cshtml" />
+    <Content Include="Views\MiscellaneousBill\AutoBillConfigList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

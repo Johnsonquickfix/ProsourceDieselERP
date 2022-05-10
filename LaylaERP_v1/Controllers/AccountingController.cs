@@ -1086,5 +1086,22 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [HttpPost]
+        public JsonResult Reconciliationprocess(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                // u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(AccountingRepository.Reconciliationprocess(id, "I", orderXML));
+
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
     }
 }

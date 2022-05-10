@@ -14,7 +14,7 @@
 
     $("#txtEndingbalance").keyup(function () {
         var $this = $(this);
-        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().replace(/[^\d.-]/g, ''));
         $this.val($this.val().substring(0, 10));
     });
    

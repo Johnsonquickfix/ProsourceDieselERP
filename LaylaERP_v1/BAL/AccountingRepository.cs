@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using LaylaERP.UTILITIES;
+using System.Xml;
 
 namespace LaylaERP.BAL
 {
@@ -1714,6 +1715,28 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return ds;
+        }
+
+        public static DataTable Reconciliationprocess(long Pkey, string qFlag, XmlDocument orderXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),   
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_reconciliation_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Accounting/Reconciliationprocess/" + Pkey + "", "Update Reconciliation process");
+                throw new Exception(ex.Message);
+            }
+            return dt;
         }
     }
 }

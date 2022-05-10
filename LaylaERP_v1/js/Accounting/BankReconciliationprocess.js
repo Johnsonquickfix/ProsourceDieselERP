@@ -32,6 +32,7 @@
     /*filldropdown();*/
     $('.billinfo').prop("disabled", true);
     //isEdit(true);
+    $(document).on("click", "#btnfinal", function (t) { t.preventDefault(); reconciling(); });
 })
 
 function isEdit(val) {
@@ -92,6 +93,9 @@ function getbankreconcilationInfo() {
                 for (let i = 0; i < data['pod'].length; i++) {
                     let itemHtml = '';
                     if (data['pod'][i].rowid > 0) {
+                        //if (data['pod'][i].statusmatch == "Not Found" || data['pod'][i].statusmatch == "Diff") {
+                        //    $("#hfstatusmatch").val(1);
+                        //}
                         itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].label_complete + '" data-rowid="' + data['pod'][i].PO_SO_ref + '">';
                         itemHtml += '<td>' + data['pod'][i].doc_date + '</td>';
                         itemHtml += '<td class="text-left">' + data['pod'][i].doc_type + '</td>';
@@ -107,6 +111,7 @@ function getbankreconcilationInfo() {
                         //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
+                       // console.log($("#hfstatusmatch").val());
                     }
                 }
             }
@@ -214,4 +219,48 @@ function createItemsList() {
         }
     });
     return _list;
+}
+
+function reconciling() {
+
+    let status = $("#hfstatus").val(), id = $("#hfqueryids").val(), hfendbail = $("#hfendbail").val(), stdate = $("#hfenddate").val(), accid = $("#hfaccid").val();
+   // let id = parseInt($('#lblbillNo').data('id')) || 0; 
+
+    //if (date == "") { swal('alert', 'Please enter create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) }
+    //else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
+    //else if (Coustomertype == 0) { swal('alert', 'Please select coustomer type', 'error').then(function () { swal.close(); $('#ddlCoustomertype').focus(); }) }
+    //else if (paymenttype == 0) { swal('alert', 'Please select bill type.', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    //else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
+    //else if (duedate == "") { swal('alert', 'Please enter due date ', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
+    //else if (date >= duedate) { swal('alert', 'Please enter a due date greater than create date', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
+    //else if (_list.length == 0) { swal('Alert!', 'Please add product.', "error") }
+    //else {
+        //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
+    let _reconciling = {
+        rowid: id, bank_code: accid, bank_opening_balance: $('#lblBeginnigbal').text(), opening_date: stdate, bank_ending_balance: hfendbail, ending_date: $('#lbldateending').text()
+        }
+    let option = { strValue1: id, strValue2: JSON.stringify(_reconciling) }
+        //console.log(option, _order, _list); return;
+        swal.queue([{
+            title: '', confirmButtonText: 'Yes, update it!', text: "Do you want final?",
+            showLoaderOnConfirm: true, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    $.post('/Accounting/Reconciliationprocess', option).done(function (result) {
+                        result = JSON.parse(result);
+                        if (result[0].Response == "success") {
+
+                            swal('Success', 'Final reconcile has been taken successfully!!', 'success').then((result) => { location.href = 'BankReconciliation'; });
+
+                            //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
+                           // swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); });
+
+                            //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
+                        }
+                        else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                    }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+                });
+            }
+        }]);
+    //}
 }

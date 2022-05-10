@@ -792,6 +792,8 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Marketing\NewAutoGenerate.js" />
+    <Content Include="js\MiscellaneousBill\AutoBillConfig.js" />
+    <Content Include="js\MiscellaneousBill\AutoBillConfigList.js" />
     <Content Include="js\OrderQuote\AddQuote.js" />
     <Content Include="js\OrderQuote\QuoteList.js" />
     <Content Include="js\OrdersMySQL\OrderHistoryMySQL.js" />

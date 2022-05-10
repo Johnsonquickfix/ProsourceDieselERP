@@ -18,7 +18,7 @@
     });
     $('#txtDate').val('');
     $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); misclistList(); });
-    //misclistList();
+    misclistList();
 
 });
 function misclistList() {
@@ -41,7 +41,7 @@ function misclistList() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/paymentInvoice/paymiscList",
+        sAjaxSource: "/miscellaneousbill/autobill-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: sd }, { name: "strValue2", value: ed });
             aoData.push({ name: "strValue3", value: status_id }, { name: "strValue4", value: (is_active > 0 ? is_active : '') }, { name: "strValue5", value: "PO" });
@@ -57,46 +57,30 @@ function misclistList() {
         },
         aoColumns: [
             {
-                data: 'ref', sWidth: "10%", title: 'Bill No',
+                data: 'rowid', sWidth: "10%", title: 'Bill No',
                 render: function (id, type, full, meta) {
-                    //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to bill view" data-toggle="tooltip" href="PayMiscBills/' + full.rowid + '">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    //return '<a title="Click here to bill view" data-toggle="tooltip" href="#">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    //}
-                    //else { return '<a href="#">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>'; }
+                    return '<a title="Click here to bill view" data-toggle="tooltip" href="AutoBillConfig/' + full.rowid + '">' + id + '</a>';
+                    //return '<a title="Click here to bill view" data-toggle="tooltip" href="PayMiscBills/' + full.rowid + '">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
+            { data: 'vendor_name', title: 'Vendor', sWidth: "15%" },
             { data: 'date_creation', title: 'Bill Date', sWidth: "10%", render: function (id, type, full, meta) { return full.date_creation; } },
 
             //{ data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) { if (data > 0) return '#' + data; else return ''; } },
-            { data: 'transaction_t', title: 'Transaction Type', sWidth: "10%" },
-            { data: 'customertype', title: 'Customer Type', sWidth: "15%" },
-
+            { data: 'transaction_type', title: 'Transaction Type', sWidth: "10%" },
             { data: 'paymenttype', title: 'Bill Type', sWidth: "15%" },
             { data: 'payaccount', title: 'Pay Account', sWidth: "15%" },
+            { data: 'due_day', title: 'Due Day of Month', sWidth: "10%" },
             {
-                data: 'totqty', title: 'Quantity', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
-                    //let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
-                    return data;
-                }
-            },
-            //{
-            //    data: 'total_rate', title: 'Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
-            //        let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
-            //        return num;
-            //    }
-            //},
-
-            {
-                data: 'total_ttc', title: 'Total Amount', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
+                data: 'net_amount', title: 'Total Amount', sWidth: "10%", class: 'text-right', render: function (data, type, full, meta) {
                     let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
                     return num;
                 }
             },
             {
-                data: 'due_date_s', title: 'Due date', sWidth: "10%", render: function (id, type, full, meta) {
-                    if (full.past_due == "Past Due") return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
-                    else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
+                data: 'is_active', title: 'Is Active', sWidth: "10%", render: function (id, type, full, meta) {
+                    if (full.is_active ) return 'True';
+                    else return 'False';
                 }
             },
 

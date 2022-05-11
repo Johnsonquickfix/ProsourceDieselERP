@@ -18,10 +18,43 @@
             getPurchaseOrderInfo();
         }
     });
+    $('#divcred').hide();
+    $('#divpaypal').hide();
+
+    //$('#expires_mmyy').inputmask({
+    //    alias: 'datetime',
+    //    inputFormat: 'mm/yy',
+    //    min: moment().add(1, 'M').format('MM/YY'),
+    //    max: moment().add(10, 'Y').format('MM/YY')
+    //})
 
     filldropdown();
     $('.billinfo').prop("disabled", true);
     //isEdit(true);
+    $('#ddlPaymentType').change(function (t) {
+        let Paymentype = $("#ddlPaymentType").val();
+        if (Paymentype == "7") {
+            // console.log(Coustomertype);
+            $('#divcred').show();
+            $('#divpaypal').hide();
+
+        }
+        else if (Paymentype == '8') {
+            $('#divcred').show();
+            $('#divpaypal').hide();
+
+        }
+        else if (Paymentype == '10') {
+            $('#divcred').hide();
+            $('#divpaypal').show();
+        }
+        else {
+            $('#divcred').hide();
+            $('#divpaypal').hide();
+        }
+    });
+
+
 })
 
 function isEdit(val) {
@@ -181,4 +214,38 @@ function createItemsList() {
         }
     });
     return _list;
+}
+
+function formatString(e) {
+    var inputChar = String.fromCharCode(event.keyCode);
+    var code = event.keyCode;
+    var allowedKeys = [8];
+    if (allowedKeys.indexOf(code) !== -1) {
+        return;
+    }
+
+    event.target.value = event.target.value.replace(
+        /^([1-9]\/|[2-9])$/g, '0$1/' // 3 > 03/
+    ).replace(
+        /^(0[1-9]|1[0-2])$/g, '$1/' // 11 > 11/
+    ).replace(
+        /^([0-1])([3-9])$/g, '0$1/$2' // 13 > 01/3
+    ).replace(
+        /^(0?[1-9]|1[0-2])([0-9]{2})$/g, '$1/$2' // 141 > 01/41
+    ).replace(
+        /^([0]+)\/|[0]+$/g, '0' // 0/ > 0 and 00 > 0
+    ).replace(
+        /[^\d\/]|^[\/]*$/g, '' // To allow only digits and `/`
+    ).replace(
+        /\/\//g, '/' // Prevent entering more than 1 `/`
+    );
+}
+function checkDigit(event) {
+    var code = (event.which) ? event.which : event.keyCode;
+
+    if ((code < 48 || code > 57) && (code > 31)) {
+        return false;
+    }
+
+    return true;
 }

@@ -18,10 +18,25 @@
     });
 
     $(document).on("click", ".btnSave", function (t) { t.preventDefault(); savemiscbill(); });
+    $(document).on("click", ".btnEditBill", function (t) {
+        t.preventDefault(); $('.billinfo').prop("disabled", false); isEdit(true);
+        $('.top-action').empty().append('<a class="btn btn-danger btnUndo" data-toggle="tooltip" title="" data-original-title="Undo Bill"><i class="fa fa-undo"></i> Cancel</a> <a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Update</a>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger btnUndo pull-left" data-toggle="tooltip" title="" data-original-title="Undo Bill"><i class="fa fa-undo"></i> Cancel</a> <a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Update</a>');
+    });
+    $(document).on("click", ".btnUndo", function (t) {
+        t.preventDefault(); $('.billinfo').prop("disabled", true);
+        let id = parseInt($('.page-heading').data('id')) || 0;
+        $("#loader").show(); getbillInfodetails(id); isEdit(false);
+    });
+    $(document).on("click", ".bill-active", function (t) {
+        t.preventDefault(); let id = parseInt($('.page-heading').data('id')) || 0;
+        ChageStatus(id, true);
+    });
     $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); }, 50); return false; });
     $("#txtshippingfee").change(function () { calculateFinal() });
     $("#txtotherfee").change(function () { calculateFinal() });
 });
+function isEdit(val) { localStorage.setItem('isEdit', val ? 'yes' : 'no'); }
 function gettransactiontype() {
     $.ajax({
         url: "/PaymentInvoice/gettransactiontype", type: "Get",
@@ -76,167 +91,58 @@ function bindItems() {
     //calculateFinal();
 }
 function getbillInfodetails(oid) {
-    //$('#divAlert').empty();
-    var itxtCnt = 0;
-    var ic = 1;
-    itxtCnt = itxtCnt + 1;
-    let totalexc = 0.00;
-    let totalincl = 0.00;
-    let totaldisc = 0.00;
-    //console.log('d1',oid);
+    $('#divAlert').empty();
     if (oid > 0) {
-        $('.billinfo').prop("disabled", true);
-        //$('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
-        //$('#line_items,#product_line_items').empty();
-        //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button>');
-        var option = { strValue1: oid };
+        $('.billinfo').prop("disabled", true); $('#line_items').empty(); $('.page-heading').data('id', oid);
+        $('.top-action').empty().append('<a class="btn btn-danger btnEditBill" data-toggle="tooltip" title="Edit Bill" data-placement="left"><i class="far fa-edit"></i> Edit</a>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/MiscellaneousBill/AutoBillConfigList" data-toggle="tooltip" title="" data-placement="left" data-original-title="Back to list"><i class="fa fa-arrow-left"></i> Back to List</a> <a class="btn btn-danger btnEditBill" data-toggle="tooltip" title="Edit Bill" data-placement="left"><i class="far fa-edit"></i> Edit</a>');
         $.ajax({
-            url: "/PaymentInvoice/GetBillDetailByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            url: "/miscellaneousbill/get-autobill", type: "Get", beforeSend: function () { $("#loader").show(); }, data: { strValue1: oid },
             success: function (result) {
-                try {
-                    let data = JSON.parse(result); var custype = "", paytype = "";
-                    for (let i = 0; i < data['po'].length; i++) {
-                        $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
-                        custype = data['po'][i].customertype.toString();
-                        paytype = data['po'][i].payaccount.toString();
-                        $('#ddlCoustomertype').val(custype.trim()).trigger('change');
-                        $('#ddltransactiontype').val(data['po'][i].fk_transactiontype).trigger('change');
-                        $('#ddlpayaccounttype').val(paytype.trim()).trigger('change');
-                        $('#txtinstaintion').val(data['po'][i].instation);
-                        $('#ddlPaymentType').val(data['po'][i].fk_paymenttype).trigger('change');
-                        $('#txtinstaintionaddress').val(data['po'][i].fk_address);
-                        $('#txtcustmeraddress').text(data['po'][i].fk_address);
-                        if (!data['po'][i].date_creation.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].date_creation);
-                        if (!data['po'][i].due_date.includes('00/00/0000')) $('#txtdueDate').val(data['po'][i].due_date);
-                        $("#ddlcoustomer").select2('').empty().select2({ data: [{ name: data['po'][i].displayname, id: data['po'][i].fk_customer, text: data['po'][i].displayname }] })
-                        $("#ddlcoustomer").select2({
-                            allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
-                            ajax: {
-                                url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
-                                error: function (xhr, status, err) { }, cache: true
-                            }
-                        });
-                        $('#txtshippingfee').val(data['po'][i].shippingfee);
-                        $('#txtotherfee').val(data['po'][i].otherfee);
-                        // $('#lblbillNo').text(data['po'][i].rowid);
-                        $('#lblbillNo').data('id', data['po'][i].rowid);
+                //try {
+                let data = JSON.parse(result.data);
+                $.each(data['Table'], function (i, row) {
+                    if (!row.is_active) {
+                        $('#divAlert').empty().append('<div class="callout callout-warning"><h4>Reminder!</h4>This bill is inactive. <a href="javscript:void(0);" class="bill-active">click here to activate.</a></div >');
                     }
 
-                    for (let i = 0; i < data['pod'].length; i++) {
-                        ic++;
-                        let itemHtml = '';
-                        //if (data['pod'][i].fk_product >= 0) {
-                        //let Remainingval = data['pod'][i].recbal.toFixed(0);
-                        //if (Remainingval < 0)
-                        //    Remainingval = 0;
-                        itemHtml = '<tr id="tritemid_' + ic + '" class="paid_item" data-id="' + data['pod'][i].miscellaneous_id + '" data-pname="' + data['pod'][i].discription + '" data-psku="' + data['pod'][i].sku + '" data-rowid="' + data['pod'][i].rowid + '">';
-                        itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + ic + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                        // itemHtml += '<td>' + data['pod'][i].description + '<br>Tag/Lot/Serial No. :- ' + data['pod'][i].product_serialno + '</td><td>' + data['pod'][i].product_sku + '</td>';
-
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
-                        // itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Vendor SKU"></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
-
-
-
-
-                        //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
-                        //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
-                        //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itembalqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].treceved.toFixed(0) + '" name="txt_itembalqty" placeholder="BalQty."></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemremaningqty_' + data['pod'][i].fk_product + '" value="' + Remainingval + '" name="txt_itemremaningqty" placeholder="RemQty."></td>';
-                        //    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfofo number rowCalulate" type="number" id="txt_itemRecqty_' + data['pod'][i].fk_product + '" value="' + '' + '" name="txt_itemRecqty" placeholder=""></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                        //itemHtml += '<td class="text-right tax-amount" data-tax1="' + data['pod'][i].localtax1_tx + '" data-tax2="' + data['pod'][i].localtax2_tx + '">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
-                        //itemHtml += '<td class="text-right ship-amount">' + data['pod'][i].total_localtax2.toFixed(2) + '</td>';
-                        //itemHtml += '<td style="display:none" class="text-right tax-amount" data-tax1="' + "0" + '" data-tax2="' + "0" + '">' + "0" + '</td>';
-                        //itemHtml += '<td style="display:none" class="text-right ship-amount">' + "0" + '</td>';
-                        // itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
-                        itemHtml += '<td class="text-right row-total">' + formatCurrency(0) + '</td>';
-                        itemHtml += '</tr>';
-                        $('#line_items').append(itemHtml);
-                        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
-                        calculateFinal();
-
-
-                        //}
-                        //else {
-                        //    itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="other_item" data-rowid="' + data['pod'][i].rowid + '" data-rang="' + data['pod'][i].rowid + '" data-proc_type="' + data['pod'][i].product_type + '">';
-                        //    itemHtml += '<td class="text-center">';
-                        //    itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + data['pod'][i].product_type + '\',\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-                        //    itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
-                        //    itemHtml += '</td > ';
-                        //    itemHtml += '<td class="item-desc">' + data['pod'][i].description + '</td><td class="item-sku">' + data['pod'][i].product_sku + '</td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].rowid + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itembalqty_' + data['pod'][i].rowid + '" value="' + data['pod'][i].recbal.toFixed(0) + '" name="txt_itembalqty" placeholder="BalQty."></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemremaningqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].Remainingval.toFixed(0) + '" name="txt_itemremaningqty_" placeholder="RemQty."></td>';
-                        //    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfofo number rowCalulate" type="number" id="txt_itemRecqty_' + data['pod'][i].rowid + '" value="' + data['pod'][i].recbal.toFixed(0) + '" name="txt_itemRecqty" placeholder="RecQty."></td>';
-                        //    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].rowid + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                        //    //itemHtml += '<td class="text-right tax-amount">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
-                        //    //itemHtml += '<td class="text-right ship-amount">' + data['pod'][i].total_localtax2.toFixed(2) + '</td>';
-                        //    itemHtml += '<td style="display:none" class="text-right tax-amount">' + "0" + '</td>';
-                        //    itemHtml += '<td  style="display:none" class="text-right ship-amount">' + "0" + '</td>';
-                        //    itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
-                        //    itemHtml += '</tr>';
-                        //    $('#product_line_items').append(itemHtml);
-                        //}
-                    }
-
-                }
-                catch (error) {
-                    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
-                }
+                    $('#ddlvendordata').val(row.fk_vendor).trigger('change');
+                    $('#ddltransactiontype').val(row.fk_transactiontype).trigger('change');
+                    $('#ddlPaymentType').val(row.fk_paymenttype).trigger('change');
+                    $('#ddlpayaccounttype').val(row.payaccount.trim()).trigger('change');
+                    $('#txtdueDay').val(row.due_day);
+                    $('#txtshippingfee').val(row.shippingfee.toFixed(2));
+                    $('#txtotherfee').val(row.otherfee.toFixed(2));
+                    let _html = '';
+                    $.each(data['Table1'], function (i, row) {
+                        _html += '<tr id="tritemid_' + i + '" class="paid_item" data-rowid="' + row.rowid + '" data-pname="' + row.discription + '" data-psku="' + row.sku + '">';
+                        _html += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + i + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                        _html += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + i + '" value="' + row.product + '"  name="txt_Service" placeholder="Product/Service"></td>';
+                        _html += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + i + '"  name="txt_sku" value="' + row.sku + '" placeholder="Vendor SKU"></td>';
+                        _html += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + i + '"  value="' + row.qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
+                        _html += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + i + '" value="' + row.rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
+                        _html += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + i + '" value="' + row.tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
+                        _html += '<td class="text-right row-total">' + formatCurrency(row.net_amount) + '</td>';
+                        _html += '</tr>';
+                    });
+                    $('#line_items').append(_html);
+                    $("#line_items").find(".rowCalulate").change(function () { calculateFinal(); });
+                    calculateFinal();
+                });
+                //}
+                //catch (error) {
+                //    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                //}
             },
-            complete: function () { $("#loader").hide(); },
-            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+            complete: function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: true
         });
-        //totalexc = $("#SubTotal").text();
-        //totaldisc = $("#discountTotal").text();
-        //totalincl = $("#orderTotal").html();
-        //// console.log($("#SubTotal").text());
-        //// console.log($("#discountTotal").text());
-        //$("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
-        //$('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-        //if ($("#hfstatus").val() == "6")
-        //    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000022">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
-        //else if ($("#hfstatus").val() == "5")
-        //    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder/1000011">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
-        //else
-        //    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
-        //$(".top-action").empty().append('<button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" data-placement="bottom" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" data-placement="bottom" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-
-        //$("#btnPrintPdf").removeClass('hidden');
-        //$('.billinfofo').prop("disabled", true);
-
-
-        //if ($("#hfstatus").val() == "5")
-        //    $(".btnpoclosed").show();
-        //else
-        //    $(".btnpoclosed").hide();
-
-
-
-
-        //// $("#SubTotal").text(totalexc);
-        ////  $("#discountTotal").text(totalincl);
-        ////   $("#orderTotal").html(totaldisc);
-
-        //$("#SubTotal").text(formatCurrency(totalexc)); $("#SubTotal").data('total', totalexc);
-        //$("#discountTotal").text(formatCurrency(totalincl)); $("#discountTotal").data('total', totalincl);
-        //$("#orderTotal").text(formatCurrency(totaldisc)); $("#orderTotal").data('total', totaldisc);
-
-
     }
     else {
-        $('.billinfo').prop("disabled", false); $('#lblbillNo').data('id', 0);
-        $("#loader").hide(); $('.page-heading').text('Add New Order');
+        $('.billinfo').prop("disabled", false); $('.page-heading').data('id', 0);
+        $("#loader").hide();
+        $('.top-action').empty().append('<a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Save</a>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/MiscellaneousBill/AutoBillConfigList" data-toggle="tooltip" title="" data-placement="left" data-original-title="Back to list"><i class="fa fa-arrow-left"></i> Back to List</a> <a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Save</a>');
     }
 }
 function removeItems(id) {
@@ -312,7 +218,7 @@ function createItemsList() {
     return _list;
 }
 function savemiscbill() {
-    let id = parseInt($('#lblbillNo').data('id')) || 0;
+    let id = parseInt($('.page-heading').data('id')) || 0;
     let vendorid = parseInt($("#ddlvendordata").val()) || 0;
     let transactiontype = parseInt($("#ddltransactiontype").val()) || 0;
     let paymenttype = parseInt($("#ddlPaymentType").val()) || 0;
@@ -352,4 +258,23 @@ function savemiscbill() {
             }
         }]);
     }
+}
+
+function ChageStatus(id, _status) {
+    let msg = _status ? 'Do you want to Active this bill?' : 'Do you want to Inactive this bill?';
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, save it!', text: msg, showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/miscellaneousbill/billstatus-update', { strValue1: id, strValue2: _status }).done(function (result) {
+                    if (result.status) {
+                        swal.insertQueueStep({ title: 'Success', text: result.message, type: 'success' });
+                        getbillInfodetails(id);
+                    }
+                    else { swal.insertQueueStep({ title: 'Error', text: result.message, type: 'error' }); }
+                    resolve();
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
 }

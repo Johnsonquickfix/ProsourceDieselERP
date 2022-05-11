@@ -1286,6 +1286,7 @@
     <Content Include="Views\Proposals\FedexShippingRate.cshtml" />
     <Content Include="Views\MiscellaneousBill\AutoBillConfig.cshtml" />
     <Content Include="Views\MiscellaneousBill\AutoBillConfigList.cshtml" />
+    <Content Include="Views\MiscellaneousBill\AutoBillSync.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

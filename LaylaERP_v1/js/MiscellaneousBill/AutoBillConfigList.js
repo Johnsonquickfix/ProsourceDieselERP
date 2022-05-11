@@ -80,7 +80,7 @@ function misclistList() {
             {
                 data: 'is_active', title: 'Status', sWidth: "10%", class: 'text-center', render: function (id, type, full, meta) {
                     if (full.is_active) return '<a href="javascript:void(0)" class="label label-success" onclick="ChageStatus(' + full.rowid + ', false);">Active</a>';
-                    else return '<a href="javascript:void(0)" class="label label-danger" onclick="ChageStatus(' + full.rowid + ', true);">De-Active</a>';
+                    else return '<a href="javascript:void(0)" class="label label-danger" onclick="ChageStatus(' + full.rowid + ', true);">Inactive</a>';
                 }
             },
             {
@@ -93,7 +93,7 @@ function misclistList() {
     $('[data-toggle="tooltip"]').tooltip();
 }
 function ChageStatus(id, _status) {
-    let msg = _status ? 'Do you want to Active this bill?' : 'Do you want to De-Active this bill?';
+    let msg = _status ? 'Do you want to Active this bill?' : 'Do you want to Inactive this bill?';
     swal.queue([{
         title: '', confirmButtonText: 'Yes, save it!', text: msg, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {

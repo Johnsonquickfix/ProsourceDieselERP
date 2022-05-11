@@ -28,6 +28,10 @@
         let id = parseInt($('.page-heading').data('id')) || 0;
         $("#loader").show(); getbillInfodetails(id); isEdit(false);
     });
+    $(document).on("click", ".bill-active", function (t) {
+        t.preventDefault(); let id = parseInt($('.page-heading').data('id')) || 0;
+        ChageStatus(id, true);
+    });
     $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); }, 50); return false; });
     $("#txtshippingfee").change(function () { calculateFinal() });
     $("#txtotherfee").change(function () { calculateFinal() });
@@ -87,6 +91,7 @@ function bindItems() {
     //calculateFinal();
 }
 function getbillInfodetails(oid) {
+    $('#divAlert').empty();
     if (oid > 0) {
         $('.billinfo').prop("disabled", true); $('#line_items').empty(); $('.page-heading').data('id', oid);
         $('.top-action').empty().append('<a class="btn btn-danger btnEditBill" data-toggle="tooltip" title="Edit Bill" data-placement="left"><i class="far fa-edit"></i> Edit</a>');
@@ -97,6 +102,10 @@ function getbillInfodetails(oid) {
                 //try {
                 let data = JSON.parse(result.data);
                 $.each(data['Table'], function (i, row) {
+                    if (!row.is_active) {
+                        $('#divAlert').empty().append('<div class="callout callout-warning"><h4>Reminder!</h4>This bill is inactive. <a href="javscript:void(0);" class="bill-active">click here to activate.</a></div >');
+                    }
+
                     $('#ddlvendordata').val(row.fk_vendor).trigger('change');
                     $('#ddltransactiontype').val(row.fk_transactiontype).trigger('change');
                     $('#ddlPaymentType').val(row.fk_paymenttype).trigger('change');
@@ -249,4 +258,23 @@ function savemiscbill() {
             }
         }]);
     }
+}
+
+function ChageStatus(id, _status) {
+    let msg = _status ? 'Do you want to Active this bill?' : 'Do you want to Inactive this bill?';
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, save it!', text: msg, showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/miscellaneousbill/billstatus-update', { strValue1: id, strValue2: _status }).done(function (result) {
+                    if (result.status) {
+                        swal.insertQueueStep({ title: 'Success', text: result.message, type: 'success' });
+                        getbillInfodetails(id);
+                    }
+                    else { swal.insertQueueStep({ title: 'Error', text: result.message, type: 'error' }); }
+                    resolve();
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
 }

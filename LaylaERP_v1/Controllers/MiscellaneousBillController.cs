@@ -42,6 +42,27 @@
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        [Route("miscellaneousbill/billstatus-update")]
+        public JsonResult BillStatusUpdate(SearchModel model)
+        {
+            string result = string.Empty;
+            bool _status = false;
+            try
+            {
+                long id = 0, userid = CommanUtilities.Provider.GetCurrent().UserID;
+                bool is_active = false;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) is_active = Convert.ToBoolean(model.strValue2);
+
+                if (MiscellaneousBillRepository.BillStatusUpdate(id, userid, is_active) > 0)
+                {
+                    _status = true; result = "Status updated successfully.";
+                }
+            }
+            catch (Exception ex) { result = ex.Message; _status = false; }
+            return Json(new { status = _status, message = result }, 0);
+        }
         [HttpGet]
         [Route("miscellaneousbill/autobill-list")]
         public JsonResult AutoBillList(JqDataTableModel model)
@@ -63,6 +84,23 @@
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        [HttpGet]
+        [Route("miscellaneousbill/get-autobill")]
+        public JsonResult GetAutoBillByID(SearchModel model)
+        {
+            string result = string.Empty;
+            bool _status = false;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt32(model.strValue1);
+                DataSet ds = MiscellaneousBillRepository.GetAutoBillByID(id);
+                result = JsonConvert.SerializeObject(ds); _status = true;
+            }
+            catch (Exception ex) { result = ex.Message; _status = false; }
+            return Json(new { status = _status, data = result }, 0);
         }
     }
 }

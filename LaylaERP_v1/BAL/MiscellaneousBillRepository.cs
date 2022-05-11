@@ -12,6 +12,25 @@
 
     public class MiscellaneousBillRepository
     {
+        public static DataSet GetAutoBillByID(long id)
+        {
+            var ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@qflag", "GETID"),
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_misc_autobill_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
         public static DataTable AutoBillConfigSave(long id, long userid, string flag, XmlDocument headerXML, XmlDocument detailsXML)
         {
             var dt = new DataTable();
@@ -29,10 +48,31 @@
             }
             catch (Exception ex)
             {
-                UserActivityLog.ExpectionErrorLog(ex, "MiscellaneousBillRepository/NewMiscBill/" + id + "", "Auto Bill Configuration");
+                UserActivityLog.ExpectionErrorLog(ex, "MiscellaneousBillRepository/AutoBillConfigSave/" + id + "", "Auto Bill Configuration");
                 throw new Exception(ex.Message);
             }
             return dt;
+        }
+
+        public static int BillStatusUpdate(long id, long userid, bool is_active)
+        {
+            int i = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@userid", userid),
+                    new SqlParameter("@is_active", is_active)
+                };
+                i = SQLHelper.ExecuteNonQuery("update erp_commerce_miscellaneous_autobill set fk_user_modif = @userid,date_modified = getdate(),is_active = @is_active where rowid = @id;", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "MiscellaneousBillRepository/BillStatusUpdate/" + id + "", "Auto Bill Configuration");
+                throw ex;
+            }
+            return i;
         }
 
         public static DataTable AutoBillsList(DateTime? fromdate, DateTime? todate,  string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")

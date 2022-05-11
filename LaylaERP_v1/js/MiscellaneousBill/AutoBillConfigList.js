@@ -59,7 +59,7 @@ function misclistList() {
             {
                 data: 'rowid', sWidth: "10%", title: 'Bill No',
                 render: function (id, type, full, meta) {
-                    return '<a title="Click here to bill view" data-toggle="tooltip" href="AutoBillConfig/' + full.rowid + '">' + id + '</a>';
+                    return '<a title="Click here to view bill" data-toggle="tooltip" href="AutoBillConfig/' + full.rowid + '">#' + id + '</a>';
                     //return '<a title="Click here to bill view" data-toggle="tooltip" href="PayMiscBills/' + full.rowid + '">' + id + '</a> <a title="Click here to view misc bill" data-toggle="tooltip" href="#" onclick="getBillPrintDetails(' + full.rowid + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
@@ -78,13 +78,34 @@ function misclistList() {
                 }
             },
             {
-                data: 'is_active', title: 'Is Active', sWidth: "10%", render: function (id, type, full, meta) {
-                    if (full.is_active ) return 'True';
-                    else return 'False';
+                data: 'is_active', title: 'Status', sWidth: "10%", class: 'text-center', render: function (id, type, full, meta) {
+                    if (full.is_active) return '<a href="javascript:void(0)" class="label label-success" onclick="ChageStatus(' + full.rowid + ', false);">Active</a>';
+                    else return '<a href="javascript:void(0)" class="label label-danger" onclick="ChageStatus(' + full.rowid + ', true);">De-Active</a>';
                 }
             },
-
+            {
+                data: 'rowid', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
+                    return '<a title="Click here to view bill" data-toggle="tooltip" href="AutoBillConfig/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                }
+            }
         ]
     });
     $('[data-toggle="tooltip"]').tooltip();
+}
+function ChageStatus(id, _status) {
+    let msg = _status ? 'Do you want to Active this bill?' : 'Do you want to De-Active this bill?';
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, save it!', text: msg, showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/miscellaneousbill/billstatus-update', { strValue1: id, strValue2: _status}).done(function (result) {
+                    if (result.status) {
+                        swal.insertQueueStep({ title: 'Success', text: result.message, type: 'success' }); $('#dtdata').DataTable().ajax.reload();
+                    }
+                    else { swal.insertQueueStep({ title: 'Error', text: result.message, type: 'error' }); }
+                    resolve();
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
 }

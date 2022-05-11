@@ -102,5 +102,15 @@
             catch (Exception ex) { result = ex.Message; _status = false; }
             return Json(new { status = _status, data = result }, 0);
         }
+        [Route("miscellaneousbill/autobill-sync")]
+        public ActionResult AutoBillSync()
+        {
+            try
+            {
+                MiscellaneousBillRepository.GenerateMiscBill();
+            }
+            catch { }
+            return View();
+        }
     }
 }

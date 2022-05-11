@@ -75,6 +75,24 @@
             return i;
         }
 
+        public static DataTable GenerateMiscBill()
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@qflag", "ABILL"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_misc_autobill_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static DataTable AutoBillsList(DateTime? fromdate, DateTime? todate,  string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

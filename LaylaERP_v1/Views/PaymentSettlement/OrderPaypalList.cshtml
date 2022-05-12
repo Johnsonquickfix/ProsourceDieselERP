@@ -165,7 +165,8 @@
                         else if (data == 'failed') return '<span class="badge bg-danger">Settlement Error</span>';
                         else return '<span class="badge bg-warning">' + (data == null ? '' : data) + '</span>';
                     }
-                }
+                },
+                { data: 'delivery_status', title: 'Delivery Status', sWidth: "10%", render: function (data, type, row) { if (row.delivery_status) return '<span class="badge bg-success">Delivered</span>'; else return '<span class="badge bg-warning">Non Delivered</span>'; } },
             ]
         });
     }

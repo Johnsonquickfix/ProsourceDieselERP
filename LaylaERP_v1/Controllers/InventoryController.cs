@@ -302,16 +302,30 @@ namespace LaylaERP.Controllers
             catch{ }
             return Json(result, 0);
         }
-        public JsonResult InventoryValuationReport()
+        [HttpGet]
+        public JsonResult InventoryValuationReport(JqDataTableModel model)
         {
             string result = string.Empty;
             try
             {
-                DataTable dt = InventoryRepository.InventoryValuationReport();
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    fromdate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    todate = Convert.ToDateTime(model.strValue5);
+                DataTable dt = InventoryRepository.InventoryValuationReport("IVSUM", model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);
+            //string result = string.Empty;
+            //try
+            //{
+            //    DataTable dt = InventoryRepository.InventoryValuationReport();
+            //    result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            //}
+            //catch { }
+            //return Json(result, 0);
         }
     }
 }

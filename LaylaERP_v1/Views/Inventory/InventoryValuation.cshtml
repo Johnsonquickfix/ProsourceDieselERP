@@ -1,9 +1,8 @@
-﻿
-@{
-    ViewBag.Title = "InventoryValuation";
+﻿@{
+    ViewBag.Title = "On-Hand Inventory";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
-
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -16,17 +15,40 @@
         <div class="col-md-12">
             <div class="page-title">
                 <h2 class="page-heading">Inventory Valuation</h2> <br />
-                    <div>
-                        <span> As of &nbsp;</span><span class="sub-heading" id="currentdatetime">
-                        </span>
-                    </div>
+                <div>
+                    <span> As of &nbsp;</span><span class="sub-heading" id="currentdatetime">
+                    </span>
+                </div>
                 <div class="active" style="margin-left:auto;min-width:280px;">
-                    <div style="display:none" class="input-group">
+                    <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                        <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row index_col_row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>SKU</label>
+                <input type="text" class="form-control" id="txtsku" placeholder="SKU" maxlength="100">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Products</label>
+                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Category</label>
+                <select class="form-control select2" id="ddlCategory" placeholder="Select Category" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3 text-center mt-25 d-flex">
+            <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
         </div>
     </div>
     <!-- end top-->
@@ -53,12 +75,12 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </section>
 <script src="@Url.Content("~/js/Inventory/InventoryValuation.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 <script>
     setInterval(function () {
         let d = new Date();

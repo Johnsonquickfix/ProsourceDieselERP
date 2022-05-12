@@ -398,12 +398,22 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable InventoryValuationReport()
+        public static DataTable InventoryValuationReport(string flag, string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
             {
-                dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary");
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag",flag),
+                    new SqlParameter("@sku", strSKU),
+                    new SqlParameter("@categoryid", categoryid),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary", parameters);
+                //dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary");
             }
             catch (Exception ex)
             {

@@ -118,13 +118,13 @@ function InventoryReport() {
 }
 
 function ShowDetails(id, sku, title) {
-    let modalHtml = '<div class="modal-dialog modal-lg modal-1040">';
+    let modalHtml = '<div class="modal-dialog modal-lg modal-fullscreen" style="transform: translateY(0px) scaleX(1) scaleY(1) translateX(0px) rotateZ(0deg); opacity: 1; display: block; transform-origin: 50% 50% 0px;">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
     modalHtml += ' <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">' + title + '</h4>';
     modalHtml += '</div>';
-    modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '<div class="modal-body "></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -133,9 +133,9 @@ function ShowDetails(id, sku, title) {
     modalHtml += '<div class="row mt-1">';
     modalHtml += '<div class="col-md-12">';
     modalHtml += '<div class="table-responsive">';
-    modalHtml += '<table id="tblList" class="table table-blue table-bordered table-striped dataTable tablelist" data-id="' + id + '">';
+    modalHtml += '<table id="tblList" class="inventory-table table-blue table table-bordered table-striped dataTable" data-id="' + id + '">';
     //modalHtml += '<thead><tr><th style="width: 10%" class="text-left" >Date</th><th style="width: 15%">Transaction Type </th><th style="width: 25%">Num</th><th style="width: 25%">Name</th><th class="text-right" style="width: 10%">Quantity</th><th class="text-right" style="width: 10%">Rate</th><th class="text-right" style="width: 10%">FIFO Cost</th><th class="text-right" style="width: 10%">Qty. on Hand</th><th class="text-right" style="width: 10%">Asset Value</th></tr></thead>';
-    //modalHtml += '<tfoot><tr><th style="width: 25%" colspan="4">Total for ' + title + '</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%"></th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th></tr></tfoot>';
+    modalHtml += '<tfoot><tr><th style="width: 25%" colspan="4">Total for ' + title + '</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%"></th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th><th class="text-right" style="width: 10%">0</th></tr></tfoot>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';
@@ -164,7 +164,7 @@ function ShowDetails(id, sku, title) {
 function DetailsReport(id) {
     let sd = $('#txtDatePopup').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDatePopup').data('daterangepicker').endDate.format('MM-DD-YYYY');
     let pid = parseInt(id) || 0;
-    let obj = { strValue1: '', strValue2: '', strValue3: pid, strValue4: '', strValue5: ed };// console.log(obj);
+    let obj = { strValue1: '', strValue2: '', strValue3: pid, strValue4: sd, strValue5: ed };// console.log(obj);
     var table_DL = $('#tblList').DataTable({
         scrollY: '50vh', scrollCollapse: true, ordering: false, dom: 'lBftipr',
         oSearch: { "sSearch": '' }, bProcessing: true, bAutoWidth: false, destroy: true, lengthMenu: [[50, 100, 150, 200], [50, 100, 150, 200]],
@@ -187,7 +187,7 @@ function DetailsReport(id) {
             { data: 'running_qty', title: 'Qty on Hand', sWidth: "8%", className: "text-right", render: function (data, type, row) { return $.fn.dataTable.render.number(',', '.', 0, '').display(data); } },
             { data: 'running_value', title: 'Asset Value', sWidth: "8%", className: "text-right", render: function (data, type, row) { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); } },
         ],
-        "buttons": [
+        buttons: [
             {
                 extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
                 filename: function () {
@@ -207,6 +207,19 @@ function DetailsReport(id) {
                 exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8], },
                 messageTop: function () { return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">Inventory Valuation Details</h3>'; },
             }
-        ]
+        ],
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+
+            let qty = api.column(4).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let fifo_cost = api.column(6).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            $(api.column(4).footer()).html(qty.toFixed(0));
+            $(api.column(6).footer()).html($.fn.dataTable.render.number(',', '.', 2, '$').display(fifo_cost));
+            let qty_hand = end > 0 ? data[end - 1].running_qty : 0;
+            $(api.column(7).footer()).html(qty_hand.toFixed(0));
+            let asset_value = end > 0 ? data[end - 1].running_value : 0;
+            $(api.column(8).footer()).html($.fn.dataTable.render.number(',', '.', 2, '$').display(asset_value));
+        },
     });
 }

@@ -9,7 +9,21 @@
 @*datatables js*@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
-
+<style>
+    .dataTables_wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+        .dataTables_wrapper .dataTables_length {
+            order: -2;
+        }
+        .dataTables_wrapper .dataTables_filter {
+            order: -1;
+            margin-left: auto;
+            margin-right: 15px;
+        }
+</style>
 <section class="content section-content neworder-section">
     <div class="row">
         <div class="col-md-12">
@@ -55,31 +69,27 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary">
-                <div class="box-header" id="on-hand-inventory">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="dtdata" class="inventory-table table-blue table table-bordered table-striped dataTable" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Parent Id</th>
-                                        <th>Id</th>
-                                        <th>Category</th>
-                                        <th>Product</th>
-                                        <th>SKU</th>
-                                        <th>Qty On Hand</th>
-                                        <th>Qty PO</th>
-                                        <th>QTY Damage</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
+                <div class="box-header">
+                    <table id="dtdata" class="inventory-table table-blue table table-bordered table-striped dataTable" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Parent Id</th>
+                                <th>Id</th>
+                                <th>Category</th>
+                                <th>Product</th>
+                                <th>SKU</th>
+                                <th>Qty On Hand</th>
+                                <th>Qty PO</th>
+                                <th>QTY Damage</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<div class="modal in printable " id="myModal" role="dialog" aria-hidden="true"></div>
+<div class="modal" id="myModal" role="dialog" aria-hidden="true"></div>
 <script src="@Url.Content("~/js/Inventory/InventoryValuation.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>

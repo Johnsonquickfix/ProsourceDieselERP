@@ -303,6 +303,7 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
         [HttpGet]
+        [Route("Inventory/inventoryvaluation-report")]
         public JsonResult InventoryValuationReport(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -318,14 +319,24 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
-            //string result = string.Empty;
-            //try
-            //{
-            //    DataTable dt = InventoryRepository.InventoryValuationReport();
-            //    result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-            //}
-            //catch { }
-            //return Json(result, 0);
+        }
+        [HttpGet]
+        [Route("Inventory/inventoryvaluation-detail-report")]
+        public JsonResult InventoryValuationDetailsReport(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    fromdate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    todate = Convert.ToDateTime(model.strValue5);
+                DataTable dt = InventoryRepository.InventoryValuationReport("IVDET", model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
     }
 }

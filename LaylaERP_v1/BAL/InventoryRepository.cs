@@ -272,11 +272,11 @@ namespace LaylaERP.BAL
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 fromdate = DateTime.Parse(from_date);
                 todate = DateTime.Parse(to_date);
-                SqlParameter[] param = 
+                SqlParameter[] param =
                     {
                     new SqlParameter("@flag", "FCV"),
                     new SqlParameter("@vendorid", vendorid),
-                    new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")), 
+                    new SqlParameter("@fromdate", fromdate.ToString("yyyy-MM-dd")),
                     new SqlParameter("@todate",todate.ToString("yyyy-MM-dd")),
                     new SqlParameter("@stockfromdate",stockfromdate),
                     new SqlParameter("@stocktodate",stocktodate),
@@ -375,7 +375,7 @@ namespace LaylaERP.BAL
             string strWhr = string.Empty; string strWhr2 = string.Empty;
             try
             {
-                if(!string.IsNullOrEmpty(sMonth))
+                if (!string.IsNullOrEmpty(sMonth))
                 {
                     strWhr = " AND convert(date,pwr.tran_date) between " + sMonth + "";
                     strWhr2 = " AND convert(date, pwr_o.tran_date) between " + sMonth + "";
@@ -398,7 +398,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable InventoryValuationReport(string flag, string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        public static DataTable InventoryValuationReport(string flag, string strSKU, string categoryid, string productid, DateTime? fromdate, DateTime? todate)
         {
             DataTable dt = new DataTable();
             try
@@ -409,8 +409,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@sku", strSKU),
                     new SqlParameter("@categoryid", categoryid),
                     new SqlParameter("@productid", productid),
-                    new SqlParameter("@fromdate", fromdate),
-                    new SqlParameter("@todate", todate),
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate) : new SqlParameter("@todate", DBNull.Value),
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary", parameters);
                 //dt = SQLHelper.ExecuteDataTable("erp_inventory_valuation_summary");

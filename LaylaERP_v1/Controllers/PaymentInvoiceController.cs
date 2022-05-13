@@ -526,13 +526,34 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                long id = 0, u_id = 0;
-                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
-                UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Misc Payment", "/PaymentInvoice/TakePaymentMisc/" + id + "" + ", " + Net.BrowserInfo);
-                u_id = CommanUtilities.Provider.GetCurrent().UserID;
-                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
-                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
-                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(id, "POP", u_id, orderXML, orderdetailsXML));
+                String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
+                //long i = 1;
+
+                //foreach (byte b in Guid.NewGuid().ToByteArray())
+                //{
+                //    i *= ((int)b + 1);
+                //}
+                if (model.SortDir == "1" || model.SortDir == "4")
+                {
+                    string number = "0"; // String.Format("{0:d9}", (DateTime.Now.Ticks / 10) % 1000000000);
+
+                    var result = clsAuthorizeNet.fundtransfer(ApiLoginID, ApiTransactionKey, number, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6));
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        long id = 0, u_id = 0;
+                        if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Misc Payment", "/PaymentInvoice/TakePaymentMisc/" + id + "" + ", " + Net.BrowserInfo);
+                        u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                        System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                        System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                        JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(result, id, "POP", u_id, orderXML, orderdetailsXML));
+                    }
+                    
+                }
+                else
+                {
+                    return Json(JSONresult, 0);
+                }
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

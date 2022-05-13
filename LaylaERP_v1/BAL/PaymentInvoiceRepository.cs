@@ -898,7 +898,7 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        public static DataTable AddNewMiscPayment(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        public static DataTable AddNewMiscPayment(string responseid, long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
         {
             var dt = new DataTable();
             try
@@ -909,6 +909,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pkey", Pkey),
                     new SqlParameter("@qflag", qFlag),
                     new SqlParameter("@userid", UserID),
+                     new SqlParameter("@responseid", responseid),
                     new SqlParameter("@orderXML", orderXML.OuterXml),
                     new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
                 };

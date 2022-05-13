@@ -38,8 +38,8 @@
                         <div style="display:none" class="alignleft actions">
 
                         </div>
-                        <div class="alignright actions bulkactions">
-                            <button type="button" id="btnChange" class="btn btn-danger" data-toggle="tooltip" title="Go for payment">Go For Payment</button>
+                        <div  style="display:none" class="alignright actions bulkactions">
+                            <button type="button" id="btnChange" class="btn btn-default" data-toggle="tooltip" title="Go for payment">Go For Payment</button>
                         </div>
                     </div>
                 </div>
@@ -60,14 +60,17 @@
                                         <thead>
                                             <tr>
                                                 @*<th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
-                                                <th width="5%"><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                                @*<th width="5%"><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
+                                                <th>#</th>
                                                 <th>Invoice No.</th>
                                                 <th>Date</th>
                                                 <th>Vendor Name</th>
+                                                <th>Name</th>
                                                 <th>Zip Code</th>
                                                 <th>Balance</th>
                                                 <th>Received</th>
                                                 <th>Due date</th>
+
                                             </tr>
                                         </thead>
                                     </table>
@@ -92,9 +95,11 @@
                                                         <th>Date</th>
                                                         <th>Vendor Name</th>
                                                         <th>Zip Code</th>
+                                                        <th>Name</th>>
                                                         <th>Balance</th>
                                                         <th>Received</th>
                                                         <th>Due date</th>
+
                                                     </tr>
                                                 </thead>
                                             </table>

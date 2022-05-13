@@ -94,9 +94,16 @@ function getPurchaseOrderInfo() {
         success: function (result) {
             try {
                 let data = JSON.parse(result);
+                for (let i = 0; i < data['po'].length; i++) {
+                    if (data['pod'][i].rowid > 0) {
+                        $("#hfbilno").val(data['po'][i].ref);
+                        $("#hfvname").val(data['po'][i].displayname);
+                    }
+                }
                 for (let i = 0; i < data['pod'].length; i++) {
                     let itemHtml = '';
                     if (data['pod'][i].rowid > 0) {
+                       
                         itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].ref + '">';
                         itemHtml += '<td>' + data['pod'][i].ref + '</td>';
                         itemHtml += '<td class="text-left">' + data['pod'][i].date_modified + '</td>';
@@ -166,6 +173,9 @@ function saveVendorPO() {
     let Comments = $("#txtComments").val();
     let _list = createItemsList();
     let status = $("#hfstatus").val();
+
+    let vnname = $("#hfvname").val();
+    let billno = $("#hfbilno").val();
     //console.log(_list);
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
@@ -175,7 +185,7 @@ function saveVendorPO() {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
             amount: parseFloat($("#Total").text()), fk_status: 0
         }
-        let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
+        let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list), strValue4: vnname, strValue5: billno, strValue6: parseFloat($("#Total").text()), SortDir: PaymentTypeid }
         //console.log(option);
         swal.queue([{
             title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to pay for the $' + parseFloat($("#Total").text()) + ' amount?',
@@ -183,11 +193,14 @@ function saveVendorPO() {
             preConfirm: function () {
                 return new Promise(function (resolve) {
                     $.post('/PaymentInvoice/TakePaymentMisc', option).done(function (result) {
-                        result = JSON.parse(result);
-                        if (result[0].Response == "Success") {
-                            swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PayBillsMisc'; });
+                        console.log('sss', result);
+                        if (result != '') {
+                            result = JSON.parse(result);
+                            if (result[0].Response == "Success") {
+                                swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PayBillsMisc'; });
+                            }
                         }
-                        else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                        else { swal('Error', 'Payment gateway not configured.', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
                 });
             }

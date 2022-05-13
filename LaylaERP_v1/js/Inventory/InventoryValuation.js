@@ -153,7 +153,7 @@ function ShowDetails(id, sku, title) {
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().startOf('month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        startDate: moment().startOf('month'), endDate: $('#txtDate').data('daterangepicker').endDate, autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "right auto",
     }, function (start, end, label) {
         let id = parseInt($('#tblList').data('id')) || 0; DetailsReport(id);
@@ -162,6 +162,7 @@ function ShowDetails(id, sku, title) {
 }
 
 function DetailsReport(id) {
+    
     let sd = $('#txtDatePopup').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDatePopup').data('daterangepicker').endDate.format('MM-DD-YYYY');
     let pid = parseInt(id) || 0;
     let obj = { strValue1: '', strValue2: '', strValue3: pid, strValue4: sd, strValue5: ed };// console.log(obj);

@@ -106,7 +106,16 @@ function getbankreconcilationInfo() {
 
                         itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].credit.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right row-total">$' + data['pod'][i].debit.toFixed(2) + '</td>';
-                        itemHtml += '<td>' + data['pod'][i].statusmatch + '</td>';
+                        if (data['pod'][i].statusmatch == 'Match') {
+                            itemHtml += '<td><span class="badge bg-success">' + data['pod'][i].statusmatch + '</span></td>';
+                        }
+                        else if (data['pod'][i].statusmatch == 'Not Found') {
+                            itemHtml += '<td><span class="badge bg-danger">' + data['pod'][i].statusmatch + '</span></td>';
+                        }
+                        else {
+                            itemHtml += '<td><span class="badge bg-warning">' + data['pod'][i].statusmatch + '</span></td>';
+                        }
+
                         //itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
                         //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
                         itemHtml += '</tr>';

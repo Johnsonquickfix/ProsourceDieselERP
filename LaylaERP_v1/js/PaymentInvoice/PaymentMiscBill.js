@@ -50,18 +50,18 @@
     });
 
     // Add event listener for opening and closing details
-    $('#dtfullypaid tbody').on('click', '.pdetails-control', function () {
+    $('#dtfullypaid tbody').on('click', '.pdetailbill-control', function () {
         // console.log('svvvd');
         var tr = $(this).closest('tr');
         var row = $('#dtfullypaid').DataTable().row(tr);
         if (row.child.isShown()) {
             // This row is already open - close it
-            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            tr.find('.pdetailbill-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
             row.child.hide();
             tr.removeClass('shown');
         } else {
             // Open this row
-            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            tr.find('.pdetailbill-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
             //row.child(formatPartially(row.data())).show();
             row.child(formatPO(row.data())).show();
             tr.addClass('shown');
@@ -158,7 +158,7 @@ function MiscBillGrid() {
     });
 }
 function formatPO(d) {
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Bill No</th><th style="width:35%; text-align:left; visibility:inherit; opacity:1;">Receive Date</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Paid Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Bill No</th><th style="width:35%; text-align:left; visibility:inherit; opacity:1;">Paid Date</th><th style="width:35%; text-align:left; visibility:inherit; opacity:1;">Transaction Id</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Paid Amount</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPaymentBilldetails', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -166,7 +166,7 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
                 wrHTML += '<tr><td style="width:20%; text-align:left;"> ' + row.ref + ' </td><td style="width:35%; text-align:left;">' + row.date_creation + '</td>';
-                wrHTML += '<td style="width:30%; text-align:left;">' + '$' + row.amount + '</td></tr > ';
+                wrHTML += '<td style="width:35%; text-align:left;">' + row.ext_payment_site + '</td><td style="width:30%; text-align:left;">' + '$' + row.amount + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },
@@ -210,7 +210,7 @@ function MiscBillFullyGrid() {
                 data: 'ref', title: 'Bill No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     //return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to view payment ."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.refordervendor + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    return '<a href="javascript:void(0);" class="pdetailspo-control" data-toggle="tooltip" title="Click here to view order preview."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetailbill-control" data-toggle="tooltip" title="Click here to view order preview."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     // return '<a  title="Click here to view order preview" data-toggle="tooltip"> #' + row.ref + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },

@@ -162,7 +162,7 @@ function ShowDetails(id, sku, title) {
 }
 
 function DetailsReport(id) {
-    
+
     let sd = $('#txtDatePopup').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDatePopup').data('daterangepicker').endDate.format('MM-DD-YYYY');
     let pid = parseInt(id) || 0;
     let obj = { strValue1: '', strValue2: '', strValue3: pid, strValue4: sd, strValue5: ed };// console.log(obj);
@@ -190,7 +190,7 @@ function DetailsReport(id) {
         ],
         buttons: [
             {
-                extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV', footer: true,
                 filename: function () {
                     let d = new Date();
                     let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
@@ -199,7 +199,7 @@ function DetailsReport(id) {
                 exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8], },
             },
             {
-                extend: 'print', title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
+                extend: 'print', title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: true,
                 filename: function () {
                     let d = new Date();
                     let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
@@ -215,6 +215,8 @@ function DetailsReport(id) {
 
             let qty = api.column(4).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
             let fifo_cost = api.column(6).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            if (qty != -0) qty = qty - (data[0].qty);
+            if (fifo_cost != -0) fifo_cost = fifo_cost - (data[0].asset_value);
             $(api.column(4).footer()).html(qty.toFixed(0));
             $(api.column(6).footer()).html($.fn.dataTable.render.number(',', '.', 2, '$').display(fifo_cost));
             let qty_hand = end > 0 ? data[end - 1].running_qty : 0;

@@ -105,23 +105,33 @@ function MiscBillGrid() {
         },
         columns: [
             /*{ data: 'ref', title: 'Parent ID', sWidth: "8%" },*/
+            //{
+            //    //'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
+            //    //    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+            //    //}
+            //    'data': 'id', sWidth: "5%",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+            //    } 
+            //},
             {
-                //'data': 'id', sWidth: "5%   ", 'render': function (data, type, row) {
-                //    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-                //}
-                'data': 'id', sWidth: "5%",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                'data': 'id', sWidth: "15%", "bSearchable": false,
+                'render': function (ID, type, full, meta) {
+
+                    return '<a href="javascript:void(0);" class="badge bg-default" onClick="takepayment(' + ID + '); " data-toggle="tooltip" title="Pay Bill">Pay Bill <a>';
+
+
                 }
+
             },
             {
-                data: 'ref', title: 'Bill No', sWidth: "12%", render: function (data, type, row) {
+                data: 'ref', title: 'Bill No', sWidth: "25%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     return '<a href="javascript:void(0);" class="pdetailspo-control" data-toggle="tooltip" title="Click here to view order preview."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                     // return '<a  title="Click here to view order preview" data-toggle="tooltip"> #' + row.ref + '</a> <a href="javascript:void(0);" title="Click here to print" data-toggle="tooltip" onclick="PrintProposals(' + row.id + ');"><i class="fas fa-search-plus"></i></a>';
                 }
             },
-            { data: 'date_creation', title: 'Bill Date', sWidth: "10%" },
+            { data: 'date_creation', title: 'Bill Date', sWidth: "15%" },
             //{ data: 'date_livraison', title: 'Due Date', sWidth: "10%" },
             //{ data: 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
             //{
@@ -130,6 +140,7 @@ function MiscBillGrid() {
             //    }
             //},
             { data: 'customertype', title: 'Bill Type', sWidth: "10%" },
+            { data: 'displayname', title: 'Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
@@ -138,7 +149,9 @@ function MiscBillGrid() {
                     if (full.past_due == "Past Due") return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date + ' <i class="fas fa-exclamation pastdue" title="Past Due" aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
                     else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
                 }
-            }
+            },
+            
+         
             /* { data: 'Status', title: 'Status', sWidth: "10%" }*/
         ],
         columnDefs: [{ targets: [0], searchable: false, orderable: false }], order: [[1, "desc"]]
@@ -210,6 +223,7 @@ function MiscBillFullyGrid() {
             //    }
             //},
             { data: 'customertype', title: 'Bill Type', sWidth: "10%" },
+            { data: 'displayname', title: 'Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'remaining', title: 'Balance Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
@@ -219,6 +233,7 @@ function MiscBillFullyGrid() {
                     else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
                 }
             },
+            
             /*{ data: 'Status', title: 'Status', sWidth: "10%" }*/
         ],
         order: [[0, "desc"]]
@@ -246,13 +261,13 @@ function Singlecheck() {
     }
 }
 
-function takepayment() {
-    let id = "";
-    $("input:checkbox[name=CheckSingle]:checked").each(function () {
-        id += $(this).val() + ",";
-    });
-    id = id.replace(/,(?=\s*$)/, '');
-    $("#checkAll").prop('checked', false);
+function takepayment(id) {
+    //let id = "";
+    //$("input:checkbox[name=CheckSingle]:checked").each(function () {
+    //    id += $(this).val() + ",";
+    //});
+    //id = id.replace(/,(?=\s*$)/, '');
+    //$("#checkAll").prop('checked', false);
     let status = 'IP'// $('#ddlStatus').val();
     console.log(id);
     if (id == "") {

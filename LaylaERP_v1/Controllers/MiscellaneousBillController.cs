@@ -102,6 +102,24 @@
             catch (Exception ex) { result = ex.Message; _status = false; }
             return Json(new { status = _status, data = result }, 0);
         }
+        [HttpGet]
+        [Route("miscellaneousbill/autobill-paymentlist")]
+        public JsonResult BillPaymentList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            decimal paid_amount = 0;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable dt = MiscellaneousBillRepository.BillPaymentList(id, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, out paid_amount, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, PaidAmount = paid_amount, aaData = result }, 0);
+        }
         [Route("miscellaneousbill/autobill-sync")]
         public ActionResult AutoBillSync()
         {

@@ -124,5 +124,35 @@
 
         }
 
+        public static DataTable BillPaymentList(long bill_id, string search, int pageno, int pagesize, out int totalrows, out decimal paid_amount, string SortCol = "bill_date", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0; paid_amount = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", bill_id),
+                    new SqlParameter("@search", search),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@qflag", "PAYID"),
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_misc_autobill_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                {
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["total_record"].ToString());
+                    paid_amount = Convert.ToDecimal(ds.Tables[1].Rows[0]["total_payment"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

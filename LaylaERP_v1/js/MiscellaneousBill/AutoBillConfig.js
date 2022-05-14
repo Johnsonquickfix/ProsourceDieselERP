@@ -144,6 +144,7 @@ function getbillInfodetails(oid) {
         $('.top-action').empty().append('<a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Save</a>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/MiscellaneousBill/AutoBillConfigList" data-toggle="tooltip" title="" data-placement="left" data-original-title="Back to list"><i class="fa fa-arrow-left"></i> Back to List</a> <a class="btn btn-danger btnSave" data-toggle="tooltip" title="Save bill details." data-placement="left"><i class="fa fa-save"></i> Save</a>');
     }
+    paymentList(oid);
 }
 function removeItems(id) {
     //------------- Remove data in Temp AddItemList-----
@@ -152,6 +153,44 @@ function removeItems(id) {
             if (result.value) { $('#tritemid_' + id).remove(); }
             calculateFinal();
         });
+}
+function paymentList(id) {
+    let table = $('#tbPayment').DataTable({
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table.search(this.value).draw(); }
+            });
+        },
+        sAjaxSource: "/miscellaneousbill/autobill-paymentlist",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: parseInt(id) || 0 }, { name: "sSortColName", value: 'bill_date' });
+            //if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            //console.log(aoData);
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+        aoColumns: [
+            { data: 'bill_no', sWidth: "10%", title: 'Bill No', render: function (id, type, full, meta) { return '#' + id; } },
+            { data: 'bill_date', title: 'Bill Date', sWidth: "15%", class: 'text-left', },
+            { data: 'payment_invoiceno', title: 'Payment Invoice No', sWidth: "10%", render: function (id, type, full, meta) { return '#' + id; } },
+            { data: 'paid_date', title: 'Paid Date', sWidth: "15%", class: 'text-left', },
+            { data: 'payment_amount', title: 'Paid Amount', sWidth: "10%", class: 'text-right', render: function (data, type, full, meta) { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); } }
+        ]
+    });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function calculateFinal() {

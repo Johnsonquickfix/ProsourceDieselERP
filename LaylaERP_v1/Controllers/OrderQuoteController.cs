@@ -200,7 +200,7 @@
                 status = true;
                 String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "QuoteOrderMail", ds);
 
-                result = SendEmail.SendEmails_outer(model.quote_header, "Your order #" + model.id + " has been received", renderedHTML, string.Empty);
+                result = SendEmail.SendEmails_outer(model.quote_header, "Your Quote #" + model.id + " has been received", renderedHTML, string.Empty);
             }
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);

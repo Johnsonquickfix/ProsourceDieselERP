@@ -36,22 +36,8 @@ $(document).ready(function () {
     var urlParams = new URLSearchParams(window.location.search);
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
     $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname)).done(function () { $('#hfOrderType').val(""); dataGridLoad(""); });
-    //$("#loader").hide();
-    //$('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-pending').click(function () { var order_type = "wc-pending"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-processing').click(function () { var order_type = "wc-processing"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-on-hold').click(function () { var order_type = "wc-on-hold"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-completed').click(function () { var order_type = "wc-completed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-cancelnopay').click(function () { var order_type = "wc-cancelnopay"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-pendingpodiuminv').click(function () { var order_type = "wc-pendingpodiuminv"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-podium').click(function () { var order_type = "wc-podium"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#wc-podiumrefund').click(function () { var order_type = "wc-podiumrefund"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    //$('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
+    $('#btnOtherFilter').click(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
+    $("#ddlUser").on("select2:clearing", function (e) { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type);});
 });
 ///Get Order Counts
 function GetOrderDetails() {
@@ -144,12 +130,12 @@ function dataGridLoad(order_type) {
                     if (id == 'amazon_payments_advanced') return 'Amazon Pay';
                     else if (id == 'authorize_net_cim_credit_card') return 'Authorize Net';
                     else if (id == 'podium' && row.payment_status == 'PAID') return 'Podium';
-                    else if (id == 'podium' && row.payment_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.quote_no + ',\'' + row.transaction_id + '\',\'' + row.billing_email + '\');">Podium</a>';
+                    else if (id == 'podium' && row.payment_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check Podium Payment Status." onclick="podiumPaymentStatus(' + row.quote_no + ',\'' + row.transaction_id + '\',\'' + row.billing_email + '\');">Podium</a>';
                     else if (id == 'ppec_paypal') return 'PayPal';
                     else return '-';
                 }
             },
-            { data: 'order_id', title: 'Order ID', sWidth: "10%", render: $.fn.dataTable.render.number('', '', 0, '#') },
+            { data: 'order_id', title: 'Order ID', sWidth: "10%", render: function (id, type, row, meta) { if (id > 0) return $.fn.dataTable.render.number('', '', 0, '#').display(id); else return '-'; } },
             {
                 data: 'quote_no', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
                     if ($("#hfEdit").val() == "1") {

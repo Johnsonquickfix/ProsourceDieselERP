@@ -72,7 +72,7 @@
         t.preventDefault(); $("#loader").show(); //$('#ddlStatus').prop("disabled", true); 
         $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
-        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
+        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Submit Order"> Submit</button>');
         $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta" data-placement="right" data-toggle="tooltip" title="Add item meta">Add&nbsp;meta</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
         ActivityLog('Edit Quote id (' + $('#hfOrderNo').val() + ') in Order Quote.', '/OrderQuote/Index/' + $('#hfOrderNo').val());
@@ -260,7 +260,7 @@ function getQuoteInfo() {
                     $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                     if (row.quote_status.trim() == 'wc-approved') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer.</div>'); }
                     else if (row.quote_status.trim() == 'wc-pendingpodiuminv') { $('#divAlert').empty().append('<div class="alert alert-success alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer and created payment invoice.</div>'); }
-                    else if (row.quote_status.trim() == 'wc-podium') { $('#divAlert').empty().append('<div class="alert alert-success alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because payment has been done.</div>'); }
+                    else if (row.quote_status.trim() == 'wc-podium') { $('#divAlert').empty().append('<div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because payment has been done.</div>'); }
                     else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
                 }
                 getQuoteItemList(data['Table1'])
@@ -1841,7 +1841,7 @@ function SaveData() {
                         $('#hfOrderNo').val(result[0].id);;
                         $.when(getQuoteInfo()).done(function () {
                             $('[data-toggle="tooltip"]').tooltip();
-                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Quote Order saved successfully.', "success"); }).catch(err => { swal('Error!', err, "error"); });
+                            $.post("/OrderQuote/SendApprovalMail", { id: result[0].id, quote_header: $('#txtbillemail').val() }).then(response => { swal('Success', 'Your Quote saved successfully. Quote email sent to the customer email.', "success"); }).catch(err => { swal('Error!', err, "error"); });
                         });
                     }
                     else { swal('Error', result[0].response, "error"); }

@@ -134,6 +134,34 @@ namespace LaylaERP.Controllers
             return Content(result, ContentType.Json, Encoding.UTF8);
         }
 
+        public ActionResult ShippedTrack()
+        {
+            try
+            {
+                var result = string.Empty;
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://quickfixtest2.com/shippedtrack.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    OrderRepository.ImportOrders(result, "SHIPTRACK");
+                }
+            }
+            catch { }
+            return View();
+        }
 
         public ActionResult ExportDatanew()
         {

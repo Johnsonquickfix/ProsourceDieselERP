@@ -57,33 +57,19 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    @*<div class="alignleft actions bulkactions">
-                            <select class="form-control" id="ddlOrderStatus">
-                                <option value="wc-on-hold">On hold</option>
-                                <option value="wc-completed">Completed</option>
-                                <option value="wc-cancelled">Cancelled</option>
-                                <option value="wc-refunded">Refunded</option>
-                                <option value="wc-failed">Failed</option>
-                            </select>
-                            <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Change Order Status">Change</button>
-                        </div>*@
-                    <div class="alignleft actions">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
-                        </div>
-                    </div>
-                    <div class="alignleft actions">
-                        <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
-                        </select>
-                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">
-                    </div>
-                </div>
+    <div class="row mb-1">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
             </div>
+        </div>
+        <div class="col-md-4">
+            <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
+            </select>
+        </div>
+        <div class="col-md-4">
+            <a id="btnOtherFilter" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Search order by selection criteria."><i class="fa fa-search"></i> Filter</a>
         </div>
     </div>
     <div class="row">

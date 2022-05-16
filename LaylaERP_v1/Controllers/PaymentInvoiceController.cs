@@ -526,18 +526,29 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
-                //long i = 1;
+                
+                 String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
 
-                //foreach (byte b in Guid.NewGuid().ToByteArray())
-                //{
-                //    i *= ((int)b + 1);
-                //}
-                if (model.SortDir == "1" || model.SortDir == "4")
+                var result = string.Empty;
+                ////long i = 1;
+
+                ////foreach (byte b in Guid.NewGuid().ToByteArray())
+                ////{
+                ////    i *= ((int)b + 1);
+                ////}
+                if (model.SortDir == "1" || model.SortDir == "4" || model.SortDir == "7" || model.SortDir == "8")
                 {
                     string number = "0"; // String.Format("{0:d9}", (DateTime.Now.Ticks / 10) % 1000000000);
 
-                    var result = clsAuthorizeNet.fundtransfer(ApiLoginID, ApiTransactionKey, number, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6));
+                    if (model.SortDir == "7" || model.SortDir == "8")
+                    {
+                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6),model.SortCol,model.PageNo,model.PageSize);
+                    }
+                    else
+                    {
+                        result = clsAuthorizeNet.Fundtransfer(ApiLoginID, ApiTransactionKey, number, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6));
+                    }
+
                     if (!string.IsNullOrEmpty(result))
                     {
                         long id = 0, u_id = 0;
@@ -548,7 +559,7 @@ namespace LaylaERP.Controllers
                         System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
                         JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(result, id, "POP", u_id, orderXML, orderdetailsXML));
                     }
-                    
+                                     
                 }
                 else
                 {

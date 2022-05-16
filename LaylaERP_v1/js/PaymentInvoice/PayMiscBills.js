@@ -74,6 +74,7 @@
     $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); }, 50); return false; });
     $("#txtshippingfee").change(function () { calculateFinal() });
     $("#txtotherfee").change(function () { calculateFinal() });
+    getipaidhistory(id);
 });
 var itxtCnt = 0;
 var i = 1;
@@ -521,5 +522,39 @@ function savemiscbill() {
                 });
             }
         }]);
+    }
+}
+
+function getipaidhistory(oid) {
+
+    if (oid > 0) {
+        var option = { strValue1: oid };
+        $.ajax({
+            url: "/PaymentInvoice/getpaidmishistory", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    // console.log(result);
+                    let itemHtml = '';
+                    if (data['pod'].length > 0) {
+                        for (let i = 0; i < data['pod'].length; i++) {
+                            itemHtml += '<tr id="tritemId_' + data['pod'][i].rowid + '" data-key="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].fk_invoceso + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].datec + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].paymenttype + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].num_payment + '</td>';                   
+                            itemHtml += '<td>' + formatCurrency(data['pod'][i].amount) + '</td>';
+                            itemHtml += '</tr>';
+                        }
+                        $('#paid_history').empty().append(itemHtml);
+                    }
+                }
+                catch (error) {
+                    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+        });
     }
 }

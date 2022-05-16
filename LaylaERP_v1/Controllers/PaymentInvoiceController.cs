@@ -607,6 +607,22 @@ namespace LaylaERP.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult getpaidmishistory(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = PaymentInvoiceRepository.getpaidmishistory(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
         //[HttpPost]
         //public JsonResult TakePayment(PaymentInvoiceModel model)
         //{

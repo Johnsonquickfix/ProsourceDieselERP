@@ -988,5 +988,26 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+        public static DataSet getpaidmishistory(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@id", id), };
+                string strSql = "select top 1 ref from erp_commerce_miscellaneous_bill"
+                                + " where rowid = @id;"
+                                + "select ep.rowid, fk_invoceso,epi.amount,num_payment,convert(varchar,datec,101) datec,pt.paymenttype from erp_payment_invoice epi "
+                                     + " inner join erp_payment ep on ep.rowid =  epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                      + " where type = 'IP' and fk_invoceso = (select ref from erp_commerce_miscellaneous_bill where rowid = @id) order by ep.rowid desc";
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
     }
 }

@@ -1290,6 +1290,7 @@
     <Content Include="Views\MiscellaneousBill\AutoBillConfigList.cshtml" />
     <Content Include="Views\MiscellaneousBill\AutoBillSync.cshtml" />
     <Content Include="Views\Product\ProductOpeningStock.cshtml" />
+    <Content Include="Views\DataImport\ShippedTrack.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

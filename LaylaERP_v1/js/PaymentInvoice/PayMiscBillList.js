@@ -29,7 +29,7 @@ function misclistList() {
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[20, 30, 50], [20, 30, 50]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -70,10 +70,10 @@ function misclistList() {
             
             //{ data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) { if (data > 0) return '#' + data; else return ''; } },
             { data: 'transaction_t', title: 'Transaction Type', sWidth: "10%" },
-            { data: 'customertype', title: 'Customer Type', sWidth: "15%" },
-         
-            { data: 'paymenttype', title: 'Bill Type', sWidth: "15%" },
-            { data: 'payaccount', title: 'Pay Account', sWidth: "15%" },
+            { data: 'customertype', title: 'Customer Type', sWidth: "10%" },
+            { data: 'displayname', title: 'Name', sWidth: "15%" },
+            { data: 'paymenttype', title: 'Bill Type', sWidth: "10%" },
+            { data: 'payaccount', title: 'Pay Account', sWidth: "10%" },
             {
                 data: 'totqty', title: 'Quantity', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {
                     //let num = $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
@@ -99,6 +99,15 @@ function misclistList() {
                     else return '<span style="display: none;">' + full.due_date_s + '</span>' + full.due_date;
                 }
             },
+            {
+                data: 'paidstatus', title: 'Paid Status', sWidth: "10%", render: function (data, type, row) {
+                    if (data == 'PD') return '<span class="badge bg-success">Paid</span>';
+                    else if (data == 'UN') return '<span class="badge bg-warning">Partially</span>';
+                    else if (data == 'NF') return '<span class="badge bg-danger">Unpaid</span>';
+                    else return data;
+                }
+            }
+
             
         ]
     });

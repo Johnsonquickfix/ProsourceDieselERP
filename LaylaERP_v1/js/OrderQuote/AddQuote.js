@@ -82,22 +82,12 @@
     $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); PrintQuote(); });
     $(document).on("click", "#btnCloneOQ", function (t) {
         t.preventDefault(); let id = parseInt($('#hfOrderNo').val()) || 0;
-        let _text = 'Are you sure you want to clone this Quote ' + id + '?';
-        swal({ title: 'Clone', text: _text, type: "question", showCancelButton: true })
-            .then((result) => {
-                if (result.value) {
-                    $("#loader").show(); $('#hfOrderNo').val(0); $('.page-heading').text('Quote Order'); $('#lblOrderNo').text('Quote Code #000000 detail');
-                    $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', ''); $('#lblOrderNo').data('tax_api', '');
-                    $('#txtDate').val(moment().format('MM/DD/YYYY')); $('#divAlert,.box-tools-header,#billGiftCard').empty()
-                    $('#ddlStatus').val('wc-draft').trigger('change');
-
-                    $('.billinfo,#ddlUser,#btnSearchCusAdd').prop("disabled", false); $('#txtbillfirstname').focus();
-                    $('.footer-finalbutton').empty().append('<button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="" data-original-title="Save and Submit Order"> Submit</button>');
-                    $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
-                    calcFinalTotals();
-                    $("#loader").hide();
-                }
-            });
+        swal.queue([{
+            type: 'question', confirmButtonText: 'Yes', text: 'Are you sure you want to clone this Quote ' + id + '?', showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) { createClone(); resolve(); });
+            }
+        }]);
     });
     /*end load function*/
     /*Start product*/
@@ -283,11 +273,14 @@ function getQuoteInfo() {
                     else if (row.quote_status.trim() == 'wc-podium') { $('#divAlert').empty().append('<div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because payment has been done.</div>'); }
                     else if (row.quote_status.trim() == 'wc-rejected') { $('#divAlert').empty().append('<div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote rejected by customer.</div>'); }
                 }
-                getQuoteItemList(data['Table1'])
+                getQuoteItemList(data['Table1']);
             });
             //}
             //catch (error) { $("#loader").hide(); swal('Alert!', "Something went wrong on loading quote.", "error"); }
-        }).catch(err => { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); getItemShippingCharge(false); });
+        }).catch(err => { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () {
+            $("#loader").hide(); $('.billinfo').prop("disabled", true); getItemShippingCharge(false);
+            if ($('#hfOrderNo').data('qt') == 'c') { createClone(); }
+        });
 
     }
     else {
@@ -414,6 +407,16 @@ function getQuoteItemList(_list) {
     $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt - zGiftCardAmt) + zRefundAmt).toFixed(2));
     if (zRefundAmt != 0 || zGiftCardRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
+}
+function createClone() {
+    $('#hfOrderNo').val(0); $('.page-heading').text('Quote Order'); $('#lblOrderNo').text('Quote Code #000000 detail');
+    $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', ''); $('#lblOrderNo').data('tax_api', '');
+    $('#txtDate').val(moment().format('MM/DD/YYYY')); $('#divAlert,.box-tools-header,#billGiftCard').empty()
+    $('#ddlStatus').val('wc-draft').trigger('change');
+    $('.billinfo,#ddlUser,#btnSearchCusAdd').prop("disabled", false); $('#txtbillfirstname').focus();
+    $('.footer-finalbutton').empty().append('<button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="" data-original-title="Save and Submit Order"> Submit</button>');
+    $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
+    calcFinalTotals();
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1844,7 +1847,7 @@ function QuoteProducts(id) {
     return _list;
 }
 function SaveData() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let oid = parseInt($('#hfOrderNo').val()) || 0; $('#hfOrderNo').data('qt','m')
     if (!ValidateData()) { $("#loader").hide(); return false };
     let quote = QuoteHeader(oid), _list = QuoteProducts(oid);
     if (_list.length <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }

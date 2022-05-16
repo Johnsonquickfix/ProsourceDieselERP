@@ -14,9 +14,9 @@
     public class OrderQuoteController : Controller
     {
         // GET: OrderQuote
-        public ActionResult Index(long id = 0)
+        public ActionResult Index(long id = 0, string qt = "m")
         {
-            ViewBag.id = id;
+            ViewBag.id = id; ViewBag.qt = qt;
             string pay_method = CommanUtilities.Provider.GetCurrent().Podium ? "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
             ViewBag.pay_option = "[" + pay_method + "]";
             return View();

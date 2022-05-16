@@ -37,7 +37,7 @@ $(document).ready(function () {
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
     $.when(GetOrderDetails(), CheckPermissions("", "#hfEdit", "", window.location.pathname)).done(function () { $('#hfOrderType').val(""); dataGridLoad(""); });
     $('#btnOtherFilter').click(function () { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
-    $("#ddlUser").on("select2:clearing", function (e) { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type);});
+    $("#ddlUser").on("select2:clearing", function (e) { let order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
 });
 ///Get Order Counts
 function GetOrderDetails() {
@@ -138,17 +138,18 @@ function dataGridLoad(order_type) {
             { data: 'order_id', title: 'Order ID', sWidth: "10%", render: function (id, type, row, meta) { if (id > 0) return $.fn.dataTable.render.number('', '', 0, '#').display(id); else return '-'; } },
             {
                 data: 'quote_no', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
+                    let _btn = '<a href="index?qt=c&id=' + id + '" data-toggle="tooltip" title="Create clone of this quote"><i class="fas fa-copy"></i></a>';
                     if ($("#hfEdit").val() == "1") {
                         if (_editable == 1) {
-                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit quote" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit quote" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a> ' + _btn;
+                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> ' + _btn;
                         }
                         else if (_editable == 0 && _id == row.customer_id) {
-                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a>';
-                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order"  onclick="ActivityLog(\'View/Edit quote id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            if ((row.status == 'wc-draft') && refund_amt == 0) return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order" onclick="ActivityLog(\'View/Edit quote id (' + id + ') in quote list.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="javascript:void(0);" onclick="cancelorder(' + id + ');" data-toggle="tooltip" title="Cancel Order"><i class="fa fa-times-circle text-danger"></i></a> ' + _btn;
+                            else return '<a href="index/' + id + '" data-toggle="tooltip" title="View/Edit Order"  onclick="ActivityLog(\'View/Edit quote id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;"><i class="glyphicon glyphicon-eye-open"></i></a> ' + _btn;
                         }
                         else {
-                            return '<a href="index/' + id + '" onclick="ActivityLog(\'Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                            return '<a href="index/' + id + '" onclick="ActivityLog(\'Edit order id (' + id + ') in order history.\',\'/OrderQuote/History\'); return true;" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> ' + _btn;
                         }
                     }
                     else { return "No Permission"; }

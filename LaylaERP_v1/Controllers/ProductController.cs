@@ -87,6 +87,12 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        //Listing Product opening stock
+        public ActionResult ProductOpeningStock()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
         {
@@ -2028,8 +2034,20 @@ namespace LaylaERP.Controllers
             return Json(new { data = JSONresult }, 0);
         }
 
-    }
-     
+        [HttpGet]
+        public JsonResult GetProductOpeningStock(ProductOpendingStock model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataSet dt = ProductRepository.GetProductOpeningStock();
+                return Json(new { data = JSONresult }, 0); //ProductOpendingStock
+            }
+            catch { }
+            return Json(JSONresult, 0);
 
+        }
+
+    }
     
 }

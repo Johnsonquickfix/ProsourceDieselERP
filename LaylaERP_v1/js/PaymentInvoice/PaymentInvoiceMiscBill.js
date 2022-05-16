@@ -173,7 +173,11 @@ function saveVendorPO() {
     let Comments = $("#txtComments").val();
     let _list = createItemsList();
     let status = $("#hfstatus").val();
-
+    let accountno = $("#txt_cardNumber").val();
+    let expimmyy = $("#expires_mmyy").val();
+    let expimmyyval = expimmyy.replace('/', '');
+    console.log(expimmyyval);
+    let cardcode = $("#txtcardcode").val();
     let vnname = $("#hfvname").val();
     let billno = $("#hfbilno").val();
     //console.log(_list);
@@ -185,7 +189,7 @@ function saveVendorPO() {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
             amount: parseFloat($("#Total").text()), fk_status: 0
         }
-        let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list), strValue4: vnname, strValue5: billno, strValue6: parseFloat($("#Total").text()), SortDir: PaymentTypeid }
+        let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list), strValue4: vnname, strValue5: billno, strValue6: parseFloat($("#Total").text()), SortDir: PaymentTypeid, SortCol: accountno, PageNo: expimmyyval, PageSize: cardcode }
         //console.log(option);
         swal.queue([{
             title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to pay for the $' + parseFloat($("#Total").text()) + ' amount?',
@@ -200,7 +204,7 @@ function saveVendorPO() {
                                 swal('Success', 'Payment has been taken successfully!!', 'success').then((result) => { location.href = 'PayBillsMisc'; });
                             }
                         }
-                        else { swal('Error', 'Payment gateway not configured.', "error"); }
+                        else { swal('Error', 'Payment gateway not configured. Or invalid credentials', "error"); }
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
                 });
             }

@@ -2841,5 +2841,18 @@ namespace LaylaERP.BAL
             return ds;
         }
 
+        public static DataSet GetProductOpeningStock()
+        {
+            DataSet ds = new DataSet();
+            try {
+                string strSQl = "select op.product_id, p.post_title as Name FROM wp_posts p, product_opening_stock op where op.product_id = p.id and (p.post_type = 'product' Or post_type = 'product_variation')";
+                ds = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+            return ds;
+        }
+
     }
 }

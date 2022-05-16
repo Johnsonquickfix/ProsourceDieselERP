@@ -832,6 +832,7 @@
     <Content Include="js\Product\ProductCalculateList.js" />
     <Content Include="js\Product\ProductCategory.js" />
     <Content Include="js\Product\ProductList.js" />
+    <Content Include="js\Product\ProductOpeningStock.js" />
     <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\Proposals\ProposalPrint.js" />
     <Content Include="js\Proposals\ProposalView.js" />
@@ -1288,6 +1289,7 @@
     <Content Include="Views\MiscellaneousBill\AutoBillConfig.cshtml" />
     <Content Include="Views\MiscellaneousBill\AutoBillConfigList.cshtml" />
     <Content Include="Views\MiscellaneousBill\AutoBillSync.cshtml" />
+    <Content Include="Views\Product\ProductOpeningStock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

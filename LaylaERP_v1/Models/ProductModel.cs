@@ -200,4 +200,13 @@ namespace LaylaERP.Models
         public string ImagePathOut { get; set; }
 
     }
+
+    public class ProductOpendingStock
+    {
+        public long product_id { get; set; }
+        public string op_date { get; set; } 
+        public int op_qty { get; set; } 
+        public decimal op_rate { get; set; }
+        public string tag { get; set; } 
+    }
 }

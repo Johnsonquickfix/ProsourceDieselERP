@@ -80,6 +80,25 @@
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getQuoteInfo(); isEdit(false); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); SaveData(); ActivityLog('Edit Quote No (' + $('#hfOrderNo').val() + ') in order history', '/OrderQuote/Index'); });
     $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); PrintQuote(); });
+    $(document).on("click", "#btnCloneOQ", function (t) {
+        t.preventDefault(); let id = parseInt($('#hfOrderNo').val()) || 0;
+        let _text = 'Are you sure you want to clone this Quote ' + id + '?';
+        swal({ title: 'Clone', text: _text, type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $("#loader").show(); $('#hfOrderNo').val(0); $('.page-heading').text('Quote Order'); $('#lblOrderNo').text('Quote Code #000000 detail');
+                    $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', ''); $('#lblOrderNo').data('tax_api', '');
+                    $('#txtDate').val(moment().format('MM/DD/YYYY')); $('#divAlert,.box-tools-header,#billGiftCard').empty()
+                    $('#ddlStatus').val('wc-draft').trigger('change');
+
+                    $('.billinfo,#ddlUser,#btnSearchCusAdd').prop("disabled", false); $('#txtbillfirstname').focus();
+                    $('.footer-finalbutton').empty().append('<button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="" data-original-title="Save and Submit Order"> Submit</button>');
+                    $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide(); isEdit(true);
+                    calcFinalTotals();
+                    $("#loader").hide();
+                }
+            });
+    });
     /*end load function*/
     /*Start product*/
     $(document).on("change", ".addnvar,.addnvar-qty", function (t) {
@@ -219,6 +238,7 @@ function CategoryWiseProducts() {
     }).fail(function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest, textStatus, errorThrown); $("#loader").hide(); swal('Alert!', errorThrown, "error"); }).always(function () { $("#loader").hide(); });
 }
 function getQuoteInfo() {
+    let _cloneBtn = '<a class="btn btn-danger" id="btnCloneOQ" data-toggle="tooltip" data-placement="left" data-original-title="Create duplicate order quote"><i class="fas fa-copy"></i> Clone</a> <a class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</a>';
     $('.view-addmeta,#divAlert').empty(); $('.billinfo').prop("disabled", true);
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
@@ -232,7 +252,7 @@ function getQuoteInfo() {
             let data = JSON.parse(result);
             $.each(data['Table'], function (i, row) {
                 $('#lblOrderNo').data('pay_by', row.payment_method); $('#lblOrderNo').data('pay_id', row.transaction_id); $('#lblOrderNo').data('tax_api', row.tax_api);
-                $('#txtLogDate').val(row.date_created);
+                $('#txtDate').val(moment(row.quote_date).format('MM/DD/YYYY'));
                 $('#ddlStatus').val(row.quote_status.trim()).trigger('change');
                 //if (data[0].payment_method.trim().length > 0)
                 //    $('.payment-history').text('Payment via ' + data[0].payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
@@ -252,11 +272,11 @@ function getQuoteInfo() {
                 $('#txtCustomerNotes').val(row.remark);
 
                 if (row.quote_status.trim() == 'wc-draft') {
-                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                    $('.box-tools-header').empty().append(_cloneBtn + ' <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
                     $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
                 }
                 else {
-                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
+                    $('.box-tools-header').empty().append(_cloneBtn + ' <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                     $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="right" title="Go to Order List">Back to List</a>');
                     if (row.quote_status.trim() == 'wc-approved') { $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer.</div>'); }
                     else if (row.quote_status.trim() == 'wc-pendingpodiuminv') { $('#divAlert').empty().append('<div class="alert alert-success alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>Order quote is not editable. Because quote approved by customer and created payment invoice.</div>'); }
@@ -1545,7 +1565,7 @@ function calcFinalTotals() {
         if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0) zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
         /// Calculate State Recycling Fee
-        let sr_fee = parseFloat($(tr).data("srfee")) || 0.00, sristaxable = $(tr).data("sristaxable"), tax_sr_rate= 0;
+        let sr_fee = parseFloat($(tr).data("srfee")) || 0.00, sristaxable = $(tr).data("sristaxable"), tax_sr_rate = 0;
         if (sristaxable) zStateRecyclingAmt += (rQty * sr_fee) + (rQty * sr_fee * tax_sr_rate)
         else zStateRecyclingAmt += (rQty * sr_fee);
     });

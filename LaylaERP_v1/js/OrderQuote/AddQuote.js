@@ -1612,12 +1612,12 @@ function FinalTotalControl(tax_list) {
     // Add Tax
     if (tax_list.length > 0) {
         $.each(tax_list, function (index, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.label + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
         });
     }
     else {
         $.each($('#hfTaxRate').data('meta_data'), function (name, value) {
-            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(2) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name.replaceAll(' ', '-') + '-' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
+            _html += '<div class="form-group"><label class="col-sm-10 control-label">' + value.type + ' - ' + (value.rate * 100).toFixed(4) + '%</label><div class="col-sm-2 controls text-right">$<span class="tax-total" data-name="' + value.name.replaceAll(' ', '-') + '-' + (value.rate * 100).toFixed(2) + '" data-label="' + value.type + '" data-percent="' + value.rate + '" data-amount="0">0.00</span></div></div>';
         });
     }
     _html += '<div class="form-group"><label class="col-sm-10 control-label">Gift Card</label><div class="col-sm-2 controls text-right">$<span id="giftCardTotal">0.00</span></div></div>';
@@ -1933,7 +1933,7 @@ function PrintQuote() {
     //myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     $('#order_final_total .tax-total').each(function (index, li) {
         let _taxpercent = parseFloat($(li).data('percent')) || 0;
-        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $(li).data('label') + ' - ' + (_taxpercent * 100).toFixed(2) + '%:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $(li).text() + '</td></tr>';
+        myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">' + $(li).data('label') + ' - ' + (_taxpercent * 100).toFixed(4) + '%:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $(li).text() + '</td></tr>';
     });
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';

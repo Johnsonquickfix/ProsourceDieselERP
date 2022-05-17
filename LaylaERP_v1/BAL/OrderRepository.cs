@@ -119,7 +119,7 @@
             catch (Exception Ex) { throw Ex; }
             return dt;
         }
-        public static DataTable ImportOrders(string postsJSON)
+        public static DataTable ImportOrders(string postsJSON, string flag = "ORDER")
         {
             var dt = new DataTable();
             try
@@ -127,6 +127,7 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@json", postsJSON),
+                    new SqlParameter("@flag", flag)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_order_import", parameters);
             }
@@ -421,7 +422,7 @@
             { throw ex; }
             return dt;
         }
-        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable,string tax_data)
+        public static int SaveTaxRate(string tocountry, string tostate, string tocity, string tostreet, string tozip, decimal rate, bool freight_taxable, string tax_data)
         {
             int result = 0;
             try

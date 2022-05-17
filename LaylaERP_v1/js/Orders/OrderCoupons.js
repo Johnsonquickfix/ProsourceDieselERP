@@ -10,6 +10,8 @@ var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", typ
 { post_title: "kapok-pillow", title: "Kapok Pillow", type: 'diff', discount_type: '2x_percent', coupon_amount: 50, individual_use: 'no', product_ids: [14023, -1], exclude_product_ids: [] },
 { post_title: 'Memory Foam Mattress', post_title_id: '118', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [118, -1], exclude_product_ids: [] },
 { post_title: 'Hybrid Mattress', post_title_id: '611172', title: 'Hybrid Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611172, -1], exclude_product_ids: [] },
+    { post_title: 'Essential Mattress', post_title_id: '813990', title: 'Essential Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [813990, -1], exclude_product_ids: [] },
+
 { post_title: 'Kapok Pillow', post_title_id: '14023', title: 'Kapok Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [14023, -1], exclude_product_ids: [] },
 { post_title: 'Memory Foam Pillow', post_title_id: '611238', title: 'Memory Foam Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611238, -1], exclude_product_ids: [] },
 { post_title: 'Mattress Foundation', post_title_id: '20861', title: 'Mattress Foundation', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [20861, -1], exclude_product_ids: [] },

@@ -100,14 +100,24 @@ namespace LaylaERP.Controllers
                     transaction_id = (dr["transaction_id"] != Convert.DBNull) ? dr["transaction_id"].ToString() : "";
                     var result = clsPodium.GetPodiumInvoiceDetails(access_token, transaction_id);
                     dynamic obj = JsonConvert.DeserializeObject<dynamic>(result);
-                    str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"order_id\" : \"" + ((dr["id"] != Convert.DBNull) ? dr["id"].ToString() : "") + "\", \"payment_mode\" : \"podium\", \"transaction_id\" : \"" + transaction_id + "\", \"payment_amount\" : \"" + ((int)obj.data.paymentNet) / 100.00 + "\", \"payment_fee\" : \"0\", \"settlement_date\" : \"" + obj.data.payments[0].settledAt + "\", \"payment_stauts\" : \"" + obj.data.payments[0].status + "\"}";
+                    double _total = 0;
+                    if (obj.data.payments.Count > 0)
+                    {
+                        foreach (var inputAttribute in obj.data.payments[0].refunds)
+                        {
+                            _total = ((int)inputAttribute.amount) / 100.00;
+                        }
+
+                        //var listSum = obj.data.payments[0].refunds.Sum(x => (x as IDictionary<string, Object>).Count);
+                        str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"order_id\" : \"" + ((dr["id"] != Convert.DBNull) ? dr["id"].ToString() : "") + "\", \"payment_mode\" : \"podium\", \"transaction_id\" : \"" + transaction_id + "\", \"payment_amount\" : \"" + ((int)obj.data.paymentNet) / 100.00 + "\", \"payment_fee\" : \"" + ((int)obj.data.payments[0].fee + (int)obj.data.payments[0].interchangeFee) / 100.00 + "\", \"settlement_date\" : \"" + obj.data.payments[0].settledAt + "\", \"payment_stauts\" : \"" + obj.data.payments[0].status + "\" ,\"refund_amount\" : \"" + _total + "\"}";
+                    }
                 }
                 if (!string.IsNullOrEmpty(str_meta))
                 {
                     OrderRepository.UpdateUnsettledOrder("[" + str_meta + "]");
                 }
             }
-            catch { }//(Exception ex) { Console.WriteLine("Error: " + ex.Message); }
+            catch (Exception ex) { }//(Exception ex) { Console.WriteLine("Error: " + ex.Message); }
             return View();
         }
         // GET: OrderPodiumList
@@ -263,6 +273,33 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { return Json(new { status = ex.Message }, 0); }
             return Json(new { status = derivedCode }, 0);
+        }
+
+        // GET: OrderUnpaidList
+        public ActionResult OrderUnpaidList()
+        {
+            return View();
+        }
+        [HttpGet]
+        [Route("paymentsettlement/unsettled-transactions")]
+        public JsonResult GetUnsettledOrders(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                //DataTable dt = OrderRepository.OrderList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = OrderRepository.AuthorizeNetOrderList(fromdate, todate, "amazon_payments_advanced", model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
     }
 }

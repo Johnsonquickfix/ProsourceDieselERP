@@ -1636,7 +1636,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "SELECT max(label_complete) label, Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
-                                + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
+                                + " Format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)), '#,##0.00') as balance"
                                 + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }

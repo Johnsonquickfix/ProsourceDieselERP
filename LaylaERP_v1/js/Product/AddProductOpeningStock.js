@@ -14,7 +14,7 @@
     }
     else {
         $("#hfid").val("0");
-    }
+    } 
 })
 
 function getProduct() {

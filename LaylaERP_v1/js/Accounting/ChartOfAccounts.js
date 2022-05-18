@@ -24,8 +24,7 @@ function ChartOfAccountGrid() {
                     { data: 'label', title: 'Name', sWidth: "16%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "15%" },
-                    { data: 'ac_type', title: 'Account tag', sWidth: "15%" }, /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },*/
-                    /*{ data: 'bs_type', title: 'BS Tag', sWidth: "6%" },*/
+                    { data: 'ac_type', title: 'Account tag', sWidth: "15%" }, /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },{ data: 'bs_type', title: 'BS Tag', sWidth: "6%" },*/
                     { data: 'account_category', title: 'Account category', sWidth: "12%" },
                     {
                         'data': 'active', sWidth: "4%", 'sClass': 'ws_nowrap text-center',

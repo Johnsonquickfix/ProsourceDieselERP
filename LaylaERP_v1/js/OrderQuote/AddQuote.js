@@ -134,14 +134,26 @@
         else if (feeamt == 0) { swal('Error!', 'Please enter fee amount.', "error").then((result) => { $('#txt_FeeAmt').focus(); return false; }); return false; }
         else { ApplyFee(rowid, orderitemid, $('#txt_FeeTitle').val(), $('#ddlFeeType').val(), feeamt); }
     });
+    $(document).on("keypress", "#txt_FeeTitle,#txt_FeeAmt", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnApplyFee').click(); }
+    });
     /*End fee*/
     /*Start Gift Card*/
     $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); if ($("#order_line_items > tr.gift_item").length > 0) return false; else GiftCardModal(); });
     $("#myModal").on("click", "#btnGiftCardAdd", function (t) { t.preventDefault(); ApplyGiftCard(); });
+    $(document).on("keypress", "#txt_GiftCard", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnGiftCardAdd').click(); }
+    });
     /*End Gift Card*/
     /*Start Coupon*/
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); if ($("#order_line_items > tr.gift_item").length > 0) return false; else CouponModal(); });
     $("#myModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
+    $(document).on("keypress", "#txt_Coupon", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnCouponAdd').click(); }
+    });
     /*End Coupon*/
 });
 function isEdit(val) {
@@ -1847,7 +1859,7 @@ function QuoteProducts(id) {
     return _list;
 }
 function SaveData() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0; $('#hfOrderNo').data('qt','m')
+    let oid = parseInt($('#hfOrderNo').val()) || 0; $('#hfOrderNo').data('qt', 'm')
     if (!ValidateData()) { $("#loader").hide(); return false };
     let quote = QuoteHeader(oid), _list = QuoteProducts(oid);
     if (_list.length <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }

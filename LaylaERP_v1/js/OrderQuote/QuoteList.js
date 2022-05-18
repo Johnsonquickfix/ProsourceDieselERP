@@ -129,8 +129,8 @@ function dataGridLoad(order_type) {
                 data: 'payment_method', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
                     if (id == 'amazon_payments_advanced') return 'Amazon Pay';
                     else if (id == 'authorize_net_cim_credit_card') return 'Authorize Net';
-                    else if (id == 'podium' && row.payment_status == 'PAID') return 'Podium';
-                    else if (id == 'podium' && row.payment_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check Podium Payment Status." onclick="podiumPaymentStatus(' + row.quote_no + ',\'' + row.transaction_id + '\',\'' + row.billing_email + '\');">Podium</a>';
+                    else if (id == 'podium' && row.payment_status == 'PAID') return 'Podium Payments';
+                    else if (id == 'podium' && row.payment_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check Podium Payment Status." onclick="podiumPaymentStatus(' + row.quote_no + ',\'' + row.transaction_id + '\',\'' + row.billing_email + '\');">Podium Payments</a>';
                     else if (id == 'ppec_paypal') return 'PayPal';
                     else return '-';
                 }

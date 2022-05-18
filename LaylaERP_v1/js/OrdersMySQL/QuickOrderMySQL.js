@@ -173,7 +173,7 @@
     $(document).on("click", "#btnPrintPdf", function (t) {
         t.preventDefault();
         let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
-        pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
+        pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium Payments" : pay_mode;
         successModal(pay_mode, pay_id, false, false);
     });
     $(document).on("click", "#btnDownloadinPdf", function (t) {
@@ -2469,7 +2469,7 @@ function PodiumPayment() {
             $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
                 let _data = JSON.parse(response.message); let uid = _data.data.uid;
                 let _postMeta = [
-                    { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
+                    { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Payments' },
                     { post_id: oid, meta_key: '_podium_uid', meta_value: uid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: uid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
                 ];
                 let opt = { OrderPostMeta: _postMeta }; console.log(opt);
@@ -2501,7 +2501,7 @@ function PodiumPayment() {
 }
 function updatePayment(oid, taskUid) {
     let _postMeta = [
-        { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Payments' },
         { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
     ];
     let opt = { OrderPostMeta: _postMeta };

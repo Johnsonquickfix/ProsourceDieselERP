@@ -2840,19 +2840,94 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-
-        public static DataSet GetProductOpeningStock()
+        public static DataTable GetProductOpeningStock(string strValue1, string userstatus,  string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "product_id", string SortDir = "DESC")
         {
-            DataSet ds = new DataSet();
-            try {
-                string strSQl = "select op.product_id, p.post_title as Name FROM wp_posts p, product_opening_stock op where op.product_id = p.id and (p.post_type = 'product' Or post_type = 'product_variation')";
-                ds = SQLHelper.ExecuteDataSet(strSQl);
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            string strWhr = string.Empty;
+            try
+            {
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (op.product_id like '%" + searchid + "%' "
+                            + " OR p.post_title like '%" + searchid + "%' "
+                            + " OR op_qty like '%" + searchid + "%' "
+                            + " OR op_rate like '%" + searchid + "%' "
+                            + " )";
+                }
+                string strSQl = "select op.product_id, FORMAT(op_date,'MM/dd/yyyy') op_date,op_qty,op_rate,tag,p.post_title as Name FROM wp_posts p, product_opening_stock op where op.product_id = p.id and (p.post_type = 'product' Or post_type = 'product_variation') " + strWhr 
+                +" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ";
+                strSQl += "; select count(op.product_id) TotalRecord FROM wp_posts p, product_opening_stock op where op.product_id = p.id and (p.post_type = 'product' Or post_type = 'product_variation')" + strWhr;
+                 DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw ex;
             }
-            return ds;
+            return dt;
         }
+        public static int AddProductOpeningStock(ProductOpendingStock model)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+               // string strsql = "INSERT into product_warehouse_rule_details(fk_product_rule, country, state, fk_vendor, fk_warehouse) values(@fk_product_rule, @country, @state, @fk_vendor, @fk_warehouse); SELECT SCOPE_IDENTITY();";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@product_id", model.product_id),
+                    new SqlParameter("@op_qty",model.op_qty),
+                    new SqlParameter("@op_rate",model.op_rate),
+                    new SqlParameter("@tag",model.tag),
+                     
+               };
+                dt = SQLHelper.ExecuteDataTable("erp_product_opening_stock_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductOpeningStock/" + model.product_id + "", "Insert Product Opening Stock.");
+                throw Ex;
+            }
+        }
+        public static int GetProductCount(SetupModel model)
+        {
+            try
+            {
+                string strquery = "SELECT COUNT(product_id) from product_opening_stock WHERE product_id = '" + model.product_id + "' ";
+                SqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetOpeningById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT product_id, op_qty, op_rate, tag FROM product_opening_stock where product_id =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
 
     }
 }

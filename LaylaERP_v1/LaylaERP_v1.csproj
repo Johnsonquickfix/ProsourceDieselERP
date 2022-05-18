@@ -827,6 +827,7 @@
     <Content Include="js\Poemail\Addemail.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
+    <Content Include="js\Product\AddProductOpeningStock.js" />
     <Content Include="js\Product\PriceDetails.js" />
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Product\ProductCalculateList.js" />
@@ -1291,6 +1292,7 @@
     <Content Include="Views\MiscellaneousBill\AutoBillSync.cshtml" />
     <Content Include="Views\Product\ProductOpeningStock.cshtml" />
     <Content Include="Views\DataImport\ShippedTrack.cshtml" />
+    <Content Include="Views\Product\AddProductOpeningStock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

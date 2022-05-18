@@ -92,7 +92,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        //Product opening stock
+        public ActionResult AddProductOpeningStock()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
         {
@@ -2033,19 +2037,79 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { data = JSONresult }, 0);
         }
-
+         
         [HttpGet]
-        public JsonResult GetProductOpeningStock(ProductOpendingStock model)
+        public JsonResult GetProductOpeningStock(JqDataTableModel model)
         {
-            string JSONresult = string.Empty;
+            string result = string.Empty;
+            int TotalRecord = 0;
             try
             {
-                DataSet dt = ProductRepository.GetProductOpeningStock();
-                return Json(new { data = JSONresult }, 0); //ProductOpendingStock
+
+                DataTable dt = ProductRepository.GetProductOpeningStock(model.strValue1, model.strValue2,  model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+
             }
             catch { }
-            return Json(JSONresult, 0);
+            //return Json(result, 0); ProductOpendingStock
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
 
+        
+
+        public JsonResult AddOpeningStock(ProductOpendingStock model)
+        {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Add Product Opening Stock", "/Product/AddProductOpeningStock" + ", " + Net.BrowserInfo);
+            //DataTable dt1 = SetupRepostiory.CountRuleForState(model);
+            //if (dt1.Rows.Count > 0)
+            //{
+            //    return Json(new { status = false, message = "Product rule already exists for these states", url = "" }, 0);
+            //}
+            //else
+            //{
+                int ID = ProductRepository.AddProductOpeningStock(model);
+                if (ID > 0)
+                {
+                    if(ID == 111111111)
+                    return Json(new { status = true, message = "Product Opening Stock saved successfully!!", url = "Manage" }, 0);
+                    else
+                    return Json(new { status = true, message = "Product Opening Stock saved successfully!!", url = "" }, 0);
+            }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+            //}
+        }
+
+        public JsonResult GetProductCount(SetupModel model)
+        {
+            int ID = ProductRepository.GetProductCount(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Product already exists", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetOpeningById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = ProductRepository.GetOpeningById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
         }
 
     }

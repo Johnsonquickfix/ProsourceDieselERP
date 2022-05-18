@@ -24,9 +24,8 @@ function ChartOfAccountGrid() {
                     { data: 'label', title: 'Name', sWidth: "16%" },
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "15%" },
-                    { data: 'ac_type', title: 'Account tag', sWidth: "15%" }, /*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },*/
-                    { data: 'bs_type', title: 'BS Tag', sWidth: "6%" },
-                    { data: 'account_category', title: 'Account category', sWidth: "6%" },
+                    { data: 'ac_type', title: 'Account tag', sWidth: "15%" }, 
+                    { data: 'account_category', title: 'Account category', sWidth: "8%" },
                     {
                         'data': 'active', sWidth: "4%", 'sClass': 'ws_nowrap text-center',
                         'render': function (id, type, full, meta) {
@@ -46,14 +45,14 @@ function ChartOfAccountGrid() {
                     },
 
                     {
-                        'data': 'account_number', sWidth: "8%",
+                        'data': 'account_number', sWidth: "7%",
                         'render': function (id, type, full, meta) {
                             return ' <span title="Click here to account balance list" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model(' + id +');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
                         }
                     },
 
                     {
-                        'data': 'ID', sWidth: "8%",
+                        'data': 'ID', sWidth: "7%",
                         'render': function (id, type, full, meta) {
                             if ($("#hfEdit").val() == "1") {
                                 return ' <span title="Click here to edit chart of accounts" data-placement="bottom" data-toggle="tooltip"><a href="../Accounting/EditAccount/' + id + '" onclick="ActivityLog(\'Edit account id ' + id + ' in Chart of Accounts.\',\'/Accounting/chartofaccounts/' + id +'\');" ><i class="glyphicon glyphicon-pencil"></i></a></span>';
@@ -113,6 +112,8 @@ function ChartOfAccountGrid() {
 
 }
 
+/*{ data: 'extraparams', title: 'Chart Tag', sWidth: "10%" },
+                    { data: 'bs_type', title: 'BS Tag', sWidth: "4%" },*/
 
 $('#btnSearch').click(function () {
     ChartOfAccountGrid();

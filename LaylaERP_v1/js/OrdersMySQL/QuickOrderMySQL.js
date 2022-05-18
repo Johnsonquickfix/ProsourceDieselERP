@@ -28,6 +28,10 @@
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); if ($("#order_line_items > tr.gift_item").length > 0) return false; else CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
+    $(document).on("keypress", "#txt_Coupon", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnCouponAdd').click(); }
+    });
     $(document).on("blur", "#txtbillzipcode", function (t) {
         t.preventDefault();
         if ($("#ddlbillcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry"), $("#txtbillzipcode")); }
@@ -137,10 +141,18 @@
         else if (feeamt == 0) { swal('Error!', 'Please enter fee amount.', "error").then((result) => { $('#txt_FeeAmt').focus(); return false; }); return false; }
         else { ApplyFee(rowid, orderitemid, $('#txt_FeeTitle').val(), $('#ddlFeeType').val(), feeamt); }
     });
+    $(document).on("keypress", "#txt_FeeTitle,#txt_FeeAmt", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnApplyFee').click(); }
+    });
     /*End Return Items*/
     /*Start Gift Card*/
     $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); if ($("#order_line_items > tr.gift_item").length > 0) return false; else GiftCardModal(); });
     $("#billModal").on("click", "#btnGiftCardAdd", function (t) { t.preventDefault(); ApplyGiftCard(); });
+    $(document).on("keypress", "#txt_GiftCard", function (t) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') { $('#btnGiftCardAdd').click(); }
+    });
     /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;

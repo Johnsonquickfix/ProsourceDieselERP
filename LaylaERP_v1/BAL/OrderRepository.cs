@@ -218,7 +218,7 @@
                                 + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation' and ps.post_status = 'publish'"
                                 + " left outer join wp_postmeta pm_rp on pm_rp.post_id = coalesce(ps.id,p.id) and pm_rp.meta_key = '_regular_price'"
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = coalesce(ps.id,p.id) and pm_sp.meta_key = '_price'"
-                                + " left outer join wp_postmeta pm_gc on pm_gc.post_id = coalesce(ps.id,p.id) and pm_gc.meta_key = '_gift_card'"
+                                + " left outer join wp_postmeta pm_gc on pm_gc.post_id = p.id and pm_gc.meta_key = '_gift_card'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
                                 + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title,pm_gc.meta_value order by wp_t.term_order,wp_t.term_id;";
                 DT = SQLHelper.ExecuteDataTable(strSQl);

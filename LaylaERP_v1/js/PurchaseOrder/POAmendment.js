@@ -32,6 +32,7 @@
         ActivityLog('PO Amendment Edit', '/PurchaseOrder/po-amendment?id=' + $('#lblPoNo').data('id') + '');
         $('#ddlVendor').prop("disabled", true); $('.billinfo,.orderfiles').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
+        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel" data-placement="left"><i class="fa fa-undo"></i> Cancel</button> <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update" data-placement="bottom"><i class="far fa-save"></i> Update</button>');
         $('[data-toggle="tooltip"]').tooltip(); $("#loader").hide();
     });
@@ -53,7 +54,13 @@
     });
     $(document).on('click', "#btnuploade", function (t) {
         t.preventDefault(); Adduploade();
-    })
+    });
+    $(document).on("click", "#btnService", function (t) { t.preventDefault(); AddProductModal(1, 0); });
+    $("#POModal").on("click", "#btnAddProc", function (t) {
+        t.preventDefault();
+        let rang = parseInt($(this).data('rang')) || 0, proc_type = parseInt($('#ddl_service_type').val()) || 0;
+        bindOtherItems(proc_type, rang);
+    });
 });
 function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function isEdit(val) {
@@ -113,6 +120,100 @@ function getVendor() {
             }
         }, async: false
     });
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AddProductModal(proc_type, row_num) {
+    let row = $('#tritemid_' + row_num);
+    let rDesc = row.find('.item-desc').text(), rSku = row.find('.item-sku').text(), rSDate = '', rEDate = '', rQty = 0.00, rPrice = 0.00, rDescPer = 0.00, rTotal = 0.00;
+    rQty = parseInt(row.find("[name=txt_itemqty]").val()) || 1;
+    rPrice = parseFloat(row.find("[name=txt_itemprice]").val()) || 0;
+    rDescPer = parseFloat(row.find("[name=txt_itemdisc]").val()) || 0;
+    rTotal = parseFloat(row.find(".row-total").text()) || 0;
+    rSDate = isNullAndUndef(row.data('proc_fromdate')) ? row.data('proc_fromdate') : $('#txtPODate').val();
+    rEDate = isNullAndUndef(row.data('proc_todate')) ? row.data('proc_todate') : $('#txtPODate').val();
+
+    var prodHtml = '<div class="modal-dialog">';
+    prodHtml += '<div class="modal-content">';
+    prodHtml += '<div class="modal-header">';
+    prodHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    prodHtml += '<h4 class="modal-title" id="myModalLabel">Add ' + (proc_type == 0 ? 'Other Product' : 'Service') + '</h4>';
+    prodHtml += '</div>';
+    prodHtml += '<div class="modal-body">';
+
+    if (proc_type == 0) {
+        prodHtml += '<div class="row">';
+        prodHtml += '<div class="col-md-12">Description<span class="text-red">*</span>';
+        prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';
+        prodHtml += '</div>';
+        prodHtml += '<div class="col-md-12">Vender SKU';
+        prodHtml += '<input class="form-control" type="input" id="txt_proc_sku" placeholder="Vender SKU" maxlength="150" autocomplete="off" value="' + rSku + '">';
+        prodHtml += '</div>';
+    }
+    else {
+        prodHtml += '<div class="row">';
+        prodHtml += '<div class="col-md-6">Service Type<span class="text-red">*</span>';
+        prodHtml += '<select class="form-control" id="ddl_service_type" placeholder="Select Service Type"><option value="1">Shipping</option><option value="2">Tax</option><option value="3">Other Fee</option></select>';
+        prodHtml += '</div>';
+        prodHtml += '<div class="col-md-6">Description<span class="text-red">*</span>';
+        prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';
+        prodHtml += '</div>';
+    }
+    prodHtml += '<div class="col-md-6">Amount<span class="text-red">*</span>';
+    prodHtml += '<input class="form-control addCalulate" type="number" id="txt_proc_price" placeholder="Price" maxlength="20" autocomplete="off" value="' + rPrice.toFixed(2) + '">';
+    prodHtml += '</div>';
+    prodHtml += '</div>';
+
+    prodHtml += '</div>';
+    prodHtml += '<div class="modal-footer">';
+    prodHtml += '<button type="button" class="btn btn-danger" id="btnAddProc" data-proc_type="' + proc_type + '" data-rang="' + row_num + '">Add</button>';
+    prodHtml += '</div>';
+    prodHtml += '</div>';
+    prodHtml += '</div>';
+    $("#POModal").empty().html(prodHtml);
+    $("#POModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_proc_desc").focus();
+    $("#ddl_service_type").val(proc_type);
+    $('.date-picker').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+}
+function bindOtherItems(proc_type, row_num) {
+    let rDesc = '', rSku = '', rSDate = '00/00/0000', rEDate = '00/00/0000', rQty = 0.00, rPrice = 0.00, rDescPer = 0.00, rTotal = 0.00;
+    if (row_num == 0) row_num = (parseInt($('#product_line_items tr:last').data("rang")) || 0) + 1;
+    rDesc = $("#txt_proc_desc").val();
+    if (rDesc == "") { swal('alert', 'Please Enter Description.', 'error').then(function () { swal.close(); $('#txt_proc_desc').focus(); }); return false; }
+    if ($('#txt_proc_qty').val() == "") { swal('alert', 'Please Enter Quantity.', 'error').then(function () { swal.close(); $('#txt_proc_qty').focus(); }); return false; }
+    if ($('#txt_proc_price').val() == "") { swal('alert', 'Please Enter Price.', 'error').then(function () { swal.close(); $('#txt_proc_price').focus(); }); return false; }
+    if (proc_type == 0) { rSku = $("#txt_proc_sku").val(), rSDate = rEDate = $("#txtPODate").val(); }
+    else { rSDate = $("#txtPODate").val(), rEDate = $("#txtPODate").val(); }
+    rQty = 1.00, rPrice = parseFloat($("#txt_proc_price").val()) || 0.00, rDescPer = 0.00;
+    rTotal = rPrice * rQty;
+    let itemHtml = '';
+    if ($('#tritemid_' + row_num).length <= 0) {
+        itemHtml += '<tr id="tritemid_' + row_num + '" class="other_item" data-rowid="0" data-rang="' + row_num + '" data-proc_type="' + proc_type + '" data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
+        itemHtml += '<td><span class="item-desc">' + rDesc + '</span> ';
+        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
+        itemHtml += '</td > ';
+        itemHtml += '<td class="item-sku">' + rSku + '</td>';
+        //itemHtml += '<td class="item-desc">' + rDesc + '</td><td class="item-sku">' + rSku + '</td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row_num + '" value="' + rPrice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number ' + (proc_type > 0 ? '' : 'rowCalulate') + '" type="number" id="txt_itemqty_' + row_num + '" value="' + rQty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number ' + (proc_type > 0 ? '' : 'rowCalulate') + '" type="number" id="txt_itemdisc_' + row_num + '" value="' + rDescPer.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
+        itemHtml += '<td class="text-right tax-amount">0.00</td><td class="text-right ship-amount">0.00</td>';
+        itemHtml += '<td class="text-right row-total">' + rTotal.toFixed(2) + '</td>';
+        itemHtml += '</tr>';
+        $('#product_line_items').append(itemHtml);
+    }
+    else {
+        $('#tritemid_' + row_num).data('proc_type', proc_type);
+        $('#tritemid_' + row_num).data('proc_fromdate', rSDate); $('#tritemid_' + row_num).data('proc_todate', rEDate);
+        $('#tritemid_' + row_num).find('.item-desc').text(rDesc); $('#tritemid_' + row_num).find('.item-sku').text(rSku);
+        $('#tritemid_' + row_num).find("[name=txt_itemprice]").val(rPrice.toFixed(2));
+        $('#tritemid_' + row_num).find("[name=txt_itemqty]").val(rQty);
+        $('#tritemid_' + row_num).find("[name=txt_itemdisc]").val(rDescPer);
+        $('#tritemid_' + row_num).find(".tax-amount").text(0.00); $('#tritemid_' + row_num).find('.row-total').text(rTotal);
+    }
+    $("#POModal").modal('hide');
+    $("#product_line_items").find(".rowCalulate").change(function () { calculateFinal(); });
+    calculateFinal();
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -224,7 +325,7 @@ function getPurchaseOrderInfo() {
                         }
                     }
                 });
-                $.each(data['pod'], function (key, row) {
+                $.each(data['pod'], function (index, row) {
                     let itemHtml = '';
                     if (row.fk_product > 0) {
                         itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
@@ -242,11 +343,12 @@ function getPurchaseOrderInfo() {
                     else {
                         let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
                         itemHtml = '<tr id="tritemid_' + row.rowid + '" class="other_item" data-rowid="' + row.rowid + '" data-rang="' + row.rowid + '" data-proc_type="' + row.product_type + '"  data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
-                        //itemHtml += '<td class="text-center">';
-                        //itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
-                        //itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
-                        //itemHtml += '</td > ';
-                        itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
+                        itemHtml += '<td><span class="item-desc">' + row.description + '</span> ';
+                        itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + 1 + '\',\'' + row.rowid + '\');" data-toggle="tooltip" title="Edit other product and services"><i class="glyphicon glyphicon-edit"></i></button>';
+                        itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');" data-toggle="tooltip" title="Delete other product and services"><i class="glyphicon glyphicon-trash"></i></button>';
+                        itemHtml += '</td > ';
+                        itemHtml += '<td class="item-sku">' + row.product_sku + '</td>';
+                        //itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo rowCalulate') + ' number" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount" ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
@@ -388,7 +490,7 @@ function saveVendorPO() {
                     $.post('/PurchaseOrder/POAmendment', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {
-                            $('#lblPoNo').data('id', result[0].id); 
+                            $('#lblPoNo').data('id', result[0].id);
                             swal('Success', 'Purchase order updated successfully.', "success").then(function () {
                                 window.location.href = window.location.origin + "/PurchaseOrder/po-amendment?id=" + result[0].id;
                                 //ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/po-amendment');

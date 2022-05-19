@@ -1337,7 +1337,7 @@ function bindCouponList(data) {
 
         //if (zPCnt == 0 && zExcPCnt == 0) { swal('Alert!', 'Invalid code entered. Please try again.!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
         $.each(data, function (key, li) {
-            if ($('#li_' + li.post_title).length <= 0) {
+            if ($('#li_' + li.post_title.toString().toLowerCase().replaceAll(' ', '_')).length <= 0) {
                 let cou_amt = parseFloat(li.coupon_amount) || 0.00;
                 layoutHtml = '<li id="li_' + li.post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (li.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + li.post_title + '" data-couponamt= "' + li.coupon_amount + '" data-disctype= "' + li.discount_type + '" data-rqprdids= "' + li.product_ids + '" data-excludeids= "' + li.exclude_product_ids + '" data-type= "' + li.type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';

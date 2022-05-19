@@ -127,7 +127,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult ProductAttributesVariation()
+        {
+            return View();
+        }
+        // UpdateAttribute
+        public ActionResult UpdateAttribute()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -497,5 +505,59 @@ namespace LaylaERP.Controllers
             }
             return Json(new { message = strmsg }, 0);
         }
+
+        [HttpGet]
+        public JsonResult ProductList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+
+                DataTable dt = SettingRepository.ProductList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+
+            }
+            catch { }
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetattributesById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = SettingRepository.GetattributesById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
+
+        public JsonResult Updateattribitues(string strValue1, string strValue2, int strValue3,int strValue4)
+        {
+            UserActivityLog.WriteDbLog(LogType.Submit, "Update attributes", "/Setting/Updateattribitues" + ", " + Net.BrowserInfo);
+            //DataTable dt1 = SetupRepostiory.CountRuleForState(model);
+            //if (dt1.Rows.Count > 0)
+            //{
+            //    return Json(new { status = false, message = "Product rule already exists for these states", url = "" }, 0);
+            //}
+            //else
+            //{
+            int ID = SettingRepository.Updateattribitues(strValue1, strValue2, strValue3, strValue4);
+            if (ID > 0)
+            {     
+                return Json(new { status = true, message = "Product Attributes update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        
     }
 }

@@ -361,5 +361,131 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataTable ProductList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                //if (strValue1 == "0")
+                //    strValue1 = "";
+                //if (strValue3 == "0")
+                //    strValue3 = "";
+                //if (strValue4 == "0")
+                //    strValue4 = "";
+
+                //if (!string.IsNullOrEmpty(userstatus))
+                //{
+                //    if (userstatus == "private")
+                //        strWhr += " and p.post_status in ('publish','private')";
+                //    else
+                //        strWhr += " and p.post_status = '" + userstatus + "'";
+                //}
+                //else
+                //    strWhr += " and p.post_status != 'auto-draft' ";
+                //if (userstatus != "trash")
+                //{
+                //    strWhr += " and p.post_status != 'draft' ";
+                //}
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (p.ID like '%" + searchid + "%' "
+                            + " OR post_title like '%" + searchid + "%' "
+                            //+ " OR itemname like '%" + searchid + "%' "
+                            + " OR s.meta_value like '%" + searchid + "%' "
+                            + " OR p.post_status like '%" + searchid + "%' "
+                            //+ " OR pm1.meta_value like '%" + searchid + "%' "
+                            //+ " OR pmstc.meta_value like '%" + searchid + "%' "
+
+
+                            + " )";
+                }
+                //if (!string.IsNullOrEmpty(strValue1))
+                //{
+
+                //    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + strValue1 + "')";
+                //}
+                //if (!string.IsNullOrEmpty(strValue3))
+                //{
+
+                //    strWhr += " and product_slug like '%" + strValue3 + "%' ";
+                //}
+                //if (!string.IsNullOrEmpty(strValue4))
+                //{
+
+                //    strWhr += " and pmstc.meta_value like '%" + strValue4 + "%' ";
+                //}      
+                string strSql = "Select * from ( select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
+              + "  max(case when p.id = s.post_id and s.meta_key = '_product_attributes' then s.meta_value else '' end) attributes,"
+              + " max(case when p.id = s.post_id and s.meta_key = '_product_attributes' then s.meta_value_old else '0' end) oldattributes,"
+              + "  (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+              + " FROM wp_posts p "
+              + " left join wp_postmeta as s on p.id = s.post_id"             
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
+              + " GROUP BY  p.ID,guid,post_status,post_parent) tt where post_parent = 0"
+               + " order by p_id,post_type,id";
+                //+ " order by p_id" + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
+               + " left join wp_postmeta as s on p.id = s.post_id"              
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' and post_parent = 0" + strWhr;
+
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetattributesById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT meta_value,meta_value_old,isnull((select term_id  from wp_terms where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_type' and term_taxonomy_id in (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = P.post_id))),0) pid FROM wp_postmeta p where meta_key = '_product_attributes' and post_id =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int Updateattribitues(string attributes, string o_attributes, int producttpye, int product_id)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                // string strsql = "INSERT into product_warehouse_rule_details(fk_product_rule, country, state, fk_vendor, fk_warehouse) values(@fk_product_rule, @country, @state, @fk_vendor, @fk_warehouse); SELECT SCOPE_IDENTITY();";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@product_id", product_id),
+                    new SqlParameter("@attributes",attributes),
+                    new SqlParameter("@o_attributes",o_attributes),
+                    new SqlParameter("@producttpye",producttpye),
+
+               };
+                dt = SQLHelper.ExecuteDataTable("erp_product_attributes_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/Updateattribitues/" + product_id + "", "Update Product attributes.");
+                throw Ex;
+            }
+        }
     }
 }

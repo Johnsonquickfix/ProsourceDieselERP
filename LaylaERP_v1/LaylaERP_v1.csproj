@@ -193,6 +193,7 @@
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
+    <Compile Include="BAL\CustomerServiceRepository.cs" />
     <Compile Include="BAL\DaRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Controllers\CommonAPIController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\CustomerServiceController.cs" />
     <Compile Include="Controllers\DataImportController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
@@ -749,6 +751,7 @@
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
+    <Content Include="js\CustomerService\CustomerSearch.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
@@ -1297,6 +1300,7 @@
     <Content Include="Views\Product\AddProductOpeningStock.cshtml" />
     <Content Include="Views\Setting\ProductAttributesVariation.cshtml" />
     <Content Include="Views\Setting\UpdateAttribute.cshtml" />
+    <Content Include="Views\CustomerService\CustomerSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

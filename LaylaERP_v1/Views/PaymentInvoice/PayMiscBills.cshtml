@@ -9,7 +9,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Pay Misc Bills</h2>
+    <h2 class="page-heading" id="lbltitle">Create Misc Bills</h2>
     <a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a>
     <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
         <input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger billinfo" />
@@ -51,9 +51,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Bill Type<span class="text-red">*</span></label>
+                            @*<label class="control-label" for="ddlPaymentType" data-toggle="tooltip" title="Vendor payment type.">Bill Type<span class="text-red">*</span></label>
                             <div class="">
                                 <select class="form-control select2 billinfoval" id="ddlPaymentType"></select>
+                            </div>*@
+                            <label class="control-label " for="Payment Terms">Payment Terms</label>
+                            <div class="">
+                                <select class="form-control select2 billinfoval" id="ddlPaymentTerms"></select>
                             </div>
                         </div>
 
@@ -127,8 +131,12 @@
                     </div>
                     <div class="col-md-4">
                         <label class="control-label" id="lblbillNo" data-id="0"></label>
+                        @*<div class="form-group">                             
+                            <label class="control-label">Balance Net</label>                            
+                                <label id="lblbalancenet" class="control-label" />                            
+                        </div>*@
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -142,9 +150,10 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">Action</th>
+                                    <th style="width: 25%">Bill Type</th>
                                     <th style="width: 20%">Product/Service/Description</th>
                                     @*<th style="width: 20%">Description</th>*@
-                                    <th style="width: 10%">SKU</th>
+                                <th style="width: 10%">Service No.</th>
                                     <th class="text-right" style="width: 10%">Quantity</th>
                                     <th class="text-right" style="width: 10%">Price</th>
                                     <th class="text-right" style="width: 10%">Tax</th>

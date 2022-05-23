@@ -64,22 +64,58 @@
             $('#divaddresstype').show();
             //$('#txtcustmeraddress').hide();
         }
+        $('#ddlPaymentTerms').val(0).trigger('change');
+        $('#txtcustmeraddress').text('');
+        $('#ddlvendordata').val(-1).trigger('change');
+        $('#ddlcoustomer').val(0).trigger('change');
 
        
 
     });
+    getMasters();
     getbillInfodetails(id);
     $(document).on("click", "#btnSave", function (t) { t.preventDefault(); savemiscbill(); });
     $("#ddlcoustomer").change(function () { setTimeout(function () { CustomerAddress($("#ddlcoustomer").val()); }, 50); return false; });
-    $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); }, 50); return false; });
+    $("#ddlvendordata").change(function () { setTimeout(function () { vendorAddress($("#ddlvendordata").val()); PaymentTerms(); }, 50); return false; });
     $("#txtshippingfee").change(function () { calculateFinal() });
     $("#txtotherfee").change(function () { calculateFinal() });
     getipaidhistory(id);
+  
 });
+
+function PaymentTerms() {
+    let _details = getVendorDetails(); //console.log(_details);
+    
+    if (_details.length > 0) {       
+        $('#ddlPaymentTerms').val((parseInt(_details[0].term) || 0)).trigger('change');
+        let days = 0;
+        days = parseInt(_details[0].balanceday) || 0
+        var date = new Date();
+        if (days > 0)
+            date.setDate(date.getDate() + days);           
+        else
+            date.setDate(date.getDate() + 15);
+        $('#txtdueDate').val(date.toLocaleDateString("en-US"));
+
+    }
+}
+
+function getVendorDetails() {
+    let VendorID = parseInt($('#ddlvendordata').val()) || 0;
+    let _details = [];
+    $.ajax({
+        url: "/PaymentInvoice/GetVendorByID", dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
+        data: { strValue1: VendorID },
+        success: function (data) { _details = JSON.parse(data); },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }, async: false
+    });
+    return _details;
+}
+
 var itxtCnt = 0;
 var i = 1;
 function bindItems() {
- 
+    let _billtype = Getpaymenttypebill();
     i++;
     itxtCnt = itxtCnt + 1;
   //  console.log('sd');
@@ -88,9 +124,18 @@ function bindItems() {
    /* itemHtml += '<td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td>';*/
     itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + i + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                    // itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
+    //itemHtml += '<td><select class="form-control billinfo"   id="ddlPaymentType_' + itxtCnt + '"  name="ddlPaymentType"></td>';
+
+    itemHtml += '<td><select id="ddlPaymentTypebill_' + itxtCnt + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfo select2"><option value="-1">Select Bill Type</option>';
+    for (var j = 0; j < _billtype.length; j++) {
+        itemHtml += '<option value="' + _billtype[j].rowid + '"> ' + _billtype[j].name + '</option>';
+    };
+    itemHtml += '</select ></td>';
+
+
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + itxtCnt + '"  name="txt_Service" placeholder="Product/Service"></td>';
     //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
-    itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + itxtCnt + '"  name="txt_sku" placeholder="SKU"></td>';
+    itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + itxtCnt + '"  name="txt_sku" placeholder="Service No."></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + itxtCnt + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Price."></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + itxtCnt + '"  name="txt_Tax" placeholder="Tax"></td>';
@@ -98,6 +143,7 @@ function bindItems() {
     itemHtml += '<td class="text-right row-total">' + formatCurrency(0) + '</td>';
     itemHtml += '</tr>';
     $('#line_items').append(itemHtml);
+    $(".select2").select2();
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
    
     calculateFinal();
@@ -112,7 +158,36 @@ function bindItems() {
 
 }
 
+function getMasters() {
+
+
+    $.ajax({
+        url: "/PaymentInvoice/getpaymentterm",
+        type: "Get",
+        success: function (data) {
+            $('#ddlPaymentTerms').append('<option value="0">Select Payment Term</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlPaymentTerms').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+
+    //let option = { strValue1: 'GETMD', strValue2: 0 };
+    //$.ajax({
+    //    url: "/PurchaseOrder/GetAllMaster", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
+    //    success: function (data) {
+    //        let dt = JSON.parse(data);
+    //        //Payment Terms
+    //        $("#ddlPaymentTerms").html('<option value="0">Select Payment Term</option>');
+    //        for (i = 0; i < dt['Table'].length; i++) { $("#ddlPaymentTerms").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+            
+    //    },
+    //    complete: function () { $("#loader").hide(); },
+    //    error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+    //});
+}
 function getbillInfodetails(oid) {
+    let _billtype = Getpaymenttypebill();
     //$('#divAlert').empty();
     var itxtCnt = 0;
     var ic = 1;
@@ -133,14 +208,14 @@ function getbillInfodetails(oid) {
                 try {
                     let data = JSON.parse(result); var custype = "", paytype = ""; 
                     for (let i = 0; i < data['po'].length; i++) {  
-                        $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
+                      
                         custype = data['po'][i].customertype.toString();
                         paytype = data['po'][i].payaccount.toString();
                         $('#ddlCoustomertype').val(custype.trim()).trigger('change');
                         $('#ddltransactiontype').val(data['po'][i].fk_transactiontype).trigger('change'); 
                         $('#ddlpayaccounttype').val(paytype.trim()).trigger('change'); 
                         $('#txtinstaintion').val(data['po'][i].instation);
-                        $('#ddlPaymentType').val(data['po'][i].fk_paymenttype).trigger('change'); 
+                       
                         $('#txtinstaintionaddress').val(data['po'][i].fk_address);
                         $('#txtcustmeraddress').text(data['po'][i].fk_address);
                         if (!data['po'][i].date_creation.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].date_creation);
@@ -159,6 +234,8 @@ function getbillInfodetails(oid) {
                         $('#txtotherfee').val(data['po'][i].otherfee);
                        // $('#lblbillNo').text(data['po'][i].rowid);
                         $('#lblbillNo').data('id', data['po'][i].rowid);
+                        $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
+                        $('#ddlPaymentTerms').val(data['po'][i].fk_paymentterm).trigger('change');
                     }
                 
                     for (let i = 0; i < data['pod'].length; i++) {
@@ -172,9 +249,31 @@ function getbillInfodetails(oid) {
                         itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + ic + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                            // itemHtml += '<td>' + data['pod'][i].description + '<br>Tag/Lot/Serial No. :- ' + data['pod'][i].product_serialno + '</td><td>' + data['pod'][i].product_sku + '</td>';
 
+                        //varHTML += '    <td class="form-group d-flex">';
+                        ///*   varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
+                        //varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label>';
+                        //varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">Select shipping class</option>';
+                        //for (var j = 0; j < _shipping_class.length; j++) {
+                        //    if (data[i].shippingclass == _shipping_class[j].rowid)
+                        //        varHTML += '<option value="' + _shipping_class[j].rowid + '" selected> ' + _shipping_class[j].name + '</option>';
+                        //    else
+                        //        varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
+                        //};
+                        //varHTML += '</select></td> ';
+
+
+                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].miscellaneous_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfo select2"><option value="-1">Select Bill Type</option>';
+                        for (var j = 0; j < _billtype.length; j++) {
+                            if (data['pod'][i].fk_paymenttype == _billtype[j].rowid)
+                                itemHtml += '<option value="' + _billtype[j].rowid + '" selected> ' + _billtype[j].name + '</option>';
+                            else
+                                itemHtml += '<option value="' + _billtype[j].rowid + '"> ' + _billtype[j].name + '</option>';
+                        };
+                        itemHtml += '</select ></td>';
+
                         itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
                        // itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Vendor SKU"></td>';
+                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Service No."></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
@@ -318,6 +417,19 @@ function getpaymenttype() {
         }, async: false
     });
 }
+
+function Getpaymenttypebill() {
+    let _billtype = [];
+    $.ajax({
+        type: "get", url: '/PaymentInvoice/getpaymenttypebill', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+        success: function (data) {
+            data = JSON.parse(data); _billtype = data;
+            //console.log(data, _shipping_class);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
+    });
+    return _billtype;
+}
 function getVendor() {
     $.ajax({
         url: "/PurchaseOrder/GetVendor",
@@ -421,12 +533,13 @@ function formatCurrency(total) {
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
-        let rproduct = '', rdiscription = '',rsku = '';
+        let rproduct = '', rdiscription = '',rsku = '',raccid;
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00, rshipAmt = 0.00, rothrAmt = 0.00;
         rproduct = $(row).find("[name=txt_Service]").val();
         /*rdiscription = $(row).find("[name=txt_Description]").val();*/
         rdiscription = '';
         rsku = $(row).find("[name=txt_sku]").val();
+        raccid = $(row).find("[name=ddlPaymentTypebill]").val();
         rPrice = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_Quantitye]").val()) || 0.00;        
         rTax1 = parseFloat($(row).find("[name=txt_Tax]").val()) || 0.00;
@@ -439,7 +552,7 @@ function createItemsList() {
         _rang += 1;
         _list.push({
              product: rproduct, discription: rdiscription, sku: rsku, shippingfee: rshipAmt, otherfee: rothrAmt,
-            qty: rQty, rate: rPrice, total_ttc: rGrossAmt, tax: rTax1
+            qty: rQty, rate: rPrice, total_ttc: rGrossAmt, tax: rTax1, fk_paymenttype: raccid
              
         });
     });
@@ -463,7 +576,7 @@ function savemiscbill() {
     let date = $("#txtcreateDate").val();
     let duedate = $("#txtdueDate").val(); 
     let caddress = '';
-    let paymenttype = parseInt($("#ddlPaymentType").val()) || 0;
+    let paymenttype = parseInt($("#ddlPaymentTerms").val()) || 0;
     let rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00;
     let rothrAmt = parseFloat($("#txtotherfee").val()) || 0.00;
 
@@ -488,7 +601,7 @@ function savemiscbill() {
     if (date == "") { swal('alert', 'Please enter create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) } 
     else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
     else if (Coustomertype == 0) { swal('alert', 'Please select coustomer type', 'error').then(function () { swal.close(); $('#ddlCoustomertype').focus(); }) }
-    else if (paymenttype == 0) { swal('alert', 'Please select bill type.', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    //else if (paymenttype == 0) { swal('alert', 'Please select payment terms.', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
     else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
     else if (duedate == "") { swal('alert', 'Please enter due date ', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
     else if (date > duedate) { swal('alert', 'Please enter a due date greater than create date', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }

@@ -716,6 +716,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable getpaymenttypebill()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select account_number rowid,label name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE', 'EXPENSE')";                
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
 
         public static DataTable NewMiscBill(long Pkey, string qFlag, XmlDocument orderXML, XmlDocument orderdetailsXML)
         {
@@ -1007,6 +1019,33 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return ds;
+        }
+
+        public static DataSet getpaymentterm()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select Term ID,PaymentTerm Name from paymentterms ";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable GetVendorByID(long VendorID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@rowid", VendorID) };
+                string strSQl = "select rowid,PaymentTermsID,term,BalanceID,balanceday from wp_vendor v left outer join paymentterms pt on pt.ID = v.PaymentTermsID left outer join balancedays bd on bd.ID = v.BalanceID  where rowid=@rowid;";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
         }
 
     }

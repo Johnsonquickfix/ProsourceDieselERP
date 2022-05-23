@@ -373,6 +373,14 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
+        public JsonResult getpaymenttypebill()
+        {
+            string JSONString = string.Empty;
+            DataTable dt = new DataTable();
+            dt = BAL.PaymentInvoiceRepository.getpaymenttypebill();
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Json(JSONString, JsonRequestBehavior.AllowGet);
+        }
 
 
         [HttpPost]
@@ -632,6 +640,34 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult getpaymentterm(SearchModel model)
+        {
+            DataSet ds = BAL.PaymentInvoiceRepository.getpaymentterm();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public JsonResult GetVendorByID(SearchModel model)
+        {
+            long id = 0;
+            string result = string.Empty;
+            try
+            {
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable dt = PaymentInvoiceRepository.GetVendorByID(id);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
         }
 
         //[HttpPost]

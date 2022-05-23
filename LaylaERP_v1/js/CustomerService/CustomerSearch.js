@@ -20,7 +20,7 @@
         },
         templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
     });
-    $(document).on("keypress", "#ddlUser", function (t) {
+    $(document).on("change", "#ddlUser", function (t) {
         t.preventDefault();
         let cus_id = parseInt($(this).val()) || 0;
         $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });

@@ -870,8 +870,6 @@
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
-    <Content Include="js\Setting\ProductAttributesVariation.js" />
-    <Content Include="js\Setting\UpdateAttribute.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
     <Content Include="js\Setup\ProductReturn.js" />
@@ -1298,8 +1296,6 @@
     <Content Include="Views\Product\ProductOpeningStock.cshtml" />
     <Content Include="Views\DataImport\ShippedTrack.cshtml" />
     <Content Include="Views\Product\AddProductOpeningStock.cshtml" />
-    <Content Include="Views\Setting\ProductAttributesVariation.cshtml" />
-    <Content Include="Views\Setting\UpdateAttribute.cshtml" />
     <Content Include="Views\CustomerService\CustomerSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>

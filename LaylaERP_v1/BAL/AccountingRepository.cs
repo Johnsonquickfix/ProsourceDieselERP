@@ -542,7 +542,7 @@ namespace LaylaERP.BAL
             {
                 string strSql = "SELECT Format((COALESCE(sum(case when senstag = 'C' then credit end),0)),'#,##0.00') credit,"
                                + " Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
-                               + " Format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)),'#,##0.00') as balance FROM erp_accounting_bookkeeping where 1 = 1 and cast(doc_date as date) BETWEEN " + sMonths;
+                               + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)),'#,##0.00') as balance FROM erp_accounting_bookkeeping where 1 = 1 and cast(doc_date as date) BETWEEN " + sMonths;
                 if(!String.IsNullOrEmpty(account_num))
                 {
                     strSql += " and(inv_complete='" + account_num + "')";

@@ -140,7 +140,7 @@ function GrandToatl(is_date) {
         data: obj,
         success: function (data) {
             var d = JSON.parse(data);
-            if (account_num != "") { $("#txtbalance").hide(); }
+            if (account_num != "") { /*$("#txtbalance").hide();*/ }
             else { $("#txtbalance").show(); }
             if (d.length > 0) {
                 $("#txtdebit").text('$' + (d[0].debit));

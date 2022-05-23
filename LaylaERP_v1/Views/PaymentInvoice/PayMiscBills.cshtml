@@ -10,9 +10,9 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">Create Misc Bills</h2>
-    <a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a>
+    @*<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a>*@
     <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
-        <input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger billinfo" />
+        @*<input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger billinfo" />*@
     </div>
 
 </div>
@@ -57,7 +57,7 @@
                             </div>*@
                             <label class="control-label " for="Payment Terms">Payment Terms</label>
                             <div class="">
-                                <select class="form-control select2 billinfoval" id="ddlPaymentTerms"></select>
+                                <select class="form-control select2 billinfovalff" id="ddlPaymentTerms"></select>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@
                         <div class="form-group">
                             <label class="control-label">Transaction Type<span class="text-red">*</span></label>
                             <div class="">
-                                <select class="form-control select2 billinfoval" id="ddltransactiontype"></select>
+                                <select class="form-control select2 billinfovalff" id="ddltransactiontype"></select>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                         <div class="form-group">
                             <label class="control-label">Pay Account<span class="text-red">*</span></label>
                             <div class="">
-                                <select class="form-control select2 billinfoval" id="ddlpayaccounttype">
+                                <select class="form-control select2 billinfovalff" id="ddlpayaccounttype">
                                     <option value="0" selected="">Select Pay Account</option>
                                     <option value="C">Card</option>
                                     <option value="B">Bank Transfer</option>
@@ -215,7 +215,7 @@
                             <div class="form-group">
                                 <label class="col-sm-10 control-label text-left">Shipping Fee</label>
                                 <div>
-                                    <input min="0" autocomplete="off" class="text-right form-control billinfo number " type="number" id="txtshippingfee" placeholder="Shipping Fee" />
+                                    <input min="0" autocomplete="off" class="text-right form-control billinfovalff number " type="number" id="txtshippingfee" placeholder="Shipping Fee" />
                                 </div>
                             </div>
 
@@ -226,7 +226,7 @@
                             <div class="form-group">
                                 <label class="col-sm-10 control-label text-left">Other Charges</label>
                                 <div>
-                                    <input min="0" autocomplete="off" class="text-right form-control billinfo number " type="number" id="txtotherfee" placeholder="Other Charges" />
+                                    <input min="0" autocomplete="off" class="text-right form-control billinfovalff number " type="number" id="txtotherfee" placeholder="Other Charges" />
                                 </div>
                             </div>
                         </div>
@@ -303,7 +303,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
                     <a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a>
-                    <input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger billinfo" />
+                    @*<input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger billinfo" />*@
                 </div>
             </div>
         </div>

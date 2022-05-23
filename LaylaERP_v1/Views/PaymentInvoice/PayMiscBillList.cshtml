@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-title">
-                <h2 class="page-heading lbltitle" data-ut="@user.UserType.ToString().ToLower()">Misc Bills</h2><a data-toggle="tooltip" title="Click here to new misc bill." data-placement="bottom" href="../../PaymentInvoice/PayMiscBills" class="btn btn-danger" id="btnAddVendor" onclick="return ActivityLog('Create new misc bill in list','/PaymentInvoice/PayMiscBillList');">New Misc Bill</a>
+                <h2 class="page-heading lbltitle" data-ut="@user.UserType.ToString().ToLower()">Misc Bills</h2><a data-toggle="tooltip" title="Click here to new misc bill." data-placement="bottom" href="../../PaymentInvoice/PayMiscBills" class="btn btn-danger" id="btnAddVendor" onclick="return ActivityLog('Create new misc bill in list','/PaymentInvoice/PayMiscBillList');">Create Misc Bill</a>
                 <div style="margin-left:auto;min-width:280px;">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -47,7 +47,7 @@
                                         <th>Vendor Name</th>
                                         <th>Name</th>
                                         <th>Destination</th>
-                                        <th>Destination Address</th>
+                                        @*<th>Destination Address</th>*@
                                         @*<th>Amount</th>*@
                                         <th>Planned date of delivery</th>
                                         @*<th>Past Due</th>*@

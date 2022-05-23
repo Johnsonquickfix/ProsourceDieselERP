@@ -80,6 +80,19 @@
     $("#txtshippingfee").change(function () { calculateFinal() });
     $("#txtotherfee").change(function () { calculateFinal() });
     getipaidhistory(id);
+
+    $(document).on("click", ".btnEdit", function (t) {
+        t.preventDefault(); $("#loader").show(); //isEdit(true);
+        $('.billinfovalff').prop("disabled", false);       
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel" data-placement="left"><i class="fa fa-undo"></i> Cancel</button> <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update" data-placement="bottom"><i class="far fa-save"></i> Update</button>');
+         $("#loader").hide();
+    });
+
+    $(document).on("click", ".btnUndoRecord", function (t) {
+        t.preventDefault(); let _text = 'Are you sure you want to undo changes this bill ?';
+        swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getbillInfodetails(id); } });
+    });
   
 });
 
@@ -198,6 +211,8 @@ function getbillInfodetails(oid) {
     //console.log('d1',oid);
     if (oid > 0) {
         $('.billinfoval').prop("disabled", true);
+        $('.billinfovalff').prop("disabled", true);
+        $('.page-heading').text('Edit Misc Bills ').append('<a class="btn btn-danger" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         //$('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
         //$('#line_items,#product_line_items').empty();
         //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button>');
@@ -236,11 +251,14 @@ function getbillInfodetails(oid) {
                         $('#lblbillNo').data('id', data['po'][i].rowid);
                         $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
                         $('#ddlPaymentTerms').val(data['po'][i].fk_paymentterm).trigger('change');
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                     }
-                
+                    $('#line_items').empty();
                     for (let i = 0; i < data['pod'].length; i++) {
                         ic++;
                         let itemHtml = '';
+                       
                         //if (data['pod'][i].fk_product >= 0) {
                             //let Remainingval = data['pod'][i].recbal.toFixed(0);
                             //if (Remainingval < 0)
@@ -262,7 +280,7 @@ function getbillInfodetails(oid) {
                         //varHTML += '</select></td> ';
 
 
-                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].miscellaneous_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfo select2"><option value="-1">Select Bill Type</option>';
+                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].miscellaneous_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfovalff select2"><option value="-1">Select Bill Type</option>';
                         for (var j = 0; j < _billtype.length; j++) {
                             if (data['pod'][i].fk_paymenttype == _billtype[j].rowid)
                                 itemHtml += '<option value="' + _billtype[j].rowid + '" selected> ' + _billtype[j].name + '</option>';
@@ -271,12 +289,12 @@ function getbillInfodetails(oid) {
                         };
                         itemHtml += '</select ></td>';
 
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
+                        itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
                        // itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Service No."></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
+                        itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Service No."></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
 
 
 
@@ -324,7 +342,7 @@ function getbillInfodetails(oid) {
                         //    $('#product_line_items').append(itemHtml);
                         //}
                     }
-
+                    $('.billinfovalff').prop("disabled", true);
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -370,13 +388,19 @@ function getbillInfodetails(oid) {
 
 
     }
-    //else {
-    //    $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
-    //    $("#loader").hide(); $('.page-heading').text('Add New Order');
-    //    $("#btnPrintPdf").addClass('hidden');
-    //    $('.billinfofo').prop("disabled", true);
-    //    $(".top-action").empty();
-    //}
+    else {
+        $("#loader").hide(); 
+        $('.page-heading').text('Create Misc Bills ').append('<a class="btn btn-danger" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+
+       // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+        $(".top-action").empty().append('<input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger" />');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList">Back to List</a><input type="submit" value="Create Bill" id="btnSave" class="btn btn-danger" />');
+        $('.billinfo').prop("disabled", true); // $('#lblPoNo').text('Draft');
+        //$("#loader").hide(); $('.page-heading').text('Add New Order');
+        //$("#btnPrintPdf").addClass('hidden');
+        //$('.billinfofo').prop("disabled", true);
+        //$(".top-action").empty();
+    }
 }
 
 //$(document).on('click', '.btn_remove', function () {

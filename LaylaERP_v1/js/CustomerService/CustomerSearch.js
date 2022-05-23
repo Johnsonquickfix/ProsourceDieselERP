@@ -22,10 +22,8 @@
     });
     $(document).on("keypress", "#ddlUser", function (t) {
         t.preventDefault();
-        if (e.keyCode == 13) {
-            let cus_id = parseInt($(this).val()) || 0;
-            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
-        }       
+        let cus_id = parseInt($(this).val()) || 0;
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
     });
     $("#ddlEmail").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
@@ -46,11 +44,13 @@
         $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
     });
     $(document).on("keypress", "#txtOrderNo", function (t) {
-        t.preventDefault();
-        let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+        if (t.keyCode == 13) {
+            //t.preventDefault();
+            let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+        }
     });
-    $.when(dataGridLoad()).done(function () { OrderInfo(0)});
+    $.when(dataGridLoad()).done(function () { OrderInfo(0) });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 

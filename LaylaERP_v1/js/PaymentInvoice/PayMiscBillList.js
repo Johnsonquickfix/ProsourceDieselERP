@@ -72,7 +72,7 @@ function misclistList() {
             { data: 'transaction_t', title: 'Transaction Type', sWidth: "10%" },
             { data: 'customertype', title: 'Customer Type', sWidth: "10%" },
             { data: 'displayname', title: 'Name', sWidth: "15%" },
-            { data: 'paymenttype', title: 'Bill Type', sWidth: "10%" },
+          /*  { data: 'paymenttype', title: 'Bill Type', sWidth: "10%" },*/
             { data: 'payaccount', title: 'Pay Account', sWidth: "10%" },
             {
                 data: 'totqty', title: 'Quantity', sWidth: "8%", class: 'text-right', render: function (data, type, full, meta) {

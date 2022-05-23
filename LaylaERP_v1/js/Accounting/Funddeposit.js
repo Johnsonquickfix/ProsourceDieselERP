@@ -120,7 +120,7 @@ function Banktransferlist(isdate) {
     var obj = { strValue1: sd, strValue2: account_num }
     var table_EL = $('#banktansfer').DataTable({
         columnDefs: [  { 'visible': false, 'targets': [1] }] ,
-        order: [[0, "desc"],[1, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        order: [[0, "desc"],[2, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -153,7 +153,8 @@ function Banktransferlist(isdate) {
            
             { data: 'doc_date', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
             { data: 'sort_no', title: '##', sWidth: "5%" },
-            { data: 'inv_num', title: 'Transaction Id', sWidth: "15%" },
+            { data: 'inv_num', title: 'Transaction No.', sWidth: "15%" },
+            { data: 'PO_SO_ref', title: 'Transaction Id', sWidth: "15%" },
             //{ data: 'label_operation', title: 'Operation Label', sWidth: "20%", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.sort_no; } else return data; } },
             { data: 'label_operation', title: 'Operation Label', sWidth: "15%" },
                { data: 'debit', title: 'Debit($)', sWidth: "5%", class: 'text-right text-bold', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
@@ -162,7 +163,12 @@ function Banktransferlist(isdate) {
             {
                 'data': 'inv_num', title: 'Action', sWidth: "2%", class: 'text-left',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" title="Click here to edit transfer transaction ." onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    if (full.import_key == '11') {
+                        return '<a href="#" title="Click here to edit transfer transaction ." onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    }
+                    else {
+                        return ' <b></b>';
+                    }
                 }
             }
         ],

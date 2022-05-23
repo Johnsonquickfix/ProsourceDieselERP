@@ -68,9 +68,9 @@
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@customer_id", customer_id),
-                    new SqlParameter("@billing_email", billing_email),
-                    new SqlParameter("@order_id", order_id),
+                    customer_id > 0 ? new SqlParameter("@customer_id", customer_id) : new SqlParameter("@customer_id",DBNull.Value),
+                    !string.IsNullOrEmpty(billing_email) ? new SqlParameter("@billing_email", billing_email) : new SqlParameter("@billing_email",DBNull.Value),
+                    order_id > 0 ? new SqlParameter("@order_id", order_id) : new SqlParameter("@order_id",DBNull.Value),
                     new SqlParameter("@flag", "CUSTINFO")
                 };
 
@@ -81,6 +81,25 @@
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataSet GetOrderInfo(long OrderID)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@order_id", OrderID),
+                    new SqlParameter("@flag", "ORDINFO")
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_order_customer_search", parameters);
+                if (ds.Tables.Count > 0) ds.Tables[0].TableName = "order";
+                if (ds.Tables.Count > 1) ds.Tables[1].TableName = "order_detail";
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return ds;
         }
     }
 }

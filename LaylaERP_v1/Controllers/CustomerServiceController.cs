@@ -71,5 +71,24 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpPost]
+        [Route("customer-service/order")]
+        public JsonResult GetOrderInfo(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                DataSet ds = CustomerServiceRepository.GetOrderInfo(oid);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

@@ -20,13 +20,15 @@
         },
         templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
     });
-    $(document).on("change", "#ddlUser", function (t) {
+    $(document).on("keypress", "#ddlUser", function (t) {
         t.preventDefault();
-        let cus_id = parseInt($(this).val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
+        if (e.keyCode == 13) {
+            let cus_id = parseInt($(this).val()) || 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
+        }       
     });
     $("#ddlEmail").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
         ajax: {
             url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { return { strValue1: 'EMAIL', strValue2: params.term }; },
@@ -43,13 +45,19 @@
         let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
         $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
     });
-    $.when(dataGridLoad()).done(function () { CustomerInfo(903927)});
+    $(document).on("keypress", "#txtOrderNo", function (t) {
+        t.preventDefault();
+        let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+    });
+    $.when(dataGridLoad()).done(function () { OrderInfo(0)});
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 
 function CustomerInfo(cus_id, ord_id, cus_email) {
-    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
+    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-'); console.log(cus_id, ord_id, cus_email);
     if (cus_id == 0 && ord_id == 0 && cus_email == null) return false;
+    console.log(cus_id, ord_id, cus_email);
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: cus_email }).then(response => {
         response = JSON.parse(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
@@ -166,7 +174,7 @@ function dataGridLoad() {
     });
 }
 
-function CustomerInfo(ord_id) {
+function OrderInfo(ord_id) {
     $("#detail-page").empty();
     if (ord_id == 0) return false;
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {

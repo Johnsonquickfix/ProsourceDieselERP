@@ -126,7 +126,8 @@ function AccountJournalList(is_date) {
 
                         if (full.code_journal == "AC")
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
-
+                        else if (full.PO_SO_ref.substring(0, 2) != "PO" && full.doc_type == 'FT')
+                            return inv_num;
                         else if (full.PO_SO_ref.substring(0, 2) == "PO")
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
                         //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';

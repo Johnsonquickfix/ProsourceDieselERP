@@ -3,17 +3,42 @@
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
         ajax: {
-            url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+            url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { return { strValue1: 'USER', strValue2: params.term }; },
+            processResults: function (data) {
+                var jobj = JSON.parse(data);
+                return {
+                    results: $.map(jobj, function (item) {
+                        return {
+                            text: item.user_email, id: item.id,
+                            html: '<div style="display:flex;"><div style="padding:5px" ><div style="font-size: 1.2em">#' + item.id + ' ' +item.user_login + '</div><div><b>' + item.user_email + '</b></div></div></div >'
+                        }
+                    })
+                };
+            },
             error: function (xhr, status, err) { }, cache: true
-        }
+        },
+        templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
     });
     $(document).on("change", "#ddlUser", function (t) { t.preventDefault(); dataGridLoad(); });
+    $("#ddlEmail").select2({
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+        ajax: {
+            url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { return { strValue1: 'EMAIL', strValue2: params.term }; },
+            processResults: function (data) { let jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.user_email, id: item.id, } }) }; },
+            error: function (xhr, status, err) { console.log(xhr, status, err); }, cache: true
+        }
+    });
+    $(document).on("change", "#ddlEmail", function (t) { t.preventDefault(); dataGridLoad(); });
     $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); dataGridLoad(); });
     $.when(dataGridLoad()).done(function () { });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
+
+function UpdateOrders() {
+    $.get('/OrdersMySQL/order-import', {}).then(response => { console.log('Done'); }).catch(err => { }).always(function () { });
+}
 
 function dataGridLoad() {
     let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0);
@@ -33,7 +58,7 @@ function dataGridLoad() {
         },
         sAjaxSource: "order-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id });
+            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id }, { name: "strValue3", value: $('#ddlEmail').val() });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,

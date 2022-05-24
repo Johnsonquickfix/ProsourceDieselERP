@@ -50,14 +50,18 @@
             $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
         }
     });
-    $.when(dataGridLoad()).done(function () { OrderInfo(0) });
+    $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
+function formatCurrency(total) {
+    var neg = false;
+    if (total < 0) { neg = true; total = Math.abs(total); }
+    return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+}
 
 function CustomerInfo(cus_id, ord_id, cus_email) {
-    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-'); console.log(cus_id, ord_id, cus_email);
+    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
     if (cus_id == 0 && ord_id == 0 && cus_email == null) return false;
-    console.log(cus_id, ord_id, cus_email);
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: cus_email }).then(response => {
         response = JSON.parse(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
@@ -167,42 +171,89 @@ function dataGridLoad() {
             },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="javascript:void(0);" onclick="OrderInfo(' + id + ');" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
         ]
     });
 }
 
+function backOrderList() { $("#list-page").removeClass('hidden'); $("#detail-page").addClass('hidden'); }
 function OrderInfo(ord_id) {
-    $("#detail-page").empty();
+    
+    //$("#detail-page").empty();
     if (ord_id == 0) return false;
+    $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
-        response = JSON.parse(response); console.log(response);
+        response = JSON.parse(response);
+        let _html = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $("#detail-page").append('<div class="row"><div class="col-xs-12"><h2 class="page-header"><i class="fa fa-globe"></i> Order #' + row.order_id + '<small class="pull-right">Date: ' + row.date_created + '</small></h2></div></div>');
-            //Add Adsress
+            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created);
+            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>'); 
+            //Add Address
+            let _json = JSON.parse(row.order_details); //console.log(_json);
+            _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._billing_address_1)) _html += _json._billing_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._billing_address_2)) _html += _json._billing_address_2 + '<br>';
+            _html += _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '<br>';
+            _html += 'Phone: ' + _json._billing_phone + '<br>';
+            _html += 'Email: ' + _json._billing_email;
+            $(".order-billing").empty().append(_html);
+            _html = '<strong>' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._shipping_address_1)) _html += _json._shipping_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._shipping_address_2)) _html += _json._shipping_address_2 + '<br>';
+            _html += _json._shipping_city + ', ' + _json._shipping_state + ' ' + _json._shipping_postcode + ' ' + _json._shipping_country;
+            $(".order-shipping").empty().append(_html);
+
+            ///Payment
+            $(".order-payment").text(_json._payment_method_title); $(".order-payment").data('pt', _json._payment_method);
+            $(".order-amount").text(formatCurrency(_json._order_total)); $(".order-tax").text(formatCurrency(_json._order_tax));
         });
 
+        _html = '';
+        let _tax = [];
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zFeeAmt = 0.00, zSRFAmt = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zGiftCardrefundAmt = 0.00, zStateRecyclingAmt = 0.00, zRefundAmt = 0.00;
+        $.each(response['order_detail'], function (i, row) {
+            let _sub_total = parseFloat(row.line_subtotal) || 0.00, _qty = parseFloat(row.qty) || 0.00, _total = parseFloat(row.line_total) || 0.00;
+            let _price = _qty > 0 ? (_sub_total / _qty) : 0;
+            if (row.order_item_type == 'line_item') {
+                _html += '<tr class="fw-bolder text-gray-700 fs-5">';
+                _html += '<td class="d-flex align-items-center pt-6"><a href="#" class="symbol symbol-50px mx-lg-1"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></a>' + row.order_item_name + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
+                _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.discount_amount) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
+                _html += '</tr>';
+                zQty += _qty; zGAmt += _sub_total;
+                zTotalTax += (parseFloat(row.tax) || 0.00);
+                zTDiscount += row.discount_amount;
+            }
+            else if (row.order_item_type == 'fee' && row.order_item_name == 'State Recycling Fee') { zSRFAmt += _total; }
+            else if (row.order_item_type == 'fee' && row.order_item_name != 'State Recycling Fee') { zFeeAmt += _total; }
+            else if (row.order_item_type == 'shipping') { zShippingAmt += _total; }
+            else if (row.order_item_type == 'gift_card') { zGiftCardAmt += _total; }
+            else if (row.order_item_type == 'tax') { _tax.push({ order_item_id: row.order_item_id, name: row.order_item_name, label: row.label, rate: row.tax, amount: _total }); }
+        });
+        $("#order_items").empty().append(_html);
 
-        //if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
-        //$.each(response, function (i, row) {
-        //    $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
-        //    let _detail = JSON.parse(row.user_details);
-
-        //    let billing_Details = '<strong>' + _detail.billing_first_name + ' ' + _detail.billing_last_name + '</strong><br>';
-        //    billing_Details += (_detail.billing_company.length > 0 ? _detail.billing_company + '<br>' : '') + (_detail.billing_address_1.length > 0 ? _detail.billing_address_1 + '<br>' : '')
-        //        + (_detail.billing_address_2.length > 0 ? _detail.billing_address_2 + '<br>' : '') + (_detail.billing_city.length > 0 ? _detail.billing_city + ', ' : '') + (_detail.billing_state.length > 0 ? _detail.billing_state + ' ' : '')
-        //        + (_detail.billing_postcode.length > 0 ? _detail.billing_postcode + ' ' : '') + (_detail.shipping_country.length > 0 ? _detail.shipping_country : '');
-        //    billing_Details += '<br><strong>Email address:</strong> ' + _detail.billing_email + '<br><strong>Phone:</strong> ' + _detail.billing_phone;
-        //    $('.billing-address').empty().append(billing_Details);
-
-        //    let shipping_Details = '<strong>' + _detail.shipping_first_name + ' ' + _detail.shipping_last_name + '</strong><br>';
-        //    shipping_Details += (_detail.shipping_company.length > 0 ? _detail.shipping_company + '<br>' : '') + (_detail.shipping_address_1.length > 0 ? _detail.shipping_address_1.trim() + '<br>' : '')
-        //        + (_detail.shipping_address_2.length > 0 ? _detail.shipping_address_2 + '<br>' : '') + (_detail.shipping_city.length > 0 ? _detail.shipping_city + ', ' : '') + (_detail.shipping_state.length > 0 ? _detail.shipping_state + ' ' : '')
-        //        + (_detail.shipping_postcode.length > 0 ? _detail.shipping_postcode + ' ' : '') + (_detail.shipping_country.length > 0 ? _detail.shipping_country : '');
-        //    $('.shipping-address').empty().append(shipping_Details);
-        //});
+        _html = '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt) + '</div></div>';
+        if (zTDiscount > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Discount:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTDiscount) + '</div></div>';
+        if (zFeeAmt > 0) _html += _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Fee</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zFeeAmt) + '</div></div>';
+        if (zSRFAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">State Recycling Fee</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zSRFAmt) + '</div></div>';
+        if (zShippingAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Shipping</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zShippingAmt) + '</div></div>';
+        //_html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping Tax</label<div class="col-sm-2 controls text-right">$<span id="shippingTaxTotal">0.00</span></div></div>';
+        // Add Tax
+        $.each(_tax, function (index, value) {
+            _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+        });
+        if (zGiftCardAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Gift Card</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGiftCardAmt) + '</div></div>';
+        _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Order Total</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + '</div></div>';
+        //// Refund 
+        //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedTotal">0.00</span></strong></div></div>';
+        //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
+        //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
+        $('#order-footer').empty().append(_html);
     }).catch(err => { }).always(function () { });
 }

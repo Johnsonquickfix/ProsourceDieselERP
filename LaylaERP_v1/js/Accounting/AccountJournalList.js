@@ -53,6 +53,7 @@ function AccountJournalList(is_date) {
     var obj = { strValue1: sd, strValue2: ed, strValue3: account_num, strValue4: vrid }
     var table_EL = $('#JournalListdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
+        columnDefs: [{ "searchable": false, "targets": 4 }],
         order: [[0, "desc"], [2, "desc"], [1, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",

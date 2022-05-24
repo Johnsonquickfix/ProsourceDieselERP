@@ -49,6 +49,7 @@ function filldropdown() {
 }
 
 function getPurchaseOrderInfo() {
+    let payterm = 0;
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val();
     console.log(status, id);
     if (status == 'PO') {
@@ -72,13 +73,20 @@ function getPurchaseOrderInfo() {
                         if (data['pod'][i].rowid > 0) {
                             itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
                             itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].vendor_name + '</td>';
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';
                             itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                             itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
                             itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
-                            itemHtml += '</tr>';
+                            if (data['pod'][i].recieved.toFixed(2) == 0.00) {
+                                payterm = data['pod'][i].total_ttc.toFixed(2) * (data['pod'][i].Term / 100);
+                                itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + payterm + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            }
+                            else {
+                                itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            }
+                                itemHtml += '</tr>';
                             $('#line_items').append(itemHtml);
                         }
                     }

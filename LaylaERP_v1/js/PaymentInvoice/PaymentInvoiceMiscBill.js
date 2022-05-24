@@ -82,6 +82,7 @@ function filldropdown() {
 }
 
 function getPurchaseOrderInfo() {
+    let payterm = 0;
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val();
     console.log(status, id);
     $('.page-heading').text('Payment Process').append('<a title="Back to list" data-toggle="tooltip" data-placement="top" class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a>');
@@ -106,12 +107,24 @@ function getPurchaseOrderInfo() {
                        
                         itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].ref + '">';
                         itemHtml += '<td>' + data['pod'][i].ref + '</td>';
+                        itemHtml += '<td>' + data['pod'][i].displayname + '</td>';
                         itemHtml += '<td class="text-left">' + data['pod'][i].date_modified + '</td>';
 
                         itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                   
                         itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                        if (data['pod'][i].recieved.toFixed(2) == 0.00) {
+                           
+                            payterm = data['pod'][i].total_ttc.toFixed(2) * (data['pod'][i].fk_paymentterm / 100);
+                            //console.log(payterm);
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + payterm.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+
+                        }
+                        else {
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            
+                        }
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
                     }

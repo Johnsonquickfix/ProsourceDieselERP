@@ -544,7 +544,7 @@ namespace LaylaERP.Controllers
                 ////{
                 ////    i *= ((int)b + 1);
                 ////}
-                if (model.SortDir == "1" || model.SortDir == "4" || model.SortDir == "7" || model.SortDir == "8")
+                if (model.SortDir == "1" || model.SortDir == "4" || model.SortDir == "7" || model.SortDir == "8" || model.SortDir == "2" || model.SortDir == "3")
                 {
                     string number = "0"; // String.Format("{0:d9}", (DateTime.Now.Ticks / 10) % 1000000000);
 
@@ -552,13 +552,13 @@ namespace LaylaERP.Controllers
                     {
                         result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6),model.SortCol,model.PageNo,model.PageSize);
                     }
-                    else
+                    if (model.SortDir == "1" || model.SortDir == "4")
                     {
                         result = clsAuthorizeNet.Fundtransfer(ApiLoginID, ApiTransactionKey, number, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6));
                     }
 
-                    if (!string.IsNullOrEmpty(result))
-                    {
+                    //if (!string.IsNullOrEmpty(result))
+                    //{
                         long id = 0, u_id = 0;
                         if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
                         UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Misc Payment", "/PaymentInvoice/TakePaymentMisc/" + id + "" + ", " + Net.BrowserInfo);
@@ -566,7 +566,7 @@ namespace LaylaERP.Controllers
                         System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
                         System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
                         JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(result, id, "POP", u_id, orderXML, orderdetailsXML));
-                    }
+                    //}
                                      
                 }
                 else

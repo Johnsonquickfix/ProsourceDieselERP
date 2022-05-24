@@ -220,11 +220,11 @@ function OrderInfo(ord_id) {
             if (row.order_item_type == 'line_item') {
                 _html += '<tr class="fw-bolder text-gray-700 fs-5">';
                 _html += '<td class="d-flex align-items-center pt-6"><a href="#" class="symbol symbol-50px mx-lg-1"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></a>' + row.order_item_name + '</td>';
-                _html += '<td class="pt-6">' + formatCurrency(_price) + '</td>';
-                _html += '<td class="pt-6">' + _qty.toFixed(0) + '</td>';
-                _html += '<td class="pt-6">' + formatCurrency(row.discount_amount) + '</td>';
-                _html += '<td class="pt-6">' + formatCurrency(row.line_total) + '</td>';
-                _html += '<td class="pt-6">' + formatCurrency(row.tax) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
+                _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.discount_amount) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
                 _html += '</tr>';
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);

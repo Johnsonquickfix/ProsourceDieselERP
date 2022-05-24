@@ -178,7 +178,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select id,PaymentType text from wp_PaymentType order by id;"
+                string strSQl = "Select id,PaymentType text from wp_PaymentType where is_show  = 1 order by id;"
                           + " Select rowid id, label text from erp_bank_account order by rowid;";
 
                 DS = SQLHelper.ExecuteDataSet(strSQl);

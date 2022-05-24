@@ -105,7 +105,7 @@ namespace LaylaERP.Controllers
             if (ID > 0)
             {
                 UserActivityLog.WriteDbLog(LogType.Submit, "Add Sufix logic", "/Setup/productrule" + ", " + Net.BrowserInfo);
-                return Json(new { status = true, message = "Product Data has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Data saved successfully!", url = "" }, 0);
             }
             else
             {
@@ -190,7 +190,7 @@ namespace LaylaERP.Controllers
                 else
                 {
                     SetupRepostiory.UpdateProductWarehouseRule(model);
-                    return Json(new { status = true, message = "Product rule updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Product rule updated successfully!", url = "" }, 0);
                 }
             }
             else
@@ -300,7 +300,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 SetupRepostiory.UpdateFreeProduct(model);
-                return Json(new { status = true, message = "Free product updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Free product updated successfully!", url = "" }, 0);
             }
             else
             {
@@ -346,7 +346,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
 
-                    return Json(new { status = true, message = "Product return days successfully", url = "" }, 0);
+                    return Json(new { status = true, message = "Product return rules saved successfully!", url = "" }, 0);
                 }
                 else
                 {
@@ -359,7 +359,7 @@ namespace LaylaERP.Controllers
             if (model.rowid > 0)
             {
                 SetupRepostiory.UpdateProductReturn(model);
-                return Json(new { status = true, message = "Update product return days successfully", url = "" }, 0);
+                return Json(new { status = true, message = "Product return rules updated successfully!", url = "" }, 0);
             }
             else
             {

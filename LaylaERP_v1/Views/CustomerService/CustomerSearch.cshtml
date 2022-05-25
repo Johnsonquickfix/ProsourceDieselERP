@@ -85,8 +85,9 @@
             <div class="card">
                 <div class="card-body">
                     <table id="dtdata" class="table align-middle table-row-dashed dataTable no-footer" width="100%">
-                        <thead>
+                        @*<thead>
                             <tr>
+                                <th width="5%">-</th>
                                 <th width="10%">Order ID</th>
                                 <th width="14%">Name</th>
                                 <th width="10%">Phone No.</th>
@@ -97,7 +98,7 @@
                                 <th width="10%">Payment Method</th>
                                 <th width="5%"></th>
                             </tr>
-                        </thead>
+                        </thead>*@
                     </table>
                 </div>
             </div>
@@ -115,13 +116,13 @@
                     <!--begin::Invoice 2 sidebar-->
                     <div class="d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten">
                         <!--begin::Labels-->
-                        <!--<div class="mb-8">
-                            <span class="badge badge-light-success me-2">Approved</span>
-                            <span class="badge badge-light-warning">Pending Payment</span>
-                        </div>-->
+                        <div class="mb-2 float-right">
+                            <span class="badge badge-light-success me-2 order-status">-</span>
+                            <!--<span class="badge badge-light-warning">Pending Payment</span>-->
+                        </div>
                         <!--end::Labels-->
                         <!--begin::Title-->
-                        <h6 class="mb-5 fw-boldest text-gray-600 text-hover-primary order-id">Order #34782</h6>
+                        <h6 class="mb-5 fw-boldest text-gray-600 text-hover-primary order-id">Order #000000</h6>
                         <!--end::Title-->
                         <!--begin::Item-->
                         <div class="mb-6">
@@ -170,7 +171,7 @@
                         <!--begin::Wrapper-->
                         <div class="m-0">
                             <!--begin::Label-->
-                            <div class="fw-bolder fs-3 text-gray-800 mb-5 order-right-id">Order #34782</div>
+                            <div class="fw-bolder fs-3 text-gray-800 mb-5 order-right-id">Order #000000</div>
                             <!--end::Label-->
                             <!--begin::Content-->
                             <div class="flex-grow-1">
@@ -179,6 +180,7 @@
                                     <table class="table mb-3">
                                         <thead>
                                             <tr class="border-bottom fs-6 fw-bolder text-muted">
+                                                <th class="min-w-25px pb-2"></th>
                                                 <th class="min-w-175px pb-2">Item</th>
                                                 <th class="min-w-70px text-end pb-2">Sale Price</th>
                                                 <th class="min-w-80px text-end pb-2">Quantity</th>
@@ -193,9 +195,29 @@
                                 </div>
                                 <!--end::Table-->
                                 <!--begin::Container-->
-                                <div class="d-flex justify-content-end">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <ul class="nav nav-pills nav-pills-custom mb-3 mx-9 order-coupon">
+                                            <!--begin::Item-->
+                                            <li class="nav-item mb-3 me-3 me-lg-6">
+                                                <!--begin::Link-->
+                                                <a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden w-80px h-85px pt-5 pb-2" data-bs-toggle="pill" id="kt_charts_widget_32_tab_1" href="#kt_charts_widget_32_tab_content_1">
+                                                    <!--begin::Icon-->
+                                                    <div class="nav-icon mb-3">
+                                                        <i class="fonticon-truck fs-1 p-0"></i>
+                                                    </div>
+                                                    <!--end::Icon-->
+                                                    <!--begin::Title-->
+                                                    <span class="nav-text text-gray-800 fw-bolder fs-6 lh-1">Van</span>
+                                                    <!--end::Title-->
+                                                </a>
+                                                <!--end::Link-->
+                                            </li>
+                                            <!--end::Item-->
+                                        </ul>
+                                    </div>
                                     <!--begin::Section-->
-                                    <div class="mw-300px" id="order-footer">
+                                    <div class="col-md-5" id="order-footer">
                                         <!--begin::Item-->
                                         <div class="d-flex flex-stack mb-3">
                                             <!--begin::Accountname-->
@@ -256,6 +278,7 @@
     </div>
 
 </div>
+<div class="modal in printable " id="myModal" role="dialog" aria-hidden="true"></div>
 
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/CustomerService/CustomerSearch.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

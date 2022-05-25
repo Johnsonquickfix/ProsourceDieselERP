@@ -180,17 +180,16 @@ function dataGridLoad() {
 
 function backOrderList() { $("#list-page").removeClass('hidden'); $("#detail-page").addClass('hidden'); }
 function OrderInfo(ord_id) {
-    
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
-        response = JSON.parse(response);
-        let _html = '';
+        response = JSON.parse(response); //console.log(response);
+        let _html = '', _coupon = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created);
-            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>'); 
+            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
+            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
             //Add Address
             let _json = JSON.parse(row.order_details); //console.log(_json);
             _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
@@ -217,26 +216,81 @@ function OrderInfo(ord_id) {
         $.each(response['order_detail'], function (i, row) {
             let _sub_total = parseFloat(row.line_subtotal) || 0.00, _qty = parseFloat(row.qty) || 0.00, _total = parseFloat(row.line_total) || 0.00;
             let _price = _qty > 0 ? (_sub_total / _qty) : 0;
+            let _dis = _sub_total - _total;
             if (row.order_item_type == 'line_item') {
-                _html += '<tr class="fw-bolder text-gray-700 fs-5">';
-                _html += '<td class="d-flex align-items-center pt-6"><a href="#" class="symbol symbol-50px mx-lg-1"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></a>' + row.order_item_name + '</td>';
+                _html += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
+                if (_sub_total > 0) _html += '<td><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0"><label></label></td>';
+                else _html += '<td></td>';
+                _html += '<td class="d-flex align-items-center pt-6">';
+                _html += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
+                _html += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7">';
+                if (isNullUndefAndSpace(row.remarks)) {
+                    let _warranty = JSON.parse(row.remarks);
+                    $.each(_warranty, function (key, val) { _html += val + '<br/>'; });
+                }
+                if (row.warrantydays > 0 && row.warrantydays < 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.warrantydays, 'days');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                else if (row.warrantydays >= 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                if (row.returndays > 0 && row.returndays < 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.returndays, 'days');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                else if (row.returndays >= 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                _html += '</span><span class="text-muted fw-bold d-block fs-7 order-claim-warranty"><span class="text-muted fw-bold d-block fs-7"></div></td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
                 _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.discount_amount) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_dis) + '</td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
                 _html += '</tr>';
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);
-                zTDiscount += row.discount_amount;
+                zTDiscount += _dis;
             }
             else if (row.order_item_type == 'fee' && row.order_item_name == 'State Recycling Fee') { zSRFAmt += _total; }
             else if (row.order_item_type == 'fee' && row.order_item_name != 'State Recycling Fee') { zFeeAmt += _total; }
             else if (row.order_item_type == 'shipping') { zShippingAmt += _total; }
             else if (row.order_item_type == 'gift_card') { zGiftCardAmt += _total; }
             else if (row.order_item_type == 'tax') { _tax.push({ order_item_id: row.order_item_id, name: row.order_item_name, label: row.label, rate: row.tax, amount: _total }); }
+            else if (row.order_item_type == 'coupon') {
+                _coupon += '<li class="nav-item mb-3 me-3 me-lg-6">';
+                _coupon += '<a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden h-85px pt-5 pb-2 active" data-bs-toggle="pill" href="javascript;void(0);">';
+                _coupon += '<div class="nav-icon mb-3"><i class="fa fa-gift"></i>$' + row.discount_amount + '</div>';
+                _coupon += '<span class="nav-text text-gray-800 fw-bolder fs-6 lh-1">' + row.order_item_name + '</span>';
+                _coupon += '<span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span > ';
+                _coupon += '</a>';
+                _coupon += '</li>';
+            }
         });
-        $("#order_items").empty().append(_html);
+        $("#order_items").empty().append(_html); $(".order-coupon").empty().append(_coupon);
 
         _html = '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt) + '</div></div>';
         if (zTDiscount > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Discount:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTDiscount) + '</div></div>';
@@ -256,4 +310,93 @@ function OrderInfo(ord_id) {
         //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
         $('#order-footer').empty().append(_html);
     }).catch(err => { }).always(function () { });
+}
+function ClaimWarranty(chk) {
+    var isChecked = $(chk).prop("checked");
+    $("[name='CheckSingle']").prop("checked", false);
+    $("[name='CheckSingle']").parent().parent().find('.order-claim-warranty').empty();
+    $(chk).prop("checked", isChecked);
+    if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
+    else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);">Claim Warranty</button>');
+}
+function ClaimWarrantyModal() {
+    let modalHtml = '<div class="modal-dialog">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<h4 class="modal-title" id="myModalLabel">Please select a reason for your warranty claim.</h4>';
+    modalHtml += '</div>';
+    modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#myModal").empty().html(modalHtml);
+
+    modalHtml = '<div class="row row-cols-1 row-cols-md-3 row-cols-lg-1 row-cols-xl-3 g-9">';
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "1" checked = "checked"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Sagging</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Tear / Hole</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Stain on cover</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Expansion</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Broken Zipper</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Dimensions</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Defective / Cracked Foam</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Pilling / Fraying on Cover</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '<div class="col">';
+    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-6" data-kt-button="true">';
+    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Custom Reason</span></span>';
+    modalHtml += '</label>';
+    modalHtml += '</div>';
+
+    modalHtml += '</div>';
+   
+
+    $('#myModal .modal-body').append(modalHtml);
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
 }

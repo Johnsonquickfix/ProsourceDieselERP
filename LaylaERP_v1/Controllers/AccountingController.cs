@@ -1031,7 +1031,7 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
-        }
+        }      
         public JsonResult AccountName(string strValue1)
         {
             string JSONResult = string.Empty;
@@ -1102,6 +1102,17 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AccountBalanceTotalBydate(string strValue1, string strValue2, string strValue3)
+        {
+            string JSONResult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.AccountBalanceTotalBydate(strValue1, strValue2, strValue3);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(JSONResult, 0);
         }
     }
 }

@@ -1636,14 +1636,14 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "SELECT max(label_complete) label, Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
-                                + " Format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)), '#,##0.00') as balance"
-                                + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "";
+                                + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
+                                + " FROM erp_accounting_bookkeeping WHERE  inv_complete = " + id + "";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
             return DS;
-        }
+        }       
 
         public static DataTable AccountName(string id)
         {
@@ -1737,6 +1737,28 @@ namespace LaylaERP.BAL
                 throw new Exception(ex.Message);
             }
             return dt;
+        }
+        public static DataTable AccountBalanceTotalBydate(string id, string sMonths, string search)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                if (search != "")
+                {
+                    strWhr += " and PO_SO_ref like '%" + search + "%'";
+                }
+
+                string strSQl = "SELECT max(label_complete) label, Format(COALESCE(sum(case when senstag = 'C' then credit end), 0), '#,##0.00') credit,  Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
+                                + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
+                                + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "and cast(doc_date as date) BETWEEN " + sMonths + strWhr;
+
+               
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
     }
 }

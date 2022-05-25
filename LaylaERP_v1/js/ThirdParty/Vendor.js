@@ -1109,7 +1109,7 @@ function getShippingMethod() {
                         $("#txtCalculatedtax").val(d[0].CalculatedTax);
                         d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
-                        $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1).trigger("change");
+                        $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "-1" : d[0].DiscountType1).trigger("change");
                         $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
                         $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
                         $("#txtAccountName").val(d[0].AccountName);

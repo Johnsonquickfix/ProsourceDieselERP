@@ -159,11 +159,14 @@ function model(account_num) {
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
         AccountBalanceList(account_num, true)
+        total(account_num, true, '');
+        gttotal(account_num);
     });
 
     name(account_num);
     setTimeout(function () { AccountBalanceList(account_num, true) }, 1000);
-    total(account_num);
+    total(account_num, true, '');
+    gttotal(account_num);
 }
 
 function AccountBalanceList(account_num, is_date) {
@@ -176,7 +179,8 @@ function AccountBalanceList(account_num, is_date) {
     var obj = {strValue2: dfa, strValue3: account_num };
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }, { "searchable": false, "targets": 3 }], order: [[0, "desc"]],
+      
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[20, 50], [20, 50]], scrollX: true, scrollY: ($(window).height() - 215),
         language: {
@@ -191,7 +195,8 @@ function AccountBalanceList(account_num, is_date) {
             $('#EmployeeListdata_filter input').unbind();
             $('#EmployeeListdata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
+                if (code == 13) { table_EL.search(this.value).draw(); console.log(this.value); total(account_num, true, this.value); }
+                
             });
         },
         /*sAjaxSource: "/Accounting/GetBalanceList",
@@ -274,10 +279,18 @@ function AccountBalanceList(account_num, is_date) {
     });
 }
 
-function total(account_num) {
-    var obj = { strValue1: account_num }
+function total(account_num, is_date,search) {
+    let j = $("#exampleModalLongTitle").text();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    //var vendor = $("#ddlVendor").val();
+    //let account_num = $("#ddlAccount").val();
+    //var obj = { strValue2: dfa, strValue3: account_num };
+
+    var obj = { strValue1: account_num, strValue2: dfa, strValue3: search}
     $.ajax({
-        url: '/Accounting/AccountBalanceTotal',
+        url: '/Accounting/AccountBalanceTotalBydate',
         type: 'GET',
         dataType: 'json',
         contentType: 'application / json; charset=utf - 8',
@@ -290,6 +303,26 @@ function total(account_num) {
             $("#lblcredit1").text("$" +jobj[0].credit);
             $("#lbldebit1").text("$" +jobj[0].debit);
             $("#lblbalance1").text("$" +jobj[0].balance);
+        },
+        complete: function () { },
+        error: function (error) { },
+    })
+}
+
+function gttotal(account_num) {
+    var obj = { strValue1: account_num}
+    $.ajax({
+        url: '/Accounting/AccountBalanceTotal',
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application / json; charset=utf - 8',
+        data: obj,
+        success: function (data) {
+            let jobj = JSON.parse(data);
+            $("#lblgtcredit").text("$" + jobj[0].credit);
+            $("#lblgtdebit").text("$" + jobj[0].debit);
+            $("#lblgtbalance").text("$" + jobj[0].balance);
+           
         },
         complete: function () { },
         error: function (error) { },

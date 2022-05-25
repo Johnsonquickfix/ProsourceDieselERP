@@ -45,6 +45,24 @@
     });
     PurchaseOrderGrid();
     SalesOrderGrid();
+
+    $("#txtDefaultDiscount").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 6));
+    });
+
+    $("#txtDiscountMinimumOrderAmount").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
+    $("#txtDiscount").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 6));
+    });
+
 })
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -502,53 +520,56 @@ $('#btnNextTab6').click(function (e) {
     AccountEmail = $("#txtAccountEmail").val();
     DiscountType2 = $("#ddlDiscountType2").val();
     Discount = $("#txtDiscount").val();
+    let defdiscount = parseInt(DefaultDiscount) || 0;
+    let discount2 = parseInt(Discount) || 0;
     //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    //if (DiscountType1 == "-1") { swal('alert', 'Please select discount type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
-    //else if (DefaultDiscount == "") { swal('alert', 'Please enter default discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
-    //else if (MinimumOrderAmount == "") { swal('alert', 'Please enter minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
+    if ((DiscountType1 == "Fixed" || DiscountType1 == "Percentage") && DiscountType2 > 0 ) { swal('alert', 'Please select one discount type ', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
+    else if (parseInt(Discount) > 0 && parseInt(DefaultDiscount) > 0) { swal('alert', 'Please enter one discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
+    else if ((DiscountType1 == "Fixed" || DiscountType1 == "Percentage") && defdiscount == 0) { swal('alert', 'Please enter default discount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
+    else if (DiscountType2 > 0 && discount2 == 0) { swal('alert', 'Please enter discount 2', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
     //else if (AccountName == "") { swal('alert', 'Please enter account name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
     //else if (AccountEmail == "") { swal('alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
     //else if (!pattern.test(AccountEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
     //else if (DiscountType2 == "-1") { swal('alert', 'Please select discount type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
     //else if (Discount == "") { swal('alert', 'Please enter discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
-    //else { }
-    var obj = {
-        rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, DiscountMinimumOrderAmount: MinimumOrderAmount, AccountName: AccountName,
-        AccountEmail: AccountEmail, DiscountType2: DiscountType2, Discount: Discount,
+    else {
+        var obj = {
+            rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, DiscountMinimumOrderAmount: MinimumOrderAmount, AccountName: AccountName,
+            AccountEmail: AccountEmail, DiscountType2: DiscountType2, Discount: Discount,
+        }
+        $.ajax({
+            url: '/ThirdParty/AddVendorDiscount/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    //swal('Alert!', data.message, 'success');
+                    //$("#tab_6").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_6 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
+                    var link = $('#mytabs .active').next().children('a').attr('href');
+                    $('#mytabs a[href="' + link + '"]').tab('show');
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
     }
-    $.ajax({
-        url: '/ThirdParty/AddVendorDiscount/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () {
-            $("#loader").show();
-        },
-        success: function (data) {
-            if (data.status == true) {
-                //swal('Alert!', data.message, 'success');
-                //$("#tab_6").find(":input").each(function () {
-                //    switch (this.type) {
-                //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                //    }
-                //});
-                //$("#tab_6 option[value='-1']").attr('selected', true)
-                //e.preventDefault();
-                var link = $('#mytabs .active').next().children('a').attr('href');
-                $('#mytabs a[href="' + link + '"]').tab('show');
-            }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () {
-            $("#loader").hide();
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
-
 });
 //$('#btnNextTab7').click(function (e) {
 //    ID = $("#hfid").val();
@@ -1088,7 +1109,7 @@ function getShippingMethod() {
                         $("#txtCalculatedtax").val(d[0].CalculatedTax);
                         d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
-                        $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1).trigger("change");
+                        $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "-1" : d[0].DiscountType1).trigger("change");
                         $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
                         $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
                         $("#txtAccountName").val(d[0].AccountName);

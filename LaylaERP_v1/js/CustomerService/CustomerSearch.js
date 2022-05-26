@@ -1,29 +1,12 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide();
-    $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
-        ajax: {
-            url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { return { strValue1: 'USER', strValue2: params.term }; },
-            processResults: function (data) {
-                var jobj = JSON.parse(data);
-                return {
-                    results: $.map(jobj, function (item) {
-                        return {
-                            text: item.user_email, id: item.id,
-                            html: '<div style="display:flex;"><div style="padding:5px" ><div style="font-size: 1.2em">#' + item.id + ' ' + item.user_login + '</div><div><b>' + item.user_email + '</b></div></div></div >'
-                        }
-                    })
-                };
-            },
-            error: function (xhr, status, err) { }, cache: true
-        },
-        templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
+    $("#loader").hide(); $(".select2").select2();
+    $(document).on("change", "#ddlSearchBy", function (t) {
+        t.preventDefault(); let id = parseInt($("#ddlSearchBy").val()) || 0; SearchByControl(id)
     });
     $(document).on("change", "#ddlUser", function (t) {
         t.preventDefault();
         let cus_id = parseInt($(this).val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '', '') });
     });
     $("#ddlEmail").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
@@ -36,21 +19,32 @@
     });
     $(document).on("change", "#ddlEmail", function (t) {
         t.preventDefault();
-        $.when(dataGridLoad()).done(function () { CustomerInfo(0, 0, $('#ddlEmail').val()) });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(0, 0, $('#ddlEmail').val(), '') });
     });
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault();
         let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val(), $('#txtOrderPhone').val()) });
     });
     $(document).on("keypress", "#txtOrderNo", function (t) {
         if (t.keyCode == 13) {
-            //t.preventDefault();
-            let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
-            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+            let cus_id = 0, ord_id = 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val(), '') });
+        }
+    });
+    $(document).on("keypress", "#txtOrderPhone", function (t) {
+        if (t.keyCode == 13) {
+            let cus_id = 0, ord_id = 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, '', $('#txtOrderPhone').val()) });
         }
     });
     $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
+    $('#kt_warranty_claim .collapse').removeClass('show');
+    $('#kt_warranty_claim .collapsed').on('click', function () {
+        console.log($(this));
+        //$(this).next().show();
+        //$(this).next().siblings('p').hide().animate();
+    });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -58,11 +52,50 @@ function formatCurrency(total) {
     if (total < 0) { neg = true; total = Math.abs(total); }
     return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
+///Search Control
+function SearchByControl(id) {
+    if (id == 1) {
+        $(".search-control").empty().append('<select class="form-control select2" id="ddlEmail" placeholder="Filter by Billing Email" style="width: 100%;"></select>');
+        $("#ddlEmail").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
+            ajax: {
+                url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { return { strValue1: 'EMAIL', strValue2: params.term }; },
+                processResults: function (data) { let jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.user_email, id: item.id, } }) }; },
+                error: function (xhr, status, err) { console.log(xhr, status, err); }, cache: true
+            }
+        });
+    }
+    else if (id == 2) {
+        $(".search-control").empty().append('<select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;"></select>');
+        $("#ddlUser").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+            ajax: {
+                url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { return { strValue1: 'USER', strValue2: params.term }; },
+                processResults: function (data) {
+                    let jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.user_email, id: item.id, html: '<div style="display:flex;"><div style="padding:5px" ><div style="font-size: 1.2em">#' + item.id + ' ' + item.user_login + '</div><div><b>' + item.user_email + '</b></div></div></div >' }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            },
+            templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
+        });
+    }
+    else if (id == 3) { $(".search-control").empty().append('<input id="txtOrderNo" class="form-control" placeholder="Order No." style="width: 100%;" maxlength="10">'); }
+    else if (id == 4) { $(".search-control").empty().append('<input id="txtOrderPhone" class="form-control" placeholder="Phone No." style="width: 100%;" maxlength="11">'); }
 
-function CustomerInfo(cus_id, ord_id, cus_email) {
     $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
-    if (cus_id == 0 && ord_id == 0 && cus_email == null) return false;
-    $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: cus_email }).then(response => {
+}
+
+function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
+    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
+    if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
+    $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
         response = JSON.parse(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
@@ -103,7 +136,7 @@ function dataGridLoad() {
         },
         sAjaxSource: "order-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id }, { name: "strValue3", value: $('#ddlEmail').val() });
+            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id }, { name: "strValue3", value: $('#ddlEmail').val() }, { name: "strValue4", value: $('#txtOrderPhone').val() });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -320,83 +353,87 @@ function ClaimWarranty(chk) {
     else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);">Claim Warranty</button>');
 }
 function ClaimWarrantyModal() {
-    let modalHtml = '<div class="modal-dialog">';
-    modalHtml += '<div class="modal-content">';
-    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-    modalHtml += '<h4 class="modal-title" id="myModalLabel">Please select a reason for your warranty claim.</h4>';
-    modalHtml += '</div>';
+    let modalHtml = '<div class="modal-dialog modal-fullscreen p-9">';
+    modalHtml += '<div class="modal-content modal-rounded">';
+    modalHtml += '<div class="modal-header py-5"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '<div class="modal-footer py-5"><button type="button" class="btn btn-sm btn-primary" data-kt-stepper-action="next">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
 
-    modalHtml = '<div class="row row-cols-1 row-cols-md-3 row-cols-lg-1 row-cols-xl-3 g-9">';
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "1" checked = "checked"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Sagging</span></span>';
-    modalHtml += '</label>';
+    modalHtml = '<div id="kt_warranty_claim" class="card-body pt-0">';
+    $.each(WarrantyQuestions, function (i, row) {
+        console.log(i, row);
+        //modalHtml += '<h1 class=" header-' + i + '">' + row.title + '</h1>';
+        //modalHtml += '<p class="body-' + i + '">' + row.title + '</p>';
+
+        modalHtml += '<div class="py-0" data-kt-customer-payment-method="row">';
+
+        modalHtml += '<div class="py-3 d-flex flex-stack flex-wrap">';
+        modalHtml += '  <div class="d-flex align-items-center collapsible rotate collapsed" data-id="' + i + '">';
+        modalHtml += '      <div class="me-3 rotate-90"></div>';
+        modalHtml += '      <div class="me-3">';
+        modalHtml += '        <div class="d-flex align-items-center">';
+        modalHtml += '            <div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-' + i + '" name="customRadio"/><label class="custom-control-label" for="customRadio-' + i + '"> ' + (i + 1) + '. ' + row.title + '</label></div>';
+        //modalHtml += '            <div class="badge badge-light-primary ms-5">Primary</div>';
+        modalHtml += '        </div>';
+        //modalHtml += '        <div class="text-muted">Expires Dec 2024</div>';
+        modalHtml += '      </div>';
+        modalHtml += '  </div>';
+        modalHtml += '</div>';
+
+        modalHtml += '<div id="kt_warranty_claim_body_' + i + '" class="fs-6 ps-10 collapse">';
+        $.each(row.questions, function (q_i, q_row) {
+
+            if (q_row.sub_questions != null)
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+            else
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+
+            $.each(q_row.sub_questions, function (sq_i, sq_row) {
+                modalHtml += '<div class="text-gray-800 px-8"><input type="checkbox" id="customRadio-' + q_i + '-' + sq_i + '"/><label class="custom-control-label" for="customRadio-' + q_i + '-' + sq_i + '"> ' + (sq_i + 1) + '. ' + sq_row.title + '</label></div>';
+            });
+            modalHtml += '</div>';
+        });
+        modalHtml += '</div>';
+
+        modalHtml += '</div><div class="separator separator-dashed"></div>';
+
+        //modalHtml += '<div class="py-0">';
+        //modalHtml += '    <div class="py-3 d-flex flex-stack flex-wrap">';
+        //modalHtml += '        <div class="custom-control custom-radio">';
+        //modalHtml += '            <input type="radio" id="customRadio-' + i + '" name="customRadio"/>';
+        //modalHtml += '            <label class="custom-control-label" for="customRadio1">' + row.title + '</label>';
+        //modalHtml += '        </div>';
+        //modalHtml += '    </div>';
+        //modalHtml += '    <div id="collapse-' + i + '" class="collapse">';
+        //modalHtml += '        <div class="card-body">';
+        //modalHtml += '        // Collapse 1 content';
+        //modalHtml += '        </div>';
+        //modalHtml += '    </div>';
+        //modalHtml += '</div>';
+
+        //modalHtml += '<div class="col">';
+        //modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+        //modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+        //modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Sagging</span></span>';
+        //modalHtml += '</label>';
+        //modalHtml += '<div class="col-Questions">anc</div>';
+        //modalHtml += '</div>';
+    });
     modalHtml += '</div>';
 
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Tear / Hole</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Stain on cover</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Expansion</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Broken Zipper</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Dimensions</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Defective / Cracked Foam</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Pilling / Fraying on Cover</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '<div class="col">';
-    modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-6" data-kt-button="true">';
-    modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
-    modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Custom Reason</span></span>';
-    modalHtml += '</label>';
-    modalHtml += '</div>';
-
-    modalHtml += '</div>';
-   
 
     $('#myModal .modal-body').append(modalHtml);
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    //$("#kt_warranty_claim").accordion({
+    //    collapsible: true
+    //});
+
+    $('#kt_warranty_claim .collapsed').on('click', function () {
+        $('#kt_warranty_claim .collapse').removeClass('show');
+        $('#kt_warranty_claim_body_' + $(this).data('id')).addClass('show');
+        $('#customRadio' + $(this).data('id')).prop("checked", true);
+    });
 }

@@ -486,7 +486,7 @@ function GenerateTokenNo() {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
                         $("#myModal").modal('hide');
-                        swal('Success', 'Thank you for Submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+                        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

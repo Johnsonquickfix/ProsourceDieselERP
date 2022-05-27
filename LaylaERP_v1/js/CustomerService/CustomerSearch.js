@@ -1,29 +1,12 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide();
-    $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
-        ajax: {
-            url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { return { strValue1: 'USER', strValue2: params.term }; },
-            processResults: function (data) {
-                var jobj = JSON.parse(data);
-                return {
-                    results: $.map(jobj, function (item) {
-                        return {
-                            text: item.user_email, id: item.id,
-                            html: '<div style="display:flex;"><div style="padding:5px" ><div style="font-size: 1.2em">#' + item.id + ' ' + item.user_login + '</div><div><b>' + item.user_email + '</b></div></div></div >'
-                        }
-                    })
-                };
-            },
-            error: function (xhr, status, err) { }, cache: true
-        },
-        templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
+    $("#loader").hide(); $(".select2").select2();
+    $(document).on("change", "#ddlSearchBy", function (t) {
+        t.preventDefault(); let id = parseInt($("#ddlSearchBy").val()) || 0; SearchByControl(id)
     });
     $(document).on("change", "#ddlUser", function (t) {
         t.preventDefault();
         let cus_id = parseInt($(this).val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '') });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, 0, '', '') });
     });
     $("#ddlEmail").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
@@ -36,21 +19,32 @@
     });
     $(document).on("change", "#ddlEmail", function (t) {
         t.preventDefault();
-        $.when(dataGridLoad()).done(function () { CustomerInfo(0, 0, $('#ddlEmail').val()) });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(0, 0, $('#ddlEmail').val(), '') });
     });
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault();
         let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
-        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+        $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val(), $('#txtOrderPhone').val()) });
     });
     $(document).on("keypress", "#txtOrderNo", function (t) {
         if (t.keyCode == 13) {
-            //t.preventDefault();
-            let cus_id = parseInt($('#ddlUser').val()) || 0, ord_id = parseInt($('#txtOrderNo').val()) || 0;
-            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val()) });
+            let cus_id = 0, ord_id = 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, $('#ddlEmail').val(), '') });
+        }
+    });
+    $(document).on("keypress", "#txtOrderPhone", function (t) {
+        if (t.keyCode == 13) {
+            let cus_id = 0, ord_id = 0;
+            $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, '', $('#txtOrderPhone').val()) });
         }
     });
     $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
+    $('#kt_warranty_claim .collapse').removeClass('show');
+    $('#kt_warranty_claim .collapsed').on('click', function () {
+        console.log($(this));
+        //$(this).next().show();
+        //$(this).next().siblings('p').hide().animate();
+    });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -58,11 +52,50 @@ function formatCurrency(total) {
     if (total < 0) { neg = true; total = Math.abs(total); }
     return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
+///Search Control
+function SearchByControl(id) {
+    if (id == 1) {
+        $(".search-control").empty().append('<select class="form-control select2" id="ddlEmail" placeholder="Filter by Billing Email" style="width: 100%;"></select>');
+        $("#ddlEmail").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Billing Email",
+            ajax: {
+                url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { return { strValue1: 'EMAIL', strValue2: params.term }; },
+                processResults: function (data) { let jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.user_email, id: item.id, } }) }; },
+                error: function (xhr, status, err) { console.log(xhr, status, err); }, cache: true
+            }
+        });
+    }
+    else if (id == 2) {
+        $(".search-control").empty().append('<select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;"></select>');
+        $("#ddlUser").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+            ajax: {
+                url: '/customer-service/customer-list', type: "GET", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { return { strValue1: 'USER', strValue2: params.term }; },
+                processResults: function (data) {
+                    let jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.user_email, id: item.id, html: '<div style="display:flex;"><div style="padding:5px" ><div style="font-size: 1.2em">#' + item.id + ' ' + item.user_login + '</div><div><b>' + item.user_email + '</b></div></div></div >' }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            },
+            templateResult: function (data) { return data.html; }, escapeMarkup: function (m) { return m; }
+        });
+    }
+    else if (id == 3) { $(".search-control").empty().append('<input id="txtOrderNo" class="form-control" placeholder="Order No." style="width: 100%;" maxlength="10">'); }
+    else if (id == 4) { $(".search-control").empty().append('<input id="txtOrderPhone" class="form-control" placeholder="Phone No." style="width: 100%;" maxlength="11">'); }
 
-function CustomerInfo(cus_id, ord_id, cus_email) {
     $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
-    if (cus_id == 0 && ord_id == 0 && cus_email == null) return false;
-    $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: cus_email }).then(response => {
+}
+
+function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
+    $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
+    if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
+    $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
         response = JSON.parse(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
@@ -103,7 +136,7 @@ function dataGridLoad() {
         },
         sAjaxSource: "order-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id }, { name: "strValue3", value: $('#ddlEmail').val() });
+            aoData.push({ name: "strValue1", value: cus_id }, { name: "strValue2", value: order_id }, { name: "strValue3", value: $('#ddlEmail').val() }, { name: "strValue4", value: $('#txtOrderPhone').val() });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -180,17 +213,16 @@ function dataGridLoad() {
 
 function backOrderList() { $("#list-page").removeClass('hidden'); $("#detail-page").addClass('hidden'); }
 function OrderInfo(ord_id) {
-    
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
-        response = JSON.parse(response);
-        let _html = '';
+        response = JSON.parse(response); //console.log(response);
+        let _html = '', _coupon = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created);
-            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>'); 
+            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
+            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
             //Add Address
             let _json = JSON.parse(row.order_details); //console.log(_json);
             _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
@@ -217,26 +249,81 @@ function OrderInfo(ord_id) {
         $.each(response['order_detail'], function (i, row) {
             let _sub_total = parseFloat(row.line_subtotal) || 0.00, _qty = parseFloat(row.qty) || 0.00, _total = parseFloat(row.line_total) || 0.00;
             let _price = _qty > 0 ? (_sub_total / _qty) : 0;
+            let _dis = _sub_total - _total;
             if (row.order_item_type == 'line_item') {
-                _html += '<tr class="fw-bolder text-gray-700 fs-5">';
-                _html += '<td class="d-flex align-items-center pt-6"><a href="#" class="symbol symbol-50px mx-lg-1"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></a>' + row.order_item_name + '</td>';
+                _html += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
+                if (_sub_total > 0) _html += '<td><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0"><label></label></td>';
+                else _html += '<td></td>';
+                _html += '<td class="d-flex align-items-center pt-6">';
+                _html += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
+                _html += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7">';
+                if (isNullUndefAndSpace(row.remarks)) {
+                    let _warranty = JSON.parse(row.remarks);
+                    $.each(_warranty, function (key, val) { _html += val + '<br/>'; });
+                }
+                if (row.warrantydays > 0 && row.warrantydays < 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.warrantydays, 'days');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                else if (row.warrantydays >= 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                if (row.returndays > 0 && row.returndays < 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.returndays, 'days');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                else if (row.returndays >= 9999) {
+                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
+                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _days = _todate.diff(moment(), 'days');
+                    if (_days > 0)
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else
+                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                }
+                _html += '</span><span class="text-muted fw-bold d-block fs-7 order-claim-warranty"><span class="text-muted fw-bold d-block fs-7"></div></td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
                 _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.discount_amount) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_dis) + '</td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
                 _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
                 _html += '</tr>';
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);
-                zTDiscount += row.discount_amount;
+                zTDiscount += _dis;
             }
             else if (row.order_item_type == 'fee' && row.order_item_name == 'State Recycling Fee') { zSRFAmt += _total; }
             else if (row.order_item_type == 'fee' && row.order_item_name != 'State Recycling Fee') { zFeeAmt += _total; }
             else if (row.order_item_type == 'shipping') { zShippingAmt += _total; }
             else if (row.order_item_type == 'gift_card') { zGiftCardAmt += _total; }
             else if (row.order_item_type == 'tax') { _tax.push({ order_item_id: row.order_item_id, name: row.order_item_name, label: row.label, rate: row.tax, amount: _total }); }
+            else if (row.order_item_type == 'coupon') {
+                _coupon += '<li class="nav-item mb-3 me-3 me-lg-6">';
+                _coupon += '<a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden h-85px pt-5 pb-2 active" data-bs-toggle="pill" href="javascript;void(0);">';
+                _coupon += '<div class="nav-icon mb-3"><i class="fa fa-gift"></i>$' + row.discount_amount + '</div>';
+                _coupon += '<span class="nav-text text-gray-800 fw-bolder fs-6 lh-1">' + row.order_item_name + '</span>';
+                _coupon += '<span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span > ';
+                _coupon += '</a>';
+                _coupon += '</li>';
+            }
         });
-        $("#order_items").empty().append(_html);
+        $("#order_items").empty().append(_html); $(".order-coupon").empty().append(_coupon);
 
         _html = '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt) + '</div></div>';
         if (zTDiscount > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Discount:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTDiscount) + '</div></div>';
@@ -256,4 +343,97 @@ function OrderInfo(ord_id) {
         //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
         $('#order-footer').empty().append(_html);
     }).catch(err => { }).always(function () { });
+}
+function ClaimWarranty(chk) {
+    var isChecked = $(chk).prop("checked");
+    $("[name='CheckSingle']").prop("checked", false);
+    $("[name='CheckSingle']").parent().parent().find('.order-claim-warranty').empty();
+    $(chk).prop("checked", isChecked);
+    if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
+    else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);">Claim Warranty</button>');
+}
+function ClaimWarrantyModal() {
+    let modalHtml = '<div class="modal-dialog modal-fullscreen p-9">';
+    modalHtml += '<div class="modal-content modal-rounded">';
+    modalHtml += '<div class="modal-header py-5"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '<div class="modal-footer py-5"><button type="button" class="btn btn-sm btn-primary" data-kt-stepper-action="next">Generate Ticket No</button></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#myModal").empty().html(modalHtml);
+
+    modalHtml = '<div id="kt_warranty_claim" class="card-body pt-0">';
+    $.each(WarrantyQuestions, function (i, row) {
+        console.log(i, row);
+        //modalHtml += '<h1 class=" header-' + i + '">' + row.title + '</h1>';
+        //modalHtml += '<p class="body-' + i + '">' + row.title + '</p>';
+
+        modalHtml += '<div class="py-0" data-kt-customer-payment-method="row">';
+
+        modalHtml += '<div class="py-3 d-flex flex-stack flex-wrap">';
+        modalHtml += '  <div class="d-flex align-items-center collapsible rotate collapsed" data-id="' + i + '">';
+        modalHtml += '      <div class="me-3 rotate-90"></div>';
+        modalHtml += '      <div class="me-3">';
+        modalHtml += '        <div class="d-flex align-items-center">';
+        modalHtml += '            <div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-' + i + '" name="customRadio"/><label class="custom-control-label" for="customRadio-' + i + '"> ' + (i + 1) + '. ' + row.title + '</label></div>';
+        //modalHtml += '            <div class="badge badge-light-primary ms-5">Primary</div>';
+        modalHtml += '        </div>';
+        //modalHtml += '        <div class="text-muted">Expires Dec 2024</div>';
+        modalHtml += '      </div>';
+        modalHtml += '  </div>';
+        modalHtml += '</div>';
+
+        modalHtml += '<div id="kt_warranty_claim_body_' + i + '" class="fs-6 ps-10 collapse">';
+        $.each(row.questions, function (q_i, q_row) {
+
+            if (q_row.sub_questions != null)
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+            else
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+
+            $.each(q_row.sub_questions, function (sq_i, sq_row) {
+                modalHtml += '<div class="text-gray-800 px-8"><input type="checkbox" id="customRadio-' + q_i + '-' + sq_i + '"/><label class="custom-control-label" for="customRadio-' + q_i + '-' + sq_i + '"> ' + (sq_i + 1) + '. ' + sq_row.title + '</label></div>';
+            });
+            modalHtml += '</div>';
+        });
+        modalHtml += '</div>';
+
+        modalHtml += '</div><div class="separator separator-dashed"></div>';
+
+        //modalHtml += '<div class="py-0">';
+        //modalHtml += '    <div class="py-3 d-flex flex-stack flex-wrap">';
+        //modalHtml += '        <div class="custom-control custom-radio">';
+        //modalHtml += '            <input type="radio" id="customRadio-' + i + '" name="customRadio"/>';
+        //modalHtml += '            <label class="custom-control-label" for="customRadio1">' + row.title + '</label>';
+        //modalHtml += '        </div>';
+        //modalHtml += '    </div>';
+        //modalHtml += '    <div id="collapse-' + i + '" class="collapse">';
+        //modalHtml += '        <div class="card-body">';
+        //modalHtml += '        // Collapse 1 content';
+        //modalHtml += '        </div>';
+        //modalHtml += '    </div>';
+        //modalHtml += '</div>';
+
+        //modalHtml += '<div class="col">';
+        //modalHtml += '<label class="btn btn-outline btn-outline-dashed btn-outline-default d-flex text-start p-3" data-kt-button="true">';
+        //modalHtml += '<span class="form-check form-check-custom form-check-solid form-check-sm align-items-start mt-1"><input class="form-check-input" type="radio" name="discount_option" value = "0"></span>';
+        //modalHtml += '<span class="ms-3"><span class="fs-7 fw-bolder text-gray-800 d-block">Sagging</span></span>';
+        //modalHtml += '</label>';
+        //modalHtml += '<div class="col-Questions">anc</div>';
+        //modalHtml += '</div>';
+    });
+    modalHtml += '</div>';
+
+
+    $('#myModal .modal-body').append(modalHtml);
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    //$("#kt_warranty_claim").accordion({
+    //    collapsible: true
+    //});
+
+    $('#kt_warranty_claim .collapsed').on('click', function () {
+        $('#kt_warranty_claim .collapse').removeClass('show');
+        $('#kt_warranty_claim_body_' + $(this).data('id')).addClass('show');
+        $('#customRadio' + $(this).data('id')).prop("checked", true);
+    });
 }

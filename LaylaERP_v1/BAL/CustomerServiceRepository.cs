@@ -10,7 +10,7 @@
 
     public class CustomerServiceRepository
     {
-        public static DataTable CustomerOrders(long customer_id, long order_id, string billing_email, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable CustomerOrders(long customer_id, long order_id, string billing_email, string phone_no, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -21,6 +21,7 @@
                     new SqlParameter("@customer_id", customer_id),
                     new SqlParameter("@order_id", order_id),
                     new SqlParameter("@billing_email", billing_email),
+                    new SqlParameter("@phone_no", phone_no),
                     new SqlParameter("@search", search),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),
@@ -61,7 +62,7 @@
             return dt;
         }
 
-        public static DataTable GetCustomerInfo(long customer_id, long order_id, string billing_email)
+        public static DataTable GetCustomerInfo(long customer_id, long order_id, string billing_email, string phone_no)
         {
             DataTable dt = new DataTable();
             try
@@ -70,6 +71,7 @@
                 {
                     customer_id > 0 ? new SqlParameter("@customer_id", customer_id) : new SqlParameter("@customer_id",DBNull.Value),
                     !string.IsNullOrEmpty(billing_email) ? new SqlParameter("@billing_email", billing_email) : new SqlParameter("@billing_email",DBNull.Value),
+                    !string.IsNullOrEmpty(phone_no) ? new SqlParameter("@phone_no", phone_no) : new SqlParameter("@phone_no",DBNull.Value),
                     order_id > 0 ? new SqlParameter("@order_id", order_id) : new SqlParameter("@order_id",DBNull.Value),
                     new SqlParameter("@flag", "CUSTINFO")
                 };

@@ -31,7 +31,7 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue2))
                     order_id = Convert.ToInt64(model.strValue2);
 
-                DataTable dt = CustomerServiceRepository.CustomerOrders(customer_id, order_id, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = CustomerServiceRepository.CustomerOrders(customer_id, order_id, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -65,7 +65,7 @@ namespace LaylaERP.Controllers
                     customer_id = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     order_id = Convert.ToInt64(model.strValue2);
-                DataTable dt = CustomerServiceRepository.GetCustomerInfo(customer_id, order_id, model.strValue3);
+                DataTable dt = CustomerServiceRepository.GetCustomerInfo(customer_id, order_id, model.strValue3, model.strValue4);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

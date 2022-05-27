@@ -103,5 +103,21 @@
             { throw ex; }
             return ds;
         }
+        public static DataTable GenerateOrderTicket(string json_data)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@search", json_data),
+                    new SqlParameter("@flag", "GENTOKEN")
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

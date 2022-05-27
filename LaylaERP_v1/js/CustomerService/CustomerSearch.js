@@ -39,11 +39,8 @@
         }
     });
     $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
-    $('#kt_warranty_claim .collapse').removeClass('show');
-    $('#kt_warranty_claim .collapsed').on('click', function () {
-        console.log($(this));
-        //$(this).next().show();
-        //$(this).next().siblings('p').hide().animate();
+    $(document).on("click", "#btnGenerateTicket", function (t) {
+        t.preventDefault(); GenerateTokenNo();
     });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
@@ -211,17 +208,21 @@ function dataGridLoad() {
     });
 }
 
-function backOrderList() { $("#list-page").removeClass('hidden'); $("#detail-page").addClass('hidden'); }
+function backOrderList() {
+    $("#list-page").removeClass('hidden'); $("#detail-page").addClass('hidden');
+    $(".order-id").data('order_id', 0); $(".order-id").data('email', ''); $(".order-id").data('name', '');
+}
 function OrderInfo(ord_id) {
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
         response = JSON.parse(response); //console.log(response);
-        let _html = '', _coupon = '';
+        let _html = '', _coupon = '', _refundHtml = '';
         $.each(response['order'], function (i, row) {
             //Add header
             $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
+            $(".order-id").data('order_id', row.order_id);
             $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
             //Add Address
             let _json = JSON.parse(row.order_details); //console.log(_json);
@@ -231,6 +232,7 @@ function OrderInfo(ord_id) {
             _html += _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '<br>';
             _html += 'Phone: ' + _json._billing_phone + '<br>';
             _html += 'Email: ' + _json._billing_email;
+            $(".order-id").data('email', _json._billing_email); $(".order-id").data('name', _json._billing_first_name);
             $(".order-billing").empty().append(_html);
             _html = '<strong>' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</strong><br>';
             if (isNullUndefAndSpace(_json._shipping_address_1)) _html += _json._shipping_address_1 + '<br>';
@@ -252,7 +254,7 @@ function OrderInfo(ord_id) {
             let _dis = _sub_total - _total;
             if (row.order_item_type == 'line_item') {
                 _html += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
-                if (_sub_total > 0) _html += '<td><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0"><label></label></td>';
+                if (_sub_total > 0) _html += '<td><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0" data-id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-qty="' + row.qty + '"><label></label></td>';
                 else _html += '<td></td>';
                 _html += '<td class="d-flex align-items-center pt-6">';
                 _html += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
@@ -322,8 +324,25 @@ function OrderInfo(ord_id) {
                 _coupon += '</a>';
                 _coupon += '</li>';
             }
+            else if (row.order_item_type == 'refund') {
+                _refundHtml += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="0" data-returndays="0" data-warrantydays="0">';
+                _refundHtml += '<td></td>';
+                _refundHtml += '<td class="d-flex align-items-center pt-6">';
+                _refundHtml += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label"></span></div>';
+                _refundHtml += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7">';
+                _refundHtml += '</span><span class="text-muted fw-bold d-block fs-7 order-claim-warranty"><span class="text-muted fw-bold d-block fs-7"></div></td>';
+                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '<td class="text-end pt-6">' + formatCurrency(_total) + '</td>';
+                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '</tr>';
+                zRefundAmt = zRefundAmt + (_total);
+            }
         });
-        $("#order_items").empty().append(_html); $(".order-coupon").empty().append(_coupon);
+        $("#order_items").empty().append(_html); $(".order-coupon").empty().append(_coupon); $('#order_items_refund').append(_refundHtml);
+
+        let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
 
         _html = '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt) + '</div></div>';
         if (zTDiscount > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Discount:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTDiscount) + '</div></div>';
@@ -338,9 +357,9 @@ function OrderInfo(ord_id) {
         if (zGiftCardAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Gift Card</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGiftCardAmt) + '</div></div>';
         _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Order Total</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + '</div></div>';
         //// Refund 
-        //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedTotal">0.00</span></strong></div></div>';
+        if (zRefundAmt != 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Refunded</div><div class="text-end fw-bolder fs-6 text-red">' + formatCurrency(zRefundAmt) + '</div></div>';
         //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Refunded By Gift Card</label><div class="col-sm-2 controls text-right text-red text-weight-bold"><strong>$<span id="refundedByGiftCard" data-orderitemid="0">0.00</span></strong></div></div>';
-        //_html += '<div class="form-group refund-total"><label class="col-sm-10 control-label">Net Payment</label><div class="col-sm-2 controls text-right text-weight-bold"><strong>$<span id="netPaymentTotal">0.00</span></strong></div></div>';
+        _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-7">Net Payment</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(netpay) + '</div></div>';
         $('#order-footer').empty().append(_html);
     }).catch(err => { }).always(function () { });
 }
@@ -350,14 +369,14 @@ function ClaimWarranty(chk) {
     $("[name='CheckSingle']").parent().parent().find('.order-claim-warranty').empty();
     $(chk).prop("checked", isChecked);
     if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
-    else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);">Claim Warranty</button>');
+    else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
 }
-function ClaimWarrantyModal() {
+function ClaimWarrantyModal(ele) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-9">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-5"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-5"><button type="button" class="btn btn-sm btn-primary" data-kt-stepper-action="next">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-footer py-5"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -375,7 +394,7 @@ function ClaimWarrantyModal() {
         modalHtml += '      <div class="me-3 rotate-90"></div>';
         modalHtml += '      <div class="me-3">';
         modalHtml += '        <div class="d-flex align-items-center">';
-        modalHtml += '            <div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-' + i + '" name="customRadio"/><label class="custom-control-label" for="customRadio-' + i + '"> ' + (i + 1) + '. ' + row.title + '</label></div>';
+        modalHtml += '            <div class="text-gray-800 fw-bolder"><input type="radio" id="rd-' + i + '" name="claimtype" class="form-check-input m-0 me-3" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="form-check-label fw-bolder text-gray-800" for="rd-' + i + '"> ' + (i + 1) + '. ' + row.title + '</label></div>';
         //modalHtml += '            <div class="badge badge-light-primary ms-5">Primary</div>';
         modalHtml += '        </div>';
         //modalHtml += '        <div class="text-muted">Expires Dec 2024</div>';
@@ -387,12 +406,12 @@ function ClaimWarrantyModal() {
         $.each(row.questions, function (q_i, q_row) {
 
             if (q_row.sub_questions != null)
-                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="radio" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="radio" id="rd-' + i + '-' + q_i + '" name="rd-' + i + '" class="form-check-input m-0 me-3" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="custom-control-label m-2" for="rd-' + i + '-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
             else
-                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="customRadio-q-' + q_i + '" name="customRadio-q-' + i + '"/><label class="custom-control-label" for="customRadio-q-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
+                modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="chk-' + i + '-' + q_i + '" class="form-check-input" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="custom-control-label m-2" for="chk-' + i + '-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
 
             $.each(q_row.sub_questions, function (sq_i, sq_row) {
-                modalHtml += '<div class="text-gray-800 px-8"><input type="checkbox" id="customRadio-' + q_i + '-' + sq_i + '"/><label class="custom-control-label" for="customRadio-' + q_i + '-' + sq_i + '"> ' + (sq_i + 1) + '. ' + sq_row.title + '</label></div>';
+                modalHtml += '<div class="text-gray-800 px-8"><input type="checkbox" id="chk-' + i + '-' + q_i + '-' + sq_i + '" class="form-check-input" data-id="' + row.id + '" data-code="' + row.code + '"/><label class="custom-control-label m-2" for="chk-' + i + '-' + q_i + '-' + sq_i + '"> ' + (sq_i + 1) + '. ' + sq_row.title + '</label></div>';
             });
             modalHtml += '</div>';
         });
@@ -424,7 +443,6 @@ function ClaimWarrantyModal() {
     });
     modalHtml += '</div>';
 
-
     $('#myModal .modal-body').append(modalHtml);
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
     //$("#kt_warranty_claim").accordion({
@@ -432,8 +450,48 @@ function ClaimWarrantyModal() {
     //});
 
     $('#kt_warranty_claim .collapsed').on('click', function () {
+        //$('input[type="checkbox"]').prop("checked", false); $('input[type="radio"]').prop("checked", false);
         $('#kt_warranty_claim .collapse').removeClass('show');
         $('#kt_warranty_claim_body_' + $(this).data('id')).addClass('show');
         $('#customRadio' + $(this).data('id')).prop("checked", true);
+
     });
+}
+
+function GenerateTokenNo() {
+    let _user = $(".order-id").data('name'), _reason = $("input[name='claimtype']:checked").data('title'), _reason_code = $("input[name='claimtype']:checked").data('code');
+    let _questions = '';
+    $("input:checkbox[name=type]:checked").each(function () {
+        _questions += $(this).data('name') + ' <br/>';
+        //yourArray.push($(this).val());
+    });
+
+
+    let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') },
+    { from: 'HelpDesk', content: 'Please select a reason for your warranty claim.' },
+        { from: _user, content: _reason }, { from: _user, content: _questions }];
+    let option = {
+        id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#btnGenerateTicket").data('qty')) || 0, order_item_sku: '',
+        chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
+        //meta_data: serialize(_taxdata)
+    };
+    console.log(option);
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, do it!', text: "Do you want to generate your order token?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/customer-service/generate-ticket', { strValue1: JSON.stringify(option) }).done(function (result) {
+                    console.log(result);
+                    result = JSON.parse(result);
+                    if (result[0].response == 'success') {
+                        $("#myModal").modal('hide');
+                        swal('Success', 'Thank you for Submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '.One of our warranty specialists will contact you with in next steps within 3 bussiness days.', "success");
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+    return false;
 }

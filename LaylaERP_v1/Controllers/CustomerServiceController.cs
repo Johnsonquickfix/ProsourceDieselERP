@@ -90,5 +90,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpPost]
+        [Route("customer-service/generate-ticket")]
+        public JsonResult GenerateOrderTicket(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

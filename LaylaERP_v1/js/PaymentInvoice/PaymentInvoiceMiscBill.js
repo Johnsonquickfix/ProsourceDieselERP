@@ -105,26 +105,47 @@ function getPurchaseOrderInfo() {
                     let itemHtml = '';
                     if (data['pod'][i].rowid > 0) {
                        
-                        itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].ref + '">';
-                        itemHtml += '<td>' + data['pod'][i].ref + '</td>';
+                        itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].ref + '" data-discount2able="' + data['pod'][i].discount2able + '" data-dayapply="' + data['pod'][i].dayapply + '" data-Beforeday="' + data['pod'][i].Beforeday + '" data-discountType1="' + data['pod'][i].DiscountType1 + '" data-defaultdiscount="' + data['pod'][i].DefaultDiscount + '" data-discountminimumorderamount="' + data['pod'][i].DiscountMinimumOrderAmount + '" data-discounttype2="' + data['pod'][i].DiscountType2 + '" data-discount="' + data['pod'][i].Discount + '" data-subtotal="' + data['pod'][i].subtotal +'">';
+                        itemHtml += '<td>' + data['pod'][i].ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + data['pod'][i].rowid  + ', false);"><i class="fas fa-search-plus"></i></a></td>';
                         itemHtml += '<td>' + data['pod'][i].displayname + '</td>';
+                        if (data['pod'][i].billtype.trim() == 'V')
+                            itemHtml += '<td class="bill-type">' + 'Vendor' + '</td>';
+                        else if (data['pod'][i].billtype.trim() == 'C')
+                            itemHtml += '<td class="bill-type">' + 'Customer' + '</td>';
+                        else
+                            itemHtml += '<td class="bill-type">' + 'Institution' + '</td>';
                         itemHtml += '<td class="text-left">' + data['pod'][i].date_modified + '</td>';
 
                         itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                    
-                        itemHtml += '<td class="text-right row-total">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
+                        itemHtml += '<td class="text-right">$' + data['pod'][i].recieved.toFixed(2) + '</td>';
                         itemHtml += '<td class="text-right price-remaining" data-tax1="' + data['pod'][i].remaining + '">$' + data['pod'][i].remaining.toFixed(2) + '</td>';
                         if (data['pod'][i].recieved.toFixed(2) == 0.00) {
                            
                             payterm = data['pod'][i].total_ttc.toFixed(2) * (data['pod'][i].fk_paymentterm / 100);
                             //console.log(payterm);
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + payterm.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control text-right billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + payterm.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
 
                         }
                         else {
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control text-right billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
                             
                         }
+
+                        //if (data['pod'][i].recieved.toFixed(2) == 0.00) {
+
+                        //    payterm = data['pod'][i].total_ttc.toFixed(2) * (data['pod'][i].fk_paymentterm / 100);
+                        //    itemHtml += '<td class="text-right row-discountval">' + payterm.toFixed(2) + '</td>';
+                        //}
+                        //else {
+                        //    //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfodis number rowCalulate" type="number" id="txt_itempricedis_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itempricedis" placeholder="Discounted"></td>';
+                        //    itemHtml += '<td class="text-right row-discountval">' + data['pod'][i].remaining.toFixed(2) + '</td>';
+                        //}
+
+                        itemHtml += '<td class="text-right row-discountval">' + 0 + '</td>';
+                        itemHtml += '<td class="text-right row-total">' + 0 + '</td>';
+                       
+
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
                     }
@@ -141,6 +162,7 @@ function getPurchaseOrderInfo() {
     // $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     $(".top-action").empty().append('<button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
     $('.billinfo').prop("disabled", true);
+    $('.billinfodis').prop("disabled", true);
 }
 $(document).on("click", ".btnEdit", function (t) {
     t.preventDefault(); $("#loader").show();
@@ -156,21 +178,73 @@ function calculateFinal() {
     let tGrossAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00
+        let rPrice = 0.00, rTotl = 0.00
         remaing  = parseFloat($(row).find("[name=txt_itemprice]").val().trim()) || 0.00;
         payment = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
+        billtype = $(row).find(".bill-type").text();
+        Discount = parseFloat($(row).data('discount')) || 0.00;
+        DiscountMinimumOrderAmount = parseFloat($(row).data('discountminimumorderamount')) || 0.00;
+        dayapply = parseInt($(row).data('dayapply'));
+        discount2able = parseInt($(row).data('discount2able'));
+        DiscountType2 = parseInt($(row).data('discounttype2')) || 0;
+        DefaultDiscount = parseFloat($(row).data('defaultdiscount')) || 0.00;
+        DiscountType1 = $(row).data('discounttype1');
+        subtotal = parseFloat($(row).data('subtotal')) || 0.00;
+
         //console.log(payment.toFixed(2), remaing.toFixed(2));
         if (remaing > payment) {
             swal('Alert!', "you can't receive greater payment form  remaining payment", "error");
             parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
             $(row).find("[name=txt_itemprice]").focus();
+            $(row).find(".row-discountval").text(0.00);
+            $(row).find(".row-total").text(0.00);
 
         }
         //console.log(remaing);
         tGrossAmt += remaing;
+        
+        console.log(remaing, payment, DiscountType1, DiscountMinimumOrderAmount, DefaultDiscount, DiscountType2, dayapply, discount2able, Discount);
+        $(row).find(".row-discountval").text(0);
+        $(row).find(".row-total").text(remaing);
+        if (remaing == payment && billtype == 'Vendor') {
+            if (DiscountType1 == 'Fixed') {
+                if (subtotal >= DiscountMinimumOrderAmount)
+                    rPrice = DefaultDiscount;
+            }
+            else if (DiscountType1 == 'Percentage') {
+                if (subtotal >= DiscountMinimumOrderAmount)
+                    rPrice = subtotal * DefaultDiscount / 100
+            }
+            else if (DiscountType2 > 0) {
+                if (dayapply == 0 && discount2able == 1)
+                    rPrice = subtotal * Discount / 100
+            }
+            console.log(rPrice);
+            $(row).find(".row-discountval").text(rPrice.toFixed(2));
+            rTotl = remaing - rPrice;
+            $(row).find(".row-total").text(rTotl.toFixed(2));
+            $("#Discount").html(rPrice.toFixed(2));
+            $("#SubTotal").html(rTotl.toFixed(2));
+        }
+        else {
+            if (remaing > payment) {
+                $("#SubTotal").html(0.00);
+                $("#Discount").html(0.00);
+                $(row).find(".row-total").text(0.00);
+            }
+            else {
+                $(row).find(".row-total").text(remaing.toFixed(2));
+                $("#Discount").html(rPrice.toFixed(2));
+                $("#SubTotal").html(remaing.toFixed(2));
+            }
+        }
+       // $("#Discount").html(rPrice.toFixed(2));
+      //  $("#SubTotal").html(remaing.toFixed(2));
+      
     });
 
     $("#Total").html(tGrossAmt.toFixed(2));
+  
 }
 
 $(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });
@@ -200,7 +274,7 @@ function saveVendorPO() {
     else {
         let _order = {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
-            amount: parseFloat($("#Total").text()), fk_status: 0
+            amount: parseFloat($("#Total").text()), fk_status: 0, discount: parseFloat($("#Discount").text()), sub_total: parseFloat($("#SubTotal").text())
         }
         let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list), strValue4: vnname, strValue5: billno, strValue6: parseFloat($("#Total").text()), SortDir: PaymentTypeid, SortCol: accountno, PageNo: expimmyyval, PageSize: cardcode }
         //console.log(option);
@@ -235,12 +309,14 @@ function createItemsList() {
         let payment = 0.00, remaing = 0.00, bailance = 0.00;
         payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         remaing = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
+        discount = parseFloat($(row).find(".row-discountval").text()) || 0.00;
+        subtotal = parseFloat($(row).find(".row-total").text()) || 0.00;
         bailance = remaing - payment;
         if (bailance > 0) {
             status = "UN";
         }
         if (payment != 0) {
-            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier') });
+            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), discount: discount, sub_total: subtotal });
         }
     });
     return _list;

@@ -29,105 +29,126 @@
                             <span class="even-space">From</span><input type="text" name="fromdate" id="fromdate" />
                             <span class="even-space">To</span><input type="text" name="todate" id="todate" />
                             @*From <input type="date" name="fromdate" id="fromdate">
-                    To<input type="date" name="todate" id="todate" >*@
+        To<input type="date" name="todate" id="todate" >*@
                             <span title="Click Here To Search Orders Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnorder" class="button action" value="Go" /></span>
                             <span title="Click Here To Refresh Order List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnvieworders" class="button action" value="Refresh" /></span>
+                            <div class="">
+                                <select class="form-control select2 billinfo" id="ddlstatus">
+                                    <option value="0" selected="">Select Status</option>
+                                    <option value="wc-pending">Pending</option>
+                                    <option value="wc-processing">Processing</option>
+                                    <option value="wc-on-hold">Hold</option>
+                                    <option value="wc-completed">Completed</option>
+                                    <option value="wc-cancelled">Cancelled</option>
+                                    <option value="wc-refunded">Refunded</option>
+                                    <option value="wc-failed">Failed</option>
+                                    <option value="wc-cancelnopay">Cancelnopay</option>
+                                </select>
+                                </div>
+                                <span title="Click Here To Filter" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnfilter" class="button action" value="Filter" /></span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="box box-primary">
-                        <div class="box-header">
-                            <table id="exportorderdata" class="table-blue table table-bordered check-table" style="width:100%;">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
-                                        <th>Order Id</th>
-                                        <th>Name</th>
-                                        <th>Total</th>
-                                        @*<th>Coupon Amount</th>*@
-                                        <th>Tax</th>
-                                        @*<th>Shipping Amount</th>*@
-                                        <th>Order Total</th>
-                                        <th>Order Date</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div><!--end tab one-->
-            <div class="tab-pane" id="tab_2">
-                <div class="user-top-section">
                     <div class="tablenav top">
                         <div class="alignleft actions bulkactions">
-                            <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
-                            <span>To</span><input type="text" name="todateusers" id="todateusers" />
-                            <span title="Click Here To Search Users Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnusers" class="button" value="Go" /></span>&nbsp;&nbsp;
-                            <select name="new_role" id="new_role" class="mydata" style="width:initial">
-                                <option value="%">Choose role</option>
-                            </select>
-                            <span title="Click Here To Search User Role Wise" data-placement="bottom" data-toggle="tooltip"><input type="button" name="changeit" id="changeit" class="button" value="Go" /></span>
-                            <span title="Click Here To Refresh User's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewusers" class="button" value="Refresh" /></span>
+                            
                         </div>
                     </div>
-                </div>
-                <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="box box-primary">
-                        <div class="box-header">
-                            <div><ul class="subsubsub" id="role-ul" style="display:none"></ul></div>
 
-                            <table id="exportuserdata" class="table-blue table table-bordered check-table display" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Address</th>
-                                        <th>Phone Number</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
                 </div>
-            </div><!--end tab two-->
-            <div class="tab-pane" id="tab_3">
-                <div class="user-top-section">
-                    <div class="tablenav top">
-                        <div class="alignleft actions bulkactions">
-                            <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers" />
-                            <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
-                            <span title="Click Here To Search Customers Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btncustomers" class="button" value="Go" /></span>
-                            <span title="Click Here To Refresh Customer's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewcustomers" class="button" value="Refresh" /></span>
+                        <div id="poststuff" class="woocommerce-reports-wide">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <table id="exportorderdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
+                                                <th>Order Id</th>
+                                                <th>Name</th>
+                                                <th>Total</th>
+                                                @*<th>Coupon Amount</th>*@
+                                                <th>Tax</th>
+                                                @*<th>Shipping Amount</th>*@
+                                                <th>Order Total</th>
+                                                <th>Status</th>
+                                                <th>Order Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="box box-primary">
-                        <div class="box-header">
-                            <table class="table-blue table table-bordered check-table display" id="exportcustomerdata" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                        <th>Phone Number</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                    </div><!--end tab one-->
+                    <div class="tab-pane" id="tab_2">
+                        <div class="user-top-section">
+                            <div class="tablenav top">
+                                <div class="alignleft actions bulkactions">
+                                    <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
+                                    <span>To</span><input type="text" name="todateusers" id="todateusers" />
+                                    <span title="Click Here To Search Users Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnusers" class="button" value="Go" /></span>&nbsp;&nbsp;
+                                    <select name="new_role" id="new_role" class="mydata" style="width:initial">
+                                        <option value="%">Choose role</option>
+                                    </select>
+                                    <span title="Click Here To Search User Role Wise" data-placement="bottom" data-toggle="tooltip"><input type="button" name="changeit" id="changeit" class="button" value="Go" /></span>
+                                    <span title="Click Here To Refresh User's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewusers" class="button" value="Refresh" /></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div><!--end tab three-->
+                        <div id="poststuff" class="woocommerce-reports-wide">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <div><ul class="subsubsub" id="role-ul" style="display:none"></ul></div>
 
-        </div>
+                                    <table id="exportuserdata" class="table-blue table table-bordered check-table display" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Address</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end tab two-->
+                    <div class="tab-pane" id="tab_3">
+                        <div class="user-top-section">
+                            <div class="tablenav top">
+                                <div class="alignleft actions bulkactions">
+                                    <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers" />
+                                    <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
+                                    <span title="Click Here To Search Customers Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btncustomers" class="button" value="Go" /></span>
+                                    <span title="Click Here To Refresh Customer's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewcustomers" class="button" value="Refresh" /></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="poststuff" class="woocommerce-reports-wide">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <table class="table-blue table table-bordered check-table display" id="exportcustomerdata" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Address</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end tab three-->
+
+                </div>
     </div>
 </div>
 
@@ -186,6 +207,17 @@
         //$(document).on('click', "#btnuser", function () {
         //    DatagridUsers();
         //})
+
+
+        $("#btnfilter").click(function () {
+            //if ($("#ddlstatus").val() == "0") {
+            //    swal('Alert', 'Please select status', 'error').then(function () { swal.close(); $('#ddlstatus').focus(); });
+            //}           
+            //else {
+                DatagridOrder();
+            //}
+        });
+
 
         $("#btnvieworders").click(function () {
             $("#fromdate").val("");
@@ -246,6 +278,7 @@
         var from_date = $("#fromdate").val();
         var to_date = $("#todate").val();
         var user_id = $("#hfuserid").val();
+        var statusval = $("#ddlstatus").val();
         //var obj = { mydate: mydate };
         $('#exportorderdata').DataTable({
             "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -254,10 +287,10 @@
             searching: false,
             bAutoWidth: false,
             "ajax": {
-                "url": '/Export/GetData',
+                "url": '/Export/GetOrderData',
                 "type": 'POST',
                 "dataType": 'json',
-                "data": { from_date: from_date, to_date: to_date, user: user_id }
+                "data": { from_date: from_date, to_date: to_date, user: user_id, status: statusval}
                 //"data": JSON.stringify(obj)
 
             },
@@ -274,6 +307,7 @@
                 { 'data': 'tax', title: 'Tax', sWidth: "10%" },
                 //{ 'data': 'shipping_amount', title: 'Shipping Amount', sWidth: "10%" },
                 { 'data': 'subtotal', title: 'Order Total', sWidth: "10%" },
+                { 'data': 'user_status', title: 'Status', sWidth: "10%" },
                 {
                     'data': 'order_created', title: 'Order Date', sWidth: "10%",
                     'render': function (jsonDate) {

@@ -336,6 +336,74 @@ namespace LaylaERP.BAL
         }
 
 
+        public static void GetOrderData(string from_date, string to_date, string user, string status)
+        {
+            try
+            {
+                string strWhr = string.Empty;
+                exportorderlist.Clear();
+                string ssql;
+
+                if (status != "0")
+                {
+                    strWhr += " and (p.post_status ='" + status + "') ";
+                }
+
+                if (!string.IsNullOrEmpty(from_date) && !string.IsNullOrEmpty(to_date))
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.ParseExact(from_date, "MM-dd-yyyy", null);
+                    todate = DateTime.ParseExact(to_date, "MM-dd-yyyy", null);
+
+
+                   
+
+                    //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,(os.total_sales) as subtotal,(os.net_total) as total,(os.tax_total) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                         + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                         + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                         + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                         + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
+                         + " WHERE pmm.meta_value='" + user + "'  and p.post_type = 'shop_order' "+ strWhr + "and p.post_status != 'auto-draft' and cast(os.date_created as date)>='" + fromdate.ToString("yyyy-MM-dd") + "' and cast(os.date_created as date)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id";
+
+                }
+                else
+                {
+                    //ssql = "select ws.order_id as id,ws.order_id as order_id,DATE_FORMAT(ws.date_created, '%M %d %Y') order_created,substring(ws.status,4) as status,ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total,ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty, cast(os.total_sales as decimal(10,2)) as subtotal,"
+                            + " cast(os.net_total as decimal(10,2)) as total, cast(os.tax_total as decimal(10,2)) as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
+                            + " REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
+                            + " WHERE pmm.meta_value='" + user + "' and p.post_type = 'shop_order' "+ strWhr + " and p.post_status != 'auto-draft' order by p.id";
+                }
+                DataSet ds1 = new DataSet();
+                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    ExportModel uobj = new ExportModel();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
+                    uobj.first_name = ds1.Tables[0].Rows[i]["FirstName"].ToString();
+                    uobj.orderstatus = ds1.Tables[0].Rows[i]["status"].ToString();
+                    //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
+                    //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
+                    uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
+                    uobj.subtotal = "$" + ds1.Tables[0].Rows[i]["subtotal"].ToString();
+                    uobj.total = "$" + ds1.Tables[0].Rows[i]["total"].ToString();
+                    uobj.tax = "$" + ds1.Tables[0].Rows[i]["tax"].ToString();
+                    uobj.user_status = ds1.Tables[0].Rows[i]["status"].ToString();
+                    //uobj.shipping_amount = "$" + ds1.Tables[0].Rows[i]["shipping_total"].ToString();
+                    //uobj.coupon = "$" + ds1.Tables[0].Rows[i]["coupon"].ToString();
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+
         public static void ExportCustomersDetails(string from_dateusers, string to_dateusers)
         {
             try

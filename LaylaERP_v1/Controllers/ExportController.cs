@@ -28,6 +28,14 @@ namespace LaylaERP.Controllers
             k.MaxJsonLength = int.MaxValue;
             return k;
         }
+        [HttpPost]
+        public ActionResult GetOrderData(string from_date, string to_date, string user, string status)
+        {
+            ExportRepository.GetOrderData(from_date, to_date, user, status);
+            var k = Json(new { data = ExportRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
+        }
 
         [HttpPost]
         public JsonResult UsersExport(string from_dateusers, string to_dateusers, string rolee)

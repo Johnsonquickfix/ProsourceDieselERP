@@ -202,14 +202,40 @@
                     </div>
                 </div>
             </div>
+            <div class="box box-primary order-files hidden">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Attached Files And Documents</h3>
+                </div>
+                <div class="box-body">
+                    <label class="control-label">Attach a new file/document</label>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="file" name="ImageFile" id="ImageFile" class="orderfiles" />
+                        </div>
+                        <div class="col-md-6 left">
+                            <input type="button" class="orderfiles" id="btnuploade" value="Upload" title="Upload documents." data-toggle="tooltip" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box-body table-responsive p-0">
+                    <table class="table-blue table table-striped table-valign-middle" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Documents</th>
+                                <th>Size</th>
+                                <th>Date</th>
+                                <th class="text-right">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divfileupload_services"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
-
         <div class="col-sm-6 order-box-total">
             <div class="box box-primary">
-
                 <div class="row">
-
                     <div class="col-sm-6">
                         <div class="box-body">
                             <div class="form-group">

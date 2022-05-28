@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -694,5 +695,105 @@ namespace LaylaERP.Controllers
         //    return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         //}
 
+        [HttpPost]
+        public ActionResult FileUploade(string Name, HttpPostedFileBase ImageFile)
+        {
+            try
+            {
+
+                if (ImageFile != null)
+                {
+
+                    ProductModel model = new ProductModel();
+                    //Use Namespace called :  System.IO  
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = System.Text.RegularExpressions.Regex.Replace(FileName, @"\s+", "");
+                    //To Get File Extension  
+                    long filesize = ImageFile.ContentLength / 1024;
+                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
+                        //Add Current Date To Attached File Name  
+                        //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
+
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+
+
+                        DataTable dt = ReceptionRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
+                        if (dt.Rows.Count > 0)
+                        {
+                            return Json(new { status = false, message = "File already uploaded", url = "" }, 0);
+                        }
+                        else
+                        {
+
+                            string UploadPath = Path.Combine(Server.MapPath("~/Content/MiscBillsFiles"));
+                            UploadPath = UploadPath + "\\";
+                            //Its Create complete path to store in server.  
+                            model.ImagePath = UploadPath + FileName;
+                            //To copy and save file into server.  
+                            ImageFile.SaveAs(model.ImagePath);
+                            var ImagePath = "~/Content/MiscBillsFiles/" + FileName;
+                            int resultOne = PaymentInvoiceRepository.FileUploade(Convert.ToInt32(Name), FileName, filesize.ToString(), FileExtension, ImagePath);
+
+                            if (resultOne > 0)
+                            {
+                                return Json(new { status = true, message = "File upload successfully!!", url = "Manage" }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult Deletefileuploade(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = PaymentInvoiceRepository.Deletefileuploade(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetfileuploadData(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = PaymentInvoiceRepository.GetfileuploadData(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
     }
 }

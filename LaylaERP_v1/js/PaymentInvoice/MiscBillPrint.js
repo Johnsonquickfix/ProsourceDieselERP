@@ -85,7 +85,7 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
     //    po_authmail = JSON.parse(po_authmail);
     //    $(po_authmail).each(function (index, tr) { oth_email += ',' + tr.user_email });
     //}
-    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
+    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00; disc_amt = 0.00
 
     let startingNumber = parseFloat(data['po'][0].fk_paymentterm) || 0.00;
     //let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
@@ -220,6 +220,7 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
         myHtml += '                                <tr>';
         myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
         myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+        myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Discount</th>';
         myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
         myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
         myHtml += '                                </tr>';
@@ -229,14 +230,17 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
             myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
             myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
             myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+            myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.discount, 2, '.', ',') + '</td>';
             myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
             myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
             myHtml += '</tr>';
             paid_amt += trpd.amount
+            disc_amt += trpd.discount
         });
         myHtml += '                            </tbody>';
         myHtml += '                        </table>';
-    //}
+    //} 
+    console.log(disc_amt);
     myHtml += '                        </td>';
     myHtml += '                    </tr>';
 
@@ -278,12 +282,12 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
 
     myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt + disc_amt, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
  
     myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net + total_other + total_shamt - paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net + total_other + total_shamt - paid_amt - disc_amt, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
  
  
@@ -314,7 +318,7 @@ function print_miscbilldetails(id, result, is_inv) {
     //    po_authmail = JSON.parse(po_authmail);
     //    $(po_authmail).each(function (index, tr) { oth_email += ',' + tr.user_email });
     //}
-    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
+    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00; disc_amt = 0.00;
     let startingNumber = parseFloat(data['po'][0].fk_paymentterm) || 0.00;
     // let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
     //let _com_add = result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
@@ -449,6 +453,7 @@ function print_miscbilldetails(id, result, is_inv) {
     myHtml += '                                <tr>';
     myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
     myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Discount</th>';
     myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
     myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
     myHtml += '                                </tr>';
@@ -458,11 +463,13 @@ function print_miscbilldetails(id, result, is_inv) {
         myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
         myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
         myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.discount, 2, '.', ',') + '</td>';
         myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
         myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
         myHtml += '</tr>';
         paid_amt += trpd.amount
-    });
+        disc_amt += trpd.discount
+    }); console.log(disc_amt);
     myHtml += '                            </tbody>';
     myHtml += '                        </table>';
     //}
@@ -508,12 +515,12 @@ function print_miscbilldetails(id, result, is_inv) {
 
     myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt + disc_amt, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
 
     myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net + total_other + total_shamt - paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net + total_other + total_shamt - paid_amt - disc_amt, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
 
 

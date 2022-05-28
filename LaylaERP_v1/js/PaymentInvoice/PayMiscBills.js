@@ -93,7 +93,9 @@
         t.preventDefault(); let _text = 'Are you sure you want to undo changes this bill ?';
         swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getbillInfodetails(id); } });
     });
-  
+    $(document).on('click', "#btnuploade", function (t) {
+        t.preventDefault(); Adduploade();
+    })
 });
 
 function PaymentTerms() {
@@ -210,7 +212,7 @@ function getbillInfodetails(oid) {
     let totaldisc = 0.00;
     //console.log('d1',oid);
     if (oid > 0) {
-        $('.billinfoval').prop("disabled", true);
+        $('.billinfoval').prop("disabled", true); $(".order-files").removeClass('hidden'); 
         $('.billinfovalff').prop("disabled", true);
         $('.page-heading').text('Edit Misc Bills ').append('<a class="btn btn-danger" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         //$('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
@@ -386,10 +388,10 @@ function getbillInfodetails(oid) {
         //$("#discountTotal").text(formatCurrency(totalincl)); $("#discountTotal").data('total', totalincl);
         //$("#orderTotal").text(formatCurrency(totaldisc)); $("#orderTotal").data('total', totaldisc);
 
-
+        bindfileuploade();
     }
     else {
-        $("#loader").hide(); 
+        $("#loader").hide(); $(".order-files").addClass('hidden');
         $('.page-heading').text('Create Misc Bills ').append('<a class="btn btn-danger" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
 
        // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
@@ -694,4 +696,68 @@ function getipaidhistory(oid) {
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     }
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Purchase Order File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function Adduploade() {
+    var formData = new FormData();
+    var file = document.getElementById("ImageFile").files[0];
+    formData.append("ImageFile", file);
+
+    var Name = parseInt($('#lblbillNo').data('id')) || 0;
+    formData.append("Name", Name);
+    if (file == "") { swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); }); }
+    else {
+
+        $.ajax({
+            type: 'post', url: '/PaymentInvoice/FileUploade', processData: false, contentType: false, data: formData,
+            beforeSend: function (xhr) { $("#loader").show(); }
+        }).then(response => {
+            if (response.status == true) {
+                if (response.url == "Manage") {
+                    swal('Success', response.message, 'success');
+                    bindfileuploade();
+                }
+                else swal('Success', response.message, 'success');
+            }
+            else swal('Alert!', response.message, 'error')
+        }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
+    }
+}
+function bindfileuploade() {
+    let id = parseInt($('#lblbillNo').data('id')) || 0;
+    var obj = { strValue1: id };
+    $.ajax({
+        type: "POST", url: '/PaymentInvoice/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let itemHtml = '';
+            $.each(data, function (key, row) {
+                itemHtml += '<tr id="tritemId_' + row.ID + '" data-id="' + row.ID + '">';
+                itemHtml += '<td><a target="popup" href="../../Content/PurchaseFiles/' + row.product_name + '">' + row.product_name + '</i></a ></td>';
+                itemHtml += '<td>' + row.product_label + 'KB' + '</td>';
+                itemHtml += '<td>' + row.sellingpric + '</td>';
+                itemHtml += '<td class="text-right"><button class="btn menu-icon-gr text-red btnDeleteItem editbutton orderfiles" disabled onClick="Deletefileupload(' + row.ID + ')" data-toggle="tooltip" title="Delete Document" data-placement="right"><i class="glyphicon glyphicon-trash"></i></button></td>';
+                itemHtml += '</tr>';
+            });
+            $('#divfileupload_services').empty().append(itemHtml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+function Deletefileupload(id) {
+    var ids = id;
+    var obj = { ID: ids }
+    $("#loader").show();
+    $.post('/PaymentInvoice/Deletefileuploade', obj).then(response => {
+        if (response.status == true) {
+            if (response.url == "Manage") {
+                swal('Success', response.message, 'success'); bindfileuploade();
+            }
+            else swal('Success', response.message, 'success');
+        }
+        else swal('Alert!', response.message, 'error')
+    }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
 }

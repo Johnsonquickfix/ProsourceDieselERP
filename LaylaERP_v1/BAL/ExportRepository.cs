@@ -359,7 +359,7 @@ namespace LaylaERP.BAL
                    
 
                     //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
-                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,(os.total_sales) as subtotal,(os.net_total) as total,(os.tax_total) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,(os.total_sales) as subtotal,(os.net_total) as total,(os.tax_total) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,DATEDIFF(day,os.date_created , getdate() ) daysdiff"
                          + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                          + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                          + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
@@ -372,7 +372,7 @@ namespace LaylaERP.BAL
                     //ssql = "select ws.order_id as id,ws.order_id as order_id,DATE_FORMAT(ws.date_created, '%M %d %Y') order_created,substring(ws.status,4) as status,ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total,ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
                     ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty, cast(os.total_sales as decimal(10,2)) as subtotal,"
                             + " cast(os.net_total as decimal(10,2)) as total, cast(os.tax_total as decimal(10,2)) as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
-                            + " REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                            + " REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,DATEDIFF(day,os.date_created , getdate() ) daysdiff"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
@@ -395,6 +395,7 @@ namespace LaylaERP.BAL
                     uobj.total = "$" + ds1.Tables[0].Rows[i]["total"].ToString();
                     uobj.tax = "$" + ds1.Tables[0].Rows[i]["tax"].ToString();
                     uobj.user_status = ds1.Tables[0].Rows[i]["status"].ToString();
+                    uobj.variant_id = ds1.Tables[0].Rows[i]["daysdiff"].ToString();
                     //uobj.shipping_amount = "$" + ds1.Tables[0].Rows[i]["shipping_total"].ToString();
                     //uobj.coupon = "$" + ds1.Tables[0].Rows[i]["coupon"].ToString();
                     exportorderlist.Add(uobj);

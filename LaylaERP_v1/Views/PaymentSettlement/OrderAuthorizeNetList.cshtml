@@ -72,7 +72,7 @@
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
                 'This Year': [moment().startOf('year'), moment().endOf('year')]
             },
-            startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true, 
+            startDate: moment(), autoUpdateInput: false, alwaysShowCalendars: true,
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto",
         }, function (start, end, label) {
             $('#txtOrderDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
@@ -172,7 +172,10 @@
                 },
                 { data: 'transaction_id', title: 'Trans. ID', sWidth: "10%" },
                 { data: 'settlement_date', title: 'Settle Date', sWidth: "10%" },
-                { data: 'payment_amount', title: 'Settle Amount', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
+                { data: 'order_amount', title: 'Order Amt.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+                { data: 'payment_amount', title: 'Settle Amt.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+                { data: 'payment_fee', title: 'Merchant Fees', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+                { data: 'refund_amount', title: 'Refund Amt.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
                 //{ data: 'payment_fee', title: 'Fee', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
                 {
                     data: 'payment_stauts', title: 'Settlement State', sWidth: "10%", render: function (data, type, row) {

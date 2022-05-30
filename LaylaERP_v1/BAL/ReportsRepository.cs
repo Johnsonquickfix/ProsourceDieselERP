@@ -3055,6 +3055,28 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+       
+        public static DataTable GetTransactionList(DateTime? fromdate, DateTime? todate, string payment_method)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                        fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    !string.IsNullOrEmpty(payment_method) ? new SqlParameter("@payment_method", payment_method) : new SqlParameter("@payment_method", DBNull.Value),
+                    new SqlParameter("@flag", "UNSETTLED")
+
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_payment_unsettlement", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

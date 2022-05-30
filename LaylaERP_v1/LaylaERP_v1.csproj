@@ -856,6 +856,7 @@
     <Content Include="js\Reception\RestPOSheet.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\Agingorders.js" />
+    <Content Include="js\Report\AgingordersNonDepositedFunds.js" />
     <Content Include="js\Report\CancelRefund.js" />
     <Content Include="js\Report\ForecastInventory.js" />
     <Content Include="js\Report\ForecastInventoryHistorical.js" />
@@ -1302,6 +1303,7 @@
     <Content Include="Views\Product\AddProductOpeningStock.cshtml" />
     <Content Include="Views\CustomerService\CustomerSearch.cshtml" />
     <Content Include="Views\Reports\Agingorders.cshtml" />
+    <Content Include="Views\Reports\AgingordersNonDepositedFunds.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -673,6 +673,7 @@
     <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\jspdf\html2canvas.js" />
     <Content Include="Content\jspdf\jspdf.debug.js" />
+    <Content Include="Content\MiscBillsFiles\default.png" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />

@@ -40,7 +40,7 @@
     });
     $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
     $(document).on("click", "#btnGenerateTicket", function (t) {
-        t.preventDefault(); GenerateTokenNo();
+        t.preventDefault(); GenerateTicketNo();
     });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
@@ -387,11 +387,11 @@ function ClaimWarranty(chk) {
     else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
 }
 function ClaimWarrantyModal(ele) {
-    let modalHtml = '<div class="modal-dialog modal-fullscreen p-9">';
+    let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-5"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-5"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -504,31 +504,39 @@ function ClaimWarrantyModal(ele) {
     });
 }
 
-function GenerateTokenNo() {
+function GenerateTicketNo() {
     let _chk = $("input[name='chk-reason']:checked");
     let _user = $(".order-id").data('name'), _reason = _chk.data('title'), _reason_code = _chk.data('code');
     let _questions = '';
     _chk.parents('li').find('ul').find('.warranty-checkbox:checked').each(function (i, row) {
         //console.log(i, row);
         //_questions.push({ pkey: $(row).attr("id"), id: $(row).data('id'), title: $(row).data('title') });
-        if (i == 0) _questions += $(row).data('title') + ' \n';
-        else _questions += '          ' + $(row).data('title') + ' \n';
+        if (i == 0) _questions += $(row).data('title') + ' <br/>';
+        else _questions += '    *   ' + $(row).data('title') + ' <br/>';
     });
 
     let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') },
-    { from: 'HelpDesk', content: 'Please select a reason for your warranty claim.' },
+    { from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
     { from: _user, content: _reason }, { from: _user, content: _questions }];
     let option = {
         id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#btnGenerateTicket").data('qty')) || 0, order_item_sku: '',
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
     };
+    let _body = TicketMailDetails(_user, _chat);
     //console.log(option, _questions); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                $.post('/customer-service/generate-ticket', { strValue1: JSON.stringify(option) }).done(function (result) {
+                let _obj = { strValue1: JSON.stringify(option), strValue2: option.email, strValue3: _body };
+                console.log(_obj);
+                $.ajax(
+                    {
+                        method: "POST", timeout: 0, headers: { "Content-Type": "application/json" },
+                        url: "/customer-service/generate-ticket", data: JSON.stringify(_obj)
+                    }
+                ).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
                         $("#myModal").modal('hide');
@@ -540,4 +548,21 @@ function GenerateTokenNo() {
         }
     }]);
     return false;
+}
+
+function TicketMailDetails(name, chat_history) {
+    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
+    _body += 'We will work diligently to get this resolved for you as soon as possible, and a Layla warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
+    _body += '<b>Here is what happens next:</b><br/><br/>';
+    _body += 'Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>';
+    _body += 'Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>';
+    _body += 'Decision Rendered: We will inform you of the decision made on your warranty claim and advise you of next steps<br/><br/>';
+    _body += 'Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>';
+    _body += 'Again, we\'re sorry you\'re having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>';
+    _body += '<b>Chat History</b><br/><br/>';
+    $.each(chat_history, function (i, row) {
+        _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>';
+    });
+    _body += '<br/><b>Help Desk <br/>';
+    return _body;
 }

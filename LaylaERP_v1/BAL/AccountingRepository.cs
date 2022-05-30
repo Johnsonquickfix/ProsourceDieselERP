@@ -1278,7 +1278,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select rowid as ID, label as Name , status from erp_accounting_fiscalyear  ;";
+                string strSQl = "select rowid as ID, label as Name , status from erp_accounting_fiscalyear order by date_start desc;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)

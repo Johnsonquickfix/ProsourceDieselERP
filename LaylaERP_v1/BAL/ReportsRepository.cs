@@ -3010,5 +3010,51 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+     
+        public static void GetOrderData(DateTime? fromdate, DateTime? todate, string status)
+        {
+            try
+            {
+                string strWhr = string.Empty;
+                exportorderlist.Clear();
+                string ssql;
+
+                SqlParameter[] parameters =
+                {
+                      fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH"),
+                      new SqlParameter("@status", status)
+
+                };
+                DataSet ds1 = new DataSet();
+                ds1 = SQLHelper.ExecuteDataSet("erp_agingorder_search", parameters);
+
+               
+               // ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
+                    uobj.first_name = ds1.Tables[0].Rows[i]["FirstName"].ToString();
+                    uobj.orderstatus = ds1.Tables[0].Rows[i]["status"].ToString();
+                    //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
+                    //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
+                    uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
+                    uobj.subtotal = "$" + ds1.Tables[0].Rows[i]["subtotal"].ToString();
+                    uobj.total = "$" + ds1.Tables[0].Rows[i]["total"].ToString();
+                    uobj.tax = "$" + ds1.Tables[0].Rows[i]["tax"].ToString();
+                    uobj.user_status = ds1.Tables[0].Rows[i]["status"].ToString();
+                    uobj.variant_id = ds1.Tables[0].Rows[i]["daysdiff"].ToString();
+                    //uobj.shipping_amount = "$" + ds1.Tables[0].Rows[i]["shipping_total"].ToString();
+                    //uobj.coupon = "$" + ds1.Tables[0].Rows[i]["coupon"].ToString();
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+
     }
 }

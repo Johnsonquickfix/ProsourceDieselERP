@@ -210,6 +210,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Agingorders()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -1037,6 +1041,21 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
+        }
+        [HttpPost]
+        public ActionResult GetOrderData(string from_date, string to_date, string user, string status)
+        {
+
+            DateTime? fromdate = null, todate = null;
+            if (!string.IsNullOrEmpty(from_date))
+                fromdate = Convert.ToDateTime(from_date);
+            if (!string.IsNullOrEmpty(to_date))
+                todate = Convert.ToDateTime(to_date);
+
+            ReportsRepository.GetOrderData(fromdate, todate,  status);
+            var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
         }
     }
 

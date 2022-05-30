@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "AgingordersNonDepositedFunds";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
+
+} 
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2 class="page-heading">Aging orders Non-Deposited Funds</h2>
+</div>
+<section class="content section-content neworder-section table-design">
+    <div class="row">
+        <input type="hidden" id="hfType" value="" />
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions">
+                        <div class="input-group">
+                            <input type="hidden" id="hfhref" />
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                    </div>
+                    <div class="alignleft actions">
+                        @*<input id="txtcouponcode" class="form-control">*@
+                        <label>Transactions</label>
+                        <select class="form-control select2 billinfo" id="ddltransaction">
+                            <option value="0" selected="">Select Transactions</option>
+                            <option value="authorize_net_cim_credit_card">Authorize.Net</option>
+                            <option value="podium">Podium</option>
+                            <option value="ppec_paypal">Paypal</option>
+                            <option value="affirm">Affirm</option>
+                            <option value="amazon_payments_advanced">AmazonPay</option> 
+                        </select>
+                        <button type="button" id="btnsearch" onclick="dataGridLoad();" class="btn btn-primary btn-flat button">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Order Date</th>
+                                        <th>Status</th>
+                                        <th>Trans. ID</th>
+                                        <th>Order Amt</th>
+                                        <th>Aging Days</th>
+                                        
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    var loc = window.location.pathname;
+    //    CheckPermissions("#btnChange", "#hfEdit", "", loc);
+    //    //CheckPermissions("#btnChange", "#btnChange", "", loc);
+    //});
+</script>
+
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Report/AgingordersNonDepositedFunds.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+

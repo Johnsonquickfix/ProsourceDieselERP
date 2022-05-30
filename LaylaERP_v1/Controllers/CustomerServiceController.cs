@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -97,8 +98,19 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1);
-                JSONresult = JsonConvert.SerializeObject(dt);
+                if (!string.IsNullOrEmpty(model.strValue1))
+                {
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1);
+                    JSONresult = JsonConvert.SerializeObject(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (dt.Rows[0]["response"].ToString() == "success")
+                        {
+                            SendEmail.SendEmails_outer(model.strValue2, "Layla Sleep Warranty Information (#" + dt.Rows[0]["id"].ToString() + ").", model.strValue3, string.Empty);
+                        }
+                    }
+                }
+                else { JSONresult = "[{\"id\":0,\"response\":\"Please select product.\"}]"; }
             }
             catch { }
             return Json(JSONresult, 0);

@@ -67,7 +67,7 @@ function Search() {
 
             },
 
-            { 'data': 'variant_id', title: 'Aging', sWidth: "10%" },
+            { 'data': 'variant_id', title: 'Aging Days', sWidth: "10%" },
 
         ],
         columnDefs: [{

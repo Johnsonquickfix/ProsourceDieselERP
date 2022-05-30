@@ -102,7 +102,7 @@ function Search() {
             {
                 extend: 'csv',
                 className: 'button',
-                text: '<i class="fas fa-file-csv"></i> Export',
+                text: '<i class="fas fa-file-csv"></i> CSV',
                 filename: function () {
                     // var d = new Date();
                     return 'Agingorders_' + $("#txtOrderDate").val().replaceAll('/', '.');

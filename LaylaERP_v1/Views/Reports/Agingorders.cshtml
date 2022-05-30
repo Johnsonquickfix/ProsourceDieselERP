@@ -14,7 +14,7 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script> 
 <div class="page-title">
-    <h2 class="page-heading">Aging orders</h2>
+    <h2 class="page-heading">All Orders</h2>
 </div>
 <section class="content section-content neworder-section table-design"> 
     <div class="row">
@@ -33,8 +33,8 @@
                         @*<input id="txtcouponcode" class="form-control">*@
                         <label>Status</label>
                         <select class="form-control select2 billinfo" id="ddlstatus">
-                            <option value="0" selected="">Select Status</option>
-                            <option value="wc-pending">Pending</option>
+                            <option value="0" >Select Status</option>
+                            <option value="wc-pending" selected="">Pending</option>
                             <option value="wc-processing">Processing</option>
                             <option value="wc-on-hold">Hold</option>
                             <option value="wc-completed">Completed</option>

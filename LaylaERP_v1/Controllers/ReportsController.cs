@@ -214,6 +214,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult AgingordersNonDepositedFunds()
+        {
+            return View();
+        }
+        
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -1056,6 +1061,25 @@ namespace LaylaERP.Controllers
             var k = Json(new { data = ReportsRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;
+        }
+
+        
+
+        public JsonResult GetTransactionList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReportsRepository.GetTransactionList(fromdate, todate, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
         }
     }
 

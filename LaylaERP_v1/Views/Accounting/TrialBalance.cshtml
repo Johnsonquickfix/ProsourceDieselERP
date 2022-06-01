@@ -20,9 +20,13 @@
     <div class="row">
         <div class="col-md-4">
             <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+            </div>
+            <!--<div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
                 <select class="form-control select2" id="ddlfinaceyear" style="width:100%"></select>
-            </div>
+            </div>-->
         </div>
         <div class="col-md-8 text-right">
             <button type="button" title="Click here for print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-danger btn-flat">Print</button>
@@ -62,11 +66,18 @@
 </section>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#txtDate').daterangepicker({
+            singleDatePicker: true, startDate: moment(), endDate: moment(), autoUpdateInput: false, defaultDate: moment(),
+            locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
+        }, function (start, end, label) {
+            $('#txtDate').val(start.format('MM/DD/YYYY'));
+            getTrialBalance();
+        }); $('#txtDate').val(moment().format('MM/DD/YYYY'));
         $('.select2').select2()
         // $.when(getAssets()).done(function () { getLiabilites(); });
-        $("#loader").hide();
-        $.when(getfinaceyear()).done(function () { getAssets(true); });
-        $('#ddlfinaceyear').change(function () { getAssets(true); });
+        $("#loader").hide(); getTrialBalance();
+        //$.when(getfinaceyear()).done(function () { getTrialBalance(); });
+        //$('#ddlfinaceyear').change(function () { getTrialBalance(); });
     });
 
     function getfinaceyear() {
@@ -86,9 +97,10 @@
         if (total < 0) { neg = true; total = Math.abs(total); }
         return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
     }
-    function getAssets(is_date) {
-        $("#selectyear").html('As of ' + moment().format('MMMM, DD YYYY'));
-        let option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0 };
+    function getTrialBalance() {
+        let _date = moment($('#txtDate').val());
+        $("#selectyear").html('As of ' + _date.format('MMMM, DD YYYY'));
+        let option = { to_date: _date.format('MM/DD/YYYY') };
         $('#tbtrialbalance').DataTable({
             bProcessing: true, bAutoWidth: false, paging: false, ordering: false, info: false, searching: false, scrollY: '50vh', scrollCollapse: true,
             buttons: [{ extend: 'print', text: '<i class="fa fa-print"></i> Print', title: $('h1').text(), exportOptions: { columns: ':not(.no-print)' }, footer: true, autoPrint: true }], destroy: true, ajax: {

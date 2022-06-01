@@ -815,7 +815,7 @@ namespace LaylaERP.Controllers
                         _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
                         string _html = model.strValue3.Replace("{_para}", _uid);
 
-                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for MISC Bill #" + model.strValue2 + ".", strBody, _html);
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for MISC Bill #" + model.strValue2 + ".", strBody, _html, "Misc_Bills.html");
                     }
                 }
             }

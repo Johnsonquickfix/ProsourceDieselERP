@@ -225,7 +225,7 @@ namespace LaylaERP.BAL
                     account = "4";
                     pcg = "INCOME";
                 }
-                else if(optType == "purchase")
+                else if (optType == "purchase")
                 {
                     account = "5";
                     pcg = "COGS";
@@ -504,7 +504,7 @@ namespace LaylaERP.BAL
                     strWhr += " and (inv_complete ='" + account_num + "') ";
                     condition = " group by subledger_account, inv_complete, label_complete, rowid, doc_date, label_operation, subledger_label order by doc_date desc";
                 }
-                
+
                 strSql += strWhr + condition;
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -543,7 +543,7 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT Format((COALESCE(sum(case when senstag = 'C' then credit end),0)),'#,##0.00') credit,"
                                + " Format(COALESCE(sum(case when senstag = 'D' then debit end), 0), '#,##0.00') debit,"
                                + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)),'#,##0.00') as balance FROM erp_accounting_bookkeeping where 1 = 1 and cast(doc_date as date) BETWEEN " + sMonths;
-                if(!String.IsNullOrEmpty(account_num))
+                if (!String.IsNullOrEmpty(account_num))
                 {
                     strSql += " and(inv_complete='" + account_num + "')";
                 }
@@ -557,7 +557,7 @@ namespace LaylaERP.BAL
         }
 
         //Start journals
-        public static DataTable AccountJournalList(string account_num,string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable AccountJournalList(string account_num, string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -991,7 +991,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "SELECT account_number from erp_accounting_account where account_number ='" + model.account_number + "'";
-                    dt = SQLHelper.ExecuteDataTable(strSQl);
+                dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             {
@@ -1089,7 +1089,7 @@ namespace LaylaERP.BAL
                          new SqlParameter("@flag", "sh")
                     };
                 dt = DAL.SQLHelper.ExecuteDataTable("erp_account_balance sheet", param);
-          
+
             }
             catch (Exception ex)
             {
@@ -1155,7 +1155,7 @@ namespace LaylaERP.BAL
                         new SqlParameter("@to", to_date),
                     new SqlParameter("@rowid", from_date),
                     new SqlParameter("@flag", "sh")
-               
+
 
                 };
                 ds = SQLHelper.ExecuteDataSet("erp_account_balance_sheet_list", parameters);
@@ -1445,12 +1445,12 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc,string inv_numval, string flag)
+        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc, string inv_numval, string flag)
         {
             var dt = new DataTable();
             try
             {
-                 
+
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@accno", accno),
@@ -1465,7 +1465,7 @@ namespace LaylaERP.BAL
                 dt = SQLHelper.ExecuteDataTable("erp_banktransfer_iud", parameters);
             }
             catch (Exception ex)
-            {                 
+            {
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -1479,11 +1479,11 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
                     {
                      new SqlParameter("@accountno", accountno),
-                     new SqlParameter("@rowid", rowid), 
-                     new SqlParameter("@flag", "sh") 
+                     new SqlParameter("@rowid", rowid),
+                     new SqlParameter("@flag", "sh")
                 };
                 ds = SQLHelper.ExecuteDataTable("erp_Banktransfer_list", parameters);
-                
+
             }
             catch (Exception ex)
             {
@@ -1499,9 +1499,9 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
                    {
-                     
+
                      new SqlParameter("@inv_num", model.strVal),
-                      
+
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_Banktransferdatabyid", parameters);
 
@@ -1594,7 +1594,7 @@ namespace LaylaERP.BAL
                 strQuery = "SELECT rowid, transaction_type, account_type  FROM erp_transaction_type where rowid ='" + id + "'";
                 dt = SQLHelper.ExecuteDataTable(strQuery);
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 throw ex;
             }
@@ -1615,7 +1615,7 @@ namespace LaylaERP.BAL
                 int result = SQLHelper.ExecuteNonQuery("erp_transaction_type_sp", parm);
                 return result;
             }
-            catch(Exception ex){ throw ex; }
+            catch (Exception ex) { throw ex; }
         }
 
         public static DataSet GetAccountingAccount()
@@ -1643,7 +1643,7 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DS;
-        }       
+        }
 
         public static DataTable AccountName(string id)
         {
@@ -1727,7 +1727,7 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@pkey", Pkey),
                     new SqlParameter("@qflag", qFlag),
-                    new SqlParameter("@orderXML", orderXML.OuterXml),   
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_reconciliation_iud", parameters);
             }
@@ -1753,12 +1753,34 @@ namespace LaylaERP.BAL
                                 + " Format((COALESCE(sum(CASE WHEN senstag = 'D' then debit end), 0)) - (COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0)), '#,##0.00') as balance"
                                 + " FROM erp_accounting_bookkeeping WHERE inv_complete = " + id + "and cast(doc_date as date) BETWEEN " + sMonths + strWhr;
 
-               
+
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
             return DS;
+        }
+
+        public static DataTable GetTrailBalance(DateTime? from_date, DateTime? to_date, int fiscalyear_id, string report_type)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] param = {
+                        from_date.HasValue ? new SqlParameter("@from", from_date) :new SqlParameter("@from",DBNull.Value),
+                        to_date.HasValue ? new SqlParameter("@to", to_date) :new SqlParameter("@to",DBNull.Value),
+                        fiscalyear_id > 0 ? new SqlParameter("@fiscalyear_id", fiscalyear_id) :new SqlParameter("@fiscalyear_id",DBNull.Value),
+                        new SqlParameter("@flag", report_type)
+                    };
+
+                dt = SQLHelper.ExecuteDataTable("erp_trial_balance_report", param);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

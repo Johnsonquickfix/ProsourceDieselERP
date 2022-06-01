@@ -68,7 +68,7 @@ namespace LaylaERP.Controllers
         public ActionResult EditChartAccountEntry()
         {
             return View();
-        }
+        }        
         public ActionResult ProfitLossAccount()
         {
             return View();
@@ -1113,6 +1113,25 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
+        }
+
+        [Route("accounting/trialbalance")]
+        public ActionResult TrialBalance()
+        {
+            return View();
+        }
+        [HttpGet]
+        [Route("accounting/get-trialbalance")]
+        public JsonResult TrialBalanceList(AccountingReportSearchModal model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetTrailBalance(model.from_date, model.to_date, model.fiscalyear_id,"TRIALBAL");
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
         }
     }
 }

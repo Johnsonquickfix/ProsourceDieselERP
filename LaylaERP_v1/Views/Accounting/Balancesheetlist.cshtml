@@ -15,277 +15,250 @@
 </div>
 <section class="content content-section p-0 reports-section">
     <div class="row">
-
-        <div class="col-md-6">
-            <div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions">
-                        <div class="input-group space-heads">
-                            @*<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                             <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
-                            <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
-                            @*<input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
-                            <select class="form-control select2" id="ddlfinaceyear"></select>
-                        </div>
-                    </div>
-                    
-                </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
+                <select class="form-control select2" id="ddlfinaceyear" style="width:100%"></select>
             </div>
         </div>
-        <div style="text-align:right" class="col-md-6">
-            <button type="button" title="Click here for print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
+        <div class="col-md-8 text-right">
+            <button type="button" title="Click here for print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-danger btn-flat">Print</button>
         </div>
-        </div>
-        <div id="printable" class="row">
-            <div class="col-md-12">
-                <div id="divass">
-                    <table>
-                        <tr>
-                            <td align="center" colspan="2" valign="top">
-                                <strong>Layla Sleep Inc</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" colspan="2" valign="top">
-                                <strong> Balance Sheet</strong>
-                            </td>
-                        </tr>
+    </div>
+    <div id="printable" class="row">
+        <div class="col-md-12">
+            <div id="divass">
+                <table>
+                    <tr>
+                        <td align="center" colspan="2" valign="top">
+                            <strong>Layla Sleep Inc</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2" valign="top">
+                            <strong> Balance Sheet</strong>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td align="center" colspan="2" valign="top">
-                                <strong><span id="selectyear">-</span></strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table id="tblass" class="table-blue table table-bordered table-striped dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center" style="width: 70%">ASSETS</th>
-                                            <th class="text-right" style="width: 30%"></th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody id="account_ass"></tbody>
-                                    <tfoot id="account_assfoot"></tfoot>
-                                </table>
-                            </td>
-                            <td valign="top">
-                                <table id="tbllib" class="table-blue table table-bordered table-striped dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center" style="width: 70%">LIABILITIES AND EQUITY</th>
-                                            <th class="text-right" style="width: 30%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="account_lib"></tbody>
-                                    <tfoot id="account_libfoot"></tfoot>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td valign="top">
-                                <table width="98%">
+                    <tr>
+                        <td align="center" colspan="2" valign="top">
+                            <strong><span id="selectyear">-</span></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table id="tblass" class="table-blue table table-bordered table-striped dataTable">
+                                <thead>
                                     <tr>
-                                        <td valign="top" width="50%">
-                                            <strong>Grand Total	(ASSETS) :</strong>
-                                        </td>
-                                        <td valign="top" width="50%" align="right">
-                                            <strong><span id="TotalExpense"></span></strong>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td valign="top">
-                                <table width="98%">
-                                    <tr>
-                                        <td valign="top" width="50%">
-                                            <strong>Grand Total	(LIABILITIES) :</strong>
-                                        </td>
-                                        <td valign="top" width="50%" align="right">
-                                            <strong><span id="TotalIncome"></span></strong>
-                                        </td>
-                                    </tr>
-                                </table>
-                                @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
-                            </td>
-                        </tr>
+                                        <th class="text-center" style="width: 70%">ASSETS</th>
+                                        <th class="text-right" style="width: 30%"></th>
 
-                    </table>
-                </div>
+                                    </tr>
+                                </thead>
+                                <tbody id="account_ass"></tbody>
+                                <tfoot id="account_assfoot"></tfoot>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <table id="tbllib" class="table-blue table table-bordered table-striped dataTable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 70%">LIABILITIES AND EQUITY</th>
+                                        <th class="text-right" style="width: 30%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="account_lib"></tbody>
+                                <tfoot id="account_libfoot"></tfoot>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td valign="top">
+                            <table width="98%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <strong>Grand Total	(ASSETS) :</strong>
+                                    </td>
+                                    <td valign="top" width="50%" align="right">
+                                        <strong><span id="TotalExpense"></span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <table width="98%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <strong>Grand Total	(LIABILITIES) :</strong>
+                                    </td>
+                                    <td valign="top" width="50%" align="right">
+                                        <strong><span id="TotalIncome"></span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                            @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
+                        </td>
+                    </tr>
+
+                </table>
             </div>
-
         </div>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                // $.when(getAssets()).done(function () { getLiabilites(); });
-                $("#loader").hide();
-                getfinaceyear();
-                getAssets(true);
 
-                $('#ddlfinaceyear').change(function () {
-                    getAssets(true);
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.select2').select2()
+            // $.when(getAssets()).done(function () { getLiabilites(); });
+            $("#loader").hide();
+            $.when(getfinaceyear()).done(function () { getAssets(true); });
+            $('#ddlfinaceyear').change(function () { getAssets(true); });
+        });
 
-                });
-
+        function getfinaceyear() {
+            $.ajax({
+                url: "/Accounting/Getfinancialyear", type: "Get",
+                success: function (data) {
+                    $('#ddlfinaceyear').empty().append('<option value="">Please Select Financial Year</option>');
+                    $.each(data, function (i, row) {
+                        $('#ddlfinaceyear').append('<option value="' + row.Value + '" ' + (row.Selected ? 'selected' : '') + '>' + row.Text + '</option>');
+                    });
+                }, async: false
             });
+        }
 
-            function getfinaceyear() {
-                let fincyear = ""; 
-                $.ajax({
-                    url: "/Accounting/Getfinancialyear",
-                    type: "Get",
-                    success: function (data) {
-                        $('#ddlfinaceyear').empty();
-                        $('#ddlfinaceyear').append('<option value="">Please Select Financial Year</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].Selected == true) {
-                                $('#ddlfinaceyear').append('<option value="' + data[i].Value + '" selected>' + data[i].Text + '</option>');
+        function formatCurrency(total) {
+            var neg = false;
+            if (total < 0) { neg = true; total = Math.abs(total); }
+            return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+        }
+        function getAssets(is_date) {
+            //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+            //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+
+            let sd = $('#ddlfinaceyear').val();
+            let ed = '2';
+
+            var option = { strValue1: sd, strValue2: ed };
+            $.ajax({
+                url: "/Accounting/GetAccountBalance", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+                success: function (result) {
+                    try {
+                        let data = JSON.parse(result);
+                        let itemHtml = '';
+                        let itemHtmllib = '';
+                        let itemHtmassfoot = '';
+                        let itemHtmlibfoot = '';
+                        let Totalacc = 0.00;
+                        let Totallib = 0.00;
+                        let ashd = 0.00;
+                        $('#account_lib').empty();
+                        $('#account_ass').empty();
+                        $('#account_libfoot').empty();
+                        $('#account_assfoot').empty();
+                        if (data['ass'].length > 0) {
+                            for (let i = 0; i < data['assnm'].length; i++) {
+                                // if (data['ass'].length > 0) {
+                                itemHtml += '<tr id="tritemId_' + data['assnm'][i].pcg_type + '" data-key="' + data['assnm'][i].pcg_type + '">';
+                                itemHtml += '<td colspan="2"><strong>' + data['assnm'][i].pcg_type + '</strong></td>';
+                                //  itemHtml += '<td style="text-align:right;"><strong>Amount</strong></td>';
+                                itemHtml += '</tr>';
+                                ashd = data['assnm'][i].pcg_type;
+                                for (let i = 0; i < data['ass'].length; i++) {
+                                    //console.log(ashd, data['ass'][i].label);
+                                    if (ashd == data['ass'][i].pcg_type) {
+                                        itemHtmllib += '<tr id="trias_' + data['ass'][i].account_number + '" data-key="' + data['ass'][i].account_number + '">';
+                                        itemHtml += '<td>' + data['ass'][i].label + '</td>';
+                                        itemHtml += '<td style="text-align:right;">' + formatCurrency(data['ass'][i].invtotal) + '</td>';
+                                        itemHtml += '</tr>';
+                                        Totalacc += parseFloat(data['ass'][i].invtotal);
+                                    }
+                                }
+                                itemHtml += '<tr id="tritemId_' + data['assnm'][i].pcg_type + '" data-key="' + data['assnm'][i].pcg_type + '">';
+                                itemHtml += '<td><strong>Total - ' + data['assnm'][i].pcg_type + '</strong></td>';
+                                itemHtml += '<td style="text-align:right;"><strong>' + formatCurrency(data['assnm'][i].invtotal) + '</strong></td>';
+                                itemHtml += '</tr>';
+                                $('#account_ass').empty().append(itemHtml);
                             }
-                            else {
-                                $('#ddlfinaceyear').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
-                            } 
+                            //}
                         }
-                    }, async: false
-                }); 
-            }
-
-            function formatCurrency(total) {
-                var neg = false;
-                if (total < 0) {
-                    neg = true;
-                    total = Math.abs(total);
-                }
-                return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
-            }
-            function getAssets(is_date) {
-                //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
-                let sd = $('#ddlfinaceyear').val();
-                let ed = '2';
-
-                var option = { strValue1: sd, strValue2: ed };
-                $.ajax({
-                    url: "/Accounting/GetAccountBalance", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
-                    success: function (result) {
-                        try {
-                            let data = JSON.parse(result);
-                            let itemHtml = '';
-                            let itemHtmllib = '';
-                            let itemHtmassfoot = '';
-                            let itemHtmlibfoot = '';
-                            let Totalacc = 0.00;
-                            let Totallib = 0.00;
-                            let ashd = 0.00;
-                            $('#account_lib').empty();
+                        else {
                             $('#account_ass').empty();
-                            $('#account_libfoot').empty();
-                            $('#account_assfoot').empty();
-                            if (data['ass'].length > 0) {
-                                for (let i = 0; i < data['assnm'].length; i++) {
-                                    // if (data['ass'].length > 0) {
-                                    itemHtml += '<tr id="tritemId_' + data['assnm'][i].pcg_type + '" data-key="' + data['assnm'][i].pcg_type + '">';
-                                    itemHtml += '<td colspan="2"><strong>' + data['assnm'][i].pcg_type + '</strong></td>';
-                                  //  itemHtml += '<td style="text-align:right;"><strong>Amount</strong></td>';
-                                    itemHtml += '</tr>';
-                                    ashd = data['assnm'][i].pcg_type;
-                                    for (let i = 0; i < data['ass'].length; i++) {
-                                        //console.log(ashd, data['ass'][i].label);
-                                        if (ashd == data['ass'][i].pcg_type) {
-                                            itemHtmllib += '<tr id="trias_' + data['ass'][i].account_number + '" data-key="' + data['ass'][i].account_number + '">';
-                                            itemHtml += '<td>' + data['ass'][i].label + '</td>';
-                                            itemHtml += '<td style="text-align:right;">' + formatCurrency(data['ass'][i].invtotal) + '</td>';
-                                            itemHtml += '</tr>';
-                                            Totalacc += parseFloat(data['ass'][i].invtotal);
-                                        }
-                                    }
-                                    itemHtml += '<tr id="tritemId_' + data['assnm'][i].pcg_type + '" data-key="' + data['assnm'][i].pcg_type + '">';
-                                    itemHtml += '<td><strong>Total - ' + data['assnm'][i].pcg_type + '</strong></td>';
-                                    itemHtml += '<td style="text-align:right;"><strong>' + formatCurrency(data['assnm'][i].invtotal) + '</strong></td>';
-                                    itemHtml += '</tr>';
-                                    $('#account_ass').empty().append(itemHtml);
-                                }
-                                //}
-                            }
-                            else {
-                                $('#account_ass').empty();
-                            }
-                            //itemHtmassfoot += '<tr>';
-                            //itemHtmassfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            //itemHtmassfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totalacc) + '</span></strong></td>';
-                            //itemHtmassfoot += '</tr>';
-                            //$('#account_assfoot').empty().append(itemHtmassfoot);
-                            if (data['libb'].length > 0) {
-                                for (let i = 0; i < data['libnm'].length; i++) {
-                                    itemHtmllib += '<tr id="tritemIdlib_' + data['libnm'][i].pcg_type + '" data-key="' + data['libnm'][i].pcg_type + '">';
-                                    itemHtmllib += '<td colspan="2"><strong>' + data['libnm'][i].pcg_type + '</strong></td>';
-                                    //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['libnm'][i].invtotal) + '</strong></td>';
-                                    itemHtmllib += '</tr>';
-                                    ashd = data['libnm'][i].pcg_type;
-                                    for (let i = 0; i < data['libb'].length; i++) {
-                                        if (ashd == data['libb'][i].pcg_type) {
-                                            itemHtmllib += '<tr id="tri_' + data['libb'][i].account_number + '" data-key="' + data['libb'][i].account_number + '">';
-                                            itemHtmllib += '<td>' + data['libb'][i].label + '</td>';
-                                            itemHtmllib += '<td style="text-align:right;">' + formatCurrency(data['libb'][i].invtotal) + '</td>';
-                                            itemHtmllib += '</tr>';
-                                            Totallib += parseFloat(data['libb'][i].invtotal);
-                                        }
-                                    }
-                                    itemHtmllib += '<tr id="tritemIdlib_' + data['libnm'][i].pcg_type + '" data-key="' + data['libnm'][i].pcg_type + '">';
-                                    itemHtmllib += '<td><strong>Total - ' + data['libnm'][i].pcg_type + '</strong></td>';
-                                    itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['libnm'][i].invtotal) + '</strong></td>';
-                                    itemHtmllib += '</tr>';
-                                    $('#account_lib').empty().append(itemHtmllib);
-                                }
-                            }
-                            else {
-                                $('#account_lib').empty();
-                            }
-                            //itemHtmlibfoot += '<tr>';
-                            //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> --- </span></strong></td>';
-                            //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">---</span></strong></td>';
-                            //itemHtmlibfoot += '</tr>';
-
-                            //itemHtmlibfoot += '<tr>';
-                            //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totallib) + '</span></strong></td>';
-                            //itemHtmlibfoot += '</tr>';
-                            //$('#account_libfoot').empty().append(itemHtmlibfoot);
-
-                            $("#TotalIncome").html(formatCurrency(Totallib));
-                            $("#TotalExpense").html(formatCurrency(Totalacc));
-
-                            for (let i = 0; i < data['fincyer'].length; i++) {
-                                $("#selectyear").html(data['fincyer'][i].dateyear);
-                            }
-
                         }
-                        catch (error) {
-                            throw error;
-                            // $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                        //itemHtmassfoot += '<tr>';
+                        //itemHtmassfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
+                        //itemHtmassfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totalacc) + '</span></strong></td>';
+                        //itemHtmassfoot += '</tr>';
+                        //$('#account_assfoot').empty().append(itemHtmassfoot);
+                        if (data['libb'].length > 0) {
+                            for (let i = 0; i < data['libnm'].length; i++) {
+                                itemHtmllib += '<tr id="tritemIdlib_' + data['libnm'][i].pcg_type + '" data-key="' + data['libnm'][i].pcg_type + '">';
+                                itemHtmllib += '<td colspan="2"><strong>' + data['libnm'][i].pcg_type + '</strong></td>';
+                                //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['libnm'][i].invtotal) + '</strong></td>';
+                                itemHtmllib += '</tr>';
+                                ashd = data['libnm'][i].pcg_type;
+                                for (let i = 0; i < data['libb'].length; i++) {
+                                    if (ashd == data['libb'][i].pcg_type) {
+                                        itemHtmllib += '<tr id="tri_' + data['libb'][i].account_number + '" data-key="' + data['libb'][i].account_number + '">';
+                                        itemHtmllib += '<td>' + data['libb'][i].label + '</td>';
+                                        itemHtmllib += '<td style="text-align:right;">' + formatCurrency(data['libb'][i].invtotal) + '</td>';
+                                        itemHtmllib += '</tr>';
+                                        Totallib += parseFloat(data['libb'][i].invtotal);
+                                    }
+                                }
+                                itemHtmllib += '<tr id="tritemIdlib_' + data['libnm'][i].pcg_type + '" data-key="' + data['libnm'][i].pcg_type + '">';
+                                itemHtmllib += '<td><strong>Total - ' + data['libnm'][i].pcg_type + '</strong></td>';
+                                itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['libnm'][i].invtotal) + '</strong></td>';
+                                itemHtmllib += '</tr>';
+                                $('#account_lib').empty().append(itemHtmllib);
+                            }
                         }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
-                });
-            }
-            function printDiv() {
-               // var newWin = window.open('', 'Print-Window', 'width=400,height=400,top=100,left=100');
-                var divName = 'printable';
-                var printContents = document.getElementById(divName).innerHTML;
-                var originalContents = document.body.innerHTML;
-                document.body.innerHTML = printContents;
-                //let title_el = document.querySelector("title");
-                //title_el.innerHTML = "World";
-                document.title = ".";
-                window.print();
-               // newWin.document.title = "Readings on PageLinks";
-                document.body.innerHTML = originalContents;
-                getfinaceyear();
-            }
-        </script>
+                        else {
+                            $('#account_lib').empty();
+                        }
+                        //itemHtmlibfoot += '<tr>';
+                        //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> --- </span></strong></td>';
+                        //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">---</span></strong></td>';
+                        //itemHtmlibfoot += '</tr>';
+
+                        //itemHtmlibfoot += '<tr>';
+                        //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
+                        //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totallib) + '</span></strong></td>';
+                        //itemHtmlibfoot += '</tr>';
+                        //$('#account_libfoot').empty().append(itemHtmlibfoot);
+
+                        $("#TotalIncome").html(formatCurrency(Totallib));
+                        $("#TotalExpense").html(formatCurrency(Totalacc));
+
+                        for (let i = 0; i < data['fincyer'].length; i++) {
+                            $("#selectyear").html(data['fincyer'][i].dateyear);
+                        }
+
+                    }
+                    catch (error) {
+                        throw error;
+                        // $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+            });
+        }
+        function printDiv() {
+            // var newWin = window.open('', 'Print-Window', 'width=400,height=400,top=100,left=100');
+            var divName = 'printable';
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            //let title_el = document.querySelector("title");
+            //title_el.innerHTML = "World";
+            document.title = ".";
+            window.print();
+            // newWin.document.title = "Readings on PageLinks";
+            document.body.innerHTML = originalContents;
+            getfinaceyear();
+        }
+    </script>
 </section>
 <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
 <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>

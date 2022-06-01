@@ -1144,7 +1144,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@qflag", "POBMA"),
                     new SqlParameter("@status", model.Status),
                 };
-                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
+                dt = SQLHelper.ExecuteDataTable("erp_miscbill_iud", parameters);
             }
             catch (Exception Ex)
             {

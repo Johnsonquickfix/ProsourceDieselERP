@@ -795,5 +795,111 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(obj, 0);
         }
+
+        [HttpPost]
+        public JsonResult SendMailBillApproval(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Bill number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />" + model.strValue5;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Approval for MISC Bill #" + model.strValue2 + ".", strBody, _html);
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+
+        [Route("paymentinvoice/bill-accept")]
+        public ActionResult MiscBillApproval(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
+                obj.Status = 3;
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
+                {
+                    DataTable dt = PaymentInvoiceRepository.BillApproval(obj);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.RowID;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
+        [Route("paymentinvoice/bill-reject")]
+        public ActionResult MiscBillDisapprove(string id, string uid, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                PurchaseOrderModel obj = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    obj.LoginID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(uid.Replace(" ", "+")));
+                }
+                if (!string.IsNullOrEmpty(uid))
+                    obj.RowID = Convert.ToInt64(UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                else
+                    obj.RowID = 0;
+                obj.Status = 8;
+                obj.Search = key;
+                if (obj.LoginID > 0 && obj.RowID > 0)
+                {
+                    //ViewBag.status = "Success";
+                    //ViewBag.id = obj.RowID;
+                    DataTable dt = PaymentInvoiceRepository.BillApproval(obj);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ViewBag.status = dt.Rows[0]["Response"].ToString();
+                        ViewBag.id = obj.RowID;
+                    }
+                    else
+                    {
+                        ViewBag.status = "You don't have permission to access please contact administrator.";
+                        ViewBag.id = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
     }
 }

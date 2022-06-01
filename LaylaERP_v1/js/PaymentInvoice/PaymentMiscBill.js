@@ -158,7 +158,7 @@ function MiscBillGrid() {
     });
 }
 function formatPO(d) {
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Pay ID.</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Paid Date</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Transaction Id</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Paid Amount</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Discount</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Total Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Pay ID.</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Paid Date</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Transaction Id</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Payment Type</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Paid Amount</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Discount</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Total Amount</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPaymentBilldetails', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -166,7 +166,7 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
                 wrHTML += '<tr><td style="width:20%; text-align:left;"> ' + row.ref + ' </td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
-                wrHTML += '<td style="width:20%; text-align:left;">' + row.ext_payment_site + '</td><td style="width:10%; text-align:right;">' + '$' + row.sub_total + '</td><td style="width:10%; text-align:right;">' + '$' + row.discount + '</td><td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
+                wrHTML += '<td style="width:20%; text-align:left;">' + row.ext_payment_site + '</td><td style="width:20%; text-align:left;">' + row.PaymentType + '</td><td style="width:10%; text-align:right;">' + '$' + row.sub_total + '</td><td style="width:10%; text-align:right;">' + '$' + row.discount + '</td><td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

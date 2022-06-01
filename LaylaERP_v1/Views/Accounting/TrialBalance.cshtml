@@ -87,7 +87,7 @@
         return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
     }
     function getAssets(is_date) {
-        $("#selectyear").html('As of ' + moment().format('MMMM, do YYYY'));
+        $("#selectyear").html('As of ' + moment().format('MMMM, DD YYYY'));
         let option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0 };
         $('#tbtrialbalance').DataTable({
             bProcessing: true, bAutoWidth: false, paging: false, ordering: false, info: false, searching: false, scrollY: '50vh', scrollCollapse: true,
@@ -97,7 +97,7 @@
             },
             columns: [
                 //{ data: 'account_parent', title: 'account_parent', sWidth: "8%" },
-                { data: 'label', title: 'Particular', sWidth: "60%" },
+                { data: 'label', title: 'Particulars', sWidth: "60%" },
                 {
                     data: 'amount', title: 'Debit', sWidth: "20%", className: "text-right", render: function (data, type, row) {
                         if (row.amount >= 0) return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); else return '';

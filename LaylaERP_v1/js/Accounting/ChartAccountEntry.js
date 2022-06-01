@@ -89,8 +89,8 @@ function AddChartOfAccountEntry() {
     var name = $("#ddlname").val();
     var type = $("#ddltype").val();
     var detailtype = $("#ddldetailtype").val();
-    var balance = $("#txtbalance").val();
-    var bankbalance = $("#txtbankbalance").val();
+    var debit = $("#txtbalance").val();
+    var credit = $("#txtbankbalance").val();
     var entrydate = $("#txtentrydate").val();
 
     if (name == "0") {
@@ -102,10 +102,10 @@ function AddChartOfAccountEntry() {
     else if (detailtype == "0") {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
-    else if (balance == "") {
+    else if (debit == "") {
         swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
     }
-    else if (bankbalance == "") {
+    else if (credit == "") {
         swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
     }
     else if (entrydate == "") {
@@ -117,8 +117,8 @@ function AddChartOfAccountEntry() {
             name: name,
             type: type,
             detail_type: detailtype,
-            balance: balance,
-            bank_balance: bankbalance,
+            debit: debit,
+            credit: credit,
             entry_date: entrydate,
         }
         $.ajax({
@@ -149,8 +149,8 @@ function UpdateChartOfAccountEntry() {
     var name = $("#ddlname").val();
     var type = $("#ddltype").val();
     var detailtype = $("#ddldetailtype").val();
-    var balance = $("#txtbalance").val();
-    var bankbalance = $("#txtbankbalance").val();
+    var debit = $("#txtbalance").val();
+    var credit = $("#txtbankbalance").val();
     var entrydate = $("#txtentrydate").val();
 
     if (name == "0") {
@@ -162,10 +162,10 @@ function UpdateChartOfAccountEntry() {
     else if (detailtype == "0") {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
-    else if (balance == "") {
+    else if (debit == "") {
         swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
     }
-    else if (bankbalance == "") {
+    else if (credit == "") {
         swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
     }
     else if (entrydate == "") {
@@ -178,8 +178,8 @@ function UpdateChartOfAccountEntry() {
             name: name,
             type: type,
             detail_type: detailtype,
-            balance: balance,
-            bank_balance: bankbalance,
+            debit: debit,
+            credit: credit,
             entry_date: entrydate,
         }
         $.ajax({

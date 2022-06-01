@@ -1305,6 +1305,8 @@
     <Content Include="Views\Reports\Agingorders.cshtml" />
     <Content Include="Views\Reports\AgingordersNonDepositedFunds.cshtml" />
     <Content Include="Views\Accounting\TrialBalance.cshtml" />
+    <Content Include="Views\PaymentInvoice\MiscBillApproval.cshtml" />
+    <Content Include="Views\PaymentInvoice\MiscBillDisapprove.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

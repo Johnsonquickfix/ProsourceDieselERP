@@ -56,8 +56,8 @@ function ChartofaccountGrid() {
             { data: 'name', title: 'Name', sWidth: "15%", class: 'text-left' },
             { data: 'type', title: 'Type', sWidth: "10%" },
             { data: 'detailtype', title: 'Detail Type', sWidth: "10%" },
-            { data: 'balance', title: 'Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
-            { data: 'bank_balance', title: 'Bank Balance ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'debit', title: 'Debit ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'credit', title: 'Credit ($)', sWidth: "10%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'datesort', title: 'Date', sWidth: "10%", render: function (id, type, full, meta) { return full.entrydate; }
             },

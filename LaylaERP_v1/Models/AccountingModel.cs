@@ -50,8 +50,8 @@ namespace LaylaERP.Models
         public string name { get; set; }
         public string type { get; set; }
         public string detail_type { get; set; }
-        public decimal balance { get; set; }
-        public decimal bank_balance { get; set; }
+        public decimal debit { get; set; }
+        public decimal credit { get; set; }
         public DateTime entry_date { get; set; }
     }
     public class AccountCategoryModel
@@ -75,5 +75,13 @@ namespace LaylaERP.Models
         public int rowid { get; set; }
         public int account_type { get; set; }
         public string transaction_type { get; set; }
+    }
+
+    public class AccountingReportSearchModal
+    {
+        public int fiscalyear_id { get; set; }
+        public DateTime? from_date { get; set; }
+        public DateTime? to_date { get; set; }
+        public string report_type { get; set; }
     }
 }

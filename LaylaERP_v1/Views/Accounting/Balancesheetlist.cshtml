@@ -133,18 +133,12 @@
             return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
         function getAssets(is_date) {
-            //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-            //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
-            let sd = $('#ddlfinaceyear').val();
-            let ed = '2';
-
-            var option = { strValue1: sd, strValue2: ed };
+            let option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0 };
             $.ajax({
                 url: "/Accounting/GetAccountBalance", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
                 success: function (result) {
                     try {
-                        let data = JSON.parse(result);
+                        let data = JSON.parse(result); console.log(data);
                         let itemHtml = '';
                         let itemHtmllib = '';
                         let itemHtmassfoot = '';

@@ -851,8 +851,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@name", model.name),
                     new SqlParameter("@type", model.type),
                     new SqlParameter("@detail_type", model.detail_type),
-                    new SqlParameter("@balance", model.balance),
-                    new SqlParameter("@bank_balance",model.bank_balance),
+                    new SqlParameter("@debit", model.debit),
+                    new SqlParameter("@credit",model.credit),
                     new SqlParameter("@entry_date",model.entry_date),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_chartaccount_entry1", para));
@@ -872,7 +872,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                string strSql = "SELECT ece.rowid id, eaa.label name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),debit) debit, credit, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
                                + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -904,7 +904,7 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] pram = { new SqlParameter("@id", id) };
-                string strSql = "SELECT rowid, name, type, detail_type, balance, bank_balance, convert(varchar(12), entry_date, 110 ) entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
+                string strSql = "SELECT rowid, name, type, detail_type, debit, credit, convert(varchar(12), entry_date, 110 ) entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
                 dt = ds.Tables[0];
             }
@@ -925,8 +925,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@name", model.name),
                     new SqlParameter("@type", model.type),
                     new SqlParameter("@detail_type", model.detail_type),
-                    new SqlParameter("@balance", model.balance),
-                    new SqlParameter("@bank_balance",model.bank_balance),
+                    new SqlParameter("@debit", model.debit),
+                    new SqlParameter("@credit",model.credit),
                     new SqlParameter("@entry_date",model.entry_date),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("erp_chartaccount_entry1", para));
@@ -958,7 +958,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                string strQry = "select format(sum(balance),'#,##0.00') balance, format(sum(bank_balance),'#,##0.00') bank_balance from erp_chartaccount_entry";
+                string strQry = "select format(sum(debit),'#,##0.00') debit, format(sum(credit),'#,##0.00') credit from erp_chartaccount_entry";
 
                 DT = SQLHelper.ExecuteDataTable(strQry);
             }
@@ -974,7 +974,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ece.name account_number, ece.rowid id, CONCAT(eaa.label,' (',ece.name,')') name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),balance) balance, bank_balance, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
+                string strSql = "SELECT ece.name account_number, ece.rowid id, CONCAT(eaa.label,' (',ece.name,')') name, ept.pcg_type type, eaafordetail.labelshort detailtype, convert(numeric(18,2),debit) debit, credit, CONVERT(varchar, entry_date, 101) entrydate, CONVERT(varchar,entry_date,112) as datesort"
                                + " FROM erp_chartaccount_entry ece LEFT JOIN erp_pcg_type ept on ept.account_parent = ece.type LEFT JOIN erp_accounting_account eaa on eaa.account_number = ece.name LEFT JOIN erp_accounting_account eaafordetail on eaafordetail.rowid = ece.detail_type WHERE 1 = 1 order by account_number";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }

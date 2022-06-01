@@ -103,10 +103,10 @@ function AddChartOfAccountEntry() {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
     else if (balance == "") {
-        swal('Alert', 'Please enter balance', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
+        swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
     }
     else if (bankbalance == "") {
-        swal('Alert', 'Please enter bank balance', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
+        swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
     }
     else if (entrydate == "") {
         swal('Alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txtentrydate').focus(); });
@@ -163,10 +163,10 @@ function UpdateChartOfAccountEntry() {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
     else if (balance == "") {
-        swal('Alert', 'Please enter balance', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
+        swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
     }
     else if (bankbalance == "") {
-        swal('Alert', 'Please enter bank balance', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
+        swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
     }
     else if (entrydate == "") {
         swal('Alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txtentrydate').focus(); });

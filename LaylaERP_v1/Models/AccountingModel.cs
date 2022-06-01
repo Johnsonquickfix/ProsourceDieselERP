@@ -50,8 +50,8 @@ namespace LaylaERP.Models
         public string name { get; set; }
         public string type { get; set; }
         public string detail_type { get; set; }
-        public decimal balance { get; set; }
-        public decimal bank_balance { get; set; }
+        public decimal debit { get; set; }
+        public decimal credit { get; set; }
         public DateTime entry_date { get; set; }
     }
     public class AccountCategoryModel

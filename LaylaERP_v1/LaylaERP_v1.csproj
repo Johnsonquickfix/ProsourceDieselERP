@@ -1304,6 +1304,7 @@
     <Content Include="Views\CustomerService\CustomerSearch.cshtml" />
     <Content Include="Views\Reports\Agingorders.cshtml" />
     <Content Include="Views\Reports\AgingordersNonDepositedFunds.cshtml" />
+    <Content Include="Views\Accounting\TrialBalance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

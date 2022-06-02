@@ -901,5 +901,18 @@ namespace LaylaERP.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        public JsonResult UpdateBillStatus(PurchaseOrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                model.LoginID = CommanUtilities.Provider.GetCurrent().UserID;
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.UpdateBillStatus(model));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
     }
 }

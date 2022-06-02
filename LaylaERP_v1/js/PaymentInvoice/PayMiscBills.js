@@ -99,6 +99,14 @@
         t.preventDefault(); let _text = 'Are you sure you want to undo changes this bill ?';
         swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getbillInfodetails(id); } });
     });
+
+    $(document).on("click", ".btnApproved", function (t) {
+        t.preventDefault(); let id = parseInt($('#lblbillNo').data('id')) || 0; billApprove(id, 'approve', 3);
+    });
+    $(document).on("click", ".btnReject", function (t) {
+        t.preventDefault(); let id = parseInt($('#lblbillNo').data('id')) || 0; billApprove(id, 'disapprove', 8);
+    });
+
     $(document).on('click', "#btnuploade", function (t) {
         t.preventDefault(); Adduploade();
     })
@@ -225,16 +233,16 @@ function getbillInfodetails(oid) {
         $('.billinfovalff').prop("disabled", true);
         $('.page-heading').text('Edit Misc Bills ').append('<a class="btn btn-danger" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         //$('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
-        //$('#line_items,#product_line_items').empty();
+        //$('#line_items,#product_line_items').empty();  
         //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button>');
         var option = { strValue1: oid };
         $.ajax({
             url: "/PaymentInvoice/GetBillDetailByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); var custype = "", paytype = ""; 
+                    let data = JSON.parse(result); var custype = "", paytype = "", status_id = 0;
                     for (let i = 0; i < data['po'].length; i++) {  
-                      
+                        status_id = parseInt(data['po'][i].fk_status) || 0;
                         custype = data['po'][i].customertype.toString();
                         paytype = data['po'][i].payaccount.toString();
                         $('#ddlCoustomertype').val(custype.trim()).trigger('change');
@@ -262,7 +270,13 @@ function getbillInfodetails(oid) {
                         $('#lblbillNo').data('id', data['po'][i].rowid);
                         $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
                         $('#ddlPaymentTerms').val(data['po'][i].fk_paymentterm).trigger('change');
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        if (status_id == 1) {
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="top"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approve and create invoice." data-placement="top"><i class="fas fa-check-double"></i> Approve</button>');
+                            $('.footer-finalbutton').append(' <button type="button" class="btn btn-danger btnReject" data-toggle="tooltip" title="Disapprove/Reject" data-placement="top"><i class="fas fa-ban"></i> Disapprove</button>');
+                        }
+                        else {
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        }
                         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
                     }
                     $('#line_items').empty();
@@ -634,7 +648,7 @@ function savemiscbill() {
         caddress = instaintionvaladdress;
     }
     let _list = createItemsList();
-    console.log(_list);
+   // console.log(_list);
 
     if (date == "") { swal('alert', 'Please enter create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) } 
     else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
@@ -665,7 +679,7 @@ function savemiscbill() {
 
                             SendPO_POApproval(result[0].id);
                             //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
-                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id);});
+                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); });
 
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
@@ -710,7 +724,51 @@ function getipaidhistory(oid) {
         });
     }
 }
-
+function billApprove(oid, status_title, status) {
+    let option = { Search: oid, Status: status };
+    let _text = 'Do you want to ' + status_title + ' this MISC Bill ?';
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.ajaxSetup({ async: false });
+                $.get('/PaymentInvoice/UpdateBillStatus', option).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].Response == "drafted") {
+                        $('#lblbillNo').data('id', oid); 
+                        swal('Success', 'Misc bill drafted', "success");
+                       // $.when(getbillInfodetails(oid)).done(function () {
+                        getbillInfodetails(oid, true);
+                       // });
+                    }
+                    else if (result[0].Response == "already") {
+                        $('#lblbillNo').data('id', oid);
+                        swal('Success', 'Misc Bill already approved. You can not approved it again.', "success");
+                        //$.when(getbillInfodetails(oid)).done(function () {
+                        getbillInfodetails(oid, true);
+                        //});
+                    }
+                    else if (result[0].Response == "success") {
+                        $('#lblbillNo').data('id', oid);
+                        swal('Success', 'Misc bill approved successfully.', "success");
+                       $.when(getbillInfodetails(oid)).done(function () {
+                        getInvoicePrintDetails(oid, true);
+                       });
+                    }
+                    else if (result[0].Response == "disapproved") {
+                        $('#lblbillNo').data('id', oid);
+                        swal('Success', 'Misc Bill disapproved.', "success");
+                        //$.when(getbillInfodetails(oid)).done(function () {
+                        getbillInfodetails(oid, true);
+                        //});
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                    //resolve();
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Misc Bill File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Adduploade() {
     var formData = new FormData();

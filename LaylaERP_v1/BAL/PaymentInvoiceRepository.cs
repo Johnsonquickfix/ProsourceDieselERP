@@ -1152,5 +1152,27 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable UpdateBillStatus(PurchaseOrderModel model)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    model.LoginID > 0 ? new SqlParameter("@userid", model.LoginID) : new SqlParameter("@userid", DBNull.Value),
+                    new SqlParameter("@pkeys", model.Search),
+                    new SqlParameter("@qflag", "POA"),
+                    new SqlParameter("@status", model.Status),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_miscbill_iud", parameters);
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "PaymentInvoice/UpdateBillStatus/" + model.Search + "", "Update MISC Bill Status");
+                throw Ex;
+            }
+            return dt;
+        }
     }
 }

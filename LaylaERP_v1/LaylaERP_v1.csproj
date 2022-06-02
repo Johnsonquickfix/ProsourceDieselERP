@@ -754,6 +754,7 @@
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
     <Content Include="js\CustomerService\CustomerSearch.js" />
+    <Content Include="js\CustomerService\CustomerTicketSearch.js" />
     <Content Include="js\CustomerService\WarrantyQuestions.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
@@ -1307,6 +1308,7 @@
     <Content Include="Views\Accounting\TrialBalance.cshtml" />
     <Content Include="Views\PaymentInvoice\MiscBillApproval.cshtml" />
     <Content Include="Views\PaymentInvoice\MiscBillDisapprove.cshtml" />
+    <Content Include="Views\CustomerService\CustomerTicketSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

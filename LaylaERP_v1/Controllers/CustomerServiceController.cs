@@ -115,5 +115,49 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [Route("customer-service/search-ticket")]
+        public ActionResult CustomerTicketSearch()
+        {
+            return View();
+        }
+        [HttpGet]
+        [Route("customer-service/ticket-list")]
+        public JsonResult GetTicketList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long ticket_id = 0, customer_id = 0, order_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    ticket_id = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    customer_id = Convert.ToInt64(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    order_id = Convert.ToInt64(model.strValue3);
+
+                DataTable dt = CustomerServiceRepository.CustomerTickets(ticket_id, customer_id, order_id, model.strValue4, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+        [HttpGet]
+        [Route("customer-service/ticket-info")]
+        public JsonResult GetTicketInfo(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                long ticket_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    ticket_id = Convert.ToInt64(model.strValue1);
+
+                DataTable dt = CustomerServiceRepository.CustomerTicketInfo(ticket_id);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

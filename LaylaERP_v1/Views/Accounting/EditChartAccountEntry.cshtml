@@ -33,11 +33,11 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="eventassign">Balance</label><span style="color:red">*</span>
+                            <label for="eventassign">Debit Amount</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbalance" />
                         </div>
                         <div class="form-group">
-                            <label for="tag">Bank Balance</label><span style="color:red">*</span>
+                            <label for="tag">Credit Amount</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankbalance" />
                         </div>
                         <div class="form-group">
@@ -84,8 +84,8 @@
                         $("#ddlname").val(d[0].name).trigger('change');
                         setTimeout(function () { $("#ddltype").val(d[0].type).trigger('change') }, 1000);
                         setTimeout(function () { $("#ddldetailtype").val(d[0].detail_type).trigger('change'); }, 1000);
-                        $("#txtbalance").val(parseFloat(d[0].balance).toFixed(2));
-                        $("#txtbankbalance").val(parseFloat(d[0].bank_balance).toFixed(2));
+                        $("#txtbalance").val(parseFloat(d[0].debit).toFixed(2));
+                        $("#txtbankbalance").val(parseFloat(d[0].credit).toFixed(2));
                         $("#txtentrydate").val(d[0].entry_date);
                     }
                 },

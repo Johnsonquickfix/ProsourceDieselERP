@@ -116,8 +116,8 @@ function getGrandTotal() {
         success: function (data) {
             var d = JSON.parse(data);
             if (d.length > 0) {
-                $("#txtbalance").text('$' + d[0].balance)
-                $("#txtbankbalance").text('$' + d[0].bank_balance)
+                $("#txtbalance").text('$' + d[0].debit)
+                $("#txtbankbalance").text('$' + d[0].credit)
             }
         },
         error: function (msg) {

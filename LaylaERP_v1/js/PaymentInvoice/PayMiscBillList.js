@@ -100,13 +100,22 @@ function misclistList() {
                 }
             },
             {
+                data: 'billstatus', title: 'Bill Status', sWidth: "10%", render: function (data, type, row) {
+                    if (data == '3') return '<span class="badgek bg-success">Approved</span>';
+                    else if (data == '1') return '<span class="badgek bg-warning">Draft</span>';
+                    else if (data == '8') return '<span class="badgek bg-danger">Rejected</span>';
+                    else return data;
+                }
+            },
+            {
                 data: 'paidstatus', title: 'Paid Status', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'PD') return '<span class="badge bg-success">Paid</span>';
                     else if (data == 'UN') return '<span class="badge bg-warning">Partially</span>';
                     else if (data == 'NF') return '<span class="badge bg-danger">Unpaid</span>';
                     else return data;
                 }
-            }
+            },
+            
 
             
         ]

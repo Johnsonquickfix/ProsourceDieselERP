@@ -12,14 +12,20 @@
     // getInvoicePrintDetails(22);
     $.when(getVendor(), gettransactiontype()).done(function () { getpaymenttype(); });
 
-    $('#txtcreateDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    let today = new Date();  
-    $('#txtcreateDate').val(today.toLocaleDateString("en-US"));
+    //$('#txtcreateDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+    //let today = new Date();  
+    //$('#txtcreateDate').val(today.toLocaleDateString("en-US"));
 
-    $('#txtdueDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    var date = new Date();
-    date.setDate(date.getDate() + 15);
-    $('#txtdueDate').val(date.toLocaleDateString("en-US"));
+
+    $('#txtcreateDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+
+    //$('#txtdueDate').daterangepicker({ format: 'MM/DD/YYYY', autoclose: true, todayHighlight: true });
+    //var date = new Date();
+    //date.setDate(date.getDate() + 15);
+    //$('#txtdueDate').val(date.toLocaleDateString("en-US"));
+
+  //  $('#txtdueDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+    $('#txtdueDate').daterangepicker({ singleDatePicker: true, startDate: moment().add(15, 'days'), autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
 
     $(".select2").select2();
     var itxtCnt = 0;
@@ -107,11 +113,14 @@ function PaymentTerms() {
         days = parseInt(_details[0].balanceday) || 0
         var date = new Date();
         if (days > 0)
-            date.setDate(date.getDate() + days);           
+            $('#txtdueDate').daterangepicker({ singleDatePicker: true, startDate: moment().add(days, 'days'), autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+            //date.setDate(date.getDate() + days);           
         else
-            date.setDate(date.getDate() + 15);
-        $('#txtdueDate').val(date.toLocaleDateString("en-US"));
+           $('#txtdueDate').daterangepicker({ singleDatePicker: true, startDate: moment().add(15, 'days'), autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+            //date.setDate(date.getDate() + 15);
+        //$('#txtdueDate').val(date.toLocaleDateString("en-US"));
 
+       
     }
 }
 
@@ -151,7 +160,7 @@ function bindItems() {
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + itxtCnt + '"  name="txt_Service" placeholder="Product/Service"></td>';
     //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_sku_' + itxtCnt + '"  name="txt_sku" placeholder="Service No."></td>';
-    itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + itxtCnt + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
+    itemHtml += '<td><input min="1" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Quantity_' + itxtCnt + '" value="' + 1 + '" name="txt_Quantitye" placeholder="Quantity"></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Price."></td>';
     itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Tax_' + itxtCnt + '"  name="txt_Tax" placeholder="Tax"></td>';
     //itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Total_' + itxtCnt + '"  name="txt_Total" placeholder="Total"></td>';
@@ -294,7 +303,7 @@ function getbillInfodetails(oid) {
                         itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Product/Service"></td>';
                        // itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].discription + '" name="txt_Description" placeholder="Description."></td>';
                         itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_sku_' + data['pod'][i].miscellaneous_id + '"  name="txt_sku" value="' + data['pod'][i].sku + '" placeholder="Service No."></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
+                        itemHtml += '<td><input min="1" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Quantity_' + data['pod'][i].miscellaneous_id + '"  value="' + data['pod'][i].qty.toFixed(0) + '"  name="txt_Quantitye" placeholder="Quantity"></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Price."></td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Tax_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_Tax" placeholder="Tax"></td>';
 
@@ -576,11 +585,14 @@ function createItemsList() {
        // rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
        // rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
         _rang += 1;
-        _list.push({
-             product: rproduct, discription: rdiscription, sku: rsku, shippingfee: rshipAmt, otherfee: rothrAmt,
-            qty: rQty, rate: rPrice, total_ttc: rGrossAmt, tax: rTax1, fk_paymenttype: raccid
-             
-        });
+        console.log(raccid, rQty, rPrice);
+        if (raccid > 0 && rQty > 0  ) {
+            _list.push({
+                product: rproduct, discription: rdiscription, sku: rsku, shippingfee: rshipAmt, otherfee: rothrAmt,
+                qty: rQty, rate: rPrice, total_ttc: rGrossAmt, tax: rTax1, fk_paymenttype: raccid
+
+            });
+        }
     });
  
     //console.log(_list)
@@ -622,7 +634,7 @@ function savemiscbill() {
         caddress = instaintionvaladdress;
     }
     let _list = createItemsList();
-    console.log(date, duedate);
+    console.log(_list);
 
     if (date == "") { swal('alert', 'Please enter create bill date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) } 
     else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
@@ -631,7 +643,7 @@ function savemiscbill() {
     else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
     else if (duedate == "") { swal('alert', 'Please enter due date ', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
     else if (date > duedate) { swal('alert', 'Please enter a due date greater than create date', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
-    else if (_list.length == 0) { swal('Alert!', 'Please add product.', "error") }
+    else if (_list.length == 0) { swal('Alert!', 'Please add bill type/service/product.', "error") }
     else {
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let _order = {

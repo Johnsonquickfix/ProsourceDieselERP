@@ -512,7 +512,7 @@ function GenerateTicketNo() {
         //console.log(i, row);
         //_questions.push({ pkey: $(row).attr("id"), id: $(row).data('id'), title: $(row).data('title') });
         if (i == 0) _questions += $(row).data('title') + ' <br/>';
-        else _questions += '    *   ' + $(row).data('title') + ' <br/>';
+        else _questions += '    🗸   ' + $(row).data('title') + ' <br/>';
     });
 
     let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') },

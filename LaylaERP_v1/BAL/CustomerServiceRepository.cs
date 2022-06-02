@@ -120,5 +120,58 @@
             { throw ex; }
             return dt;
         }
+
+        public static DataTable CustomerTickets(long ticket_id, long customer_id, long order_id, string billing_email, string phone_no, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@ticket_id", ticket_id),
+                    new SqlParameter("@customer_id", customer_id),
+                    new SqlParameter("@order_id", order_id),
+                    new SqlParameter("@billing_email", billing_email),
+                    new SqlParameter("@phone_no", phone_no),
+                    new SqlParameter("@search", search),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "TICKETLIST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_order_customer_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable CustomerTicketInfo(long ticket_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@ticket_id", ticket_id),
+                    new SqlParameter("@flag", "TICKETINFO")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

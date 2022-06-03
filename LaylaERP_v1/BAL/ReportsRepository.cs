@@ -3077,6 +3077,25 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
+        public static DataSet GetNonDepositedFundlist(DateTime? fromdate, DateTime? todate)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH")
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_NonDepositedFund_mail", parameters);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

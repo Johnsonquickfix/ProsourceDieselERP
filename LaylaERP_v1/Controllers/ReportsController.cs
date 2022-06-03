@@ -1081,6 +1081,52 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+        [HttpGet]
+        public JsonResult GetNonDepositedFundlist(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                DataSet ds = ReportsRepository.GetNonDepositedFundlist(fromdate, todate);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { data = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SendNonDepositedFundMail(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> The list of orders that are in the GL account for more than 2 weeks indicate that we never received funds from the merchant.</b>.<br />Please see below attached file.<br /><br /><br /><br />";
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "The list of aging orders in non-deposited Funds ( " + model.strValue2 + " ).", strBody, _html, "non-deposited-funds-orders.html");
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
     }
+
 
 }

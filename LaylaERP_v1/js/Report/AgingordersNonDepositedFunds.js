@@ -31,6 +31,11 @@
     );
 
     dataGridLoad();
+
+    $('#btnsendmail').click(function () {
+        //PurchaseOrderGrid();
+        Sendnondepositfund_mail();
+    });
      
 });
 
@@ -231,5 +236,100 @@ function dataGridLoad() {
 
     });
 }
+
+function Sendnondepositfund_mail() {
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtDate').val() == '') { sd = ''; ed = '' };
+
+    var option = { strValue1: sd, strValue2: ed };
+    // $.get("/Reception/GetReceveOrderPrint", option).then(response => { send_mail(id, response); }).catch(err => { });
+    $.get("/Reports/GetNonDepositedFundlist", option).then(response => {
+        //  $("#loader").show();
+
+        let data = JSON.parse(response.data);
+         console.log(data['pod'].length);
+        if (data['pod'].length > 0) {
+            send_mail(1, response);
+        }
+        else {
+            swal('Alert!', "No record found.", 'error');
+        }
+        // $("#loader").hide();
+    }).catch(err => { });
+
+}
+function send_mail(id, result) {
+    let data = JSON.parse(result.data);
+    //console.log('jsondata', result);
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
+    //let inv_title = 'Bill'; // is_inv ? 'Bill' : 'Receive Order';
+    let inv_titleNew = 'The list of aging orders in non-deposited funds (' + $("#txtOrderDate").val() +' )', po_authmail = data['po'][0].po_authmail;
+    //let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
+    //  console.log('Printss', pono);
+    // let _com_add = result.name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    // _com_add += 'Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + ' <br> ' + result.email + ' <br> ' + result.website;
+
+    //let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
+    //console.log('Print',pono);
+    let myHtml = '<table id="Non-Deposited-Funds" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
+    myHtml += '<tr>';
+    myHtml += '                                        <td  style="padding:0px 2.5px">';
+    myHtml += '                                        <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_titleNew + '</h2>';
+    myHtml += '                                        </td>';
+    myHtml += ' </tr>';
+    myHtml += '<tr>';
+    myHtml += '<td style="padding:0px 15px 0px 15px;">';
+    myHtml += '    <table class="product-tables" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
+    myHtml += '        <thead class="itemdetailsheader" style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    myHtml += '            <tr>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">Order ID#</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Order Date</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">Status</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">Payment Method</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Transaction ID</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Amount</th>';
+    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Aging Days</th>';
+    //myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Modified Date</th>';
+    myHtml += '            </tr>';
+    myHtml += '        </thead>';
+    myHtml += '        <tbody class="itemdetailsbody">';
+    $(data['pod']).each(function (index, tr) {
+        //if (tr.product_type == 0) {
+        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">' + tr.id + '</td>';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_creation">' + tr.post_date + '</td>';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_fk_projet">' + tr.post_status + '</td>';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemvendor_name">' + tr.payment_method + '</td>';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemwarehouse_name">' + tr.transaction_id + '</td>'; 
+        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + numberRenderer(tr.order_amount) + '</td>';
+        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.daysdiff + '</td>';
+        myHtml += '</tr>';
+        //}
+    });
+    myHtml += '        </tbody>';
+    myHtml += '    </table>';
+    myHtml += '</td>';
+    myHtml += '</tr >';
+    myHtml += '</table >';
+    //console.log(myHtml);
+
+    let opt = { strValue1: po_authmail, strValue2: $("#txtOrderDate").val(), strValue3: myHtml }
+     console.log(opt);
+    //let opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: data['po'][0].ref, strValue3: myHtml, strValue5: _com_add }
+    if (opt.strValue1.length > 1) {
+        $.ajax({
+            type: "POST", url: '/Reports/SendNonDepositedFundMail', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (result) { console.log(result); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { swal('Success!', 'E-mail sent.', 'success'); $("#loader").hide(); }//, async: false
+        });
+    }
+}
+
 
 

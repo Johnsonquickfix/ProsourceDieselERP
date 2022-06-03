@@ -35,9 +35,13 @@
                             <option value="podium">Podium Transactions</option>
                             <option value="ppec_paypal">Paypal Transactions</option>
                             <option value="affirm">Affirm Transactions</option>
-                            <option value="amazon_payments_advanced">AmazonPay Transactions</option> 
+                            <option value="amazon_payments_advanced">AmazonPay Transactions</option>
                         </select>
                         <button type="button" id="btnsearch" onclick="dataGridLoad();" class="btn btn-primary btn-flat button">Filter</button>
+                    </div>
+                    <div class="alignleft actions right">
+                        @*<button type="button" id="btnsearch" class="btn btn-primary btn-flat button">Send Mail</button>*@
+                        <button type="button" class="btn btn-danger" id="btnsendmail" data-toggle="tooltip" title="Send non-deposited funds in mail"><i class="fas fa-envelope"></i> Send Mail</button>
                     </div>
                 </div>
             </div>

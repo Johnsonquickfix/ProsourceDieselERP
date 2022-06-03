@@ -12,7 +12,20 @@
 
     });
 }
+function getUsertype() {
+    $.ajax({
+        url: "/Poemail/GetRolesType",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please select user type</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlUsertype').html(opt);
+        }
 
+    });
+}
 $("#ddlUserid").change(function () {
     getUseremail();
 });
@@ -79,6 +92,7 @@ function EmailList() {
             { data: 'user_id', title: 'Id', sWidth: "5%" },
             { data: 'user_email', title: 'Email', sWidth: "10%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
+            { data: 'User_Type', title: 'User Type', sWidth: "10%" },
             {
                 'data': 'id', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
@@ -96,17 +110,22 @@ function AddEmail() {
     userid = $("#ddlUserid").val();
     useremail = $("#txtemail").val();
     status = $("#chkstatus").prop("checked") ? 1 : 0;
+    usertype = $("#ddlUsertype").val();
     if (userid == "-1") {
         swal('Alert', 'Please select user id', 'error').then(function () { swal.close(); $('#ddlUserid').focus(); });
     }
     else if (useremail == "") {
-        swal('Alert', 'Please user email', 'error').then(function () { swal.close(); $('#txtemail').focus(); });
+        swal('Alert', 'Please enter user email', 'error').then(function () { swal.close(); $('#txtemail').focus(); });
+    }
+    else if (usertype == "-1") {
+        swal('Alert', 'Please select user type', 'error').then(function () { swal.close(); $('#ddlUsertype').focus(); });
     }
     else {
         var obj = {
             user_id: userid,
             user_email: useremail,
             status: status,
+            fk_usertypeid: usertype,
         }
         $.ajax({
             url: '/Poemail/AddPoemail', dataType: 'json', type: 'Post',
@@ -142,12 +161,13 @@ function EditSelectAddress(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var jobj = JSON.parse(data);
-            console.log(jobj[0].rowid);
+            console.log(jobj[0].fk_usertypeid);
             $("#hfid").val(jobj[0].rowid);
+            $("#ddlUsertype").val(jobj[0].fk_usertypeid).trigger('change');
             $("#ddlUserid").val(jobj[0].user_id).trigger('change');
             $("#txtemail").val(jobj[0].user_email);
             jobj[0].status == true ? $("#chkstatus").prop("checked", true) : $("#chkstatus").prop("checked", false);
-
+           
             $("#btnUpdate").show();
             $("#btnSave").hide();
             isEdit(true);
@@ -162,11 +182,15 @@ function UpdateEmail() {
     userid = $("#ddlUserid").val();
     useremail = $("#txtemail").val();
     status = $("#chkstatus").prop("checked") ? 1 : 0;
+    usertype = $("#ddlUsertype").val();
     if (userid == "-1") {
         swal('Alert', 'Please select user id', 'error').then(function () { swal.close(); $('#ddlUserid').focus(); });
     }
     else if (useremail == "") {
-        swal('Alert', 'Please user email', 'error').then(function () { swal.close(); $('#txtemail').focus(); });
+        swal('Alert', 'Please enter user email', 'error').then(function () { swal.close(); $('#txtemail').focus(); });
+    }
+    else if (usertype == "-1") {
+        swal('Alert', 'Please select user type', 'error').then(function () { swal.close(); $('#ddlUsertype').focus(); });
     }
     else {
         var obj = {
@@ -174,6 +198,7 @@ function UpdateEmail() {
             user_id: userid,
             user_email: useremail,
             status: status,
+            fk_usertypeid: usertype,
         }
         $.ajax({
             url: '/Poemail/UpdateEmail', dataType: 'json', type: 'Post',
@@ -207,6 +232,7 @@ function reset() {
     $("#hfid").val("");
     $("#chkstatus").prop("checked", false);
     $("#btnSave").show();
+    $("#ddlUsertype").val('-1').trigger('change');
     $("#btnUpdate").hide();
 }
 

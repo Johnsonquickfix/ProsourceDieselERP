@@ -50,7 +50,7 @@ namespace LaylaERP_v1.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "select rowid id, user_id, user_email, iif(status = '1','Active','InActive') status from erp_po_admin_email WHERE 1=1";
+                string strSql = "select rowid id, user_id, user_email, iif(status = '1','Active','InActive') status,User_Type from erp_po_admin_email epae inner join wp_user_classification wuc on wuc.ID = epae.fk_usertypeid WHERE 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (user_id like '%" + searchid + "%' OR user_email like '%" + searchid + "%')";
@@ -98,6 +98,7 @@ namespace LaylaERP_v1.BAL
                     new SqlParameter("@userid", model.user_id),
                     new SqlParameter("@useremail",model.user_email),
                     new SqlParameter("@status", model.status),
+                    new SqlParameter("@fk_usertypeid", model.fk_usertypeid),
                 };
                 int result = Convert.ToInt32(LaylaERP.DAL.SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -114,7 +115,7 @@ namespace LaylaERP_v1.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid,user_id,user_email,status from erp_po_admin_email where rowid='" + model.strValue1 + "'";
+                string strquery = "SELECT rowid,user_id,user_email,status,fk_usertypeid from erp_po_admin_email where rowid='" + model.strValue1 + "'";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
@@ -135,6 +136,7 @@ namespace LaylaERP_v1.BAL
                     new SqlParameter("@userid", model.user_id),
                     new SqlParameter("@useremail",model.user_email),
                     new SqlParameter("@status", model.status),
+                    new SqlParameter("@fk_usertypeid", model.fk_usertypeid),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery("Poemail", para));
                 return result;
@@ -144,6 +146,18 @@ namespace LaylaERP_v1.BAL
                 UserActivityLog.ExpectionErrorLog(Ex, "Poemail/UpdateEmail/" + model.rowid + "", "Update poemail details.");
                 throw Ex;
             }
+        }
+        public static DataTable GetRolesType()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select ID, user_type from wp_user_classification order by user_type";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

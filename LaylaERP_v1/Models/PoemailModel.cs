@@ -11,5 +11,6 @@ namespace LaylaERP_v1.Models
         public string user_email { get; set; }
         public int status { get; set; }
         public int rowid { get; set; }
+        public int fk_usertypeid { get; set; }
     }
 }

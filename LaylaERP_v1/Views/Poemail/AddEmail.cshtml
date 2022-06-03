@@ -51,6 +51,13 @@
                 <input type="text" class="form-control" id="txtemail" />
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="userid">User Type<span style="color:red">*</span></label>
+                <select class="form-control select2" id="ddlUsertype" placeholder="Select user type" style="width: 100%;"> 
+                </select>
+            </div>
+        </div>
         <div class="col-md-1">
             <div class="form-group">
                 <br />
@@ -65,7 +72,7 @@
                 <button type="button" id="btnSave" class="btn btn-danger"><span title="Click here to save." data-placement="bottom" data-toggle="tooltip">Save</span></button>
                 <button type="button" id="btnUpdate" class="btn btn-danger"><span title="Click here to update." data-placement="bottom" data-toggle="tooltip">Update</span></button>
                 <button type="button" id="btnReset" class="btn btn-danger"><span title="Click here to reset." data-placement="bottom" data-toggle="tooltip">Reset</span></button>
-</div>
+            </div>
         </div>
     </div>
     <!-- end top-->
@@ -81,6 +88,7 @@
                                         <th>User id</th>
                                         <th>Email</th>
                                         <th>Status</th>
+                                        <th>User Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -105,6 +113,7 @@
         $("#btnUpdate").hide();
 
         getUserid();
+        getUsertype();
         EmailList();
         $("#btnSave").click(function () {
             AddEmail();
@@ -115,6 +124,12 @@
         $("#btnReset").click(function () {
             reset();
         });
+        //$.get('/Users/GetRolesType', function (data) {
+        //    var items = "";
+        //    $.each(data, function (index, value) {
+        //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlUsertype");
+        //    })
+        //})
     })
 </script>
 <script src="@Url.Content("~/js/Poemail/Addemail.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

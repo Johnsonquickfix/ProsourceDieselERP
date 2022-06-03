@@ -105,5 +105,21 @@ namespace LaylaERP_v1.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
+        public JsonResult GetRolesType()
+        {
+            DataTable dt = new DataTable();
+            dt = PoemailRepository.GetRolesType();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = dt.Rows[i]["user_type"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -211,10 +211,16 @@ function dataGridLoad(order_type) {
                     else if (data == 'wc-cancelled') return 'Cancelled';
                     else if (data == 'wc-refunded') return 'Refunded';
                     else if (data == 'wc-failed') return 'Failed';
+                    else if (data == 'wc-erp-desk-amazon') return 'ERP Desktop Amazon Testing';
                     else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
                     else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
                     else if (data == 'wc-podium') return 'Order via Podium';
                     else if (data == 'wc-podiumrefund') return 'Podium Refunded';
+                    else if (data == 'wc-pendingfraud') return 'Pending Fraud';
+                    else if (data == 'wc-wc-fraud') return 'Fraud';
+                    else if (data == 'wc-retention-refund') return 'Retention Refund';
+                    else if (data == 'wc-retained') return 'Retained';
+                    else if (data == 'wc-retention') return 'Retention';
                     else if (data == 'draft') return 'draft';
                     else return '-';
                 }

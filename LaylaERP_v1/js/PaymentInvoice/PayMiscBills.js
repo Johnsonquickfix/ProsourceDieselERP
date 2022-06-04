@@ -622,7 +622,13 @@ function createItemsList() {
 }
 function savemiscbill() {
     let id = parseInt($('#lblbillNo').data('id')) || 0;
-   
+    let conformation = '';
+    if (id > 0) {
+        conformation = "Do you want to update your bill?";
+    }
+    else {
+        conformation = "Do you want to create your bill?";
+    }
     
     let transactiontype = parseInt($("#ddltransactiontype").val()) || 0;
     let payaccounttype = $("#ddlpayaccounttype").val();
@@ -677,7 +683,7 @@ function savemiscbill() {
         let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option, _order, _list); return;
         swal.queue([{
-            title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to pay your bill?",
+            title: '', confirmButtonText: 'Yes, update it!', text: conformation,
             showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
                 return new Promise(function (resolve) {
@@ -759,9 +765,10 @@ function billApprove(oid, status_title, status) {
                     else if (result[0].Response == "success") {
                         $('#lblbillNo').data('id', oid);
                         swal('Success', 'Misc bill approved successfully.', "success");
-                       $.when(getbillInfodetails(oid)).done(function () {
-                        getInvoicePrintDetails(oid, true);
-                       });
+                       //$.when(getbillInfodetails(oid)).done(function () {
+                       // getInvoicePrintDetails(oid, true);
+                       //});
+                        getbillInfodetails(oid, true);
                     }
                     else if (result[0].Response == "disapproved") {
                         $('#lblbillNo').data('id', oid);

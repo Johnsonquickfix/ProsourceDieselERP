@@ -176,12 +176,12 @@
                             _date_from = moment(result[0].date_start), _date_to = moment(result[0].date_end)
                             let _sublist = groupBy(g_row, (c) => c.pcg_type);                            
                             $.each(_sublist, function (sg_i, sg_row) {
+                                let _total = 0;
                                 if (g_i == 'E') {
                                     _exp_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
                                     _exp_html += '<td colspan="2"><strong>' + sg_i + '</strong></td>';
                                     //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
-                                    _exp_html += '</tr>';
-                                    let _total = 0;
+                                    _exp_html += '</tr>';                                    
                                     $.each(sg_row, function (i, row) {
                                         _exp_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
                                         _exp_html += '<td>' + row.label + '</td>';
@@ -196,22 +196,33 @@
                                     _expense += _total;
                                 }
                                 else if (g_i == 'I') {
-                                    _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
-                                    _inc_html += '<td colspan="2"><strong>' + sg_i + '</strong></td>';
-                                    //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
-                                    _inc_html += '</tr>';
-                                    let _total = 0;
-                                    $.each(sg_row, function (i, row) {
-                                        _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
-                                        _inc_html += '<td>' + row.label + '</td>';
-                                        _inc_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                    if (sg_i != '-') {
+                                        _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                        _inc_html += '<td colspan="2"><strong>' + sg_i + '</strong></td>';
+                                        //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
                                         _inc_html += '</tr>';
-                                        _total += parseFloat(row.invtotal) || 0;
-                                    });
-                                    _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
-                                    _inc_html += '<td><strong>Total - ' + sg_i + '</strong></td>';
-                                    _inc_html += '<td style="text-align:right;"><strong>' + formatCurrency(_total) + '</strong></td>';
-                                    _inc_html += '</tr>';
+                                        $.each(sg_row, function (i, row) {
+                                            _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
+                                            _inc_html += '<td>' + row.label + '</td>';
+                                            _inc_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                            _inc_html += '</tr>';
+                                            _total += parseFloat(row.invtotal) || 0;
+                                        });
+                                        _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                        _inc_html += '<td><strong>Total - ' + sg_i + '</strong></td>';
+                                        _inc_html += '<td style="text-align:right;"><strong>' + formatCurrency(_total) + '</strong></td>';
+                                        _inc_html += '</tr>';
+                                    }
+                                    else {
+                                        $.each(sg_row, function (i, row) {
+                                            _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
+                                            _inc_html += '<td><strong>' + row.label + '</strong></td>';
+                                            _inc_html += '<td style="text-align:right;"><strong>' + formatCurrency(row.invtotal) + '</strong></td>';
+                                            _inc_html += '</tr>';
+                                            _total += parseFloat(row.invtotal) || 0;
+                                        });
+                                        
+                                    }                                    
                                     _income += _total;
                                 }
                             });

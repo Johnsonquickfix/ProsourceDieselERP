@@ -281,7 +281,7 @@ function getbillInfodetails(oid) {
                            // $('.page-heading').empty().append('Edit Purchase Order <span class="text-aqua">(' + row.po_status + ')</span> ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                             //$(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order" data-placement="left"><i class="fas fa-print"></i> Print</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PayMiscBillList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
-                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This Bill is not editable because amount has been received.</div>');
+                            $('#divAlert').empty().append('<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i> Alert!</h4>This bill is not editable. Paid already.</div>');
                         }
                         else {
                             $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="left"><i class="far fa-edit"></i> Edit</button>');
@@ -693,7 +693,7 @@ function savemiscbill() {
 
                             SendPO_POApproval(result[0].id);
                             //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
-                            swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); });
+                            swal('Success', 'Misc bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); });
 
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
@@ -740,7 +740,7 @@ function getipaidhistory(oid) {
 }
 function billApprove(oid, status_title, status) {
     let option = { Search: oid, Status: status };
-    let _text = 'Do you want to ' + status_title + ' this MISC Bill ?';
+    let _text = 'Do you want to ' + status_title + ' this misc bill ?';
     swal.queue([{
         title: '', confirmButtonText: 'Yes, update it!', text: _text, showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
@@ -757,7 +757,7 @@ function billApprove(oid, status_title, status) {
                     }
                     else if (result[0].Response == "already") {
                         $('#lblbillNo').data('id', oid);
-                        swal('Success', 'Misc Bill already approved. You can not approved it again.', "success");
+                        swal('Success', 'Misc bill already approved. You can not approved it again.', "success");
                         //$.when(getbillInfodetails(oid)).done(function () {
                         getbillInfodetails(oid, true);
                         //});
@@ -772,7 +772,7 @@ function billApprove(oid, status_title, status) {
                     }
                     else if (result[0].Response == "disapproved") {
                         $('#lblbillNo').data('id', oid);
-                        swal('Success', 'Misc Bill disapproved.', "success");
+                        swal('Success', 'Misc bill disapproved.', "success");
                         //$.when(getbillInfodetails(oid)).done(function () {
                         getbillInfodetails(oid, true);
                         //});

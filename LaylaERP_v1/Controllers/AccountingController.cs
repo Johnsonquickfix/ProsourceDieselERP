@@ -1127,7 +1127,9 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.GetTrailBalance(model.from_date, model.to_date, model.fiscalyear_id,"TRIALBAL");
+                if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
+                else if (model.report_type.Equals("PLREPORT")) model.report_type = "PROFITLOSS";
+                DataTable dt = AccountingRepository.GetTrailBalance(model.from_date, model.to_date, model.fiscalyear_id, model.report_type);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }

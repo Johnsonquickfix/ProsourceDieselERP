@@ -14,345 +14,274 @@
 <section class="content content-section p-0 reports-section">
     <div class="row">
 
-        <div class="col-md-6">
-            <div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions">
-                        <div class="input-group space-heads">
-                            <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
-                            @*<input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
-                            <select class="form-control select2" id="ddlfinaceyear"></select>
-                        </div>
-                    </div>
-
-                </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
+                <select class="form-control select2" id="ddlfinaceyear"></select>
             </div>
         </div>
-        <div style="text-align:right" class="col-md-6">
+        <div style="text-align:right" class="col-md-8">
             <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button">Print</button>
         </div>
     </div>
     <div id="printable" class="row">
+        <div class="col-md-12 text-center">
+            <strong>Layla Sleep Inc</strong>
+        </div>
+        <div class="col-md-12 text-center">
+            <strong>Trial Balance</strong>
+        </div>
+        <div class="col-md-12 text-center">
+            <strong><span id="selectyear">-</span></strong>
+        </div>
+
         <div class="col-md-12">
-            <div id="divass">
-                <table>
-                    <tr>
-                        <td align="center" colspan="2" valign="top">
-                            <strong>Layla Sleep Inc</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center" colspan="2" valign="top">
-                            <strong> Profit & Loss A/C</strong>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td align="center" colspan="2" valign="top">
-                            <strong><span id="selectyear">-</span></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td valign="top">
-                            <table id="tblass" class="table-blue table table-bordered table-striped dataTable">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 70%">Particulars (Expense)</th>
-                                        <th class="text-right" style="width: 30%"></th>
-
-                                    </tr>
-                                </thead>
-                                <tbody id="account_ass"></tbody>
-                                <tfoot id="account_assfoot"></tfoot>
-                            </table>
-                        </td>
-                        <td valign="top">
-                            <table id="tbllib" class="table-blue table table-bordered table-striped dataTable">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 70%">Particulars (Income)</th>
-                                        <th class="text-right" style="width: 30%"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="account_lib"></tbody>
-                                <tfoot id="account_libfoot"></tfoot>
-                            </table>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <table width="98%">
+            <table>
+                <tr>
+                    <td valign="top">
+                        <table id="tblass" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
                                 <tr>
-                                    <td valign="top" width="50%">
-                                        <strong>Net Profit :</strong>
-                                    </td>
-                                    <td valign="top" width="50%" align="right">
-                                        <strong><span id="Totalprofit"></span></strong>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td></td>
+                                    <th class="text-center" style="width: 60%">Particulars (Expense)</th>
+                                    <th class="text-right" style="width: 40%"></th>
 
-                    </tr>
-                    <tr>
-                        <td valign="top">
-                            <table width="98%">
+                                </tr>
+                            </thead>
+                            <tbody id="account_ass"></tbody>
+                            <tfoot id="account_assfoot"></tfoot>
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table id="tbllib" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
                                 <tr>
-                                    <td valign="top" width="50%">
-                                        <strong>Total(Expense) :</strong>
-                                    </td>
-                                    <td valign="top" width="50%" align="right">
-                                        <strong><span id="TotalExpense"></span></strong>
-                                    </td>
+                                    <th class="text-center" style="width: 60%">Particulars (Income)</th>
+                                    <th class="text-right" style="width: 40%"></th>
                                 </tr>
-                            </table>
-                        </td>
-                        <td valign="top">
-                            <table width="98%">
-                                <tr>
-                                    <td valign="top" width="50%">
-                                        <strong>Total(Income) :</strong>
-                                    </td>
-                                    <td valign="top" width="50%" align="right">
-                                        <strong><span id="TotalIncome"></span></strong>
-                                    </td>
-                                </tr>
-                            </table>
-                            @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
-                        </td>
-                    </tr>
-
-
-                </table>
-            </div>
+                            </thead>
+                            <tbody id="account_lib"></tbody>
+                            <tfoot id="account_libfoot"></tfoot>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table class="table-blue table table-bordered table-striped dataTable">
+                            <tr>
+                                <td valign="top" width="60%">
+                                    <strong id="lblProfit">Net Profit :</strong>
+                                </td>
+                                <td valign="top" width="40%" align="right">
+                                    <strong><span id="Totalprofit"></span></strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <table class="table-blue table table-bordered table-striped dataTable">
+                            <tr>
+                                <td valign="top" width="60%">
+                                    <strong id="lblLoss">Net Loss :</strong>
+                                </td>
+                                <td valign="top" width="40%" align="right">
+                                    <strong><span id="TotalLoss"></span></strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">
+                        <table class="table-blue table table-bordered table-striped dataTable">
+                            <tr>
+                                <td valign="top" width="60%">
+                                    <strong>Total (Expense) :</strong>
+                                </td>
+                                <td valign="top" width="40%" align="right">
+                                    <strong><span id="TotalExpense"></span></strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <table class="table-blue table table-bordered table-striped dataTable">
+                            <tr>
+                                <td valign="top" width="60%">
+                                    <strong>Total (Income) :</strong>
+                                </td>
+                                <td valign="top" width="40%" align="right">
+                                    <strong><span id="TotalIncome"></span></strong>
+                                </td>
+                            </tr>
+                        </table>
+                        @*<strong>Total(Income) : <span id="TotalIncome"></span></strong>*@
+                    </td>
+                </tr>
+            </table>
         </div>
 
     </div>
     <script type="text/javascript">
-            $(document).ready(function () {
-                // $.when(getAssets()).done(function () { getLiabilites(); });
-                $("#loader").hide();
-                //$('#txtOrderDate').daterangepicker({
-                //    ranges: {
-                //        'Today': [moment(), moment()],
-                //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                //    },
-                //    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
-                //    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-                //}, function (start, end, label) {
-                //    getAssets(true);
-                //});
-                getfinaceyear();
-                //fincyear = getCurrentFinancialYear();
-                //$('#ddlfinaceyear').text(fincyear).trigger('change');
-                //console.log(fincyear);
-                getAssets(true);
+        $(document).ready(function () {
+            $("#loader").hide(); $(".select2").select2();
+            //$('#txtOrderDate').daterangepicker({
+            //    ranges: {
+            //        'Today': [moment(), moment()],
+            //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+            //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            //    },
+            //    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+            //    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+            //}, function (start, end, label) {
+            //    getAssets(true);
+            //});
+            $.when(getfinaceyear()).done(function () { getAssets(true) });
+            $('#ddlfinaceyear').change(function () { getAssets(true); });
 
-                $('#ddlfinaceyear').change(function () {
-                    getAssets(true); 
-                   
-                });
-
-            });
-
-        //function getCurrentFinancialYear() {
-        //    var fiscalyear = "";
-        //    var today = new Date();
-        //    if ((today.getMonth() + 1) <= 3) {
-        //        fiscalyear = (today.getFullYear() - 1) + "-" + today.getFullYear()
-        //    } else {
-        //        fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
-        //    }
-        //    return fiscalyear
-        //}
+        });
 
         function getfinaceyear() {
-            let fincyear = "";
-          //  fincyear = getCurrentFinancialYear();
             $.ajax({
-                url: "/Accounting/Getfinancialyear",
-                type: "Get",
+                url: "/Accounting/Getfinancialyear", type: "Get",
                 success: function (data) {
-                    $('#ddlfinaceyear').empty();
-                    $('#ddlfinaceyear').append('<option value="">Please Select Financial Year</option>');
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].Selected == true) {
-                            $('#ddlfinaceyear').append('<option value="' + data[i].Value + '" selected>' + data[i].Text + '</option>');
-                        }
-                        else {
-                            $('#ddlfinaceyear').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
-                        }
-
-                       // $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
-                    }
+                    $('#ddlfinaceyear').empty().append('<option value="">Please Select Financial Year</option>');
+                    $.each(data, function (i, row) {
+                        $('#ddlfinaceyear').append('<option value="' + row.Value + '" ' + (row.Selected ? 'selected' : '') + '>' + row.Text + '</option>');
+                    });
                 }, async: false
             });
-            //if ($('#ddlfinaceyear') == 1)
-           
         }
-            function formatCurrency(total) {
-                var neg = false;
-                if (total < 0) {
-                    neg = true;
-                    total = Math.abs(total);
-                }
-                return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
-            }
-            function getAssets(is_date) {
-                //let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                //let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
-                let sd = $('#ddlfinaceyear').val();
-                let ed = '2';
-
-                var option = { strValue1: sd, strValue2: ed };
-                $.ajax({
-                    url: "/Accounting/GetAccountProfitLoss", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
-                    success: function (result) {
-                        try {
-                            let data = JSON.parse(result);
-                            let itemHtml = '';
-                            let itemHtmllib = '';
-                            let itemHtmassfoot = '';
-                            let itemHtmlibfoot = '';
-                            let Totalacc = 0.00;
-                            let Totallib = 0.00;
-                            let ashd = 0.00;
-                            let tprofit = 0.00;
-                            $('#account_lib').empty();
-                            $('#account_ass').empty();
-                            $('#account_libfoot').empty();
-                            $('#account_assfoot').empty();
-                            if (data['exp'].length > 0) {
-                                for (let i = 0; i < data['expnm'].length; i++) {
-                                    // if (data['ass'].length > 0) {
-                                    itemHtml += '<tr id="tritemId_' + data['expnm'][i].pcg_type + '" data-key="' + data['expnm'][i].pcg_type + '">';
-                                    itemHtml += '<td colspan="2"><strong>' + data['expnm'][i].pcg_type + '</strong></td>';
-                                  //  itemHtml += '<td style="text-align:right;"><strong>Amount</strong></td>';
-                                    itemHtml += '</tr>';
-                                    ashd = data['expnm'][i].pcg_type;
-                                    for (let i = 0; i < data['exp'].length; i++) {
-                                        //console.log(ashd, data['ass'][i].label);
-                                        if (ashd == data['exp'][i].pcg_type) {
-                                            itemHtmllib += '<tr id="trias_' + data['exp'][i].account_number + '" data-key="' + data['exp'][i].account_number + '">';
-                                            itemHtml += '<td>' + data['exp'][i].label + '</td>';
-                                            itemHtml += '<td style="text-align:right;">' + formatCurrency(data['exp'][i].Total) + '</td>';
-                                            itemHtml += '</tr>';
-                                            Totalacc += parseFloat(data['exp'][i].Total);
-                                        }
-                                    }
-                                    itemHtml += '<tr id="tritemId_' + data['expnm'][i].pcg_type + '" data-key="' + data['expnm'][i].pcg_type + '">';
-                                    itemHtml += '<td><strong>Total - ' + data['expnm'][i].pcg_type + '</strong></td>';
-                                    itemHtml += '<td style="text-align:right;"><strong>' + formatCurrency(data['expnm'][i].Total) + '</strong></td>';
-                                    itemHtml += '</tr>';
-                                    $('#account_ass').empty().append(itemHtml);
-                                }
-                                //}
-                            }
-                            else {
-                                $('#account_ass').empty();
-                            }
-                            //itemHtmassfoot += '<tr>';
-                            //itemHtmassfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            //itemHtmassfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totalacc) + '</span></strong></td>';
-                            //itemHtmassfoot += '</tr>';
-                            //$('#account_assfoot').empty().append(itemHtmassfoot);
-                            if (data['inc'].length > 0) {
-                                for (let i = 0; i < data['incnm'].length; i++) {
-                                    itemHtmllib += '<tr id="tritemIdlib_' + data['incnm'][i].pcg_type + '" data-key="' + data['incnm'][i].pcg_type + '">';
-                                    itemHtmllib += '<td colspan="2"><strong>' + data['incnm'][i].pcg_type + '</strong></td>';
+        function formatCurrency(total) {
+            var neg = false;
+            if (total < 0) { neg = true; total = Math.abs(total); }
+            return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+        }
+        function groupBy(xs, f) {
+            return xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {});
+        }
+        function getAssets(is_date) {
+            let _income = 0, _expense = 0; let _date_from = moment(), _date_to = moment();
+            let option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, report_type: 'PLREPORT' };
+            $.ajax({
+                url: "/accounting/get-trialbalance", dataType: 'json', contentType: "application/json; charset=utf-8", data: option, beforeSend: function () { $("#loader").show(); },
+                success: function (result) {
+                    try {
+                        result = JSON.parse(result);
+                        let _list = groupBy(result, (c) => c.extraparams);
+                        let _inc_html = '', _exp_html = '';
+                        $.each(_list, function (g_i, g_row) {
+                            _date_from = moment(result[0].date_start), _date_to = moment(result[0].date_end)
+                            let _sublist = groupBy(g_row, (c) => c.pcg_type);                            
+                            $.each(_sublist, function (sg_i, sg_row) {
+                                let _total = 0;
+                                if (g_i == 'E') {
+                                    _exp_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                    _exp_html += '<td colspan="2"><strong>' + sg_i + '</strong></td>';
                                     //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
-                                    itemHtmllib += '</tr>';
-                                    ashd = data['incnm'][i].pcg_type;
-                                    for (let i = 0; i < data['inc'].length; i++) {
-                                        if (ashd == data['inc'][i].pcg_type) {
-                                            itemHtmllib += '<tr id="tri_' + data['inc'][i].account_number + '" data-key="' + data['inc'][i].account_number + '">';
-                                            itemHtmllib += '<td>' + data['inc'][i].label + '</td>';
-                                            itemHtmllib += '<td style="text-align:right;">' + formatCurrency(data['inc'][i].Total) + '</td>';
-                                            itemHtmllib += '</tr>';
-                                            Totallib += parseFloat(data['inc'][i].Total);
-                                        }
-                                    }
-                                    itemHtmllib += '<tr id="tritemIdlib_' + data['incnm'][i].pcg_type + '" data-key="' + data['incnm'][i].pcg_type + '">';
-                                    itemHtmllib += '<td><strong>Total - ' + data['incnm'][i].pcg_type + '</strong></td>';
-                                    itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
-                                    itemHtmllib += '</tr>';
-                                    $('#account_lib').empty().append(itemHtmllib);
+                                    _exp_html += '</tr>';                                    
+                                    $.each(sg_row, function (i, row) {
+                                        _exp_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
+                                        _exp_html += '<td>' + row.label + '</td>';
+                                        _exp_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                        _exp_html += '</tr>';
+                                        _total += parseFloat(row.invtotal) || 0;
+                                    });
+                                    _exp_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                    _exp_html += '<td><strong>Total - ' + sg_i + '</strong></td>';
+                                    _exp_html += '<td style="text-align:right;"><strong>' + formatCurrency(_total) + '</strong></td>';
+                                    _exp_html += '</tr>';
+                                    _expense += _total;
                                 }
-                            }
-                            else {
-                                $('#account_lib').empty();
-                            }
-                            //itemHtmlibfoot += '<tr>';
-                            //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> --- </span></strong></td>';
-                            //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">---</span></strong></td>';
-                            //itemHtmlibfoot += '</tr>';
-
-                            //itemHtmlibfoot += '<tr>';
-                            //itemHtmlibfoot += '<td style="width:70%%; text-align:left;"><strong><span id="total"> Grand Total </span></strong></td>';
-                            //itemHtmlibfoot += '<td style="width:30%; text-align:right;"><strong><span id="totalfircast">' + formatCurrency(Totallib) + '</span></strong></td>';
-                            //itemHtmlibfoot += '</tr>';
-                            //$('#account_libfoot').empty().append(itemHtmlibfoot);
-
-                            tprofit = Totallib - Totalacc;
-
-                            $("#TotalIncome").html(formatCurrency(Totallib));
-                            $("#TotalExpense").html(formatCurrency(Totalacc + tprofit));
-                             
-                            $("#Totalprofit").html(formatCurrency(tprofit));
-
-                            for (let i = 0; i < data['fincyer'].length; i++) {
-                                $("#selectyear").html(data['fincyer'][i].dateyear);
-                            }
-
-                        }
-                        catch (error) {
-                            throw error;
-                            // $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
-                        }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
-                });
+                                else if (g_i == 'I') {
+                                    if (sg_i != '-') {
+                                        _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                        _inc_html += '<td colspan="2"><strong>' + sg_i + '</strong></td>';
+                                        //itemHtmllib += '<td style="text-align:right;"><strong>' + formatCurrency(data['incnm'][i].Total) + '</strong></td>';
+                                        _inc_html += '</tr>';
+                                        $.each(sg_row, function (i, row) {
+                                            _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
+                                            _inc_html += '<td>' + row.label + '</td>';
+                                            _inc_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                            _inc_html += '</tr>';
+                                            _total += parseFloat(row.invtotal) || 0;
+                                        });
+                                        _inc_html += '<tr id="tritemIdlib_' + sg_i + '" data-key="' + sg_i + '">';
+                                        _inc_html += '<td><strong>Total - ' + sg_i + '</strong></td>';
+                                        _inc_html += '<td style="text-align:right;"><strong>' + formatCurrency(_total) + '</strong></td>';
+                                        _inc_html += '</tr>';
+                                    }
+                                    else {
+                                        $.each(sg_row, function (i, row) {
+                                            _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
+                                            _inc_html += '<td><strong>' + row.label + '</strong></td>';
+                                            _inc_html += '<td style="text-align:right;"><strong>' + formatCurrency(row.invtotal) + '</strong></td>';
+                                            _inc_html += '</tr>';
+                                            _total += parseFloat(row.invtotal) || 0;
+                                        });                                        
+                                    }                                    
+                                    _income += _total;
+                                }
+                            });
+                        });
+                        $('#account_ass').empty().append(_exp_html);
+                        $('#account_lib').empty().append(_inc_html);
+                    }
+                    catch (error) { throw error; }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+            });
+            let _profit = _income - _expense;
+            if (_profit >= 0) {
+                $("#TotalIncome").html(formatCurrency(_income));
+                $("#lblProfit").html('Net Profit  :'); $("#Totalprofit").html(formatCurrency(_profit));
+                $("#lblLoss,#TotalLoss").html('-');
+                $("#TotalExpense").html(formatCurrency(_expense + _profit));
             }
-            function printDiv() {
-               // var newWin = window.open('', 'Print-Window', 'width=400,height=400,top=100,left=100');
-                var divName = 'printable';
-                var printContents = document.getElementById(divName).innerHTML;
-                var originalContents = document.body.innerHTML;
-                document.body.innerHTML = printContents;
-                //let title_el = document.querySelector("title");
-                //title_el.innerHTML = "World";
-                document.title = ".";
-                
-                window.print();
-               // newWin.document.title = "Readings on PageLinks";
-                document.body.innerHTML = originalContents;
-
-                getfinaceyear();
-                //$('#txtOrderDate').daterangepicker({
-                //    ranges: {
-                //        'Today': [moment(), moment()],
-                //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                //    },
-                //    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
-                //    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
-                //}, function (start, end, label) {
-                //    getAssets(true);
-                //});
+            else if (_profit < 0) {
+                $("#lblLoss").html(formatCurrency('Net Loss :')); $("#TotalLoss").html(formatCurrency((-1 * _profit)));
+                $("#TotalIncome").html(formatCurrency(_income + (-1 * _profit)));
+                $("#lblProfit,#Totalprofit").html('-');
+                $("#TotalExpense").html(formatCurrency(_expense));
             }
+
+            $("#selectyear").html(_date_from.format('MMMM, DD YYYY') + ' to ' + _date_to.format('MMMM, DD YYYY'));
+        }
+        function printDiv() {
+            // var newWin = window.open('', 'Print-Window', 'width=400,height=400,top=100,left=100');
+            var divName = 'printable';
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            //let title_el = document.querySelector("title");
+            //title_el.innerHTML = "World";
+            document.title = ".";
+
+            window.print();
+            // newWin.document.title = "Readings on PageLinks";
+            document.body.innerHTML = originalContents;
+
+            getfinaceyear();
+            //$('#txtOrderDate').daterangepicker({
+            //    ranges: {
+            //        'Today': [moment(), moment()],
+            //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+            //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            //    },
+            //    startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+            //    locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+            //}, function (start, end, label) {
+            //    getAssets(true);
+            //});
+        }
     </script>
 </section>
 @*<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
-<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>*@
+    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>*@
 <script src="~/js/common.js"></script>

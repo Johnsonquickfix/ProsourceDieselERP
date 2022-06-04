@@ -53,6 +53,7 @@ namespace LaylaERP.Models
         public decimal debit { get; set; }
         public decimal credit { get; set; }
         public DateTime entry_date { get; set; }
+        public string senstag { get; set; }
     }
     public class AccountCategoryModel
     {

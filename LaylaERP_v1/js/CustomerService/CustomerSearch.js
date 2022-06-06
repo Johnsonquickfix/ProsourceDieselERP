@@ -530,7 +530,6 @@ function GenerateTicketNo() {
         preConfirm: function () {
             return new Promise(function (resolve) {
                 let _obj = { strValue1: JSON.stringify(option), strValue2: option.email, strValue3: _body };
-                console.log(_obj);
                 $.ajax(
                     {
                         method: "POST", timeout: 0, headers: { "Content-Type": "application/json" },

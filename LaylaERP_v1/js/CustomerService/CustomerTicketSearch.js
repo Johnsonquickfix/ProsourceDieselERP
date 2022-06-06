@@ -152,23 +152,111 @@ function ClaimWarrantyModal(id) {
     modalHtml = '';
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
         response = JSON.parse(response);
-        let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
+        modalHtml += '<div class="row">';
+        modalHtml += '<div class="col-lg-4 order-info">';
+        $.each(response, function (i, row) {
+            console.log(i, row);
+            let _json = JSON.parse(row.order_details); //console.log(_json);
+            
 
+
+            modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten">';
+            modalHtml += '      <div class="mb-2 float-right">';
+            modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';
+            modalHtml += '      </div>';
+            modalHtml += '      <h6 class="mb-5 fw-boldest text-gray-600 text-hover-primary order-id">Order #' + row.order_id + '</h6>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Order Date:</div>';
+            modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-date">' + row.order_date + '</div>';
+            modalHtml += '      </div>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Billing:</div>';
+            modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-billing">';
+            modalHtml += '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._billing_address_1)) modalHtml += _json._billing_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._billing_address_2)) modalHtml += _json._billing_address_2 + '<br>';
+            modalHtml += _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '<br>';
+            modalHtml += 'Phone: ' + _json._billing_phone + '<br> Email: ' + _json._billing_email;
+            modalHtml += '          </div>';
+            modalHtml += '      </div>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Shipping:</div>';
+            modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-billing">';
+            modalHtml += '<strong>' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._shipping_address_1)) modalHtml += _json._shipping_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._shipping_address_2)) modalHtml += _json._shipping_address_2 + '<br>';
+            modalHtml += _json._shipping_city + ', ' + _json._shipping_state + ' ' + _json._shipping_postcode + ' ' + _json._shipping_country;
+            modalHtml += '          </div>';
+            modalHtml += '      </div>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Order Amount:</div>';
+            modalHtml += '          <div class="fw-bolder text-success fs-6 order-amount">' + formatCurrency(_json._order_total) + '</div>';
+            modalHtml += '      </div>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Order tax:</div>';
+            modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-tax">' + formatCurrency(_json._order_tax) + '</div>';
+            modalHtml += '      </div>';
+            modalHtml += '      <div class="mb-6">';
+            modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Payment Mathod:</div>';
+            modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-payment">' + _json._payment_method_title + '</div>';
+            modalHtml += '      </div>';
+            modalHtml += '</div>';
+        });
+        modalHtml += '</div>';
+
+        let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
+        modalHtml += '<div class="col-lg-4 order-info">';
         $.each(_chat_history, function (i, row) {
-            console.log(i, row, modalHtml);
             modalHtml += '<div class="row">';
             modalHtml += '<div class="col-lg-12">';
-            modalHtml += '<h3 class="mb-2">' + row.from+'</h3>';
-            modalHtml += '<p class="fs-6 text-gray-600 fw-bold mb-4 mb-lg-8">' + row.content +'</p>';
+            modalHtml += '<h3 class="mb-2">' + row.from + '</h3>';
+            modalHtml += '<p class="fs-6 text-gray-600 fw-bold mb-4 mb-lg-8">' + row.content + '</p>';
             modalHtml += '</div>';
             modalHtml += '</div>';
         });
-    }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml);});
+        modalHtml += '</div>';
+        modalHtml += '</div>';
+    }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
 
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
     //$("#kt_warranty_claim").accordion({
     //    collapsible: true
     //});
+}
+
+function OrderInfo(ord_id) {
+    //$("#detail-page").empty();
+    if (ord_id == 0) return false;
+    $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
+    $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
+        response = JSON.parse(response); //console.log(response);
+        let _html = '', _coupon = '', _refundHtml = '';
+        $.each(response['order'], function (i, row) {
+            //Add header
+            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
+            $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
+            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
+            //Add Address
+            let _json = JSON.parse(row.order_details); //console.log(_json);
+            _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._billing_address_1)) _html += _json._billing_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._billing_address_2)) _html += _json._billing_address_2 + '<br>';
+            _html += _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '<br>';
+            _html += 'Phone: ' + _json._billing_phone + '<br>';
+            _html += 'Email: ' + _json._billing_email;
+            $(".order-id").data('email', _json._billing_email); $(".order-id").data('name', _json._billing_first_name);
+            $(".order-billing").empty().append(_html);
+            _html = '<strong>' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</strong><br>';
+            if (isNullUndefAndSpace(_json._shipping_address_1)) _html += _json._shipping_address_1 + '<br>';
+            if (isNullUndefAndSpace(_json._shipping_address_2)) _html += _json._shipping_address_2 + '<br>';
+            _html += _json._shipping_city + ', ' + _json._shipping_state + ' ' + _json._shipping_postcode + ' ' + _json._shipping_country;
+            $(".order-shipping").empty().append(_html);
+
+            ///Payment
+            $(".order-payment").text(_json._payment_method_title); $(".order-payment").data('pt', _json._payment_method);
+            $(".order-amount").text(formatCurrency(_json._order_total)); $(".order-tax").text(formatCurrency(_json._order_tax));
+        });
+    }).catch(err => { }).always(function () { });
 }
 
 function TicketMailDetails(name, chat_history) {

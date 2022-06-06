@@ -20,7 +20,7 @@
                         <div class="form-group">
                             <input type="hidden" id="hfid" />
                             <label for="name">Name</label><span style="color:red">*</span>
-                            <select class="form-control select2" id="ddlname"></select>
+                            <select class="form-control select2" readonly id="ddlname"></select>
                         </div>
                         <div class="form-group">
                             <label for="startdate">Type</label><span style="color:red">*</span>
@@ -33,8 +33,13 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="eventassign">Debit Amount</label><span style="color:red">*</span>
-                            <input type="text" class="form-control" id="txtbalance" />
+                            <label for="eventassign">Debit/Credit</label><span style="color:red">*</span>
+                            @*<input type="text" class="form-control" id="txtbalance" />*@
+                            <select id="ddlamounttype" class="form-control select2 billinfo">
+                                <option value="0" selected>Please Select Amount Type</option>
+                                <option value="D">Debit</option>
+                                <option value="C">Credit</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="tag">Credit Amount</label><span style="color:red">*</span>
@@ -65,6 +70,9 @@
             format: 'mm-dd-yyyy',
         });
     });
+
+
+   
 </script>
 
 <script>
@@ -84,9 +92,23 @@
                         $("#ddlname").val(d[0].name).trigger('change');
                         setTimeout(function () { $("#ddltype").val(d[0].type).trigger('change') }, 1000);
                         setTimeout(function () { $("#ddldetailtype").val(d[0].detail_type).trigger('change'); }, 1000);
-                        $("#txtbalance").val(parseFloat(d[0].debit).toFixed(2));
-                        $("#txtbankbalance").val(parseFloat(d[0].credit).toFixed(2));
+                       // $("#txtbalance").val(parseFloat(d[0].debit).toFixed(2));
+                        
                         $("#txtentrydate").val(d[0].entry_date);
+                        $('#txtentrydate').attr('readonly', true);
+                        $("#txtentrydate").datepicker("destroy");
+                        $("#ddlamounttype").val(d[0].senstag).trigger('change');
+                       // $('#ddldetailtype').attr('readonly', true);
+                        $('#ddldetailtype').attr('disabled', 'disabled');
+                        $('#ddltype').attr('disabled', 'disabled');
+                        $('#ddlname').attr('disabled', 'disabled');
+                        if (d[0].senstag == 'D') {
+                            $("#txtbankbalance").val(parseFloat(d[0].debit).toFixed(2));
+                        }
+                        else {
+                            $("#txtbankbalance").val(parseFloat(d[0].credit).toFixed(2));
+                        }
+
                     }
                 },
                 error: function (msg) {

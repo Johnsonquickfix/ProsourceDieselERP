@@ -852,6 +852,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@type", model.type),
                     new SqlParameter("@detail_type", model.detail_type),
                     new SqlParameter("@debit", model.debit),
+                   new SqlParameter("@senstag", model.senstag),
                     new SqlParameter("@credit",model.credit),
                     new SqlParameter("@entry_date",model.entry_date),
                 };
@@ -904,7 +905,7 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] pram = { new SqlParameter("@id", id) };
-                string strSql = "SELECT rowid, name, type, detail_type, debit, credit, convert(varchar(12), entry_date, 110 ) entry_date FROM erp_chartaccount_entry WHERE rowid = @id ";
+                string strSql = "SELECT rowid, name, type, detail_type, debit, credit, convert(varchar(12), entry_date, 110 ) entry_date,senstag FROM erp_chartaccount_entry WHERE rowid = @id ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql, pram);
                 dt = ds.Tables[0];
             }
@@ -925,7 +926,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@name", model.name),
                     new SqlParameter("@type", model.type),
                     new SqlParameter("@detail_type", model.detail_type),
-                    new SqlParameter("@debit", model.debit),
+                     new SqlParameter("@senstag", model.senstag),
+                     new SqlParameter("@debit", model.debit),
                     new SqlParameter("@credit",model.credit),
                     new SqlParameter("@entry_date",model.entry_date),
                 };

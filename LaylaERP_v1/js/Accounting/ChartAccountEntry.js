@@ -89,10 +89,19 @@ function AddChartOfAccountEntry() {
     var name = $("#ddlname").val();
     var type = $("#ddltype").val();
     var detailtype = $("#ddldetailtype").val();
-    var debit = $("#txtbalance").val();
+   // var debit = $("#txtbalance").val();
+    var debit = '0';
     var credit = $("#txtbankbalance").val();
     var entrydate = $("#txtentrydate").val();
-
+    var senstag = $("#ddlamounttype").val();
+    if (senstag == 'D') {
+        debit = credit;
+        credit = '0.00';
+    }
+    else {
+        debit = '0.00';
+        credit = credit
+    }
     if (name == "0") {
         swal('Alert', 'Please select name', 'error').then(function () { swal.close(); $('#ddlname').focus(); });
     }
@@ -102,8 +111,8 @@ function AddChartOfAccountEntry() {
     else if (detailtype == "0") {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
-    else if (debit == "") {
-        swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
+    else if (senstag == "0") {
+        swal('Alert', 'Please select debit amount type', 'error').then(function () { swal.close(); $('#ddlamounttype').focus(); });
     }
     else if (credit == "") {
         swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
@@ -117,6 +126,7 @@ function AddChartOfAccountEntry() {
             name: name,
             type: type,
             detail_type: detailtype,
+            senstag: senstag,
             debit: debit,
             credit: credit,
             entry_date: entrydate,
@@ -149,10 +159,18 @@ function UpdateChartOfAccountEntry() {
     var name = $("#ddlname").val();
     var type = $("#ddltype").val();
     var detailtype = $("#ddldetailtype").val();
-    var debit = $("#txtbalance").val();
+    var debit = '0';
     var credit = $("#txtbankbalance").val();
     var entrydate = $("#txtentrydate").val();
-
+    var senstag = $("#ddlamounttype").val();
+    if (senstag == 'D') {
+        debit = credit;
+        credit = '0.00';
+    }
+    else {
+        debit = '0.00';
+        credit = credit
+    }
     if (name == "0") {
         swal('Alert', 'Please select name', 'error').then(function () { swal.close(); $('#ddlname').focus(); });
     }
@@ -162,8 +180,8 @@ function UpdateChartOfAccountEntry() {
     else if (detailtype == "0") {
         swal('Alert', 'Please select detail type', 'error').then(function () { swal.close(); $('#ddldetailtype').focus(); });
     }
-    else if (debit == "") {
-        swal('Alert', 'Please enter debit amount', 'error').then(function () { swal.close(); $('#txtbalance').focus(); });
+    else if (senstag == "0") {
+        swal('Alert', 'Please select debit amount type', 'error').then(function () { swal.close(); $('#ddlamounttype').focus(); });
     }
     else if (credit == "") {
         swal('Alert', 'Please enter credit amount', 'error').then(function () { swal.close(); $('#txtbankbalance').focus(); });
@@ -178,8 +196,9 @@ function UpdateChartOfAccountEntry() {
             name: name,
             type: type,
             detail_type: detailtype,
-            debit: debit,
+            senstag: senstag,
             credit: credit,
+            debit: debit,
             entry_date: entrydate,
         }
         $.ajax({
@@ -209,7 +228,7 @@ function reset() {
     $("#ddlname").val("0");
     $("#ddltype").val("0");
     $("#ddldetailtype").val("0");
-    $("#txtbalance").val("");
+    $("#ddlamounttype").val("0");
     $("#txtbankbalance").val("");
     $("#txtentrydate").val("");
 }

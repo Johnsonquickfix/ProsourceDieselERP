@@ -31,11 +31,17 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="eventassign">Debit Amount</label><span style="color:red">*</span>
-                            <input type="text" class="form-control" id="txtbalance" />
+                            <label for="eventassign">Debit/Credit</label><span style="color:red">*</span>
+                            @*<input type="text" class="form-control" id="txtbalance" />*@
+                        <select id="ddlamounttype" class="form-control select2 billinfo">
+                            <option value="0" selected>Please Select Amount Type</option>
+                            <option value="D">Debit</option>
+                            <option value="C">Credit</option>
+                        </select>
+
                         </div>
                         <div class="form-group">
-                            <label for="tag">Credit Amount</label><span style="color:red">*</span>
+                            <label for="tag">Amount</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankbalance" />
                         </div>
                         <div class="form-group">

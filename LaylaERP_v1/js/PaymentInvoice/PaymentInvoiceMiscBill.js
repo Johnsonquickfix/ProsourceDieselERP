@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     var queryString = new Array();
     $(function () {
         if (queryString.length == 0) {
@@ -16,6 +17,8 @@
             $("#hfqueryids").val(queryString["id"]);
             // getPurchaseOrderInfo(queryString["status"], queryString["id"]);
             getPurchaseOrderInfo();
+            setTimeout(function () { getpaymenttp($("#hfpaytype").val()) }, 1000);
+           // $('#ddlPaymentType').val('3').trigger('change');
         }
     });
     $('#divcred').hide();
@@ -32,7 +35,7 @@
     $('.billinfo').prop("disabled", true);
     //isEdit(true);
     $('#ddlPaymentType').change(function (t) {
-        let Paymentype = $("#ddlPaymentType").val();
+        let Paymentype = $("#ddlPaymentType").val();         
         if (Paymentype == "7") {
             // console.log(Coustomertype);
             $('#divcred').show();
@@ -53,10 +56,12 @@
             $('#divpaypal').hide();
         }
     });
-
-
+   //// console.log('dd', 2);
+   // $('#ddlPaymentType').val(2).trigger('change');
 })
-
+function getpaymenttp(tpid) {
+    $('#ddlPaymentType').val(tpid).trigger('change');
+};
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
@@ -67,7 +72,7 @@ function filldropdown() {
         success: function (data) {
             let dt = JSON.parse(data);
             //Product
-            $("#ddlPaymentType").html('<option value="">Select Payment Type</option>');
+            $("#ddlPaymentType").html('<option value="0">Select Payment Type</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlPaymentType").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
 
             $("#ddlaccount").html('<option value="0">Select Account</option>');
@@ -99,6 +104,10 @@ function getPurchaseOrderInfo() {
                     if (data['pod'][i].rowid > 0) {
                         $("#hfbilno").val(data['po'][i].ref);
                         $("#hfvname").val(data['po'][i].displayname);
+                     //  console.log('dd',data['po'][i].payaccount);
+                       // $('#ddlPaymentType').val(1).trigger('change');
+                       // $('#ddlPaymentType').val(1).trigger('change');
+                        $("#hfpaytype").val(data['po'][i].payaccount);
                     }
                 }
                 for (let i = 0; i < data['pod'].length; i++) {

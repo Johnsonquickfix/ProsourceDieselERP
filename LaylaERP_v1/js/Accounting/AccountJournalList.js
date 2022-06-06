@@ -41,9 +41,9 @@
         getGrandTotal(true);
     })
 
-    $("#btnExport").click(function () {
-        window.location = '/Accounting/ExportJournal';
-    }) 
+    //$("#btnExport").click(function () {
+    //    window.location = '/Export/ExportInventory';
+    //}) 
 
 });
 
@@ -191,7 +191,7 @@ function AccountJournalList(is_date) {
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var vrid = $("#ddlVendor").val();
     var account_num = $("#ddlAccount").val();
-
+    var numberRenderer = $.fn.dataTable.render.number(',', '.', 2).display;
     var table_EL = $('#JournalListdata').DataTable({
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
@@ -210,6 +210,18 @@ function AccountJournalList(is_date) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
+        },
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+
+            let DebitTotal = api.column(8, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(9, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+
+            $(api.column(2).footer()).html('Page Total');
+            $(api.column(6).footer()).html('$' + numberRenderer(DebitTotal));
+            $(api.column(7).footer()).html('$' + numberRenderer(CreditTotal));
+            //console.log(DebitTotal, CreditTotal);
         },
         sAjaxSource: "/Accounting/JournalAccountList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {

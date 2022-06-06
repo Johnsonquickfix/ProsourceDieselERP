@@ -630,6 +630,37 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable JournalAccountList(string flag, DateTime? fromdate,  DateTime? todate, long account_num, string vendor_id, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    account_num > 0 ? new SqlParameter("@account_num", account_num) : new SqlParameter("@account_num", DBNull.Value),
+                    new SqlParameter("@thirdparty_code", vendor_id),
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", flag)
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_Journal_account_report", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         //End Journals
 
         public static DataTable AccountLedgerList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")

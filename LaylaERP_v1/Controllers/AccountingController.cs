@@ -434,7 +434,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
+       
         public JsonResult AccountJournalList(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -453,6 +453,31 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult JournalAccountList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+                long aid = 0 ;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    aid = Convert.ToInt64(model.strValue4);
+                //if (!string.IsNullOrEmpty(model.strValue5))
+                //    vid = Convert.ToInt64(model.strValue5);
+
+                DataTable dt = AccountingRepository.JournalAccountList(model.strValue1, fromdate, todate, aid, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
         public JsonResult AccountLedgerList(JqDataTableModel model)
@@ -1136,5 +1161,8 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+
+       
+
     }
 }

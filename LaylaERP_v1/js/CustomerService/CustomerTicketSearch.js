@@ -155,11 +155,8 @@ function ClaimWarrantyModal(id) {
         modalHtml += '<div class="row">';
         modalHtml += '<div class="col-lg-4 order-info">';
         $.each(response, function (i, row) {
-            console.log(i, row);
             let _json = JSON.parse(row.order_details); //console.log(_json);
             
-
-
             modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten">';
             modalHtml += '      <div class="mb-2 float-right">';
             modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';

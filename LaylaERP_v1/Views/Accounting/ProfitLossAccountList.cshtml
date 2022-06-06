@@ -184,8 +184,8 @@
                                     _exp_html += '</tr>';                                    
                                     $.each(sg_row, function (i, row) {
                                         _exp_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
-                                        _exp_html += '<td>' + row.label + '</td>';
-                                        _exp_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                        _exp_html += '<td style="padding-left: 30px!important;">' + row.label + '</td>';
+                                        _exp_html += '<td style="text-align:right;font-style: italic;">' + formatCurrency(row.invtotal) + '</td>';
                                         _exp_html += '</tr>';
                                         _total += parseFloat(row.invtotal) || 0;
                                     });
@@ -203,8 +203,8 @@
                                         _inc_html += '</tr>';
                                         $.each(sg_row, function (i, row) {
                                             _inc_html += '<tr id="tri_' + row.account_number + '" data-key="' + row.account_number + '">';
-                                            _inc_html += '<td>' + row.label + '</td>';
-                                            _inc_html += '<td style="text-align:right;">' + formatCurrency(row.invtotal) + '</td>';
+                                            _inc_html += '<td style="padding-left: 30px!important;">' + row.label + '</td>';
+                                            _inc_html += '<td style="text-align:right;font-style: italic;">' + formatCurrency(row.invtotal) + '</td>';
                                             _inc_html += '</tr>';
                                             _total += parseFloat(row.invtotal) || 0;
                                         });

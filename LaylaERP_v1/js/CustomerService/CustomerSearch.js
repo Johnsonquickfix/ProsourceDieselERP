@@ -478,11 +478,12 @@ function ClaimWarrantyModal(ele) {
     });
     $('.warranty-checkbox').change(function (e) {
         var checked = $(this).prop("checked"), container = $(this).parent(), siblings = container.siblings();
-        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false); container.parents('li')
+        if ($(this).attr('type') == 'radio') $('.warranty-checkbox').prop("checked", false);
+        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false); 
         container.find('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
         function checkSiblings(el) {
             var parent = el.parent().parent(), all = true;
-
+            console.log(parent);
             el.siblings().each(function () {
                 let returnValue = all = ($(this).children('.warranty-checkbox').prop("checked") === checked);
                 return returnValue;
@@ -494,7 +495,7 @@ function ClaimWarrantyModal(ele) {
 
             } else if (all && !checked) {
                 parent.children('.warranty-checkbox').prop("checked", checked);
-                //parent.children('.warranty-checkbox').prop("indeterminate", (parent.find('.warranty-checkbox:checked').length > 0));
+                parent.children('.warranty-checkbox').prop("indeterminate", (parent.find('.warranty-checkbox:checked').length > 0));
                 checkSiblings(parent);
             } else {
                 el.parents("li").children('.warranty-checkbox').prop({ indeterminate: true, checked: true });

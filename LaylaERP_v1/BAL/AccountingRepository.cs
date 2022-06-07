@@ -299,7 +299,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams, ac_type, bs_type, fk_accounting_category from erp_accounting_account "
+                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type, active, extraparams, ac_type, bs_type, fk_accounting_category,Sub_Account from erp_accounting_account "
                 + "where rowid=" + id + "";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);

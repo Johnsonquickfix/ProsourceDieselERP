@@ -95,7 +95,7 @@
                         </div>
                         <div class="form-group">
                             <div title="Enter E-mail">
-                                <label for="name">Sub-Account</label>
+                                <label for="name">Parent Account</label>
                                 <select class="form-control select2" id="ddlSubAccount"></select>
                             </div>
                         </div>
@@ -253,6 +253,7 @@
                         $("#ddlactype").val(d[0].ac_type).trigger('change');
                         $("#ddlbstype").val(d[0].bs_type).trigger('change');
                         setTimeout(function () { $("#ddlaccountcategory").val(d[0].fk_accounting_category).trigger('change') }, 500);
+                        setTimeout(function () { $("#ddlSubAccount").val(d[0].Sub_Account).trigger('change') }, 550);
                         //console.log(d[0].rowid);
                     }
                 },

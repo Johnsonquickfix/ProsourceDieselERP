@@ -25,7 +25,7 @@ function ChartOfAccountGrid() {
                     { data: 'pcg_type', title: 'Type', sWidth: "10%" },
                     { data: 'labelshort', title: 'Detail Type', sWidth: "15%" },
                     { data: 'ac_type', title: 'Account tag', sWidth: "15%" },
-                    { data: 'Sub_Account', title: 'Sub Account', sWidth: "15%" },
+                    { data: 'Sub_Account', title: 'Parent Account', sWidth: "15%" },
                     { data: 'account_category', title: 'Account category', sWidth: "8%" },
                     {
                         'data': 'active', sWidth: "4%", 'sClass': 'ws_nowrap text-center',

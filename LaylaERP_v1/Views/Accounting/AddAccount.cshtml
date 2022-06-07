@@ -92,6 +92,12 @@
                                             <select class="form-control" id="ddlaccountcategory"></select>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div title="Enter E-mail">
+                                            <label for="name">Sub-Account</label>
+                                            <select class="form-control select2" id="ddlSubAccount"></select>
+                                        </div>
+                                    </div>
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnSave"><span title="Save details of chart of accounts" data-placement="left" data-toggle="tooltip"><b>Submit</b></span></a>
@@ -108,6 +114,7 @@
         <script>
             $(document).ready(function () {
                 $("#loader").hide();
+                $(".select2").select2();
                 getAccountCategory();
                 $(document).on('click', "#btnSave", function () {
                     AddAccount();
@@ -123,7 +130,21 @@
                 });
 
                 isEdit(true);
+                getsubaccount();
             });
+
+            function getsubaccount() {
+                $.ajax({
+                    url: "/Accounting/GetName",
+                    type: "Get",
+                    success: function (data) {
+                        $('#ddlSubAccount').append('<option value="0">Please select sub account</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            $('#ddlSubAccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                        }
+                    }, async: false
+                });
+            }
 
             function isEdit(val) {
                 localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -144,7 +165,7 @@
                 var actype = $("#ddlactype").val();
                 var bstype = $("#ddlbstype").val();
                 var accountcategory = $("#ddlaccountcategory").val();
-
+                var subaccount = $("#ddlSubAccount").val();
                 if (pcgversion == "") {
                     swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
                 }
@@ -174,6 +195,7 @@
                         ac_type: actype,
                         bs_type: bstype,
                         fk_accounting_category: accountcategory,
+                        Sub_Account: subaccount,
                     }
                     $.ajax({
                         url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',

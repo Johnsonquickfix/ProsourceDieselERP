@@ -173,7 +173,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT eaa.rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, ac_type, pcg_type, bs_type, eac.account_category, active from erp_accounting_account eaa"
+                string strSql = "SELECT eaa.rowid as ID, account_number, label, labelshort, account_parent, (case when extraparams='I' then 'Income' when extraparams='E' then 'Expense' else '' end ) extraparams, ac_type, pcg_type, bs_type, eac.account_category, active,(select label from erp_accounting_account where account_number = eaa.Sub_Account) Sub_Account from erp_accounting_account eaa"
                                 + " left join erp_accounting_category eac on eac.rowid = eaa.fk_accounting_category where 1=1";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
@@ -248,8 +248,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type) "
-                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type); SELECT SCOPE_IDENTITY();";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable, labelshort, extraparams, ac_type, bs_type,Sub_Account) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable, @labelshort, @extraparams, @ac_type, @bs_type,@Sub_Account); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@entity", "1"),
@@ -267,6 +267,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@ac_type",model.ac_type ?? (object)DBNull.Value),
                     new SqlParameter("@bs_type",model.bs_type ?? (object)DBNull.Value),
                     new SqlParameter("@fk_accounting_category",model.fk_accounting_category),
+                    new SqlParameter("@Sub_Account",model.Sub_Account),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -363,7 +364,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams, ac_type=@ac_type, bs_type=@bs_type, fk_accounting_category=@fk_accounting_category where rowid='" + model.rowid + "'";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label, account_number=@account_number, labelshort= @labelshort, extraparams=@extraparams, ac_type=@ac_type, bs_type=@bs_type, fk_accounting_category=@fk_accounting_category,Sub_Account = @Sub_Account where rowid='" + model.rowid + "'";
 
                 SqlParameter[] para =
                 {
@@ -377,6 +378,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@ac_type",model.ac_type ?? (object)DBNull.Value),
                     new SqlParameter("@bs_type",model.bs_type ?? (object)DBNull.Value),
                     new SqlParameter("@fk_accounting_category",model.fk_accounting_category),
+                    new SqlParameter("@Sub_Account",model.Sub_Account),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

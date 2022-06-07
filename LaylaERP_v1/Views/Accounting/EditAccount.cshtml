@@ -93,6 +93,12 @@
                                 <select class="form-control" id="ddlaccountcategory"></select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="name">Parent Account</label>
+                                <select class="form-control select2" id="ddlSubAccount"></select>
+                            </div>
+                        </div>
                         <div class="box-footer">
                             <div class="text-right">
                                 <a href="#" class="btn btn-danger" id="btnSave"><span title="Click here to update the details" data-placement="left" data-toggle="tooltip"><b>Update</b></span></a>
@@ -110,6 +116,7 @@
 
 <script>
     $(document).ready(function () {
+        $(".select2").select2();
         getType();
         getAccountCategory();
         var url = window.location.pathname;
@@ -122,6 +129,7 @@
             EditAccount();
         });
         isEdit(true);
+        getsubaccount();
     });
 
     function isEdit(val) {
@@ -131,6 +139,19 @@
 </script>
 
 <script>
+
+    function getsubaccount() {
+        $.ajax({
+            url: "/Accounting/GetName",
+            type: "Get",
+            success: function (data) {
+                $('#ddlSubAccount').append('<option value="0">Please select sub account</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlSubAccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+                }
+            }, async: false
+        });
+    }
     function EditAccount() {
         debugger
         var rowid = $("#hfid").val();
@@ -145,7 +166,7 @@
         var actype = $("#ddlactype").val();
         var bstype = $("#ddlbstype").val();
         var accountcategory = $("#ddlaccountcategory").val();
-
+        var subaccount = $("#ddlSubAccount").val();
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -173,7 +194,8 @@
                 extraparams: tag,
                 ac_type: actype,
                 bs_type: bstype,
-                fk_accounting_category:accountcategory,
+                fk_accounting_category: accountcategory,
+                Sub_Account: subaccount,
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -231,6 +253,7 @@
                         $("#ddlactype").val(d[0].ac_type).trigger('change');
                         $("#ddlbstype").val(d[0].bs_type).trigger('change');
                         setTimeout(function () { $("#ddlaccountcategory").val(d[0].fk_accounting_category).trigger('change') }, 500);
+                        setTimeout(function () { $("#ddlSubAccount").val(d[0].Sub_Account).trigger('change') }, 550);
                         //console.log(d[0].rowid);
                     }
                 },

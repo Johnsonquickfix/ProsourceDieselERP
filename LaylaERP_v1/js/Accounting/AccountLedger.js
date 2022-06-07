@@ -9,7 +9,7 @@
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().subtract(1, 'day'), autoUpdateInput: true, alwaysShowCalendars: true,
+        startDate: moment().subtract(6, 'day'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
         $("#totaldebit").text(''); $("#totalcredival").text(''); $("#totalbalval").text('')

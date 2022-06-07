@@ -14,7 +14,7 @@
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'left', orientation: "left auto"
     }, function (start, end, label) {
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
-        PurchaseOrderGrid();
+        LoadGrid();
     });
     $('#txtDate').val('');
     $('#txtDate').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); LoadGrid(); });
@@ -240,6 +240,31 @@ $("#btngenerateinvoice").click(function () {
         //}
     }
 })
+
+$("#btnmanualgenerateinvoice").click(function () {
+    var ID = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        ID += $(this).val() + ",";
+    });
+    ID = ID.replace(/,(?=\s*$)/, '');
+    // var vacDays = ID.split(",");
+    var commaCount = ID.split(",").length;
+    if (ID == "") { swal('Alert', 'Please select PO from list', 'error'); }
+    else {
+        //if (new_role != "") {
+
+        swal({
+            title: '', text: "Are you sure you want to generate an invoice for (" + commaCount + ") orders?", type: 'warning', showCancelButton: true,
+            confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+                //ActivityLog('Revoke role "' + new_role + ' for" user id (' + ID + ')', '/Users/Users');
+                manualgeneratesalespoinvoice(ID);
+            }
+        })
+        //}
+    }
+})
 function generateinvoice(ID) {
     var obj = {
         strValue1: ID
@@ -258,6 +283,41 @@ function generateinvoice(ID) {
                 else {
                     swal('Alert!', data.message, 'info');
                     if (data.type == 'Miss')
+                        $('.nav-tabs a[href="#tabPO_02"]').tab('show');
+                }
+
+                $.when(LoadGrid()).done(function () {
+                    LoadGridIPO()
+                });
+            }
+            else {
+                swal('Alert!', data.message, 'error');
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+
+function manualgeneratesalespoinvoice(ID) {
+    var obj = {
+        strValue1: ID
+    }
+    $.ajax({
+        url: '/proposals/manualgeneratesalespoinvoice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                if (data.type == 'All') {
+                    swal('Success', data.message, 'success');
+                    $('.nav-tabs a[href="#tabPO_02"]').tab('show');
+                }
+                else {
+                    swal('Alert!', data.message, 'info');
+                   // if (data.type == 'Miss')
                         $('.nav-tabs a[href="#tabPO_02"]').tab('show');
                 }
 

@@ -77,17 +77,17 @@ function gettotal() {
 function NewBankEntry() {
     let acountid = $("#hfid").val() || 0;
     let flag = 'I';
-    let totalamt = $("#txttotalamt").val() || 0;
-    let bankfee = $("#txtbankfee").val() || 0;
+    let totalamt = parseFloat($("#txttotalamt").val()) || 0;
+    let bankfee = parseFloat($("#txtbankfee").val()) || 0;
     let Account = parseInt($("#ddlAccount").val()) || 0;
-    let merchantfee = $("#txtmerchantfee").val() || 0;
+    let merchantfee = parseFloat($("#txtmerchantfee").val()) || 0;
     let transferAccount = parseInt($("#ddltransferAccount").val()) || 0;
     if (acountid > 0) {
         flag = 'U';
         totalamt = '999999999999';
     }
-    if (totalamt = 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
-    else if (bankfee <= 0) { swal('alert', 'Please enter bank transfer fee', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
+   // if (totalamt = 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
+    if (bankfee != 0) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
    // else if (merchantfee > 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
    // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }

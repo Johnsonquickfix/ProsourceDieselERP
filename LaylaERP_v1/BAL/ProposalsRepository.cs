@@ -107,6 +107,26 @@
                 throw Ex;
             }
         }
+        public static DataTable manualgeneratesalespoinvoice(string ID)
+        {
+            try
+            {
+                string strsql = String.Empty;
+                int result = 0;
+                strsql = "erp_manualinvoiceupdate_salespo";
+                SqlParameter[] para =
+                {
+                new SqlParameter("@id", ID)
+                };
+                DataTable dt = SQLHelper.ExecuteDataTable(strsql, para);
+                return dt;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Proposals/generateinvoice/" + ID + "", "Generate invoice ");
+                throw Ex;
+            }
+        }
         public static DataTable GetFedexJSONforRate(long? id, out string orders)
         {
             DataTable dt = new DataTable();

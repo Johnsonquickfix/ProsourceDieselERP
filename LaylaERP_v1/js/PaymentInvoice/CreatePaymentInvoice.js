@@ -228,12 +228,21 @@ function saveVendorPO() {
 function createItemsList() {
     let _list = [];
     let status = $("#hfstatus").val();
+    let checkstatus = 0;
+    let PaymentTypeid = parseInt($("#ddlPaymentType").val()) || 0;
+    if (PaymentTypeid == 3) {
+        checkstatus = 0;
+    }
+    else {
+        checkstatus = 2;
+    }
+
     $('#line_items > tr').each(function (index, row) {
         let payment = 0.00, remaing = 0.00;
         payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         remaing = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
         if (payment != 0) {
-            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier') });
+            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), checkstatus: checkstatus});
         }
     });
     return _list;

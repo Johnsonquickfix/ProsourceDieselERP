@@ -65,20 +65,37 @@
                         <label id="lbltransfer" style="margin-right: 10px;">Transfer To</label>
                         <select id="ddltransferAccount" class="form-control select2">
                             <option selected="selected" value="1010">Bank account ...5134</option>
-                        </select>
+                        </select> 
+                       
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group form-user-role">
+                        @*<label>TotalAmount</label>*@
                         <input type="text" id="txttotalamt" readonly class="form-control" placeholder="Total Amount">
+                        @*<label>TransferAmountToBank</label>*@
                         <input type="text" id="txtbankfee" class="form-control" placeholder="Transfer Amount To Bank">
+                        @*<label>MerchantFee</label>*@
                         <input type="text" id="txtmerchantfee" class="form-control" placeholder="Merchant Fee">
+
+                    </div>
+                  
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-user-role">
+                        @*<label>Date</label>*@
+                        <input type="text" id="txttransferDate" class="form-control" style="width:25%;" placeholder="Fund Transfer Date (MM/DD/YYYY)" autocomplete="off" />
+                        @*<label>Description</label>*@
+                        <input type="text" id="txtDescription" class="form-control billinfovalff" placeholder="Description" autocomplete="off" />
                         <button type="button" id="btntransfer" class="btn btn-danger" style="float:right;"><i class="fa fa-check"></i><span title="Click here to transfer." data-placement="bottom" data-toggle="tooltip"> Transfer </span></button>
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-primary table-design not-fixed">
@@ -133,6 +150,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+            </div>
+        </div>
 <script src="@Url.Content("~/js/Accounting/Funddeposit.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

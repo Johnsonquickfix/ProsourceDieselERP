@@ -13,6 +13,8 @@ namespace LaylaERP.Models
         public string strValue4 { get; set; }
         public string strValue5 { get; set; }
         public string strValue6 { get; set; }
+        public string strValue7 { get; set; }
+        public string strValue8 { get; set; }
 
     }
     public class PaggingModel

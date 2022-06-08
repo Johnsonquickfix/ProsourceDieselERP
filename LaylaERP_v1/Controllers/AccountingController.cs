@@ -945,8 +945,11 @@ namespace LaylaERP.Controllers
         {
             string JSONresult = string.Empty;
             try
-            {            
-               JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6,model.SortCol, model.SortDir));
+            {
+                DateTime? creationdate = null;
+                if (!string.IsNullOrEmpty(model.strValue7))
+                    creationdate = Convert.ToDateTime(model.strValue7);
+                JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6,model.SortCol, model.SortDir, creationdate, model.strValue8));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

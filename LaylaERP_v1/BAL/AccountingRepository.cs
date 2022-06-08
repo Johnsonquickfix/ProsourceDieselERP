@@ -1480,7 +1480,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc, string inv_numval, string flag)
+        public static DataTable NewBankEntry(string accno, string transaccno, string misleaccno, string total_ttc, string trans_ttc, string misle_ttc, string inv_numval, string flag, DateTime? fundtransferdate, string Description)
         {
             var dt = new DataTable();
             try
@@ -1495,6 +1495,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@trans_ttc", trans_ttc),
                     new SqlParameter("@misle_ttc", misle_ttc),
                     new SqlParameter("@inv_numval", inv_numval),
+                   // new SqlParameter("@date_creation",fundtransferdate),
+                    fundtransferdate.HasValue ? new SqlParameter("@date_creation", fundtransferdate.Value) : new SqlParameter("@date_creation", DBNull.Value),
+                    new SqlParameter("@Remark", Description),
                     new SqlParameter("@flag", flag)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_banktransfer_iud", parameters);

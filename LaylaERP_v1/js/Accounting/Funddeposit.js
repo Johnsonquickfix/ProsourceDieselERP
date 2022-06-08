@@ -9,6 +9,7 @@ $(document).ready(function () {
     $(document).on("click", "#btntransfer", function (t) { t.preventDefault(); NewBankEntry(); });
     $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); Banktransferlist(true); getGrandTotal(true); });
     getGrandTotal(true);
+    $('#txttransferDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
 })
 
 function getfinaceyear() {
@@ -82,17 +83,21 @@ function NewBankEntry() {
     let Account = parseInt($("#ddlAccount").val()) || 0;
     let merchantfee = parseFloat($("#txtmerchantfee").val()) || 0;
     let transferAccount = parseInt($("#ddltransferAccount").val()) || 0;
+    let fundtransferdate = $("#txttransferDate").val();
+    let Description = $("#txtDescription").val();
     if (acountid > 0) {
         flag = 'U';
         totalamt = '999999999999';
     }
+    console.log(bankfee);
    // if (totalamt = 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
-    if (bankfee != 0) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
+    if (bankfee == 0.00) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
    // else if (merchantfee > 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
    // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
+    else if (fundtransferdate == '') { swal('alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txttransferDate').focus(); }) }
     else {
-        let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: '0', strValue5: bankfee, strValue6: merchantfee, SortCol: acountid, SortDir: flag}
+        let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: '0', strValue5: bankfee, strValue6: merchantfee, strValue7: fundtransferdate, strValue8: Description, SortCol: acountid, SortDir: flag}
         //console.log(option, _order, _list); return;
         swal.queue([{
             title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to funds deposited from merchant to bank?",
@@ -102,12 +107,15 @@ function NewBankEntry() {
                     $.post('/Accounting/NewBankEntry', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].Response == "Success") {                       
-                            swal('Success', 'Funds deposited from merchant to bank successfully.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); getGrandTotal(true); } );
+                            //swal('Success', 'Funds deposited from merchant to bank successfully.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); getGrandTotal(true); } );
+                            swal('Success', 'Funds deposited from merchant to bank successfully.', "success").then((result) => { location.href = '../../Accounting/FunddepositList'; });
                         }
                         else if (result[0].Response == "update") {
-                            swal('Success', 'Funds deposited from merchant to bank successfully update.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); Banktransferlist(true); getGrandTotal(true); });
+                          //  swal('Success', 'Funds deposited from merchant to bank successfully update.', "success").then(function () { $("#txttotalamt").val(''); $("#txtbankfee").val(''); $("#txtmerchantfee").val(''); $("#ddlAccount").val(''); $("#hfid").val(0); $("#txtDescription").val(''); Banktransferlist(true); getGrandTotal(true); });
+                            swal('Success', 'Funds deposited from merchant to bank successfully update.', "success").then((result) => { location.href = '../../Accounting/FunddepositList'; });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                        $('#ddlAccount').attr("disabled", false);
                     }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
                 });
             }
@@ -193,6 +201,8 @@ function EditData(id) {
             $('#txtbankfee').val(i[0].Transferamount);
             $('#txtmerchantfee').val(i[0].mercntfee);
             $('#ddlAccount').attr("disabled", true);
+            $('#txttransferDate').val(i[0].date_creation);
+            $('#txtDescription').val(i[0].remark);
         },
         complete: function () { $("#loader").hide(); },
         error: function (msg) { alert(msg); }

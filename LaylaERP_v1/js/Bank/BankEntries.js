@@ -39,21 +39,16 @@ function BankEntriesList() {
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
-        //footerCallback: function (row, data, start, end, display) {
-        //    var api = this.api(), data;
-        //    console.log(data);
-        //    var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
 
-        //    var DebitTotal = api.column(7).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let DebitTotal = api.column(4).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(5).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
 
-        //    var CreditTotal = api.column(8).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
-
-        //    $(api.column(0).footer()).html('Page Total');
-        //    $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
-        //    $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
-        //    console.log(DebitTotal);
-        //    console.log(CreditTotal);
-        //},
+            var footer = $(this).append('<tfoot><tr></tr></tfoot>');
+            $(footer).append('<td>Page Total</th><th></th><th></th><th></th><th class=" text-right">' + CurrencyFormat(DebitTotal) + '</th><th class=" text-right">' + CurrencyFormat(CreditTotal)+ '</th><th></th>');
+        },
 
         sAjaxSource: "/bank/bank-transactions",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -64,7 +59,6 @@ function BankEntriesList() {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 success: function (data) {
-                    console.log(data);
                     var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     $("#txtinitialamount").text(CurrencyFormat(data.opening_balance)); $("#txtbalance").text(CurrencyFormat(data.closing_balance)); $("#txtunclearbalance").text(CurrencyFormat(data.uncleared_balance));
                     return fnCallback(dtOption);
@@ -81,7 +75,7 @@ function BankEntriesList() {
             { data: 'subledger_label', title: 'Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Memo/Description', sWidth: "20%" },
             { data: 'debit', title: 'Debit', sWidth: "15%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'credit', title: 'Credit', sWidth: "15%", class: 'text-right',render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'credit', title: 'Credit', sWidth: "15%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'balance', title: 'Balance', sWidth: "15%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '$') }
         ],
         //"dom": 'lBftipr',
@@ -149,7 +143,6 @@ function PendingEntriesList() {
         },
         footerCallback: function (row, data, start, end, display) {
             var api = this.api(), data;
-            console.log(data);
             var intVal = function (i) {
                 return typeof i === 'string' ?
                     i.replace(/[\$,]/g, '') * 1 :
@@ -168,8 +161,8 @@ function PendingEntriesList() {
             $(api.column(0).footer()).html('Page Total');
             $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
             $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
-            console.log(DebitTotal);
-            console.log(CreditTotal);
+            var footer = $(this).append('<tfoot><tr></tr></tfoot>');
+            $(footer).append('<th class="text-right">Total</th>');
         },
 
         sAjaxSource: "/Bank/PendingBankEntriesList",
@@ -282,7 +275,7 @@ function FundTransferList(is_date) {
 
         ajax: {
             url: '/Bank/FundTransferlist', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+            dataSrc: function (data) { return JSON.parse(data); }
         },
         aoColumns: [
             {

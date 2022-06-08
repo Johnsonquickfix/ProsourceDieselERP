@@ -94,7 +94,8 @@ function NewBankEntry() {
     if (bankfee == 0.00) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
    // else if (merchantfee > 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
-   // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
+   // else if (bankfee + merchantfee !== 0 ) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
+ // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
     else if (fundtransferdate == '') { swal('alert', 'Please enter date', 'error').then(function () { swal.close(); $('#txttransferDate').focus(); }) }
     else {
         let option = { strValue1: Account, strValue2: transferAccount, strValue3: '0', strValue4: '0', strValue5: bankfee, strValue6: merchantfee, strValue7: fundtransferdate, strValue8: Description, SortCol: acountid, SortDir: flag}

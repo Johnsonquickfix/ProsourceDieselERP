@@ -126,6 +126,25 @@
             }
 
         }
+        // manual generate invoice for Vendor Sales PO
+        [HttpPost]
+        public JsonResult manualgeneratesalespoinvoice(SearchModel model)
+        {
+            string strID = model.strValue1;
+            if (strID != "")
+            {
+                DataTable dt = ProposalsRepository.manualgeneratesalespoinvoice(strID);
+                if (dt.Rows[0]["Response"].ToString() == "Success")
+                    return Json(new { status = true, message = "Invoice generate successfully!", type = "All" }, 0);
+               else
+                    return Json(new { status = true, message = "Invoice not generate!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
 
         [HttpGet]
         [Route("proposals/getship-rate")]

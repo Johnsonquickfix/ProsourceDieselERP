@@ -222,18 +222,24 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
+        [HttpGet]
+        [Route("bank/bank-transactions")]
         public JsonResult BankEntriesList(JqDataTableModel model)
         {
             string result = string.Empty;
-            int TotalRecord = 0;
+            int TotalRecord = 0; decimal opening_balance = 0, closing_balance = 0, uncleared_balance = 0;
             try
             {
-                DataTable dt = BankRepository.BankEntriesList(model.strValue2, model.strValue1, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+                DataTable dt = BankRepository.BankEntriesList(model.strValue1, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, out opening_balance, out closing_balance, out uncleared_balance, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, opening_balance = opening_balance, closing_balance = closing_balance, uncleared_balance = uncleared_balance, aaData = result }, 0);
         }
 
         public JsonResult AllBankEntriesList(JqDataTableModel model)

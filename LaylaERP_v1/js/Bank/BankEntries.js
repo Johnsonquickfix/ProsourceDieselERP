@@ -17,7 +17,7 @@
     });
     BankEntriesList();
     setTimeout(function () { FundTransferList(true) }, 2000);//product dropdown
-    
+
 });
 function BankEntriesList() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -72,13 +72,17 @@ function BankEntriesList() {
             });
         },
         aoColumns: [
-            { data: 'date', title: 'Date', sWidth: "15%" },
+            {
+                data: 'date', title: 'Date', sWidth: "15%", render: function (id, type, full, meta) {
+                    return moment(id).format('MM/DD/YYYY');
+                }
+            },
             { data: 'doc_type', title: 'Transaction Type', sWidth: "15%" },
             { data: 'subledger_label', title: 'Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Memo/Description', sWidth: "20%" },
-            { data: 'debit', title: 'Debit', sWidth: "15%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'credit', title: 'Credit', sWidth: "15%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'balance', title: 'Balance', sWidth: "15%", render: $.fn.dataTable.render.number(',', '.', 2, '$') }
+            { data: 'debit', title: 'Debit', sWidth: "15%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'credit', title: 'Credit', sWidth: "15%", class: 'text-right',render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'balance', title: 'Balance', sWidth: "15%", class: 'text-right', render: $.fn.dataTable.render.number(',', '.', 2, '$') }
         ],
         //"dom": 'lBftipr',
         //"buttons": [

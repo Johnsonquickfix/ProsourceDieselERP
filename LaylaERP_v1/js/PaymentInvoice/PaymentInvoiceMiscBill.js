@@ -56,6 +56,7 @@
             $('#divpaypal').hide();
         }
     });
+    $('#txtpaymentdate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
    //// console.log('dd', 2);
    // $('#ddlPaymentType').val(2).trigger('change');
 })
@@ -276,6 +277,7 @@ function saveVendorPO() {
     let cardcode = $("#txtcardcode").val();
     let vnname = $("#hfvname").val();
     let billno = $("#hfbilno").val();
+    let paydate = $("#txtpaymentdate").val();
     //console.log(_list);
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
@@ -283,7 +285,7 @@ function saveVendorPO() {
     else {
         let _order = {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
-            amount: parseFloat($("#Total").text()), fk_status: 0, discount: parseFloat($("#Discount").text()), sub_total: parseFloat($("#SubTotal").text())
+            amount: parseFloat($("#Total").text()), fk_status: 0, discount: parseFloat($("#Discount").text()), sub_total: parseFloat($("#SubTotal").text()), datec: paydate
         }
         let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list), strValue4: vnname, strValue5: billno, strValue6: parseFloat($("#SubTotal").text()), SortDir: PaymentTypeid, SortCol: accountno, PageNo: expimmyyval, PageSize: cardcode }
         //console.log(option);
@@ -314,6 +316,14 @@ function createItemsList() {
     let _list = [];
     //let status = $("#hfstatus").val();
     let status = "PD";
+    let checkstatus = 0;
+    let PaymentTypeid = parseInt($("#ddlPaymentType").val()) || 0;
+    if (PaymentTypeid == 3) {
+        checkstatus = 0;
+    }
+    else {
+        checkstatus = 2;
+    }
     $('#line_items > tr').each(function (index, row) {
         let payment = 0.00, remaing = 0.00, bailance = 0.00;
         payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
@@ -325,7 +335,7 @@ function createItemsList() {
             status = "UN";
         }
         if (payment != 0) {
-            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), discount: discount, sub_total: subtotal });
+            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), discount: discount, sub_total: subtotal, checkstatus: checkstatus  });
         }
     });
     return _list;

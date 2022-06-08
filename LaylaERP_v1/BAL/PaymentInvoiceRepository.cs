@@ -709,7 +709,8 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select account_number ID,label Name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE','EXPENSE');";
+                string strSQl = "select account_number ID,label Name from erp_accounting_account;";
+                //string strSQl = "select account_number ID,label Name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE','EXPENSE');";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -721,7 +722,8 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "select account_number rowid,label name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE', 'EXPENSE')";                
+                string strSQl = "select account_number rowid,label name from erp_accounting_account";
+                // string strSQl = "select account_number rowid,label name from erp_accounting_account where pcg_type in ('OTHER_EXPENSE', 'EXPENSE')";                
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

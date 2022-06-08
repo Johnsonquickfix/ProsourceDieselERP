@@ -22,6 +22,7 @@
     filldropdown();
     $('.billinfo').prop("disabled", true);
     //isEdit(true);
+    $('#txtpaymentdate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
 })
 
 function isEdit(val) {
@@ -184,6 +185,7 @@ function saveVendorPO() {
     let Transmitter = $("#txtTransmitter").val();
     let BankCheck = $("#txtBankCheck").val();
     let Comments = $("#txtComments").val();
+    let paydate = $("#txtpaymentdate").val();
     let _list = createItemsList();
     let status = $("#hfstatus").val();
     //console.log(_list);
@@ -193,7 +195,7 @@ function saveVendorPO() {
     else {
         let _order = {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
-            amount: parseFloat($("#Total").text()), fk_status: 0
+            amount: parseFloat($("#Total").text()), fk_status: 0, datec: paydate
         }
         let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list) }
         //console.log(option);

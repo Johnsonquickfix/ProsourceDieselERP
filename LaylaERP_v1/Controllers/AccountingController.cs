@@ -1180,8 +1180,10 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
-
-       
-
+        [Route("accounting/cash-flows-statement")]
+        public ActionResult CashFlowsStatement()
+        {
+            return View();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 $(document).ready(function () { 
     GetAccount();
+    GetBankAccount();
     $('#ddlAccount').change(function () {
         gettotal();
     });
@@ -10,6 +11,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); Banktransferlist(true); getGrandTotal(true); });
     getGrandTotal(true);
     $('#txttransferDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+    $(".select2").select2();
 })
 
 function getfinaceyear() {
@@ -103,9 +105,11 @@ function NewBankEntry() {
     }
     console.log(bankfee);
    // if (totalamt = 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
-    if (bankfee == 0.00) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
-    else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
+    
+    if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
     else if (transferAccount <= 0) { swal('alert', 'Please select transfer account.', 'error').then(function () { swal.close(); $('#ddltransferAccount').focus(); }) }
+    else if (Account == transferAccount) { swal('alert', 'Can not transfer the same account.', 'error').then(function () { swal.close(); $('#ddltransferAccount').focus(); }) }
+    else if (bankfee == 0.00) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
    // else if (merchantfee > 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
    // else if (bankfee + merchantfee !== 0 ) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
  // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
@@ -217,6 +221,8 @@ function EditData(id) {
             $('#ddlAccount').attr("disabled", true);
             $('#txttransferDate').val(i[0].date_creation);
             $('#txtDescription').val(i[0].remark);
+            $('#ddltransferAccount').val(i[0].Transferaccountid).trigger('change');
+            $('#ddltransferAccount').attr("disabled", true);
         },
         complete: function () { $("#loader").hide(); },
         error: function (msg) { alert(msg); }

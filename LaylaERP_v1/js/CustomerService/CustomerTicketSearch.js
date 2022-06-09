@@ -94,6 +94,7 @@ function dataGridLoad() {
         },
         columns: [
             { data: 'id', title: 'Ticket No.', sWidth: "10%", render: function (id, type, full, meta) { return '#' + id; } },
+            { data: 'subject', title: 'Subject', sWidth: "15%" },
             { data: 'ticket_date', title: 'Ticket Date', sWidth: "10%" },
             {
                 data: 'order_id', title: 'OrderID', sWidth: "10%",
@@ -104,7 +105,8 @@ function dataGridLoad() {
             },
             { data: 'order_date', title: 'Order Date', sWidth: "10%" },
             { data: 'email', title: 'Email', sWidth: "10%" },
-            { data: 'first_name', title: 'Name', sWidth: "15%", render: function (id, type, row) { return row.first_name + ' ' + row.last_name; } },
+            { data: 'first_name', title: 'Requester', sWidth: "15%", render: function (id, type, row) { return row.first_name + ' ' + row.last_name; } },
+            
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
@@ -113,6 +115,7 @@ function dataGridLoad() {
                     return amt;
                 }
             },
+            { data: 'agent_name', title: 'Agent Name', sWidth: "10%" },
             //{
             //    data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
             //        if (data == 'wc-pending') return 'Pending payment';
@@ -144,7 +147,7 @@ function ClaimWarrantyModal(id) {
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3"><h4>Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
+    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -153,11 +156,10 @@ function ClaimWarrantyModal(id) {
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
         response = JSON.parse(response);
         modalHtml += '<div class="row">';
-        modalHtml += '<div class="col-lg-4 order-info">';
+        modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten order-info">';
         $.each(response, function (i, row) {
             let _json = JSON.parse(row.order_details); //console.log(_json);
             
-            modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten">';
             modalHtml += '      <div class="mb-2 float-right">';
             modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';
             modalHtml += '      </div>';
@@ -197,12 +199,11 @@ function ClaimWarrantyModal(id) {
             modalHtml += '          <div class="fw-bold text-gray-600 fs-7">Payment Mathod:</div>';
             modalHtml += '          <div class="fw-bolder text-gray-800 fs-6 order-payment">' + _json._payment_method_title + '</div>';
             modalHtml += '      </div>';
-            modalHtml += '</div>';
         });
         modalHtml += '</div>';
 
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
-        modalHtml += '<div class="col-lg-4 order-info">';
+        modalHtml += '<div class="col-lg-7 order-info">';
         $.each(_chat_history, function (i, row) {
             modalHtml += '<div class="row">';
             modalHtml += '<div class="col-lg-12">';

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Balancesheetlist";
+    ViewBag.Title = "Statement of Cash Flows";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
@@ -11,7 +11,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2> Balance Sheet</h2>
+    <h2> Statement of Cash Flows</h2>
 </div>
 <section class="content content-section p-0 reports-section">
     <div class="row">
@@ -53,6 +53,9 @@
             </table>
         </div>
     </div>
+    <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+    <script src="~/js/common.js?v=1.0"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#txtDate').daterangepicker({
@@ -84,7 +87,7 @@
                 url: "/accounting/get-trialbalance", dataType: 'json', contentType: "application/json; charset=utf-8", data: option, beforeSend: function () { $("#loader").show(); },
                 success: function (result) {
                     try {
-                        result = JSON.parse(result); 
+                        result = JSON.parse(result);
                         let _list = groupBy(result, (c) => c.flows_type);
                         let _html = '';
                         $.each(_list, function (g_i, g_row) {
@@ -150,6 +153,3 @@
         }
     </script>
 </section>
-<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
-<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
-<script src="~/js/common.js"></script>

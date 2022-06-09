@@ -11,6 +11,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); Banktransferlist(true); getGrandTotal(true); });
     getGrandTotal(true);
     $('#txttransferDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+    $(".select2").select2();
 })
 
 function getfinaceyear() {

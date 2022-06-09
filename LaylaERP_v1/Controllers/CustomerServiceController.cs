@@ -100,7 +100,8 @@ namespace LaylaERP.Controllers
             {
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
-                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1);
+                    long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id);
                     JSONresult = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)
                     {

@@ -24,7 +24,7 @@
 
 function getInfo() {
     let status = $("#hfstatus").val(), id = $("#hfqueryids").val();
-    $('.page-heading').text('Bank Settlement Process').append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
+    $('.page-heading').text('Check Clearance Process').append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
     $('#line_items').empty();
     $('.footer-finalbutton').empty().append('<a data-toggle="tooltip" title="Back to list" class="btn btn-danger back_to_list" href="/CheckDeposit/CheckDepositList">Back to List</a>');
     var option = { strValue1: status, strValue2: id };

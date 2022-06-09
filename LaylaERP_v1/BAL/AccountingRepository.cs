@@ -1457,6 +1457,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+        public static DataTable GetBankAccount()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT  account_number, label  from erp_accounting_account  where pcg_type =  'BANK' and account_number not in (1,1210)";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
 
         public static DataTable GetTotalAmountByID(OrderPostStatusModel model)
         {

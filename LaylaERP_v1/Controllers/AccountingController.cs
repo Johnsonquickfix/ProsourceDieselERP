@@ -909,13 +909,29 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
-            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            //return Json(new {  sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
         public JsonResult GetAccount()
         {
             DataTable dt = new DataTable();
             dt = BAL.AccountingRepository.GetAccount();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["account_number"].ToString(),
+                    Text = dt.Rows[i]["label"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetBankAccount()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.AccountingRepository.GetBankAccount();
             List<SelectListItem> usertype = new List<SelectListItem>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {

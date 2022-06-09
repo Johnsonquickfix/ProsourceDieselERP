@@ -55,6 +55,18 @@ function GetAccount() {
     })
 };
 
+function GetBankAccount() {
+    $.get('GetBankAccount', function (data) {
+        var items = "";
+        $('#ddltransferAccount').empty();
+        items += $("<option value=''>Please select</option>").appendTo("#ddltransferAccount");
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferAccount");
+        })
+        $('#ddltransferAccount').bind(items);
+    })
+};
+
 function gettotal() { 
     var ID = $('#ddlAccount').val();
     var obj = { strVal: ID }
@@ -93,6 +105,7 @@ function NewBankEntry() {
    // if (totalamt = 0) { swal('alert', 'Please enter total amount', 'error').then(function () { swal.close(); $('#txttotalamt').focus(); }) }
     if (bankfee == 0.00) { swal('alert', 'Please enter bank transfer amount.', 'error').then(function () { swal.close(); $('#txtbankfee').focus(); }) }
     else if (Account <= 0) { swal('alert', 'Please select account.', 'error').then(function () { swal.close(); $('#ddlAccount').focus(); }) }
+    else if (transferAccount <= 0) { swal('alert', 'Please select transfer account.', 'error').then(function () { swal.close(); $('#ddltransferAccount').focus(); }) }
    // else if (merchantfee > 0) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
    // else if (bankfee + merchantfee !== 0 ) { swal('alert', 'Please enter merchant fee', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }
  // else if (parseFloat(totalamt) < parseFloat(bankfee) + parseFloat(merchantfee)) { swal('alert', 'Please enter less amount from total amount', 'error').then(function () { swal.close(); $('#txtmerchantfee').focus(); }) }

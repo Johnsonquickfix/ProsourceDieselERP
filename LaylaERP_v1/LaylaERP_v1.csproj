@@ -1309,6 +1309,7 @@
     <Content Include="Views\PaymentInvoice\MiscBillApproval.cshtml" />
     <Content Include="Views\PaymentInvoice\MiscBillDisapprove.cshtml" />
     <Content Include="Views\CustomerService\CustomerTicketSearch.cshtml" />
+    <Content Include="Views\Accounting\CashFlowsStatement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

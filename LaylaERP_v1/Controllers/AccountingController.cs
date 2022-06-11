@@ -1182,6 +1182,7 @@ namespace LaylaERP.Controllers
                 if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
                 else if (model.report_type.Equals("PLREPORT")) model.report_type = "PROFITLOSS";
                 else if (model.report_type.Equals("BSREPORT")) model.report_type = "BALANSHEET";
+                else if (model.report_type.Equals("CFREPORT")) model.report_type = "CASHFLOW";
                 DataTable dt = AccountingRepository.GetTrailBalance(model.from_date, model.to_date, model.fiscalyear_id, model.report_type);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }

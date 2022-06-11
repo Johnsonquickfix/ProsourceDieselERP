@@ -388,7 +388,7 @@ function savemiscbill() {
     let date = $("#txtcreateDate").val();
      
     let _list = createItemsList();
-    // console.log(_list);
+    // console.log(_list); 
 
     if (date == "") { swal('alert', 'Please enter create voucher date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) }
     //else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }

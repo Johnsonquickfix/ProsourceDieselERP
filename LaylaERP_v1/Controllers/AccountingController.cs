@@ -118,6 +118,14 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult journalvoucherlist()
+        {
+            return View();
+        }        
+        public ActionResult journalvoucher()
+        {
+            return View();
+        }
 
         public JsonResult GetNatureofJournal(SearchModel model)
         {
@@ -1180,10 +1188,54 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+
+        [HttpGet]
+        [Route("accounting/AccountjournalvoucherList")]
+        public JsonResult AccountjournalvoucherList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                int statusid = 0;
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    statusid = Convert.ToInt32(model.strValue3);
+                DataTable dt = AccountingRepository.AccountjournalvoucherList(fromdate, todate, statusid, model.strValue4, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Newvoucher(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                // u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(AccountingRepository.Newvoucher(id, "I", orderXML, orderdetailsXML));
+
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
         [Route("accounting/cash-flows-statement")]
         public ActionResult CashFlowsStatement()
         {
             return View();
         }
+
+       
     }
 }

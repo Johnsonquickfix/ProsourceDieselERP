@@ -63,8 +63,14 @@ function bindItems() {
 
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + itxtCnt + '"  name="txt_Service" placeholder="Description"></td>';
     //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
-    itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Debit"></td>';
-    itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_credit_' + itxtCnt + '"  name="txt_credit" placeholder="Credit"></td>';
+
+    itemHtml += '<td><select id="ddlsenstag_' + itxtCnt + '"  name="ddlsenstag" class="ddlsenstag form-control billinfo select2"><option value="-1">Select Senstag</option>';
+    itemHtml += '<option value="D"> Debit</option>';
+    itemHtml += '<option value="C"> Credit</option>'; 
+    itemHtml += '</select ></td>';
+
+    //itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Debit"></td>';
+    itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_credit_' + itxtCnt + '"  name="txt_credit" placeholder="Debit/Credit"></td>';
     //itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Total_' + itxtCnt + '"  name="txt_Total" placeholder="Total"></td>';
     /*itemHtml += '<td class="text-right row-total">' + formatCurrency(0) + '</td>';*/
     itemHtml += '</tr>';
@@ -104,39 +110,18 @@ function getbillInfodetails(oid) {
         //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button>');
         var option = { strValue1: oid };
         $.ajax({
-            url: "/PaymentInvoice/GetBillDetailByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            url: "/Accounting/GetvoucherDetailByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
                     let data = JSON.parse(result); var custype = "", paytype = "", status_id = 0;
                     for (let i = 0; i < data['po'].length; i++) {
-                        status_id = parseInt(data['po'][i].fk_status) || 0;
-                        custype = data['po'][i].customertype.toString();
-                        paytype = data['po'][i].payaccount.toString();
-                        $('#ddlCoustomertype').val(custype.trim()).trigger('change');
-                        $('#ddltransactiontype').val(data['po'][i].fk_transactiontype).trigger('change');
-                        $('#ddlpayaccounttype').val(paytype.trim()).trigger('change');
-                        $('#txtinstaintion').val(data['po'][i].instation);
-                        $('#txtinstaintionaddress').val(data['po'][i].fk_address);
-                        $('#txtcustmeraddress').text(data['po'][i].fk_address);
-                        if (!data['po'][i].date_creation.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].date_creation);
-                        if (!data['po'][i].due_date.includes('00/00/0000')) $('#txtdueDate').val(data['po'][i].due_date);
-                        $("#ddlcoustomer").select2('').empty().select2({ data: [{ name: data['po'][i].displayname, id: data['po'][i].fk_customer, text: data['po'][i].displayname }] })
-                        $("#ddlcoustomer").select2({
-                            allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
-                            ajax: {
-                                url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
-                                error: function (xhr, status, err) { }, cache: true
-                            }
-                        });
-                        $('#txtshippingfee').val(data['po'][i].shippingfee);
-                        $('#txtotherfee').val(data['po'][i].otherfee);
+                        
+                        if (!data['po'][i].voucher_date.includes('00/00/0000')) $('#txtcreateDate').val(data['po'][i].voucher_date);
+                        
                         // $('#lblbillNo').text(data['po'][i].rowid);
-                        $('#lblbillNo').data('id', data['po'][i].rowid);
-                        $('#ddlvendordata').val(data['po'][i].fk_vendor).trigger('change');
-                        $('#ddlPaymentTerms').val(data['po'][i].fk_paymentterm).trigger('change');
-                        $('.page-heading').empty().append('Edit Journal Voucher <span class="text-yellow">(' + data['po'][i].po_status + ')</span> ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+                        $('#lblbillNo').data('id', data['po'][i].voucher_no);
+                    
+                      //  $('.page-heading').empty().append('Edit Journal Voucher <span class="text-yellow">(' + data['po'][i].po_status + ')</span> ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
                         //if (status_id == 1) {
 
                         //    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit" data-placement="top"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approve and create invoice." data-placement="top"><i class="fas fa-check-double"></i> Approve</button>');
@@ -157,22 +142,37 @@ function getbillInfodetails(oid) {
                     for (let i = 0; i < data['pod'].length; i++) {
                         ic++;
                         let itemHtml = ''; 
-                        itemHtml = '<tr id="tritemid_' + ic + '" class="paid_item" data-pid="' + data['pod'][i].miscellaneous_id + '" data-pname="' + data['pod'][i].discription + '" data-psku="' + data['pod'][i].sku + '" data-rowid="' + data['pod'][i].rowid + '">';
+                        itemHtml = '<tr id="tritemid_' + ic + '" class="paid_item" data-pid="' + data['pod'][i].row_id + '" data-pname="' + data['pod'][i].description + '" data-rowid="' + data['pod'][i].row_id + '">';
                         itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + ic + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                         itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].miscellaneous_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfovalff select2"><option value="-1">Select Voucher Type</option>';
+                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].row_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfovalff select2"><option value="-1">Select Voucher Type</option>';
                         for (var j = 0; j < _billtype.length; j++) {
-                            if (data['pod'][i].fk_paymenttype == _billtype[j].rowid)
+                            if (data['pod'][i].account_number == _billtype[j].rowid)
                                 itemHtml += '<option value="' + _billtype[j].rowid + '" selected> ' + _billtype[j].name + '</option>';
                             else
                                 itemHtml += '<option value="' + _billtype[j].rowid + '"> ' + _billtype[j].name + '</option>';
                         };
                         itemHtml += '</select ></td>';
 
-                        itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_Service_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].product + '"  name="txt_Service" placeholder="Description"></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Debit"></td>';
-                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_credit_' + data['pod'][i].miscellaneous_id + '" value="' + data['pod'][i].tax.toFixed(2) + '" name="txt_credit" placeholder="Credit"></td>';
+                        itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_Service_' + data['pod'][i].row_id + '" value="' + data['pod'][i].description + '"  name="txt_Service" placeholder="Description"></td>';
+
+                        itemHtml += '<td><select id="ddlsenstag_' + data['pod'][i].row_id + '"  name="ddlsenstag" class="ddlsenstag form-control billinfovalff select2"><option value="-1">Select Senstag</option>';
+                        if (data['pod'][i].senstag == 'D') {
+                            itemHtml += '<option value="D" selected> Debit</option>';
+                            itemHtml += '<option value="C"> Credit</option>';
+                        }
+                        else {
+                            itemHtml += '<option value="D"> Debit</option>';
+                            itemHtml += '<option value="C" selected> Credit</option>';
+                        }
+                        itemHtml += '</select ></td>';
+
+                        //itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_Price_' + itxtCnt + '"  name="txt_Price" placeholder="Debit"></td>';
+                       // itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txt_credit_' + itxtCnt + '"  name="txt_credit" placeholder="Debit/Credit"></td>';
+
+                     //   itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_Price_' + data['pod'][i].row_id + '" value="' + data['pod'][i].rate.toFixed(2) + '" name="txt_Price" placeholder="Debit"></td>';
+                        itemHtml += '<td><input min="0" autocomplete="off" class="text-right form-control billinfovalff number rowCalulate" type="number" id="txt_credit_' + data['pod'][i].row_id + '" value="' + data['pod'][i].amount.toFixed(2) + '" name="txt_credit" placeholder="Credit"></td>';
  
-                        itemHtml += '<td class="text-right row-total">' + formatCurrency(0) + '</td>';
+                       // itemHtml += '<td class="text-right row-total">' + formatCurrency(0) + '</td>';
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
                         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
@@ -313,7 +313,8 @@ function calculateFinal() {
     //tNetAmt = tNetAmt + rshipAmt + rothrAmt;
     ////  $(".thQuantity").text(tQty.toFixed(0));
  
-    $("#tdebit").text(formatCurrency(tdebit)); $("#tdebit").data('total', tdebit.toFixed(2));
+    /* $("#tdebit").text(formatCurrency(tdebit)); $("#tdebit").data('total', tdebit.toFixed(2));*/
+    $("#tdebit").text(formatCurrency(tcredit)); $("#tdebit").data('total', tcredit.toFixed(2));
     $("#tcredit").html(formatCurrency(tcredit)); $("#tcredit").data('total', tcredit.toFixed(2));
     //let paid_amt = parseFloat($('#paidTotal').data('paid')) || 0.00;
     //$('#unpaidTotal').text(formatCurrency(tNetAmt - paid_amt))
@@ -345,18 +346,27 @@ function createItemsList() {
         //rdebit = parseFloat($("#tdebit").val()) || 0.00;
         //rcredit = parseFloat($("#tcredit").val()) || 0.00;
 
-        rdebit = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
-        rcredit = parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
+        sanstag = $(row).find("[name=ddlsenstag]").val();
+        if (sanstag == 'D') {
+            rdebit = parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
+            rcredit = 0.00;
+        }
+        else {
+            rcredit = parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
+            rdebit = 0.00;
+        }
        // rGrossAmt = rPrice * rQty; 
         _rang += 1;
         console.log(rdebit, rcredit );
-       // if (rdebit > 0 && rcredit > 0) {
-            _list.push({
-                voucher_date: date, discription: rproduct, account_number: raccid,
-                debit: rdebit, credit: rcredit
+        if (sanstag == 'D' || sanstag == 'C') {
+            if (raccid > 0) {
+                _list.push({
+                    voucher_date: date, discription: rproduct, account_number: raccid,
+                    debit: rdebit, credit: rcredit, senstag: sanstag, row_id: $(row).data('rowid')
 
-            });
-        //}
+                });
+            }
+         }
     });
 
     //console.log(_list)
@@ -416,11 +426,11 @@ function savemiscbill() {
 
                         if (result[0].Response == "success") {
 
-                          //  SendPO_POApproval(result[0].id);
+                          //  SendPO_POApproval(result[0].id);canc
                             //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
-                            //swal('Success', 'Voucher saved successfully.', "success").then(function () { getbillInfodetails(result[0].id); });
-                            swal('Success', 'Voucher saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/Accounting/journalvoucherList/" });
-
+                           // swal('Success', 'Voucher saved successfully.', "success").then(function () { getbillInfodetails(result[0].id); });
+                           // swal('Success', 'Voucher saved successfully.', "success").then((result) => { location.href = '/Accounting/journalvoucherlist/'; });
+                            swal('Success', 'Voucher saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/Accounting/journalvoucher/" + result[0].id; });
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -510,7 +520,7 @@ function savemiscbill() {
 //        }
 //    }]);
 //}
-///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Misc Bill File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Voucher File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Adduploade() {
     var formData = new FormData();
     var file = document.getElementById("ImageFile").files[0];
@@ -522,7 +532,7 @@ function Adduploade() {
     else {
 
         $.ajax({
-            type: 'post', url: '/PaymentInvoice/FileUploade', processData: false, contentType: false, data: formData,
+            type: 'post', url: '/Accounting/FileUploade', processData: false, contentType: false, data: formData,
             beforeSend: function (xhr) { $("#loader").show(); }
         }).then(response => {
             if (response.status == true) {
@@ -540,7 +550,7 @@ function bindfileuploade() {
     let id = parseInt($('#lblbillNo').data('id')) || 0;
     var obj = { strValue1: id };
     $.ajax({
-        type: "POST", url: '/PaymentInvoice/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        type: "POST", url: '/Accounting/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             let itemHtml = '';
@@ -563,7 +573,7 @@ function Deletefileupload(id) {
     var ids = id;
     var obj = { ID: ids }
     $("#loader").show();
-    $.post('/PaymentInvoice/Deletefileuploade', obj).then(response => {
+    $.post('/Accounting/Deletefileuploade', obj).then(response => {
         if (response.status == true) {
             if (response.url == "Manage") {
                 swal('Success', response.message, 'success'); bindfileuploade();

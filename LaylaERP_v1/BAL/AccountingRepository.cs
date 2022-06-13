@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using LaylaERP.UTILITIES;
 using System.Xml;
+using System.Text;
 
 namespace LaylaERP.BAL
 {
@@ -1891,6 +1892,123 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataSet GetvoucherDetailByID(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] para = { new SqlParameter("@id", id), };
+                ds = SQLHelper.ExecuteDataSet("erp_voucherdatabyid", para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static int FileUploade(int fk_product, string FileName, string Length, string FileType, string FilePath)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("Insert into erp_commerce_journalvoucher_linkedfiles(fk_purchase,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');select SCOPE_IDENTITY();"));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Accounting/FileUploade/" + fk_product + "", "Add Misc Bills linkedfiles");
+                throw Ex;
+            }
+        }
+
+        public static int Deletefileuploade(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                StringBuilder strSql = new StringBuilder(string.Format("delete from erp_commerce_journalvoucher_linkedfiles where rowid = {0}; ", model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Accounting/Deletefileuploade/" + model.ID + "", "Delete Misc Bills linkedfiles");
+                throw ex;
+            }
+            return result;
+        }
+
+        public static List<ProductModelservices> GetfileuploadData(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+                        strWhr += " fk_purchase = " + strValue1;
+                    string strSQl = "SELECT pw.rowid as ID,fk_purchase,Length,FileType,CONVERT(VARCHAR(12), CreateDate, 107)  CreateDate,FileName"
+                                + " from erp_commerce_journalvoucher_linkedfiles pw"
+                                + " WHERE " + strWhr;
+
+                    strSQl += ";";
+                    SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+                        if (sdr["FileName"] != DBNull.Value)
+                            productsModel.product_name = sdr["FileName"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        productsModel.product_label = sdr["Length"].ToString();
+                        productsModel.sellingpric = sdr["CreateDate"].ToString();
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
+        public static DataTable GetfileCountdata(int fk_product, string FileName)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select FileName from erp_commerce_journalvoucher_linkedfiles"
+                                + " WHERE fk_purchase in (" + fk_product + ") and FileName = '" + FileName + "' "
+                                + " ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
 
     }
 }

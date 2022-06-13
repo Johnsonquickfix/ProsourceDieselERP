@@ -56,7 +56,14 @@ function journalvoucher() {
         },
         aoColumns: [
             
-            { data: 'voucher_no', title: 'Voucher No', sWidth: "10%" },
+            //{ data: 'voucher_no', title: 'Voucher No', sWidth: "10%" },
+            {
+                data: 'voucher_no', sWidth: "10%", title: 'Voucher No',
+                render: function (id, type, full, meta) {
+                    //if ($("#hfEdit").val() == "1") {
+                    return '<a title="Click here to voucher no view" data-toggle="tooltip" href="../Accounting/journalvoucher/' + id + '">' + id + '</a>';
+                }
+            },
             { data: 'voucher_date', title: 'Voucher Date', sWidth: "10%", render: function (id, type, full, meta) { return full.voucher_date; } },
             { data: 'account_number', title: 'Account_Number', sWidth: "10%" },
             { data: 'description', title: 'Description', sWidth: "10%" },

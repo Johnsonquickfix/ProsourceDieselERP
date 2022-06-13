@@ -744,12 +744,16 @@
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\Funddeposit.js" />
+    <Content Include="js\Accounting\journalvoucher.js" />
+    <Content Include="js\Accounting\journalvoucherlist.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\Accounting\ProfitLossAccount.js" />
     <Content Include="js\Accounting\TranscationType.js" />
     <Content Include="js\app.js" />
     <Content Include="js\Bank\Bank.js" />
     <Content Include="js\Bank\BankEntries.js" />
+    <Content Include="js\Bank\BankPaymentVoucher.js" />
+    <Content Include="js\Bank\BankPaymentVoucherList.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1308,6 +1312,10 @@
     <Content Include="Views\Accounting\TrialBalance.cshtml" />
     <Content Include="Views\CustomerService\CustomerTicketSearch.cshtml" />
     <Content Include="Views\Accounting\CashFlowsStatement.cshtml" />
+    <Content Include="Views\Accounting\journalvoucher.cshtml" />
+    <Content Include="Views\Accounting\journalvoucherlist.cshtml" />
+    <Content Include="Views\Bank\BankPaymentVoucher.cshtml" />
+    <Content Include="Views\Bank\BankPaymentVoucherList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

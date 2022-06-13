@@ -610,5 +610,96 @@ namespace LaylaERP.BAL
             { throw ex; }
 
         }
+
+        #region bank voucher
+        public static DataTable GetAccountsList(string flag, string search)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    !string.IsNullOrEmpty(search) ? new SqlParameter("@search", search) : new SqlParameter("@search", DBNull.Value)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_accounting_bank_voucher_search", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable AddBankVoucher(string flag, long id, string vtype, long user_id, string voucher_header, string voucher_details)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@user_id", user_id),
+                    new SqlParameter("@voucher_no", id),
+                    new SqlParameter("@voucher_type", vtype),
+                    new SqlParameter("@header_json", voucher_header),
+                    new SqlParameter("@details_json", voucher_details)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_accounting_bank_voucher_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+        public static DataSet GetVoucherDetails(long id,string vtype)
+        {
+            var ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "GETBV"),
+                    new SqlParameter("@voucher_no", id),
+                    new SqlParameter("@voucher_type", vtype),
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_accounting_bank_voucher_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return ds;
+        }
+        public static DataTable BankVoucherList(DateTime? fromdate, DateTime? todate, long bankid, string vtype, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    bankid > 0 ? new SqlParameter("@bank_id", bankid) : new SqlParameter("@bank_id", DBNull.Value),
+                    new SqlParameter("@voucher_type", vtype),
+                    new SqlParameter("@search", search),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "BVLIST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_accounting_bank_voucher_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        #endregion
     }
 }

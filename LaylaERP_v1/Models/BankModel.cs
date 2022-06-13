@@ -42,5 +42,12 @@ namespace LaylaERP.Models
         public HttpPostedFileBase ImageFile { get; set; }
         
     }
+    public class BankVoucherModel
+    {
+        public long id { get; set; }
+        public string vtype { get; set; }
+        public string voucher_header { get; set; }
+        public string voucher_details { get; set; }
+    }
 }
 

@@ -329,5 +329,105 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid details !", url = "" }, 0);
             }
         }
+
+        #region bank payment
+        public ActionResult BankPaymentVoucherList()
+        {
+            return View();
+        }
+        [HttpGet]
+        [Route("bank/expense-list")]
+        public JsonResult GetBankPaymentVoucherList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                long bankid = 0;
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    bankid = Convert.ToInt64(model.strValue3);
+
+                //DataTable dt = OrderRepository.OrderList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = BankRepository.BankVoucherList(fromdate, todate, bankid, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+        [Route("bank/expense")]
+        [Route("bank/expense/{id}")]
+        public ActionResult BankPaymentVoucher(long id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
+        [HttpGet]
+        public JsonResult GetAccountsList(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.GetAccountsList(model.strValue1, model.strValue2);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        [Route("bank/create-voucher")]
+        public JsonResult CreateVoucher(BankVoucherModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                if (string.IsNullOrEmpty(model.voucher_header))
+                {
+                    return Json("[{\"response\":\"Please select bank info.\",\"id\":0}]", JsonRequestBehavior.AllowGet);
+                }
+                if (string.IsNullOrEmpty(model.voucher_details))
+                {
+                    return Json("[{\"response\":\"Please add Expense Details.\",\"id\":0}]", JsonRequestBehavior.AllowGet);
+                }
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                JSONresult = JsonConvert.SerializeObject(BankRepository.AddBankVoucher("ADD", model.id, model.vtype, om.UserID, model.voucher_header, model.voucher_details));
+            }
+            catch (Exception ex) { return Json("[{\"response\":\"" + ex.Message + ".\",\"id\":0}]", JsonRequestBehavior.AllowGet); }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        [Route("bank/delete-voucher")]
+        public JsonResult DeleteVoucher(BankVoucherModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                if (model.id == 0)
+                {
+                    return Json("[{\"response\":\"Invalid voucher details.\",\"id\":0}]", JsonRequestBehavior.AllowGet);
+                }
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                JSONresult = JsonConvert.SerializeObject(BankRepository.AddBankVoucher("DELETE",model.id, model.vtype, om.UserID, string.Empty, string.Empty));
+            }
+            catch (Exception ex) { return Json("[{\"response\":\"" + ex.Message + ".\",\"id\":0}]", JsonRequestBehavior.AllowGet); }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        [Route("bank/voucher-details")]
+        public JsonResult GetVoucherDetails(BankVoucherModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                JSONresult = JsonConvert.SerializeObject(BankRepository.GetVoucherDetails(model.id, model.vtype));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

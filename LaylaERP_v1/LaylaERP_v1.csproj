@@ -744,6 +744,8 @@
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\Funddeposit.js" />
+    <Content Include="js\Accounting\journalvoucher.js" />
+    <Content Include="js\Accounting\journalvoucherlist.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\Accounting\ProfitLossAccount.js" />
     <Content Include="js\Accounting\TranscationType.js" />
@@ -1308,6 +1310,8 @@
     <Content Include="Views\Accounting\TrialBalance.cshtml" />
     <Content Include="Views\CustomerService\CustomerTicketSearch.cshtml" />
     <Content Include="Views\Accounting\CashFlowsStatement.cshtml" />
+    <Content Include="Views\Accounting\journalvoucher.cshtml" />
+    <Content Include="Views\Accounting\journalvoucherlist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

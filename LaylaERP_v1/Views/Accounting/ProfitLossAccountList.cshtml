@@ -28,6 +28,7 @@
                 </div>
                 <div class="col-md-6">
                     <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                    <button type="button" title="Click here to export Profit Loss Account" data-placement="top" data-toggle="tooltip" id="btnExportDetails" class="btn btn-primary btn-flat button">Export Details</button>
                     <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button pull-right">Print</button>
                 </div>
             </div>
@@ -140,6 +141,7 @@
             });
             $('#ddlfinaceyear').change(function () { getProfitLoss(); });
             $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); getProfitLoss(); });
+            $(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportProfitLoss(); });
         });
         ///Search Control
         function SearchByControl(id) {
@@ -311,6 +313,33 @@
             //}, function (start, end, label) {
             //    getAssets(true);
             //});
+        }
+        function ExportProfitLoss() {
+            let _income = 0, _expense = 0;
+            let _searchby = parseInt($('#ddlSearchBy').val()) || 0, _date_from = moment(), _date_to = moment();
+            let option = {};
+            if (_searchby == 2) {
+                _date_from = $('#txtDate').data('daterangepicker').startDate, _date_to = $('#txtDate').data('daterangepicker').endDate;
+                option = { fiscalyear_id: 0, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'PLDREPORT' };
+            }
+            else {
+                option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, from_date: '', to_date: '', report_type: 'PLDREPORT' };
+            }
+            $.ajax({
+                url: "/accounting/profitloss-export", type: "get", data: option, beforeSend: function () { $("#loader").show(); },
+                dataType: 'json',// contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    //debugger;
+                    var bytes = new Uint8Array(result.FileContents);
+                    var blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "myFileName.xlsx";
+                    link.click();
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (xhr, status, err) { $("#loader").hide(); console.log(xhr, status, err) }, async: true
+            });
         }
     </script>
 </section>

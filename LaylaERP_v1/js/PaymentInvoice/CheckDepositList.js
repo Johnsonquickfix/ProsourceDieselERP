@@ -75,14 +75,15 @@ function Search() {
         //    Rejected();
         //});
         Uncleared();
+        validatedata();
         Rejected();
          Cleared();
     }
 
-    $('#dtdatacleared tbody').on('click', '.pdetails-control', function () {
+    $('#dtdatavalidate tbody').on('click', '.pdetails-control', function () {
         console.log('svvvd');
         var tr = $(this).closest('tr');
-        var row = $('#dtdatacleared').DataTable().row(tr);
+        var row = $('#dtdatavalidate').DataTable().row(tr);
         if (row.child.isShown()) {
             // This row is already open - close it
             tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
@@ -194,12 +195,11 @@ function Rejected() {
     });
 }
 
-
-function Cleared() {
+function validatedata() {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     var account = $('#ddlbankaccount').val();
-    $('#dtdatacleared').DataTable({
+    $('#dtdatavalidate').DataTable({
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -213,7 +213,7 @@ function Cleared() {
         },
         sAjaxSource: "/CheckDeposit/GetCheckClearedDepositList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: "2" });
+            aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: "1" });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", async: false, url: sSource, data: aoData,
@@ -224,7 +224,7 @@ function Cleared() {
             });
         },
         columns: [
-           { data: 'id', title: '', sWidth: "8%" },
+            { data: 'id', title: '', sWidth: "8%" },
             //{            
             //    'data': 'id', title: '', sWidth: "8%",
             //    'render': function (id, type, row, meta) {
@@ -240,13 +240,63 @@ function Cleared() {
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
-           // { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            // { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
             { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
             //{ data: 'Bank', title: 'Check Details', sWidth: "10%" },
             { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
             /*   { data: 'Status', title: 'Transaction', sWidth: "10%" }*/
         ],
-        columnDefs: [{ targets: [0], searchable: false,visible: false }], order: [[1, "desc"]]
+        columnDefs: [{ targets: [0], searchable: false, visible: false }], order: [[1, "desc"]]
+    });
+}
+
+
+function Cleared() {
+
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    var account = $('#ddlbankaccount').val();
+    $('#dtdatacleared').DataTable({
+        destroy: true, bProcessing: true, bServerSide: true,
+        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        sAjaxSource: "/CheckDeposit/GetCheckDepositList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: account }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: "2" });
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", async: false, url: sSource, data: aoData,
+                "success": function (data) {
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+        columns: [
+            //{ data: 'id', title: '#', sWidth: "8%" },
+            {
+                'data': 'id', title: '', sWidth: "8%",
+                'render': function (id, type, row, meta) {
+                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Reject this" onClick="Rejectthis(' + id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>'
+
+                }
+            },
+            { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
+            { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
+            { data: 'Bank', title: 'Check Details', sWidth: "10%" },
+            { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
+            /*   { data: 'Status', title: 'Transaction', sWidth: "10%" }*/
+        ],
+        columnDefs: [{ targets: [0], searchable: false }], order: [[1, "desc"]]
     });
 }
 
@@ -259,7 +309,7 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
              
-                wrHTML += '<tr><td><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-trash"></i></a></td><td style="width:20%; text-align:left;">' + row.num_payment + '</td>';
+                wrHTML += '<tr><td><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-trash"></i></a>  <a href="javascript:void(0);" title="Cleare this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>  </td><td style="width:20%; text-align:left;">' + row.num_payment + '</td>';
                 wrHTML += '<td style="width:30%; text-align:left;">' + '$' + row.amount + '</td></tr > ';
             });
         },
@@ -333,6 +383,38 @@ function Rejectthis(id) {
                         swal('Success', 'Amount has been reject successfully!!', 'success').then((result) => {
                             Cleared(), Rejected();
                             $('.nav-tabs a[href="#tab_23"]').tab('show');
+                        });
+
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+
+}
+
+function Clearedthis(id) {
+
+    //let accountid = $("#hfstatus").val();
+
+    //let _list = createItemsList();
+    //let _order = {
+    //    amount: parseFloat($("#Total").text()), fk_bank: accountid,
+    //}
+    let option = { strValue1: id }
+    //console.log(option);
+    swal.queue([{
+        title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to cleare this amount?',
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/CheckDeposit/CheckCleare', option).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].Response == "Success") {
+                        swal('Success', 'amount has been cleared successfully!!', 'success').then((result) => {
+                            Cleared(), Rejected();
+                            $('.nav-tabs a[href="#tab_22"]').tab('show');
                         });
 
                     }

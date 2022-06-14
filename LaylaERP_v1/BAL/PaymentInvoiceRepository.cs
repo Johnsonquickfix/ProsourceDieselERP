@@ -398,6 +398,26 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable CheckCleare(long Pkey, string qFlag)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_payment_various_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "CheckDeposit/CheckCleare/" + Pkey + "", "Update payment bank status");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
 
         public static DataTable GetClearedDataList(long id)
         {

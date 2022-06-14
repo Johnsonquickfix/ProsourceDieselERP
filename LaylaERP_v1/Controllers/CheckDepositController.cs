@@ -143,6 +143,19 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        public JsonResult CheckCleare(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0; //, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.CheckCleare(id, "CHC'"));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
         public JsonResult ClearedAmount(SearchModel model)
         {
             string JSONresult = string.Empty;

@@ -12,7 +12,20 @@
     
  
     getbillInfodetails(id);
-    $(document).on("click", "#btnSave", function (t) { t.preventDefault(); savemiscbill(); });
+    $(document).on("click", "#btnSave", function (t) {
+        t.preventDefault();       
+        if (parseFloat($("#tdebit").text()) == parseFloat($("#tcredit").text()))
+            {
+               savemiscbill();
+            }
+            else
+            {
+            swal('Warning', 'The debit amount should be equal to the credit amount.', "warning");
+            }
+       // $("#tdebit").text(formatCurrency(tdebit));  
+       // $("#tcredit").html(formatCurrency(tcredit));  
+       // savemiscbill();
+    });
     
 
     $(document).on("click", ".btnEdit", function (t) {
@@ -24,7 +37,7 @@
     });
 
     $(document).on("click", ".btnUndoRecord", function (t) {
-        t.preventDefault(); let _text = 'Are you sure you want to undo changes this voucher ?';
+        t.preventDefault(); let _text = 'Are you sure you want to undo changes this entry ?';
         swal({ title: '', text: _text, type: "question", showCancelButton: true }).then((result) => { if (result.value) { $("#loader").show(); getbillInfodetails(id); } });
     });
 
@@ -54,7 +67,7 @@ function bindItems() {
     // itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
     //itemHtml += '<td><select class="form-control billinfo"   id="ddlPaymentType_' + itxtCnt + '"  name="ddlPaymentType"></td>';
 
-    itemHtml += '<td><select id="ddlPaymentTypebill_' + itxtCnt + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfo select2"><option value="-1">Select Voucher Type</option>';
+    itemHtml += '<td><select id="ddlPaymentTypebill_' + itxtCnt + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfo select2"><option value="-1">Select Account Type</option>';
     for (var j = 0; j < _billtype.length; j++) {
         itemHtml += '<option value="' + _billtype[j].rowid + '"> ' + _billtype[j].name + '</option>';
     };
@@ -64,7 +77,7 @@ function bindItems() {
     itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Service_' + itxtCnt + '"  name="txt_Service" placeholder="Description"></td>';
     //itemHtml += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txt_Description_' + itxtCnt + '"  name="txt_Description" placeholder="Description."></td>';
 
-    itemHtml += '<td><select id="ddlsenstag_' + itxtCnt + '"  name="ddlsenstag" class="ddlsenstag form-control billinfo select2"><option value="-1">Select Senstag</option>';
+    itemHtml += '<td><select id="ddlsenstag_' + itxtCnt + '"  name="ddlsenstag" class="ddlsenstag form-control billinfo select2"><option value="-1">Select Transaction Tag</option>';
     itemHtml += '<option value="D"> Debit</option>';
     itemHtml += '<option value="C"> Credit</option>'; 
     itemHtml += '</select ></td>';
@@ -104,7 +117,7 @@ function getbillInfodetails(oid) {
     if (oid > 0) {
         $('.billinfoval').prop("disabled", true); $(".order-files").removeClass('hidden');
         $('.billinfovalff').prop("disabled", true);
-        $('.page-heading').text('Edit Journal Voucher ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+        $('.page-heading').text('Edit Journal Entry ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
         //$('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
         //$('#line_items,#product_line_items').empty();  
         //$('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close This PO"><i class="far fa-btnpoclosed"></i> Close This PO</button><button type="button" id="btnpoopen" class="btn btn-danger btnpoopen" style="float:unset" data-toggle="tooltip" title="Open PO"><i class="far fa-btnpoopen"></i> Open PO</button>');
@@ -144,7 +157,7 @@ function getbillInfodetails(oid) {
                         let itemHtml = ''; 
                         itemHtml = '<tr id="tritemid_' + ic + '" class="paid_item" data-pid="' + data['pod'][i].row_id + '" data-pname="' + data['pod'][i].description + '" data-rowid="' + data['pod'][i].row_id + '">';
                         itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + ic + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].row_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfovalff select2"><option value="-1">Select Voucher Type</option>';
+                        itemHtml += '<td><select id="ddlPaymentTypebill_' + data['pod'][i].row_id + '"  name="ddlPaymentTypebill" class="ddlPaymentTypebill form-control billinfovalff select2"><option value="-1">Select Account Type</option>';
                         for (var j = 0; j < _billtype.length; j++) {
                             if (data['pod'][i].account_number == _billtype[j].rowid)
                                 itemHtml += '<option value="' + _billtype[j].rowid + '" selected> ' + _billtype[j].name + '</option>';
@@ -155,7 +168,7 @@ function getbillInfodetails(oid) {
 
                         itemHtml += '<td><input autocomplete="off" class="form-control billinfovalff" type="text" id="txt_Service_' + data['pod'][i].row_id + '" value="' + data['pod'][i].description + '"  name="txt_Service" placeholder="Description"></td>';
 
-                        itemHtml += '<td><select id="ddlsenstag_' + data['pod'][i].row_id + '"  name="ddlsenstag" class="ddlsenstag form-control billinfovalff select2"><option value="-1">Select Senstag</option>';
+                        itemHtml += '<td><select id="ddlsenstag_' + data['pod'][i].row_id + '"  name="ddlsenstag" class="ddlsenstag form-control billinfovalff select2"><option value="-1">Select Transaction Tag</option>';
                         if (data['pod'][i].senstag == 'D') {
                             itemHtml += '<option value="D" selected> Debit</option>';
                             itemHtml += '<option value="C"> Credit</option>';
@@ -250,11 +263,11 @@ function getbillInfodetails(oid) {
     }
     else {
         $("#loader").hide(); $(".order-files").addClass('hidden');
-        $('.page-heading').text('Create Journal Voucher ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherlist" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
+        $('.page-heading').text('Create Journal Entry ').append('<a class="btn btn-danger" href="/Accounting/journalvoucherlist" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a>');
 
         // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="Accounting/journalvoucherList" data-toggle="tooltip" title="Back to List" data-placement="right">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-        $(".top-action").empty().append('<input type="submit" value="Create Voucher" id="btnSave" class="btn btn-danger" />');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Accounting/journalvoucherlist">Back to List</a><input type="submit" value="Create Voucher" id="btnSave" class="btn btn-danger" />');
+        $(".top-action").empty().append('<input type="submit" value="Create Entry" id="btnSave" class="btn btn-danger" />');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Accounting/journalvoucherlist">Back to List</a><input type="submit" value="Create Entry" id="btnSave" class="btn btn-danger" />');
         $('.billinfo').prop("disabled", true); // $('#lblPoNo').text('Draft');
         //$("#loader").hide(); $('.page-heading').text('Add New Order');
         //$("#btnPrintPdf").addClass('hidden');
@@ -296,6 +309,17 @@ function calculateFinal() {
         rdebit = parseFloat($(row).find("[name=txt_Price]").val()) || 0.00;
         rcredit = parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
 
+
+        sanstag = $(row).find("[name=ddlsenstag]").val();
+        if (sanstag == 'D') {
+            tdebit += parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
+           // tcredit += 0.00;
+        }
+        else {
+            tcredit += parseFloat($(row).find("[name=txt_credit]").val()) || 0.00;
+            //tcredit += 0.00;
+        }
+
         //rDisPer = 0.00;
         //rTax1 = parseFloat($(row).find("[name=txt_Tax]").val()) || 0.00;
         //rTax2 = 0.00;
@@ -303,8 +327,8 @@ function calculateFinal() {
         //rTax_Amt1 = rTax1; //rTax_Amt2 = rTax2 * rQty;
         //rNetAmt = rGrossAmt + rTax_Amt1;
         // $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2));
-        tdebit += rdebit; //, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
-        tcredit += rcredit;
+      //  tdebit += rdebit; //, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt; 
+       // tcredit += rcredit;
        // $(row).find(".row-total").text(formatCurrency(rNetAmt));
     });
     //rshipAmt = parseFloat($("#txtshippingfee").val()) || 0.00;
@@ -314,7 +338,7 @@ function calculateFinal() {
     ////  $(".thQuantity").text(tQty.toFixed(0));
  
     /* $("#tdebit").text(formatCurrency(tdebit)); $("#tdebit").data('total', tdebit.toFixed(2));*/
-    $("#tdebit").text(formatCurrency(tcredit)); $("#tdebit").data('total', tcredit.toFixed(2));
+    $("#tdebit").text(formatCurrency(tdebit)); $("#tdebit").data('total', tdebit.toFixed(2));
     $("#tcredit").html(formatCurrency(tcredit)); $("#tcredit").data('total', tcredit.toFixed(2));
     //let paid_amt = parseFloat($('#paidTotal').data('paid')) || 0.00;
     //$('#unpaidTotal').text(formatCurrency(tNetAmt - paid_amt))
@@ -326,7 +350,7 @@ function formatCurrency(total) {
         neg = true;
         total = Math.abs(total);
     }
-    return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+    return (neg ? "-$" : '') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
 function createItemsList() {
     let _list = []; let _rang = 0;
@@ -388,10 +412,10 @@ function savemiscbill() {
     let id = parseInt($('#lblbillNo').data('id')) || 0;
     let conformation = '';
     if (id > 0) {
-        conformation = "Do you want to update your voucher?";
+        conformation = "Do you want to update your entry?";
     }
     else {
-        conformation = "Do you want to create your voucher?";
+        conformation = "Do you want to create your entry?";
     }
 
     
@@ -400,14 +424,14 @@ function savemiscbill() {
     let _list = createItemsList();
     // console.log(_list); 
 
-    if (date == "") { swal('alert', 'Please enter create voucher date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) }
+    if (date == "") { swal('alert', 'Please enter create entry date ', 'error').then(function () { swal.close(); $('#txtcreateDate').focus(); }) }
     //else if (transactiontype == 0) { swal('alert', 'Please select transaction  type', 'error').then(function () { swal.close(); $('#ddltransactiontype').focus(); }) }
     //else if (Coustomertype == 0) { swal('alert', 'Please select coustomer type', 'error').then(function () { swal.close(); $('#ddlCoustomertype').focus(); }) }
     ////else if (paymenttype == 0) { swal('alert', 'Please select payment terms.', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
     //else if (payaccounttype == 0) { swal('alert', 'Please select pay account.', 'error').then(function () { swal.close(); $('#ddlpayaccounttype').focus(); }) }
     //else if (duedate == "") { swal('alert', 'Please enter due date ', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
     //else if (date > duedate) { swal('alert', 'Please enter a due date greater than create date', 'error').then(function () { swal.close(); $('#txtdueDate').focus(); }) }
-    else if (_list.length == 0) { swal('Alert!', 'Please add voucher .', "error") }
+    else if (_list.length == 0) { swal('Alert!', 'Please add entry .', "error") }
     else {
         //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let _order = {
@@ -430,7 +454,7 @@ function savemiscbill() {
                             //swal('Success', 'Misc Bills saved successfully.', "success").then(function () { getInvoicePrintDetails(result[0].id); $('#line_items').empty(); calculateFinal(); $("#thQuantity").text('0'); $("#SubTotal").text('0.00'); $("#salesTaxTotal").text('0.00'); $("#shippingTotal").text('0.00'); $("#otherTotal").text('0.00'); $("#orderTotal").text('0.00'); $("#txtshippingfee").val('0'); $("#txtotherfee").val('0'); } );
                            // swal('Success', 'Voucher saved successfully.', "success").then(function () { getbillInfodetails(result[0].id); });
                            // swal('Success', 'Voucher saved successfully.', "success").then((result) => { location.href = '/Accounting/journalvoucherlist/'; });
-                            swal('Success', 'Voucher saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/Accounting/journalvoucher/" + result[0].id; });
+                            swal('Success', 'Entry saved successfully.', "success").then(function () { window.location.href = window.location.origin + "/Accounting/journalvoucher/" + result[0].id; });
                             //then(function () { window.location.href = window.location.origin + "/PurchaseOrder/NewPurchaseOrder/" + result[0].id; ActivityLog('create new purchase order for vendor id (' + vendorid + ')', '/PurchaseOrder/NewPurchaseOrder'); });
                         }
                         else { swal('Error', 'Something went wrong, please try again.', "error"); }

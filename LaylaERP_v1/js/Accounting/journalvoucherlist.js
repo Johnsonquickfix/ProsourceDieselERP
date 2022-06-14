@@ -58,13 +58,13 @@ function journalvoucher() {
             
             //{ data: 'voucher_no', title: 'Voucher No', sWidth: "10%" },
             {
-                data: 'voucher_no', sWidth: "10%", title: 'Voucher No',
+                data: 'voucher_no', sWidth: "10%", title: 'Entry No',
                 render: function (id, type, full, meta) {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to voucher no view" data-toggle="tooltip" href="../Accounting/journalvoucher/' + id + '">' + id + '</a>';
+                    return '<a title="Click here to entry no view" data-toggle="tooltip" href="../Accounting/journalvoucher/' + id + '">' + id + '</a>';
                 }
             },
-            { data: 'voucher_date', title: 'Voucher Date', sWidth: "10%", render: function (id, type, full, meta) { return full.voucher_date; } },
+            { data: 'voucher_date', title: 'Entry Date', sWidth: "10%", render: function (id, type, full, meta) { return full.voucher_date; } },
             { data: 'account_number', title: 'Account_Number', sWidth: "10%" },
             { data: 'description', title: 'Description', sWidth: "10%" },
             { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },

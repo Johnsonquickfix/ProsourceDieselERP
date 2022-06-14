@@ -56,7 +56,8 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="active"><a class="active" href="#tab_21" title="Click here to see uncleared list" data-toggle="tab">Uncleared <span class="badge badge-danger"></span></a></li>
-            <li title="Click here to see cleared  List" data-toggle="tooltip"><a href="#tab_22" data-toggle="tab">Validate <span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see validate List" data-toggle="tooltip"><a href="#tab_24" data-toggle="tab">Validate<span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see cleared  List" data-toggle="tooltip"><a href="#tab_22" data-toggle="tab">Cleared<span class="badge badge-danger"></span></a></li>
             <li title="Click here to see rejected List" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Rejected<span class="badge badge-danger"></span></a></li>
 
         </ul>
@@ -86,6 +87,33 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane" id="tab_24">
+                <div class="tab-content">
+                    <div id="divvalidate" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary table-design not-fixed">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="dtdatavalidate" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Date</th>
+                                                        <th>Check No</th>
+                                                        <th>Transmitter</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="tab-pane" id="tab_22">
                 <div class="tab-content">
                     <div id="divcanvel" class="row">
@@ -97,10 +125,12 @@
                                             <table id="dtdatacleared" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
+                                                        <th width="5%"></th>
+                                                        @*<th width="5%"><input type="checkbox" name="checkallpr" id="checkallpr" onClick="CheckAllpr();"><label></label></th>*@
                                                         <th>Date</th>
                                                         <th>Check No</th>
-                                                        <th>Transmitter</th>                                            
+                                                        <th>Transmitter</th>
+                                                        <th>Bank Details</th>
                                                         <th>Amount</th>
                                                     </tr>
                                                 </thead>
@@ -110,7 +140,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="tab-pane" id="tab_23">

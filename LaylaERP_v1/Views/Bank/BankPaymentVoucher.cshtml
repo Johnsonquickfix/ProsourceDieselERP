@@ -99,10 +99,10 @@
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 5%">#</th>
-                            <th style="width: 35%">Expense Head</th>
+                            <th style="width: 30%">Expense Head</th>
                             <th style="width: 40%">Description</th>
                             <th class="text-right" style="width: 15%">Amount</th>
-                            <th class="text-right" style="width: 5%"></th>
+                            <th class="text-center" style="width: 10%"></th>
                         </tr>
                     </thead>
                     <tbody id="line_items"></tbody>
@@ -161,7 +161,7 @@
         <div class="col-sm-6 order-box-total">
         </div>
     </div>
-    <div class="modal in printable " id="myModal" role="dialog" aria-hidden="true"></div>
+    <div class="modal in printable " id="myModal" role="dialog" data-backdrop="static" data-keyboard="false"></div>
 </section>
 <script src="~/js/common.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Bank/BankPaymentVoucher.js?v="+DateTime.Now.ToString(" ddMMyyyymmss")+"")" asp-append-version="true"></script>

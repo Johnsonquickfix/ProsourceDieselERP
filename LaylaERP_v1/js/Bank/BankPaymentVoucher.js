@@ -150,6 +150,7 @@ function GetAddress() {
 }
 
 function AddExpenseModal(index, id, desc, amt) {
+    $("#myModal").modal('show', { backdrop: 'static', keyboard: false });
     //ActivityLog('Edit fee (' + feevalue + ') in order id (' + $('#hfOrderNo').val() + ')', '/Product/AddNewProduct/');
     var _html = '<div class="modal-dialog">';
     _html += '<div class="modal-content">';
@@ -160,7 +161,7 @@ function AddExpenseModal(index, id, desc, amt) {
     _html += '<div class="modal-body">';
 
     _html += '<div class="row"><div class="col-md-12"><div class="form-group"><label class="control-label">Expense Head<span class="text-red">*</span></label><select class="form-control select2" id="ddlaccount"><option value="0" selected>Select Expense Head</option></select></div></div></div>';
-    _html += '<div class="row"><div class="col-md-12"><div class="form-group"><label class="control-label">Description</label><textarea class="form-control" id="txtrow_desc" rows="3" maxlength="500" placeholder="Add description (optional)" value="' + desc + '"></textarea></div></div></div>';
+    _html += '<div class="row"><div class="col-md-12"><div class="form-group"><label class="control-label">Description</label><textarea class="form-control" id="txtrow_desc" rows="3" maxlength="500" placeholder="Add description (optional)">' + desc + '</textarea></div></div></div>';
     _html += '<div class="row">';
     _html += '<div class="col-md-6"><div class="form-group"><label class="control-label">Amount<span class="text-red">*</span></label><input class="form-control" type="number" id="txtrow_amt" placeholder="Amount" maxlength="15" autocomplete="true" value="' + amt + '"></div></div>';
     _html += '<div class="col-md-6"></div>';
@@ -170,9 +171,9 @@ function AddExpenseModal(index, id, desc, amt) {
     _html += '<div class="modal-footer"><button type="button" class="btn btn-danger pull-right btnupdateline" data-index="' + index + '"><i class="fa fa-plus-circle"></i> Add</button></div>';
     _html += '</div>';
     _html += '</div>';
-    $("#myModal").empty().html(_html); $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    $("#myModal").empty().html(_html);
     getAllExpenseHead(id);
-    $("#ddlaccount").select2('open');
+    //$("#ddlaccount").select2('open');
 }
 
 function MaxRowid() {
@@ -188,13 +189,24 @@ function MaxRowid() {
 function bindItems(_list) {
     let _html = '';
     $.each(_list, function (i, row) {
-        _html += '<tr id="tr_' + row.row_id + '" class="paid_item" data-rowid="' + row.row_id + '" data-acc_id="' + row.account_number + '" data-acc_name="' + row.account_name + '" data-senstag="D">';
-        _html += '<td class="text-center">' + row.row_id + '</td>';
-        _html += '<td>' + row.account_name + '</td>';
-        _html += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txtheaddescription_' + row.row_id + '"  name="txtheaddescription" placeholder="Description" value="' + row.description + '"></td>';
-        _html += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txtheadamt_' + row.row_id + '"  name="txtheadamt" placeholder="Amount"  value="' + row.amount.toFixed(2) + '"></td>';
-        _html += '<td><button class="btn menu-icon-gr p-0 text-red billinfo" onclick="removeItems(' + row.row_id + ');" data-toggle="tooltip" title="Remove Expense Head"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-        _html += '</tr>';
+        if ($('#tr_' + row.row_id).length <= 0) {
+            _html += '<tr id="tr_' + row.row_id + '" class="paid_item" data-rowid="' + row.row_id + '" data-acc_id="' + row.account_number + '" data-acc_name="' + row.account_name + '" data-senstag="D">';
+            _html += '<td class="text-center">' + row.row_id + '</td>';
+            _html += '<td class="">' + row.account_name + '</td>';
+            _html += '<td><input autocomplete="off" class="form-control billinfo" type="text" id="txtheaddescription_' + row.row_id + '"  name="txtheaddescription" placeholder="Description" value="' + row.description + '"></td>';
+            _html += '<td><input min="0" autocomplete="off" class="text-right form-control billinfo number rowCalulate" type="number" id="txtheadamt_' + row.row_id + '"  name="txtheadamt" placeholder="Amount"  value="' + row.amount.toFixed(2) + '"></td>';
+            _html += '<td class="text-center"><button class="btn menu-icon-gr p-1 text-red billinfo" onclick="AddExpenseModal(' + row.row_id + ',' + row.account_number + ',\'' + row.description + '\',' + row.amount.toFixed(2) + ');" data-toggle="tooltip" title="Edit Expense Head"> <i class="fa fa-edit"></i></button>';
+            _html += '<button class="btn menu-icon-gr p-1 text-red billinfo" onclick="removeItems(' + row.row_id + ');" data-toggle="tooltip" title="Remove Expense Head"> <i class="fa fa-trash"></i></button></td>';
+            _html += '</tr>';
+        }
+        else {
+            $('#tr_' + row.row_id).data('acc_id', row.account_number); $('tr_' + row.row_id).data('acc_name', row.account_name);
+            $('#tr_' + row.row_id).find('td:eq(1)').html(row.account_name);
+            $('#tr_' + row.row_id).find('[name="txtheaddescription"]').val(row.description);
+            $('#tr_' + row.row_id).find('[name="txtheadamt"]').val(row.amount.toFixed(2));
+            $('#tr_' + row.row_id).find('td:eq(4)').empty().append('<button class="btn menu-icon-gr p-1 text-red billinfo" onclick="AddExpenseModal(' + row.row_id + ',' + row.account_number + ',\'' + row.description + '\',' + row.amount.toFixed(2) + ');" data-toggle="tooltip" title="Edit Expense Head"> <i class="fa fa-edit"></i></button>');
+            $('#tr_' + row.row_id).find('td:eq(4)').append('<button class="btn menu-icon-gr p-1 text-red billinfo" onclick="removeItems(' + row.row_id + ');" data-toggle="tooltip" title="Remove Expense Head"> <i class="fa fa-trash"></i></button>');
+        }
     });
     $('#line_items').append(_html);
     $(".select2").select2();
@@ -337,7 +349,7 @@ function RemoveData() {
             return new Promise(function (resolve) {
                 $.post('/bank/delete-voucher', obj).done(function (result) {
                     result = JSON.parse(result);
-                    if (result[0].response == "Success") { location.origin = '/bank/BankPaymentVoucherList'; }
+                    if (result[0].response == "Success") { window.location.href = location.origin + '/bank/BankPaymentVoucherList'; }
                     else { swal('Error', result[0].response, "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
             });

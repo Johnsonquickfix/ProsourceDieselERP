@@ -349,7 +349,7 @@ function RemoveData() {
             return new Promise(function (resolve) {
                 $.post('/bank/delete-voucher', obj).done(function (result) {
                     result = JSON.parse(result);
-                    if (result[0].response == "Success") { location.origin = '/bank/BankPaymentVoucherList'; }
+                    if (result[0].response == "Success") { window.location.href = location.origin + '/bank/BankPaymentVoucherList'; }
                     else { swal('Error', result[0].response, "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
             });

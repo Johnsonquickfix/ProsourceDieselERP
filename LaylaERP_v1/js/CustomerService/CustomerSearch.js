@@ -308,7 +308,7 @@ function OrderInfo(ord_id) {
                 _html += '</div>';
                 _html += '<div class="order-claim-warranty-' + row.order_item_id + '">';
                 if (row.ticket_no) {
-                    _html += '<a class="fw-bolder text-dark fs-5 text-hover-primary" onclick="WarrantyInfoModal(' + row.ticket_no + ',\'' + row.ticket_action + '\');">Ticket No.: #' + row.ticket_no + '</a>';
+                    _html += '<a class="fw-bolder text-dark fs-5 text-hover-primary" href="javascript:void(0);" onclick="WarrantyInfoModal(' + row.ticket_no + ',\'' + row.ticket_action + '\');">Ticket No.: #' + row.ticket_no + '</a>';
                     _html += '<div class="fs-7 text-muted">Ticket Date: ' + moment(row.ticket_date).format("MM/DD/YYYY") + '</div>';
                     _html += '<div class="fs-7 text-muted">' + row.reason + '</div>';
                     if (row.ticket_action == 'SR') _html += '<span class="fs-5 text-success">Send to Retention</span>';

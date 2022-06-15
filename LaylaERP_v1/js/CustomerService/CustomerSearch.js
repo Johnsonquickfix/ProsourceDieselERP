@@ -159,9 +159,9 @@ function dataGridLoad() {
                     return phone;
                 }
             },
-            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
+            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%", class: 'text-end' },
             {
-                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
+                data: 'total_sales', title: 'Order Total', sWidth: "10%", class: 'text-end', render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
                     amt += refund_gc_amt != 0 ? '<br>Refunded by gift card : $' + refund_gc_amt.toFixed(2) : '';
@@ -200,7 +200,7 @@ function dataGridLoad() {
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
+                'data': 'id', title: 'Action', sWidth: "8%", class: 'text-center', 'render': function (id, type, row, meta) {
                     return '<a href="javascript:void(0);" onclick="OrderInfo(' + id + ');" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
@@ -213,6 +213,7 @@ function backOrderList() {
     $(".order-id").data('order_id', 0); $(".order-id").data('email', ''); $(".order-id").data('name', '');
 }
 function OrderInfo(ord_id) {
+    $("#order_items,.order-coupon,#order_items_refund").empty();
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
@@ -252,13 +253,26 @@ function OrderInfo(ord_id) {
             let _sub_total = parseFloat(row.line_subtotal) || 0.00, _qty = parseFloat(row.qty) || 0.00, _total = parseFloat(row.line_total) || 0.00;
             let _price = _qty > 0 ? (_sub_total / _qty) : 0;
             let _dis = _sub_total - _total;
+            let _ticket_no = parseInt(row.ticket_no) || 0;
             if (row.order_item_type == 'line_item') {
                 _html += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
-                if (_sub_total > 0) _html += '<td><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0" data-id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-qty="' + row.qty + '"><label></label></td>';
-                else _html += '<td></td>';
-                _html += '<td class="d-flex align-items-center pt-6">';
+                if (_sub_total > 0 && _ticket_no == 0) _html += '<td class="pt-6"><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0" data-id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-qty="' + row.qty + '"><label></label></td>';
+                else _html += '<td class="pt-6"></td>';
+                _html += '<td class="d-flex align-items-center">';
                 _html += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
-                _html += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7">';
+                _html += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7"></div></td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
+                _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(_dis) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
+                _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
+                _html += '</tr>';
+
+                /// show other details
+                _html += '<tr>';
+                _html += '<td colspan="7" class="pt-0">';
+                _html += '<div class="notice bg-light-primary rounded border-primary border border-dashed text-muted fw-bold d-block d-flex flex-stack fs-7 p-6">';
+                _html += '<div>';
                 if (isNullUndefAndSpace(row.remarks)) {
                     let _warranty = JSON.parse(row.remarks);
                     $.each(_warranty, function (key, val) { _html += val + '<br/>'; });
@@ -267,45 +281,48 @@ function OrderInfo(ord_id) {
                     let _date = moment($(".order-date").text(), "MM/DD/YYYY");
                     let _todate = moment(_date, 'MM/DD/YYYY').add(row.warrantydays, 'days');
                     let _days = _todate.diff(moment(), 'days');
-                    if (_days > 0)
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
-                    else
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                    if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 else if (row.warrantydays >= 9999) {
                     let _date = moment($(".order-date").text(), "MM/DD/YYYY");
                     let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
                     let _days = _todate.diff(moment(), 'days');
-                    if (_days > 0)
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
-                    else
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                    if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 if (row.returndays > 0 && row.returndays < 9999) {
                     let _date = moment($(".order-date").text(), "MM/DD/YYYY");
                     let _todate = moment(_date, 'MM/DD/YYYY').add(row.returndays, 'days');
                     let _days = _todate.diff(moment(), 'days');
-                    if (_days > 0)
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
-                    else
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                    if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
+                    else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 else if (row.returndays >= 9999) {
                     let _date = moment($(".order-date").text(), "MM/DD/YYYY");
                     let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
                     let _days = _todate.diff(moment(), 'days');
-                    if (_days > 0)
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
-                    else
-                        _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
+                    if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
+                    else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
-                _html += '</span><span class="text-muted fw-bold d-block fs-7 order-claim-warranty"><span class="text-muted fw-bold d-block fs-7"></div></td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
-                _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(_dis) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
+                _html += '</div>';
+                _html += '<div class="order-claim-warranty-' + row.order_item_id + '">';
+                if (row.ticket_no) {
+                    _html += '<a class="fw-bolder text-dark fs-5 text-hover-primary" onclick="WarrantyInfoModal(' + row.ticket_no + ',\'' + row.ticket_action + '\');">Ticket No.: #' + row.ticket_no + '</a>';
+                    _html += '<div class="fs-7 text-muted">Ticket Date: ' + moment(row.ticket_date).format("MM/DD/YYYY") + '</div>';
+                    _html += '<div class="fs-7 text-muted">' + row.reason + '</div>';
+                    if (row.ticket_action == 'SR') _html += '<span class="fs-5 text-success">Send to Retention</span>';
+                    else if (row.ticket_action == 'RT') _html += '<span class=fs-5 text-success">Create Return</span>';
+                    else if (row.ticket_action == 'RP') _html += '<span class=fs-5 text-success">Create Replacement</span>';
+                    else if (row.ticket_action == 'CO') _html += '<span class=fs-5 text-success">Create new order</span>';
+                    else _html += '<span class="fs-5 text-warning">Processing</span>';
+                }
+                _html += '</div>';
+
+                _html += '</div>';
+                _html += '</td>';
                 _html += '</tr>';
+
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);
                 zTDiscount += _dis;
@@ -367,7 +384,7 @@ function OrderInfo(ord_id) {
             //let is_customer_note = parseInt(row.is_customer_note) || 0;
             _noteHtml += '<div class="timeline-item align-items-center mb-4">';
             _noteHtml += '<div class="timeline-line w-20px mt-9 mb-n14"></div>';
-            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-gift"></i></span></div>';
+            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-comment fa-flip-horizontal"></i></span></div>';
             _noteHtml += '<div class="timeline-content m-0">';
             _noteHtml += '   <a href="javascript:void(0)" class="fs-6 text-gray-800 fw-bolder d-block text-hover-primary">' + row.comment_content + '</a>';
             _noteHtml += '   <span class="fw-bold text-gray-400">' + row.comment_date + '</span>';
@@ -378,18 +395,62 @@ function OrderInfo(ord_id) {
 
     }).catch(err => { }).always(function () { });
 }
+
+function WarrantyInfoModal(id, _action) {
+    let modalHtml = '<div class="modal-dialog p-12">';
+    modalHtml += '<div class="modal-content modal-rounded">';
+    modalHtml += '<div class="modal-header py-3"><h4 class="modal-title">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '<div class="modal-footer py-3"></div>';
+    //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#myModal").empty().html(modalHtml);
+
+    modalHtml = '';
+    $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
+        response = JSON.parse(response);
+        modalHtml += '<div class="row">';
+        let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
+        modalHtml += '<div class="col-lg-12">';
+        $.each(_chat_history, function (i, row) {
+            modalHtml += '<div class="row">';
+            modalHtml += '<div class="col-lg-12">';
+            modalHtml += '<h3 class="mb-2">' + row.from + '</h3>';
+            modalHtml += '<p class="fs-6 text-gray-600 fw-bold mb-4 mb-lg-8">' + row.content + '</p>';
+            modalHtml += '</div>';
+            modalHtml += '</div>';
+        });
+        modalHtml += '</div>';
+        modalHtml += '</div>';
+    }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
+    console.log(_action);
+    //add action button
+    if (_action == 'SR') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button>'); }
+    else if (_action == 'RT') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>'); }
+    else if (_action == 'RP') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
+    else if (_action == 'CO') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
+
+
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
+    //$("#kt_warranty_claim").accordion({
+    //    collapsible: true
+    //});
+}
+
 function ClaimWarranty(chk) {
     var isChecked = $(chk).prop("checked");
     $("[name='CheckSingle']").prop("checked", false);
-    $("[name='CheckSingle']").parent().parent().find('.order-claim-warranty').empty();
+    $('.order-claim-warranty-' + $(chk).data('id')).empty();
     $(chk).prop("checked", isChecked);
     if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
-    else $(chk).parent().parent().find('.order-claim-warranty').empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
+    else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
 }
 function ClaimWarrantyModal(ele) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
@@ -479,7 +540,7 @@ function ClaimWarrantyModal(ele) {
     $('.warranty-checkbox').change(function (e) {
         var checked = $(this).prop("checked"), container = $(this).parent(), siblings = container.siblings();
         if ($(this).attr('type') == 'radio') $('.warranty-checkbox').prop("checked", false);
-        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false); 
+        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false);
         container.find('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
         function checkSiblings(el) {
             var parent = el.parent().parent(), all = true;

@@ -106,7 +106,7 @@ function dataGridLoad() {
             { data: 'order_date', title: 'Order Date', sWidth: "10%" },
             { data: 'email', title: 'Email', sWidth: "10%" },
             { data: 'first_name', title: 'Requester', sWidth: "15%", render: function (id, type, row) { return row.first_name + ' ' + row.last_name; } },
-            
+
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
@@ -143,11 +143,13 @@ function dataGridLoad() {
 }
 
 function ClaimWarrantyModal(id) {
+    let _action = '';
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3"><h4>Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
+    modalHtml += '<div class="modal-footer py-3"></div>';
+    //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -159,7 +161,7 @@ function ClaimWarrantyModal(id) {
         modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten order-info">';
         $.each(response, function (i, row) {
             let _json = JSON.parse(row.order_details); //console.log(_json);
-            
+            _action = _json.ticket_action;
             modalHtml += '      <div class="mb-2 float-right">';
             modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';
             modalHtml += '      </div>';
@@ -215,6 +217,14 @@ function ClaimWarrantyModal(id) {
         modalHtml += '</div>';
         modalHtml += '</div>';
     }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
+
+    //add action button
+    if (_action == 'SR') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button>'); }
+    else if (_action == 'RT') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>');}
+    else if (_action == 'RP') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>');}
+    else if (_action == 'CO') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
+
 
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
     //$("#kt_warranty_claim").accordion({

@@ -1,4 +1,5 @@
-﻿using LaylaERP.BAL;
+﻿using ClosedXML.Excel;
+using LaylaERP.BAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
@@ -69,7 +70,7 @@ namespace LaylaERP.Controllers
         public ActionResult EditChartAccountEntry()
         {
             return View();
-        }        
+        }
         public ActionResult ProfitLossAccount()
         {
             return View();
@@ -114,7 +115,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        
+
         public ActionResult BankReconciliationprocess()
         {
             return View();
@@ -122,7 +123,7 @@ namespace LaylaERP.Controllers
         public ActionResult journalvoucherlist()
         {
             return View();
-        }        
+        }
         public ActionResult journalvoucher()
         {
             return View();
@@ -443,7 +444,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-       
+
         public JsonResult AccountJournalList(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -476,7 +477,7 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue2);
                 if (!string.IsNullOrEmpty(model.strValue3))
                     todate = Convert.ToDateTime(model.strValue3);
-                long aid = 0 ;
+                long aid = 0;
                 if (!string.IsNullOrEmpty(model.strValue4))
                     aid = Convert.ToInt64(model.strValue4);
                 //if (!string.IsNullOrEmpty(model.strValue5))
@@ -974,7 +975,7 @@ namespace LaylaERP.Controllers
                 DateTime? creationdate = null;
                 if (!string.IsNullOrEmpty(model.strValue7))
                     creationdate = Convert.ToDateTime(model.strValue7);
-                JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6,model.SortCol, model.SortDir, creationdate, model.strValue8));
+                JSONresult = JsonConvert.SerializeObject(AccountingRepository.NewBankEntry(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5, model.strValue6, model.SortCol, model.SortDir, creationdate, model.strValue8));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
@@ -983,11 +984,11 @@ namespace LaylaERP.Controllers
         {
             string result = string.Empty;
             try
-            { 
+            {
                 DataTable dt = AccountingRepository.Banktransferlist(model.strValue1, model.strValue2);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-            //  DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
-                 
+                //  DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
+
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
@@ -1019,7 +1020,7 @@ namespace LaylaERP.Controllers
         public JsonResult AddTranscationType(TranscationType model)
         {
             int ID = AccountingRepository.AddTranscationType(model);
-            if(ID > 0)
+            if (ID > 0)
             {
                 return Json(new { status = true, message = "Transcation type saved successfully", url = "", id = ID }, 0);
             }
@@ -1049,19 +1050,19 @@ namespace LaylaERP.Controllers
                 DataTable dt = AccountingRepository.TranscationTypeById(strValue1);
                 JSONResult = JsonConvert.SerializeObject(dt);
             }
-            catch(Exception ex) { throw ex; }
+            catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
         }
         public JsonResult UpdateTranscationType(TranscationType model)
         {
-            if(model.rowid > 0)
+            if (model.rowid > 0)
             {
                 AccountingRepository.UpdateTranscationType(model);
-                return Json(new { status = true, message ="Transaction type update successfully.", url = "", id = model.rowid },0);
+                return Json(new { status = true, message = "Transaction type update successfully.", url = "", id = model.rowid }, 0);
             }
             else
             {
-                return Json(new { status = false, message ="Something went wrong.", url ="", id = 0 }, 0);
+                return Json(new { status = false, message = "Something went wrong.", url = "", id = 0 }, 0);
             }
         }
         public JsonResult GetAccountingAccount(SearchModel model)
@@ -1084,7 +1085,7 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(JSONResult, 0);
-        }      
+        }
         public JsonResult AccountName(string strValue1)
         {
             string JSONResult = string.Empty;
@@ -1356,6 +1357,76 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-       
+        [HttpGet]
+        [Route("accounting/profitloss-export")]
+        public ActionResult ProfitLossReportExport(AccountingReportSearchModal model)
+        {
+            //Name of File  
+            FileContentResult robj;
+            string fileName = "Sample.xlsx";
+            try
+            {
+                if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
+                else if (model.report_type.Equals("PLREPORT")) model.report_type = "PROFITLOSS";
+                else if (model.report_type.Equals("PLDREPORT")) model.report_type = "PROFITLOSSDETAIL";
+                else if (model.report_type.Equals("BSREPORT")) model.report_type = "BALANSHEET";
+                else if (model.report_type.Equals("CFREPORT")) model.report_type = "CASHFLOW";
+                DataTable dt = AccountingRepository.GetTrailBalance(model.from_date, model.to_date, model.fiscalyear_id, model.report_type);
+                dt.TableName = "Profit_Loss";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    var ws = wb.Worksheets.Add("Profit_Loss");
+                    ws.Style.Font.FontName = "Arial"; ws.Style.Font.FontSize = 8;
+
+                    ws.Cell("A1").Value = CommanUtilities.Provider.GetCurrent().CompanyName;
+                    ws.Cell("A1").Style.Font.Bold = true; ws.Cell("A1").Style.Font.FontSize = 14; ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A1:H1").Merge();
+                    ws.Cell("A2").Value = "Profit and Loss Detail";
+                    ws.Cell("A2").Style.Font.Bold = true; ws.Cell("A2").Style.Font.FontSize = 14; ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A2:H2").Merge();
+                    ws.Cell("A3").Value = "";
+                    ws.Cell("A3").Style.Font.Bold = true; ws.Cell("A3").Style.Font.FontSize = 10; ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A3:H3").Merge();
+
+                    //Add header
+                    ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
+                    ws.Cell("A5").Value = ""; 
+                    ws.Cell("B5").Value = "Date";
+                    ws.Cell("C5").Value = "Transaction Type";
+                    ws.Cell("D5").Value = "Num";
+                    ws.Cell("E5").Value = "Name";
+                    ws.Cell("F5").Value = "Memo/Description";
+                    ws.Cell("G5").Value = "Amount";
+                    ws.Cell("H5").Value = "Balance";
+                    int i = 6;
+                    foreach (DataRow dtRow in dt.Rows)
+                    {
+                        ws.Cell("A" + i).Value = dtRow["account_name"].ToString();
+                        ws.Cell("B" + i).Value = dtRow["date"].ToString();
+                        ws.Cell("C" + i).Value = dtRow["doc_type_desc"].ToString();
+                        ws.Cell("D" + i).Value = dtRow["num"].ToString();
+                        ws.Cell("E" + i).Value = dtRow["name"].ToString();
+                        ws.Cell("F" + i).Value = dtRow["memo"].ToString();
+                        ws.Cell("G" + i).Value = dtRow["amount"].ToString();
+                        ws.Cell("H" + i).Value = dtRow["balance"].ToString();
+                        i++;
+                    }
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        var bytesdata = File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                        robj = bytesdata;
+                        //Return xlsx Excel File  
+                        //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    }
+                }
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(robj, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -397,9 +397,9 @@ function OrderInfo(ord_id) {
 }
 
 function WarrantyInfoModal(id, _action) {
-    let modalHtml = '<div class="modal-dialog p-12">';
+    let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3"><h4 class="modal-title">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3"></div>';
     //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
@@ -450,7 +450,7 @@ function ClaimWarranty(chk) {
 function ClaimWarrantyModal(ele) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3"><h4>Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';

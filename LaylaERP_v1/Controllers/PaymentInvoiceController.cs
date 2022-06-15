@@ -56,6 +56,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult MultipleBillPaymentList()
+        {
+            return View();
+        }
+        public ActionResult MultipleBillPayment()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
@@ -175,6 +184,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpGet]
+        public JsonResult GetMiscPaymentType()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = PaymentInvoiceRepository.GetMiscPaymentType();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
         [HttpGet]
         public JsonResult GetTypePayment()
         {
@@ -488,6 +510,26 @@ namespace LaylaERP.Controllers
                     todate = Convert.ToDateTime(model.strValue3);
 
                 DataTable dt = PaymentInvoiceRepository.GetPaymentMiscList(model.strValue1, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetMultipalPaymentMiscList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.GetMultipalPaymentMiscList(model.strValue1, model.strValue4, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

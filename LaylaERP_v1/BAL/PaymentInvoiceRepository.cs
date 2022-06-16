@@ -824,7 +824,7 @@ namespace LaylaERP.BAL
             return DT;
         }
 
-        public static DataTable paymiscList(DateTime? fromdate, DateTime? todate, int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable paymiscList(DateTime? fromdate, DateTime? todate, int statusid, string userstatus, string salestatus,string custype, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -838,6 +838,7 @@ namespace LaylaERP.BAL
                     !CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator") ? new SqlParameter("@userid", CommanUtilities.Provider.GetCurrent().UserID) : new SqlParameter("@userid",DBNull.Value),
                     new SqlParameter("@isactive", userstatus),
                     new SqlParameter("@status", statusid),
+                    new SqlParameter("@customertype", custype),
                     new SqlParameter("@searchcriteria", searchid),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),

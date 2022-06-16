@@ -29,6 +29,7 @@
                                     <span class="input-group-addon"><i class="fa fa-calendar">Financial Year</i></span>
                                     @*<input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">*@
                                     <select class="form-control select2" id="ddlfinaceyear"></select>
+                                    @*<button type="button" id="btnreset" data-toggle="tooltip" title="Reset Page." onclick="Reset();" class="btn btn-primary btn-flat button">Reset</button>*@
                                 </div>
                             </div>
 
@@ -55,7 +56,7 @@
                 </div>
 
             </div>
-
+             
             <div class="row">
                 <h2 class="sm-heading">Non Deposit Accounts</h2>
                 <div class="col-sm-6">
@@ -83,25 +84,26 @@
                     </div>
                     <div class="form-group">
                         @*<label for="startdate">Transfer Amount To Bank</label><span style="color:red">*</span>
-                        <input type="text" id="txtbankfee" class="form-control col-sm-3" placeholder="Transfer Amount To Bank">
-                        <input type="text" id="txtmerchantfee" class="form-control col-sm-3" placeholder="Merchant Fee">*@
+            <input type="text" id="txtbankfee" class="form-control col-sm-3" placeholder="Transfer Amount To Bank">
+            <input type="text" id="txtmerchantfee" class="form-control col-sm-3" placeholder="Merchant Fee">*@
                         <div class="col-sm-6">
                             <label for="bankfee">Transfer Amount To Bank</label><span style="color:red">*</span>
                             <input type="text" id="txtbankfee" class="form-control col-sm-3" placeholder="Transfer Amount To Bank">
                         </div>
-                            <div  class="col-sm-6">            
-                                    <label for="merchantfee">Merchant Fee</label>
-                                    <input type="text" id="txtmerchantfee" class="form-control col-sm-3" placeholder="Merchant Fee"> 
-                            </div>
+                        <div class="col-sm-6">
+                            <label for="merchantfee">Merchant Fee</label>
+                            <input type="text" id="txtmerchantfee" class="form-control col-sm-3" placeholder="Merchant Fee">
                         </div>
-
-                        <div class="form-group">
-                            
-                            <label for="description">Description</label>
-                            <input type="text" id="txtDescription" class="form-control billinfovalff" placeholder="Description" autocomplete="off" />
-                        </div>
-                        <button type="button" id="btntransfer" class="btn btn-danger" style="float:right;"><i class="fa fa-check"></i><span title="Click here to transfer." data-placement="bottom" data-toggle="tooltip"> Transfer </span></button>
                     </div>
+
+                    <div class="form-group">
+
+                        <label for="description">Description</label>
+                        <input type="text" id="txtDescription" class="form-control billinfovalff" placeholder="Description" autocomplete="off" />
+                    </div>
+                    <a href="#" class="btn btn-danger" id="btnReset"><span title="Click here to reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
+                    <button type="button" id="btntransfer" class="btn btn-danger" style="float:right;"><i class="fa fa-check"></i><span title="Click here to transfer." data-placement="bottom" data-toggle="tooltip"> Transfer </span></button>
+                </div>
             </div>
 
             @*<div class="row">

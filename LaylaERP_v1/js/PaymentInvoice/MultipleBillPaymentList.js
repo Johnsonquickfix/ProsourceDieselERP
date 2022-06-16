@@ -290,7 +290,7 @@ function takepayment() {
     let status = 'IP'// $('#ddlStatus').val();
     console.log(id);
     if (id == "") {
-        swal('Alert', 'Please select a PO', 'error');
+        swal('Alert', 'Please select bill', 'error');
     }
     else {
         ActivityLog('Go for payment process', '/PaymentInvoice/PaymentInvoiceMiscBill?status=' + status + '&id=' + id + '');

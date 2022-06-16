@@ -14,6 +14,9 @@
     $(document).on("keypress", "#txtOrderNo,#txtOrderPhone,#txtTicketNo", function (t) { if (t.keyCode == 13) { dataGridLoad(); } });
 
     $.when(dataGridLoad()).done(function () { });
+    $(document).on("click", "[name='ticke_action']", function (t) {
+        $("[name='ticke_action']").not(this).prop("checked", false)
+    });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -21,6 +24,7 @@ function formatCurrency(total) {
     if (total < 0) { neg = true; total = Math.abs(total); }
     return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
+
 ///Search Control
 function SearchByControl(id) {
     if (id == 0) {
@@ -93,20 +97,21 @@ function dataGridLoad() {
             });
         },
         columns: [
-            { data: 'id', title: 'Ticket No.', sWidth: "10%", render: function (id, type, full, meta) { return '#' + id; } },
+            { data: 'id', title: 'Ticket No.', sWidth: "10%", render: function (id, type, full, meta) { return '<div class="text-gray-800 fw-boldest">#' + id + '</div>'; } },
             { data: 'subject', title: 'Subject', sWidth: "15%" },
             { data: 'ticket_date', title: 'Ticket Date', sWidth: "10%" },
             {
                 data: 'order_id', title: 'OrderID', sWidth: "10%",
                 render: function (id, type, full, meta) {
-                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
-                    else return '#' + id;
+                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '<div class="text-gray-800 fw-boldest">#' + id + '</div> <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else return '<div class="text-gray-800 fw-boldest">#' + id + '</div>';
                 }
             },
             { data: 'order_date', title: 'Order Date', sWidth: "10%" },
-            { data: 'email', title: 'Email', sWidth: "10%" },
-            { data: 'first_name', title: 'Requester', sWidth: "15%", render: function (id, type, row) { return row.first_name + ' ' + row.last_name; } },
-
+            {
+                data: 'email', title: 'Email', sWidth: "10%",
+                render: function (id, type, row) { return '<div class="text-gray-800 text-hover-primary fw-boldest">' + row.first_name + ' ' + row.last_name + '</div><div class="text-gray-400 fw-bold">' + row.email + '</div>'; }
+            },
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
                     let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00, refund_gc_amt = parseFloat(row.refund_giftcard_total) || 0.00;
@@ -116,40 +121,31 @@ function dataGridLoad() {
                 }
             },
             { data: 'agent_name', title: 'Agent Name', sWidth: "10%" },
-            //{
-            //    data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
-            //        if (data == 'wc-pending') return 'Pending payment';
-            //        else if (data == 'wc-processing') return 'Processing';
-            //        else if (data == 'wc-on-hold') return 'On hold';
-            //        else if (data == 'wc-completed') return 'Completed';
-            //        else if (data == 'wc-cancelled') return 'Cancelled';
-            //        else if (data == 'wc-refunded') return 'Refunded';
-            //        else if (data == 'wc-failed') return 'Failed';
-            //        else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
-            //        else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
-            //        else if (data == 'wc-podium') return 'Order via Podium';
-            //        else if (data == 'wc-podiumrefund') return 'Podium Refunded';
-            //        else if (data == 'draft') return 'draft';
-            //        else return '-';
-            //    }
-            //}
+            {
+                data: 'ticket_action', title: 'Ticket Action', sWidth: "10%", render: function (data, type, row) {
+                    if (data == 'wp_return') return '<div class="badge badge-light-primary">Return</div>';
+                    else if (data == 'wp_replacement') return '<div class="badge badge-light-primary">Replacement</div>';
+                    else if (data == 'wp_createorder') return '<div class="badge badge-light-primary">Create new order</div>';
+                    else if (data == 'wp_declined') return '<div class="badge badge-light-danger">Declined</div>';
+                    else return '<div class="badge badge-light-warning">Processing</div>';
+                }
+            },
             {
                 'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
-                    return '<a href="javascript:void(0);" onclick="ClaimWarrantyModal(' + id + ');" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="javascript:void(0);" onclick="ClaimWarrantyModal(' + id + ',\'' + row.ticket_action + '\');" data-toggle="tooltip" title="View Warranty claim detail."><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
         ]
     });
 }
 
-function ClaimWarrantyModal(id) {
-    let _action = '';
+function ClaimWarrantyModal(id, _action) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3"></div>';
-    //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
+    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="UpdateTicketAction(this);"><i class="fa fa-paper-plane"></i> Submit</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -158,10 +154,9 @@ function ClaimWarrantyModal(id) {
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
         response = JSON.parse(response);
         modalHtml += '<div class="row">';
-        modalHtml += '<div class="col-lg-4 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten order-info">';
+        modalHtml += '<div class="col-lg-4 m-0 me-xl-10 me-lg-5 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten order-info">';
         $.each(response, function (i, row) {
             let _json = JSON.parse(row.order_details); //console.log(_json);
-            _action = _json.ticket_action;
             modalHtml += '      <div class="mb-2 float-right">';
             modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';
             modalHtml += '      </div>';
@@ -214,22 +209,80 @@ function ClaimWarrantyModal(id) {
             modalHtml += '</div>';
             modalHtml += '</div>';
         });
+
+        //Add comments
+        let _agent_comments = isNullUndefAndSpace(response[0].ticket_comments) ? JSON.parse(response[0].ticket_comments) : [];
+        console.log(_agent_comments);
+        modalHtml += '<div class="separator separator-dashed my-3"></div>';
+        modalHtml += '<div class="row order-comments mb-6"><div class="col-lg-12">';
+        $.each(_agent_comments, function (i, row) {
+            if (row.comment_from == 'agent') {
+                modalHtml += '<div class="d-flex flex-column align-items-start">';
+                modalHtml += '  <div class="d-flex align-items-center mb-2">';
+                modalHtml += '    <div class="ms-3 fs-5 fw-bolder text-gray-900 text-hover-primary me-1">' + row.comment_from + '</div>';
+                modalHtml += '  </div>';
+                modalHtml += '  <div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start">' + row.ticket_comment + '</div>';
+                modalHtml += '</div>';
+            }
+            else {
+                modalHtml += '<div class="d-flex flex-column align-items-end">';
+                modalHtml += '  <div class="d-flex align-items-center mb-2">';
+                modalHtml += '    <div class="ms-3 fs-5 fw-bolder text-gray-900 text-hover-primary me-1">' + row.comment_from + '</div>';
+                modalHtml += '  </div>';
+                modalHtml += '<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end">' + row.ticket_comment + '</div>';
+                modalHtml += '</div>';
+            }
+        });
+        modalHtml += '</div></div>';
+
+        //Add action
+        modalHtml += '<div class="row notice bg-light-warning rounded border-warning border border-dashed p-6">';
+        modalHtml += '<div class="col-lg-12">';
+
+        modalHtml += '<label class="d-flex align-items-center">';
+        modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_return" ' + (_action == 'wp_return' ? 'checked' : '') + '>';
+        modalHtml += '<span class="form-check-label d-flex flex-column align-items-start">';
+        modalHtml += '<span class="text-gray-900 fw-bolder">Return</span><span class="fs-6 text-gray-700 pe-7">Damage claim for the entire product.</span>';
+        modalHtml += '</span>';
+        modalHtml += '</label><div class="separator separator-dashed my-3"></div>';
+
+        modalHtml += '<label class="d-flex align-items-center">';
+        modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_replacement" ' + (_action == 'wp_replacement' ? 'checked' : '') + '>';
+        modalHtml += '<span class="form-check-label d-flex flex-column align-items-start">';
+        modalHtml += '<span class="text-gray-900 fw-bolder">Replacement</span><span class="fs-6 text-gray-700 pe-7">Damage/wrong item claim for just a part or entire product.</span>';
+        modalHtml += '</span>';
+        modalHtml += '</label><div class="separator separator-dashed my-3"></div>';
+
+        modalHtml += '<label class="d-flex align-items-center">';
+        modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_createorder" ' + (_action == 'wp_createorder' ? 'checked' : '') + '>';
+        modalHtml += '<span class="form-check-label d-flex flex-column align-items-start">';
+        modalHtml += '<span class="text-gray-900 fw-bolder">Create new order</span><span class="fs-6 text-gray-700 pe-7">Missing/required/additional item claim for in warranty or out of warranty.</span>';
+        modalHtml += '</span>';
+        modalHtml += '</label><div class="separator separator-dashed my-3"></div>';
+
+        modalHtml += '<label class="d-flex align-items-center">';
+        modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_declined" ' + (_action == 'wp_declined' ? 'checked' : '') + '>';
+        modalHtml += '<span class="form-check-label d-flex flex-column align-items-start">';
+        modalHtml += '<span class="text-gray-900 fw-bolder">Declined</span><span class="fs-6 text-gray-700 pe-7">There\'s no need for either customer to open support ticket.</span>';
+        modalHtml += '</span>';
+        modalHtml += '</label>';
+
+        modalHtml += '</div>';
+        modalHtml += '</div>';
+
+        modalHtml += '<div class="row notice bg-light-warning rounded border-warning border border-dashed p-6 mt-4">';
+        modalHtml += '<div class="col-lg-12">';
+        modalHtml += '<label class="form-label text-gray-800 fw-bolder">Comment</label>';
+        modalHtml += '<textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
+        modalHtml += '</div>';
+        modalHtml += '</div>';
+
         modalHtml += '</div>';
         modalHtml += '</div>';
     }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
 
-    //add action button
-    if (_action == 'SR') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button>'); }
-    else if (_action == 'RT') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>');}
-    else if (_action == 'RP') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>');}
-    else if (_action == 'CO') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
-    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
-
-
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
-    //$("#kt_warranty_claim").accordion({
-    //    collapsible: true
-    //});
+    $("input[name='ticke_action'][value=" + _action + "]").prop("checked", true);
 }
 
 function OrderInfo(ord_id) {
@@ -265,6 +318,34 @@ function OrderInfo(ord_id) {
             $(".order-amount").text(formatCurrency(_json._order_total)); $(".order-tax").text(formatCurrency(_json._order_tax));
         });
     }).catch(err => { }).always(function () { });
+}
+
+function UpdateTicketAction(element) {
+    let _chk = $("input[name='ticke_action']:checked").val();
+    let option = { id: parseInt($(element).data('id')) || 0, ticket_action: _chk, comment: $("#kt_warranty_claim_note").val() };
+    //console.log(option); return false;
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, do it!', text: "Update ticket feedback.",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.ajax(
+                    {
+                        method: "POST", timeout: 0, headers: { "Content-Type": "application/json" },
+                        url: "/customer-service/ticket-action", data: JSON.stringify({ strValue1: JSON.stringify(option) })
+                    }
+                ).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].response == 'success') {
+                        $("#myModal").modal('hide');
+                        swal('Success', 'Thank you for giving feedback.', "success");
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+    return false;
 }
 
 function TicketMailDetails(name, chat_history) {

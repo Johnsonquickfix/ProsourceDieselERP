@@ -140,7 +140,6 @@ function dataGridLoad() {
 }
 
 function ClaimWarrantyModal(id, _action) {
-    console.log(id, _action);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
@@ -212,8 +211,29 @@ function ClaimWarrantyModal(id, _action) {
         });
 
         //Add comments
-        modalHtml += '<div class="row order-comments">';
-        modalHtml += '</div>';
+        let _agent_comments = isNullUndefAndSpace(response[0].ticket_comments) ? JSON.parse(response[0].ticket_comments) : [];
+        console.log(_agent_comments);
+        modalHtml += '<div class="separator separator-dashed my-3"></div>';
+        modalHtml += '<div class="row order-comments mb-6"><div class="col-lg-12">';
+        $.each(_agent_comments, function (i, row) {
+            if (row.comment_from == 'agent') {
+                modalHtml += '<div class="d-flex flex-column align-items-start">';
+                modalHtml += '  <div class="d-flex align-items-center mb-2">';
+                modalHtml += '    <div class="ms-3 fs-5 fw-bolder text-gray-900 text-hover-primary me-1">' + row.comment_from + '</div>';
+                modalHtml += '  </div>';
+                modalHtml += '  <div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start">' + row.ticket_comment + '</div>';
+                modalHtml += '</div>';
+            }
+            else {
+                modalHtml += '<div class="d-flex flex-column align-items-end">';
+                modalHtml += '  <div class="d-flex align-items-center mb-2">';
+                modalHtml += '    <div class="ms-3 fs-5 fw-bolder text-gray-900 text-hover-primary me-1">' + row.comment_from + '</div>';
+                modalHtml += '  </div>';
+                modalHtml += '<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end">' + row.ticket_comment + '</div>';
+                modalHtml += '</div>';
+            }
+        });
+        modalHtml += '</div></div>';
 
         //Add action
         modalHtml += '<div class="row notice bg-light-warning rounded border-warning border border-dashed p-6">';

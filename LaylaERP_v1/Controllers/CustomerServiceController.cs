@@ -101,7 +101,7 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     long user_id = CommanUtilities.Provider.GetCurrent().UserID;
-                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id);
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "GENTICKET");
                     JSONresult = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)
                     {
@@ -112,6 +112,24 @@ namespace LaylaERP.Controllers
                     }
                 }
                 else { JSONresult = "[{\"id\":0,\"response\":\"Please select product.\"}]"; }
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        [Route("customer-service/ticket-action")]
+        public JsonResult TicketAction(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                if (!string.IsNullOrEmpty(model.strValue1))
+                {
+                    long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETACT");
+                    JSONresult = JsonConvert.SerializeObject(dt);                    
+                }
+                else { JSONresult = "[{\"id\":0,\"response\":\"Please select action.\"}]"; }
             }
             catch { }
             return Json(JSONresult, 0);

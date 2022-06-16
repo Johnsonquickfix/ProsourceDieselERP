@@ -49,6 +49,11 @@ function formatCurrency(total) {
     if (total < 0) { neg = true; total = Math.abs(total); }
     return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
+function ValidateMaxValue(value, min, max) {
+    if (parseInt(value) < min || isNaN(value)) return 0;
+    else if (parseInt(value) > max) return max;
+    else return value;
+}
 ///Search Control
 function SearchByControl(id) {
     if (id == 1) {
@@ -424,12 +429,11 @@ function WarrantyInfoModal(id, _action) {
         modalHtml += '</div>';
         modalHtml += '</div>';
     }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
-    console.log(_action);
     //add action button
-    if (_action == 'SR') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button>'); }
-    else if (_action == 'RT') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>'); }
-    else if (_action == 'RP') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
-    else if (_action == 'CO') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>'); }
+    else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
+    else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+    else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
     else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
 
 
@@ -448,11 +452,12 @@ function ClaimWarranty(chk) {
     else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
 }
 function ClaimWarrantyModal(ele) {
+    let _qty = (parseInt($(ele).data('qty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + $(ele).data('qty') + '">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -490,41 +495,24 @@ function ClaimWarrantyModal(ele) {
         modalHtml += '</li>';
     });
     modalHtml += '</ul>';
+    modalHtml += '</div>';
+    modalHtml += '<div class="separator separator-dashed my-5"></div>';
 
+    modalHtml += '<div class="bg-light-warning rounded border-warning border border-dashed p-6">';
+    modalHtml += '<div class="row">';
+    modalHtml += '<div class="col-md-6">';
+    modalHtml += '<label class="required form-label text-gray-800 fw-bolder">Quantity</label>';
+    modalHtml += '<input type="number" id="kt_warranty_claim_qty" class="form-control mb-2" placeholder="Quantity" value="' + _qty + '" min="0" max="' + _qty + '" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + _qty + ')">';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
 
-    //$.each(WarrantyQuestions, function (i, row) {
-    //    modalHtml += '<div class="py-0" data-kt-customer-payment-method="row">';
+    modalHtml += '<div class="row">';
+    modalHtml += '<div class="col-md-12">';
+    modalHtml += '<label class="form-label text-gray-800 fw-bolder">Comment</label>';
+    modalHtml += '<textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
 
-    //    modalHtml += '<div class="py-3 d-flex flex-stack flex-wrap">';
-    //    modalHtml += '  <div class="d-flex align-items-center collapsible rotate collapsed" data-id="' + i + '">';
-    //    modalHtml += '      <div class="me-3 rotate-90"></div>';
-    //    modalHtml += '      <div class="me-3">';
-    //    modalHtml += '        <div class="d-flex align-items-center">';
-    //    modalHtml += '            <div class="text-gray-800 fw-bolder"><input type="checkbox" id="rd-' + i + '" name="claimtype" class="form-check-input m-0 me-3" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="form-check-label fw-bolder text-gray-800" for="rd-' + i + '"> ' + (i + 1) + '. ' + row.title + '</label></div>';
-    //    //modalHtml += '            <div class="badge badge-light-primary ms-5">Primary</div>';
-    //    modalHtml += '        </div>';
-    //    //modalHtml += '        <div class="text-muted">Expires Dec 2024</div>';
-    //    modalHtml += '      </div>';
-    //    modalHtml += '  </div>';
-    //    modalHtml += '</div>';
-
-    //    modalHtml += '<div id="kt_warranty_claim_body_' + i + '" class="fs-6 ps-10 collapse">';
-    //    $.each(row.questions, function (q_i, q_row) {
-
-    //        if (q_row.sub_questions != null)
-    //            modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="rd-' + i + '-' + q_i + '" name="rd-' + i + '" class="form-check-input m-0 me-3" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="custom-control-label m-2" for="rd-' + i + '-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
-    //        else
-    //            modalHtml += '<div class="text-gray-800 fw-bolder"><input type="checkbox" id="chk-' + i + '-' + q_i + '" class="form-check-input" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/><label class="custom-control-label m-2" for="chk-' + i + '-' + q_i + '"> ' + (q_i + 1) + '. ' + q_row.title + '</label>';
-
-    //        $.each(q_row.sub_questions, function (sq_i, sq_row) {
-    //            modalHtml += '<div class="text-gray-800 px-8"><input type="checkbox" id="chk-' + i + '-' + q_i + '-' + sq_i + '" class="form-check-input" data-id="' + row.id + '" data-code="' + row.code + '"/><label class="custom-control-label m-2" for="chk-' + i + '-' + q_i + '-' + sq_i + '"> ' + (sq_i + 1) + '. ' + sq_row.title + '</label></div>';
-    //        });
-    //        modalHtml += '</div>';
-    //    });
-    //    modalHtml += '</div>';
-
-    //    modalHtml += '</div><div class="separator separator-dashed"></div>';
-    //});
     modalHtml += '</div>';
 
     $('#myModal .modal-body').append(modalHtml);
@@ -544,7 +532,6 @@ function ClaimWarrantyModal(ele) {
         container.find('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
         function checkSiblings(el) {
             var parent = el.parent().parent(), all = true;
-            console.log(parent);
             el.siblings().each(function () {
                 let returnValue = all = ($(this).children('.warranty-checkbox').prop("checked") === checked);
                 return returnValue;
@@ -581,8 +568,9 @@ function GenerateTicketNo() {
     { from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
     { from: _user, content: _reason }, { from: _user, content: _questions }];
     let option = {
-        id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#btnGenerateTicket").data('qty')) || 0, order_item_sku: '',
+        id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#kt_warranty_claim_qty").val()) || 0, order_item_sku: '',
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
+        comment: $("#kt_warranty_claim_note").val()
     };
     let _body = TicketMailDetails(_user, _chat);
     //console.log(option, _questions); return false;
@@ -600,8 +588,9 @@ function GenerateTicketNo() {
                 ).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
-                        $("#myModal").modal('hide');
+                        $("#myModal").modal('hide'); OrderInfo(option.order_id);
                         swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+                        
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

@@ -12,7 +12,12 @@ $(document).ready(function () {
     getGrandTotal(true);
     $('#txttransferDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2();
+
+    $("#btnReset").click(function () {
+         location.href = '../../Accounting/FunddepositList'; 
+    });
 })
+
 
 function getfinaceyear() {
     let fincyear = "";

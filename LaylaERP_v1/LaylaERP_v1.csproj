@@ -835,6 +835,8 @@
     <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\CreatePaymentInvoicePO.js" />
     <Content Include="js\PaymentInvoice\MiscBillPrint.js" />
+    <Content Include="js\PaymentInvoice\MultipleBillPayment.js" />
+    <Content Include="js\PaymentInvoice\MultipleBillPaymentList.js" />
     <Content Include="js\PaymentInvoice\PaymentChecklist.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoiceMiscBill.js" />
@@ -1327,6 +1329,8 @@
     <Content Include="Views\Accounting\journalvoucherlist.cshtml" />
     <Content Include="Views\Bank\BankPaymentVoucher.cshtml" />
     <Content Include="Views\Bank\BankPaymentVoucherList.cshtml" />
+    <Content Include="Views\PaymentInvoice\MultipleBillPayment.cshtml" />
+    <Content Include="Views\PaymentInvoice\MultipleBillPaymentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

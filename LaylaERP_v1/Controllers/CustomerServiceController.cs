@@ -79,13 +79,19 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                long oid = 0;
+                long oid = 0, ticketid = 0;
                 if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (string.IsNullOrEmpty(model.strValue2)) { model.strValue2 = "ORDINFO"; }
+                else if (model.strValue2 == "TICKET")
+                {
+                    model.strValue2 = "TICKETITEM";
+                    ticketid = oid;
+                }
                 if (oid <= 0)
                 {
                     throw new Exception("Invalid Data");
                 }
-                DataSet ds = CustomerServiceRepository.GetOrderInfo(oid);
+                DataSet ds = CustomerServiceRepository.GetOrderInfo(oid, ticketid, model.strValue2);
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
@@ -127,7 +133,7 @@ namespace LaylaERP.Controllers
                 {
                     long user_id = CommanUtilities.Provider.GetCurrent().UserID;
                     DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETACT");
-                    JSONresult = JsonConvert.SerializeObject(dt);                    
+                    JSONresult = JsonConvert.SerializeObject(dt);
                 }
                 else { JSONresult = "[{\"id\":0,\"response\":\"Please select action.\"}]"; }
             }

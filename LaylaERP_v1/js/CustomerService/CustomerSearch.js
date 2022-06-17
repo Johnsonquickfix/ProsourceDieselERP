@@ -238,7 +238,7 @@ function OrderInfo(ord_id) {
             _html += _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '<br>';
             _html += 'Phone: ' + _json._billing_phone + '<br>';
             _html += 'Email: ' + _json._billing_email;
-            $(".order-id").data('email', _json._billing_email); $(".order-id").data('name', _json._billing_first_name);
+            $(".order-id").data('email', _json._billing_email); $(".order-id").data('name', _json._billing_first_name + ' ' + _json._billing_last_name);
             $(".order-billing").empty().append(_html);
             _html = '<strong>' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</strong><br>';
             if (isNullUndefAndSpace(_json._shipping_address_1)) _html += _json._shipping_address_1 + '<br>';
@@ -247,7 +247,7 @@ function OrderInfo(ord_id) {
             $(".order-shipping").empty().append(_html);
 
             ///Payment
-            $(".order-payment").text(_json._payment_method_title); $(".order-payment").data('pt', _json._payment_method);
+            $(".order-payment").text(_json._payment_method_title); $(".order-payment").data('pt', _json._payment_method); $(".order-payment").data('pt_desc', _json._payment_method_title);
             $(".order-amount").text(formatCurrency(_json._order_total)); $(".order-tax").text(formatCurrency(_json._order_tax));
         });
 
@@ -412,8 +412,9 @@ function OrderInfo(ord_id) {
     }).catch(err => { }).always(function () { });
 }
 
+//Show Customer Warranty claim details and add comments
 function WarrantyInfoModal(id, _action) {
-    let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
+    let modalHtml = '<div class="modal-dialog modal-lg modal-dialog-scrollable">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Ticket No.: #' + id + ', Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
@@ -426,7 +427,7 @@ function WarrantyInfoModal(id, _action) {
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
 }
 function WarrantyInfoModalData(id, _action) {
-    let _html = '';
+    let _html = ''; $("#loader").show();
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
         response = JSON.parse(response);
         _html += '<div class="row">';
@@ -477,9 +478,9 @@ function WarrantyInfoModalData(id, _action) {
         _html += '</div>';
 
         _html += '</div></div>';
-    }).catch(err => { }).always(function () { $('#myModal .modal-body').empty().append(_html); });
+    }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append(_html); });
     //add action button
-    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button>'); }
+    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Return</button>'); }
     else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
     else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
     else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
@@ -498,14 +499,7 @@ function TicketCommentPost(element) {
     return false;
 }
 
-function ClaimWarranty(chk) {
-    var isChecked = $(chk).prop("checked");
-    $("[name='CheckSingle']").prop("checked", false);
-    $('#btnclaimwarranty').remove();
-    $(chk).prop("checked", isChecked);
-    if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
-    else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
-}
+//Customer Warranty claim details
 function ClaimWarrantyModal(ele) {
     let _qty = (parseInt($(ele).data('qty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
@@ -607,7 +601,16 @@ function ClaimWarrantyModal(ele) {
         checkSiblings(container);
     });
 }
+function ClaimWarranty(chk) {
+    var isChecked = $(chk).prop("checked");
+    $("[name='CheckSingle']").prop("checked", false);
+    $('#btnclaimwarranty').remove();
+    $(chk).prop("checked", isChecked);
+    if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
+    else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
+}
 
+//generete Ticket for order warranty claim
 function GenerateTicketNo() {
     let _chk = $("input[name='chk-reason']:checked");
     let _user = $(".order-id").data('name'), _reason = _chk.data('title'), _reason_code = _chk.data('code');
@@ -654,7 +657,6 @@ function GenerateTicketNo() {
     }]);
     return false;
 }
-
 function TicketMailDetails(name, chat_history) {
     let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
     _body += 'We will work diligently to get this resolved for you as soon as possible, and a Layla warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
@@ -670,4 +672,68 @@ function TicketMailDetails(name, chat_history) {
     });
     _body += '<br/><b>Help Desk <br/>';
     return _body;
+}
+
+//create return order
+function CreateReturnModal(id) {
+    let _html = ''; $("#loader").show();
+    $.post('/customer-service/order', { strValue1: id, strValue2: 'TICKET' }).then(response => {
+        response = JSON.parse(response); //console.log(response);
+        $.each(response['order'], function (i, row) {
+            _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5">Order #' + row.order_id + '</div>';
+            _html += '<div class="row g-5 mb-7">';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1"> Date:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + moment().format('DD MMM YYYY') + '</div>';
+            _html += '    </div>';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Payment Mathod:</div>';
+            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + row.status_desc + '</span>';
+            _html += '    </div>';
+            _html += '</div>';
+
+            let _json = JSON.parse(row.order_details);
+            _html += '<div class="row g-5 mb-7">';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_first_name + ' ' + _json._billing_last_name + '</div>';
+            _html += '        <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_email + '</div>';
+            _html += '    </div>';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping Address:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</div>';
+            _html += '        <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._shipping_city + ', ' + _json._shipping_state + ' ' + _json._shipping_postcode + ' ' + _json._shipping_country + '</div>';
+            _html += '    </div>';
+            _html += '</div>';
+        });
+
+        _html += '<div class="flex-grow-1">';
+        _html += '    <div class="table-responsive border-bottom mb-9">';
+        _html += '        <table class="table mb-3">';
+        _html += '                <thead><tr class="border-bottom fs-6 fw-bolder text-muted">';
+        _html += '                    <th class="min-w-175px pb-2">Item</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Quantity</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Price</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Total</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Tax</th>';
+        _html += '                </tr></thead>';
+        _html += '                <tbody>';
+        $.each(response['order_detail'], function (i, row) {
+            _html += '                <tr class="fw-bolder text-gray-700 fs-5">';
+            _html += '                    <th class="pt-6">' + row.order_item_name + '</th>';
+            _html += '                    <th class="pt-6 text-end">' + row.order_item_qty + '</th>';
+            _html += '                    <th class="pt-6 text-end">' + row.line_total + '</th>';
+            _html += '                    <th class="pt-6 text-end">' + row.line_total + '</th>';
+            _html += '                    <th class="pt-6 text-end">' + row.tax + '</th>';
+            _html += '                </tr>';
+        });
+        _html += '                </tbody>';
+        _html += '        </table>';
+        _html += '    </div>';
+        _html += '</div>';
+    }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append('<div class="m-0">' + _html + '</div>'); });
+
+    //add action button
+    $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>');
 }

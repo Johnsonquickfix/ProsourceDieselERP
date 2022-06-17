@@ -72,7 +72,7 @@ function NatureofJournalList() {
     let table_JD = $('#Journaldata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }, { targets: [0], visible: false }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[20, 50], [20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

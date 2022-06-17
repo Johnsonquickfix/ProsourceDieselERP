@@ -121,7 +121,7 @@ function AccountJournalList_Old(is_date) {
                     else if (full.doc_type == 'PR') return 'Purchase Order Refund';
                     else if (full.doc_type == 'FT') return 'Fund Transfer';
                     else if (full.doc_type == 'IP') return 'Payment Bill';
-                    else if (full.doc_type == 'MB') return 'Miscellaneous Bill';
+                    else if (full.doc_type == 'MB') return 'Miscellaneous Bill (Payment)';
                     else return full.doc_type;
                 }
             },

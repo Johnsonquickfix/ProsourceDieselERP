@@ -808,7 +808,7 @@ function ReturnGenereate() {
     };
     let obj = { order_id: _oid, ticket_id: _id, OrderPostMeta: _postMeta, OrderProducts: _items, OrderPostStatus: _postStatus };
 
-    console.log(obj); return false;
+    //console.log(obj); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/OrdersMySQL/SaveCustomerOrderRefund",

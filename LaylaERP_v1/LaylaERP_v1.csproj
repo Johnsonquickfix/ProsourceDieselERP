@@ -871,6 +871,7 @@
     <Content Include="js\Reception\POInventoryValuation.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Reception\ReceiveProductList.js" />
     <Content Include="js\Reception\RestPOSheet.js" />
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\Agingorders.js" />
@@ -1331,6 +1332,7 @@
     <Content Include="Views\Bank\BankPaymentVoucherList.cshtml" />
     <Content Include="Views\PaymentInvoice\MultipleBillPayment.cshtml" />
     <Content Include="Views\PaymentInvoice\MultipleBillPaymentList.cshtml" />
+    <Content Include="Views\Reception\ReceiveProductList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

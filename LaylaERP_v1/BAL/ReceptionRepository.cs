@@ -837,7 +837,55 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetProductReceiveList(int userid, DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@flag", "SERCH"), 
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@userid", userid)
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_productserno_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        } 
 
+        public static DataTable allotserial(string id)
+        {
+            var dt = new DataTable();
+            try
+            {
+                 
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", id), 
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_allotserial_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "Reception/allotserial/" + id + "", "Allot serial");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
 
 
     }

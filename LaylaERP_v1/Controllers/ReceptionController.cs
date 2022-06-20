@@ -61,6 +61,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ReceiveProductList()
+        {
+            return View();
+        }
 
         public JsonResult Getwarehouse(SearchModel model)
         {
@@ -550,6 +554,42 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        public JsonResult GetProductReceiveList(JqDataTableModel model)
+        {
+            DataTable dt = new DataTable();
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);                
+                    dt = ReceptionRepository.GetProductReceiveList(0, fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult allotserial(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+               DataTable ds =  ReceptionRepository.allotserial(strID);
+                return Json(new { status = true, message = "Serial number generated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
 
     }

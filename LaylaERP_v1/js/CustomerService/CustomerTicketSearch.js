@@ -131,7 +131,7 @@ function dataGridLoad() {
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "8%", 'render': function (id, type, row, meta) {
+                'data': 'id', title: 'Action', sWidth: "8%", render: function (id, type, row, meta) {
                     return '<a href="javascript:void(0);" onclick="ClaimWarrantyModal(' + id + ',\'' + row.ticket_action + '\');" data-toggle="tooltip" title="View Warranty claim detail."><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
@@ -212,7 +212,6 @@ function ClaimWarrantyModal(id, _action) {
 
         //Add comments
         let _agent_comments = isNullUndefAndSpace(response[0].ticket_comments) ? JSON.parse(response[0].ticket_comments) : [];
-        console.log(_agent_comments);
         modalHtml += '<div class="separator separator-dashed my-3"></div>';
         modalHtml += '<div class="row order-comments mb-6"><div class="col-lg-12">';
         $.each(_agent_comments, function (i, row) {
@@ -337,7 +336,7 @@ function UpdateTicketAction(element) {
                 ).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
-                        $("#myModal").modal('hide');
+                        $("#myModal").modal('hide'); $('#dtTickets').DataTable().ajax.reload();
                         swal('Success', 'Thank you for giving feedback.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

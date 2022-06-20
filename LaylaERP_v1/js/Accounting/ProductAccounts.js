@@ -82,7 +82,7 @@ function ProductAccountingGrid() {
              data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        lengthMenu: [[20, 50, 100], [20, 50, 100]],
         columns: [
             { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
             {

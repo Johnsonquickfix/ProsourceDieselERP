@@ -5,7 +5,7 @@
     var table_EL = $('#AccountCategoryListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
-        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[20, 50], [20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

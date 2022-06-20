@@ -85,7 +85,7 @@
             return dt;
         }
 
-        public static DataSet GetOrderInfo(long OrderID)
+        public static DataSet GetOrderInfo(long OrderID, long TicketID, string flag = "ORDINFO")
         {
             DataSet ds = new DataSet();
             try
@@ -93,7 +93,8 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@order_id", OrderID),
-                    new SqlParameter("@flag", "ORDINFO")
+                    new SqlParameter("@ticket_id", TicketID),
+                    new SqlParameter("@flag", flag)
                 };
                 ds = SQLHelper.ExecuteDataSet("erp_order_customer_search", parameters);
                 if (ds.Tables.Count > 0) ds.Tables[0].TableName = "order";

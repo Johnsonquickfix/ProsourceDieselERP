@@ -91,7 +91,7 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <table id="dtdata" class="table align-middle table-row-dashed fs-6 gy-4" width="100%">
+                    <table id="dtdata" class="table dataTable table-row-dashed no-footer text-propercase text-gray-600 fs-6 gy-5" width="100%">
                     </table>
                 </div>
             </div>
@@ -190,68 +190,22 @@
                                 <!--end::Table-->
                                 <!--begin::Container-->
                                 <div class="row">
-                                    <div class="col-md-7">
-                                        <ul class="nav nav-pills nav-pills-custom mb-3 mx-9 order-coupon">
-                                            <!--begin::Item-->
-                                            <li class="nav-item mb-3 me-3 me-lg-6">
-                                                <!--begin::Link-->
-                                                <a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden w-80px h-85px pt-5 pb-2" data-bs-toggle="pill" id="kt_charts_widget_32_tab_1" href="#kt_charts_widget_32_tab_content_1">
-                                                    <!--begin::Icon-->
-                                                    <div class="nav-icon mb-3">
-                                                        <i class="fonticon-truck fs-1 p-0"></i>
-                                                    </div>
-                                                    <!--end::Icon-->
-                                                    <!--begin::Title-->
-                                                    <span class="nav-text text-gray-800 fw-bolder fs-6 lh-1">Van</span>
-                                                    <!--end::Title-->
-                                                </a>
-                                                <!--end::Link-->
-                                            </li>
-                                            <!--end::Item-->
-                                        </ul>
+                                    <div class="col-md-6 px-6 pb-5 order-coupon">
                                     </div>
                                     <!--begin::Section-->
-                                    <div class="col-md-5" id="order-footer">
-                                        <!--begin::Item-->
-                                        <div class="d-flex flex-stack mb-3">
-                                            <!--begin::Accountname-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div>
-                                            <!--end::Accountname-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800 order-subtotal">$0.00</div>
-                                            <!--end::Label-->
+                                    <div class="col-md-5 col-md-offset-1">
+                                        <div class="border border-dashed border-gray-300 bg-lighten card-rounded p-6" id="order-footer">
+                                            <!--begin::Item-->
+                                            <div class="d-flex flex-stack">
+                                                <!--begin::Code-->
+                                                <div class="fw-bold pe-10 text-gray-600 fs-7">Total</div>
+                                                <!--end::Code-->
+                                                <!--begin::Label-->
+                                                <div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div>
+                                                <!--end::Label-->
+                                            </div>
+                                            <!--end::Item-->
                                         </div>
-                                        <!--end::Item-->
-                                        <!--begin::Item-->
-                                        <div class="d-flex flex-stack mb-3">
-                                            <!--begin::Accountname-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Discount:</div>
-                                            <!--end::Accountname-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800 order-discount">$0.00</div>
-                                            <!--end::Label-->
-                                        </div>
-                                        <!--end::Item-->
-                                        <!--begin::Item-->
-                                        <div class="d-flex flex-stack mb-3">
-                                            <!--begin::Accountname-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7 order-taxname">Tax 0%</div>
-                                            <!--end::Accountname-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800 order-tax">0.00</div>
-                                            <!--end::Label-->
-                                        </div>
-                                        <!--end::Item-->
-                                        <!--begin::Item-->
-                                        <div class="d-flex flex-stack">
-                                            <!--begin::Code-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Total</div>
-                                            <!--end::Code-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div>
-                                            <!--end::Label-->
-                                        </div>
-                                        <!--end::Item-->
                                     </div>
                                     <!--end::Section-->
                                 </div>

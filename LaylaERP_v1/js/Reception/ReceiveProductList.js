@@ -105,7 +105,7 @@ function ProductGrid() {
 function allotserial(id) {
     var obj = { strVal: id }
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to allot serial?",
+        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to generated?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

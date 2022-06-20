@@ -321,7 +321,7 @@ function OrderInfo(ord_id) {
 
 function UpdateTicketAction(element) {
     let _chk = $("input[name='ticke_action']:checked").val();
-    let option = { id: parseInt($(element).data('id')) || 0, ticket_action: _chk, comment: $("#kt_warranty_claim_note").val() };
+    let option = { id: parseInt($(element).data('id')) || 0, ticket_action: _chk, comment: $("#kt_warranty_claim_note").val(), comment_by: 'retention_specialist' };
     //console.log(option); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Update ticket feedback.",

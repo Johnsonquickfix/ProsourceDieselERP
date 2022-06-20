@@ -94,7 +94,7 @@ function ProductGrid() {
                 'data': 'ReceiveID', sWidth: "10%", "bSearchable": false,
                 'render': function (ID, type, full, meta) {
 
-                    return '<a href="javascript:void(0);" class="badge bg-default" onClick="allotserial(' + ID + '); " data-toggle="tooltip" title="Create Serial">Create Serial <a>';
+                    return '<a href="javascript:void(0);" class="badge bg-orange" onClick="allotserial(' + ID + '); " data-toggle="tooltip" title="Create Serial">Generated <a>';
                 }
             },
         ],

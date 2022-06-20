@@ -40,6 +40,7 @@
         public decimal TotalFee{ get; set; }
         public decimal TotalGift { get; set; }
         public decimal NetTotal { get; set; }
+        public long ticket_id { get; set; }
 
         public List<OrderPostMetaModel> OrderPostMeta { get; set; }
         public List<OrderProductsModel> OrderProducts { get; set; }

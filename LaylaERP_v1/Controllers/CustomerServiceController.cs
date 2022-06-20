@@ -184,5 +184,31 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        #region Order Ticket Action
+        [HttpPost]
+        [Route("customer-service/create-order-return")]
+        public JsonResult CreateOrderReturn(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_refunded_by", meta_value = om.UserID.ToString() });
+
+                int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
+                if (result > 0)
+                {
+                    DAL.MYSQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + 0.ToString());
+                    status = true; JSONresult = "Order placed successfully.";
+                }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message }, 0); }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+        #endregion
     }
 }

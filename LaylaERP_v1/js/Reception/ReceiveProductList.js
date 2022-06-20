@@ -88,7 +88,7 @@ function ProductGrid() {
             //    }
             //},
          
-            { data: 'Quenty', title: 'Quenty', sWidth: "10%" },
+            { data: 'Quenty', title: 'Quantity', sWidth: "10%" },
             //{ data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             {
                 'data': 'ReceiveID', sWidth: "10%", "bSearchable": false,

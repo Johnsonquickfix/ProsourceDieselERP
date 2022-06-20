@@ -30,9 +30,16 @@
     </div>
     <div class="nav-tabs-custom Receive-order-PO">
         <input type="hidden" id="hfEdit" value="" />
-        <input type="text" id="ROPOrder" name="ROPOrder" value="@Session["ROPO"]" style="display:none" /> 
+        <input type="text" id="ROPOrder" name="ROPOrder" value="@Session["ROPO"]" style="display:none" />
+
+        <ul class="nav nav-tabs">
+            <li class="active ROPO-1" title="Click here to see pending" data-toggle="tooltip"><a class="active" href="#tab_21" title="Click here to see pending list" data-toggle="tab">Pending<span class="badge badge-danger"></span></a></li>
+            @*<li class="ROPO-2" title="Click here to see Partially Received" data-toggle="tooltip"><a class="" href="#tab_22" data-toggle="tab">Received<span class="badge badge-danger"></span></a></li>
+            <li class="ROPO-3" title="Click here to see PO-Closure" data-toggle="tooltip"><a class="" href="#tab_23" data-toggle="tab">Closed</a></li>*@
+        </ul>
+
         <div class="tab-content">
-            <div class="tab-pane active" id="tab_21"> 
+            <div class="tab-pane active" id="tab_21">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box box-primary">
@@ -46,10 +53,10 @@
                                                     <th>Order Date</th>
                                                     <th>Tag/Lot/Batch No</th>
                                                     @*<th>Vendor Name</th>*@
-                                                <th>Product Name</th>
+                                                    <th>Product Name</th>
                                                     <th>Quantity</th>
                                                     @*<th>Quenty</th>*@
-                                                    <th>Action</th>    
+                                                    <th>Action</th>
 
 
                                                 </tr>
@@ -62,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
         </div>
     </div>
 </section> 

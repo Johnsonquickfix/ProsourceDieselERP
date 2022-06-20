@@ -94,7 +94,7 @@ function ProductGrid() {
                 'data': 'ReceiveID', sWidth: "10%", "bSearchable": false,
                 'render': function (ID, type, full, meta) {
 
-                    return '<a href="javascript:void(0);" class="badge bg-orange" onClick="allotserial(' + ID + '); " data-toggle="tooltip" title="Generated serial">Generated <a>';
+                    return '<a href="javascript:void(0);" class="badge bg-orange" onClick="allotserial(' + ID + '); " data-toggle="tooltip" title="Generate serial">Generate <a>';
                 }
             },
         ],
@@ -105,7 +105,7 @@ function ProductGrid() {
 function allotserial(id) {
     var obj = { strVal: id }
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to generated?",
+        title: '', confirmButtonText: 'Yes, update it!', text: "Do you want to generate?",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {

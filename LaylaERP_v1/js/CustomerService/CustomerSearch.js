@@ -824,7 +824,7 @@ function ReturnGenereate() {
     //console.log(obj); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/OrdersMySQL/SaveCustomerOrderRefund",
+        url: "/customer-service/create-order-return",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             //data = JSON.parse(data); //

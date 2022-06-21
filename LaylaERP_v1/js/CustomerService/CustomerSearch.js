@@ -346,15 +346,15 @@ function OrderInfo(ord_id) {
             }
             else if (row.order_item_type == 'refund') {
                 _refundHtml += '<tr class="fw-bolder text-gray-700" data-id="' + row.order_item_id + '" data-qty="0" data-returndays="0" data-warrantydays="0">';
-                _refundHtml += '<td></td>';
-                _refundHtml += '<td class="d-flex align-items-center pt-6 fs-6">';
-                _refundHtml += '<div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label bg-light-success"><i class="fas fa-retweet text-success"></i></span></div>';
-                _refundHtml += '<div class="d-flex flex-column min-h-40px">' + row.order_item_name + '</div></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6 fs-6">' + formatCurrency(_total) + '</td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '<td colspan="7">';
+                _refundHtml += '    <div class="d-flex flex-stack">';
+                _refundHtml += '        <div class="d-flex align-items-center me-5">';
+                _refundHtml += '            <div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label bg-light-success"><i class="fas fa-retweet text-success"></i></span></div>';
+                _refundHtml += '            <div class="me-5">' + row.order_item_name + '</div>';                
+                _refundHtml += '        </div>';
+                _refundHtml += '        <div class="d-flex align-items-center">' + formatCurrency(_total) + '</div>';
+                _refundHtml += '    </div>';
+                _refundHtml += '</td>';
                 _refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (_total);
             }
@@ -393,7 +393,7 @@ function OrderInfo(ord_id) {
         //_html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping Tax</label<div class="col-sm-2 controls text-right">$<span id="shippingTaxTotal">0.00</span></div></div>';
         // Add Tax
         $.each(_tax, function (index, value) {
-            _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+            _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">$' + value.amount.toFixed(4) + '</span></div></div>';
         });
         if (zGiftCardAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Gift Card</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGiftCardAmt) + '</div></div>';
         _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Order Total</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + '</div></div>';
@@ -493,7 +493,7 @@ function WarrantyInfoModalData(id, _action) {
     else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
     else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
     else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
-    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
+    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
 }
 function TicketCommentPost(element) {
     $("#loader").show();
@@ -691,6 +691,8 @@ function CreateReturnModal(id) {
         response = JSON.parse(response); //console.log(response);
         $.each(response['order'], function (i, row) {
             _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5 refund-order-title" data-order_id="' + row.order_id + '">Order #' + row.order_id + '</div>';
+                        let _json = JSON.parse(row.order_details);
+            _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1"> Date:</div>';
@@ -698,12 +700,10 @@ function CreateReturnModal(id) {
             _html += '    </div>';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Payment Mathod:</div>';
-            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + row.status_desc + '</span>';
+            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + _json._payment_method_title + '</span>';
             _html += '    </div>';
             _html += '</div>';
 
-            let _json = JSON.parse(row.order_details);
-            _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';

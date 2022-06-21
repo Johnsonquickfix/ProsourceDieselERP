@@ -837,7 +837,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetProductReceiveList(int userid, DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetProductReceiveList(string flag, DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -847,13 +847,13 @@ namespace LaylaERP.BAL
                 {
                     fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
                     todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
-                    new SqlParameter("@flag", "SERCH"), 
+                    new SqlParameter("@flag", flag), 
                     new SqlParameter("@searchcriteria", searchid),
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
-                    new SqlParameter("@userid", userid)
+                    new SqlParameter("@userid", 0)
                 };
                 DataSet ds = SQLHelper.ExecuteDataSet("erp_productserno_search", parameters);
                 dt = ds.Tables[0];

@@ -480,7 +480,7 @@ function WarrantyInfoModalData(id, _action) {
         _html += '</div></div>';
     }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append(_html); });
     //add action button
-    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Return</button>'); }
+    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
     else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
     else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
     else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
@@ -676,11 +676,12 @@ function TicketMailDetails(name, chat_history) {
 
 //create return order
 function CreateReturnModal(id) {
-    let _html = ''; $("#loader").show();
+    let _html = '', _tax_html = ''; $("#loader").show();
+    let _customer_id = 0, zQty = 0, zSubtotal = 0.00, zTax = 0.00;
     $.post('/customer-service/order', { strValue1: id, strValue2: 'TICKET' }).then(response => {
         response = JSON.parse(response); //console.log(response);
         $.each(response['order'], function (i, row) {
-            _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5">Order #' + row.order_id + '</div>';
+            _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5 refund-order-title" data-order_id="' + row.order_id + '">Order #' + row.order_id + '</div>';
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1"> Date:</div>';
@@ -693,6 +694,7 @@ function CreateReturnModal(id) {
             _html += '</div>';
 
             let _json = JSON.parse(row.order_details);
+            _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
@@ -718,20 +720,30 @@ function CreateReturnModal(id) {
         _html += '                    <th class="min-w-75px pb-2 text-end">Total</th>';
         _html += '                    <th class="min-w-75px pb-2 text-end">Tax</th>';
         _html += '                </tr></thead>';
-        _html += '                <tbody>';
-        let zSubtotal = 0.00, zTax = 0.00, zNettotal = 0.00;
+        _html += '                <tbody class="refund_order_line_items">';
+
         $.each(response['order_detail'], function (i, row) {
-            let _line_total = parseFloat(row.line_total) || 0.00, _order_qty = parseFloat(row.qty) || 0.00, _order_tax = parseFloat(row.tax) || 0.00;
-            let _qty = parseFloat(row.order_item_qty) || 0.00;
-            let _price = _line_total / _order_qty, _tax = _order_tax / _order_qty;
-            _html += '<tr class="fw-bolder text-gray-700 fs-5">';
-            _html += '    <th class="pt-6">' + row.order_item_name + '</th>';
-            _html += '    <th class="pt-6 text-end">' + row.order_item_qty + '</th>';
-            _html += '    <th class="pt-6 text-end">' + formatCurrency(_price) + '</th>';
-            _html += '    <th class="pt-6 text-end">' + formatCurrency(_price * _qty) + '</th>';
-            _html += '    <th class="pt-6 text-end">' + formatCurrency(_tax * _qty) + '</th>';
-            _html += '</tr>';
-            zSubtotal += (_price * _qty); zTax += (_tax * _qty);
+            if (row.order_item_type == 'line_item') {
+                let _line_total = parseFloat(row.line_total) || 0.00, _order_qty = parseFloat(row.qty) || 0.00, _order_tax = parseFloat(row.tax) || 0.00;
+                let _qty = parseFloat(row.order_item_qty) || 0.00, _free_qty = parseFloat(row.qty) || 0.00;
+                if (_line_total == 0) _qty = _qty * _free_qty;
+                let _price = _line_total / _order_qty, _tax = _order_tax / _order_qty;
+                _html += '<tr class="fw-bolder text-gray-700 fs-5 ' + (_line_total > 0 ? 'paid-item' : 'free-item') + '" data-orderitemid="' + row.order_item_id + '" data-pid="' + row.p_id + '" data-vid="' + row.v_id + '" data-pname="' + row.order_item_name + '" data-price="' + _price + '" data-qty="' + _qty + '" data-tax="' + _tax + '">';
+                _html += '    <th class="pt-6">' + row.order_item_name + '</th>';
+                _html += '    <th class="pt-6 text-end">' + _qty + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_price) + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_price * _qty) + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_tax * _qty) + '</th>';
+                _html += '</tr>';
+                zQty += _qty; zSubtotal += (_price * _qty); zTax += (_tax * _qty);
+            }
+            else if (row.order_item_type == 'tax') {
+
+                _tax_html += '        <div class="d-flex flex-stack mb-3">';
+                _tax_html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">' + row.label + ' - ' + (row.tax * 100).toFixed(4) + '%:</div>';
+                _tax_html += '            <div class="text-end fw-bolder fs-6 text-gray-800 tax-total" data-order_item_id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-label="' + row.label + '" data-percent="' + row.tax + '" data-amount="' + zSubtotal * row.tax + '">' + formatCurrency(zSubtotal * row.tax) + '</div>';
+                _tax_html += '        </div>';
+            }
         });
         _html += '                </tbody>';
         _html += '        </table>';
@@ -739,23 +751,78 @@ function CreateReturnModal(id) {
         _html += '</div>';
 
         _html += '<div class="d-flex justify-content-end">';
-        _html += '    <div class="mw-300px">';
+        _html += '    <div class="mw-300px refund_order_final_total">';
         _html += '        <div class="d-flex flex-stack mb-3">';
         _html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div>';
         _html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zSubtotal) + '</div>';
         _html += '        </div>';
-        _html += '        <div class="d-flex flex-stack mb-3">';
-        _html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Tax:</div>';
-        _html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTax) + '</div>';
-        _html += '        </div>';
+        //add taxes
+        _html += _tax_html;
+        //_html += '        <div class="d-flex flex-stack mb-3">';
+        //_html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Tax:</div>';
+        //_html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTax) + '</div>';
+        //_html += '        </div>';
         _html += '        <div class="d-flex flex-stack mb-3">';
         _html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Total:</div>';
         _html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zSubtotal + zTax) + '</div>';
         _html += '        </div>';
         _html += '    </div>';
         _html += '</div>';
-    }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append('<div class="m-0">' + _html + '</div>'); });
+    }).catch(err => { }).always(function () {
+        $("#loader").hide(); $('#myModal .modal-body').empty().append('<div class="m-0">' + _html + '</div>');
+        $('#myModal .modal-title').empty().append('Ticket No.: #' + id + ', Create return/refund order.');
+        $(".refund-order-title").data('id', id); $(".refund-order-title").data('customer', _customer_id);
+    });
 
     //add action button
-    $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>');
+    $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" onclick="ReturnGenereate();">Submit</button>');
+}
+function ReturnGenereate() {
+    let _id = parseInt($(".refund-order-title").data('id')) || 0, _oid = parseInt($(".refund-order-title").data('order_id')) || 0, _total_qty = 0, _total_amount = 0.00, _total_tax = 0.00;
+    let _cid = parseInt($(".refund-order-title").data('customer')) || 0;
+    let _items = [], _postMeta = [];
+    $('.refund_order_line_items > tr').each(function (index, tr) {
+        let _price = parseFloat($(tr).data('price')) || 0.00;
+        let _tax = parseFloat($(tr).data('tax')) || 0.00;
+        let _qty = parseFloat($(tr).data('qty')) || 0.00;
+        _total_qty += _qty; _total_tax += (_tax * _qty); _total_amount += (_price * _qty);
+        _items.push({
+            order_item_id: parseInt($(tr).data('orderitemid')) || 0, product_type: 'line_item', PKey: index, order_id: _oid, customer_id: _cid, product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
+            quantity: parseInt(_qty), sale_rate: _price, total: (_price * _qty), discount: 0, tax_amount: (_tax * _qty), shipping_amount: 0, shipping_tax_amount: 0,
+            //meta_data: serialize(_taxdata)
+        });
+    });
+    _postMeta.push(
+        { post_id: 0, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: 0, meta_key: '_refund_reason', meta_value: '' },
+        { post_id: 0, meta_key: '_cart_discount', meta_value: 0 }, { post_id: 0, meta_key: '_cart_discount_tax', meta_value: 0 },
+        { post_id: 0, meta_key: '_order_shipping', meta_value: 0 }, { post_id: 0, meta_key: '_order_shipping_tax', meta_value: 0 },
+        { post_id: 0, meta_key: '_order_tax', meta_value: (_total_tax * -1.0) }, { post_id: 0, meta_key: '_order_total', meta_value: ((_total_amount + _total_tax) * -1.0) },
+        { post_id: 0, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: 0, meta_key: '_prices_include_tax', meta_value: 'no' },
+        { post_id: 0, meta_key: '_refund_amount', meta_value: _total_amount + _total_tax }, { post_id: 0, meta_key: '_refunded_payment', meta_value: '' },
+        { post_id: 0, meta_key: '_refund_giftcard_amount', meta_value: 0 }
+    );
+    let _postStatus = {
+        order_id: _oid, parent_id: 0, returning_customer: 0, customer_id: _cid,
+        num_items_sold: (_total_qty * -1), total_sales: ((_total_amount + _total_tax) * -1.0), tax_total: (_total_tax * -1.0), shipping_total: 0,
+        net_total: (_total_amount * -1.0), status: 'wc-refunded', pay_by: ''
+    };
+    let obj = { order_id: _oid, ticket_id: _id, OrderPostMeta: _postMeta, OrderProducts: _items, OrderPostStatus: _postStatus };
+
+    //console.log(obj); return false;
+    $.ajax({
+        type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/OrdersMySQL/SaveCustomerOrderRefund",
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            //data = JSON.parse(data); //
+            console.log(data);
+            if (data.status == true) {
+                $("#myModal").modal('hide'); OrderInfo(_oid);
+                swal('Success!', 'Refunded order placed successfully.', "success");//.then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
+            }
+            else { swal('Error', data.message, "error").then((result) => { return false; }); }
+        },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { $("#loader").hide(); isEdit(false); },
+    });
 }

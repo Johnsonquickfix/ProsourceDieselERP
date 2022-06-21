@@ -100,6 +100,7 @@
                 if (ds.Tables.Count > 0) ds.Tables[0].TableName = "order";
                 if (ds.Tables.Count > 1) ds.Tables[1].TableName = "order_detail";
                 if (ds.Tables.Count > 2) ds.Tables[2].TableName = "order_notes";
+                if (ds.Tables.Count > 3) ds.Tables[3].TableName = "order_tickets";
             }
             catch (Exception ex)
             { throw ex; }

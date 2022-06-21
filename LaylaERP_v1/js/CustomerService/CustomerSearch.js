@@ -350,7 +350,7 @@ function OrderInfo(ord_id) {
                 _refundHtml += '    <div class="d-flex flex-stack">';
                 _refundHtml += '        <div class="d-flex align-items-center me-5">';
                 _refundHtml += '            <div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label bg-light-success"><i class="fas fa-retweet text-success"></i></span></div>';
-                _refundHtml += '            <div class="me-5">' + row.order_item_name + '</div>';                
+                _refundHtml += '            <div class="me-5">' + row.order_item_name + '</div>';
                 _refundHtml += '        </div>';
                 _refundHtml += '        <div class="d-flex align-items-center">' + formatCurrency(_total) + '</div>';
                 _refundHtml += '    </div>';
@@ -417,6 +417,21 @@ function OrderInfo(ord_id) {
             _noteHtml += '</div>';
         });
         $(".order-notes").empty().append(_noteHtml);
+
+        _noteHtml = '';
+        $.each(response['order_tickets'], function (i, row) {
+            //let is_customer_note = parseInt(row.is_customer_note) || 0;
+            _noteHtml += '<div class="timeline-item align-items-center mb-4">';
+            _noteHtml += '<div class="timeline-line w-20px mt-9 mb-n14"></div>';
+            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-comment fa-flip-horizontal"></i></span></div>';
+            _noteHtml += '<div class="timeline-content m-0">';
+            _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary">#' + row.id + '</a> at ' + moment(row.created_at).format('MMMM Do YYYY, h:mm:ss a') ;
+            _noteHtml += '   <span class="fs-8 fw-boldest text-success text-uppercase">' + row.ticket_action + '</span>';
+            _noteHtml += '   <span class="fw-bold text-gray-400">' + '' + '</span>';
+            _noteHtml += '</div>';
+            _noteHtml += '</div>';
+        });
+        $(".order-tickets").empty().append(_noteHtml);
 
     }).catch(err => { }).always(function () { });
 }
@@ -691,7 +706,7 @@ function CreateReturnModal(id) {
         response = JSON.parse(response); //console.log(response);
         $.each(response['order'], function (i, row) {
             _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5 refund-order-title" data-order_id="' + row.order_id + '">Order #' + row.order_id + '</div>';
-                        let _json = JSON.parse(row.order_details);
+            let _json = JSON.parse(row.order_details);
             _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';

@@ -568,7 +568,7 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);                
-                    dt = ReceptionRepository.GetProductReceiveList(0, fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    dt = ReceptionRepository.GetProductReceiveList(model.strValue4, fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 
                 result = JsonConvert.SerializeObject(dt);
             }

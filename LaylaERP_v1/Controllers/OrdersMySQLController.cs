@@ -134,7 +134,7 @@
         }
 
         //Refund Order
-        public static long AddRefundOrderPost(long parent_id)
+        public static long AddRefundOrderPost(long parent_id,string post_status= "wc-completed")
         {
             long result = 0;
             try
@@ -147,7 +147,7 @@
                 model.post_content = string.Empty;
                 model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
-                model.post_status = "wc-completed";// "draft";
+                model.post_status = post_status;// "draft";
                 model.comment_status = "closed";
                 model.ping_status = "closed";
                 model.post_password = "wc_order_" + Guid.NewGuid().ToString().Replace("-", "");
@@ -212,7 +212,8 @@
             try
             {
                 long n_orderid = 0;
-                n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id);
+                if (string.IsNullOrEmpty(model.OrderPostStatus.status)) model.OrderPostStatus.status = "wc-completed";
+                 n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id, model.OrderPostStatus.status);
                 if (n_orderid > 0)
                 {
                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();

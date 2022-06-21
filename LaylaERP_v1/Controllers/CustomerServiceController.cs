@@ -201,7 +201,7 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
                 if (result > 0)
                 {
-                    DAL.MYSQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + 0.ToString());
+                    DAL.MYSQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());
                     status = true; JSONresult = "Order placed successfully.";
                 }
                 //JSONresult = JsonConvert.SerializeObject(DT);

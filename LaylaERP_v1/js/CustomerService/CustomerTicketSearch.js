@@ -321,6 +321,7 @@ function OrderInfo(ord_id) {
 
 function UpdateTicketAction(element) {
     let _chk = $("input[name='ticke_action']:checked").val();
+    if (_chk == 'wp_declined' && $("#kt_warranty_claim_note").val() == '') { swal('Info!', 'Please enter comment.', "info").then((result) => { $('#kt_warranty_claim_note').focus(); return false; }); return false; }
     let option = { id: parseInt($(element).data('id')) || 0, ticket_action: _chk, comment: $("#kt_warranty_claim_note").val(), comment_by: 'retention_specialist' };
     //console.log(option); return false;
     swal.queue([{

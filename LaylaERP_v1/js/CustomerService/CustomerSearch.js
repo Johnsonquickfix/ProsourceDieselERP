@@ -221,14 +221,15 @@ function OrderInfo(ord_id) {
     $("#order_items,.order-coupon,#order_items_refund").empty();
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
+    let _order_date = moment();
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
         response = JSON.parse(response); //console.log(response);
         let _html = '', _coupon = '', _refundHtml = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $(".order-id").text('Order #' + row.order_id); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
-            $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
+            $(".order-id").text('Order #' + row.order_id); $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
+            _order_date = moment(row.date_created, 'MM/DD/YYYY'); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
             $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
             //Add Address
             let _json = JSON.parse(row.order_details); //console.log(_json);
@@ -258,19 +259,19 @@ function OrderInfo(ord_id) {
             let _sub_total = parseFloat(row.line_subtotal) || 0.00, _qty = parseFloat(row.qty) || 0.00, _total = parseFloat(row.line_total) || 0.00;
             let _price = _qty > 0 ? (_sub_total / _qty) : 0;
             let _dis = _sub_total - _total;
-            let _ticket_no = parseInt(row.ticket_no) || 0;
+            let _ticket_no = parseInt(row.ticket_no) || 0, orderitemid = parseInt(row.order_item_id) || 0;
             if (row.order_item_type == 'line_item') {
-                _html += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
-                if (_sub_total > 0 && _ticket_no == 0) _html += '<td class="pt-6"><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0" data-id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-qty="' + row.qty + '" class="form-check-input m-3"><label></label></td>';
-                else _html += '<td class="pt-6"></td>';
+                _html = '<tr id="tr_' + orderitemid + '" class="fw-bolder text-gray-700" data-id="' + row.order_item_id + '" data-qty="' + row.qty + '" data-returndays="' + row.returndays + '" data-warrantydays="' + row.warrantydays + '">';
+                if (_sub_total > 0 && _ticket_no == 0) _html += '<td class=""><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ClaimWarranty(this)" value="0" data-id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-qty="' + row.qty + '" class="form-check-input m-3"><label></label></td>';
+                else _html += '<td class=""></td>';
                 _html += '<td class="d-flex align-items-center">';
-                _html += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
-                _html += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7"></div></td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(_price) + '</td>';
-                _html += '<td class="text-end pt-6">' + _qty.toFixed(0) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(_dis) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.line_total) + '</td>';
-                _html += '<td class="text-end pt-6">' + formatCurrency(row.tax) + '</td>';
+                _html += '  <div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label" style="background-image:url(' + row.p_img + ');"></span></div>';
+                _html += '  <div class="d-flex flex-column min-h-40px">' + row.order_item_name + '</div></td>';
+                _html += '<td class="text-end ">' + formatCurrency(_price) + '</td>';
+                _html += '<td class="text-end "><div class="mb-2 fw-bolder">' + _qty.toFixed(0) + '</div><div class="refund-qty badge badge-danger fs-base"></div></td>';
+                _html += '<td class="text-end ">' + formatCurrency(_dis) + '</td>';
+                _html += '<td class="text-end ">' + formatCurrency(row.line_total) + '</td>';
+                _html += '<td class="text-end ">' + formatCurrency(row.tax) + '</td>';
                 _html += '</tr>';
 
                 /// show other details
@@ -283,29 +284,25 @@ function OrderInfo(ord_id) {
                     $.each(_warranty, function (key, val) { _html += val + '<br/>'; });
                 }
                 if (row.warrantydays > 0 && row.warrantydays < 9999) {
-                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
-                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.warrantydays, 'days');
+                    let _todate = moment(_order_date).add(row.warrantydays, 'days');
                     let _days = _todate.diff(moment(), 'days');
                     if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
                     else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty ' + row.warrantydays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 else if (row.warrantydays >= 9999) {
-                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
-                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _todate = moment(_order_date).add(10, 'years');
                     let _days = _todate.diff(moment(), 'days');
                     if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
                     else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Warranty 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 if (row.returndays > 0 && row.returndays < 9999) {
-                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
-                    let _todate = moment(_date, 'MM/DD/YYYY').add(row.returndays, 'days');
+                    let _todate = moment(_order_date).add(row.returndays, 'days');
                     let _days = _todate.diff(moment(), 'days');
                     if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _days + ' days</span></div>';
                     else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds ' + row.returndays + ' days<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
                 }
                 else if (row.returndays >= 9999) {
-                    let _date = moment($(".order-date").text(), "MM/DD/YYYY");
-                    let _todate = moment(_date, 'MM/DD/YYYY').add(10, 'years');
+                    let _todate = moment(_order_date).add(10, 'years');
                     let _days = _todate.diff(moment(), 'days');
                     if (_days > 0) _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-success d-flex align-items-center"><span class="bullet bullet-dot bg-success mx-2"></span>Remaining ' + _todate.diff(moment(), 'days') + ' days</span></div>';
                     else _html += '<div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center">Returns/Refunds 10 Years<span class="fs-7 text-danger d-flex align-items-center"><span class="bullet bullet-dot bg-danger mx-2"></span>Warranty Expired</span></div>';
@@ -313,21 +310,21 @@ function OrderInfo(ord_id) {
                 _html += '</div>';
                 _html += '<div class="order-claim-warranty-' + row.order_item_id + '">';
                 if (row.ticket_no) {
-                    _html += '<a class="fw-bolder text-dark fs-5 text-hover-primary" href="javascript:void(0);" onclick="WarrantyInfoModal(' + row.ticket_no + ',\'' + row.ticket_action + '\');">Ticket No.: #' + row.ticket_no + '</a>';
+                    _html += '<a class="fw-bolder fs-5 text-primary" href="javascript:void(0);" onclick="WarrantyInfoModal(' + row.ticket_no + ',\'' + row.ticket_action + '\');">Ticket No.: #' + row.ticket_no + '</a>';
                     _html += '<div class="fs-7 text-muted">Ticket Date: ' + moment(row.ticket_date).format("MM/DD/YYYY") + '</div>';
                     _html += '<div class="fs-7 text-muted">' + row.reason + '</div>';
-                    if (row.ticket_action == 'wp_return') _html += '<span class=fs-5 text-success">Return</span>';
-                    else if (row.ticket_action == 'wp_replacement') _html += '<span class=fs-5 text-success">Replacement</span>';
-                    else if (row.ticket_action == 'wp_createorder') _html += '<span class=fs-5 text-success">Create new order</span>';
-                    else if (row.ticket_action == 'wp_declined') _html += '<span class=fs-5 text-danger">Declined</span>';
-                    else _html += '<span class="fs-5 text-warning">Processing</span>';
+                    if (row.ticket_action == 'wp_return') _html += '<span class="badge badge-success fs-base">Return</span>';
+                    else if (row.ticket_action == 'wp_replacement') _html += '<span class="badge badge-success fs-base">Replacement</span>';
+                    else if (row.ticket_action == 'wp_createorder') _html += '<span class="badge badge-success fs-base">Create new order</span>';
+                    else if (row.ticket_action == 'wp_declined') _html += '<span class="badge badge-danger fs-base">Declined</span>';
+                    else _html += '<span class="badge badge-warning fs-base">Processing</span>';
                 }
                 _html += '</div>';
 
                 _html += '</div>';
                 _html += '</td>';
                 _html += '</tr>';
-
+                $("#order_items").append(_html);
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);
                 zTDiscount += _dis;
@@ -338,40 +335,52 @@ function OrderInfo(ord_id) {
             else if (row.order_item_type == 'gift_card') { zGiftCardAmt += _total; }
             else if (row.order_item_type == 'tax') { _tax.push({ order_item_id: row.order_item_id, name: row.order_item_name, label: row.label, rate: row.tax, amount: _total }); }
             else if (row.order_item_type == 'coupon') {
-                //_coupon += '<li class="nav-item mb-3 me-3 me-lg-6">';
-                //_coupon += '<a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden h-85px pt-5 pb-2 active" data-bs-toggle="pill" href="javascript;void(0);">';
-                //_coupon += '<div class="nav-icon mb-3"><i class="fa fa-gift"></i>$' + row.discount_amount + '</div>';
-                //_coupon += '<span class="nav-text text-gray-800 fw-bolder fs-6 lh-1">' + row.order_item_name + '</span>';
-                //_coupon += '<span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span > ';
-                //_coupon += '</a>';
-                //_coupon += '</li>';
                 _coupon += '<div class="d-flex align-items-center flex-row-fluid flex-wrap">';
                 _coupon += '    <div class="symbol symbol-40px me-3"><span class="symbol-label bg-light-success"><i class="fa fa-gift"></i></span></div>';
                 _coupon += '    <div class="flex-grow-1 me-2">';
                 _coupon += '        <a href="#" class="text-gray-800 text-hover-primary fs-6 fw-bolder">' + row.order_item_name + '</a>';
                 _coupon += '        <span class="fw-bold fs-6 d-block text-start text-success fw-bolder ps-0">$' + row.discount_amount + '</span>';
                 _coupon += '    </div>';
-                //_coupon += '    <span class="badge badge-light fw-bolder my-2">$' + row.discount_amount + '</span>';
                 _coupon += '</div>';
                 _coupon += '<div class="separator separator-dashed my-4"></div>';
             }
             else if (row.order_item_type == 'refund') {
-                _refundHtml += '<tr class="fw-bolder text-gray-700 fs-5" data-id="' + row.order_item_id + '" data-qty="0" data-returndays="0" data-warrantydays="0">';
-                _refundHtml += '<td></td>';
-                _refundHtml += '<td class="d-flex align-items-center pt-6">';
-                _refundHtml += '<div class="symbol symbol-50px overflow-hidden me-3"><span class="symbol-label"></span></div>';
-                _refundHtml += '<div class="d-flex flex-column">' + row.order_item_name + '<span class="text-muted fw-bold d-block fs-7">';
-                _refundHtml += '</span><span class="text-muted fw-bold d-block fs-7 order-claim-warranty"><span class="text-muted fw-bold d-block fs-7"></div></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
-                _refundHtml += '<td class="text-end pt-6">' + formatCurrency(_total) + '</td>';
-                _refundHtml += '<td class="text-end pt-6"></td>';
+                _refundHtml += '<tr class="fw-bolder text-gray-700" data-id="' + row.order_item_id + '" data-qty="0" data-returndays="0" data-warrantydays="0">';
+                _refundHtml += '<td colspan="7">';
+                _refundHtml += '    <div class="d-flex flex-stack">';
+                _refundHtml += '        <div class="d-flex align-items-center me-5">';
+                _refundHtml += '            <div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label bg-light-success"><i class="fas fa-retweet text-success"></i></span></div>';
+                _refundHtml += '            <div class="me-5">' + row.order_item_name + '</div>';
+                _refundHtml += '        </div>';
+                _refundHtml += '        <div class="d-flex align-items-center">' + formatCurrency(_total) + '</div>';
+                _refundHtml += '    </div>';
+                _refundHtml += '</td>';
                 _refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (_total);
             }
+            else if (row.order_item_type == 'refund_items') {
+                if (row.order_item_name == "line_item") {
+                    $("#tr_" + orderitemid).data("returnqty", row.qty);
+                    $("#tr_" + orderitemid).find('.refund-qty').append(row.qty);
+                    let max_return = parseInt($("#tr_" + orderitemid).data("qty")) + row.qty;
+                    if (max_return <= 0) $("#tr_" + orderitemid).find('#CheckSingle').remove();
+                }
+                //else if (row.product_name == "fee") {
+                //    let max_amt = parseInt($("#trfeeid_" + orderitemid).data("totalamt")) + parseInt(row.total);
+                //    $("#trfeeid_" + orderitemid).find('[name=txt_FeeAmt]').attr({ "max": max_amt, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_amt + ')' });
+                //    $("#trfeeid_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
+                //}
+                //else if (row.product_name == "shipping") {
+                //    $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.shipping_amount + '</span>');
+                //}
+                //else if (row.product_name == "gift_card") {
+                //    let ref_amt = parseInt($("#trfeeid_" + orderitemid).data("ref_amt")) + parseInt(row.total);
+                //    $("#billGiftCard").find('[data-orderitemid=' + orderitemid + ']').data('ref_amt', ref_amt);
+                //    zGiftCardrefundAmt += row.total;
+                //}
+            }
         });
-        $("#order_items").empty().append(_html); $(".order-coupon").empty().append(_coupon); $('#order_items_refund').append(_refundHtml);
+        $(".order-coupon").empty().append(_coupon); $('#order_items_refund').append(_refundHtml);
 
         let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
 
@@ -384,7 +393,7 @@ function OrderInfo(ord_id) {
         //_html += '<div class="form-group"><label class="col-sm-10 control-label">Shipping Tax</label<div class="col-sm-2 controls text-right">$<span id="shippingTaxTotal">0.00</span></div></div>';
         // Add Tax
         $.each(_tax, function (index, value) {
-            _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">' + value.amount.toFixed(4) + '</span></div></div>';
+            _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">' + value.label + ' - ' + (value.rate * 100).toFixed(4) + '%</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="' + value.order_item_id + '" data-name="' + value.name + '" data-label="' + value.label + '" data-percent="' + value.rate + '" data-amount="' + value.amount.toFixed(4) + '">$' + value.amount.toFixed(4) + '</span></div></div>';
         });
         if (zGiftCardAmt > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Gift Card</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGiftCardAmt) + '</div></div>';
         _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Order Total</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + '</div></div>';
@@ -409,6 +418,26 @@ function OrderInfo(ord_id) {
         });
         $(".order-notes").empty().append(_noteHtml);
 
+        _noteHtml = '';
+        $.each(response['order_tickets'], function (i, row) {
+            //let is_customer_note = parseInt(row.is_customer_note) || 0;
+            _noteHtml += '<div class="timeline-item align-items-center mb-4">';
+            _noteHtml += '<div class="timeline-line w-20px mt-9 mb-n14"></div>';
+            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-paper-plane"></i></span></div>';
+            _noteHtml += '<div class="timeline-content m-0">';
+            _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary" onclick="WarrantyInfoModal(' + row.id + ',\'' + row.ticket_action + '\');">#' + row.id + '</a>';
+            if (row.ticket_action == 'wp_return') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return</span>';
+            else if (row.ticket_action == 'wp_replacement') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Replacement</span>';
+            else if (row.ticket_action == 'wp_createorder') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Create new order</span>';
+            else if (row.ticket_action == 'wp_declined') _noteHtml += '<span class="fs-8 fw-boldest d-block text-danger text-uppercase">Declined</span>';
+            else _noteHtml += '<span class="fs-8 fw-boldest d-block text-warning text-uppercase">Processing</span>';
+            _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + row.reason + '</span>';
+            _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + moment(row.created_at).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
+            _noteHtml += '</div>';
+            _noteHtml += '</div>';
+        });
+        $(".order-tickets").empty().append(_noteHtml);
+
     }).catch(err => { }).always(function () { });
 }
 
@@ -427,9 +456,10 @@ function WarrantyInfoModal(id, _action) {
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
 }
 function WarrantyInfoModalData(id, _action) {
-    let _html = ''; $("#loader").show();
+    let _html = ''; $("#loader").show(); _is_open = false;
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
-        response = JSON.parse(response);
+        response = JSON.parse(response); console.log(response);
+        _is_open = response[0].ticket_is_open;
         _html += '<div class="row">';
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
         _html += '<div class="col-lg-12">';
@@ -478,13 +508,18 @@ function WarrantyInfoModalData(id, _action) {
         _html += '</div>';
 
         _html += '</div></div>';
-    }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append(_html); });
-    //add action button
-    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
-    else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
-    else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
-    else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
-    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Waiting for action of retention specialist.</div>'); }
+    }).catch(err => { }).always(function () {
+        $("#loader").hide(); $('#myModal .modal-body').empty().append(_html);
+        //add action button
+        if (_is_open) {
+            if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
+            else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
+            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+            else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
+            else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
+        }
+        else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Ticket has been closed.</div>'); }
+    });    
 }
 function TicketCommentPost(element) {
     $("#loader").show();
@@ -501,7 +536,7 @@ function TicketCommentPost(element) {
 
 //Customer Warranty claim details
 function ClaimWarrantyModal(ele) {
-    let _qty = (parseInt($(ele).data('qty')) || 0);
+    let _qty = (parseInt($(ele).data('qty')) || 0) + (parseInt($(ele).data('returnqty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
@@ -682,6 +717,8 @@ function CreateReturnModal(id) {
         response = JSON.parse(response); //console.log(response);
         $.each(response['order'], function (i, row) {
             _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5 refund-order-title" data-order_id="' + row.order_id + '">Order #' + row.order_id + '</div>';
+            let _json = JSON.parse(row.order_details);
+            _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1"> Date:</div>';
@@ -689,12 +726,10 @@ function CreateReturnModal(id) {
             _html += '    </div>';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Payment Mathod:</div>';
-            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + row.status_desc + '</span>';
+            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + _json._payment_method_title + '</span>';
             _html += '    </div>';
             _html += '</div>';
 
-            let _json = JSON.parse(row.order_details);
-            _customer_id = parseInt(_json._customer_user) || 0;
             _html += '<div class="row g-5 mb-7">';
             _html += '    <div class="col-sm-6">';
             _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
@@ -738,7 +773,6 @@ function CreateReturnModal(id) {
                 zQty += _qty; zSubtotal += (_price * _qty); zTax += (_tax * _qty);
             }
             else if (row.order_item_type == 'tax') {
-
                 _tax_html += '        <div class="d-flex flex-stack mb-3">';
                 _tax_html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">' + row.label + ' - ' + (row.tax * 100).toFixed(4) + '%:</div>';
                 _tax_html += '            <div class="text-end fw-bolder fs-6 text-gray-800 tax-total" data-order_item_id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-label="' + row.label + '" data-percent="' + row.tax + '" data-amount="' + zSubtotal * row.tax + '">' + formatCurrency(zSubtotal * row.tax) + '</div>';
@@ -780,16 +814,21 @@ function CreateReturnModal(id) {
 function ReturnGenereate() {
     let _id = parseInt($(".refund-order-title").data('id')) || 0, _oid = parseInt($(".refund-order-title").data('order_id')) || 0, _total_qty = 0, _total_amount = 0.00, _total_tax = 0.00;
     let _cid = parseInt($(".refund-order-title").data('customer')) || 0;
-    let _items = [], _postMeta = [];
+    let _items = [], _postMeta = [], _taxes = [], _taxdata = { total: {}, subtotal: {} };
+    //get all tax type
+    $('#myModal .refund_order_final_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('name'), percent: parseFloat($(li).data('percent')) || 0 }); });
+
     $('.refund_order_line_items > tr').each(function (index, tr) {
-        let _price = parseFloat($(tr).data('price')) || 0.00;
-        let _tax = parseFloat($(tr).data('tax')) || 0.00;
-        let _qty = parseFloat($(tr).data('qty')) || 0.00;
+        let _price = parseFloat($(tr).data('price')) || 0.00, _tax = parseFloat($(tr).data('tax')) || 0.00, _qty = parseFloat($(tr).data('qty')) || 0.00;
         _total_qty += _qty; _total_tax += (_tax * _qty); _total_amount += (_price * _qty);
+        _taxdata = { total: {}, subtotal: {} };
+        $.each(_taxes, function (i, r) {
+            _taxdata.total[r.label] = ((_price * _qty) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((_price * _qty) * r.percent).toFixed(4);
+        });
         _items.push({
             order_item_id: parseInt($(tr).data('orderitemid')) || 0, product_type: 'line_item', PKey: index, order_id: _oid, customer_id: _cid, product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
             quantity: parseInt(_qty), sale_rate: _price, total: (_price * _qty), discount: 0, tax_amount: (_tax * _qty), shipping_amount: 0, shipping_tax_amount: 0,
-            //meta_data: serialize(_taxdata)
+            meta_data: serialize(_taxdata)
         });
     });
     _postMeta.push(
@@ -804,14 +843,14 @@ function ReturnGenereate() {
     let _postStatus = {
         order_id: _oid, parent_id: 0, returning_customer: 0, customer_id: _cid,
         num_items_sold: (_total_qty * -1), total_sales: ((_total_amount + _total_tax) * -1.0), tax_total: (_total_tax * -1.0), shipping_total: 0,
-        net_total: (_total_amount * -1.0), status: 'wc-refunded', pay_by: ''
+        net_total: (_total_amount * -1.0), status: 'wc-processing', pay_by: ''
     };
     let obj = { order_id: _oid, ticket_id: _id, OrderPostMeta: _postMeta, OrderProducts: _items, OrderPostStatus: _postStatus };
 
     //console.log(obj); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/OrdersMySQL/SaveCustomerOrderRefund",
+        url: "/customer-service/create-order-return",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             //data = JSON.parse(data); //

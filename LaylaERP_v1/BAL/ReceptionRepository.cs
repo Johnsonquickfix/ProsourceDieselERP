@@ -893,8 +893,8 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select distinct appb.purchase_id id,ref text from commerce_purchase_product_batch appb inner join commerce_purchase_order cpo on cpo.rowid = appb.purchase_id ;";
-
+                string strSQl = "Select distinct appb.purchase_id id,ref text from commerce_purchase_product_batch appb inner join commerce_purchase_order cpo on cpo.rowid = appb.purchase_id ;"+
+                                 "select distinct product_id id,post_title text from commerce_purchase_product_batch cppb inner join wp_posts wp on wp.id = cppb.product_id";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)

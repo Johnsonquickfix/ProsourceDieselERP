@@ -423,11 +423,16 @@ function OrderInfo(ord_id) {
             //let is_customer_note = parseInt(row.is_customer_note) || 0;
             _noteHtml += '<div class="timeline-item align-items-center mb-4">';
             _noteHtml += '<div class="timeline-line w-20px mt-9 mb-n14"></div>';
-            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-comment fa-flip-horizontal"></i></span></div>';
+            _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-paper-plane"></i></span></div>';
             _noteHtml += '<div class="timeline-content m-0">';
-            _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary">#' + row.id + '</a> at ' + moment(row.created_at).format('MMMM Do YYYY, h:mm:ss a') ;
-            _noteHtml += '   <span class="fs-8 fw-boldest text-success text-uppercase">' + row.ticket_action + '</span>';
-            _noteHtml += '   <span class="fw-bold text-gray-400">' + '' + '</span>';
+            _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary" onclick="WarrantyInfoModal(' + row.id + ',\'' + row.ticket_action + '\');">#' + row.id + '</a>';
+            if (row.ticket_action == 'wp_return') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return</span>';
+            else if (row.ticket_action == 'wp_replacement') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Replacement</span>';
+            else if (row.ticket_action == 'wp_createorder') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Create new order</span>';
+            else if (row.ticket_action == 'wp_declined') _noteHtml += '<span class="fs-8 fw-boldest d-block text-danger text-uppercase">Declined</span>';
+            else _noteHtml += '<span class="fs-8 fw-boldest d-block text-warning text-uppercase">Processing</span>';
+            _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + row.reason + '</span>';
+            _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + moment(row.created_at).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
             _noteHtml += '</div>';
             _noteHtml += '</div>';
         });
@@ -451,9 +456,10 @@ function WarrantyInfoModal(id, _action) {
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
 }
 function WarrantyInfoModalData(id, _action) {
-    let _html = ''; $("#loader").show();
+    let _html = ''; $("#loader").show(); _is_open = false;
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
-        response = JSON.parse(response);
+        response = JSON.parse(response); console.log(response);
+        _is_open = response[0].ticket_is_open;
         _html += '<div class="row">';
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
         _html += '<div class="col-lg-12">';
@@ -502,13 +508,18 @@ function WarrantyInfoModalData(id, _action) {
         _html += '</div>';
 
         _html += '</div></div>';
-    }).catch(err => { }).always(function () { $("#loader").hide(); $('#myModal .modal-body').empty().append(_html); });
-    //add action button
-    if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
-    else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
-    else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
-    else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
-    else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
+    }).catch(err => { }).always(function () {
+        $("#loader").hide(); $('#myModal .modal-body').empty().append(_html);
+        //add action button
+        if (_is_open) {
+            if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
+            else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
+            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+            else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
+            else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
+        }
+        else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Ticket has been closed.</div>'); }
+    });    
 }
 function TicketCommentPost(element) {
     $("#loader").show();

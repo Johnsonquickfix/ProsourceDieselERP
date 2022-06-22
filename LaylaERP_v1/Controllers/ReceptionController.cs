@@ -568,7 +568,7 @@ namespace LaylaERP.Controllers
                     fromdate = Convert.ToDateTime(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     todate = Convert.ToDateTime(model.strValue2);                
-                    dt = ReceptionRepository.GetProductReceiveList(model.strValue4, fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    dt = ReceptionRepository.GetProductReceiveList(model.strValue4, model.strValue5, fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 
                 result = JsonConvert.SerializeObject(dt);
             }
@@ -590,6 +590,35 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
+        }
+
+        [HttpGet]
+        public JsonResult Getserealpo()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = ReceptionRepository.Getserealpo();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult Getbatchnobypurchaseid(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                //model.strValue1 = string.IsNullOrEmpty(model.strValue1) ? "GETMD" : model.strValue1;
+                int id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = int.Parse(model.strValue1);
+                DataSet DS = ReceptionRepository.Getbatchnobypurchaseid(id);
+                JSONresult = JsonConvert.SerializeObject(DS);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

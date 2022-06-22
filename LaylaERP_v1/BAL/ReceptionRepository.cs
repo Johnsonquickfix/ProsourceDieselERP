@@ -837,7 +837,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetProductReceiveList(string flag, DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetProductReceiveList(string flag,string batchno, DateTime? fromdate, DateTime? todate, string searchcriteria, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -853,6 +853,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@batchno", batchno),
                     new SqlParameter("@userid", 0)
                 };
                 DataSet ds = SQLHelper.ExecuteDataSet("erp_productserno_search", parameters);
@@ -886,6 +887,33 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataSet Getserealpo()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select distinct appb.purchase_id id,ref text from commerce_purchase_product_batch appb inner join commerce_purchase_order cpo on cpo.rowid = appb.purchase_id ;";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet Getbatchnobypurchaseid(int purchase_id)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                //SqlParameter[] para = { new SqlParameter("@purchase_id", purchase_id)  };
+                DS = SQLHelper.ExecuteDataSet("select  distinct batchno id,batchno text from commerce_purchase_product_batch where purchase_id = " + purchase_id + "");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
 
 
     }

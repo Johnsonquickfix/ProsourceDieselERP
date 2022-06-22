@@ -433,6 +433,8 @@
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.monthpicker.css" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.monthpicker.js" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\moment.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\dropzone\dropzone.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\dropzone\dropzone.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\fastclick.js" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.css" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.min.css" />

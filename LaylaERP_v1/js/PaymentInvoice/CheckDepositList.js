@@ -5,8 +5,8 @@
     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
     console.log(pathid);
     if (pathid == "1000011") {
-        $('.nav-tabs a[href="#tab_22"]').tab('show');
-        console.log(pathid);
+        $('.nav-tabs a[href="#tab_24"]').tab('show');
+        //console.log(pathid);
     };
 
     $('#txtOrderDate').daterangepicker({
@@ -138,6 +138,11 @@ function Uncleared() {
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            {
+                data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
+                    return 'Payment';
+                }
+            },
             { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
             { data: 'Bank', title: 'Check Details', sWidth: "10%" },
             { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
@@ -180,12 +185,17 @@ function Rejected() {
             {
                 'data': 'id', title: '', sWidth: "8%",
                 'render': function (id, type, row, meta) {
-                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Cleared this" onClick="Validate(' + id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Cleared this" onClick="Validate(' + id + ')"><i class="glyphicon glyphicon-ok"></i></a>'
                    
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            {
+                data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
+                    return 'Payment';
+                }
+            },
             { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
             { data: 'Bank', title: 'Check Details', sWidth: "10%" },
             { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
@@ -240,6 +250,11 @@ function validatedata() {
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
+            {
+                data: 'Transmitter', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
+                    return 'Payment';
+                }
+            },
             // { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
             { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
             //{ data: 'Bank', title: 'Check Details', sWidth: "10%" },
@@ -285,12 +300,17 @@ function Cleared() {
             {
                 'data': 'id', title: '', sWidth: "8%",
                 'render': function (id, type, row, meta) {
-                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Reject this" onClick="Rejectthis(' + id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Reject this" onClick="Rejectthis(' + id + ')"><i class="glyphicon glyphicon-remove"></i></a>'
 
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            {
+                data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
+                    return 'Payment';
+                }
+            },
             { data: 'Transmitter', title: 'Transmitter', sWidth: "10%" },
             { data: 'Bank', title: 'Check Details', sWidth: "10%" },
             { data: 'amount', title: 'Amount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') }
@@ -309,8 +329,8 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
              
-                wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-trash"></i></a>  <a href="javascript:void(0);" title="Clear this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
-                wrHTML += '<td style="width:45%; text-align:left;">' + '$' + row.comments + '</td>';
+                wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-remove"></i></a>  <a href="javascript:void(0);" title="Clear this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-ok"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
+                wrHTML += '<td style="width:45%; text-align:left;">'+ row.comments + '</td>';
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
             });
         },

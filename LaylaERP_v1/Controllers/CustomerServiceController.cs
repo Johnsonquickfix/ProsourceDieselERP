@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -99,21 +101,22 @@ namespace LaylaERP.Controllers
         }
         [HttpPost]
         [Route("customer-service/generate-ticket")]
-        public JsonResult GenerateOrderTicket(SearchModel model)
+        public JsonResult GenerateOrderTicket(CustomerServiceModel model)
         {
             string JSONresult = string.Empty;
             try
             {
-                if (!string.IsNullOrEmpty(model.strValue1))
+                if (!string.IsNullOrEmpty(model.json_data))
                 {
-                    long user_id = CommanUtilities.Provider.GetCurrent().UserID;
-                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "GENTICKET");
+                    model.user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.json_data, model.user_id, "GENTICKET");
                     JSONresult = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)
                     {
                         if (dt.Rows[0]["response"].ToString() == "success")
                         {
-                            SendEmail.SendEmails_outer(model.strValue2, "Layla Sleep Warranty Information (#" + dt.Rows[0]["id"].ToString() + ").", model.strValue3, string.Empty);
+                            UploadedFile(dt.Rows[0]["id"].ToString(), model.files);
+                            SendEmail.SendEmails_outer(model.receipient_email, "Layla Sleep Warranty Information (#" + dt.Rows[0]["id"].ToString() + ").", model.body, string.Empty);
                         }
                     }
                 }
@@ -210,5 +213,44 @@ namespace LaylaERP.Controllers
             return Json(new { status = status, message = JSONresult }, 0);
         }
         #endregion
+
+        public void UploadedFile(string ticket_id, List<CustomerServiceFilesModel> files)
+        {
+            try
+            {
+                //loop through all the files
+                foreach (var file in files)
+                {
+                    //Save file content goes here
+                    //if (file != null && file.ContentLength > 0)
+                    {
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}Content\\tickets\\", Server.MapPath(@"\")));
+
+                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), ticket_id);
+
+                        bool isExists = System.IO.Directory.Exists(pathString);
+
+                        if (!isExists)
+                            System.IO.Directory.CreateDirectory(pathString);
+
+                        var path = string.Format("{0}\\{1}", pathString, file.name);
+                        //file.SaveAs(path);
+                        byte[] bytes = Convert.FromBase64String(file.dataURL);
+
+                        Image image;
+                        using (MemoryStream ms = new MemoryStream(bytes))
+                        {
+                            image = Image.FromStream(ms);
+                        }
+                        image.Save(path);
+                    }
+
+                }
+
+            }
+            catch //(Exception ex)
+            {
+            }
+        }
     }
 }

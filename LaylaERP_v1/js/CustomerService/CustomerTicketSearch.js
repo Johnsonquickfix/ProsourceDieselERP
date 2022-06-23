@@ -210,6 +210,21 @@ function ClaimWarrantyModal(id, _action) {
             modalHtml += '</div>';
         });
 
+        //Show Image
+        try {
+            let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];
+            if (_gdrive_link.length > 0) {
+                modalHtml += '<div class="d-flex align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
+                $.each(_gdrive_link, function (i, row) {
+                    modalHtml += '  <div class="overlay me-10">';
+                    modalHtml += '      <div class="overlay-wrapper"><img alt="img" class="rounded w-150px" src="../' + row.files + '"></div >';
+                    modalHtml += '  </div>';
+                });
+                modalHtml += '</div>';
+            }
+        }
+        catch { };
+
         //Add comments
         let _agent_comments = isNullUndefAndSpace(response[0].ticket_comments) ? JSON.parse(response[0].ticket_comments) : [];
         modalHtml += '<div class="separator separator-dashed my-3"></div>';

@@ -301,6 +301,7 @@
     <Compile Include="Models\CommercialProposalModel.cs" />
     <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
+    <Compile Include="Models\CustomerServiceModel.cs" />
     <Compile Include="Models\DaModel.cs" />
     <Compile Include="Models\EmailSettingModel.cs" />
     <Compile Include="Models\EventsModel.cs" />

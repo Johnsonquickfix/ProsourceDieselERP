@@ -474,6 +474,21 @@ function WarrantyInfoModalData(id, _action) {
         _html += '</div>';
         _html += '</div>';
 
+        //Show Image
+        try {
+            let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];
+            if (_gdrive_link.length > 0) {
+                _html += '<div class="d-flex align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
+                $.each(_gdrive_link, function (i, row) {
+                    _html += '  <div class="overlay me-10">';
+                    _html += '      <div class="overlay-wrapper"><img alt="img" class="rounded w-150px" src="../' + row.files + '"></div >';
+                    _html += '  </div>';
+                });
+                _html += '</div>';
+            }
+        }
+        catch { };
+
         //Add comments
         let _agent_comments = isNullUndefAndSpace(response[0].ticket_comments) ? JSON.parse(response[0].ticket_comments) : [];
         _html += '<div class="separator separator-dashed my-3"></div>';
@@ -650,14 +665,17 @@ function ClaimWarrantyModal(ele) {
     previewTemplate += '        <span class="dropzone-delete" data-dz-remove><i class="fa fa-times"></i></span>';
     previewTemplate += '    </div>';
     previewTemplate += '</div>';
+
     let myDropzone = new Dropzone(_id, {
-        url: "file", // Set the url for your upload script location
-        parallelUploads: 20, acceptedFiles: 'image/*,application/pdf',
+        url: "/CustomerService/SaveUploadedFile", // Set the url for your upload script location
+        paramName: "files",
+        autoProcessQueue: false,
+        parallelUploads: 20, acceptedFiles: 'image/*',
         previewTemplate: previewTemplate,
         maxFilesize: 2, // Max filesize in MB
         autoQueue: false, // Make sure the files aren't queued until manually added
         previewsContainer: _id + " .dropzone-items", // Define the container to display the previews
-        clickable: _id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+        clickable: _id + " .dropzone-select", // Define the element that should be used as click trigger to select files.       
     });
     $('#myModal .dropzone-remove-all').on('click', function () {
         myDropzone.removeAllFiles(true);
@@ -690,6 +708,13 @@ function ClaimWarranty_previous() {
 
 //generete Ticket for order warranty claim
 function GenerateTicketNo() {
+    let _file = [], _gdrive_link = [];
+    var file = Dropzone.forElement("#kt_dropzonejs_example_3").getAcceptedFiles();
+    $.each(file, function (i, r) {
+        _file.push({ dataURL: r.dataURL.split(',')[1], name: r.name, type: r.type });
+        _gdrive_link.push({ files: 'Content/tickets/{tid}/' + r.name });
+    });
+    //console.log(_file, _gdrive_link); return false;
     let _chk = $("input[name='chk-reason']:checked");
     let _user = $(".order-id").data('name'), _reason = _chk.data('title'), _reason_code = _chk.data('code');
     let _questions = '';
@@ -706,22 +731,22 @@ function GenerateTicketNo() {
     let option = {
         id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#kt_warranty_claim_qty").val()) || 0, order_item_sku: '',
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
-        comment: $("#kt_warranty_claim_note").val()
+        comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
     };
     let _body = TicketMailDetails(_user, _chat);
-    //console.log(option, _questions); return false;
+    //console.log(option, _questions, _file, file); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let _obj = { strValue1: JSON.stringify(option), strValue2: option.email, strValue3: _body };
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: '', body: _body, files: _file };
                 $.ajax(
                     { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
                 ).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
-                        OrderInfo(option.order_id);//$("#myModal").modal('hide'); 
+                        OrderInfo(option.order_id); $("#myModal").modal('hide');
                         swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

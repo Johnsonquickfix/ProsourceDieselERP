@@ -519,7 +519,7 @@ function WarrantyInfoModalData(id, _action) {
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
         }
         else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Ticket has been closed.</div>'); }
-    });    
+    });
 }
 function TicketCommentPost(element) {
     $("#loader").show();
@@ -541,35 +541,29 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
 
-    modalHtml = '<div id="kt_warranty_claim" class="card-body pt-0">';
+    modalHtml = '<div id="kt_warranty_claim" class="claimwarranty-step1 card-body pt-0">';
 
     modalHtml += '<ul>';
     $.each(WarrantyQuestions, function (i, row) {
         modalHtml += '<li>';
-        //modalHtml += '<label>';
         modalHtml += '<input type="radio" id="chk-' + i + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/>';
         modalHtml += '<label for="chk-' + i + '">' + row.title + '</label>';
-        //modalHtml += '</label>';
         modalHtml += '  <ul>';
         $.each(row.questions, function (q_i, q_row) {
             modalHtml += '<li>';
-            //modalHtml += '<label>';
             if (q_row.sub_questions != null) modalHtml += '<input type="radio" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '" name="chk-' + i + '" data-id="' + q_row.id + '" data-code="' + q_row.code + '" data-title="' + q_row.title + '"/>';
             else modalHtml += '<input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '" name="chk-' + i + '-' + q_i + '" data-id="' + q_row.id + '" data-code="' + q_row.code + '" data-title="' + q_row.title + '"/>';
             modalHtml += '<label for="chk-' + i + '-' + q_i + '">' + q_row.title + '</label>';
-            //modalHtml += '</label>';
             modalHtml += '  <ul>';
             $.each(q_row.sub_questions, function (sq_i, sq_row) {
                 modalHtml += '<li>';
-                //modalHtml += '<label>';
                 modalHtml += '<input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '-' + sq_i + '" name="chk-' + i + '-' + q_i + '-' + sq_i + '" data-id="' + sq_row.id + '" data-code="' + sq_row.code + '" data-title="' + sq_row.title + '"/>';
                 modalHtml += '<label for="chk-' + i + '-' + q_i + '-' + sq_i + '">' + sq_row.title + '</label>';
-                //modalHtml += '</label>';
                 modalHtml += '</li>';
             });
             modalHtml += '  </ul>';
@@ -580,23 +574,31 @@ function ClaimWarrantyModal(ele) {
     });
     modalHtml += '</ul>';
     modalHtml += '</div>';
-    modalHtml += '<div class="separator separator-dashed my-5"></div>';
+    //modalHtml += '<div class="separator separator-dashed my-5"></div>';
 
-    modalHtml += '<div class="bg-light-warning rounded border-warning border border-dashed p-6">';
-    modalHtml += '<div class="row">';
-    modalHtml += '<div class="col-md-6">';
-    modalHtml += '<label class="required form-label text-gray-800 fw-bolder">Quantity</label>';
-    modalHtml += '<input type="number" id="kt_warranty_claim_qty" class="form-control mb-2" placeholder="Quantity" value="' + _qty + '" min="0" max="' + _qty + '" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + _qty + ')">';
-    modalHtml += '</div>';
+    modalHtml += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 hide">';
+    modalHtml += '  <div class="row">';
+    modalHtml += '      <div class="col-md-6">';
+    modalHtml += '          <label class="required form-label text-gray-800 fw-bolder">Quantity</label>';
+    modalHtml += '          <input type="number" id="kt_warranty_claim_qty" class="form-control mb-2" placeholder="Quantity" value="' + _qty + '" min="0" max="' + _qty + '" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + _qty + ')">';
+    modalHtml += '      </div>';
+    modalHtml += '  </div>';
+    modalHtml += '  <div class="row">';
+    modalHtml += '      <div class="col-md-12">';
+    modalHtml += '          <label class="form-label text-gray-800 fw-bolder">Comment</label>';
+    modalHtml += '          <textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
+    modalHtml += '      </div>';
+    modalHtml += '  </div>';
     modalHtml += '</div>';
 
-    modalHtml += '<div class="row">';
-    modalHtml += '<div class="col-md-12">';
-    modalHtml += '<label class="form-label text-gray-800 fw-bolder">Comment</label>';
-    modalHtml += '<textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
-    modalHtml += '</div>';
-    modalHtml += '</div>';
-
+    modalHtml += '<div class="claimwarranty-step3 hide">';
+    modalHtml += '  <div class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="kt_dropzonejs_example_3">';
+    modalHtml += '      <div class="dropzone-panel mb-lg-0 mb-2">';
+    modalHtml += '          <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>';
+    modalHtml += '          <a class="dropzone-remove-all btn btn-sm btn-primary">Remove All</a>';
+    modalHtml += '      </div>';
+    modalHtml += '      <div class="dropzone-items wm-200px"></div>';
+    modalHtml += '  </div><span class="form-text fs-6 text-muted">Max file size is 2MB per file.</span>';
     modalHtml += '</div>';
 
     $('#myModal .modal-body').append(modalHtml);
@@ -609,7 +611,7 @@ function ClaimWarrantyModal(ele) {
         $('#kt_warranty_claim .collapse').removeClass('show');
         $('#kt_warranty_claim_body_' + $(this).data('id')).addClass('show');
     });
-    $('.warranty-checkbox').change(function (e) {
+    $('#myModal .warranty-checkbox').change(function (e) {
         var checked = $(this).prop("checked"), container = $(this).parent(), siblings = container.siblings();
         if ($(this).attr('type') == 'radio') $('.warranty-checkbox').prop("checked", false);
         $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false);
@@ -635,6 +637,32 @@ function ClaimWarrantyModal(ele) {
         }
         checkSiblings(container);
     });
+
+    let _id = "#kt_dropzonejs_example_3";
+    let previewTemplate = '<div class="dropzone-item bg-light-primary rounded border-primary border border-dashed d-block d-flex flex-stack my-2 p-4">';
+    previewTemplate += '    <div class="dropzone-file">';
+    previewTemplate += '        <div class="dropzone-filename text-gray-800 fw-bolder" title = "some_image_file_name.jpg"><span data-dz-name>some_image_file_name.jpg</span><strong> (<span data-dz-size>340kb</span>)</strong></div>';
+    previewTemplate += '        <div class="dropzone-error text-danger" data-dz-errormessage></div>';
+    previewTemplate += '    </div>';
+    previewTemplate += '    <div class="dropzone-toolbar">';
+    previewTemplate += '    <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>';
+    previewTemplate += '        <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>';
+    previewTemplate += '        <span class="dropzone-delete" data-dz-remove><i class="fa fa-times"></i></span>';
+    previewTemplate += '    </div>';
+    previewTemplate += '</div>';
+    let myDropzone = new Dropzone(_id, {
+        url: "file", // Set the url for your upload script location
+        parallelUploads: 20, acceptedFiles: 'image/*,application/pdf',
+        previewTemplate: previewTemplate,
+        maxFilesize: 2, // Max filesize in MB
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewsContainer: _id + " .dropzone-items", // Define the container to display the previews
+        clickable: _id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+    });
+    $('#myModal .dropzone-remove-all').on('click', function () {
+        myDropzone.removeAllFiles(true);
+    });
+    $('#myModal .dropzone.dropzone-queue .dz-message').addClass('hide');
 }
 function ClaimWarranty(chk) {
     var isChecked = $(chk).prop("checked");
@@ -644,6 +672,21 @@ function ClaimWarranty(chk) {
     if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
     else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
 }
+function ClaimWarranty_next() {
+    let _chk = $("input[name='chk-reason']:checked").data('code');
+    if (!isNullUndefAndSpace(_chk)) { swal('Error!', 'Please select a reason for your warranty claim.', "error").then((result) => { return false; }); return false; }
+    $('#myModal .claimwarranty-step1').addClass('hide');
+    $('#myModal .claimwarranty-step2').removeClass('hide'); $('#myModal #btnGenerateTicket').removeClass('hide');
+    $('#myModal .claimwarranty_previous').removeClass('hide'); $('#myModal .claimwarranty_next').addClass('hide');
+    $('#myModal .claimwarranty-step3').removeClass('hide');
+}
+function ClaimWarranty_previous() {
+    $('#myModal .claimwarranty-step1').removeClass('hide');
+    $('#myModal .claimwarranty-step2').addClass('hide'); $('#myModal #btnGenerateTicket').addClass('hide');
+    $('#myModal .claimwarranty_previous').addClass('hide'); $('#myModal .claimwarranty_next').removeClass('hide');
+    $('#myModal .claimwarranty-step3').addClass('hide');
+}
+
 
 //generete Ticket for order warranty claim
 function GenerateTicketNo() {
@@ -674,16 +717,12 @@ function GenerateTicketNo() {
             return new Promise(function (resolve) {
                 let _obj = { strValue1: JSON.stringify(option), strValue2: option.email, strValue3: _body };
                 $.ajax(
-                    {
-                        method: "POST", timeout: 0, headers: { "Content-Type": "application/json" },
-                        url: "/customer-service/generate-ticket", data: JSON.stringify(_obj)
-                    }
+                    { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
                 ).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
-                        $("#myModal").modal('hide'); OrderInfo(option.order_id);
+                        OrderInfo(option.order_id);//$("#myModal").modal('hide'); 
                         swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
-
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

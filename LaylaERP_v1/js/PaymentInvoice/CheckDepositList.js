@@ -301,7 +301,7 @@ function Cleared() {
 }
 
 function formatPO(d) {
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:5%; text-align:left; visibility:inherit; opacity:1;">#</th><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Check No</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">#</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Check No</th><th style="width:45%; text-align:left; visibility:inherit; opacity:1;">Check Details</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Amount</th></tr></thead>';
     $.ajax({
         url: '/CheckDeposit/GetClearedDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -309,8 +309,9 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
              
-                wrHTML += '<tr><td><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-trash"></i></a>  <a href="javascript:void(0);" title="Cleare this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>  </td><td style="width:20%; text-align:left;">' + row.num_payment + '</td>';
-                wrHTML += '<td style="width:30%; text-align:left;">' + '$' + row.amount + '</td></tr > ';
+                wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-trash"></i></a>  <a href="javascript:void(0);" title="Clear this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-eye-open"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
+                wrHTML += '<td style="width:45%; text-align:left;">' + '$' + row.comments + '</td>';
+                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

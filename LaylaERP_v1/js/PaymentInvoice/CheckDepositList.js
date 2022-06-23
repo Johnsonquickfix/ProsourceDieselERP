@@ -185,7 +185,7 @@ function Rejected() {
             {
                 'data': 'id', title: '', sWidth: "8%",
                 'render': function (id, type, row, meta) {
-                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Cleared this" onClick="Validate(' + id + ')"><i class="glyphicon glyphicon-ok"></i></a>'
+                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Check cleared." onClick="Validate(' + id + ')"><i class="glyphicon glyphicon-ok"></i></a>'
                    
                 }
             },
@@ -246,7 +246,7 @@ function validatedata() {
                 data: 'ref', title: 'VOU. No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     //return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" onclick="GetCheckDepositPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> #' + row.ref + ' <a href="#" title="Click here to print the check deposit list to the bank." onclick="GetCheckDepositPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
@@ -300,7 +300,7 @@ function Cleared() {
             {
                 'data': 'id', title: '', sWidth: "8%",
                 'render': function (id, type, row, meta) {
-                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Reject this" onClick="Rejectthis(' + id + ')"><i class="glyphicon glyphicon-remove"></i></a>'
+                    return '<a href="javascript:void(0);" data-toggle="tooltip" title="Check rejected." onClick="Rejectthis(' + id + ')"><i class="glyphicon glyphicon-remove"></i></a>'
 
                 }
             },
@@ -329,7 +329,7 @@ function formatPO(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
              
-                wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Reject this" data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-remove"></i></a>  <a href="javascript:void(0);" title="Clear this" data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-ok"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
+                wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Check rejected." data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-remove"></i></a>  <a href="javascript:void(0);" title="Check cleared." data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-ok"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
                 wrHTML += '<td style="width:45%; text-align:left;">'+ row.comments + '</td>';
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
             });

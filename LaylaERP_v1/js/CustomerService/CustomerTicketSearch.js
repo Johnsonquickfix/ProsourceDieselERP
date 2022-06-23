@@ -210,6 +210,7 @@ function ClaimWarrantyModal(id, _action) {
             modalHtml += '</div>';
         });
 
+
         //Show Image
         try {
             let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];

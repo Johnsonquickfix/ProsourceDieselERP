@@ -956,5 +956,16 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+
+        [Route("paymentinvoice/autoserialno-sync")]
+        public ActionResult AutoserialnoSync()
+        {
+            try
+            {
+                PaymentInvoiceRepository.Generateautoserial();
+            }
+            catch { }
+            return View();
+        }
     }
 }

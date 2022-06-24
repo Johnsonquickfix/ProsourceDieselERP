@@ -1242,5 +1242,22 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable Generateautoserial()
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@qflag", "ASERL"),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_autoserial_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

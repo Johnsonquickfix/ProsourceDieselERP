@@ -216,6 +216,7 @@
                  n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id, model.OrderPostStatus.status);
                 if (n_orderid > 0)
                 {
+                    model.new_order_id = n_orderid;
                     DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                     /// step 1 : wp_wc_order_stats
                     StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',customer_id='{5}' where order_id='{6}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,

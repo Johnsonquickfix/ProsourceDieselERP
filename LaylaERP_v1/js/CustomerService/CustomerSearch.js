@@ -426,13 +426,15 @@ function OrderInfo(ord_id) {
             _noteHtml += '<div class="timeline-icon px-1"><span class="svg-icon svg-icon-2 svg-icon-success"><i class="fa fa-paper-plane"></i></span></div>';
             _noteHtml += '<div class="timeline-content m-0">';
             _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary" onclick="WarrantyInfoModal(' + row.id + ',\'' + row.ticket_action + '\');">#' + row.id + '</a>';
-            if (row.ticket_action == 'wp_return') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return</span>';
-            else if (row.ticket_action == 'wp_replacement') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Replacement</span>';
-            else if (row.ticket_action == 'wp_createorder') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Create new order</span>';
+            if (row.ticket_action == 'wp_return') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
+            else if (row.ticket_action == 'wp_replacement') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Replacement ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
+            else if (row.ticket_action == 'wp_createorder') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Create new order ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
             else if (row.ticket_action == 'wp_declined') _noteHtml += '<span class="fs-8 fw-boldest d-block text-danger text-uppercase">Declined</span>';
             else _noteHtml += '<span class="fs-8 fw-boldest d-block text-warning text-uppercase">Processing</span>';
             _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + row.reason + '</span>';
             _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + moment(row.created_at).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
+            console.log(row.is_confirmed_by_vendor);
+            if (row.is_confirmed_by_vendor) _noteHtml += '   <span class="d-block fw-bold text-gray-400"> Confirmed by vendor on ' + moment(row.confirmed_by_vendor_date).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
             _noteHtml += '</div>';
             _noteHtml += '</div>';
         });

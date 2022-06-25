@@ -526,6 +526,8 @@ namespace LaylaERP.Controllers
                 int i = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 if (i > 0)
                 {
+                    DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats_action set is_confirmed_by_vendor = 1,confirmed_by_vendor_date =getadte() where new_order_id = " + id.ToString());
+
                     ViewBag.status = "Refund order confirmed successfully.";
                     ViewBag.id = id;
                 }

@@ -38,7 +38,7 @@
             $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, '', $('#txtOrderPhone').val()) });
         }
     });
-    $.when(dataGridLoad()).done(function () { OrderInfo(0) });//903954
+    $.when(SearchDefault(),dataGridLoad()).done(function () { OrderInfo(0) });//903954
     $(document).on("click", "#btnGenerateTicket", function (t) {
         t.preventDefault(); GenerateTicketNo();
     });
@@ -55,6 +55,11 @@ function ValidateMaxValue(value, min, max) {
     else return value;
 }
 ///Search Control
+function SearchDefault() {
+    let searchText = localStorage.getItem('_search');
+    if (searchText != '') { SearchByControl(3); }
+    $('#txtOrderNo').val(searchText); localStorage.setItem('_search', '');
+}
 function SearchByControl(id) {
     if (id == 1) {
         $(".search-control").empty().append('<select class="form-control select2" id="ddlEmail" placeholder="Filter by Billing Email" style="width: 100%;"></select>');
@@ -90,7 +95,6 @@ function SearchByControl(id) {
     }
     else if (id == 3) { $(".search-control").empty().append('<input id="txtOrderNo" class="form-control" placeholder="Order No." style="width: 100%;" maxlength="10">'); }
     else if (id == 4) { $(".search-control").empty().append('<input id="txtOrderPhone" class="form-control" placeholder="Phone No." style="width: 100%;" maxlength="11">'); }
-
     $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
 }
 

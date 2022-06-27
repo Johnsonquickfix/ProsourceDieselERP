@@ -200,11 +200,15 @@ namespace LaylaERP.Controllers
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_refunded_by", meta_value = om.UserID.ToString() });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_ticket_id", meta_value = model.ticket_id.ToString() });
 
                 int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
                 if (result > 0)
                 {
-                    DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());
+                    string json_data = "{\"ticket_id\":"+ model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":1 }";
+                    CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
+
+                    //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());
                     status = true; JSONresult = "Order placed successfully.";
                 }
                 //JSONresult = JsonConvert.SerializeObject(DT);

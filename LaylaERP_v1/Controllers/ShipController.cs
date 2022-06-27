@@ -1,5 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
+using Newtonsoft.Json;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
@@ -184,16 +186,16 @@ namespace LaylaERP.Controllers
                         shipped_items = (shipped_items.Length > 0 ? shipped_items + ", " : "") + node["Name"].InnerText + " (" + node["SKU"].InnerText + ") x " + node["Quantity"].InnerText;
                         shipped_qty += int.Parse(node["Quantity"].InnerText);
                     }
-                   DataTable dt = ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
+                    DataTable dt = ShipRepository.UpdateOrderShipped(Convert.ToInt64(order_number), oname, shipped_items, shipped_qty, tracking_number, carrier);
                     // My sql wp_posts data update
-                    long id = Convert.ToInt64( dt.Rows[0]["id"].ToString());
+                    long id = Convert.ToInt64(dt.Rows[0]["id"].ToString());
                     string wpstatus = dt.Rows[0]["wpstatus"].ToString();
-                    
+
                     //StringBuilder strSql = new StringBuilder("Update wp_posts set post_status = '"+ wpstatus + "'  where order_id=" + id + "; ");
                     // DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
 
                     StringBuilder strSql = new StringBuilder(string.Format("update wp_posts set post_status = '{0}' where id = {1};", wpstatus, id));
-                    DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString()); 
+                    DAL.MYSQLHelper.ExecuteNonQuery(strSql.ToString());
                 }
                 else
                 {
@@ -406,5 +408,227 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { }
         }
+
+        #region return order vendor approval by mail
+        [Route("ship/return-order-vendor-approval")]
+        public ActionResult OrderReturnVendorMail()
+        {
+            try
+            {
+                string vendor_email = string.Empty;
+                DataSet ds = PurchaseOrderRepository.GetPurchaseOrderPrintList("ORVMWAIT");
+                string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
+                int SMTPServerPortNo = 587; bool SSL = false;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    SenderEmailID = (dr["SenderEmailID"] != Convert.DBNull) ? dr["SenderEmailID"].ToString() : "";
+                    SenderEmailPwd = (dr["SenderEmailPwd"] != Convert.DBNull) ? dr["SenderEmailPwd"].ToString() : "";
+                    SMTPServerName = (dr["SMTPServerName"] != Convert.DBNull) ? dr["SMTPServerName"].ToString() : "";
+                    SMTPServerPortNo = (dr["SMTPServerPortNo"] != Convert.DBNull) ? Convert.ToInt32(dr["SMTPServerPortNo"].ToString()) : 25;
+                    SSL = (dr["SSL"] != Convert.DBNull) ? Convert.ToBoolean(dr["SSL"]) : false;
+                }
+                string str_meta = string.Empty;
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    vendor_email = dr["vendor_email"] != DBNull.Value ? dr["vendor_email"].ToString().Trim() : "";
+                    string html = "<div style=\"background-color:#59595b;margin:0;padding:70px 0 70px 0;width:100%;text-align: -webkit-center;\">";
+                    html += "   <div>";
+                    html += "       <p style=\"margin-top:0\"><img src=\"https://laylasleep.com/wp-content/uploads/2018/12/logo-mail-1.png\" alt=\"Layla\" style=\"border:none;display:inline-block;font-size:14px;font-weight:bold;height:auto;outline:none;text-decoration:none;text-transform:capitalize;vertical-align:middle;margin-right:10px\"></p>";
+                    html += "   </div>";
+                    html += "   <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background-color:#ffffff;border:1px solid #505052;border-radius:3px;width:600px;-webkit-border-horizontal-spacing:0px;-webkit-border-vertical-spacing:0px;\">";
+                    html += "       <tbody>";
+                    html += "           <tr>";
+                    html += "               <td style=\"text-align:-webkit-center;background-color: #ff4100;color: #ffffff;border-bottom: 0;font-weight: bold;line-height: 100%;vertical-align: middle;font-family: &quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-radius: 3px 3px 0 0;padding: 36px 48px;\">";
+                    html += "                   <h1 style=\"font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff\">Refund order details.</h1>";
+                    html += "               </td>";
+                    html += "           </tr>";
+                    html += "           <tr>";
+                    html += "               <td style=\"background-color: #ffffff;padding: 48px 48px 0;text-align:-webkit-center;vertical-align: top;\">";
+                    html += "                   <div style=\"color:#636363;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">";
+                    html += "                       <p style=\"margin:0 0 16px\">Hi " + dr["vendor_name"].ToString() + ",</p>";
+                    html += "                       <p style=\"margin:0 0 16px\">Customer (name) has applied a refund to your Layla Order. For your reference, the details of the refund are below. </p>";
+                    html += "                       <h2 style=\"color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left\">";
+                    html += "                           <a href=\"http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D\" style =\"font-weight:normal;text-decoration:underline;color:#ff4100\" target =\"_blank\" >[Order #" + dr["fk_projet"].ToString() + "]</a> (" + dr["date_creation"].ToString() + ")";
+                    html += "                       </h2>";
+                    html += "                       <div style=\"margin-bottom:40px\">";
+                    html += "                           <table cellspacing=\"0\" cellpadding=\"6\" border=\"1\" style=\"color:#636363;border:1px solid #e5e5e5;vertical-align:middle;width:100%;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif\">";
+                    html += "                               <thead>";
+                    html += "                                   <tr>";
+                    html += "                                       <th style=\"color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:left;width:75%;\">Product</th>";
+                    html += "                                       <th style=\"color:#636363;border:1px solid #e5e5e5;vertical-align:middle;padding:12px;text-align:right;width:25%;\">Quantity</th>";
+                    html += "                                   </tr>";
+                    html += "                               </thead>";
+                    html += "                               <tbody>" + dr["items"].ToString() + "</tbody>";
+                    html += "                               <tfoot>";
+                    html += "                                   <tr>";
+                    html += "                                       <th colspan=\"2\" style=\"border:0px solid #e5e5e5;padding:12px;text-align:end;\">";
+                    html += "                                           <a href=\"" + dr["base_url"].ToString() + "/ship/return-order-conform?key=00&id=" + dr["fk_projet"].ToString() + "\" target=\"_blank\" style=\"margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;\">conform</a>";
+                    html += "                                       </th>";
+                    html += "                                   </tr>";
+                    html += "                               </tfoot>";
+                    html += "                           </table>";
+                    html += "                       </div>";
+                    html += "                       <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"width:100%;vertical-align:top;margin-bottom:40px;padding:0\">";
+                    html += "                           <tbody>";
+                    html += "                               <tr>";
+                    html += "                                   <td valign=\"top\" width=\"50%\" style=\"text-align:left;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;border:0;padding:0\">";
+                    html += "                                       <h2 style=\"color:#ff4100;display:block;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left\">Billing address</h2>";
+                    html += "                                       <address style=\"padding:12px 12px 0;color:#636363;border:1px solid #e5e5e5\">" + dr["billing_address"].ToString() + "</address>";
+                    html += "                                   </td>";
+                    html += "                                   <td valign=\"top\" width=\"50%\" style=\"text-align:left;font-family:'Helvetica Neue',Helvetica,Roboto,Arial,sans-serif;border:0;padding:0\">";
+                    html += "                                       <h2 style=\"color:#ff4100;display:block;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left\">Pickup address</h2>";
+                    html += "                                       <address style=\"padding:12px 12px 0;color:#636363;border:1px solid #e5e5e5\">" + dr["ship_address"].ToString() + "</address>";
+                    html += "                                   </td>";
+                    html += "                               </tr>";
+                    html += "                           </tbody>";
+                    html += "                       </table>";
+                    html += "                   </div>";
+                    html += "               </td>";
+                    html += "           </tr>";
+                    html += "           <tr>";
+                    html += "               <td align=\"center\" valign=\"top\" style=\"border: 0;color:#ff8d66;font-family:Arial;font-size:12px;line-height:125%;text-align:center;padding:0 48px 48px 48px;\">";
+                    html += "                   <p>" + dr["company_address"].ToString() + "<br>855-358-1676<br>";
+                    html += "                       <a href=\"mailto:" + dr["company_email"].ToString() + "\" target=\"_blank\">" + dr["company_email"].ToString() + " </a>";
+                    html += "                   </p>";
+                    html += "               </td>";
+                    html += "           </tr>";
+                    html += "       </tbody>";
+                    html += "   </table>";
+                    html += "</div>";
+
+                    if (!string.IsNullOrEmpty(vendor_email) && !string.IsNullOrEmpty(SenderEmailID))
+                    {
+                        try
+                        {
+                            UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, vendor_email, "Refund order #" + dr["fk_projet"].ToString() + " details", html, string.Empty);
+                            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ id: " + dr["rowid"].ToString() + " }";
+                        }
+                        catch { }
+                    }
+
+                }
+                if (!string.IsNullOrEmpty(str_meta))
+                {
+                    //System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    //PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
+                }
+            }
+            catch { }
+            return View();
+        }
+        [Route("ship/return-order-conform")]
+        public ActionResult OrderReturnConform(string id, string key)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                long parent_order_id = 0; decimal order_amount = 0; string result = string.Empty;
+                DateTime cDate = UTILITIES.CommonDate.CurrentDate(), cUTFDate = UTILITIES.CommonDate.UtcDate();
+                /// step 1 : wp_posts
+                string strSql = string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3} and post_status = 'wc-processing';", "wc-completed", cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), id);
+                int i = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (i > 0)
+                {
+                    DataTable dt = CustomerServiceRepository.CustomerTicketInfo(0, Convert.ToInt64(id), "VENDORCONFORM");
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        parent_order_id = (dr["post_id"] != DBNull.Value ? Convert.ToInt64(dr["post_id"].ToString().Trim()) : 0);
+                        order_amount = (dr["order_amount"] != DBNull.Value ? Convert.ToDecimal(dr["order_amount"].ToString().Trim()) : 0);
+                        if (dr["payment_method"].ToString().Trim() == "podium")
+                        {
+                            clsPodiumModal obj = new clsPodiumModal();
+                            obj.locationUid = dr["podium_location_uid"].ToString().Trim();
+                            obj.invoiceNumber = dr["podium_uid"].ToString().Trim();
+                            obj.uid = dr["podium_payment_uid"].ToString().Trim();
+                            obj.amount = Convert.ToInt32(order_amount * 100);
+                            obj.reason = "requested_by_customer";
+
+                            result = clsPodium.PodiumInvoiceRefund(obj);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id; notesModel.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "authorize_net_cim_credit_card")
+                        {
+                            string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty, crdtype = string.Empty, ExpirationDatePrint = string.Empty;
+                            TransactionID = (dt.Rows[0]["authorize_net_trans_id"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_trans_id"].ToString() : "";
+                            CardNumber = (dt.Rows[0]["authorize_net_card_account_four"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_account_four"].ToString() : "";
+                            crdtype = (dt.Rows[0]["authorize_net_cim_credit_card_card_type"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_cim_credit_card_card_type"].ToString() : "";
+                            ExpirationDate = (dt.Rows[0]["authorize_net_card_expiry_date"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_expiry_date"].ToString() : "";
+                            ExpirationDatePrint = ExpirationDate.Split('-')[1] + "/" + ExpirationDate.Split('-')[0];
+                            ExpirationDate = ExpirationDate.Split('-')[1] + ExpirationDate.Split('-')[0];
+                            result = clsAuthorizeNet.RefundTransaction(TransactionID, CardNumber, ExpirationDate, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Authorize.Net Credit Card Charge Refund Issued: {0} ending in {1} (expires {2}) (Transaction ID {3}). Refund Issued for ${4}. The refund should appear on your statement in 5 to 10 days.", crdtype, CardNumber, ExpirationDatePrint, result, order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "affirm")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["transaction_id"] != Convert.DBNull) ? dt.Rows[0]["transaction_id"].ToString() : "";
+                            result = clsAffirm.AffirmRefund(TransactionID, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Refunded ${0} - Refund ID: {1} - Reason: Customer Return", order_amount, result);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "amazon_payments_advanced")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["amazon_capture_id"] != Convert.DBNull) ? dt.Rows[0]["amazon_capture_id"].ToString() : "";
+                            result = clsAmazonPay.RefundTransaction(id.ToString(), TransactionID, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Amazon Pay Refund Issued. Transaction ID {0}. Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", result, order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        if (dr["payment_method"].ToString().Trim() == "ppec_paypal")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["amazon_capture_id"] != Convert.DBNull) ? dt.Rows[0]["amazon_capture_id"].ToString() : "";
+                            if (dr["post_mime_type"].ToString().Trim() == "shop_order_erp" || dr["post_mime_type"].ToString().Trim() == "shopordererp")
+                                result = clsPayPal.PaypalInvoiceRefund(TransactionID, DateTime.Today.ToString("yyyy-MM-dd"), order_amount);
+                            else
+                                result = clsPayPal.PaypalPaymentRefund(TransactionID, "INVOICE - " + id + "-" + DateTime.Today.ToString("yyyyMMddmmss"), "", order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                var dyn = JsonConvert.DeserializeObject<dynamic>(result);
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id; notesModel.comment_content = string.Format("PayPal Refund Issued for ${0:0.00}. transaction ID = {1}", order_amount, dyn.refund_id);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                    }
+                    //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats_action set is_confirmed_by_vendor = 1,confirmed_by_vendor_date =getdate() where new_order_id = " + id.ToString());
+
+                    ViewBag.status = "Refund order confirmed successfully.";
+                    ViewBag.id = id;
+                }
+                else
+                {
+                    ViewBag.status = "You don't have permission to access please contact administrator.";
+                    ViewBag.id = "0";
+                }
+            }
+            return View();
+        }
+        #endregion
     }
 }

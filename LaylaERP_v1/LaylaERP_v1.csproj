@@ -1336,6 +1336,8 @@
     <Content Include="Views\PaymentInvoice\MultipleBillPayment.cshtml" />
     <Content Include="Views\PaymentInvoice\MultipleBillPaymentList.cshtml" />
     <Content Include="Views\Reception\ReceiveProductList.cshtml" />
+    <Content Include="Views\Ship\OrderReturnConform.cshtml" />
+    <Content Include="Views\Ship\OrderReturnVendorMail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

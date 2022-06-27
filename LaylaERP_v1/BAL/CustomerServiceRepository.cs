@@ -157,7 +157,7 @@
             return dt;
         }
 
-        public static DataTable CustomerTicketInfo(long ticket_id)
+        public static DataTable CustomerTicketInfo(long ticket_id, long order_id = 0, string flag = "TICKETINFO")
         {
             DataTable dt = new DataTable();
             try
@@ -165,7 +165,8 @@
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@ticket_id", ticket_id),
-                    new SqlParameter("@flag", "TICKETINFO")
+                    new SqlParameter("@order_id", order_id),
+                    new SqlParameter("@flag", flag)
                 };
 
                 dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);

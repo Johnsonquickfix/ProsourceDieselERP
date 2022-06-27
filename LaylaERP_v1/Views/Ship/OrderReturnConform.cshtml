@@ -1,0 +1,18 @@
+﻿
+@{
+    Layout = null;
+}
+
+<h2 class="lbl-tilte" data-status="@ViewBag.status" data-id="@ViewBag.id">Refund order</h2>
+
+<script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+<script src="~/js/common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
+        if (_status == "Success") {
+            $('.lbl-tilte').empty().append('Refund order confirmed successfully. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+        }
+        else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>');}
+    });
+</script>

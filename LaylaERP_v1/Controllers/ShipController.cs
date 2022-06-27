@@ -1,5 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
+using Newtonsoft.Json;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
@@ -519,14 +521,102 @@ namespace LaylaERP.Controllers
         {
             if (!string.IsNullOrEmpty(id))
             {
+                long parent_order_id = 0; decimal order_amount = 0; string result = string.Empty;
                 DateTime cDate = UTILITIES.CommonDate.CurrentDate(), cUTFDate = UTILITIES.CommonDate.UtcDate();
                 /// step 1 : wp_posts
                 string strSql = string.Format("update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3} and post_status = 'wc-processing';", "wc-completed", cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), id);
-
                 int i = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 if (i > 0)
                 {
-                    DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats_action set is_confirmed_by_vendor = 1,confirmed_by_vendor_date =getdate() where new_order_id = " + id.ToString());
+                    DataTable dt = CustomerServiceRepository.CustomerTicketInfo(0, Convert.ToInt64(id), "VENDORCONFORM");
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        parent_order_id = (dr["post_id"] != DBNull.Value ? Convert.ToInt64(dr["post_id"].ToString().Trim()) : 0);
+                        order_amount = (dr["order_amount"] != DBNull.Value ? Convert.ToDecimal(dr["order_amount"].ToString().Trim()) : 0);
+                        if (dr["payment_method"].ToString().Trim() == "podium")
+                        {
+                            clsPodiumModal obj = new clsPodiumModal();
+                            obj.locationUid = dr["podium_location_uid"].ToString().Trim();
+                            obj.invoiceNumber = dr["podium_uid"].ToString().Trim();
+                            obj.uid = dr["podium_payment_uid"].ToString().Trim();
+                            obj.amount = Convert.ToInt32(order_amount * 100);
+                            obj.reason = "requested_by_customer";
+
+                            result = clsPodium.PodiumInvoiceRefund(obj);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id; notesModel.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "authorize_net_cim_credit_card")
+                        {
+                            string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty, crdtype = string.Empty, ExpirationDatePrint = string.Empty;
+                            TransactionID = (dt.Rows[0]["authorize_net_trans_id"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_trans_id"].ToString() : "";
+                            CardNumber = (dt.Rows[0]["authorize_net_card_account_four"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_account_four"].ToString() : "";
+                            crdtype = (dt.Rows[0]["authorize_net_cim_credit_card_card_type"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_cim_credit_card_card_type"].ToString() : "";
+                            ExpirationDate = (dt.Rows[0]["authorize_net_card_expiry_date"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_expiry_date"].ToString() : "";
+                            ExpirationDatePrint = ExpirationDate.Split('-')[1] + "/" + ExpirationDate.Split('-')[0];
+                            ExpirationDate = ExpirationDate.Split('-')[1] + ExpirationDate.Split('-')[0];
+                            result = clsAuthorizeNet.RefundTransaction(TransactionID, CardNumber, ExpirationDate, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Authorize.Net Credit Card Charge Refund Issued: {0} ending in {1} (expires {2}) (Transaction ID {3}). Refund Issued for ${4}. The refund should appear on your statement in 5 to 10 days.", crdtype, CardNumber, ExpirationDatePrint, result, order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "affirm")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["transaction_id"] != Convert.DBNull) ? dt.Rows[0]["transaction_id"].ToString() : "";
+                            result = clsAffirm.AffirmRefund(TransactionID, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Refunded ${0} - Refund ID: {1} - Reason: Customer Return", order_amount, result);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        else if (dr["payment_method"].ToString().Trim() == "amazon_payments_advanced")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["amazon_capture_id"] != Convert.DBNull) ? dt.Rows[0]["amazon_capture_id"].ToString() : "";
+                            result = clsAmazonPay.RefundTransaction(id.ToString(), TransactionID, order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id;
+                                notesModel.comment_content = string.Format("Amazon Pay Refund Issued. Transaction ID {0}. Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", result, order_amount);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                        if (dr["payment_method"].ToString().Trim() == "ppec_paypal")
+                        {
+                            string TransactionID = string.Empty;
+                            TransactionID = (dt.Rows[0]["amazon_capture_id"] != Convert.DBNull) ? dt.Rows[0]["amazon_capture_id"].ToString() : "";
+                            if (dr["post_mime_type"].ToString().Trim() == "shop_order_erp" || dr["post_mime_type"].ToString().Trim() == "shopordererp")
+                                result = clsPayPal.PaypalInvoiceRefund(TransactionID, DateTime.Today.ToString("yyyy-MM-dd"), order_amount);
+                            else
+                                result = clsPayPal.PaypalPaymentRefund(TransactionID, "INVOICE - " + id + "-" + DateTime.Today.ToString("yyyyMMddmmss"), "", order_amount);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                var dyn = JsonConvert.DeserializeObject<dynamic>(result);
+                                OrderNotesModel notesModel = new OrderNotesModel();
+                                notesModel.post_ID = parent_order_id; notesModel.comment_content = string.Format("PayPal Refund Issued for ${0:0.00}. transaction ID = {1}", order_amount, dyn.refund_id);
+                                notesModel.is_customer_note = string.Empty; notesModel.comment_author = string.Empty; notesModel.comment_author_email = string.Empty;
+                                OrderRepository.AddOrderNotes(notesModel);
+                            }
+                        }
+                    }
+                    //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats_action set is_confirmed_by_vendor = 1,confirmed_by_vendor_date =getdate() where new_order_id = " + id.ToString());
 
                     ViewBag.status = "Refund order confirmed successfully.";
                     ViewBag.id = id;

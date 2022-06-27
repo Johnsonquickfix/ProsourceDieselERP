@@ -1,6 +1,7 @@
 ﻿using LaylaERP.DAL;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,16 @@ namespace LaylaERP.UTILITIES
         //public static string Paypal_IPNurl = "https://paypal.com/cgi-bin/webscr";
         public static string GetToken()
         {
-            // string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
-            string clientId = CommanUtilities.Provider.GetCurrent().PaypalClientId, clientSecret = CommanUtilities.Provider.GetCurrent().PaypalSecret;
+            // string client_id = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", client_secret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
+            //string client_id = CommanUtilities.Provider.GetCurrent().PaypalClientId, client_secret = CommanUtilities.Provider.GetCurrent().PaypalSecret;
+            string client_id = string.Empty, client_secret = string.Empty;
+            System.Data.DataTable dt = BAL.Users.AppSystemSetting();
+            if (dt.Rows.Count > 0)
+            {
+                client_id = (dt.Rows[0]["PaypalClientId"] != Convert.DBNull) ? dt.Rows[0]["PaypalClientId"].ToString().Trim() : string.Empty;
+                client_secret = (dt.Rows[0]["PaypalSecret"] != Convert.DBNull) ? dt.Rows[0]["PaypalSecret"].ToString().Trim() : string.Empty;
+            }
+
             List<KeyValuePair<string, string>> tokenServerPairs = new List<KeyValuePair<string, string>>();
             tokenServerPairs.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             var content = new FormUrlEncodedContent(tokenServerPairs);
@@ -31,7 +40,7 @@ namespace LaylaERP.UTILITIES
                 client.BaseAddress = new Uri(base_url + "/v1/oauth2/token");
                 client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
-                var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"));
+                var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:{client_secret}"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64String);
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                 var response = client.PostAsync("", content).Result;
@@ -65,6 +74,51 @@ namespace LaylaERP.UTILITIES
                 else { result.invoice_number = string.Empty; }
             }
             return result.invoice_number;
+        }
+
+        public static string PaypalPaymentRefund(string capture_id, string invoice_id, string note_to_payer, decimal amount)
+        {
+            string invoice_info = string.Empty;
+            string access_token = GetToken();
+
+            if (!string.IsNullOrEmpty(access_token))
+            {
+                var client_rest = new RestClient(base_url + "/v2/payments/captures/" + capture_id + "/refund");
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Accept", "application/json");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", "Bearer " + access_token);
+                request.AddParameter("application/json", "{ \"note_to_payer\": \"" + note_to_payer + "\", \"invoice_id\":  \"" + invoice_id + " \", \"amount\": { \"currency_code\": \"USD\", \"value\": " + amount + " } }", ParameterType.RequestBody);
+                IRestResponse response_rest = client_rest.Execute(request);
+
+                if (response_rest.StatusCode == HttpStatusCode.OK)
+                {
+                    invoice_info = response_rest.Content;
+                }
+            }
+            return invoice_info;
+        }
+        public static string PaypalInvoiceRefund(string invoice_id, string refund_date, decimal amount)
+        {
+            string invoice_info = string.Empty;
+            string access_token = GetToken();
+
+            if (!string.IsNullOrEmpty(access_token))
+            {
+                var client_rest = new RestClient(base_url + "/v2/invoicing/invoices/" + invoice_id + "/refund");
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Accept", "application/json");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Authorization", "Bearer " + access_token);
+                request.AddParameter("application/json", "{ \"method\": \"BANK_TRANSFER\", \"refund_date\":  \"" + refund_date + " \", \"amount\": { \"currency_code\": \"USD\", \"value\": " + amount + " } }", ParameterType.RequestBody);
+                IRestResponse response_rest = client_rest.Execute(request);
+
+                if (response_rest.StatusCode == HttpStatusCode.OK)
+                {
+                    invoice_info = response_rest.Content;
+                }
+            }
+            return invoice_info;
         }
     }
     public class clsAccessToken

@@ -185,6 +185,18 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
         [HttpGet]
+        public JsonResult GetPaymentwithoutcheckType()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = PaymentInvoiceRepository.GetPaymentwithoutcheckType();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet]
         public JsonResult GetMiscPaymentType()
         {
             string result = string.Empty;

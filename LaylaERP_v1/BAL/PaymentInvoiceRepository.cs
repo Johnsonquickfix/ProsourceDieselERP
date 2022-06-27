@@ -201,7 +201,20 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataSet GetPaymentwithoutcheckType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select id,PaymentType text from wp_PaymentType where is_show  = 1 and id not in (3) order by id;"
+                           + " Select rowid id, label text from erp_bank_account order by rowid;";
 
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
         public static DataSet GetTypePayment()
         {
             DataSet DS = new DataSet();

@@ -117,7 +117,8 @@ function getPurchaseOrderInfo() {
 
                         itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].ref + '" data-discount2able="' + data['pod'][i].discount2able + '" data-dayapply="' + data['pod'][i].dayapply + '" data-Beforeday="' + data['pod'][i].Beforeday + '" data-discountType1="' + data['pod'][i].DiscountType1 + '" data-defaultdiscount="' + data['pod'][i].DefaultDiscount + '" data-discountminimumorderamount="' + data['pod'][i].DiscountMinimumOrderAmount + '" data-discounttype2="' + data['pod'][i].DiscountType2 + '" data-discount="' + data['pod'][i].Discount + '" data-subtotal="' + data['pod'][i].subtotal + '">';
                         itemHtml += '<td>' + data['pod'][i].ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + data['pod'][i].rowid + ', false);"><i class="fas fa-search-plus"></i></a></td>';
-                        itemHtml += '<td>' + data['pod'][i].displayname + '</td>';
+                       /* itemHtml += '<td>' + data['pod'][i].displayname + '</td>';*/
+                        itemHtml += '<td class="vendor-name" data-vendorname="' + data['pod'][i].displayname + '">' + data['pod'][i].displayname + '</td>';
                         if (data['pod'][i].billtype.trim() == 'V')
                             itemHtml += '<td class="bill-type">' + 'Vendor' + '</td>';
                         else if (data['pod'][i].billtype.trim() == 'C')
@@ -333,11 +334,12 @@ function createItemsList() {
         discount = parseFloat($(row).find(".row-discountval").text()) || 0.00;
         subtotal = parseFloat($(row).find(".row-total").text()) || 0.00;
         bailance = remaing - payment;
+        payeeval = $(row).find(".vendor-name").data('vendorname');
         if (bailance > 0) {
             status = "UN";
         }
         if (payment != 0) {
-            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), discount: discount, sub_total: subtotal, checkstatus: checkstatus });
+            _list.push({ fk_payment: $(row).data('pid'), fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), discount: discount, sub_total: subtotal, checkstatus: checkstatus, payee: payeeval });
         }
     });
     return _list;

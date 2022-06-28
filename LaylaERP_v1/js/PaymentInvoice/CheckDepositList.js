@@ -138,6 +138,7 @@ function Uncleared() {
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            { data: 'payee', title: 'Payee', sWidth: "10%" },
             {
                 data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
                     return 'Payment';
@@ -191,6 +192,7 @@ function Rejected() {
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            { data: 'payee', title: 'Payee', sWidth: "10%" },
             {
                 data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
                     return 'Payment';
@@ -306,6 +308,7 @@ function Cleared() {
             },
             { data: 'date_creation', title: 'Check Reception  Date', sWidth: "10%" },
             { data: 'num_payment', sWidth: "10%", title: 'Check No', sWidth: "10%" },
+            { data: 'payee', title: 'Payee', sWidth: "10%" },
             {
                 data: 'num_payment', title: 'Transaction Type', sWidth: "10%", render: function (data, type, row) {
                     return 'Payment';
@@ -321,7 +324,7 @@ function Cleared() {
 }
 
 function formatPO(d) {
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">#</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Check No</th><th style="width:45%; text-align:left; visibility:inherit; opacity:1;">Check Details</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">#</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Check No</th><th style="width:15%; text-align:left; visibility:inherit; opacity:1;">Payee</th><th style="width:45%; text-align:left; visibility:inherit; opacity:1;">Check Details</th><th style="width:10%; text-align:right; visibility:inherit; opacity:1;">Amount</th></tr></thead>';
     $.ajax({
         url: '/CheckDeposit/GetClearedDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -330,7 +333,8 @@ function formatPO(d) {
             $(result).each(function (index, row) {
              
                 wrHTML += '<tr><td style="width:20%; text-align:left;"><a href="javascript:void(0);" title="Check rejected." data-toggle="tooltip" class="editbutton" onClick="Rejectthis(' + row.id + ')"><i class="glyphicon glyphicon-remove"></i></a>  <a href="javascript:void(0);" title="Check cleared." data-toggle="tooltip" class="editbutton" onClick="Clearedthis(' + row.id + ')"><i class="glyphicon glyphicon-ok"></i></a>  </td><td style="width:30%; text-align:left;">' + row.num_payment + '</td>';
-                wrHTML += '<td style="width:45%; text-align:left;">'+ row.comments + '</td>';
+                wrHTML += '<td style="width:15%; text-align:left;">' + row.payee + '</td>';
+                wrHTML += '<td style="width:45%; text-align:left;">' + row.comments + '</td>';
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.amount + '</td></tr > ';
             });
         },

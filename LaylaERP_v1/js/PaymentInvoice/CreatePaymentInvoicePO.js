@@ -19,7 +19,7 @@
         }
     });
 
-    filldropdown();
+  //  filldropdown();
     $('.billinfo').prop("disabled", true);
     //isEdit(true);
     $('#txtpaymentdate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
@@ -67,7 +67,8 @@ function getPurchaseOrderInfo() {
                         if (data['pod'][i].rowid > 0) {
                             itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier   + '" data-rowid="' + data['pod'][i].ref_ext + '">';
                             itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].vendor_name + '</td>';
+                            //itemHtml += '<td>' + data['pod'][i].vendor_name + '</td>';
+                            itemHtml += '<td class="vendor-name" data-vendorname="' + data['pod'][i].vendor_name + '">' + data['pod'][i].vendor_name + '</td>';
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_modified + '</td>';
                        
                             itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
@@ -86,6 +87,44 @@ function getPurchaseOrderInfo() {
         });
    
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); }); calculateFinal();
+    if ($('#hfvendor').val() == '1') {
+
+        $.ajax({
+            url: "/PaymentInvoice/GetPaymentwithoutcheckType",
+            type: "Get", beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                let dt = JSON.parse(data);
+                //Product
+                $("#ddlPaymentType").html('<option value="">Select Payment Type</option>');
+                for (i = 0; i < dt['Table'].length; i++) { $("#ddlPaymentType").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+
+                $("#ddlaccount").html('<option value="0">Select Account</option>');
+                for (i = 0; i < dt['Table1'].length; i++) { $("#ddlaccount").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); }
+        });
+    }
+    else {
+        $.ajax({
+            url: "/PaymentInvoice/GetPaymentType",
+            type: "Get", beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                let dt = JSON.parse(data);
+                //Product
+                $("#ddlPaymentType").html('<option value="">Select Payment Type</option>');
+                for (i = 0; i < dt['Table'].length; i++) { $("#ddlPaymentType").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+
+                $("#ddlaccount").html('<option value="0">Select Account</option>');
+                for (i = 0; i < dt['Table1'].length; i++) { $("#ddlaccount").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); }
+        });
+
+    }
         $('.footer-finalbutton').empty().append('<a title="Back to list" data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentSOInvoiceList">Back to List</a><button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
     // $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     $(".top-action").empty().append('<button type="button" title="Click for edit" data-toggle="tooltip" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
@@ -103,12 +142,14 @@ $(document).on("click", ".btnEdit", function (t) {
 $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); isEdit(false); });
 function calculateFinal() {
     let tGrossAmt = 0.00;
+    let vname = '';
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00
         remaing = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         payment = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
         //console.log(remaing.toFixed(2), payment.toFixed(2));
+        vname += $(row).find(".vendor-name").data('vendorname') + ",";
         if (remaing > payment) {
             swal('Alert!', "you can't receive greater payment form remaining payment", "error");
             parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
@@ -118,7 +159,19 @@ function calculateFinal() {
         //console.log(remaing);
         tGrossAmt += remaing;
     });
-
+    var s = vname.replace(/,(?=\s*$)/, '');
+    var match = s.split(',');
+    console.log(allAreEqual(match));
+    if (allAreEqual(match) == false) {
+        // swal('Alert!', "You can't payment with different vendors", "error");
+        // $(".btnEdit").show = false;
+        //$('.btnEdit').hide();
+        //  $('.btnEdit').css('display', 'none');
+        $('#hfvendor').val('1');
+    }
+    else {
+        $('#hfvendor').val('2');
+    }
     $("#Total").html(tGrossAmt.toFixed(2));
 }
 
@@ -180,16 +233,32 @@ function createItemsList() {
         checkstatus = 2;
     }
     $('#line_items > tr').each(function (index, row) {
-        let payment = 0.00, remaing = 0.00,bailance = 0.00;
+        let payment = 0.00, remaing = 0.00, bailance = 0.00;
+        let payeeval = '';
         payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         remaing = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
         bailance = remaing - payment;
+        payeeval = $(row).find(".vendor-name").data('vendorname');
         if (bailance > 0) {
             status = "UN";
         }
         if (payment != 0) {
-            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), checkstatus: checkstatus });
+            _list.push({ fk_payment: 0, fk_invoice: $(row).data('rowid'), amount: payment, type: status, thirdparty_code: $(row).data('supplier'), checkstatus: checkstatus, payee: payeeval });
         }
     });
     return _list;
+}
+
+function allAreEqual(array) {
+    if (array.length > 0) {
+        const result = array.every(element => {
+            if (element === array[0]) {
+                return true;
+            }
+        });
+
+        return result;
+    }
+
+    return false;
 }

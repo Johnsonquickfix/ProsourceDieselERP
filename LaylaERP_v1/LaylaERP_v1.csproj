@@ -1338,6 +1338,7 @@
     <Content Include="Views\Reception\ReceiveProductList.cshtml" />
     <Content Include="Views\Ship\OrderReturnConform.cshtml" />
     <Content Include="Views\Ship\OrderReturnVendorMail.cshtml" />
+    <Content Include="Views\PaymentInvoice\AutoserialnoSync.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

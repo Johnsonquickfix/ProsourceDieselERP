@@ -328,7 +328,7 @@
                 model.post_modified_gmt = model.post_date_gmt;
                 model.post_content_filtered = string.Empty;
                 model.post_parent = parent_id.ToString();
-                model.post_type = "shop_order_replacement";
+                model.post_type = "shop_order_replace";
                 //model.guid = string.Format("{0}?{1}={2}", Net.Host, model.post_type, model.post_name);
                 model.guid = string.Format("{0}?post_type={1}&p={2}", "http://173.247.242.204/~rpsisr/woo/", "shop_order_refund&p", "");
                 model.menu_order = "0";

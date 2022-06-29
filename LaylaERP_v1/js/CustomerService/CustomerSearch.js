@@ -38,7 +38,7 @@
             $.when(dataGridLoad()).done(function () { CustomerInfo(cus_id, ord_id, '', $('#txtOrderPhone').val()) });
         }
     });
-    $.when(SearchDefault(),dataGridLoad()).done(function () { OrderInfo(0) });//903954
+    $.when(SearchDefault(), dataGridLoad()).done(function () { OrderInfo(0) });//903954
     $(document).on("click", "#btnGenerateTicket", function (t) {
         t.preventDefault(); GenerateTicketNo();
     });
@@ -534,7 +534,7 @@ function WarrantyInfoModalData(id, _action) {
         //add action button
         if (_is_open) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
-            else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button>'); }
+            else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
             else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
@@ -928,6 +928,161 @@ function ReturnGenereate() {
             if (data.status == true) {
                 $("#myModal").modal('hide'); OrderInfo(_oid);
                 swal('Success!', 'Refunded order placed successfully.', "success");//.then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
+            }
+            else { swal('Error', data.message, "error").then((result) => { return false; }); }
+        },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { $("#loader").hide(); isEdit(false); },
+    });
+}
+
+//create replacement order
+function CreateReplacementModal(id) {
+    let _html = '', _tax_html = ''; $("#loader").show();
+    let _customer_id = 0, zQty = 0, zSubtotal = 0.00, zTax = 0.00;
+    $.post('/customer-service/order', { strValue1: id, strValue2: 'TICKET' }).then(response => {
+        response = JSON.parse(response); //console.log(response);
+        $.each(response['order'], function (i, row) {
+            _html += '<div class="fw-bolder fs-3 text-gray-800 mb-5 refund-order-title" data-order_id="' + row.order_id + '">Order #' + row.order_id + '</div>';
+            let _json = JSON.parse(row.order_details);
+            _customer_id = parseInt(_json._customer_user) || 0;
+            _html += '<div class="row g-5 mb-7">';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1"> Date:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + moment().format('DD MMM YYYY') + '</div>';
+            _html += '    </div>';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Payment Mathod:</div>';
+            _html += '        <span class="fw-bolder fs-6 text-gray-800">' + _json._payment_method_title + '</span>';
+            _html += '    </div>';
+            _html += '</div>';
+
+            _html += '<div class="row g-5 mb-7">';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_first_name + ' ' + _json._billing_last_name + '</div>';
+            _html += '        <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_email + '</div>';
+            _html += '    </div>';
+            _html += '    <div class="col-sm-6">';
+            _html += '        <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping Address:</div>';
+            _html += '        <div class="fw-bolder fs-6 text-gray-800">' + _json._shipping_first_name + ' ' + _json._shipping_last_name + '</div>';
+            _html += '        <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._shipping_city + ', ' + _json._shipping_state + ' ' + _json._shipping_postcode + ' ' + _json._shipping_country + '</div>';
+            _html += '    </div>';
+            _html += '</div>';
+        });
+
+        _html += '<div class="flex-grow-1">';
+        _html += '    <div class="table-responsive border-bottom mb-9">';
+        _html += '        <table class="table mb-3">';
+        _html += '                <thead><tr class="border-bottom fs-6 fw-bolder text-muted">';
+        _html += '                    <th class="min-w-175px pb-2">Item</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Quantity</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Price</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Total</th>';
+        _html += '                    <th class="min-w-75px pb-2 text-end">Tax</th>';
+        _html += '                </tr></thead>';
+        _html += '                <tbody class="refund_order_line_items">';
+
+        $.each(response['order_detail'], function (i, row) {
+            if (row.order_item_type == 'line_item') {
+                let _line_total = parseFloat(row.line_total) || 0.00, _order_qty = parseFloat(row.qty) || 0.00, _order_tax = parseFloat(row.tax) || 0.00;
+                let _qty = parseFloat(row.order_item_qty) || 0.00, _free_qty = parseFloat(row.qty) || 0.00;
+                if (_line_total == 0) _qty = _qty * _free_qty;
+                let _price = 0.00, _tax = 0.00;
+                _html += '<tr class="fw-bolder text-gray-700 fs-5 ' + (_line_total > 0 ? 'paid-item' : 'free-item') + '" data-orderitemid="' + row.order_item_id + '" data-pid="' + row.p_id + '" data-vid="' + row.v_id + '" data-pname="' + row.order_item_name + '" data-price="' + _price + '" data-qty="' + _qty + '" data-tax="' + _tax + '">';
+                _html += '    <th class="pt-6">' + row.order_item_name + '</th>';
+                _html += '    <th class="pt-6 text-end">' + _qty + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_price) + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_price * _qty) + '</th>';
+                _html += '    <th class="pt-6 text-end">' + formatCurrency(_tax * _qty) + '</th>';
+                _html += '</tr>';
+                zQty += _qty; zSubtotal += (_price * _qty); zTax += (_tax * _qty);
+            }
+            else if (row.order_item_type == 'tax') {
+                _tax_html += '        <div class="d-flex flex-stack mb-3">';
+                _tax_html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">' + row.label + ' - ' + (row.tax * 100).toFixed(4) + '%:</div>';
+                _tax_html += '            <div class="text-end fw-bolder fs-6 text-gray-800 tax-total" data-order_item_id="' + row.order_item_id + '" data-name="' + row.order_item_name + '" data-label="' + row.label + '" data-percent="' + row.tax + '" data-amount="' + zSubtotal * row.tax + '">' + formatCurrency(zSubtotal * row.tax) + '</div>';
+                _tax_html += '        </div>';
+            }
+        });
+        _html += '                </tbody>';
+        _html += '        </table>';
+        _html += '    </div>';
+        _html += '</div>';
+
+        _html += '<div class="d-flex justify-content-end">';
+        _html += '    <div class="mw-300px refund_order_final_total">';
+        _html += '        <div class="d-flex flex-stack mb-3">';
+        _html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Subtotal:</div>';
+        _html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zSubtotal) + '</div>';
+        _html += '        </div>';
+        //add taxes
+        _html += _tax_html;
+        //_html += '        <div class="d-flex flex-stack mb-3">';
+        //_html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Tax:</div>';
+        //_html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTax) + '</div>';
+        //_html += '        </div>';
+        _html += '        <div class="d-flex flex-stack mb-3">';
+        _html += '            <div class="fw-bold pe-10 text-gray-600 fs-7">Total:</div>';
+        _html += '            <div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zSubtotal + zTax) + '</div>';
+        _html += '        </div>';
+        _html += '    </div>';
+        _html += '</div>';
+    }).catch(err => { }).always(function () {
+        $("#loader").hide(); $('#myModal .modal-body').empty().append('<div class="m-0">' + _html + '</div>');
+        $('#myModal .modal-title').empty().append('Ticket No.: #' + id + ', Create Replacement.');
+        $(".refund-order-title").data('id', id); $(".refund-order-title").data('customer', _customer_id);
+    });
+
+    //add action button
+    $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" onclick="ReplacementGenereate();">Submit</button>');
+}
+function ReplacementGenereate() {
+    let _id = parseInt($(".refund-order-title").data('id')) || 0, _oid = parseInt($(".refund-order-title").data('order_id')) || 0, _total_qty = 0, _total_amount = 0.00, _total_tax = 0.00;
+    let _cid = parseInt($(".refund-order-title").data('customer')) || 0;
+    let _items = [], _postMeta = [], _taxes = [], _taxdata = { total: {}, subtotal: {} };
+    //get all tax type
+    $('#myModal .refund_order_final_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('name'), percent: parseFloat($(li).data('percent')) || 0 }); });
+
+    $('.refund_order_line_items > tr').each(function (index, tr) {
+        let _price = parseFloat($(tr).data('price')) || 0.00, _tax = parseFloat($(tr).data('tax')) || 0.00, _qty = parseFloat($(tr).data('qty')) || 0.00;
+        _total_qty += _qty; _total_tax += (_tax * _qty); _total_amount += (_price * _qty);
+        _taxdata = { total: {}, subtotal: {} };
+        $.each(_taxes, function (i, r) {
+            _taxdata.total[r.label] = ((_price * _qty) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((_price * _qty) * r.percent).toFixed(4);
+        });
+        _items.push({
+            order_item_id: parseInt($(tr).data('orderitemid')) || 0, product_type: 'line_item', PKey: index, order_id: _oid, customer_id: _cid, product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
+            quantity: parseInt(_qty) || 0, sale_rate: _price, total: (_price * _qty), discount: 0, tax_amount: (_tax * _qty), shipping_amount: 0, shipping_tax_amount: 0,
+            meta_data: serialize(_taxdata)
+        });
+    });
+    _postMeta.push(
+        { post_id: 0, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: 0, meta_key: '_refund_reason', meta_value: '' },
+        { post_id: 0, meta_key: '_cart_discount', meta_value: 0 }, { post_id: 0, meta_key: '_cart_discount_tax', meta_value: 0 },
+        { post_id: 0, meta_key: '_order_shipping', meta_value: 0 }, { post_id: 0, meta_key: '_order_shipping_tax', meta_value: 0 },
+        { post_id: 0, meta_key: '_order_tax', meta_value: _total_tax }, { post_id: 0, meta_key: '_order_total', meta_value: _total_amount + _total_tax },
+        { post_id: 0, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: 0, meta_key: '_prices_include_tax', meta_value: 'no' },
+        { post_id: 0, meta_key: '_refund_amount', meta_value: _total_amount + _total_tax }, { post_id: 0, meta_key: '_refunded_payment', meta_value: '' },
+        { post_id: 0, meta_key: '_refund_giftcard_amount', meta_value: 0 }
+    );
+    let _postStatus = {
+        order_id: _oid, parent_id: 0, returning_customer: 0, customer_id: _cid, num_items_sold: _total_qty, total_sales: 0, tax_total: 0, shipping_total: 0, net_total: 0, status: 'wc-processing', pay_by: ''
+    };
+    let obj = { order_id: _oid, ticket_id: _id, OrderPostMeta: _postMeta, OrderProducts: _items, OrderPostStatus: _postStatus };
+
+    //console.log(obj); return false;
+    $.ajax({
+        type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/customer-service/create-order-replacement",
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            //data = JSON.parse(data); //
+            console.log(data);
+            if (data.status == true) {
+                $("#myModal").modal('hide'); OrderInfo(_oid);
+                swal('Success!', 'Replacement order placed successfully.', "success");
             }
             else { swal('Error', data.message, "error").then((result) => { return false; }); }
         },

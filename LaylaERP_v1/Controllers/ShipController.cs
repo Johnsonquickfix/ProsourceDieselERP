@@ -448,7 +448,7 @@ namespace LaylaERP.Controllers
                     html += "               <td style=\"background-color: #ffffff;padding: 48px 48px 0;text-align:-webkit-center;vertical-align: top;\">";
                     html += "                   <div style=\"color:#636363;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">";
                     html += "                       <p style=\"margin:0 0 16px\">Hi " + dr["vendor_name"].ToString() + ",</p>";
-                    html += "                       <p style=\"margin:0 0 16px\">Customer (" + dr["customer_name"].ToString() + ") has applied a " + order_type_desc.ToLower() + " to your Layla Order. For your reference, the details of the refund are below. </p>";
+                    html += "                       <p style=\"margin:0 0 16px\">Customer (" + dr["customer_name"].ToString() + ") has applied a " + order_type_desc.ToLower() + " to your Layla Order. For your reference, the details of the " + order_type_desc.ToLower() + " are below. </p>";
                     html += "                       <h2 style=\"color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left\">";
                     html += "                           <a href=\"http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D\" style =\"font-weight:normal;text-decoration:underline;color:#ff4100\" target =\"_blank\" >[Order #" + dr["fk_projet"].ToString() + "]</a> (" + dr["date_creation"].ToString() + ")";
                     html += "                       </h2>";
@@ -511,8 +511,8 @@ namespace LaylaERP.Controllers
                 }
                 if (!string.IsNullOrEmpty(str_meta))
                 {
-                    //System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
-                    //PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
+                    System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
                 }
             }
             catch { }

@@ -415,7 +415,7 @@ namespace LaylaERP.Controllers
         {
             try
             {
-                string vendor_email = string.Empty;
+                string vendor_email = string.Empty, order_type = string.Empty, order_type_desc = string.Empty;
                 DataSet ds = PurchaseOrderRepository.GetPurchaseOrderPrintList("ORVMWAIT");
                 string SenderEmailID = string.Empty, SenderEmailPwd = string.Empty, SMTPServerName = string.Empty;
                 int SMTPServerPortNo = 587; bool SSL = false;
@@ -430,6 +430,8 @@ namespace LaylaERP.Controllers
                 string str_meta = string.Empty;
                 foreach (DataRow dr in ds.Tables[1].Rows)
                 {
+                    order_type = dr["post_type"] != DBNull.Value ? dr["post_type"].ToString().Trim() : "";
+                    order_type_desc = (order_type == "shop_order_refund" ? "Refund" : "Replacement");
                     vendor_email = dr["vendor_email"] != DBNull.Value ? dr["vendor_email"].ToString().Trim() : "";
                     string html = "<div style=\"background-color:#59595b;margin:0;padding:70px 0 70px 0;width:100%;text-align: -webkit-center;\">";
                     html += "   <div>";
@@ -439,14 +441,14 @@ namespace LaylaERP.Controllers
                     html += "       <tbody>";
                     html += "           <tr>";
                     html += "               <td style=\"text-align:-webkit-center;background-color: #ff4100;color: #ffffff;border-bottom: 0;font-weight: bold;line-height: 100%;vertical-align: middle;font-family: &quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-radius: 3px 3px 0 0;padding: 36px 48px;\">";
-                    html += "                   <h1 style=\"font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff\">Refund order details.</h1>";
+                    html += "                   <h1 style=\"font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:30px;font-weight:300;line-height:150%;margin:0;text-align:left;color:#ffffff\">" + order_type_desc + " order details.</h1>";
                     html += "               </td>";
                     html += "           </tr>";
                     html += "           <tr>";
                     html += "               <td style=\"background-color: #ffffff;padding: 48px 48px 0;text-align:-webkit-center;vertical-align: top;\">";
                     html += "                   <div style=\"color:#636363;font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left\">";
                     html += "                       <p style=\"margin:0 0 16px\">Hi " + dr["vendor_name"].ToString() + ",</p>";
-                    html += "                       <p style=\"margin:0 0 16px\">Customer (name) has applied a refund to your Layla Order. For your reference, the details of the refund are below. </p>";
+                    html += "                       <p style=\"margin:0 0 16px\">Customer (" + dr["customer_name"].ToString() + ") has applied a " + order_type_desc.ToLower() + " to your Layla Order. For your reference, the details of the " + order_type_desc.ToLower() + " are below. </p>";
                     html += "                       <h2 style=\"color:#ff4100;display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:0 0 18px;text-align:left\">";
                     html += "                           <a href=\"http://links.laylasleep.com/ls/click?upn=yxJ3Fx6NcMiSDt7VXEtStX0MpMdm6XseJY7o7vUrOBkfVgJ4X9nkAMhNmFtKos-2B9M9Bot6bdTU3ILGkIdLKQHM5p9jjpNwPXHx9I18Bi6YA-3DTjzH_W4c-2BpSBzgNJfLcL9-2BulscTtl5jAgIO0mPlKCAnxFIDAhT4YzdMoDegxFjMmlJHaVbZHPoyOrrUK5K5luQa6zvvpABYnJiSpgtcwWZaiuEkMTkoebRytOB-2B7umgXQ6SPaTvMycMw8EfXYlFdlO9wfnmLiaa9Lg5rwWekvVjLZ-2FOB6FXNFcJ1ZNTjQ7j9pjdu-2By6ZpsAUUp-2B7CtwSDu9SXYQv0Wrnsj7EFlEVg1X1B24M1oz-2F4-2FlmuuMyXvJqYop-2Bhpp3J2N2teeA13cp-2FkYfxjQ-3D-3D\" style =\"font-weight:normal;text-decoration:underline;color:#ff4100\" target =\"_blank\" >[Order #" + dr["fk_projet"].ToString() + "]</a> (" + dr["date_creation"].ToString() + ")";
                     html += "                       </h2>";
@@ -500,7 +502,7 @@ namespace LaylaERP.Controllers
                     {
                         try
                         {
-                            UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, vendor_email, "Refund order #" + dr["fk_projet"].ToString() + " details", html, string.Empty);
+                            UTILITIES.SendEmail.SendEmails(SenderEmailID, SenderEmailPwd, SMTPServerName, SMTPServerPortNo, SSL, vendor_email, order_type_desc + " order #" + dr["fk_projet"].ToString() + " details", html, string.Empty);
                             str_meta += (str_meta.Length > 0 ? ", " : "") + "{ id: " + dr["rowid"].ToString() + " }";
                         }
                         catch { }
@@ -509,8 +511,8 @@ namespace LaylaERP.Controllers
                 }
                 if (!string.IsNullOrEmpty(str_meta))
                 {
-                    //System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
-                    //PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
+                    System.Xml.XmlDocument orderXML = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Data\":[" + str_meta + "]}", "Items");
+                    PurchaseOrderRepository.SendInvoiceUpdate(orderXML);
                 }
             }
             catch { }

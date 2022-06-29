@@ -205,7 +205,7 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
                 if (result > 0)
                 {
-                    string json_data = "{\"ticket_id\":"+ model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":1 }";
+                    string json_data = "{\"ticket_id\":"+ model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
 
                     //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());
@@ -233,7 +233,7 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveReplacementOrder(model);
                 if (result > 0)
                 {
-                    string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":1 }";
+                    string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
 
                     //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());

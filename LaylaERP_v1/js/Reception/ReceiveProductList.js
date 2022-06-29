@@ -325,7 +325,7 @@ function Search() {
             //{ data: 'receive_qty', title: 'Receive Qty', sWidth: "10%" },
             //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
-            { data: 'issue_order_no', title: 'Issue Order No', sWidth: "10%" },
+            { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
 
         ],
 
@@ -406,7 +406,7 @@ function Searchproduct() {
                 //{ data: 'receive_qty', title: 'Receive Qty', sWidth: "10%" },
                 //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
                 { data: 'status', title: 'Status', sWidth: "10%" },
-                { data: 'issue_order_no', title: 'Issue Order No', sWidth: "10%" },
+                { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
 
             ],
 

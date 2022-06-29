@@ -41,6 +41,7 @@
             <li class="active ROPO-1" title="Click here to see pending" data-toggle="tooltip"><a class="active" href="#tab_21" title="Click here to see pending list" data-toggle="tab">Pending<span class="badge badge-danger"></span></a></li>
             <li class="ROPO-2" title="Click here to see generated list" data-toggle="tooltip"><a class="" href="#tab_22" data-toggle="tab">Generated List<span class="badge badge-danger"></span></a></li>
             <li class="ROPO-3" title="Click here to see listing serial number" data-toggle="tooltip"><a class="" href="#tab_23" data-toggle="tab">Listing Serial Number</a></li>
+            <li class="ROPO-4" title="Click here to see listing order serial number" data-toggle="tooltip"><a class="" href="#tab_24" data-toggle="tab">Listing Order Serial Number</a></li>
         </ul>
 
         <div class="tab-content">
@@ -122,7 +123,7 @@
                                         @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
                                         <button type="button" id="btnsearch" data-toggle="tooltip" title="Search  by selection criteria." onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
                                     </div>
-                                     
+
                                     <div class="alignleft actions">
                                         <select class="form-control select2" id="ddlproduct">
                                             <option value="0" selected="selected">Select Product</option>
@@ -136,7 +137,7 @@
                                         <button type="button" id="btnreload" data-toggle="tooltip" title="Refresh." onclick="Reload();" class="btn btn-primary btn-flat button">Refresh</button>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="divprdata" class="row">
@@ -154,7 +155,7 @@
                                                         <th>Warehouse Name</th>
                                                         <th>Serial No</th>
                                                         @*<th>Receive Qty</th>
-                                                        <th>Order Qty</th>*@
+                                                    <th>Order Qty</th>*@
                                                         <th>Status</th>
                                                         <th>Issue Order No</th>
                                                     </tr>
@@ -168,7 +169,74 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane" id="tab_24">
+                <div class="tab-content">
+                    <div class="row"> 
+                        <div class="col-md-12">
+                            <div class="user-top-section">
+                                <div class="tablenav top tablenav-top2">
+                                    <div class="alignleft actions">
+                                        <div class="input-group">
+                                            <select class="form-control select2" id="ddlpofillorder">
+                                                <option value="0" selected="selected">Select Purchases Order </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="alignleft actions">
+                                        <select class="form-control select2" id="ddlbatchnoorder">
+                                            <option value="0" selected="selected">Select Batch No.</option>
+
+                                        </select>
+                                        @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
+                                        <button type="button" id="btnsearchorder" data-toggle="tooltip" title="Search  by selection criteria." onclick="Searchorder();" class="btn btn-primary btn-flat button">Filter</button>
+                                    </div>
+
+                                    <div class="alignleft actions">
+                                        <select class="form-control select2" id="ddlproductorder">
+                                            <option value="0" selected="selected">Select Product</option>
+
+                                        </select>
+                                        @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
+                                        <button type="button" id="btnbtnsearchorder" data-toggle="tooltip" title="Search  by product selection criteria." onclick="Searchproductorder();" class="btn btn-primary btn-flat button">Get Details</button>
+                                    </div>
+
+                                    <div class="alignright actions bulkactions">
+                                        <button type="button" id="btnreloadorder" data-toggle="tooltip" title="Refresh." onclick="Reloadorder();" class="btn btn-primary btn-flat button">Refresh</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divprdata" class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary table-design not-fixed">
+                                <div class="box-header">
+                                    <div class="table-responsive">
+                                        <div class="col-sm-12">
+                                            <table id="dtdataorderlisting" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        @*<th>Date</th>*@
+                                                        <th>Product Name</th>
+                                                        <th>SKU</th>
+                                                        <th>Warehouse Name</th>
+                                                        <th>Serial No</th>
+                                                        @*<th>Receive Qty</th>
+                                                    <th>Order Qty</th>*@
+                                                        <th>Status</th>
+                                                        <th>Issue No</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 </section> 
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Reception/ReceivePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

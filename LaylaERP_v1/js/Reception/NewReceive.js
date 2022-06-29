@@ -1004,14 +1004,14 @@ function getPurchasehistory() {
                     if (data['pod'].length > 0) {
                         for (let i = 0; i < data['pod'].length; i++) {
                             itemHtml += '<tr id="tritemId_' + data['pod'][i].rowid + '" data-key="' + data['pod'][i].rowid + '">';
-                            itemHtml += '<td>' + data['pod'][i].description + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
+                            itemHtml += '<td style="width: 20%">' + data['pod'][i].description + '</td>';
+                            itemHtml += '<td style="width: 12%">' + data['pod'][i].date_creation + '</td>';
+                            itemHtml += '<td style="width: 10%">' + data['pod'][i].recqty + '</td>';
                            /* itemHtml += '<td>' + data['pod'][i].discount.toFixed(2) + '</td>';*/
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].amount) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].shipping) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].tax) + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].avgcast.toFixed(2)) + '</td>';
+                            itemHtml += '<td style="width: 13%">' + formatCurrency(data['pod'][i].amount) + '</td>';
+                            itemHtml += '<td style="width: 15%">' + formatCurrency(data['pod'][i].shipping) + '</td>';
+                            itemHtml += '<td style="width: 10%">' + formatCurrency(data['pod'][i].tax) + '</td>';
+                            itemHtml += '<td style="width: 10%">' + formatCurrency(data['pod'][i].avgcast.toFixed(2)) + '</td>';
                             itemHtml += '</tr>';
 
                         }
@@ -1046,10 +1046,10 @@ function getinvoicehistory() {
                         for (let i = 0; i < data['pod'].length; i++) {
                             itemHtml += '<tr id="tritemId_' + data['pod'][i].RicD + '" data-key="' + data['pod'][i].RicD + '">';
                             itemHtml += '<td style="text-align:left;"> <a href="#" title="Click here to view bill preview" data-toggle="tooltip"  onclick="getInvoicePrintnew(' + data['pod'][i].RicD + '); "><i class="fas fa - search - plus"></i>' + data['pod'][i].refordervendor + '</a></td>';
-                            itemHtml += '<td>' + data['pod'][i].dtcration + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].des + '</td>';
-                            itemHtml += '<td>' + data['pod'][i].Quenty + '</td>';
-                            itemHtml += '<td>' + formatCurrency(data['pod'][i].total_ttc) + '</td>';
+                            itemHtml += '<td style="width: 15%">' + data['pod'][i].dtcration + '</td>';
+                            itemHtml += '<td style="width: 35%">' + data['pod'][i].des + '</td>';
+                            itemHtml += '<td style="width: 15%">' + data['pod'][i].Quenty + '</td>';
+                            itemHtml += '<td style="width: 20%">' + formatCurrency(data['pod'][i].total_ttc) + '</td>';
                             itemHtml += '</tr>';
 
                         }

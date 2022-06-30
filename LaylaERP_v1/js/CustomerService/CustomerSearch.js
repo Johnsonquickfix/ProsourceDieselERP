@@ -745,7 +745,7 @@ function GenerateTicketNo() {
         else _questions += '    🗸   ' + $(row).data('title') + ' <br/>';
     });
 
-    let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') },
+    let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') + ' X ' + (parseInt($("#kt_warranty_claim_qty").val()) || 0) },
     { from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
     { from: _user, content: _reason }, { from: _user, content: _questions }];
     let option = {

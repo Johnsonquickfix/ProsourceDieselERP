@@ -101,8 +101,9 @@ function SearchByControl(id) {
 function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
     $(".profile-username,.profile-useremail,.billing-address,.shipping-address").text('-');
     if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
+    $.ajaxSetup({ async: true });
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
-        response = JSON.parse(response);
+        response = JSON.parse(response); console.log(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
@@ -361,6 +362,19 @@ function OrderInfo(ord_id) {
                 _refundHtml += '</td>';
                 _refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (_total);
+            }
+            else if (row.order_item_type == 'replacement') {
+                _refundHtml += '<tr class="fw-bolder text-gray-700" data-id="' + row.order_item_id + '" data-qty="0" data-returndays="0" data-warrantydays="0">';
+                _refundHtml += '<td colspan="7">';
+                _refundHtml += '    <div class="d-flex flex-stack">';
+                _refundHtml += '        <div class="d-flex align-items-center me-5">';
+                _refundHtml += '            <div class="symbol symbol-40px overflow-hidden me-3"><span class="symbol-label bg-light-success"><i class="fas fa-retweet text-success"></i></span></div>';
+                _refundHtml += '            <div class="me-5">' + row.order_item_name + '</div>';
+                _refundHtml += '        </div>';
+                _refundHtml += '        <div class="d-flex align-items-center">' + formatCurrency(_total) + '</div>';
+                _refundHtml += '    </div>';
+                _refundHtml += '</td>';
+                _refundHtml += '</tr>';
             }
             else if (row.order_item_type == 'refund_items') {
                 if (row.order_item_name == "line_item") {
@@ -731,7 +745,7 @@ function GenerateTicketNo() {
         else _questions += '    🗸   ' + $(row).data('title') + ' <br/>';
     });
 
-    let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') },
+    let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') + ' X ' + (parseInt($("#kt_warranty_claim_qty").val()) || 0) },
     { from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
     { from: _user, content: _reason }, { from: _user, content: _questions }];
     let option = {

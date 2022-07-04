@@ -349,6 +349,57 @@ $("#btnservicessave").click(function (e) {
     else { alert("Fields cannot be empty.") }
 });
 
+$("#btncomponentservicessave").click(function (e) {
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
+    let _ItemProductServices = [];
+    $("#Productcomponent_services > tr").each(function (index, tr) {
+        //  console.log(tr);
+        //if (parseInt($(tr).find("input[name = txt_service]").val()) > 0) {
+
+        _ItemProductServices.push(
+            { fk_product: $("#ddlproductchild").val(), fk_product_fils: $(this).data('key'), qty: $(tr).find("input[name = txt_compservice]").val() }
+        );
+        //}
+    });
+    // console.log(_ItemProductServices);
+    var obj = {
+        ProductChildMeta: _ItemProductServices
+    }
+    //var layoutHtml = '';
+    //$('#Product_services').empty().append(layoutHtml);
+    if (_ItemProductServices != '') {
+
+        //NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+        $.ajax({
+            type: 'POST',
+            url: '/Product/UpdateComponentChildvariations',
+            data: JSON.stringify(obj),
+            dataType: 'json',
+            headers: { "Content-Type": "application/json" },
+            beforeSend: function () {
+                $("#loader1").show();
+            },
+            success: function (data) {
+                if (data.status == true) { 
+                    //var layoutHtml = '';
+                    //$('#Product_services').empty(); 
+                    ComponentbindChildproductsservices();
+                    swal('Success!', data.message, 'success');
+                    ActivityLog('Update list of products/services that are component(s) of this kit for product id (' + urlid + ')', '/Product/UpdateComponentChildvariations/' + urlid + '');
+                }
+            },
+            complete: function () {
+                $("#loader1").hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                // alert(errorThrown);
+            }
+        });
+    }
+    else { alert("Fields cannot be empty.") }
+});
+
 
 function GetDataPurchaseByID(order_id) {
   
@@ -637,7 +688,7 @@ function ComponentbindChildproductsservices() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                        
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty, Stock: data[i].Stock, buyingprice: data[i].buyingprice, sellingpric: data[i].sellingpric
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty, Stock: data[i].Stock, buyingprice: data[i].buyingprice, sellingpric: data[i].sellingpric, status: data[i].status
                 });
 
             }
@@ -663,8 +714,8 @@ function Componentbinddata(data) {
                 layoutHtml += '<td>' + '$' + data[i].buyingprice + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].sellingpric + '</td>';
                 layoutHtml += '<td>' + data[i].Stock + '</td>';
-                //layoutHtml += '<td><input min="0"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
-                if (data[i].quantity == 0) {
+                layoutHtml += '<td><input min="0"  autocomplete="off" type="number" id="txt_compservice' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_compservice" placeholder="Qty"></td>';
+                if (data[i].status == 0) {
                     toggleclass = "fas fa-toggle-on";
                     toggleStyle = "color: #ff0000!important;font-size: 24px;";
                     toggleStatus = 1;
@@ -694,7 +745,7 @@ function Componentbinddata(data) {
         layoutHtml += '<th>Buying price</th>';
         layoutHtml += '<th>Selling price</th>';
         layoutHtml += '<th>Stock</th>';
-      //  layoutHtml += '<th>Qty</th>';
+     layoutHtml += '<th>Qty</th>';
         layoutHtml += '<th>Status</th>';
 
         layoutHtml += '</tr>';

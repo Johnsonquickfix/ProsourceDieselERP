@@ -2160,6 +2160,23 @@ namespace LaylaERP.Controllers
             return Json(obj, 0);
         }
 
+        public JsonResult UpdateComponentChildvariations(ProductModel model)
+        {
+
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = ProductRepository.UpdateComponentChildvariations(model.ProductChildMeta);
+                if (res > 0)
+                {
+                    status = true;
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
+        }
+
     }
 
 }

@@ -336,7 +336,7 @@ namespace LaylaERP.BAL
                     if (!string.IsNullOrEmpty(strValue1))
  
                         strWhr += " and p.product_id = " + strValue1;
-                    string strSQl = "SELECT distinct rowid ID,wp.post_title,post_title title,  isnull((SELECT min(Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)) purchase_price from Product_Purchase_Items where fk_product = p.component_product_id),'0.00') buyingprice,isnull(Cast(CONVERT(DECIMAL(10,2),pmsaleprice.meta_value) as nvarchar),'0.00') sellingpric,0 Stock , status qty "
+                    string strSQl = "SELECT distinct rowid ID,wp.post_title,post_title title,  isnull((SELECT min(Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)) purchase_price from Product_Purchase_Items where fk_product = p.component_product_id),'0.00') buyingprice,isnull(Cast(CONVERT(DECIMAL(10,2),pmsaleprice.meta_value) as nvarchar),'0.00') sellingpric,0 Stock , status status,component_quantity qty "
                                 + " FROM erp_product_component p"
                                 + "  left outer join wp_posts wp on wp.ID = p.component_product_id"
                                 + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
@@ -353,6 +353,7 @@ namespace LaylaERP.BAL
                             productsModel.ID = 0;
 
                         productsModel.qty = Convert.ToInt32(sdr["qty"]);
+                        productsModel.status = Convert.ToInt32(sdr["status"]);
                         productsModel.Stock = sdr["Stock"].ToString();
                         productsModel.buyingprice = sdr["buyingprice"].ToString();
                         productsModel.sellingpric = sdr["sellingpric"].ToString();
@@ -361,6 +362,8 @@ namespace LaylaERP.BAL
                             productsModel.product_name = sdr["post_title"].ToString();
                         else
                             productsModel.product_name = string.Empty;
+
+                  
 
                         _list.Add(productsModel);
                     }
@@ -3087,6 +3090,30 @@ namespace LaylaERP.BAL
             return _list;
         }
 
+
+        public static int UpdateComponentChildvariations(List<ProductChildModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductChildModel obj in model)
+                {
+                    if (obj.qty == 0)
+                        strSql.Append("delete from erp_product_component where product_id =" + obj.fk_product + " and rowid =" + obj.fk_product_fils + ";");
+                    else
+                        strSql.Append(string.Format("update erp_product_component set component_quantity = '{0}' where rowid = '{1}' and product_id = '{2}' ; ", obj.qty, obj.fk_product_fils, obj.fk_product));
+ 
+                }
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/UpdateChildvariations/" + "0" + "", "Update Product Free Quantity");
+            }
+            return result;
+        }
 
     }
 }

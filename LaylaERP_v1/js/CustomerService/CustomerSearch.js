@@ -42,6 +42,17 @@
     $(document).on("click", "#btnGenerateTicket", function (t) {
         t.preventDefault(); GenerateTicketNo();
     });
+    $(document).on("change", "#myModal #ddlshipcountry", function (t) { t.preventDefault(); let obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); $("#ddlshipcountry,#ddlshipstate").select2({ dropdownParent: $("#myModal") }); });
+    $(document).on("change", "#myModal #ddlshipstate", function (t) { t.preventDefault(); GetTaxRate() });
+    $(document).on("blur", "#myModal #txtshipzipcode", function (t) {
+        t.preventDefault();
+        if ($("#ddlshipcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
+    });
+    $(document).on("change", "#myModal #ddlorderitem", function (t) {
+        t.preventDefault(); let vr = $(this).val().split('$');
+        let pid = parseInt(vr[0]) || 0, vid = parseInt(vr[1]) || 0;
+        getItemList(pid, vid);
+    });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -103,7 +114,7 @@ function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
     if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
     $.ajaxSetup({ async: true });
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
-        response = JSON.parse(response); console.log(response);
+        response = JSON.parse(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
@@ -451,7 +462,6 @@ function OrderInfo(ord_id) {
             else _noteHtml += '<span class="fs-8 fw-boldest d-block text-warning text-uppercase">Processing</span>';
             _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + row.reason + '</span>';
             _noteHtml += '   <span class="d-block fw-bold text-gray-400">' + moment(row.created_at).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
-            console.log(row.is_confirmed_by_vendor);
             if (row.is_confirmed_by_vendor) _noteHtml += '   <span class="d-block fw-bold text-gray-400"> Confirmed by vendor on ' + moment(row.confirmed_by_vendor_date).format('MMMM Do, YYYY h:mm:ss a') + '</span>';
             _noteHtml += '</div>';
             _noteHtml += '</div>';
@@ -463,7 +473,7 @@ function OrderInfo(ord_id) {
 
 //Show Customer Warranty claim details and add comments
 function WarrantyInfoModal(id, _action) {
-    let modalHtml = '<div class="modal-dialog modal-lg modal-dialog-scrollable">';
+    let modalHtml = '<div class="modal-dialog modal-fullscreen p-9 modal-dialog-scrollable">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Ticket No.: #' + id + ', Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
@@ -478,7 +488,7 @@ function WarrantyInfoModal(id, _action) {
 function WarrantyInfoModalData(id, _action) {
     let _html = ''; $("#loader").show(); _is_open = false;
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
-        response = JSON.parse(response); console.log(response);
+        response = JSON.parse(response);
         _is_open = response[0].ticket_is_open;
         _html += '<div class="row">';
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
@@ -549,7 +559,7 @@ function WarrantyInfoModalData(id, _action) {
         if (_is_open) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
             else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
-            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button>'); }
+            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrderModal(' + id + ');">Create new order</button>'); }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
         }
@@ -575,8 +585,8 @@ function ClaimWarrantyModal(ele) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
-    modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-body py-1"></div>';
+    modalHtml += '<div class="modal-footer py-2"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -1102,5 +1112,176 @@ function ReplacementGenereate() {
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { $("#loader").hide(); isEdit(false); },
+    });
+}
+
+
+//create new order
+function CreateNewOrderModal(id) {
+    let _html = '', _ct = '', _st = ''; $("#loader").show();
+    let _customer_id = 0;
+    $.ajaxSetup({ async: false });
+    $.post('/customer-service/order', { strValue1: id, strValue2: 'TICKET' }).done(response => {
+        response = JSON.parse(response);
+        $.each(response['order'], function (i, row) {
+            let _json = JSON.parse(row.order_details);
+            _customer_id = parseInt(_json._customer_user) || 0, _ct = _json._shipping_country, _st = _json._shipping_state;
+            _html += '<div class="row">';
+            _html += '  <div class="col-sm-6">';
+            _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
+            _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_first_name + ' ' + _json._billing_last_name + '</div>';
+            _html += '      <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
+            _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_email + '</div>';
+            _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '</div>';
+            _html += '  </div>';
+            _html += '  <div class="col-sm-6">';
+            _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping Address:</div>';
+            _html += '      <div class="row row-small">';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipfirstname" placeholder="First Name" value="' + _json._shipping_first_name + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshiplastname" placeholder="Last Name" value="' + _json._shipping_last_name + '"></div>';
+            //_html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipcompany" placeholder="Company" value="' + _json._shipping_company + '"></div>';
+            _html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipaddress1" placeholder="Enter Address Line 1" value="' + _json._shipping_address_1 + '"></div>';
+            _html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipaddress2" placeholder="Enter Address Line 2" value="' + _json._shipping_address_2 + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipcity" placeholder="City" value="' + _json._shipping_city + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><select class="form-control select2" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipzipcode" placeholder="Zip Code" data-st="' + _json._shipping_state + '" data-ct="' + _json._shipping_country + '" value="' + _json._shipping_postcode + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><select class="form-control select2" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;"><option value="">Select a country / region…</option><option value="CA">Canada</option><option value="US" selected>United States (US)</option></select></div>';
+            _html += '      </div>';
+            _html += '  </div>';
+            _html += '</div>';
+        });
+
+        _html += '<div class="row"><div class="col-sm-12">';
+        _html += '    <div class="table-responsive border-bottom mb-2">';
+        _html += '        <table class="table table-row-bordered gy-2 gs-2">';
+        _html += '                <thead class="border-bottom border-gray-200 text-gray-900 fw-bolder bg-light bg-opacity-75"><tr class="">';
+        _html += '                    <th style="width: 40%;" class="min-w-175px">Item</th>';
+        _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Quantity</th>';
+        _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Price</th>';
+        _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Total</th>';
+        _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Tax</th>';
+        _html += '                </tr></thead>';
+        _html += '                <tbody class="fw-bolder text-gray-900 refund_order_line_items"></tbody>';
+        _html += '                <tfoot class="border-bottom border-gray-200 text-gray-900 fw-bolder bg-light bg-opacity-75"><tr>';
+        _html += '                    <th style="width: 40%;" class="min-w-175px"><select class="form-control select2" id="ddlorderitem" placeholder="Select product" style="width: 100%;"></select></th>';
+        _html += '                    <th class="text-end" colspan="4"></th>';
+        _html += '                </tr></tfoot>';
+        _html += '        </table>';
+        _html += '    </div>';
+        _html += '</div></div>';
+
+        _html += '<div class="d-flex justify-content-end">';
+        _html += '    <div class="mw-300px refund_order_final_total">';
+        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Items Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div></div>';
+        _html += '        <div class="refund_order_tax_total"></div>';
+        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Order Total:</div><div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div></div>';
+        _html += '    </div>';
+        _html += '</div>';
+    }).catch(err => { }).always(function () {
+        $("#loader").hide(); $('#myModal .modal-body').empty().append(_html);
+        $('#myModal .modal-title').empty().append('Create new order for Ticket No.: #' + id);
+        $(".refund-order-title").data('id', id); $(".refund-order-title").data('customer', _customer_id);
+        $("#ddlshipcountry").val(_ct).trigger('change'); $("#ddlshipstate").val(_st).trigger('change');
+    });
+    GetProductComponent('ddlorderitem', id);
+    //add action button
+    $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" onclick="ReturnGenereate();">Submit</button>');
+}
+function GetProductComponent(ctr, id) {
+    $.ajaxSetup({ async: true });
+    $.post('/customer-service/product-components', { ticket_id: id }).done(response => {
+        response = JSON.parse(response); $("#" + ctr).html('<option value="0">Select Product</option>');
+        $.each(response, function (i, r) { $("#" + ctr).append('<option value="' + r.r_id + '">' + r.post_title + '</option>'); });
+    }).catch(err => { }).always(function () { $("#" + ctr).select2({ dropdownParent: $("#myModal") }); });
+}
+function GetTaxRate() {
+    $('#myModal .refund_order_tax_total').empty(); $('#myModal #txtshipzipcode').data('tax_rate', 0);
+    ///Tax Calculate for state
+    let tax_states = ["NY", "CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
+    let s_state = $("#myModal #ddlshipstate").val(), _html = '';
+    if (tax_states.includes(s_state)) {
+        let opt = { to_zip: $("#myModal #txtshipzipcode").val(), to_street: $("#myModal #txtshipaddress1").val(), to_city: $("#myModal #txtshipcity").val(), to_state: s_state, to_country: $("#myModal #ddlshipcountry").val(), amount: 0.00, shipping: 0.00 };
+        if (opt.to_zip.length > 0 || opt.to_city.length > 0 || opt.to_country.length > 0) {
+            //$.ajaxSetup({ async: false });
+            $.post('/Orders/GetTaxAmounts', opt).done(res => {
+                let tax_meta = (res.tax_meta != '' && res.tax_meta != null) ? JSON.parse(res.tax_meta) : [];
+                $('#myModal #txtshipzipcode').data('tax_rate', res.rate);
+                $.each(tax_meta, function (i, r) {
+                    _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">' + r.type + ' - ' + (r.rate * 100).toFixed(4) + '%:</div><div class="text-end fw-bolder fs-6 text-gray-800"><span class="tax-total" data-order_item_id="0" data-name="' + r.name.replaceAll(' ', '-') + '-' + (r.rate * 100).toFixed(2) + '" data-label="' + r.type + '" data-percent="' + r.rate + '" data-amount="0">$0.00</span></div></div>';
+                });
+            }).catch(err => { swal('Alert!', err, "error"); }).always(function () { $('#myModal .refund_order_tax_total').empty().append(_html) });
+        }
+    }
+}
+function getItemList(pid, vid) {
+    if ($('#myModal #trpid_' + pid + '_' + vid).length > 0) { swal('Alert!', 'Product already added to list.', "error"); return false; }
+    $("#loader").show();
+    let option = { strValue1: pid, strValue2: vid, strValue3: $('#myModal #ddlshipcountry').val(), strValue4: $('#myModal #ddlshipstate').val() };
+    let _html = '';
+    $.ajaxSetup({ async: false });
+    $.post('/Orders/GetProductInfo', option).done(response => {
+        console.log(response);
+        $.each(response, function (key, pr) {
+            let _PKey = pr.product_id + '_' + pr.variation_id;
+            _html += '<tr id="trpid_' + _PKey + '" data-id="' + _PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="0" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
+            _html += '  <td style="width: 40%;" class="min-w-175px">' + pr.product_name + '</td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px"><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + _PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px text-end">' + formatCurrency(pr.sale_price) + '</td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px text-end">' + formatCurrency(pr.sale_price) + '</td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px text-end">$0.00</td>';
+            _html += '</tr>';
+        });
+    }).catch(err => { swal('Alert!', err, "error"); }).always(function () {
+        $("#loader").hide(); $('#myModal .refund_order_line_items').append(_html);
+        $("#myModal .refund_order_line_items").find(".rowCalulate").change(function () { calcFinalTotals(); });
+    });
+}
+function calcFinalTotals() {
+    let tax_rate = parseFloat($('#myModal #txtshipzipcode').data('tax_rate')) || 0.00;
+    let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00, zStateRecyclingAmt = 0.00;
+    
+    $("#order_line_items > tr.paid_item").each(function (index, row) {
+        let pid = $(row).data('pid'), vid = $(row).data('vid'), row_perqty_discamt = 0.00, row_disc = 0.00;
+        if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
+            row_perqty_discamt = parseFloat($(row).find(".RowDiscount").data("couponamt")) || 0.00;
+            row_disc = parseFloat($(row).find(".RowDiscount").data("lastdiscount")) || 0.00;
+            zQty = parseFloat($(row).find("[name=txt_ItemQty]").val()) || 0.00;
+            zRegPrice = parseFloat($(row).find(".TotalAmount").data("regprice")) || 0.00;
+            zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
+            zGrossAmount = zRegPrice * zQty;
+            $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
+            ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
+            if (zType == 'diff' && is_sales == 0) {
+                if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
+            }
+            else if (zType == 'diff' && is_sales > 0) zCouponAmt = 0.00;
+
+            //else { zCouponAmt = 0.00; }
+            let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
+
+            if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
+            else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
+            else if (zDiscType == 'percent') {
+                if (pid == 14023) zDisAmt = ((cou_details.price * cou_details.qty) - row_disc) * (cou_details.disc_amt / 100);
+                else zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100);
+            }
+            else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
+            //console.log(cou, cou_details, zDisAmt);
+            //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
+            //else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
+            //else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+            //else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
+
+            //Coupon Amount Total                        
+            cou_amt += zDisAmt;
+            $(row).find(".RowDiscount").data("lastdiscount", (row_disc + zDisAmt));
+            $(row).find(".TotalAmount").data("discount", zDisAmt.toFixed(2)); $(row).find(".RowDiscount").data("disctype", 'fixed');
+            zDisAmt = row_disc + zDisAmt + (row_perqty_discamt * zQty);
+            //$(row).find(".RowDiscount").data("couponamt", zDisAmt);
+            $(row).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(row).find(".linetotal").text((zGrossAmount - zDisAmt).toFixed(2));
+            //Taxation                     
+            zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
+            $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+        }
     });
 }

@@ -284,5 +284,21 @@ namespace LaylaERP.Controllers
             {
             }
         }
+
+        #region Order Ticket Action [Create New Order]
+        [HttpPost]
+        [Route("customer-service/product-components")]
+        public JsonResult GetProductComponent(CustomerServiceModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable ds = CustomerServiceRepository.CustomerTicketInfo(model.ticket_id, 0, "PROCOMPONENT");
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        #endregion
     }
 }

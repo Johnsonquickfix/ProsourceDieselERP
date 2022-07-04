@@ -153,6 +153,7 @@ namespace LaylaERP.Models
         public string sellingpric { get; set; }
         public string Stock { get; set; }
         public int qty { get; set; }
+        public int status { get; set; }
 
     }
 

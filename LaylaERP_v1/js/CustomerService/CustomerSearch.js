@@ -735,7 +735,6 @@ function ClaimWarranty_previous() {
     $('#myModal .claimwarranty-step3').addClass('hide');
 }
 
-
 //generete Ticket for order warranty claim
 function GenerateTicketNo() {
     let _file = [], _gdrive_link = [];
@@ -1115,7 +1114,6 @@ function ReplacementGenereate() {
     });
 }
 
-
 //create new order
 function CreateNewOrderModal(id) {
     let _html = '', _ct = '', _st = ''; $("#loader").show();
@@ -1130,14 +1128,14 @@ function CreateNewOrderModal(id) {
             _html += '  <div class="col-sm-6">';
             _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
             _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_first_name + ' ' + _json._billing_last_name + '</div>';
-            _html += '      <div class="fw-bold fs-7 text-gray-600">8692 Wild Rose Drive<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
+            _html += '      <div class="fw-bold fs-7 text-gray-600">' + _json._billing_address_1 + '<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
             _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_email + '</div>';
             _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '</div>';
             _html += '  </div>';
             _html += '  <div class="col-sm-6">';
             _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping Address:</div>';
             _html += '      <div class="row row-small">';
-            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipfirstname" placeholder="First Name" value="' + _json._shipping_first_name + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipfirstname" placeholder="First Name" value="' + _json._shipping_first_name + '" data-oid="' + row.order_id + '"></div>';
             _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshiplastname" placeholder="Last Name" value="' + _json._shipping_last_name + '"></div>';
             //_html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipcompany" placeholder="Company" value="' + _json._shipping_company + '"></div>';
             _html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipaddress1" placeholder="Enter Address Line 1" value="' + _json._shipping_address_1 + '"></div>';
@@ -1172,20 +1170,20 @@ function CreateNewOrderModal(id) {
 
         _html += '<div class="d-flex justify-content-end">';
         _html += '    <div class="mw-300px refund_order_final_total">';
-        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Items Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div></div>';
+        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Items Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800 items-subtotal">$0.00</div></div>';
         _html += '        <div class="refund_order_tax_total"></div>';
-        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Order Total:</div><div class="text-end fw-bolder fs-6 text-gray-800">$0.00</div></div>';
+        _html += '        <div class="d-flex flex-stack mb-3"><div class="fw-bold pe-15">Order Total:</div><div class="text-end fw-bolder fs-6 text-gray-800 order-total">$0.00</div></div>';
         _html += '    </div>';
         _html += '</div>';
     }).catch(err => { }).always(function () {
         $("#loader").hide(); $('#myModal .modal-body').empty().append(_html);
         $('#myModal .modal-title').empty().append('Create new order for Ticket No.: #' + id);
-        $(".refund-order-title").data('id', id); $(".refund-order-title").data('customer', _customer_id);
+        $("#txtshipfirstname").data('id', id); $("#txtshipfirstname").data('customer', _customer_id);
         $("#ddlshipcountry").val(_ct).trigger('change'); $("#ddlshipstate").val(_st).trigger('change');
     });
     GetProductComponent('ddlorderitem', id);
     //add action button
-    $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" onclick="ReturnGenereate();">Submit</button>');
+    $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" onclick="SaveNewOrder();">Submit</button>');
 }
 function GetProductComponent(ctr, id) {
     $.ajaxSetup({ async: true });
@@ -1218,70 +1216,133 @@ function getItemList(pid, vid) {
     $("#loader").show();
     let option = { strValue1: pid, strValue2: vid, strValue3: $('#myModal #ddlshipcountry').val(), strValue4: $('#myModal #ddlshipstate').val() };
     let _html = '';
-    $.ajaxSetup({ async: false });
+    $.ajaxSetup({ async: true });
     $.post('/Orders/GetProductInfo', option).done(response => {
-        console.log(response);
         $.each(response, function (key, pr) {
             let _PKey = pr.product_id + '_' + pr.variation_id;
             _html += '<tr id="trpid_' + _PKey + '" data-id="' + _PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="0" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
             _html += '  <td style="width: 40%;" class="min-w-175px">' + pr.product_name + '</td>';
             _html += '  <td style="width: 15%;" class="min-w-75px"><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + _PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
             _html += '  <td style="width: 15%;" class="min-w-75px text-end">' + formatCurrency(pr.sale_price) + '</td>';
-            _html += '  <td style="width: 15%;" class="min-w-75px text-end">' + formatCurrency(pr.sale_price) + '</td>';
-            _html += '  <td style="width: 15%;" class="min-w-75px text-end">$0.00</td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px text-end item-total" data-salerate="' + pr.sale_price + '">' + formatCurrency(pr.sale_price) + '</td>';
+            _html += '  <td style="width: 15%;" class="min-w-75px text-end item-tax">$0.00</td>';
             _html += '</tr>';
         });
     }).catch(err => { swal('Alert!', err, "error"); }).always(function () {
-        $("#loader").hide(); $('#myModal .refund_order_line_items').append(_html);
+        $("#loader").hide(); $('#myModal .refund_order_line_items').append(_html); calcFinalTotals();
         $("#myModal .refund_order_line_items").find(".rowCalulate").change(function () { calcFinalTotals(); });
     });
 }
 function calcFinalTotals() {
     let tax_rate = parseFloat($('#myModal #txtshipzipcode').data('tax_rate')) || 0.00;
-    let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00, zStateRecyclingAmt = 0.00;
-    
-    $("#order_line_items > tr.paid_item").each(function (index, row) {
-        let pid = $(row).data('pid'), vid = $(row).data('vid'), row_perqty_discamt = 0.00, row_disc = 0.00;
-        if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
-            row_perqty_discamt = parseFloat($(row).find(".RowDiscount").data("couponamt")) || 0.00;
-            row_disc = parseFloat($(row).find(".RowDiscount").data("lastdiscount")) || 0.00;
-            zQty = parseFloat($(row).find("[name=txt_ItemQty]").val()) || 0.00;
-            zRegPrice = parseFloat($(row).find(".TotalAmount").data("regprice")) || 0.00;
-            zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
-            zGrossAmount = zRegPrice * zQty;
-            $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
-            ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
-            if (zType == 'diff' && is_sales == 0) {
-                if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
-            }
-            else if (zType == 'diff' && is_sales > 0) zCouponAmt = 0.00;
+    let zQty = 0, zGrossAmount = 0.00, zTotalTax = 0.00;
 
-            //else { zCouponAmt = 0.00; }
-            let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
-
-            if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-            else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-            else if (zDiscType == 'percent') {
-                if (pid == 14023) zDisAmt = ((cou_details.price * cou_details.qty) - row_disc) * (cou_details.disc_amt / 100);
-                else zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100);
-            }
-            else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
-            //console.log(cou, cou_details, zDisAmt);
-            //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
-            //else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
-            //else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
-            //else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
-
-            //Coupon Amount Total                        
-            cou_amt += zDisAmt;
-            $(row).find(".RowDiscount").data("lastdiscount", (row_disc + zDisAmt));
-            $(row).find(".TotalAmount").data("discount", zDisAmt.toFixed(2)); $(row).find(".RowDiscount").data("disctype", 'fixed');
-            zDisAmt = row_disc + zDisAmt + (row_perqty_discamt * zQty);
-            //$(row).find(".RowDiscount").data("couponamt", zDisAmt);
-            $(row).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(row).find(".linetotal").text((zGrossAmount - zDisAmt).toFixed(2));
-            //Taxation                     
-            zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
-            $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
-        }
+    $("#myModal .refund_order_line_items > tr.paid_item").each(function (index, row) {
+        let rQty = 0.00, rSalePrice = 0.00, rGrossAmount = 0.00, rTotalTax = 0.00;
+        rQty = parseFloat($(row).find("[name=txt_ItemQty]").val()) || 0.00; zQty += parseInt(rQty);
+        rSalePrice = parseFloat($(row).find(".item-total").data("salerate")) || 0.00;
+        rGrossAmount = rSalePrice * rQty; zGrossAmount += rGrossAmount;
+        $(row).find(".item-total").text(formatCurrency(rGrossAmount));
+        rTotalTax = rGrossAmount * tax_rate;
+        $(row).find(".item-tax").text(formatCurrency(rTotalTax));
     });
+    $("#myModal .items-subtotal").text(formatCurrency(zGrossAmount));
+    $("#myModal .refund_order_tax_total .tax-total").each(function (index, row) {
+        let rRate = parseFloat($(row).data('percent')) || 0.00, rTotalTax = 0.00;
+        rTotalTax = zGrossAmount * rRate; zTotalTax += rTotalTax;
+        $(row).text(formatCurrency(rTotalTax)); $(row).data('amount', rTotalTax)
+    });
+    $("#myModal .order-total").text(formatCurrency(zGrossAmount + zTotalTax));
+    $("#myModal .order-total").data('total', (zGrossAmount + zTotalTax)); $("#myModal .order-total").data('tax', zTotalTax); $("#myModal .order-total").data('qty', zQty);
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta (Save/Update) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function createPostMeta() {
+    let oid = 0, _total = parseFloat($("#myModal .order-total").data('total')) || 0.00, _tax = parseFloat($("#myModal .order-total").data('tax')) || 0.00;
+    let _list = [
+        { post_id: oid, meta_key: '_shipping_first_name', meta_value: $('#txtshipfirstname').val() }, { post_id: oid, meta_key: '_shipping_last_name', meta_value: $('#txtshiplastname').val() },
+        { post_id: oid, meta_key: '_shipping_address_1', meta_value: $('#txtshipaddress1').val() }, { post_id: oid, meta_key: '_shipping_address_2', meta_value: $('#txtshipaddress2').val() },
+        { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() }, { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() },
+        { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() }, { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() },
+        { post_id: oid, meta_key: '_shipping_email', meta_value: '' }, { post_id: oid, meta_key: '_shipping_phone', meta_value: '' },
+        { post_id: oid, meta_key: '_order_total', meta_value: _total }, { post_id: oid, meta_key: '_cart_discount', meta_value: 0 },
+        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: 0 },
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: _tax },
+        { post_id: oid, meta_key: '_gift_amount', meta_value: 0 }, { post_id: oid, meta_key: 'total_gcamt', meta_value: 0 }
+    ];
+    return _list;
+}
+function createPostStatus() {
+    let oid = 0, _total = parseFloat($("#myModal .order-total").data('total')) || 0.00, _tax = parseFloat($("#myModal .order-total").data('tax')) || 0.00;
+    let _list = {
+        order_id: oid, parent_id: 0, returning_customer: 0, customer_id: parseInt($("#txtshipfirstname").data('customer')) || 0,
+        num_items_sold: parseInt($("#myModal .order-total").data('qty')) || 0, total_sales: _total, tax_total: _tax, shipping_total: 0.00, net_total: _total, status: 'wc-pending', customer_notes: ''
+    };
+    return _list;
+}
+function createItemsList() {
+    let tax_rate = parseFloat($('#myModal #txtshipzipcode').data('tax_rate')) || 0.00;
+    let _list = [], oid = 0, cid = parseInt($("#txtshipfirstname").data('customer')) || 0;
+    let _taxes = []; _taxdata = { total: {}, subtotal: {} };
+    $('#myModal .refund_order_tax_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('name'), percent: parseFloat($(li).data('percent')) || 0.00 }); });
+    //Add Product
+    $('#order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(row).find(".item-total").data("salerate")) || 0.00;
+        let grossAmount = qty * rate, discountAmount = 0.00, shippinAmount = 0.00;
+        let taxAmount = grossAmount * tax_rate;
+        _taxdata = { total: {}, subtotal: {} };
+        $.each(_taxes, function (i, r) {
+            _taxdata.total[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4);
+        });
+        _list.push({
+            order_item_id: 0, PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount * qty, shipping_tax_amount: 0,
+            order_itemmeta: [], meta_data: serialize(_taxdata)
+        });
+    });
+
+    //Add Fee
+    //$('#order_fee_line_items > tr').each(function (index, tr) {
+    //    _list.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: parseFloat($(tr).find(".TotalAmount").text()) || 0.00, tax_amount: 0 });
+    //});
+    //Add Tax
+    $('#myModal .refund_order_tax_total .tax-total').each(function (index, li) {
+        _list.push({ order_item_id: 0, order_id: oid, product_name: $(li).data('name'), meta_data: $(li).data('label'), product_type: 'tax', tax_rate_state: 0, tax_amount: parseFloat($(li).data('percent')) || 0, total: parseFloat($(li).data('amount')) || 0, shipping_tax_amount: 0 });
+    });
+    return _list;
+}
+function ValidateData() {
+    if ($('#txtshipfirstname').val() == '') { swal('Error!', 'Please Enter Shipping First Name.', "error").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
+    else if ($('#txtshiplastname').val() == '') { swal('Error!', 'Please Enter Shipping Last Name.', "error").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
+    else if ($('#txtshipaddress1').val() == '') { swal('Error!', 'Please Enter Shipping Address.', "error").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
+    else if ($('#txtshipzipcode').val() == '') { swal('Error!', 'Please Enter Shipping Post Code.', "error").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Error!', 'Please Enter Shipping City.', "error").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }
+    else if ($('#ddlshipcountry').val() == '') { swal('Error!', 'Please Select Shipping Country.', "error").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Error!', 'Please Select Shipping State.', "error").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
+    return true;
+}
+function SaveNewOrder() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($("#txtshipfirstname").data('customer')) || 0;
+    if (!ValidateData()) { $("#loader").hide(); return false };
+
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
+
+    if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlorderitem').select2('open'); return false; }); return false; }
+    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
+    //console.log(obj); return;
+    $.ajax({
+        url: "/OrdersMySQL/create-component-order", type: "POST", contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            if (result.status) {
+                //PaymentModal();
+                $("#myModal").modal('hide'); OrderInfo(_oid);
+                //$('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
+                //$.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true); });
+            }
+            else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
+        },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { $("#loader").hide(); },
+    });
+    $('#btnCheckout').text("Checkout");
+    return false;
 }

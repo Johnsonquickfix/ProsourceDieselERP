@@ -23,9 +23,10 @@
         <ul class="nav nav-tabs">
             <li title="Click here to see buying prices" data-toggle="tooltip" class="active"><a class="active" href="#tab_21" title="Click here to see Buying prices" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
             @*<li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
-                <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
+        <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
 
             <li title="Click here to see kits" data-toggle="tooltip"><a href="#tab_24" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see component" data-toggle="tooltip"><a href="#tab_27" data-toggle="tab">Component<span class="badge badge-danger"></span></a></li>
             <li title="Click here to see linked warehouse" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Linked Warehouse</a></li>
             <li title="Click here to see notes" data-toggle="tooltip"><a href="#tab_25" title="Click here to see Notes" data-toggle="tab">Notes</a></li>
             <li title="Click here to see linked files" data-toggle="tooltip"><a href="#tab_26" title="Click here to see Linked files" data-toggle="tab">Linked files</a></li>
@@ -48,13 +49,13 @@
                         </div>
                         <div class="edit-proposal-box">
                             @*<div class="proposal-box" style="display:none">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fa fa-edit"></i></label>
-                                </div>
-                                <div class="edit-proposal-texts" style="display:none">
-                                    <h3 class="box-title" id="txtprosutname"></h3>
+                            <input type="file" name="file" id="proposal" class="inputfile">
+                            <label for="proposal"><i class="fa fa-edit"></i></label>
+                        </div>
+                        <div class="edit-proposal-texts" style="display:none">
+                            <h3 class="box-title" id="txtprosutname"></h3>
 
-                                </div>*@
+                        </div>*@
                         </div>
 
                     </div>
@@ -80,11 +81,11 @@
                                 </div>
 
                                 @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Weighted average price</label>
-                                        <div class="col-md-8">
-                                            <p id="txtaverageprice"></p>
-                                        </div>
-                                    </div>*@
+                                <label class="col-md-4 control-label">Weighted average price</label>
+                                <div class="col-md-8">
+                                    <p id="txtaverageprice"></p>
+                                </div>
+                            </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Best buying price</label>
                                     <div class="col-md-8">
@@ -191,8 +192,8 @@
                                             <input type="text" id="txtDiscountqty" class="form-control">
                                         </div>
                                         @*<div class="col-sm-1">
-                                            %
-                                        </div>*@
+                                        %
+                                    </div>*@
                                     </div>
 
 
@@ -221,7 +222,7 @@
                         <div class="box box-primary">
                             <div class="box-header">
                                 <h2 class="box-title">Vendor prices</h2>
-                                <input type="submit" name="setprice" id="setprice" title="Click here to set default" data-toggle="tooltip" class="btn btn-danger"  value="Set default">
+                                <input type="submit" name="setprice" id="setprice" title="Click here to set default" data-toggle="tooltip" class="btn btn-danger" value="Set default">
                             </div>
                             <div class="box-body">
                                 <div class="form-group d-flex">
@@ -260,102 +261,102 @@
             </div>
             <!--<div class="tab-pane active" style="display:none" id="tab_22">
 
-            <div class="row rowbox proposal-row">
-                <div class="col-md-6">
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Stock quantity</label>
-                                <div class="col-md-8">
-                                    <p id="txtstockquantity"></p>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Allow backorders</label>
-                                <div class="col-md-8">
-                                    <p id="txtAllowbackorders"></p>
-                                </div>
-                            </div>-->
+    <div class="row rowbox proposal-row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Stock quantity</label>
+                        <div class="col-md-8">
+                            <p id="txtstockquantity"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Allow backorders</label>
+                        <div class="col-md-8">
+                            <p id="txtAllowbackorders"></p>
+                        </div>
+                    </div>-->
             @*<div class="form-group">
-                    <label class="col-md-4 control-label">Shipping Class</label>
-                    <div class="col-md-8">
-                        <p id="txtShippingClass"></p>
-                    </div>
-                </div>*@
-            <!--<div class="form-group">
-                                    <label class="col-md-4 control-label">Tax Class</label>
-                                    <div class="col-md-8">
-                                        <p id="txtTaxClass"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Description</label>
-                                    <div class="col-md-8">
-                                        <p id="txtDescription"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
-                                    <div class="col-md-6">
-                                        <p id="txtDimensions"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Virtual</label>
-                                    <div class="col-md-6">
-                                        <p id="txtVirtual"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Manage Stock</label>
-                                    <div class="col-md-6">
-                                        <p id="txtManage"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <label class="col-md-4 control-label">Shipping Class</label>
+            <div class="col-md-8">
+                <p id="txtShippingClass"></p>
             </div>
-            <div class="tab-pane" style="display:none" id="tab_23">
-
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">SKU</label>
-                                    <div class="col-md-8">
-                                        <p id="txtSku"></p>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Regular Price($)</label>
-                                    <div class="col-md-8">
-                                        <p id="txtRegularprice"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Sale Price</label>
-                                    <div class="col-md-8">
-                                        <p id="txtsaleprice"></p>
-                                    </div>
-                                </div>
-
+        </div>*@
+            <!--<div class="form-group">
+                            <label class="col-md-4 control-label">Tax Class</label>
+                            <div class="col-md-8">
+                                <p id="txtTaxClass"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Description</label>
+                            <div class="col-md-8">
+                                <p id="txtDescription"></p>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div>-->
+            </div>
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
+                            <div class="col-md-6">
+                                <p id="txtDimensions"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Virtual</label>
+                            <div class="col-md-6">
+                                <p id="txtVirtual"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Manage Stock</label>
+                            <div class="col-md-6">
+                                <p id="txtManage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane" style="display:none" id="tab_23">
+
+        <div class="row rowbox proposal-row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">SKU</label>
+                            <div class="col-md-8">
+                                <p id="txtSku"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Regular Price($)</label>
+                            <div class="col-md-8">
+                                <p id="txtRegularprice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Sale Price</label>
+                            <div class="col-md-8">
+                                <p id="txtsaleprice"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>-->
 
 
 
@@ -365,11 +366,11 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Nature of product (material/finished)</label>
-                                        <div class="col-md-8">
-                                            <p id="txtNatureofproduct"></p>
-                                        </div>
-                                    </div>*@
+                                <label class="col-md-4 control-label">Nature of product (material/finished)</label>
+                                <div class="col-md-8">
+                                    <p id="txtNatureofproduct"></p>
+                                </div>
+                            </div>*@
                                 <div class="form-group">
                                     <label id="lblRegularPrice" class="lblRegularPrice col-md-4 control-label">Regular Price($)</label>
                                     <div class="col-md-8">
@@ -511,6 +512,132 @@
 
 
             </div>
+            <div class="tab-pane" id="tab_27"> 
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h3 class="box-title">List of component with this product</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group d-flex">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive" id="divcomponentParent">
+                                            <table id="dtcomponentdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-left">Parent products</th>
+                                                        <th>Label</th>
+                                                        <th>Qty</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="Productcomponent_Parent"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    List of products/services that are component(s)
+                                </h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group d-flex">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive" id="divAddcomponentservices">
+                                            <table id="dtAddcomponentservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th class="text-left">Child products</th>
+                                                        <th>Label</th>
+                                                        <th>Buying price</th>
+                                                        <th>Sell price</th>
+                                                        <th>Stock</th>
+                                                        @*<th>Qty</th>*@
+                                                    <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="Productcomponent_services"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer text-right">
+                                <button id="btncomponentservicessave" title="Click here to update quantity " data-toggle="tooltip" data-placement="left" class="btn btn-danger">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <div class="user-top-section">
+                                    <div class="tablenav top">
+                                        <div class="alignleft actions bulkactions">
+                                            <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            <input type="text" id="txtcomponentkeewordfilter" class="form-control">
+                                            <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            @*<input type="text" id="txtCategoryfilter" class="form-control">*@
+                                            <select name="ddlcomponentCategoryfilter" id="ddlcomponentCategoryfilter" class="form-control">
+                                            </select>
+                                            <input type="button" id="componentfiltersrchexp" value="Search" class="button" />
+                                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    Search product to add
+                                </h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group d-flex">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive" id="divcomponentAddItemFinal">
+                                            <table id="dtcomponentdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-left">Child products</th>
+                                                        <th>Label</th>
+                                                        @*<th>Qty</th>*@
+                                                        <th>Add</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ordercomponent_line_items"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-12 text-right">
+
+
+                                <button id="btncomponentaddupdatechild" title="Click here to Add/Update child products" data-toggle="tooltip" data-placement="left" class="btn btn-danger">Add/Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
             <div class="tab-pane" id="tab_23">
 
                 <div class="row rowbox proposal-row">
@@ -615,24 +742,24 @@
             <div class="tab-pane" id="tab_26">
                 <div class="box box-primary">
                     @*<div class="box-header">
-                            <div class="d-flex proposal-top">
-                                <div class="edit-proposal-box">
-                                    <div class="proposal-box">
-                                        <input type="file" name="file" id="proposal" class="inputfile">
-                                        <label for="proposal"><i class="fas fa-landmark"></i></label>
-                                    </div>
-                                    <div class="edit-proposal-texts">
-                                        <h3 class="box-title">#101</h3>
-                                        <p>Capital One</p>
-                                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                    </div>
-                                </div>
-                                <div class="back-to-list">
-                                    <p><button class="btn btn-danger">Back to list</button></p>
-                                    <p><button class="btn btn-danger">Open</button></p>
-                                </div>
+                    <div class="d-flex proposal-top">
+                        <div class="edit-proposal-box">
+                            <div class="proposal-box">
+                                <input type="file" name="file" id="proposal" class="inputfile">
+                                <label for="proposal"><i class="fas fa-landmark"></i></label>
                             </div>
-                        </div>*@
+                            <div class="edit-proposal-texts">
+                                <h3 class="box-title">#101</h3>
+                                <p>Capital One</p>
+                                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                            </div>
+                        </div>
+                        <div class="back-to-list">
+                            <p><button class="btn btn-danger">Back to list</button></p>
+                            <p><button class="btn btn-danger">Open</button></p>
+                        </div>
+                    </div>
+                </div>*@
                     <div class="box-body">
                         <table class="table-blue table check-table table-bordered inventory-table fixed-table">
                             <tbody>
@@ -641,9 +768,9 @@
                                     <td class="text-left" colspan="3"><p id="txtnumattached"></p></td>
                                 </tr>
                                 @*<tr>
-                                        <td class="titlefield">Total size of attached files/documents</td>
-                                        <td class="text-left" colspan="3">0 b.</td>
-                                    </tr>*@
+                                <td class="titlefield">Total size of attached files/documents</td>
+                                <td class="text-left" colspan="3">0 b.</td>
+                            </tr>*@
                             </tbody>
                         </table>
                     </div>
@@ -656,7 +783,7 @@
                                 <div class="col-sm-12">
 
                                     @*@using (Html.BeginForm("FileUploade", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                        {*@
+                                {*@
 
                                     <div class="form-group">
                                         <div class="col-md-6">
@@ -669,17 +796,17 @@
                                 </div>
                             </div>
                             @*<div class="box-header">
-                                    <label class="control-label">Link a new file/document</label>
-                                    <div class="col-sm-12">
-                                        <form class="form-inline">
-                                            <div class="form-group align-items-center file-group">
-                                                <input type="text" class="form-control" " placeholder="Url to Link">
-                                                <input type="text" class="form-control" placeholder="Label">
-                                                <button type="submit" class="btn btn-danger">Link</button>
-                                            </div>
-                                        </form>
+                            <label class="control-label">Link a new file/document</label>
+                            <div class="col-sm-12">
+                                <form class="form-inline">
+                                    <div class="form-group align-items-center file-group">
+                                        <input type="text" class="form-control" " placeholder="Url to Link">
+                                        <input type="text" class="form-control" placeholder="Label">
+                                        <button type="submit" class="btn btn-danger">Link</button>
                                     </div>
-                                </div>*@
+                                </form>
+                            </div>
+                        </div>*@
                             <div class="box-body">
                                 <div class="mb-35">
                                     <label class="control-label">Attached files and documents</label>
@@ -701,18 +828,18 @@
                                     </div>
                                 </div>
                                 @*<div class="mb-35">
-                                        <label class="control-label">Linked files and documents</label>
-                                        <div class="table-responsive bank-table-wrapper">
-                                            <table class="inventory-table table-blue table check-table table-bordered table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Linked</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>*@
+                                <label class="control-label">Linked files and documents</label>
+                                <div class="table-responsive bank-table-wrapper">
+                                    <table class="inventory-table table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Linked</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>*@
                             </div>
                         </div>
                     </div>

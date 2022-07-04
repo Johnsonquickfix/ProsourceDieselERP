@@ -1011,6 +1011,16 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(obj, 0);
         }
+        public JsonResult GetComponentProductservices(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetComponentProductservices(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
 
         public JsonResult GetProductParent(SearchModel model)
         {
@@ -1785,7 +1795,22 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
         }
+        public JsonResult SaveComponentChildvariations(ProductModel model)
+        {
 
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = ProductRepository.SaveComponentChildvariations(model.ProductChildMeta);
+                if (res > 0)
+                {
+                    status = true;
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
+        }
         public JsonResult UpdateChildvariations(ProductModel model)
         {
 
@@ -2112,6 +2137,29 @@ namespace LaylaERP.Controllers
             return Json(JSONResult, 0);
         }
 
+        public JsonResult UpdatecomponentStatus(AccountingJournalModel model)
+        {
+            if (model.rowid > 0)
+            {
+                new ProductRepository().UpdatecomponentStatus(model);
+                return Json(new { status = true, message = "Status changed successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+        public JsonResult GetComponentProductParent(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetComponentProductParent(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
     }
-    
+
 }

@@ -317,6 +317,60 @@ namespace LaylaERP.BAL
             return _list;
         }
 
+        public static List<ProductModelservices> GetComponentProductservices(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+ 
+                        strWhr += " and p.product_id = " + strValue1;
+                    string strSQl = "SELECT distinct rowid ID,wp.post_title,post_title title,  isnull((SELECT min(Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)) purchase_price from Product_Purchase_Items where fk_product = p.component_product_id),'0.00') buyingprice,isnull(Cast(CONVERT(DECIMAL(10,2),pmsaleprice.meta_value) as nvarchar),'0.00') sellingpric,0 Stock , status qty "
+                                + " FROM erp_product_component p"
+                                + "  left outer join wp_posts wp on wp.ID = p.component_product_id"
+                                + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                                + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
+
+                    strSQl += ";";
+                    SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+
+                        productsModel.qty = Convert.ToInt32(sdr["qty"]);
+                        productsModel.Stock = sdr["Stock"].ToString();
+                        productsModel.buyingprice = sdr["buyingprice"].ToString();
+                        productsModel.sellingpric = sdr["sellingpric"].ToString();
+                        productsModel.product_label = sdr["title"].ToString();
+                        if (sdr["post_title"] != DBNull.Value)
+                            productsModel.product_name = sdr["post_title"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
 
         public int Changestatus(OrderPostStatusModel model, string ID)
         {
@@ -1871,6 +1925,41 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        public static int SaveComponentChildvariations(List<ProductChildModel> model)
+        {
+            int result = 1;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                //foreach (ProductChildModel obj in model)
+                //{
+                //    strSql.Append("Insert into erp_product_component(product_id,component_product_id,component_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');");
+                //}
+                //result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                string res = string.Empty;
+                foreach (ProductChildModel obj in model)
+                {
+                    SqlParameter[] parameters =
+               {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@product_id", obj.fk_product),
+                    new SqlParameter("@component_product_id", obj.fk_product_fils),
+                    new SqlParameter("@component_quantity", obj.qty),
+                 };
+                    res = SQLHelper.ExecuteScalar("erp_productcomponent_iud", parameters).ToString();
+                    //result = 1;            
+                    // string 
+                    // if (res.StartsWith("Success")) result = 1;
+                }
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/SaveComponentChildvariations/" + "0" + "", "Insert Child variations");
+            }
+            return result;
+        }
+
 
         public static int UpdateChildvariations(List<ProductChildModel> model)
         {
@@ -2926,6 +3015,76 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public int UpdatecomponentStatus(AccountingJournalModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update erp_product_component set status=@status where rowid=@ID;";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@ID", model.rowid),
+                    new SqlParameter("@status", model.active),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static List<ProductModelservices> GetComponentProductParent(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1)) 
+                        strWhr += " component_product_id = " + strValue1;
+                    string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,component_quantity qty"
+                                + " FROM erp_product_component p"
+                                + "  left outer join wp_posts wp on wp.ID = p.product_id"
+                                + " WHERE " + strWhr;
+
+
+                    strSQl += ";";
+                    SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+
+                        productsModel.qty = Convert.ToInt32(sdr["qty"]);
+                        productsModel.product_label = sdr["title"].ToString();
+                        if (sdr["post_title"] != DBNull.Value)
+                            productsModel.product_name = sdr["post_title"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
         }
 
 

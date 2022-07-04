@@ -45,8 +45,8 @@
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
         setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
         setTimeout(function () { bindbuyingprice(); }, 16000);
-        setTimeout(function () { bindChildproductsservices(); }, 17000);
-        setTimeout(function () { bindparentproductsservices(); }, 18000);
+        setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
+        setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
         setTimeout(function () { bindwarehouse(); }, 19000);
    
         setTimeout(function () { bindfileuploade(); }, 19700);
@@ -133,7 +133,10 @@
 
         $("#filtersrchexp").click(function (e) {
             dataGridLoad($("#ddlproductchild").val());
-        }); 
+        });
+        $("#componentfiltersrchexp").click(function (e) {
+            componentdataGridLoad($("#ddlproductchild").val());
+        });
 
     }
 
@@ -176,6 +179,7 @@ function getParentCategory(id) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + '</option>';
             }
             $('#ddlCategoryfilter').html(opt);
+            $('#ddlcomponentCategoryfilter').html(opt);
         }
     });
 }
@@ -234,6 +238,63 @@ $("#btnaddupdatechild").click(function (e) {
         });
     }
     else { alert("Fields cannot be empty.") }
+});
+
+$("#btncomponentaddupdatechild").click(function (e) {
+    let _ItemProduct = [];
+    //$("#ordercomponent_line_items > tr").each(function (index, tr) {
+        var ID = "";
+        $("input:checkbox[name=chkcmtservices]:checked").each(function () {
+            ID += $(this).val() ;
+
+            console.log(ID);
+       
+        //console.log($(tr).find("input[name = chkcmtservices]").val());
+       // if (parseInt($(tr).find("input[name = chkcmtservices]").val()) > 0) {
+            _ItemProduct.push(
+                { fk_product: $("#ddlproductchild").val(), fk_product_fils: ID, qty: 1 }
+            );
+            ID = "";
+            //}
+        });
+   // });
+    var url = window.location.pathname;
+    var urlid = url.substring(url.lastIndexOf('/') + 1);
+    // console.log(_ItemProduct);
+    var obj = {
+        ProductChildMeta: _ItemProduct
+    }
+    console.log(_ItemProduct);
+    if (_ItemProduct != '') {
+
+        //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+        $.ajax({
+            type: 'POST',
+            url: '/Product/SaveComponentChildvariations',
+            data: JSON.stringify(obj),
+            dataType: 'json',
+            headers: { "Content-Type": "application/json" },
+            beforeSend: function () {
+                $("#loader1").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    var layoutHtml = '';
+                    $('#ordercomponent_line_items').empty().append(layoutHtml);
+                    ComponentbindChildproductsservices();
+                    swal('Success!', data.message, 'success');
+                    ActivityLog('Add/Update product to add product/services of this component for product id (' + urlid + ')', '/Product/AddNewProduct/' + urlid + '');
+                }
+            },
+            complete: function () {
+                $("#loader1").hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                // alert(errorThrown);
+            }
+        });
+    }
+    else { alert("Child products should be selected.") }
 });
 
 $("#btnservicessave").click(function (e) {
@@ -386,6 +447,8 @@ $("#ddlproductchild").change(function (t) {
     bindwarehouse();
     getNotesList($("#ddlproductchild").val());
     bindfileuploade();
+    bindcompnentparentproductsservices();
+    ComponentbindChildproductsservices();
     ClearControl();
     $('#dvbuysing').hide();
     $("#hfbuyingid").val('');
@@ -426,6 +489,40 @@ function dataGridLoad(order_type) {
 
     });
 }
+
+function componentdataGridLoad(order_type) {
+
+    var keywordfilter = $('#txtcomponentkeewordfilter').val();
+    let categoryfiler = $('#ddlcomponentCategoryfilter').val();
+
+    var obj = { strValue1: keywordfilter, strValue2: categoryfiler };
+    $.ajax({
+        type: "POST", url: '/Product/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader1").show(); },
+        success: function (data) {
+            // datav = JSON.stringify(data);
+
+            //console.log(JSON.parse(data));
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                        
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].Qty
+                });
+
+            }
+            //Bind Product
+
+            componentbindItemListDataTable(itemsDetailsxml);
+
+        },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
 function bindItemListDataTable(data) {
    // console.log('g', data);
     var layoutHtml = '';
@@ -459,6 +556,42 @@ function bindItemListDataTable(data) {
     }
 
 }
+
+function componentbindItemListDataTable(data) {
+    // console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
+                layoutHtml += '<td>' + data[i].product_name + '</td>';
+                //layoutHtml += '<td><input min="1" readonly autocomplete="off" type="number" id="txt_CmtItemQty_' + data[i].PKey + '" value="' + 1 + '" name="txt_CmtItemQty" placeholder="Qty"></td>';
+                layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible;" value="' + data[i].PKey + '" name="chkcmtservices" id="chk_' + data[i].PKey + '"></td>';
+                //layoutHtml += '<td><input style="opacity:1" name="chkcmtservices"  type="checkbox" style="opacity: 1; position: relative; visibility: visible;"  value="' + data[i].PKey + '" id="chkcmtservices_' + data[i].PKey + '"></td>';
+
+                layoutHtml += '</tr>';
+            }
+        }
+        $('#ordercomponent_line_items').empty().append(layoutHtml);
+    }
+    else {
+        layoutHtml += '<table id="dtcomponentdatachildkits" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th class="text-left">Child products</th>';
+        layoutHtml += '<th>Label</th>';
+       // layoutHtml += '<th>Qty</th>';
+        layoutHtml += '<th>Add</th>';
+
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="ordercomponent_line_items"></tbody>';
+
+        layoutHtml += '</table>';
+        $('#divcomponentAddItemFinal').empty().html(layoutHtml);
+    }
+
+}
 function bindChildproductsservices() {
     let PostID = $('#ddlproductchild').val();
 
@@ -486,6 +619,91 @@ function bindChildproductsservices() {
         async: false
 
     });
+}
+
+
+function ComponentbindChildproductsservices() {
+    let PostID = $('#ddlproductchild').val();
+
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Product/GetComponentProductservices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader1").show(); },
+        success: function (data) {
+            // datav = JSON.stringify(data);
+
+            //console.log(JSON.parse(data));
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                        
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty, Stock: data[i].Stock, buyingprice: data[i].buyingprice, sellingpric: data[i].sellingpric
+                });
+
+            }
+            Componentbinddata(itemsDetailsxml);
+
+        },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
+function Componentbinddata(data) {
+
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
+                layoutHtml += '<td>' + data[i].product_name + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].buyingprice + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].sellingpric + '</td>';
+                layoutHtml += '<td>' + data[i].Stock + '</td>';
+                //layoutHtml += '<td><input min="0"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
+                if (data[i].quantity == 0) {
+                    toggleclass = "fas fa-toggle-on";
+                    toggleStyle = "color: #ff0000!important;font-size: 24px;";
+                    toggleStatus = 1;
+                }
+
+                else {
+                    toggleclass = "fas fa-toggle-off";
+                    toggleStyle = "color: #49be25!important;font-size: 24px;";
+                    toggleStatus = 0;
+                }
+                console.log(toggleStatus);
+                layoutHtml += '<td> <span title="Click here to change the status." data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + data[i].PKey + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span> </td>';
+                //  layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkproductservices" id="chkservices_' + data[i].PKey + '" value="' + data[i].PKey + '"></td>';
+                layoutHtml += '</tr>';
+            }
+        }
+
+        $('#Productcomponent_services').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtAddcomponentservices" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th class="text-left">Child products</th>';
+        layoutHtml += '<th>Label</th>';
+        layoutHtml += '<th>Buying price</th>';
+        layoutHtml += '<th>Selling price</th>';
+        layoutHtml += '<th>Stock</th>';
+      //  layoutHtml += '<th>Qty</th>';
+        layoutHtml += '<th>Status</th>';
+
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="Productcomponent_services"></tbody>';
+
+        layoutHtml += '</table>';
+        $('#divAddcomponentservices').empty().html(layoutHtml);
+    }
+
 }
 
 function binddata(data) {
@@ -587,6 +805,64 @@ function bindParentdata(data) {
 
 }
 
+function bindcompnentparentproductsservices() {
+    let PostID = $('#ddlproductchild').val();
+
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Product/GetComponentProductParent', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader1").show(); },
+        success: function (data) {
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                      
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty
+                });
+
+            }
+            bindComponentParentdata(itemsDetailsxml);
+        },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
+function bindComponentParentdata(data) {
+    // console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                /*layoutHtml += '<td class="text-left"><a href="../../Product/AddNewProduct/' + data[i].PKey + '">' + data[i].product_label + '</i></a ></td>';*/
+                layoutHtml += '<td>' + data[i].product_label + '</td>';
+                layoutHtml += '<td>' + data[i].product_name + '</td>';
+                layoutHtml += '<td>' + data[i].quantity + '</td>';
+                layoutHtml += '</tr>';
+            }
+        }
+        // console.log(layoutHtml);
+        $('#Productcomponent_Parent').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtcomponentdatakits" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th class="text-left">Parent products</th>';
+        layoutHtml += '<th>Label</th>';
+        layoutHtml += '<th>Qty</th>';
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="Productcomponent_Parent"></tbody>';
+        layoutHtml += '</table>';
+        $('#divcomponentParent').empty().html(layoutHtml);
+    }
+
+}
+
 $(document).on('click', "#btnbuyingsave", function () {
     AddBuyingt();
 })
@@ -679,6 +955,32 @@ function AddBuyingt() {
 
 
 
+}
+
+
+function ChangeStatus(id, status) {
+    console.log(id,status);
+  //  let cofStatus = status == "0" ? "Inactive" : "Active";
+    ActivityLog('change status as ' + status + '', '/Product/UpdatecomponentStatus/' + id + '');
+    var obj = { rowid: id, active: status, }
+    $.ajax({
+        url: '/Product/UpdatecomponentStatus/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {
+
+                ComponentbindChildproductsservices();
+
+                swal('Success', data.message, 'success');
+            }
+            else { swal('Alert!', data.message, 'error') }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
 }
 
 function btncopybuying() {

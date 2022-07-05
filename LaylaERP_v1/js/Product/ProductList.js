@@ -383,7 +383,9 @@ function dataGridLoad(order_type) {
                             toggleStyle = "color: #49be25!important;font-size: 24px;";
                             toggleStatus = 0;
                         }
-                        return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + full.id + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
+                        //return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + full.id + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
+                        return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" "><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
+
                     }
                     else {
                          return ' <b></b>';

@@ -1011,7 +1011,7 @@ namespace LaylaERP.BAL
               + " (select string_agg(ui.name,',') from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname , "
              // + " STUFF((SELECT ',' + ui.name FROM dbo.wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id FOR XML PATH('')), 1, 1, '') as metadetails, "
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-              + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
+              + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,max(case when p.id = s.post_id and s.meta_key = '_component_status' then s.meta_value else '' end) component_status, "
               + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
               + " FROM wp_posts p "
               + " left join wp_postmeta as s on p.id = s.post_id"
@@ -3111,6 +3111,54 @@ namespace LaylaERP.BAL
             catch (Exception Ex)
             {
                 UserActivityLog.ExpectionErrorLog(Ex, "Product/UpdateChildvariations/" + "0" + "", "Update Product Free Quantity");
+            }
+            return result;
+        }
+
+        public int UpdateproductcomponentStatus(AccountingJournalModel model)
+        {
+            //try
+            //{
+                //string strsql = "";
+                //strsql = "Update erp_product_component set status=@status where rowid=@ID;";
+                //SqlParameter[] para =
+                //{
+                //    new SqlParameter("@ID", model.rowid),
+                //    new SqlParameter("@status", model.active),
+                //};
+                //int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                //return result;
+
+                int result = 0;
+                try
+                {
+                    string strSql_insert = string.Empty;
+                    StringBuilder strSql = new StringBuilder();
+                    //foreach (ProductChildModel obj in model)
+                    //{
+                    //    strSql.Append("Insert into erp_product_component(product_id,component_product_id,component_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');");
+                    //}
+                    //result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                    string res = string.Empty;
+                     
+                        SqlParameter[] parameters =
+                   {
+                     new SqlParameter("@ID", model.rowid),
+                    new SqlParameter("@status", model.active),
+                 };
+                        res = SQLHelper.ExecuteScalar("erp_updateproductcomponent", parameters).ToString();
+                // result = 1;            
+                // string 
+                if (res.StartsWith("Success"))
+                    result = 1;
+                //else
+                //    result = 0;
+
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
             }
             return result;
         }

@@ -2177,6 +2177,19 @@ namespace LaylaERP.Controllers
             return Json(new { status = true, message = "Update successfully!!", ID = 1 }, 0);
         }
 
+        public JsonResult UpdateproductcomponentStatus(AccountingJournalModel model)
+        {
+            if (model.rowid > 0)
+            {
+                new ProductRepository().UpdateproductcomponentStatus(model);
+                return Json(new { status = true, message = "Component status changed successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
     }
 
 }

@@ -302,7 +302,7 @@ function dataGridLoad(order_type) {
                     //}
                     //else {
                     if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
-                        else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="65"  height="50"/>'; }
+                        else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50"  height="50"/>'; }
                         else { return '<img src="../../Content/ProductCategory/default.png" width="65" height="50"/>'; }
                     //}
                 }
@@ -356,7 +356,7 @@ function dataGridLoad(order_type) {
                     return tprice
                 }
             },
-            { data: 'itemname', title: 'Categories', sWidth: "10%" },
+            { data: 'itemname', title: 'Categories', sWidth: "5%" },
             //{
             //    'data': 'ID', sWidth: "5%   ",
             //    'render': function (data, type, full, meta) {
@@ -364,11 +364,36 @@ function dataGridLoad(order_type) {
             //    }
             //},
 
-            { data: 'Date', title: 'Creation Date', sWidth: "10%" },
+            { data: 'Date', title: 'Creation Date', sWidth: "8%" },
             { data: 'publishDate', title: 'Publish Date', sWidth: "8%" },
-            { data: 'Activestatus', title: 'Status', sWidth: "7%" },
+            { data: 'Activestatus', title: 'Status', sWidth: "5%" },
+           // { data: 'component_status', title: 'Component Status', sWidth: "7%" },
             {
-                'data': 'id', title: 'Action', sWidth: "7%",
+                'data': 'component_status', sWidth: "5%",  
+                'render': function (id, type, full, meta) {
+                    if (full.post_parent > 0 || full.term_id == 2) {
+                        if (id == '' || id == 0) {
+                            toggleclass = "fas fa-toggle-on";
+                            toggleStyle = "color: #ff0000!important;font-size: 24px;";
+                            toggleStatus = 1;
+                        }
+
+                        else {
+                            toggleclass = "fas fa-toggle-off";
+                            toggleStyle = "color: #49be25!important;font-size: 24px;";
+                            toggleStatus = 0;
+                        }
+                        //return ' <span title="Click here to change the status of chart of accounts" data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + full.id + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
+                        return ' <span  data-placement="bottom" data-toggle="tooltip"> <a "><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span>';
+
+                    }
+                    else {
+                         return ' <b></b>';
+                    }
+                }
+            },
+            {
+                'data': 'id', title: 'Action', sWidth: "5%",
                 'render': function (id, type, row) {
                     if (row.post_parent > 0)
                         return ' <b></b>';
@@ -388,7 +413,30 @@ function dataGridLoad(order_type) {
     });
 }
 
+function ChangeStatus(id, status) {
+    console.log(id, status);
+    //  let cofStatus = status == "0" ? "Inactive" : "Active";
+    ActivityLog('change status as ' + status + '', '/Product/UpdateproductcomponentStatus/' + id + '');
+    var obj = { rowid: id, active: status, }
+    $.ajax({
+        url: '/Product/UpdateproductcomponentStatus/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {
 
+                dataGridLoad('');
+
+                swal('Success', data.message, 'success');
+            }
+            else { swal('Alert!', data.message, 'error') }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+}
 
 function CheckAll() {
     var isChecked = $('#checkall').prop("checked");

@@ -1339,8 +1339,8 @@ function SaveNewOrder() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status) {
-                PaymentOptions(927975);
-                //PaymentOptions(result.id);
+                //PaymentOptions(927975);
+                PaymentOptions(result.id);
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
@@ -1371,7 +1371,7 @@ function AcceptPayment(order_id) {
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 function PodiumPayment(order_id) {
-    let bill_to = $('input[name="podiumchannel"]:checked').val(), bill_name = $('#myModal #txtshipzipcode').data('name');
+    let bill_to = $('input[name="podiumchannel"]:checked').val(), bill_name = $('#myModal #txtshipfirstname').data('name');
     let tax_total = parseFloat($("#myModal .order-total").data('tax')) || 0.00;
     let parent_order = parseInt($(".order-id").data('order_id')) || 0;
     let _lineItems = [];
@@ -1383,15 +1383,16 @@ function PodiumPayment(order_id) {
     if (tax_total > 0) _lineItems.push({ description: "Tax", amount: tax_total * 100 });
 
     let opt_inv = { strValue1: bill_to, strValue2: bill_name, strValue3: 'INV-' + order_id, strValue4: JSON.stringify(_lineItems), strValue5: '' };
-    console.log('Creating Podium Payment Invoice...');
+    console.log('Creating Podium Payment Invoice...', opt_inv);
     swal.queue([{
         title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
             swal.showLoading();
             $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
+                console.log(response);
                 let _data = JSON.parse(response.message);
                 let opt = { OrderPostMeta: [{ post_id: order_id, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: order_id, meta_key: '_payment_method_title', meta_value: 'Podium Payments' }, { post_id: order_id, meta_key: '_podium_uid', meta_value: _data.data.uid }, { post_id: order_id, meta_key: 'taskuidforsms', meta_value: _data.data.uid }, { post_id: order_id, meta_key: '_podium_status', meta_value: 'SENT' }] };
-                console.log(opt);
+               
                 $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
                     swal('Success!', response.message, 'success');
                     if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }
@@ -1415,8 +1416,8 @@ function PaypalPayment(order_id) {
                     { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 1].replace(/\#/g, '') },
                     { post_id: oid, meta_key: '_transaction_id', meta_value: id[id.length - 1].replace(/\#/g, '') }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }
                 ];
-                let mail_body = 'Hi ' + $('#myModal #txtshipzipcode').data('name') + ', {BR}Please use this secure link to make your payment. Thank you! ' + _data.href;
-                let opt = { b_email: $('#myModal #txtshipzipcode').data('email'), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
+                let mail_body = 'Hi ' + $('#myModal #txtshipfirstname').data('name') + ', {BR}Please use this secure link to make your payment. Thank you! ' + _data.href;
+                let opt = { b_email: $('#myModal #txtshipfirstname').data('email'), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
                 $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
                     swal('Success!', result.message, 'success');
                     if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }
@@ -1450,7 +1451,7 @@ function createPaypalXML(oid, pp_no) {
         primary_recipients: [
             {
                 billing_info: {
-                    name: { given_name: $('#myModal #txtshipzipcode').data('name'), surname: '' },
+                    name: { given_name: $('#myModal #txtshipfirstname').data('name'), surname: '' },
                     address: { address_line_1: $('#txtshipaddress1').val() + ' ' + $('#txtshipaddress2').val(), admin_area_2: $('#txtshipcity').val(), admin_area_1: $('#ddlshipstate').val(), postal_code: $('#txtshipzipcode').val(), country_code: $('#ddlshipcountry').val() },
                     //name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
                     //address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },

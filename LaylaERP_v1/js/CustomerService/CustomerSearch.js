@@ -42,16 +42,21 @@
     $(document).on("click", "#btnGenerateTicket", function (t) {
         t.preventDefault(); GenerateTicketNo();
     });
-    $(document).on("change", "#myModal #ddlshipcountry", function (t) { t.preventDefault(); let obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); $("#ddlshipcountry,#ddlshipstate").select2({ dropdownParent: $("#myModal") }); });
-    $(document).on("change", "#myModal #ddlshipstate", function (t) { t.preventDefault(); GetTaxRate() });
-    $(document).on("blur", "#myModal #txtshipzipcode", function (t) {
+    $("#myModal").on("change", "#ddlshipcountry", function (t) { t.preventDefault(); let obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); $("#ddlshipcountry,#ddlshipstate").select2({ dropdownParent: $("#myModal") }); });
+    $("#myModal").on("change", "#ddlshipstate", function (t) { t.preventDefault(); GetTaxRate() });
+    $("#myModal").on("blur", "#txtshipzipcode", function (t) {
         t.preventDefault();
         if ($("#ddlshipcountry").val() == 'US') { GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry"), $("#txtshipzipcode")); }
     });
-    $(document).on("change", "#myModal #ddlorderitem", function (t) {
+    $("#myModal").on("change", "#ddlorderitem", function (t) {
         t.preventDefault(); let vr = $(this).val().split('$');
         let pid = parseInt(vr[0]) || 0, vid = parseInt(vr[1]) || 0;
         getItemList(pid, vid);
+    });
+    $("#myModal").on("change", "#ddlPaymentMethod", function (t) {
+        t.preventDefault();
+        if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
+        else { $('.podiumchannel').addClass('hidden'); }
     });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
@@ -477,7 +482,7 @@ function WarrantyInfoModal(id, _action) {
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Ticket No.: #' + id + ', Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
-    modalHtml += '<div class="modal-footer py-3"></div>';
+    modalHtml += '<div class="modal-footer py-3 d-flex"></div>';
     //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
@@ -586,7 +591,7 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body py-1"></div>';
-    modalHtml += '<div class="modal-footer py-2"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
+    modalHtml += '<div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
@@ -1126,6 +1131,7 @@ function CreateNewOrderModal(id) {
             _customer_id = parseInt(_json._customer_user) || 0, _ct = _json._shipping_country, _st = _json._shipping_state;
             _html += '<div class="row">';
             _html += '  <div class="col-sm-6">';
+            _html += '      <div class="fw-bolder fs-5 text-gray-800 mb-1 new-order-no">Order No #000000</div>';
             _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Billing Address:</div>';
             _html += '      <div class="fw-bolder fs-6 text-gray-800">' + _json._billing_first_name + ' ' + _json._billing_last_name + '</div>';
             _html += '      <div class="fw-bold fs-7 text-gray-600">' + _json._billing_address_1 + '<br>' + _json._billing_city + ', ' + _json._billing_state + ' ' + _json._billing_postcode + ' ' + _json._billing_country + '</div>';
@@ -1135,7 +1141,7 @@ function CreateNewOrderModal(id) {
             _html += '  <div class="col-sm-6">';
             _html += '      <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping Address:</div>';
             _html += '      <div class="row row-small">';
-            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipfirstname" placeholder="First Name" value="' + _json._shipping_first_name + '" data-oid="' + row.order_id + '"></div>';
+            _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshipfirstname" placeholder="First Name" value="' + _json._shipping_first_name + '" data-oid="' + row.order_id + '" data-name="' + _json._billing_first_name + ' ' + _json._billing_last_name + '" data-email="' + _json._billing_email + '" data-phone="' + _json._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "$1$2$3") + '"></div>';
             _html += '          <div class="form-group col-md-6 mb-1"><input type="text" class="form-control" id="txtshiplastname" placeholder="Last Name" value="' + _json._shipping_last_name + '"></div>';
             //_html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipcompany" placeholder="Company" value="' + _json._shipping_company + '"></div>';
             _html += '          <div class="form-group col-md-12 mb-1"><input type="text" class="form-control" id="txtshipaddress1" placeholder="Enter Address Line 1" value="' + _json._shipping_address_1 + '"></div>';
@@ -1285,8 +1291,8 @@ function createItemsList() {
     let _taxes = []; _taxdata = { total: {}, subtotal: {} };
     $('#myModal .refund_order_tax_total .tax-total').each(function (index, li) { _taxes.push({ label: $(li).data('name'), percent: parseFloat($(li).data('percent')) || 0.00 }); });
     //Add Product
-    $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(row).find(".item-total").data("salerate")) || 0.00;
+    $('#myModal .refund_order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".item-total").data("salerate")) || 0.00;
         let grossAmount = qty * rate, discountAmount = 0.00, shippinAmount = 0.00;
         let taxAmount = grossAmount * tax_rate;
         _taxdata = { total: {}, subtotal: {} };
@@ -1320,23 +1326,21 @@ function ValidateData() {
     return true;
 }
 function SaveNewOrder() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($("#txtshipfirstname").data('customer')) || 0;
+    let oid = parseInt($('#txtshipfirstname').data('oid')) || 0, cid = parseInt($("#txtshipfirstname").data('customer')) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
 
     let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (postStatus.num_items_sold <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlorderitem').select2('open'); return false; }); return false; }
-    let obj = { order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
+    let obj = { ticket_id: parseInt($('#txtshipfirstname').data('id')) || 0, order_id: oid, OrderPostStatus: postStatus, OrderPostMeta: postMeta, OrderProducts: itemsDetails };
     //console.log(obj); return;
     $.ajax({
-        url: "/OrdersMySQL/create-component-order", type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/customer-service/create-component-order", type: "POST", contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             if (result.status) {
-                //PaymentModal();
-                $("#myModal").modal('hide'); OrderInfo(_oid);
-                //$('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
-                //$.when(getOrderItemList(oid), getItemShippingCharge(false)).done(function () { if (postStatus.net_total > 0) PaymentModal(); else successModal('Gift Card', '', true, true); });
+                PaymentOptions(927975);
+                //PaymentOptions(result.id);
             }
             else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
@@ -1345,4 +1349,123 @@ function SaveNewOrder() {
     });
     $('#btnCheckout').text("Checkout");
     return false;
+}
+function PaymentOptions(order_id) {
+    $("#myModal .modal-body :input").prop("disabled", true); $("#myModal .new-order-no").text('Order No #' + order_id);
+    let _total = parseFloat($("#myModal .order-total").data('total')) || 0.00, _phone = $('#txtshipfirstname').data('phone');
+    let _html = '<div class="col-md-3 flex-fill">';
+    _html += '    <select class="form-control form-select form-select-sm" id="ddlPaymentMethod" style="width: auto;">';
+    _html += '        <option value="podium">Podium Payments</option><option value="ppec_paypal">PayPal</option>';
+    _html += '    </select>';
+    _html += '</div>';
+    _html += '<div class="col-md-6 podiumchannel flex-fill">';
+    _html += '    <label class="form-check-label"><input type="radio" name="podiumchannel" checked="" value="' + $('#txtshipfirstname').data('email') + '"> Email Channel</label>';
+    _html += '    <label class="form-check-label"><input type="radio" name="podiumchannel" value="' + _phone + '"> SMS Channel</label>';
+    _html += '</div>';
+    _html += '<button type="button" class="btn btn-primary" onclick="AcceptPayment(' + order_id + ');">Generate Payment Invoice $' + _total + '</button>';
+    $('#myModal .modal-footer').empty().append(_html);
+}
+function AcceptPayment(order_id) {
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment(order_id); ActivityLog('Order  id (' + $('#hfOrderNo').val() + ') proceed for paypal payment from order payment invoice.', '/customer-service/search-customer/' + $('#hfOrderNo').val() + ''); }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment(order_id); ActivityLog('Order  id (' + order_id + ') proceed for podium payment from order payment invoice.', '/customer-service/search-customer/' + order_id + ''); }
+    else { swal('Alert!', 'Please Select Payment Method.', "error"); }
+}
+function PodiumPayment(order_id) {
+    let bill_to = $('input[name="podiumchannel"]:checked').val(), bill_name = $('#myModal #txtshipzipcode').data('name');
+    let tax_total = parseFloat($("#myModal .order-total").data('tax')) || 0.00;
+    let parent_order = parseInt($(".order-id").data('order_id')) || 0;
+    let _lineItems = [];
+    $('#myModal .refund_order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".item-total").data("salerate")) || 0.00;
+        let grossAmount = qty * rate;
+        if (grossAmount > 0) _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: grossAmount * 100 });
+    });
+    if (tax_total > 0) _lineItems.push({ description: "Tax", amount: tax_total * 100 });
+
+    let opt_inv = { strValue1: bill_to, strValue2: bill_name, strValue3: 'INV-' + order_id, strValue4: JSON.stringify(_lineItems), strValue5: '' };
+    console.log('Creating Podium Payment Invoice...');
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPodiumInvoice', opt_inv).then(response => {
+                let _data = JSON.parse(response.message);
+                let opt = { OrderPostMeta: [{ post_id: order_id, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: order_id, meta_key: '_payment_method_title', meta_value: 'Podium Payments' }, { post_id: order_id, meta_key: '_podium_uid', meta_value: _data.data.uid }, { post_id: order_id, meta_key: 'taskuidforsms', meta_value: _data.data.uid }, { post_id: order_id, meta_key: '_podium_status', meta_value: 'SENT' }] };
+                console.log(opt);
+                $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
+                    swal('Success!', response.message, 'success');
+                    if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+function PaypalPayment(order_id) {
+    let parent_order = parseInt($(".order-id").data('order_id')) || 0, oid = order_id, pp_no = 'WC-' + new Date().getTime();
+    let option_pp = createPaypalXML(oid, pp_no);
+    console.log('Start PayPal Payment Processing...');
+    swal.queue([{
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Setting/CreatePayPalInvoice', { strValue1: '', strValue2: JSON.stringify(option_pp) }).then(response => {
+                let _data = JSON.parse(response.message); let id = _data.href.split('/');
+                let _postMeta = [
+                    { post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' },
+                    { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 1].replace(/\#/g, '') },
+                    { post_id: oid, meta_key: '_transaction_id', meta_value: id[id.length - 1].replace(/\#/g, '') }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }
+                ];
+                let mail_body = 'Hi ' + $('#myModal #txtshipzipcode').data('name') + ', {BR}Please use this secure link to make your payment. Thank you! ' + _data.href;
+                let opt = { b_email: $('#myModal #txtshipzipcode').data('email'), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
+                $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
+                    swal('Success!', result.message, 'success');
+                    if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }
+                }).catch(err => { console.log(err); swal.hideLoading(); });
+                swal.hideLoading();
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+function createPaypalXML(oid, pp_no) {
+    let taxPer = parseFloat($('#myModal #txtshipzipcode').data('tax_rate')) || 0.00, df = moment().format('YYYY-MM-DD');
+    let _items = [], paypal_seller_email = $('.page-heading').data('paypal_seller'), pp_email = $('#txtshipfirstname').data('email');
+    //get items
+    $('#myModal .refund_order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".item-total").data("salerate")) || 0.00;
+        let discountAmount = 0.00, taxAmount = 0.00;
+        _items.push({ name: $(tr).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
+    });
+    let paupal_xml = {
+        id: '', status: "DRAFT",
+        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: 'Layla Invoice.', payment_term: { term_type: "NET_10" } },
+        invoicer: {
+            name: { given_name: "", surname: "" },
+            address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
+            email_address: paypal_seller_email,
+            phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
+            website: "www.laylasleep.com",
+            logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",
+            additional_notes: ""
+        },
+        primary_recipients: [
+            {
+                billing_info: {
+                    name: { given_name: $('#myModal #txtshipzipcode').data('name'), surname: '' },
+                    address: { address_line_1: $('#txtshipaddress1').val() + ' ' + $('#txtshipaddress2').val(), admin_area_2: $('#txtshipcity').val(), admin_area_1: $('#ddlshipstate').val(), postal_code: $('#txtshipzipcode').val(), country_code: $('#ddlshipcountry').val() },
+                    //name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
+                    //address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },
+                    email_address: pp_email,
+                },
+                shipping_info: {
+                    name: { given_name: $('#txtshipfirstname').val(), surname: $('#txtshiplastname').val() },
+                    address: { address_line_1: $('#txtshipaddress1').val() + ' ' + $('#txtshipaddress2').val(), admin_area_2: $('#txtshipcity').val(), admin_area_1: $('#ddlshipstate').val(), postal_code: $('#txtshipzipcode').val(), country_code: $('#ddlshipcountry').val() }
+                }
+            }
+        ],
+        items: _items,
+        configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
+        //amount: { breakdown: { discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: 'Other Fee', amount: { currency_code: "USD", value: 0 } } } },
+        payment_method: { payee_preferred: "UNRESTRICTED" }
+    }
+    return paupal_xml;
 }

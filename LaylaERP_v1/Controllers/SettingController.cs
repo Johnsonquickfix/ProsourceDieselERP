@@ -240,6 +240,19 @@ namespace LaylaERP.Controllers
             catch { b_status = false; result = ""; }
             return Json(new { status = b_status, message = result }, 0);
         }
+        [HttpPost]
+        public JsonResult CreatePayPalInvoice(SearchModel model)
+        {
+            string result = string.Empty;
+            bool b_status = false;
+            try
+            {
+                result = clsPayPal.CreatePaypalInvoice(model.strValue1, model.strValue2);
+                b_status = true;
+            }
+            catch { b_status = false; result = ""; }
+            return Json(new { status = b_status, message = result }, 0);
+        }
         [HttpGet]
         public JsonResult GetPodiumToken(SearchModel model)
         {
@@ -538,7 +551,7 @@ namespace LaylaERP.Controllers
             return Json(JSONResult, 0);
         }
 
-        public JsonResult Updateattribitues(string strValue1, string strValue2, int strValue3,int strValue4)
+        public JsonResult Updateattribitues(string strValue1, string strValue2, int strValue3, int strValue4)
         {
             UserActivityLog.WriteDbLog(LogType.Submit, "Update attributes", "/Setting/Updateattribitues" + ", " + Net.BrowserInfo);
             //DataTable dt1 = SetupRepostiory.CountRuleForState(model);
@@ -550,7 +563,7 @@ namespace LaylaERP.Controllers
             //{
             int ID = SettingRepository.Updateattribitues(strValue1, strValue2, strValue3, strValue4);
             if (ID > 0)
-            {     
+            {
                 return Json(new { status = true, message = "Product Attributes update successfully!!", url = "" }, 0);
             }
             else
@@ -558,6 +571,6 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
-        
+
     }
 }

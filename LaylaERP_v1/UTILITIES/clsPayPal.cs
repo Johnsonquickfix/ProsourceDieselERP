@@ -76,6 +76,60 @@ namespace LaylaERP.UTILITIES
             return result.invoice_number;
         }
 
+        public static string CreatePaypalInvoice(string invoice_id, string json_data)
+        {
+            string invoice_info = string.Empty;
+            string access_token = GetToken();
+
+            if (!string.IsNullOrEmpty(access_token))
+            {
+                var client_rest = new RestClient(base_url + "/v2/invoicing/invoices");
+                var request = new RestRequest(Method.POST);
+                if (!string.IsNullOrEmpty(invoice_id))
+                {
+                    client_rest = new RestClient(base_url + "/v2/invoicing/invoices/" + invoice_id);
+                    request = new RestRequest(Method.PUT);
+                    request.AddHeader("Accept", "application/json");
+                    request.AddHeader("Content-Type", "application/json");
+                    request.AddHeader("Authorization", "Bearer " + access_token);
+                    request.AddParameter("application/json", json_data, ParameterType.RequestBody);
+                    IRestResponse response_rest = client_rest.Execute(request);
+                    if (response_rest.StatusCode == HttpStatusCode.OK)
+                    {
+                        invoice_info = response_rest.Content;
+                    }
+                }
+                else
+                {
+                    request.AddHeader("Accept", "application/json");
+                    request.AddHeader("Content-Type", "application/json");
+                    request.AddHeader("Authorization", "Bearer " + access_token);
+                    request.AddParameter("application/json", json_data, ParameterType.RequestBody);
+                    IRestResponse response_rest = client_rest.Execute(request);
+                    string sendURL = string.Empty;
+                    if (response_rest.StatusCode == HttpStatusCode.Created)
+                    {
+                        sendURL = JsonConvert.DeserializeObject<dynamic>(response_rest.Content).href;
+                    }
+                    // send invoice
+                    if (!string.IsNullOrEmpty(sendURL))
+                    {
+                        client_rest = new RestClient(sendURL + "/send");
+                        request = new RestRequest(Method.POST);
+                        request.AddHeader("Accept", "application/json");
+                        request.AddHeader("Content-Type", "application/json");
+                        request.AddHeader("Authorization", "Bearer " + access_token);
+                        request.AddParameter("application/json", "{ \"send_to_recipient\": true, \"send_to_invoicer\": true }", ParameterType.RequestBody);
+                        response_rest = client_rest.Execute(request);
+                        if (response_rest.StatusCode == HttpStatusCode.OK)
+                        {
+                            invoice_info = response_rest.Content;
+                        }
+                    }
+                }
+            }
+            return invoice_info;
+        }
         public static string PaypalPaymentRefund(string capture_id, string invoice_id, string note_to_payer, decimal amount)
         {
             string invoice_info = string.Empty;

@@ -3,6 +3,7 @@
     ViewBag.Title = "Customer Service (Help Desk)";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 <link href="~/Content/AdminLTE-3.1.0/dropzone/dropzone.min.css" rel="stylesheet" />
 <link href="~/css/style.bundle.css" rel="stylesheet" />
@@ -37,7 +38,7 @@
 </div>
 <!--begin::Page title-->
 <div class="page-title">
-    <h2 class="page-heading">Customer Service (Help Desk)</h2>
+    <h2 class="page-heading" data-paypal_seller="@user.PaypalSellerAccount">Customer Service (Help Desk)</h2>
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
     </div>
 </div>

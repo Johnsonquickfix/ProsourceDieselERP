@@ -242,6 +242,7 @@ function GenratedProductGrid() {
             { data: 'tagno', title: 'Tag/Lot/Batch No', sWidth: "10%" },
             { data: 'display', title: 'Product Name', sWidth: "15%" },
             { data: 'Quenty', title: 'Quantity', sWidth: "10%" },
+            { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
 
         ],
 

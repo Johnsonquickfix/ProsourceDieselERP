@@ -1159,7 +1159,8 @@ function CreateNewOrderModal(id) {
         _html += '    <div class="table-responsive border-bottom mb-2">';
         _html += '        <table class="table table-row-bordered gy-2 gs-2">';
         _html += '                <thead class="border-bottom border-gray-200 text-gray-900 fw-bolder bg-light bg-opacity-75"><tr class="">';
-        _html += '                    <th style="width: 40%;" class="min-w-175px">Item</th>';
+        _html += '                    <th style="width: 5%;"></th>';
+        _html += '                    <th style="width: 35%;" class="min-w-175px">Item</th>';
         _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Quantity</th>';
         _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Price</th>';
         _html += '                    <th style="width: 15%;" class="min-w-75px text-end">Total</th>';
@@ -1167,7 +1168,7 @@ function CreateNewOrderModal(id) {
         _html += '                </tr></thead>';
         _html += '                <tbody class="fw-bolder text-gray-900 refund_order_line_items"></tbody>';
         _html += '                <tfoot class="border-bottom border-gray-200 text-gray-900 fw-bolder bg-light bg-opacity-75"><tr>';
-        _html += '                    <th style="width: 40%;" class="min-w-175px"><select class="form-control select2" id="ddlorderitem" placeholder="Select product" style="width: 100%;"></select></th>';
+        _html += '                    <th style="width: 5%;"></th><th style="width: 35%;" class="min-w-175px"><select class="form-control select2" id="ddlorderitem" placeholder="Select product" style="width: 100%;"></select></th>';
         _html += '                    <th class="text-end" colspan="4"></th>';
         _html += '                </tr></tfoot>';
         _html += '        </table>';
@@ -1227,7 +1228,8 @@ function getItemList(pid, vid) {
         $.each(response, function (key, pr) {
             let _PKey = pr.product_id + '_' + pr.variation_id;
             _html += '<tr id="trpid_' + _PKey + '" data-id="' + _PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="0" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
-            _html += '  <td style="width: 40%;" class="min-w-175px">' + pr.product_name + '</td>';
+            _html += '  <td style="width: 5%;" class="text-center"><button class="btn menu-icon-gr p-0 text-red" onclick="removeItemsInTable(\'' + _PKey + '\');" data-toggle="tooltip" title="Delete product"><i class="glyphicon glyphicon-trash"></i></button></td>';
+            _html += '  <td style="width: 35%;" class="min-w-175px">' + pr.product_name + '</td>';
             _html += '  <td style="width: 15%;" class="min-w-75px"><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + _PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
             _html += '  <td style="width: 15%;" class="min-w-75px text-end">' + formatCurrency(pr.sale_price) + '</td>';
             _html += '  <td style="width: 15%;" class="min-w-75px text-end item-total" data-salerate="' + pr.sale_price + '">' + formatCurrency(pr.sale_price) + '</td>';
@@ -1239,6 +1241,7 @@ function getItemList(pid, vid) {
         $("#myModal .refund_order_line_items").find(".rowCalulate").change(function () { calcFinalTotals(); });
     });
 }
+function removeItemsInTable(_id) { $("#trpid_" + _id).remove(); calcFinalTotals() }
 function calcFinalTotals() {
     let tax_rate = parseFloat($('#myModal #txtshipzipcode').data('tax_rate')) || 0.00;
     let zQty = 0, zGrossAmount = 0.00, zTotalTax = 0.00;
@@ -1392,7 +1395,7 @@ function PodiumPayment(order_id) {
                 console.log(response);
                 let _data = JSON.parse(response.message);
                 let opt = { OrderPostMeta: [{ post_id: order_id, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: order_id, meta_key: '_payment_method_title', meta_value: 'Podium Payments' }, { post_id: order_id, meta_key: '_podium_uid', meta_value: _data.data.uid }, { post_id: order_id, meta_key: 'taskuidforsms', meta_value: _data.data.uid }, { post_id: order_id, meta_key: '_podium_status', meta_value: 'SENT' }] };
-               
+
                 $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(response => {
                     swal('Success!', response.message, 'success');
                     if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }

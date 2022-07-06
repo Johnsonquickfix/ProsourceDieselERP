@@ -187,7 +187,7 @@ function GenratedProductGrid() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let gentable = $('#dtdatagenrated').DataTable({
         /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-        columnDefs: [], order: [[0, "asc"]],
+        columnDefs: [], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],

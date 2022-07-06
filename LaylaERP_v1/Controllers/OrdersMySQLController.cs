@@ -751,30 +751,7 @@
             return result;
         }
 
-        #region Order Ticket Action [Create New Order]
-        [HttpPost]
-        [Route("OrdersMySQL/create-component-order")]
-        public JsonResult CreateComponentOrders(OrderModel model)
-        {
-            string JSONresult = string.Empty; bool status = false;
-            try
-            {
-                OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                string host = Request.ServerVariables["HTTP_ORIGIN"];
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_tax_api", meta_value = "avatax" });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
-
-                long result = SaveComponentOrders(host, model);
-                if (result > 0)
-                { status = true; JSONresult = "Order placed successfully."; }
-                //JSONresult = JsonConvert.SerializeObject(DT);
-            }
-            catch { }
-            return Json(new { status = status, message = JSONresult }, 0);
-        }
+        #region Order Ticket Action [Create New Order]        
         public static long SaveComponentOrders(string host, OrderModel model)
         {
             long id = 0;
@@ -799,7 +776,7 @@
                     var i = 0;
                     foreach (OrderPostMetaModel obj in model.OrderPostMeta)
                     {
-                        if (++i == model.OrderPostMeta.Count) strSql.Append(string.Format("('{0}','{1}','{2}') ", id, obj.meta_key, obj.meta_value));
+                        if (++i == model.OrderPostMeta.Count) strSql.Append(string.Format("('{0}','{1}','{2}'); ", id, obj.meta_key, obj.meta_value));
                         else strSql.Append(string.Format("('{0}','{1}','{2}'), ", id, obj.meta_key, obj.meta_value));
                     }
 
@@ -855,7 +832,7 @@
                     strSql.Append(string.Format(" update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
                         model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.status, model.OrderPostStatus.customer_id, id));
                     /// step 7 : wp_posts
-                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}',comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, id));
+                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}',comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}',post_parent = {4} where id = {5}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.order_id, id));
 
                     var result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }

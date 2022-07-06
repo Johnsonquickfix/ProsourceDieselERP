@@ -205,7 +205,7 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
                 if (result > 0)
                 {
-                    string json_data = "{\"ticket_id\":"+ model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
+                    string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
 
                     //DAL.SQLHelper.ExecuteNonQuery("update erp_product_warranty_chats set ticket_is_open = 0 where id = " + model.ticket_id.ToString());
@@ -298,6 +298,33 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        [Route("customer-service/create-component-order")]
+        public JsonResult CreateComponentOrders(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false; long result = 0;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                string host = Request.ServerVariables["HTTP_ORIGIN"];
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_tax_api", meta_value = "avatax" });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+
+                result = OrdersMySQLController.SaveComponentOrders(host, model);
+                if (result > 0)
+                {
+                    string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + result.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
+                    CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
+                    status = true; JSONresult = "Order placed successfully.";
+                }
+                //status = true; JSONresult = "Order placed successfully.";
+            }
+            catch { }
+            return Json(new { id = result, status = status, message = JSONresult }, 0);
         }
         #endregion
     }

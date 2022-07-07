@@ -40,7 +40,7 @@ function ProductGrid() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-        columnDefs: [], order: [[0, "asc"]],
+        columnDefs: [], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false,  scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
         language: {
@@ -271,7 +271,7 @@ function Search() {
     if (batchnoid != '0' && pofillid != '0') {
        let gentable = $('#dtdatalisting').DataTable({
         /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-        columnDefs: [], order: [[3, "asc"]],
+           columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"],[3, "asc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -318,7 +318,7 @@ function Search() {
         },
         aoColumns: [
             
-           /* { data: 'order_date', class: 'text-left', title: 'Date', sWidth: "10%" },*/
+            
             { data: 'productname', class: 'text-left',title: 'Product Name', sWidth: "10%" },
             { data: 'sku', title: 'SKU', sWidth: "15%" },
             { data: 'warehouse_name', title: 'Warehouse Name', sWidth: "10%" },
@@ -327,6 +327,8 @@ function Search() {
             //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
             { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
+            { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+            { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
         ],
 
@@ -352,7 +354,7 @@ function Searchproduct() {
     if (productid != '0') {
         let gentable = $('#dtdatalisting').DataTable({
             /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-            columnDefs: [], order: [[3, "asc"]],
+            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"], [3, "asc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -408,6 +410,8 @@ function Searchproduct() {
                 //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
                 { data: 'status', title: 'Status', sWidth: "10%" },
                 { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
+                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],
 
@@ -471,7 +475,7 @@ function Searchorder() {
     if (batchnoid != '0' && pofillid != '0') {
         let gentable = $('#dtdataorderlisting').DataTable({
             /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-            columnDefs: [], order: [[3, "asc"]],
+            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"], [3, "asc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -532,6 +536,8 @@ function Searchorder() {
                         return '#' + data;
                     }
                 },
+                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],
 
@@ -557,7 +563,7 @@ function Searchproductorder() {
     if (productid != '0') {
         let gentable = $('#dtdataorderlisting').DataTable({
             /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-            columnDefs: [], order: [[3, "asc"]],
+            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"], [3, "asc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -617,7 +623,8 @@ function Searchproductorder() {
                         return '#' + data;
                     }
                 },
-
+                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],
 

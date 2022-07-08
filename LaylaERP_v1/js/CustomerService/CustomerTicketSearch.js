@@ -124,6 +124,7 @@ function dataGridLoad() {
             {
                 data: 'ticket_action', title: 'Ticket Action', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'wp_return') return '<div class="badge badge-light-primary">Return</div>';
+                    else if (data == 'wp_return_to_vender') return '<div class="badge badge-light-primary">Return to vendor</div>';
                     else if (data == 'wp_replacement') return '<div class="badge badge-light-primary">Replacement</div>';
                     else if (data == 'wp_createorder') return '<div class="badge badge-light-primary">Create new order</div>';
                     else if (data == 'wp_declined') return '<div class="badge badge-light-danger">Declined</div>';
@@ -210,6 +211,16 @@ function ClaimWarrantyModal(id, _action) {
             modalHtml += '</div>';
         });
 
+        modalHtml += '<div class="row notice bg-light-primary rounded border-primary border border-dashed p-6 mb-2">';
+        modalHtml += '  <div class="d-flex align-items-center me-5">';
+        modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
+        modalHtml += '      <span class="me-5">';
+        modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+        if (response[0].box_is_opened) modalHtml += '          <span class="badge badge-success fs-base">Yes</span>';
+        else modalHtml += '          <span class="badge badge-danger fs-base text-uppercase">No</span>';
+        modalHtml += '      </span>';
+        modalHtml += '  </div>';
+        modalHtml += '</div>';
 
         //Show Image
         try {
@@ -260,6 +271,15 @@ function ClaimWarrantyModal(id, _action) {
         modalHtml += '<span class="text-gray-900 fw-bolder">Return</span><span class="fs-6 text-gray-700 pe-7">Damage claim for the entire product.</span>';
         modalHtml += '</span>';
         modalHtml += '</label><div class="separator separator-dashed my-3"></div>';
+
+        if (response[0].box_is_opened) {
+            modalHtml += '<label class="d-flex align-items-center">';
+            modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_return_to_vender" ' + (_action == 'wp_return_to_vender' ? 'checked' : '') + '>';
+            modalHtml += '<span class="form-check-label d-flex flex-column align-items-start">';
+            modalHtml += '<span class="text-gray-900 fw-bolder">Return to vendor</span><span class="fs-6 text-gray-700 pe-7">Damage claim for the entire product.</span>';
+            modalHtml += '</span>';
+            modalHtml += '</label><div class="separator separator-dashed my-3"></div>';
+        }
 
         modalHtml += '<label class="d-flex align-items-center">';
         modalHtml += '<input class="form-check-input m-3" type="checkbox" name="ticke_action" value="wp_replacement" ' + (_action == 'wp_replacement' ? 'checked' : '') + '>';

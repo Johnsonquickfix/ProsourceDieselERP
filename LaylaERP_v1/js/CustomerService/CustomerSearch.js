@@ -58,6 +58,7 @@
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
         else { $('.podiumchannel').addClass('hidden'); }
     });
+    //$("#myModal").on("click", "[name='box_is_opened']", function (t) { $("[name='box_is_opened']").not(this).prop("checked", false) });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -335,6 +336,7 @@ function OrderInfo(ord_id) {
                     _html += '<div class="fs-7 text-muted">Ticket Date: ' + moment(row.ticket_date).format("MM/DD/YYYY") + '</div>';
                     _html += '<div class="fs-7 text-muted">' + row.reason + '</div>';
                     if (row.ticket_action == 'wp_return') _html += '<span class="badge badge-success fs-base">Return</span>';
+                    else if (row.ticket_action == 'wp_return_to_vender') _html += '<span class="badge badge-success fs-base">Return to vendor</span>';
                     else if (row.ticket_action == 'wp_replacement') _html += '<span class="badge badge-success fs-base">Replacement</span>';
                     else if (row.ticket_action == 'wp_createorder') _html += '<span class="badge badge-success fs-base">Create new order</span>';
                     else if (row.ticket_action == 'wp_declined') _html += '<span class="badge badge-danger fs-base">Declined</span>';
@@ -461,6 +463,7 @@ function OrderInfo(ord_id) {
             _noteHtml += '<div class="timeline-content m-0">';
             _noteHtml += '   <a href="javascript:void(0)" class="fs-6 fw-bolder d-block text-primary" onclick="WarrantyInfoModal(' + row.id + ',\'' + row.ticket_action + '\');">#' + row.id + '</a>';
             if (row.ticket_action == 'wp_return') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
+            else if (row.ticket_action == 'wp_return_to_vender') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Return to vendor ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
             else if (row.ticket_action == 'wp_replacement') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Replacement ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
             else if (row.ticket_action == 'wp_createorder') _noteHtml += '<span class="fs-8 fw-boldest d-block text-success text-uppercase">Create new order ' + (row.new_order_id > 0 ? ' Order #' + row.new_order_id : '') + '</span>';
             else if (row.ticket_action == 'wp_declined') _noteHtml += '<span class="fs-8 fw-boldest d-block text-danger text-uppercase">Declined</span>';
@@ -493,7 +496,7 @@ function WarrantyInfoModal(id, _action) {
 function WarrantyInfoModalData(id, _action) {
     let _html = ''; $("#loader").show(); _is_open = false;
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
-        response = JSON.parse(response);
+        response = JSON.parse(response); console.log(response);
         _is_open = response[0].ticket_is_open;
         _html += '<div class="row">';
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
@@ -507,6 +510,17 @@ function WarrantyInfoModalData(id, _action) {
             _html += '</div>';
         });
         _html += '</div>';
+        _html += '</div>';
+
+        _html += '<div class="bg-light-primary rounded border-primary border border-dashed p-6 mb-2">';
+        _html += '  <div class="d-flex align-items-center me-5">';
+        _html += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
+        _html += '      <span class="me-5">';
+        _html += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+        if (response[0].box_is_opened) _html += '          <span class="badge badge-success fs-base">Yes</span>';
+        else _html += '          <span class="badge badge-danger fs-base text-uppercase">No</span>';
+        _html += '      </span>';
+        _html += '  </div>';
         _html += '</div>';
 
         //Show Image
@@ -563,6 +577,7 @@ function WarrantyInfoModalData(id, _action) {
         //add action button
         if (_is_open) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
+            else if (_action == 'wp_return_to_vender') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return to vendor</button>'); }
             else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
             else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrderModal(' + id + ');">Create new order</button>'); }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
@@ -626,7 +641,26 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '</div>';
     //modalHtml += '<div class="separator separator-dashed my-5"></div>';
 
+    modalHtml += '<div class="claimwarranty-step2 bg-light-primary rounded border-primary border border-dashed p-6 mb-2 hide">';
+    modalHtml += '  <div class="d-flex align-items-center me-5">';
+    modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
+    modalHtml += '      <span class="me-5">';
+    modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+    modalHtml += '          <div class="form-check-solid fv-row fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">';
+    modalHtml += '              <input name="box_is_opened" class="form-check-input" type="radio" value="1" checked id="box_is_opened"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_opened">Yes</label>';
+    modalHtml += '              <input name="box_is_opened" class="form-check-input ms-4" type="radio" value="0" id="box_is_opened_no"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_opened_no">No</label>';
+    modalHtml += '          </div>';
+    modalHtml += '      </span>';
+    modalHtml += '  </div>';
+    modalHtml += '</div>';
+
     modalHtml += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 hide">';
+    modalHtml += '  <div class="d-flex flex-stack">';
+    modalHtml += '      <div class="me-5 fw-bold"><label class="fs-6">The box or package has been opened.</label></div>';
+    modalHtml += '      <label class="form-check form-switch form-check-custom form-check-solid">';
+    modalHtml += '          <input class="form-check-input" type="checkbox" value="1" checked="checked"> <span class="form-check-label fw-bold text-muted">Yes</span>';
+    modalHtml += '      </label>';
+    modalHtml += '  </div>';
     modalHtml += '  <div class="row">';
     modalHtml += '      <div class="col-md-6">';
     modalHtml += '          <label class="required form-label text-gray-800 fw-bolder">Quantity</label>';
@@ -712,9 +746,7 @@ function ClaimWarrantyModal(ele) {
         previewsContainer: _id + " .dropzone-items", // Define the container to display the previews
         clickable: _id + " .dropzone-select", // Define the element that should be used as click trigger to select files.       
     });
-    $('#myModal .dropzone-remove-all').on('click', function () {
-        myDropzone.removeAllFiles(true);
-    });
+    $('#myModal .dropzone-remove-all').on('click', function () { myDropzone.removeAllFiles(true); });
     $('#myModal .dropzone.dropzone-queue .dz-message').addClass('hide');
 }
 function ClaimWarranty(chk) {
@@ -765,7 +797,7 @@ function GenerateTicketNo() {
     let option = {
         id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#kt_warranty_claim_qty").val()) || 0, order_item_sku: '',
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
-        comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
+        box_is_opened: $("input[name='box_is_opened']:checked").val(), comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
     };
     let _body = TicketMailDetails(_user, _chat);
     //console.log(option, _questions, _file, file); return false;

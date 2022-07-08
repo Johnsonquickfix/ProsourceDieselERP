@@ -36,7 +36,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult ProductType()
+        {
+            return View();
+        }
         public JsonResult GetProduct()
         {
             DataSet ds = SetupRepostiory.GetProducts();
@@ -393,6 +396,48 @@ namespace LaylaERP.Controllers
                 throw ex;
             }
             return Json(JSONResult,0);
+        }
+
+        public JsonResult GetProductTypeList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = SetupRepostiory.GetProductTypeList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+
+        public JsonResult GetProductTypeById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = SetupRepostiory.GetProductTypeById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
+        public JsonResult UpdateProducttype(ProductTypeModel model)
+        {
+            SetupRepostiory.UpdateProductType(model);
+            if (model.rowid > 0)
+            { 
+                return Json(new { status = true, message = "Product type updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = true, message = "Product type save successfully!", url = "" }, 0);
+            }
         }
     }
 }

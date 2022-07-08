@@ -26,7 +26,7 @@
         <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
 
             <li title="Click here to see kits" data-toggle="tooltip"><a href="#tab_24" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
-            <li title="Click here to see component" data-toggle="tooltip"><a href="#tab_27" data-toggle="tab">Component<span class="badge badge-danger"></span></a></li>
+            @*<li title="Click here to see component" data-toggle="tooltip"><a href="#tab_27" data-toggle="tab">Component<span class="badge badge-danger"></span></a></li>*@
             <li title="Click here to see linked warehouse" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Linked Warehouse</a></li>
             <li title="Click here to see notes" data-toggle="tooltip"><a href="#tab_25" title="Click here to see Notes" data-toggle="tab">Notes</a></li>
             <li title="Click here to see linked files" data-toggle="tooltip"><a href="#tab_26" title="Click here to see Linked files" data-toggle="tab">Linked files</a></li>
@@ -391,7 +391,7 @@
                     <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-header">
-                                <h3 class="box-title">List of kits with this product.</h3>
+                                <h3 class="box-title">List of related products with the product.</h3>
                             </div>
                             <div class="box-body">
                                 <div class="form-group d-flex">
@@ -435,8 +435,9 @@
                                                         <th>Buying price</th>
                                                         <th>Sell price</th>
                                                         <th>Stock</th>
+                                                        <th>Product Type</th>
                                                         <th>Qty</th>
-                                                        <th>Increase/Decrease stock</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="Product_services"></tbody>
@@ -512,7 +513,7 @@
 
 
             </div>
-            <div class="tab-pane" id="tab_27"> 
+            <!--<div class="tab-pane" id="tab_27"> 
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
@@ -586,13 +587,13 @@
                                         <div class="alignleft actions bulkactions">
                                             <label class=" control-label ws_nowrap">Keyword filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                             <input type="text" id="txtcomponentkeewordfilter" class="form-control">
-                                            <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            <label class="control-label ws_nowrap">Category filter:&nbsp;&nbsp;&nbsp;&nbsp;</label>-->
                                             @*<input type="text" id="txtCategoryfilter" class="form-control">*@
-                                            <select name="ddlcomponentCategoryfilter" id="ddlcomponentCategoryfilter" class="form-control">
+                                            <!--<select name="ddlcomponentCategoryfilter" id="ddlcomponentCategoryfilter" class="form-control">
                                             </select>
-                                            <input type="button" id="componentfiltersrchexp" value="Search" class="button" />
+                                            <input type="button" id="componentfiltersrchexp" value="Search" class="button" />-->
                                             @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-                                        </div>
+                                        <!--</div>
                                     </div>
                                 </div>
                             </div>
@@ -609,9 +610,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="text-left">Child products</th>
-                                                        <th>Label</th>
+                                                        <th>Label</th>-->
                                                         @*<th>Qty</th>*@
-                                                        <th>Add</th>
+                                                        <!--<th>Add</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="ordercomponent_line_items"></tbody>
@@ -637,7 +638,7 @@
 
 
 
-            </div>
+            </div>-->
             <div class="tab-pane" id="tab_23">
 
                 <div class="row rowbox proposal-row">

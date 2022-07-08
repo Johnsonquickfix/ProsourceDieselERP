@@ -23,14 +23,15 @@
     $.get('/Product/GetShipping/' + 1, { async: false }, function (data) {
         var items = "";
         // $('#ddlShipping').empty();
-        // items += "<option value=''>Please select</option>";
+        // items += "<option value=''>Please select</option>";  
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShipping");
         })
     });
 
     $('#chkgiftcard').change();
-
+    Getsimpalproducttype();
+    $("#ddlproducttypesimpal").val(1);
     if (id != "" && id != "AddNewProduct") {
         $("#target :input").prop("disabled", true);       
         $('#lbltitle').text("Update Product");        
@@ -172,11 +173,13 @@
             $('#divregular').hide();
             $('#divsale').hide();
             $('li:contains(Variations)').show();
+            $('#divproducttypesimpal').hide();
 
         } else {
             $('#divregular').show();
             $('#divsale').show();
             $('li:contains(Variations)').hide();
+            $('#divproducttypesimpal').show();
         }
     });
 
@@ -248,6 +251,7 @@
         let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
         //var ID = "796103";// $("#hfUpdatedID").val();
         let _shipping_class = GetShippingClass();
+        let _producttype = Getproducttype();
         // alert(ID);
         if (ID != "") {
             $.ajax({
@@ -307,10 +311,16 @@
                         varHTML += '</div>';
                         varHTML += '    <div class="form-group d-flex mt-25">';
                         /*varHTML += '<div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
-                        varHTML += '<div class="col-md-12"><label class="control-label">Shipping Class</label></div>';
+                        varHTML += '<div class="col-md-6"><label class="control-label">Shipping Class</label></div>';
                         varHTML += '<select class="txtshipvariation form-control select2"><option value="-1">Select shipping class</option>';
                         for (var j = 0; j < _shipping_class.length; j++) {                           
                                 varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
+                        };
+                        varHTML += '</select ></div > ';
+                        varHTML += '<div class="col-md-6"><label class="control-label">Product Type</label></div>';
+                        varHTML += '<select class="ddlproducttypeser form-control select2"><option value="0">Select Product Type</option>';
+                        for (var j = 0; j < _producttype.length; j++) {
+                            varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
                         };
                         varHTML += '</select ></div > ';
                         varHTML += '    </div>';
@@ -357,7 +367,33 @@
         $("#row" + button_id + '').remove();
     });
 
-  
+
+    function Getproducttype() {
+        let _producttype = [];
+        $.ajax({
+            type: "get", url: '/Product/Getproducttype', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+            success: function (data) {
+                data = JSON.parse(data); _producttype = data;
+                //console.log(data, _shipping_class);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
+        });
+        return _producttype;
+    }
+    function Getsimpalproducttype() {
+        $.ajax({
+            url: "/Product/Getproducttype",
+            type: "get",
+            success: function (data) {
+                //  console.log(data);
+                data = JSON.parse(data);
+                $('#ddlproducttypesimpal').append('<option value="0">Please Select Product Type</option>');
+                for (var i = 0; i < data.length; i++) {
+                    $('#ddlproducttypesimpal').append('<option value="' + data[i].rowid + '">' + data[i].name + '</option>');
+                }
+            }, async: false
+        });
+    }
     $(document).on('click', "#btnedit", function () {
         $("#target :input").prop("disabled", false);
         $("#tbhold").find("input,button,textarea,select").attr("disabled", false);
@@ -513,6 +549,12 @@
             $(div).find(".txtdescriptionvariation").each(function () {
                 _attxml.push(
                     { post_id: $(div).find('.nmvariationid').val(), meta_key: '_variation_description', meta_value: this.value }
+                );
+            });
+
+            $(div).find(".ddlproducttypeser").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_product_type_id', meta_value: this.value }
                 );
             });
         });
@@ -993,6 +1035,7 @@ function AddProduct() {
     taxstatus = $("#ddltaxstatus").val();
     classtax = $("#ddlclasstax").val();
     pdstatus = $("#ddlstatus").val();
+    ddlsimpalprodcttype = $("#ddlproducttypesimpal").val();
     sku = $("#txtsku").val();    
     enableStockval = enableStock;
     Stockquantity = $("#txtStockquantity").val();
@@ -1064,7 +1107,8 @@ function AddProduct() {
             _gift_card: giftcard,
             _gift_card_expiration_days: dayexpire,
             _gift_card_template_default_use_image: Recipientemail,
-            post_status: pdstatus
+            post_status: pdstatus,
+           _product_type_id: ddlsimpalprodcttype
         }
         var checkstr = confirm('Want to save/update product?');
         if (checkstr == true) {
@@ -1170,6 +1214,12 @@ function GetDataByID(order_id) {
             
             $('#ddlstatus').val(i[0].post_status).trigger('change');
 
+
+            if (i[0].ptypeid == "" || i[0].ptypeid == null)
+                $('#ddlproducttypesimpal').val("1").trigger('change');
+            else
+                $('#ddlproducttypesimpal').val(i[0].ptypeid).trigger('change');
+
             $("#txtsku").val(i[0].sku);
           //  console.log(i[0].Publish_Date);
             if (i[0].Publish_Date != null)
@@ -1237,11 +1287,14 @@ function GetDataByID(order_id) {
                 $('#divregular').hide();
                 $('#divsale').hide();
                 $('li:contains(Variations)').show();
+                $('#divproducttypesimpal').hide();
+                
 
             } else {
                 $('#divregular').show();
                 $('#divsale').show();
                 $('li:contains(Variations)').hide();
+                $('#divproducttypesimpal').show();
             }
 
             var path = i[0].image;
@@ -1406,7 +1459,7 @@ function GetShippingClass() {
 function GetProductvariationID(ProductID) {
     $("#product_variations").empty();
     let _shipping_class = GetShippingClass();
-   
+    let _producttype = Getproducttype();
     var obj = { strVal: ProductID }
     $.ajax({
         url: '/Product/GetDataVariationByID', type: 'post', contentType: "application/json; charset=utf-8", dataType: 'JSON',
@@ -1580,13 +1633,22 @@ function GetProductvariationID(ProductID) {
                 varHTML += '</div>';
                 varHTML += '    <div class="form-group d-flex">';
                 /*   varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
-                varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label>';
+                varHTML += '        <div class="col-md-6"><label class="control-label">Shipping Class</label>';
                 varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">Select shipping class</option>';
                 for (var j = 0; j < _shipping_class.length; j++) {
                     if (data[i].shippingclass == _shipping_class[j].rowid)
                         varHTML += '<option value="' + _shipping_class[j].rowid + '" selected> ' + _shipping_class[j].name + '</option>';
                     else
                         varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
+                };
+                varHTML += '</select></div> ';
+                varHTML += '        <div class="col-md-6"><label class="control-label">Product Type</label>';
+                varHTML += '<select class="ddlproducttypeser form-control select2" id="ddlpdtype_' + data[i].id + '"><option value="0">Select Product Type</option>';
+                for (var j = 0; j < _producttype.length; j++) {
+                    if (v_data['_product_type_id'] == _producttype[j].rowid)
+                        varHTML += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
+                    else
+                        varHTML += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
                 };
                 varHTML += '</select></div> ';
                 varHTML += '    </div>';

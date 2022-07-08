@@ -91,6 +91,7 @@ namespace LaylaERP.Models
         public string _gift_card { get; set; }
         public string _gift_card_expiration_days { get; set; }
         public string _gift_card_template_default_use_image { get; set; }
+        public string _product_type_id { get; set; }
     }
     public class ProductModelMetaModel
     {
@@ -140,8 +141,9 @@ namespace LaylaERP.Models
         public int fk_product_fils { get; set; }
 
         public int qty { get; set; }
+        public int product_type_id { get; set; }
 
-   
+
     }
 
     public class ProductModelservices
@@ -154,6 +156,8 @@ namespace LaylaERP.Models
         public string Stock { get; set; }
         public int qty { get; set; }
         public int status { get; set; }
+        public int product_type_id { get; set; }
+        public string product_type_name { get; set; }
 
     }
 

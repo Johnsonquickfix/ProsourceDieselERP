@@ -707,10 +707,10 @@ namespace LaylaERP.Controllers
 
         private void Adduser_MetaData(ProductModel model, long id)
         {
-            string[] varQueryArr1 = new string[29];
-            string[] varFieldsName = new string[29] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_product_attributes", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image" };
-            string[] varFieldsValue = new string[29] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.product_attributes, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image };
-            for (int n = 0; n < 29; n++)
+            string[] varQueryArr1 = new string[30];
+            string[] varFieldsName = new string[30] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_product_attributes", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image", "_product_type_id" };
+            string[] varFieldsValue = new string[30] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.product_attributes, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image,model._product_type_id };
+            for (int n = 0; n < 30; n++)
             {
                 ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
@@ -824,10 +824,10 @@ namespace LaylaERP.Controllers
 
         private void UpdateVariation_MetaData(ProductModel model, long id)
         {
-            string[] varQueryArr1 = new string[27];
-            string[] varFieldsName = new string[27] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_low_stock_amount", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image" };
-            string[] varFieldsValue = new string[27] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.low_stock_amount, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image };
-            for (int n = 0; n < 27; n++)
+            string[] varQueryArr1 = new string[28];
+            string[] varFieldsName = new string[28] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_low_stock_amount", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image", "_product_type_id" };
+            string[] varFieldsValue = new string[28] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.low_stock_amount, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image,model._product_type_id };
+            for (int n = 0; n < 28; n++)
             {
                 ProductRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
@@ -2188,6 +2188,15 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
             }
+        }
+
+        public JsonResult Getproducttype()
+        {
+            string JSONString = string.Empty;
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.Getproducttype();
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Json(JSONString, JsonRequestBehavior.AllowGet);
         }
 
     }

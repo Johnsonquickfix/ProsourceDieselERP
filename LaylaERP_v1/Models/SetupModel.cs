@@ -33,4 +33,11 @@ namespace LaylaERP.Models
         public int warrantydays { get; set; }
         public string remarks {get; set;}
     }
+    public class ProductTypeModel
+    {
+        public int rowid { get; set; }
+        public string flag { get; set; }
+        public string product_type_name { get; set; }
+        public string product_type_code { get; set; }
+    }
 }

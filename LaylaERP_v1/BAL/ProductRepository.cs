@@ -281,10 +281,10 @@ namespace LaylaERP.BAL
                         //            + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
 
                         strWhr += " and p.product_id = " + strValue1;
-                    string strSQl = "SELECT distinct free_product_id ID,wp.post_title,post_title title,  isnull((SELECT min(Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar)) purchase_price from Product_Purchase_Items where fk_product = p.free_product_id),'0.00') buyingprice,isnull(Cast(CONVERT(DECIMAL(10,2),pmsaleprice.meta_value) as nvarchar),'0.00') sellingpric,0 Stock , free_quantity qty "
+                    string strSQl = "SELECT distinct free_product_id ID,wp.post_title,post_title title,  isnull((SELECT min(Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar)) purchase_price from Product_Purchase_Items where fk_product = p.free_product_id),'0.00') buyingprice,isnull(Cast(CONVERT(DECIMAL(10,2),pmsaleprice.meta_value) as nvarchar),'0.00') sellingpric,0 Stock , free_quantity qty,product_type_name,status"
                                 + " FROM wp_product_free p"
                                 + "  left outer join wp_posts wp on wp.ID = p.free_product_id"
-                                + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                                + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'   left outer join erp_product_type ept on ept.rowid = p.product_type_id"
                                 + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
 
 
@@ -303,10 +303,14 @@ namespace LaylaERP.BAL
                         productsModel.buyingprice = sdr["buyingprice"].ToString();
                         productsModel.sellingpric = sdr["sellingpric"].ToString();
                         productsModel.product_label = sdr["title"].ToString();
+                        //productsModel.product_type_id = Convert.ToInt32(sdr["product_type_id"]);
+                        productsModel.status = Convert.ToInt32(sdr["status"]);
                         if (sdr["post_title"] != DBNull.Value)
                             productsModel.product_name = sdr["post_title"].ToString();
                         else
                             productsModel.product_name = string.Empty;
+
+                        productsModel.product_type_name = sdr["product_type_name"].ToString();
 
                         _list.Add(productsModel);
                     }
@@ -1011,7 +1015,7 @@ namespace LaylaERP.BAL
               + " (select string_agg(ui.name,',') from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname , "
              // + " STUFF((SELECT ',' + ui.name FROM dbo.wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id FOR XML PATH('')), 1, 1, '') as metadetails, "
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-              + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,(select count(product_id) from erp_product_component where product_id = p.ID and status =1 ) component_status, "
+              + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,max(case when p.id = s.post_id and s.meta_key = '_product_type_id' and s.meta_value = 3 then 1 else 0 end) component_status, "
               + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
               + " FROM wp_posts p "
               + " left join wp_postmeta as s on p.id = s.post_id"
@@ -1899,7 +1903,7 @@ namespace LaylaERP.BAL
 
         public static int Childvariations(List<ProductChildModel> model)
         {
-            int result = 0;
+            int result = 1;
             try
             {
                 string strSql_insert = string.Empty;
@@ -1909,18 +1913,29 @@ namespace LaylaERP.BAL
                 //{
                 //    strSql.Append("delete from product_association where fk_product =" + obj.fk_product + ";");
                 //}
-
+                string res = string.Empty;
                 foreach (ProductChildModel obj in model)
                 {
 
                     // strSql.Append("Insert into product_association(fk_product,fk_product_fils,qty) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
-                    strSql.Append("Insert into wp_product_free(product_id,free_product_id,free_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');");
+                    //strSql.Append("Insert into wp_product_free(product_id,free_product_id,free_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');");
 
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+
+                    SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@product_id", obj.fk_product),
+                    new SqlParameter("@free_product_id", obj.fk_product_fils),
+                    new SqlParameter("@free_quantity", obj.qty),
+                 };
+                    res = SQLHelper.ExecuteScalar("erp_parentproductchild_iud", parameters).ToString();
+
+
                 }
 
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                //result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch (Exception Ex ) {
                 UserActivityLog.ExpectionErrorLog(Ex, "Product/SaveChildvariations/" + "0" + "", "Insert Child variations");
@@ -3025,11 +3040,12 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Update erp_product_component set status=@status where rowid=@ID;";
+                strsql = "Update wp_product_free set status=@status where product_id=@product_id and free_product_id =@free_product_id ;";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@ID", model.rowid),
+                    new SqlParameter("@free_product_id", model.rowid),
                     new SqlParameter("@status", model.active),
+                      new SqlParameter("@product_id", model.code),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -3161,6 +3177,19 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
             return result;
+        }
+
+        public static DataTable Getproducttype()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select  rowid,product_type_name name from erp_product_type";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
 
     }

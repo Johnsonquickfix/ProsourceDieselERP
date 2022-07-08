@@ -45,8 +45,10 @@
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
         setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
         setTimeout(function () { bindbuyingprice(); }, 16000);
-        setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
-        setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
+        setTimeout(function () { bindChildproductsservices(); }, 17000);
+        setTimeout(function () { bindparentproductsservices(); }, 18000);
+        //setTimeout(function () { bindChildproductsservices(); ComponentbindChildproductsservices(); }, 17000);
+        //setTimeout(function () { bindparentproductsservices(); bindcompnentparentproductsservices(); }, 18000);
         setTimeout(function () { bindwarehouse(); }, 19000);
    
         setTimeout(function () { bindfileuploade(); }, 19700);
@@ -303,7 +305,7 @@ $("#btnservicessave").click(function (e) {
     let _ItemProductServices = [];
     $("#Product_services > tr").each(function (index, tr) {
       //  console.log(tr);
-        //if (parseInt($(tr).find("input[name = txt_service]").val()) > 0) {
+        //if (parseInt($(tr).find("input[name = ddlproducttype]").val()) > 0) {
             
             _ItemProductServices.push(
                 { fk_product: $("#ddlproductchild").val(), fk_product_fils: $(this).data('key'), qty: $(tr).find("input[name = txt_service]").val() }
@@ -658,7 +660,7 @@ function bindChildproductsservices() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                        
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty, Stock: data[i].Stock, buyingprice: data[i].buyingprice, sellingpric: data[i].sellingpric
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, quantity: data[i].qty, Stock: data[i].Stock, buyingprice: data[i].buyingprice, sellingpric: data[i].sellingpric, product_type_name: data[i].product_type_name, status: data[i].status
                 });
 
             }
@@ -758,7 +760,7 @@ function Componentbinddata(data) {
 }
 
 function binddata(data) {
-    
+   // let _producttype = Getproducttype();
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
@@ -769,8 +771,32 @@ function binddata(data) {
                 layoutHtml += '<td>' + '$' + data[i].buyingprice + '</td>';
                 layoutHtml += '<td>' + '$'+ data[i].sellingpric + '</td>';
                 layoutHtml += '<td>' + data[i].Stock + '</td>';
+
+                layoutHtml += '<td>' + data[i].product_type_name + '</td>';
+
+                //layoutHtml += '<td><select id="ddlproducttype_' + data[i].PKey + '"   name="ddlproducttype" class="ddlproducttype form-control  select2"><option value="0">Select Product Type</option>';
+                //for (var j = 0; j < _producttype.length; j++) {
+                //    if (data[i].product_type_id == _producttype[j].rowid)
+                //        layoutHtml += '<option value="' + _producttype[j].rowid + '" selected> ' + _producttype[j].name + '</option>';
+                //    else
+                //        layoutHtml += '<option value="' + _producttype[j].rowid + '"> ' + _producttype[j].name + '</option>';
+                //};
+                layoutHtml += '</select ></td>';
                 layoutHtml += '<td><input min="0"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
-                layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkproductservices" id="chkservices_' + data[i].PKey + '" value="' + data[i].PKey + '"></td>';
+               // layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkproductservices" id="chkservices_' + data[i].PKey + '" value="' + data[i].PKey + '"></td>';
+                if (data[i].status == 0) {
+                    toggleclass = "fas fa-toggle-on";
+                    toggleStyle = "color: #ff0000!important;font-size: 24px;";
+                    toggleStatus = 1;
+                }
+
+                else {
+                    toggleclass = "fas fa-toggle-off";
+                    toggleStyle = "color: #49be25!important;font-size: 24px;";
+                    toggleStatus = 0;
+                }
+                console.log(toggleStatus);
+                layoutHtml += '<td> <span title="Click here to change the status." data-placement="bottom" data-toggle="tooltip"> <a href="#" onclick="ChangeStatus(' + data[i].PKey + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a></span> </td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -787,8 +813,9 @@ function binddata(data) {
         layoutHtml += '<th>Buying price</th>';
         layoutHtml += '<th>Selling price</th>';
         layoutHtml += '<th>Stock</th>';
+        layoutHtml += '<th>Product Type</th>';
         layoutHtml += '<th>Qty</th>';
-        layoutHtml += '<th>Increase/Decrease stock</th>';
+        layoutHtml += '<th>Status</th>';
 
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="Product_services"></tbody>';
@@ -797,6 +824,19 @@ function binddata(data) {
         $('#divAddservices').empty().html(layoutHtml);
     }
 
+}
+
+function Getproducttype() {
+    let _producttype = [];
+    $.ajax({
+        type: "get", url: '/Product/Getproducttype', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+        success: function (data) {
+            data = JSON.parse(data); _producttype = data;
+            //console.log(data, _shipping_class);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
+    });
+    return _producttype;
 }
 
 function bindparentproductsservices() {
@@ -1010,10 +1050,11 @@ function AddBuyingt() {
 
 
 function ChangeStatus(id, status) {
-    console.log(id,status);
+    console.log(id, status);
+    let PostID = $('#ddlproductchild').val();
   //  let cofStatus = status == "0" ? "Inactive" : "Active";
     ActivityLog('change status as ' + status + '', '/Product/UpdatecomponentStatus/' + id + '');
-    var obj = { rowid: id, active: status, }
+    var obj = { rowid: id, active: status, code: PostID  }
     $.ajax({
         url: '/Product/UpdatecomponentStatus/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -1023,8 +1064,8 @@ function ChangeStatus(id, status) {
         success: function (data) {
             if (data.status == true) {
 
-                ComponentbindChildproductsservices();
-
+             //   ComponentbindChildproductsservices();
+                bindChildproductsservices();
                 swal('Success', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }

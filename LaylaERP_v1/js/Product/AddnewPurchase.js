@@ -586,7 +586,7 @@ function bindItemListDataTable(data) {
                 layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
                 layoutHtml += '<td>' + data[i].product_name + '</td>';
                 layoutHtml += '<td><input min="1"  autocomplete="off" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkservices" id="chk_' + data[i].PKey + '"></td>';
+                /*layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkservices" id="chk_' + data[i].PKey + '"></td>';*/
                 layoutHtml += '</tr>';
             }
         }
@@ -599,7 +599,7 @@ function bindItemListDataTable(data) {
         layoutHtml += '<th class="text-left">Child products</th>';
         layoutHtml += '<th>Label</th>';
         layoutHtml += '<th>Qty</th>';
-        layoutHtml += '<th>Increase/Decrease stock on parent change</th>';
+       /* layoutHtml += '<th>Increase/Decrease stock on parent change</th>';*/
 
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="order_line_items"></tbody>';

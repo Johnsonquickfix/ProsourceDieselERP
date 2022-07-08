@@ -901,6 +901,7 @@
     <Content Include="js\Setup\freeproduct.js" />
     <Content Include="js\Setup\ProductReturn.js" />
     <Content Include="js\Setup\productrule.js" />
+    <Content Include="js\Setup\ProductType.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
@@ -1339,6 +1340,7 @@
     <Content Include="Views\Ship\OrderReturnConform.cshtml" />
     <Content Include="Views\Ship\OrderReturnVendorMail.cshtml" />
     <Content Include="Views\PaymentInvoice\AutoserialnoSync.cshtml" />
+    <Content Include="Views\Setup\ProductType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

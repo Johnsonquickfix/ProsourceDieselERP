@@ -125,23 +125,21 @@ function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
             let _detail = JSON.parse(row.user_details);
-
             let billing_Details = '<strong>' + _detail.billing_first_name + ' ' + _detail.billing_last_name + '</strong><br>';
-            billing_Details += (_detail.billing_company.length > 0 ? _detail.billing_company + '<br>' : '') + (_detail.billing_address_1.length > 0 ? _detail.billing_address_1 + '<br>' : '')
-                + (_detail.billing_address_2.length > 0 ? _detail.billing_address_2 + '<br>' : '') + (_detail.billing_city.length > 0 ? _detail.billing_city + ', ' : '') + (_detail.billing_state.length > 0 ? _detail.billing_state + ' ' : '')
-                + (_detail.billing_postcode.length > 0 ? _detail.billing_postcode + ' ' : '') + (_detail.shipping_country.length > 0 ? _detail.shipping_country : '');
+            billing_Details += (isNullUndefAndSpace(_detail.billing_company) ? _detail.billing_company + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_address_1) ? _detail.billing_address_1 + '<br>' : '')
+                + (isNullUndefAndSpace(_detail.billing_address_2) ? _detail.billing_address_2 + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_city) ? _detail.billing_city + ', ' : '') + (isNullUndefAndSpace(_detail.billing_state) ? _detail.billing_state + ' ' : '')
+                + (isNullUndefAndSpace(_detail.billing_postcode) ? _detail.billing_postcode + ' ' : '') + (isNullUndefAndSpace(_detail.shipping_country) ? _detail.shipping_country : '');
             billing_Details += '<br><strong>Email address:</strong> ' + _detail.billing_email + '<br><strong>Phone:</strong> ' + _detail.billing_phone;
             $('.billing-address').empty().append(billing_Details);
 
             let shipping_Details = '<strong>' + _detail.shipping_first_name + ' ' + _detail.shipping_last_name + '</strong><br>';
-            shipping_Details += (_detail.shipping_company.length > 0 ? _detail.shipping_company + '<br>' : '') + (_detail.shipping_address_1.length > 0 ? _detail.shipping_address_1.trim() + '<br>' : '')
-                + (_detail.shipping_address_2.length > 0 ? _detail.shipping_address_2 + '<br>' : '') + (_detail.shipping_city.length > 0 ? _detail.shipping_city + ', ' : '') + (_detail.shipping_state.length > 0 ? _detail.shipping_state + ' ' : '')
-                + (_detail.shipping_postcode.length > 0 ? _detail.shipping_postcode + ' ' : '') + (_detail.shipping_country.length > 0 ? _detail.shipping_country : '');
+            shipping_Details += (isNullUndefAndSpace(_detail.shipping_company) ? _detail.shipping_company + '<br>' : '') + (isNullUndefAndSpace(_detail.shipping_address_1) ? _detail.shipping_address_1.trim() + '<br>' : '')
+                + (isNullUndefAndSpace(_detail.shipping_address_2) ? _detail.shipping_address_2 + '<br>' : '') + (isNullUndefAndSpace(_detail.shipping_city) ? _detail.shipping_city + ', ' : '') + (isNullUndefAndSpace(_detail.shipping_state) ? _detail.shipping_state + ' ' : '')
+                + (isNullUndefAndSpace(_detail.shipping_postcode) ? _detail.shipping_postcode + ' ' : '') + (isNullUndefAndSpace(_detail.shipping_country) ? _detail.shipping_country : '');
             $('.shipping-address').empty().append(shipping_Details);
         });
     }).catch(err => { }).always(function () { });
 }
-
 function dataGridLoad() {
     let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0);
     let table_oh = $('#dtdata').DataTable({
@@ -240,19 +238,19 @@ function backOrderList() {
     $(".order-id").data('order_id', 0); $(".order-id").data('email', ''); $(".order-id").data('name', '');
 }
 function OrderInfo(ord_id) {
-    $("#order_items,.order-coupon,#order_items_refund").empty();
+    $("#order_items,.order-coupon,#order_items_refund,.order-right-tool").empty();
     //$("#detail-page").empty();
     if (ord_id == 0) return false;
-    let _order_date = moment();
+    let _order_date = moment(); $("#loader").show();
     $("#list-page").addClass('hidden'); $("#detail-page").removeClass('hidden');
     $.post('/customer-service/order', { strValue1: ord_id }).then(response => {
         response = JSON.parse(response); //console.log(response);
         let _html = '', _coupon = '', _refundHtml = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $(".order-id").text('Order #' + row.order_id); $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
+            $(".order-id,.order-right-id").text('Order #' + row.order_id); $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
             _order_date = moment(row.date_created, 'MM/DD/YYYY'); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
-            $(".order-right-id").empty().append('Order #' + row.order_id + '<a href="javascript:void(0);" class="btn btn-primary btn-sm float-right" onclick="backOrderList();">Back To List</a>');
+            $(".order-right-tool").empty().append('<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="StolenPackageModal(' + row.order_id + ');">Stolen Package</a> <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="backOrderList();">Back To List</a>');
             //Add Address
             let _json = JSON.parse(row.order_details); //console.log(_json);
             _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
@@ -401,19 +399,6 @@ function OrderInfo(ord_id) {
                     let max_return = parseInt($("#tr_" + orderitemid).data("qty")) + row.qty;
                     if (max_return <= 0) $("#tr_" + orderitemid).find('#CheckSingle').remove();
                 }
-                //else if (row.product_name == "fee") {
-                //    let max_amt = parseInt($("#trfeeid_" + orderitemid).data("totalamt")) + parseInt(row.total);
-                //    $("#trfeeid_" + orderitemid).find('[name=txt_FeeAmt]').attr({ "max": max_amt, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_amt + ')' });
-                //    $("#trfeeid_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.total + '</span>');
-                //}
-                //else if (row.product_name == "shipping") {
-                //    $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + row.shipping_amount + '</span>');
-                //}
-                //else if (row.product_name == "gift_card") {
-                //    let ref_amt = parseInt($("#trfeeid_" + orderitemid).data("ref_amt")) + parseInt(row.total);
-                //    $("#billGiftCard").find('[data-orderitemid=' + orderitemid + ']').data('ref_amt', ref_amt);
-                //    zGiftCardrefundAmt += row.total;
-                //}
             }
         });
         $(".order-coupon").empty().append(_coupon); $('#order_items_refund').append(_refundHtml);
@@ -476,7 +461,80 @@ function OrderInfo(ord_id) {
         });
         $(".order-tickets").empty().append(_noteHtml);
 
-    }).catch(err => { }).always(function () { });
+    }).catch(err => { $("#loader").hide(); }).always(function () { $("#loader").hide(); });
+}
+
+//Customer Warranty claim details
+function StolenPackageModal(order_id) {
+    let _html = '<div class="modal-dialog modal-fullscreen p-12">';
+    _html += '  <div class="modal-content modal-rounded">';
+    _html += '      <div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Order #' + order_id + ' not received by customer.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    _html += '      <div class="modal-body py-1"></div>';
+    _html += '      <div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary" data-id="' + order_id + '" onclick="GenerateStolenPackageTicket(' + order_id + ')">Generate Ticket No</button></div>';
+    _html += '  </div>';
+    _html += '</div>';
+    $("#myModal").empty().html(_html);
+
+    _html = '<div id="kt_warranty_claim" class="claimwarranty-step1 card-body">';
+    $.each(StolenPackageQuestions, function (i, row) {
+        _html += '<label class="form-check-custom form-check-solid d-flex" for="chk-' + i + '">';
+        _html += '  <input type="checkbox" class="form-check-input me-3 warranty-checkbox" id="chk-' + i + '" name="chk-' + i + '" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/>';
+        _html += '  <span class="form-check-label d-flex flex-fill align-items-start fs-5 my-1">' + row.title + '</span>';
+        _html += '</label>';
+        _html += '<div class="separator separator-dashed my-2"></div>';
+    });
+    _html += '</div>';
+
+    _html += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 ">';
+    _html += '  <div class="row">';
+    _html += '      <div class="col-md-12">';
+    _html += '          <label class="form-label text-gray-800 fw-bolder">Comment</label>';
+    _html += '          <textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
+    _html += '      </div>';
+    _html += '  </div>';
+    _html += '</div>';
+
+    $('#myModal .modal-body').append(_html);
+    $("#myModal").modal({ backdrop: 'static', keyboard: false });
+}
+function GenerateStolenPackageTicket(order_id) {
+    let _user = $(".order-id").data('name'), _reason = 'Packages not received by customer.', _reason_code = '9000';
+    let _questions = '';
+    $('#kt_warranty_claim').find('.warranty-checkbox').each(function (i, row) {
+        if ($(row).prop('checked') == true) _questions += '    🗸   ' + $(row).data('title') + ' <br/>';
+        else _questions += '    X   ' + $(row).data('title') + ' <br/>';
+    });
+
+    let _chat = [{ from: _user, content: 'Name: Packages not received by customer.' },
+    { from: 'Help Desk', content: 'Answered by the customer.' },
+    { from: _user, content: _reason }, { from: _user, content: _questions }];
+    let option = {
+        id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: 'All Product', order_item_size: '', order_item_color: '', order_item_qty: 0, order_item_sku: '',
+        chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: order_id, order_item_id: 0,
+        box_is_opened: 0, comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify([])
+    };
+    let _body = TicketMailDetails(_user, _chat);
+    //console.log(option, _questions); return false;
+    swal.queue([{
+        title: '', confirmButtonText: 'Yes, do it!', text: "Generate stolen package ticket number.",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep Stolen Package', body: _body };
+                $.ajax(
+                    { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
+                ).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].response == 'success') {
+                        OrderInfo(option.order_id); $("#myModal").modal('hide');
+                        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
+    return false;
 }
 
 //Show Customer Warranty claim details and add comments
@@ -655,12 +713,6 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '</div>';
 
     modalHtml += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 hide">';
-    modalHtml += '  <div class="d-flex flex-stack">';
-    modalHtml += '      <div class="me-5 fw-bold"><label class="fs-6">The box or package has been opened.</label></div>';
-    modalHtml += '      <label class="form-check form-switch form-check-custom form-check-solid">';
-    modalHtml += '          <input class="form-check-input" type="checkbox" value="1" checked="checked"> <span class="form-check-label fw-bold text-muted">Yes</span>';
-    modalHtml += '      </label>';
-    modalHtml += '  </div>';
     modalHtml += '  <div class="row">';
     modalHtml += '      <div class="col-md-6">';
     modalHtml += '          <label class="required form-label text-gray-800 fw-bolder">Quantity</label>';
@@ -806,7 +858,7 @@ function GenerateTicketNo() {
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: '', body: _body, files: _file };
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep Warranty Information', body: _body, files: _file };
                 $.ajax(
                     { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
                 ).done(function (result) {
@@ -832,9 +884,7 @@ function TicketMailDetails(name, chat_history) {
     _body += 'Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>';
     _body += 'Again, we\'re sorry you\'re having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>';
     _body += '<b>Chat History</b><br/><br/>';
-    $.each(chat_history, function (i, row) {
-        _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>';
-    });
+    $.each(chat_history, function (i, row) { _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>'; });
     _body += '<br/><b>Help Desk <br/>';
     return _body;
 }

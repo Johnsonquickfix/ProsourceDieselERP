@@ -42,7 +42,7 @@
                     @row["id"].ToString()
                 </strong>
                 <span style="display:block;">
-                    <a href="@row["base_url"].ToString()/donate/receipt/id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Donate</a>
+                    <a href="@row["base_url"].ToString()/donate/receipt?id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Donate</a>
                     @*<a href="@row["base_url"].ToString()/quote/reject?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px; border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); " target="_blank" rel="noreferrer">Disapprove</a>*@
                 </span>
             }

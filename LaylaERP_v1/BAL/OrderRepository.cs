@@ -1349,7 +1349,12 @@
                             + " and pm.meta_key in ('_billing_first_name', '_billing_last_name', '_billing_company', '_billing_address_1', '_billing_address_2', '_billing_city', '_billing_state', '_billing_country', '_billing_postcode', '_billing_phone', '_billing_email', '_shipping_first_name', '_shipping_last_name', '_shipping_company', '_shipping_address_1', '_shipping_address_2', '_shipping_city', '_shipping_state', '_shipping_country', '_shipping_postcode')"
                             + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft'"
                             + " group by po.ID, pmu.meta_value) tt group by customer_id, meta_data";
-                dt = SQLHelper.ExecuteDataTable(strSql);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@customer_id", CustomerID),
+                    new SqlParameter("@flag", "CSADS")
+                };
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_search", parameters);
             }
             catch (Exception ex)
             {

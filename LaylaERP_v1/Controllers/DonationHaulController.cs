@@ -62,7 +62,7 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);
         }
-
+         
         [Route("donate/receipt")]
         public ActionResult DonateReceipt(string id)
         {

@@ -643,6 +643,7 @@
     <Content Include="Content\DataTables\select\1.3.3\js\dataTables.select.min.js" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
     <Content Include="Content\default.png" />
+    <Content Include="Content\DonateHaul\default.png" />
     <Content Include="Content\easyui\easyui.css" />
     <Content Include="Content\easyui\images\accordion_arrows.png" />
     <Content Include="Content\easyui\images\blank.gif" />

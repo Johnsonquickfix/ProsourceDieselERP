@@ -66,10 +66,14 @@ namespace LaylaERP_v1.Controllers
         [Route("donate/receipt")]
         public ActionResult DonateReceipt(string id)
         {
+            long cusid = 0; 
             if (!string.IsNullOrEmpty(id))
             {
-                ViewBag.id = id;
+                cusid = Convert.ToInt64(LaylaERP.UTILITIES.CryptorEngine.Decrypt(id.Replace(" ", "+")));
+                ViewBag.id = cusid;
             }
+            else
+                ViewBag.id = 5555;
             return View();
         }
 

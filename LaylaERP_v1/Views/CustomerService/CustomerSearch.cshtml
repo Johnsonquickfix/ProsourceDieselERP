@@ -31,8 +31,9 @@
     .timeline:before {
         background: none !important;
     }
+
     .form-switch.form-check-solid .form-check-input {
-        background-image: none!important;
+        background-image: none !important;
     }
 </style>
 <div id="loader" class="align-items-center">
@@ -171,7 +172,13 @@
                         <!--begin::Wrapper-->
                         <div class="m-0">
                             <!--begin::Label-->
-                            <div class="fw-bolder fs-3 text-gray-800 mb-5 order-right-id">Order #000000</div>
+                            <div class="d-flex flex-stack flex-grow-1">
+                                <div class="fw-bolder fs-3 order-right-id">
+                                    Order #000000
+                                </div>
+                                <div class="justify-content-end order-right-tool">
+                                </div>
+                            </div>
                             <!--end::Label-->
                             <!--begin::Content-->
                             <div class="flex-grow-1">
@@ -179,7 +186,7 @@
                                 <div class="table-responsive border-bottom mb-9">
                                     <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer">
                                         <thead>
-                                            <tr class="border-bottom fs-6 fw-bolder text-muted">
+                                            <tr class="text-gray-700 fw-bolder text-muted">
                                                 <th class="min-w-25px pb-2"></th>
                                                 <th class="min-w-175px pb-2">Item</th>
                                                 <th class="min-w-70px text-end pb-2">Sale Price</th>

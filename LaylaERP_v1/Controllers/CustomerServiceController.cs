@@ -116,7 +116,7 @@ namespace LaylaERP.Controllers
                         if (dt.Rows[0]["response"].ToString() == "success")
                         {
                             UploadedFile(dt.Rows[0]["id"].ToString(), model.files);
-                            SendEmail.SendEmails_outer(model.receipient_email, "Layla Sleep Warranty Information (#" + dt.Rows[0]["id"].ToString() + ").", model.body, string.Empty);
+                            SendEmail.SendEmails_outer(model.receipient_email, model.subject + " (#" + dt.Rows[0]["id"].ToString() + ").", model.body, string.Empty);
                         }
                     }
                 }

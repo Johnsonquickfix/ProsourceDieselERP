@@ -59,7 +59,7 @@
             success: function (data) {
                 $('#dtdata').dataTable({
                     destroy: true,
-                    scrollX:true,
+                    scrollX: true, responsive: true, lengthMenu: [[20, 50], [20, 50]],
                     data: JSON.parse(data),
                     "columns": [
                         { data: 'menu_id', title: 'Menu Id', sWidth: "10%" },

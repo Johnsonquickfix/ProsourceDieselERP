@@ -1348,6 +1348,7 @@
     <Content Include="Views\DonationHaul\DonateReceipt.cshtml" />
     <Content Include="Views\DonationHaul\Index.cshtml" />
     <Content Include="Views\EmailNotifications\DonateandHaulMail.cshtml" />
+    <Content Include="Views\Accounting\BusinessSnapshotReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+@*datatables CSS*@
+<input type="hidden" id="hfEdit" value="" /> 
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script> 
+<div class="page-title">
+    <h2 class="page-heading">Customers List</h2>  
+</div>
+<section class="content section-content table-design customer-section">
+    <div class="user-top-section" id="customer-section-top"> 
+        <div class="tablenav top tablenav-top2"> 
+        </div>
+    </div>
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                <th>Cust ID</th>
+                                <th>Customer Name</th>
+                                <th>E-mail</th>
+                                 <th>Phone</th>
+                                 <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 
+<script src="@Url.Content("~/js/DonationHaul/DonationHaulList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+
+

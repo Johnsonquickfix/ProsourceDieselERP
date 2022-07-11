@@ -1,6 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
+using LaylaERP_v1.BAL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -117,6 +118,11 @@ namespace LaylaERP.Controllers
         public ActionResult QuoteOrderMail(OrderQuoteModel model)
         {
             DataSet ds = OrderQuoteRepository.GetOrdersQuote(model.id);
+            return View(ds);
+        }
+        public ActionResult DonateandHaulMail(OrderQuoteModel model)
+        {
+            DataSet ds = DonationHaulRepository.donationcusmail(model.id);
             return View(ds);
         }
     }

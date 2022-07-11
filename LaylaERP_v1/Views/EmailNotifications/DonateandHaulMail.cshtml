@@ -1,0 +1,57 @@
+﻿@using System.Data
+@model DataSet
+@{
+    Layout = null;
+     
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
+    <title>Donate and Haul tempted</title>
+</head>
+<body id="main-body" style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
+    <div style=" background-color:#fff; box-shadow:0px 0px 4px #ddd; max-width:600px; margin:auto;">
+        <div style="text-align: center; padding:25px 10px 10px 10px;"><a style="text-decoration:none;" href=""><img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" /></a></div>
+        <div style="padding:0 15px 15px 15px;">
+            <h5 style=" font-family:Arial, Helvetica, sans-serif; margin-bottom: 5px; margin-top: 10px; font-size:20px; color:#4f4f4f;">Thanks for interesting this .</h5>
+            @*<div style="color:#ff4100; font-style:italic; margin-bottom: 7px;">We will notify you when your order ships.</div>*@
+        <div style="font-size: 18px;">
+            <!--<div class="col">
+        <label class="control-label">Receipt Image</label>
+        <div class="add-profile">
+            <span class="edit-pic-profile">
+                <input type="file" onchange="readURL(this);" name="ImageFile" id="ImageFile" class="inputfile" />
+                <label id="btnfileproduct" for="ImageFile"><i class="fa fa-edit"></i>Edit</label>
+            </span>-->
+            @*<img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="https://dev.laylaerp.com/Content/ProductCategory/default.png" alt="Receipt Image">*@
+            <!--</div>
+
+    </div>
+
+    <div class="col">
+        <button id="btnproductuploade" title="Click here to upload" data-toggle="tooltip" style="float: left;" class="btn btn-danger">Upload</button>
+    </div>-->
+            Customers Id:
+            @foreach (DataRow row in Model.Tables[0].Rows)
+            {
+                <strong id="lblorder">
+                    @row["id"].ToString()
+                </strong>
+                <span style="display:block;">
+                    <a href="@row["base_url"].ToString()/donate/receipt/id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px;border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);" target="_blank" rel="noreferrer">Donate</a>
+                    @*<a href="@row["base_url"].ToString()/quote/reject?key=@row["row_key"].ToString()&id=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["quote_no"].ToString())&uid=@LaylaERP.UTILITIES.CryptorEngine.Encrypt(row["customer_id"].ToString())" style="color: #FFF; display: inline-block; line-height: 35px; width: 120px; margin: 10px; border-radius: 50px; box-shadow: 5px 5px 2px -2px #a5a5a5; background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); " target="_blank" rel="noreferrer">Disapprove</a>*@
+                </span>
+            }
+        </div>
+        </div>
+        <!-- jQuery -->
+        <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+         
+    </div>
+  
+</body>
+</html >

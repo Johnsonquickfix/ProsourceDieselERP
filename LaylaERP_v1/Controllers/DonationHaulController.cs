@@ -68,7 +68,7 @@ namespace LaylaERP_v1.Controllers
         {
             if (!string.IsNullOrEmpty(id))
             {
-                 
+                ViewBag.id = id;
             }
             return View();
         }

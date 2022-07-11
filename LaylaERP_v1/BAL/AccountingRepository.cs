@@ -1833,6 +1833,27 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetBusinessSnapshotReport(DateTime? from_date, DateTime? to_date, int fiscalyear_id, string report_type)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] param = {
+                        from_date.HasValue ? new SqlParameter("@from", from_date) :new SqlParameter("@from",DBNull.Value),
+                        to_date.HasValue ? new SqlParameter("@to", to_date) :new SqlParameter("@to",DBNull.Value),
+                        fiscalyear_id > 0 ? new SqlParameter("@fiscalyear_id", fiscalyear_id) :new SqlParameter("@fiscalyear_id",DBNull.Value),
+                        new SqlParameter("@flag", report_type)
+                    };
+
+                dt = SQLHelper.ExecuteDataTable("erp_business_snapshot_report", param);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
         public static DataTable AccountjournalvoucherList(DateTime? fromdate, DateTime? todate, int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {

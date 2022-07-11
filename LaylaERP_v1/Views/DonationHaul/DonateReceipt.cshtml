@@ -36,7 +36,7 @@
 </section>
 
 <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
-<script src="~/js/common.js"></script>
+@*<script src="~/js/common.js"></script>*@
 <script type="text/javascript">
     //$(document).ready(function () {
     //    let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
@@ -46,9 +46,15 @@
     //    else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>'); }
     //});
     $(document).ready(function () {
+        id = parseInt($('.lbl-tilte').data('id')) || 0;
+        console.log(id);
     $(document).on('click', "#btndonateuploade", function () {
         AdddonateImages();
+       
+
     })
+
+        
     });
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -64,7 +70,8 @@
         var formData = new FormData();
         var ImageFile = document.getElementById("ImageFile").files[0];
         formData.append("ImageFile", ImageFile);
-        var cusmerid = @ViewBag.id;
+       // id = parseInt($('.lbl-tilte').data('id')) || 0;
+        var cusmerid = $('.lbl-tilte').data('id');
         formData.append("cusmerid", cusmerid);
         var desc = $("#txtdescription").val();
         formData.append("desc", desc);

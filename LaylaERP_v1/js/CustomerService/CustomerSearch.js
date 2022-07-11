@@ -513,14 +513,14 @@ function GenerateStolenPackageTicket(order_id) {
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: order_id, order_item_id: 0,
         box_is_opened: 0, comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify([])
     };
-    let _body = TicketMailDetails(_user, _chat);
+    let _body = StolenPackageTicketMailBody(_user, _chat);
     //console.log(option, _questions); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Generate stolen package ticket number.",
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep Stolen Package', body: _body };
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep || Reported Stolen (Not Delivered But Shown as Delivered) ', body: _body };
                 $.ajax(
                     { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
                 ).done(function (result) {
@@ -535,6 +535,20 @@ function GenerateStolenPackageTicket(order_id) {
         }
     }]);
     return false;
+}
+function StolenPackageTicketMailBody(name, chat_history) {
+    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your reported loss of the package.<br/><br/>';
+    _body += 'We will work diligently to resolve this for you as soon as possible, and a Layla specialist will get back to you regarding your stolen report within 3-5 business days.<br/><br/>';
+    _body += '<b>Here is what happens next:</b><br/><br/>';
+    _body += 'Review: We will review your claim details and any other evidence submitted pertaining to your claim.<br/><br/>';
+    _body += 'Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or an explanation of your stolen package issue.<br/><br/>';
+    _body += 'Decision Rendered: We will inform you of the decision made on your stolen package claim and advise you of the next steps.<br/><br/>';
+    _body += 'Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include creating a new order of the product.<br/><br/>';
+    _body += 'Again, we\'re sorry you\'re having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>';
+    _body += '<b>Chat History</b><br/><br/>';
+    $.each(chat_history, function (i, row) { _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>'; });
+    _body += '<br/><b>Help Desk <br/>';
+    return _body;
 }
 
 //Show Customer Warranty claim details and add comments

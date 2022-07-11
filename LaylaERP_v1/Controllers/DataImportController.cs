@@ -168,11 +168,11 @@ namespace LaylaERP.Controllers
             var result = string.Empty;
             try
             {
-               // Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
+                // Dictionary<string, Dictionary<string, object>> parentRow = new Dictionary<string, Dictionary<string, object>>();
                 //Dictionary<string, object> childRow;
-                 
+
                 //parentRow.Add("Administrator");
-                string str =  "{'str': {'str': 'Administrator,SalesRep'}}";
+                string str = "{'str': {'str': 'Administrator,SalesRep'}}";
 
                 object a = JsonConvert.DeserializeObject(str, typeof(object));
 
@@ -318,6 +318,28 @@ namespace LaylaERP.Controllers
                 myConnection.Close();
             }
             return Content(result, ContentType.Json, Encoding.UTF8);
+        }
+
+        [Route("{shortUrl}")]
+        public ActionResult ShortUrlPage(string shortUrl)
+        {
+            if (string.IsNullOrEmpty(shortUrl))
+            {
+                //Show home page
+                return View();
+            }
+
+            //Retrieve related post
+            //var redirectPost = GetPostByShortUrl(shortUrl);
+            var redirectPost = new { Id = 928011 };
+            if (redirectPost == null)
+            {
+                //No match, serve home page
+                return View();
+            }
+
+            //Redirect to relate post
+            return RedirectToAction("minesofmoria", "ordersmysql", new { id = redirectPost.Id });
         }
     }
 }

@@ -4,13 +4,13 @@
     //Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = null;
 }
-<h2 class="lbl-tilte"  data-id="@ViewBag.id">Donate Receipt Upload</h2>
+<h2 class="lbl-tilte" data-id="@ViewBag.id">Please Upload The Donation Receipt</h2>
  
 
 <section id="target" class="content section-content new-donate-section">
     <div id="divuploade" class="form-group d-flex profile-flex">
         <div class="col">
-            <label class="control-label">Donate Receipt</label>
+            @*<label class="control-label">Donate Receipt</label>*@
             <div class="add-profile">
                 <span class="edit-pic-profile">
                     <input type="file" onchange="readURL(this);" name="ImageFile" id="ImageFile" class="inputfile" />
@@ -101,14 +101,14 @@
                         //}
                        // <h2> 'Success' </h2>
                         $("#divuploade").hide();
-                        $('.lbl-tilte').empty().append('Your receipt upload. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+                        $('.lbl-tilte').empty().append('Thanks for the upload your donation receipt. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
                         
                     }
                     else {
                        // <h2> error </h2>
                        // swal('Alert!', data.message, 'error')
                         $("#divuploade").hide();
-                        $('.lbl-tilte').empty().append('Something wrong . <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+                        $('.lbl-tilte').empty().append('Something went wrong . <a title="Click here" href="' + window.location.origin + '">Click here</a>');
                     }
                 },
                 complete: function () {

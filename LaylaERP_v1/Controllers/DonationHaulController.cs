@@ -55,7 +55,7 @@ namespace LaylaERP_v1.Controllers
                 status = true;
                 String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "DonateandHaulMail", ds);
 
-                result = SendEmail.SendEmails_outer("christison.quickfix@gmail.com", "Donate and Haul tempted", renderedHTML, string.Empty);
+                result = SendEmail.SendEmails_outer(model.quote_header, "Donate and Haul tempted", renderedHTML, string.Empty);
 
                 //result = SendEmail.SendEmails_outer(model.quote_header, "Your Donation #" + model.id + " has been received", renderedHTML, string.Empty);
             }

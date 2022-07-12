@@ -120,19 +120,19 @@ function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
     if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
     $.ajaxSetup({ async: true });
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
-        response = JSON.parse(response);
+        response = JSON.parse(response); console.log(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
-            let _detail = JSON.parse(row.user_details);
-            let billing_Details = '<strong>' + _detail.billing_first_name + ' ' + _detail.billing_last_name + '</strong><br>';
+            let _detail = JSON.parse(row.user_details); console.log(_detail);
+            let billing_Details = '<strong>' + (isNullUndefAndSpace(_detail.billing_first_name) ? _detail.billing_first_name : '') + ' ' + (isNullUndefAndSpace(_detail.billing_last_name) ? _detail.billing_last_name : '') + '</strong><br>';
             billing_Details += (isNullUndefAndSpace(_detail.billing_company) ? _detail.billing_company + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_address_1) ? _detail.billing_address_1 + '<br>' : '')
                 + (isNullUndefAndSpace(_detail.billing_address_2) ? _detail.billing_address_2 + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_city) ? _detail.billing_city + ', ' : '') + (isNullUndefAndSpace(_detail.billing_state) ? _detail.billing_state + ' ' : '')
                 + (isNullUndefAndSpace(_detail.billing_postcode) ? _detail.billing_postcode + ' ' : '') + (isNullUndefAndSpace(_detail.shipping_country) ? _detail.shipping_country : '');
-            billing_Details += '<br><strong>Email address:</strong> ' + _detail.billing_email + '<br><strong>Phone:</strong> ' + _detail.billing_phone;
+            billing_Details += '<br><strong>Email address:</strong> ' + (isNullUndefAndSpace(_detail.billing_email) ? _detail.billing_email : '') + '<br><strong>Phone:</strong> ' + (isNullUndefAndSpace(_detail.billing_phone) ? _detail.billing_phone : '');
             $('.billing-address').empty().append(billing_Details);
 
-            let shipping_Details = '<strong>' + _detail.shipping_first_name + ' ' + _detail.shipping_last_name + '</strong><br>';
+            let shipping_Details = '<strong>' + (isNullUndefAndSpace(_detail.shipping_first_name) ? _detail.shipping_first_name : '') + ' ' + (isNullUndefAndSpace(_detail.shipping_last_name) ? _detail.shipping_last_name : '') + '</strong><br>';
             shipping_Details += (isNullUndefAndSpace(_detail.shipping_company) ? _detail.shipping_company + '<br>' : '') + (isNullUndefAndSpace(_detail.shipping_address_1) ? _detail.shipping_address_1.trim() + '<br>' : '')
                 + (isNullUndefAndSpace(_detail.shipping_address_2) ? _detail.shipping_address_2 + '<br>' : '') + (isNullUndefAndSpace(_detail.shipping_city) ? _detail.shipping_city + ', ' : '') + (isNullUndefAndSpace(_detail.shipping_state) ? _detail.shipping_state + ' ' : '')
                 + (isNullUndefAndSpace(_detail.shipping_postcode) ? _detail.shipping_postcode + ' ' : '') + (isNullUndefAndSpace(_detail.shipping_country) ? _detail.shipping_country : '');
@@ -468,7 +468,7 @@ function OrderInfo(ord_id) {
 function StolenPackageModal(order_id) {
     let _html = '<div class="modal-dialog modal-fullscreen p-12">';
     _html += '  <div class="modal-content modal-rounded">';
-    _html += '      <div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Order #' + order_id + ' not received by customer.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    _html += '      <div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Order #' + order_id + ' has not been received by the customer..</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     _html += '      <div class="modal-body py-1"></div>';
     _html += '      <div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary" data-id="' + order_id + '" onclick="GenerateStolenPackageTicket(' + order_id + ')">Generate Ticket No</button></div>';
     _html += '  </div>';

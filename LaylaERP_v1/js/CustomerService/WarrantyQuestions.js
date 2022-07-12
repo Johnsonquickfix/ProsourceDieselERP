@@ -38,7 +38,7 @@ var StolenPackageQuestions = [
     { id: 9001, title: "Did you check the front of the house?" },
     { id: 9002, title: "Did you check the back of the house?" },
     { id: 9003, title: "Do you live in an apartment building where packages are held in a certain place?" },
-    { id: 9004, title: "Have you asked property management or neighbors?" },
+    { id: 9004, title: "Have you asked property management or neighbours?" },
     { id: 9005, title: "Etc." }
 ];
 

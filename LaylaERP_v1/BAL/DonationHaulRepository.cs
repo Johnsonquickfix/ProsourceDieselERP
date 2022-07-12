@@ -95,6 +95,28 @@ using System.Text;
                 throw Ex;
             }
         }
+        public static DataTable Uploaddatalist(SearchModel model)
+        {
+            //string strWhr = " where fk_pcg_version='" + model.strValue1 + "'";
+            DataTable dtr = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT edh.fk_customerid id,user_nicename, user_email,filepath,right(filepath, Datalength(filepath)-1) urlfile,CONCAT(umfn.meta_value,' ',umln.meta_value) name ,umph.meta_value  billing_phone,discription FROM erp_donation_haul  edh"
+                                + " INNER JOIN wp_users ur on  ur.ID = edh.fk_customerid  LEFT OUTER JOIN  wp_usermeta umfn on umfn.user_id = ur.ID  and umfn.meta_key='first_name' LEFT OUTER JOIN  wp_usermeta umph on umph.user_id = ur.ID  and umph.meta_key='billing_phone' LEFT OUTER JOIN wp_usermeta umln on umln.user_id = ur.ID  and umln.meta_key='last_name' where 1=1";
+                //if (!string.IsNullOrEmpty(model.strValue1))
+                //{
+                //    strSql += strWhr;
+                //}
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
 
     }
 }

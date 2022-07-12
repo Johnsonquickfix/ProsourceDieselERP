@@ -96,7 +96,7 @@ function dataGridLoad() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let gentable = $('#dtdata').DataTable({
         /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         /*   responsive: true, lengthMenu: [[10, 20, 30, 40], [10, 20, 30, 40]],*/
@@ -143,12 +143,12 @@ function dataGridLoad() {
             });
         },
         aoColumns: [
-            {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                }
-            },
+            //{
+            //    'data': 'id', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+            //    }
+            //},
             { data: 'id', title: 'Cust ID', sWidth: "8%" },
             { data: 'name', title: 'Customer Name', sWidth: "14%" },
             { data: 'user_email', title: 'E-mail', sWidth: "23%" }, 

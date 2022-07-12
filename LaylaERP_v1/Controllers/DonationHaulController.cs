@@ -24,6 +24,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult UploadedList()
+        {
+            return View();
+        }
         public JsonResult GetCustmerDonationHaulList(JqDataTableModel model)
         {
             DataTable dt = new DataTable();
@@ -143,6 +147,19 @@ namespace LaylaERP_v1.Controllers
                 return Json(new { status = false, message = "Invalid details", url = "" }, 0);
             }
 
+        }
+
+        public JsonResult Uploaddatalist(SearchModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = DonationHaulRepository.Uploaddatalist(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

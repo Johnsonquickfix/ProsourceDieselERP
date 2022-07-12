@@ -45,28 +45,20 @@
 </div>
 <div class="page-title">
     <h2>Business Snapshot</h2>
-</div>
-<section class="content section-content neworder-section table-design">
-    <div class="box">
-        <div class="box-body">
-            <div class="row mb-1">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input id="txtDate" data-auto-update-input="true" readonly="readonly" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
-                    <button type="button" title="Click here to export Profit Loss Account" data-placement="top" data-toggle="tooltip" id="btnExportDetails" class="btn btn-primary btn-flat button">Export Details</button>
-                    <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnChange" onclick="printDiv();" class="btn btn-primary btn-flat button pull-right">Print</button>
-                </div>
-            </div>
+    <div class="active" style="margin-left:auto;min-width:280px;">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            <input id="txtDate" data-auto-update-input="true" readonly="readonly" class="form-control">
         </div>
     </div>
+</div>
+<section class="content section-content neworder-section table-design">
     <div class="row mb-1">
         <div class="col-md-6">
             <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Income</h3>
+                </div>
                 <div class="box-body">
                     <div id="pie_chart_income"></div>
                 </div>
@@ -74,8 +66,11 @@
         </div>
         <div class="col-md-6">
             <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Expenses</h3>
+                </div>
                 <div class="box-body">
-                    <div id="pie_chart_expence"></div>
+                    <div id="pie_chart_expenses"></div>
                 </div>
             </div>
         </div>
@@ -83,6 +78,15 @@
     <div class="row mb-1">
         <div class="col-md-6">
             <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Previous year income comparison</h3>
+                    <div class="box-tools pull-right">
+                        <div class="btn-group" data-toggle="btn-toggle">
+                            <button type="button" class="btn btn-default btn-sm active" onclick="getQuarterComparison('Y','I')">Yearly</button>
+                            <button type="button" class="btn btn-default btn-sm" onclick="getQuarterComparison('Q','I')">Quarterly</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-body">
                     <div id="bar_comp_income"></div>
                 </div>
@@ -90,8 +94,17 @@
         </div>
         <div class="col-md-6">
             <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Previous year expenses comparison</h3>
+                    <div class="box-tools pull-right">
+                        <div class="btn-group" data-toggle="btn-toggle">
+                            <button type="button" class="btn btn-default btn-sm active" onclick="getQuarterComparison('Y','E')">Yearly</button>
+                            <button type="button" class="btn btn-default btn-sm" onclick="getQuarterComparison('Q','E')">Quarterly</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-body">
-                    <div id="bar_comp_expence"></div>
+                    <div id="bar_comp_expenses"></div>
                 </div>
             </div>
         </div>
@@ -126,21 +139,10 @@
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
         }, function (start, end, label) {
             $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
-            //$.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
+            $.when(getProfitLossAccounts()).done(function () { getYearlyComparison(); });
         });
-        $.when(getProfitLossAccounts()).done(function () { getYearlyComparison();});
-        //$(document).on("change", "#ddlSearchBy", function (t) {
-        //    t.preventDefault(); let id = parseInt($("#ddlSearchBy").val()) || 0; SearchByControl(id)
-        //});
-        //$('#ddlfinaceyear').change(function () { getProfitLoss(); });
-        //$(document).on("click", "#btnSearch", function (t) { t.preventDefault(); getProfitLoss(); });
-        //$(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportProfitLoss(); });
+        $.when(getProfitLossAccounts()).done(function () { getYearlyComparison(); });
     });
-    function formatCurrency(total) {
-        var neg = false;
-        if (total < 0) { neg = true; total = Math.abs(total); }
-        return (neg ? "-$" : '$') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
-    }
     function getProfitLossAccounts() {
         let _date_from = $('#txtDate').data('daterangepicker').startDate, _date_to = $('#txtDate').data('daterangepicker').endDate;
         let option = { fiscalyear_id: 0, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'IEREPORT' };
@@ -150,8 +152,8 @@
                 try {
                     result = JSON.parse(result);
                     let _income = Enumerable.from(result).where(function (e) { return (e.extraparams === "I" && e.amount != 0); }).select(function (e) { return { name: e.label, y: Math.round(e.amount * 100) / 100 }; }).toArray();
-                    let _expence = Enumerable.from(result).where(function (e) { return (e.extraparams === "E" && e.amount != 0); }).select(function (e) { return { name: e.label, y: Math.round(e.amount * 100) / 100 }; }).toArray();
-                    bindPieChart(_income, _expence);
+                    let _expenses = Enumerable.from(result).where(function (e) { return (e.extraparams === "E" && e.amount != 0); }).select(function (e) { return { name: e.label, y: Math.round(e.amount * 100) / 100 }; }).toArray();
+                    bindPieChart(_income, _expenses);
                 }
                 catch (error) { throw error; }
             },
@@ -159,25 +161,23 @@
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: true
         });
     }
-    function bindPieChart(_income, _expence) {
+    function bindPieChart(_income, _expenses) {
         Highcharts.setOptions({ lang: { decimalPoint: '.', thousandsSep: ',' } });
         Highcharts.chart('pie_chart_income', {
             //colors: ['#2f7ed8', '#0d233a', '#8bbc21', '#910000', '#1aadce', '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'],
-            chart: { plotBackgroundColor: null, plotBorderWidth: null, plotShadow: false, type: 'pie' },
-            title: { text: 'Income' }, 
+            chart: { plotBackgroundColor: null, plotBorderWidth: null, plotShadow: false, type: 'pie' }, title: { text: '' },
             tooltip: { pointFormat: '{series.name}: {point.y:,.2f} <b>({point.percentage:.1f}%)</b>' },
             accessibility: { point: { valueSuffix: '%' } },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', showInLegend: false, dataLabels: { enabled: true, format: '<b>{point.name}</b>: {point.y:,.2f} ({point.percentage:.1f}%)' } } },
             series: [{ name: 'Income', colorByPoint: true, data: _income }]
         });
 
-        Highcharts.chart('pie_chart_expence', {
-            chart: { plotBackgroundColor: null, plotBorderWidth: null, plotShadow: false, type: 'pie' },
-            title: { text: 'Expence' },
+        Highcharts.chart('pie_chart_expenses', {
+            chart: { plotBackgroundColor: null, plotBorderWidth: null, plotShadow: false, type: 'pie' }, title: { text: '' },
             tooltip: { pointFormat: '{series.name}: ({point.y:,.2f}) <b>({point.percentage:.1f}%)</b>' },
             accessibility: { point: { valueSuffix: '%' } },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', showInLegend: false, dataLabels: { enabled: true, format: '<b>{point.name}</b>: {point.y:,.2f} ({point.percentage:.1f}%)' } } },
-            series: [{ name: 'Expence', colorByPoint: true, data: _expence }]
+            series: [{ name: 'Expenses', colorByPoint: true, data: _expenses }]
         });
 
         $('.highcharts-credits').remove();
@@ -191,14 +191,98 @@
             success: function (result) {
                 try {
                     result = JSON.parse(result);
-                    let _income = Enumerable.from(result).where(function (e) { return (e.extraparams === "I" && e.amount != 0); }).select(function (e) { return { name: e.label, y: Math.round(e.amount * 100) / 100 }; }).toArray();
-                    let _expence = Enumerable.from(result).where(function (e) { return (e.extraparams === "E" && e.amount != 0); }).select(function (e) { return { name: e.label, y: Math.round(e.amount * 100) / 100 }; }).toArray();
-                    //bindPieChart(_income, _expence);
+                    let _category = Enumerable.from(result).groupBy("$.month_name").select("$.key()").toArray();
+                    let _bar_income = Enumerable.from(result).where(function (e) { return (e.extraparams === "I"); }).groupBy("$.year_id").select(function (e) {
+                        let _obj = { name: e.key(), data: [] };
+                        $.each(e.getSource(), function (i, r) { _obj.data.push(r.amount); });
+                        return _obj;
+                    }).toArray();
+                    let _bar_expence = Enumerable.from(result).where(function (e) { return (e.extraparams === "E"); }).groupBy("$.year_id").select(function (e) {
+                        let _obj = { name: e.key(), data: [] };
+                        $.each(e.getSource(), function (i, r) { _obj.data.push(r.amount); });
+                        return _obj;
+                    }).toArray();
+                    bindIncomeBarChart(_category, _bar_income);
+                    bindExpensesBarChart(_category, _bar_expence);
                 }
                 catch (error) { throw error; }
             },
             complete: function () { $("#loader").hide(); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: true
         });
+    }
+    function getQuarterComparison(_type, _incomexpenses) {
+        $.ajax({
+            url: "/accounting/get-income-expence", dataType: 'json', contentType: "application/json; charset=utf-8", data: { report_type: 'PYIEC' }, beforeSend: function () { $("#loader").show(); },
+            success: function (result) {
+                try {
+                    result = JSON.parse(result);
+                    let _category = [], _bar_income = [], _bar_expence = [];
+                    if (_type == 'Q') {
+                        _category = Enumerable.from(result).groupBy("$.quarter_name", null, function (e, g) { return 'Quarter ' + e; }).toArray();
+                        _bar_income = Enumerable.from(result).where(function (e) { return (e.extraparams === "I"); }).groupBy("$.year_id", null,
+                            function (e, g) {
+                                let _obj = { name: e, data: [] };
+                                Enumerable.from(g.getSource()).groupBy("$.quarter_name", null, function (s_e, s_g) { _obj.data.push(s_g.sum(function (y) { return y.amount | 0; })); }).toArray();
+                                return _obj;
+                            }).toArray();
+                        _bar_expence = Enumerable.from(result).where(function (e) { return (e.extraparams === "E"); }).groupBy("$.year_id", null,
+                            function (e, g) {
+                                let _obj = { name: e, data: [] };
+                                Enumerable.from(g.getSource()).groupBy("$.quarter_name", null, function (s_e, s_g) { _obj.data.push(s_g.sum(function (y) { return y.amount | 0; })); }).toArray();
+                                return _obj;
+                            }).toArray();
+                    }
+                    else {
+                        _category = Enumerable.from(result).groupBy("$.month_name").select("$.key()").toArray();
+                        _bar_income = Enumerable.from(result).where(function (e) { return (e.extraparams === "I"); }).groupBy("$.year_id").select(function (e) {
+                            let _obj = { name: e.key(), data: [] };
+                            $.each(e.getSource(), function (i, r) { _obj.data.push(r.amount); });
+                            return _obj;
+                        }).toArray();
+                        _bar_expence = Enumerable.from(result).where(function (e) { return (e.extraparams === "E"); }).groupBy("$.year_id").select(function (e) {
+                            let _obj = { name: e.key(), data: [] };
+                            $.each(e.getSource(), function (i, r) { _obj.data.push(r.amount); });
+                            return _obj;
+                        }).toArray();
+                    }
+                    if (_incomexpenses == 'I') bindIncomeBarChart(_category, _bar_income);
+                    else if (_incomexpenses == 'E') bindExpensesBarChart(_category, _bar_expence);
+                }
+                catch (error) { throw error; }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: true
+        });
+    }
+    function bindIncomeBarChart(_category, _bar_income) {
+        Highcharts.setOptions({ lang: { decimalPoint: '.', thousandsSep: ',' } });
+        Highcharts.chart('bar_comp_income', {
+            chart: { type: 'column' }, title: { text: '' }, colors: ['#7cb5ec', '#90ed7d'],
+            xAxis: { categories: _category, crosshair: true }, yAxis: { min: 0, title: { text: 'Amount' } },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>${point.y:,.2f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true, useHTML: true
+            },
+            plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } }, series: _bar_income
+        });
+        $('.highcharts-credits').remove();
+    }
+    function bindExpensesBarChart(_category, _bar_expence) {
+        Highcharts.setOptions({ lang: { decimalPoint: '.', thousandsSep: ',' } });
+        Highcharts.chart('bar_comp_expenses', {
+            chart: { type: 'column' }, title: { text: '' }, colors: ['#e4d354', '#f7a35c'],
+            xAxis: { categories: _category, crosshair: true }, yAxis: { min: 0, title: { text: 'Amount' } },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>${point.y:,.2f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true, useHTML: true
+            },
+            plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } }, series: _bar_expence
+        });
+        $('.highcharts-credits').remove();
     }
 </script>

@@ -1478,7 +1478,7 @@ namespace LaylaERP.Controllers
         {
             //Name of File  
             //FileContentResult robj;
-            string fileName = "Sample.xlsx";
+            string fileName = "Expense_Report_" + model.strValue1 + "_to_" + model.strValue2 + ".xlsx";
             try
             {
                 int TotalRecord = 0;
@@ -1517,14 +1517,15 @@ namespace LaylaERP.Controllers
                     foreach (DataRow dtRow in dt.Rows)
                     {
                         ws.Cell("A" + i).Value = i - 5;
-                        ws.Cell("B" + i).Value = dtRow["doc_date"].ToString();
-                        ws.Cell("C" + i).Value = dtRow["doc_type"].ToString();
-                        ws.Cell("D" + i).Value = dtRow["PO_SO_ref"].ToString();
+                        ws.Cell("B" + i).Value = dtRow["doc_date"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("C" + i).Value = dtRow["doc_type"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("D" + i).Value = dtRow["PO_SO_ref"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Cell("E" + i).Value = dtRow["subledger_label"].ToString();
                         ws.Cell("F" + i).Value = dtRow["amount"].ToString();
                         i++;
                     }
-
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
                     using (MemoryStream stream = new MemoryStream())
                     {
                         //wb.SaveAs(stream);

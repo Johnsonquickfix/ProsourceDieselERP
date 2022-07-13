@@ -27,9 +27,9 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <input type="hidden" id="hfEdit" value="" />
-<div class="page-title">
+<div class="page-title d-flex flex-stack flex-grow-1">
     <h2 class="page-heading">Expense Report</h2>
-    <div class="active" style="margin-left:auto;min-width:280px;">
+    <div class="active d-flex" style="margin-left:auto;min-width:280px;">
         <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             <input id="txtDate" data-auto-update-input="true" readonly="readonly" class="form-control">
@@ -84,9 +84,14 @@
                 strValue1: $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), strValue2: $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY'),
                 sSearch: '', sSortColName: 'doc_date', sSortDir_0: 'asc'
             };
-            var url = "/accounting/expense-list-export?strValue1=" + _object.strValue1 + "&strValue2=" + _object.strValue2 + "&sSortColName=doc_date&sSortDir_0=asc";
-            $("#fileForm").attr('action', url);
-            $("#fileForm").submit();
+            $.when(dataGridLoad($("#loader").show())).done(function () {
+                var url = "/accounting/expense-list-export?strValue1=" + _object.strValue1 + "&strValue2=" + _object.strValue2 + "&sSortColName=doc_date&sSortDir_0=asc";
+                $("#fileForm").attr('action', url);
+                $("#fileForm").submit();
+            }).done(function () { $("#loader").hide();});
+           
+           
+            
             //$.ajax({
             //    url: "/accounting/expense-list-export", type: "post", //dataType: 'json', contentType: "application/json; charset=utf-8",
             //    data: _object, beforeSend: function () { $("#loader").show(); },

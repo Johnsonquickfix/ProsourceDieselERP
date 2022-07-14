@@ -226,7 +226,6 @@ function getItemList(product_id, vender_id) {
     });
 }
 function bindItems(data) {
-    console.log(data);
     let itemHtml = '';
     if (data.length > 0) {
         $.each(data, function (key, row) {
@@ -247,12 +246,8 @@ function bindItems(data) {
             }
         });
         $('#line_items').append(itemHtml); $("#divAddItemFinal").find(".rowCalulate").change(function (e) {
-            let _freeitems = $(this).closest('tr').data('freeitems'); console.log($(this).closest('tr').data('freeitems'));
-            let _qty = parseInt($(this).closest('tr').find("[name=txt_itemqty]").val()) || 0;
-            $.each(_freeitems, function (key, value) {
-                //console.log(key, row);
-                $('#tritemid_' + key).find("[name=txt_itemqty]").val((parseInt(value) || 0) * _qty);
-            });
+            let _freeitems = $(this).closest('tr').data('freeitems'), _qty = parseInt($(this).closest('tr').find("[name=txt_itemqty]").val()) || 0;
+            $.each(_freeitems, function (key, value) { $('#tritemid_' + key).find("[name=txt_itemqty]").val((parseInt(value) || 0) * _qty); });
             calculateFinal();
         });
     }
@@ -263,6 +258,8 @@ function removeItems(id) {
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
+                let _freeitems = $('#tritemid_' + id).data('freeitems');
+                $.each(_freeitems, function (key, value) { $('#tritemid_' + key).remove(); });
                 $('#tritemid_' + id).remove();
                 calculateFinal();
                 ActivityLog('delete other product id (' + id + ') in new purchase order', '/PurchaseOrder/NewPurchaseOrder');

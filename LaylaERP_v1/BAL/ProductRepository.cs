@@ -1234,6 +1234,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_parent", model.post_parent),
                     new SqlParameter("@comment_status", model.comment_status),
                     new SqlParameter("@post_modified",model.PublishDate),
+                    new SqlParameter("@product_typeid",model.ProductTypeID),
 
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_product_iud", para);

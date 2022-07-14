@@ -64,5 +64,6 @@ namespace LaylaERP.Models
         public int rang { get; set; }
         public string date_start { get; set; }
         public string date_end { get; set; }
+        public string free_itmes { get; set; }        
     }
 }

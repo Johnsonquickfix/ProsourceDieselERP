@@ -226,26 +226,35 @@ function getItemList(product_id, vender_id) {
     });
 }
 function bindItems(data) {
+    console.log(data);
     let itemHtml = '';
     if (data.length > 0) {
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].fk_product > 0) {
-                if ($('#tritemid_' + data[i].fk_product).length <= 0) {
-                    itemHtml += '<tr id="tritemid_' + data[i].fk_product + '" class="paid_item" data-pid="' + data[i].fk_product + '" data-pname="' + data[i].description + '" data-psku="' + data[i].product_sku + '" data-rowid="' + data[i].rowid + '">';
-                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                    itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data[i].fk_product + '" value="' + data[i].qty + '" name="txt_itemqty" placeholder="Qty."></td>';
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data[i].fk_product + '" value="' + data[i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                    itemHtml += '<td class="text-right tax-amount" data-tax1="' + data[i].localtax1_tx + '" data-tax2="' + data[i].localtax2_tx + '">' + data[i].total_localtax1 + '</td>';
-                    itemHtml += '<td class="text-right ship-amount">' + data[i].total_localtax2 + '</td>';
-                    itemHtml += '<td class="text-right row-total" data-total="' + data[i].total_ttc.toFixed(2) + '">' + formatCurrency(data[i].total_ttc) + '</td>';
+        $.each(data, function (key, row) {
+            if (row.fk_product > 0) {
+                if ($('#tritemid_' + row.fk_product).length <= 0) {
+                    itemHtml += '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '" data-freeitems=\'' + row.free_itmes + '\'>';
+                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty + '" name="txt_itemqty" placeholder="Qty."></td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.fk_product + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                    itemHtml += '<td class="text-right tax-amount" data-tax1="' + row.localtax1_tx + '" data-tax2="' + row.localtax2_tx + '">' + row.total_localtax1 + '</td>';
+                    itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2 + '</td>';
+                    itemHtml += '<td class="text-right row-total" data-total="' + row.total_ttc.toFixed(2) + '">' + formatCurrency(row.total_ttc) + '</td>';
                     itemHtml += '</tr>';
                 }
-                else { $('#txt_itemqty_' + data[i].rowid).val((parseFloat($('#txt_itemqty_' + data[i].rowid).val()) + data[i].qty).toFixed(2)); }
+                else { $('#txt_itemqty_' + row.rowid).val((parseFloat($('#txt_itemqty_' + row.rowid).val()) + row.qty).toFixed(2)); }
             }
-        }
-        $('#line_items').append(itemHtml); $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
+        });
+        $('#line_items').append(itemHtml); $("#divAddItemFinal").find(".rowCalulate").change(function (e) {
+            let _freeitems = $(this).closest('tr').data('freeitems'); console.log($(this).closest('tr').data('freeitems'));
+            let _qty = parseInt($(this).closest('tr').find("[name=txt_itemqty]").val()) || 0;
+            $.each(_freeitems, function (key, value) {
+                //console.log(key, row);
+                $('#tritemid_' + key).find("[name=txt_itemqty]").val((parseInt(value) || 0) * _qty);
+            });
+            calculateFinal();
+        });
     }
     calculateFinal();
 }
@@ -259,6 +268,19 @@ function removeItems(id) {
                 ActivityLog('delete other product id (' + id + ') in new purchase order', '/PurchaseOrder/NewPurchaseOrder');
             }
         });
+}
+function freeQtyUpdate() {
+    let _freeitems = $(prow).data('freeitems')
+
+    //$("#order_line_items > tr.free_item").each(function (index, row) {
+    //    let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;
+    //    $("#order_line_items  > tr.paid_item").each(function (i, prow) {
+    //        if ($(prow).data('freeitems')[pid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]); }
+    //        else if ($(prow).data('freeitems')[vid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[vid]); }
+    //    });
+    //    if (zQty <= 0) $('#tritemId_' + $(row).data('id')).remove();
+    //    else $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
+    //});
 }
 function calculateFinal() {
     let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00;

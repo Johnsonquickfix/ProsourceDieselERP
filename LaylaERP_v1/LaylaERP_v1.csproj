@@ -779,6 +779,7 @@
     <Content Include="js\CustomerService\WarrantyQuestions.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\DonationHaul\DonationHaulList.js" />
+    <Content Include="js\DonationHaul\UploadedList.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\Events\Events.js" />
@@ -1349,6 +1350,8 @@
     <Content Include="Views\DonationHaul\Index.cshtml" />
     <Content Include="Views\EmailNotifications\DonateandHaulMail.cshtml" />
     <Content Include="Views\Accounting\BusinessSnapshotReport.cshtml" />
+    <Content Include="Views\DonationHaul\UploadedList.cshtml" />
+    <Content Include="Views\Accounting\ExpenseReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

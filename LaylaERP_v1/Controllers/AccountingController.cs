@@ -1357,13 +1357,10 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        [HttpGet]
-        [Route("accounting/profitloss-export")]
+        [HttpPost, Route("accounting/profitloss-export")]
         public ActionResult ProfitLossReportExport(AccountingReportSearchModal model)
-        {
-            //Name of File  
-            FileContentResult robj;
-            string fileName = "Sample.xlsx";
+        {            
+            string fileName = "Profit_Loss_detail.xlsx";
             try
             {
                 if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
@@ -1392,8 +1389,8 @@ namespace LaylaERP.Controllers
 
                     //Add header
                     ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
-                    ws.Cell("A5").Value = ""; 
-                    ws.Cell("B5").Value = "Date";
+                    ws.Cell("A5").Value = "Account";
+                    ws.Cell("B5").Value = "Date"; 
                     ws.Cell("C5").Value = "Transaction Type";
                     ws.Cell("D5").Value = "Num";
                     ws.Cell("E5").Value = "Name";
@@ -1413,43 +1410,135 @@ namespace LaylaERP.Controllers
                         ws.Cell("H" + i).Value = dtRow["balance"].ToString();
                         i++;
                     }
-
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
                     using (MemoryStream stream = new MemoryStream())
                     {
                         wb.SaveAs(stream);
-                        var bytesdata = File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                        robj = bytesdata;
-                        //Return xlsx Excel File  
-                        //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
                     }
                 }
                 //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
-            return Json(robj, JsonRequestBehavior.AllowGet);
+            //return Json(robj, JsonRequestBehavior.AllowGet);
         }
 
+        #region [Business Snapshot Report]
         [Route("accounting/business-snapshot-report")]
         public ActionResult BusinessSnapshotReport()
         {
             return View();
         }
-        [HttpGet]
-        [Route("accounting/get-income-expence")]
+        [HttpGet, Route("accounting/get-income-expence")]
         public JsonResult GetBusinessSnapshotReport(AccountingReportSearchModal model)
         {
             string result = string.Empty;
             try
             {
-                if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
-                else if (model.report_type.Equals("IEREPORT")) model.report_type = "PROFITLOSS";
-                else if (model.report_type.Equals("BSREPORT")) model.report_type = "BALANSHEET";
-                else if (model.report_type.Equals("CFREPORT")) model.report_type = "CASHFLOW";
+                if (model.report_type.Equals("IEREPORT")) model.report_type = "PROFITLOSS";
+                else if (model.report_type.Equals("PYCOMPARISON")) model.report_type = "PYIEC";
                 DataTable dt = AccountingRepository.GetBusinessSnapshotReport(model.from_date, model.to_date, model.fiscalyear_id, model.report_type);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+        #endregion
+
+        #region [Expense Report]
+        [Route("accounting/expense-report")]
+        public ActionResult ExpenseReport()
+        {
+            return View();
+        }
+        [HttpGet, Route("accounting/expense-list")]
+        public JsonResult GetExpenseVoucherList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1)) fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) todate = Convert.ToDateTime(model.strValue2);
+
+                DataTable dt = AccountingRepository.ExpenseVoucherList(fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+        [HttpPost, Route("accounting/expense-list-export")]
+        public FileResult ExpenseVoucherListExport(JqDataTableModel model)
+        {
+            //Name of File  
+            //FileContentResult robj;
+            string fileName = "Expense_Report_" + model.strValue1 + "_to_" + model.strValue2 + ".xlsx";
+            try
+            {
+                int TotalRecord = 0;
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1)) fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) todate = Convert.ToDateTime(model.strValue2);
+
+                DataTable dt = AccountingRepository.ExpenseVoucherList(fromdate, todate, model.sSearch, 0, 1000000, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                dt.TableName = "Expense_Report";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    var ws = wb.Worksheets.Add("Expense_Report");
+                    ws.Style.Font.FontName = "Arial"; ws.Style.Font.FontSize = 8;
+
+                    ws.Cell("A1").Value = CommanUtilities.Provider.GetCurrent().CompanyName;
+                    ws.Cell("A1").Style.Font.Bold = true; ws.Cell("A1").Style.Font.FontSize = 14; ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A1:F1").Merge();
+                    ws.Cell("A2").Value = "Expense Report";
+                    ws.Cell("A2").Style.Font.Bold = true; ws.Cell("A2").Style.Font.FontSize = 14; ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A2:F2").Merge();
+                    ws.Cell("A3").Value = "";
+                    ws.Cell("A3").Style.Font.Bold = true; ws.Cell("A3").Style.Font.FontSize = 10; ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A3:F3").Merge();
+
+                    //Add header
+                    ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
+                    ws.Cell("A5").Value = "";
+                    ws.Cell("B5").Value = "Transaction date";
+                    ws.Cell("C5").Value = "Transaction type";
+                    ws.Cell("D5").Value = "Transaction number";
+                    ws.Cell("E5").Value = "Vendor name";
+                    ws.Cell("F5").Value = "Amount";
+                    int i = 6;
+                    foreach (DataRow dtRow in dt.Rows)
+                    {
+                        ws.Cell("A" + i).Value = i - 5;
+                        ws.Cell("B" + i).Value = dtRow["doc_date"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("C" + i).Value = dtRow["doc_type_desc"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("D" + i).Value = dtRow["PO_SO_ref"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("E" + i).Value = dtRow["subledger_label"].ToString();
+                        ws.Cell("F" + i).Value = dtRow["amount"].ToString();
+                        i++;
+                    }
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        //wb.SaveAs(stream);
+                        //var bytesdata = File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                        //robj = bytesdata;
+                        //Return xlsx Excel File  
+                        //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
+                    }
+                }
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            //return Json(robj, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

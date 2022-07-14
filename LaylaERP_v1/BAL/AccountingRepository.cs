@@ -1812,6 +1812,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+        #region [Report : Trail Balance, Profit & Loss A/C, Profit & Loss A/C, Statement of Cash Flows, Business Snapshot Report, Expense Report]
         public static DataTable GetTrailBalance(DateTime? from_date, DateTime? to_date, int fiscalyear_id, string report_type)
         {
             DataTable dt = new DataTable();
@@ -1854,6 +1855,36 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable ExpenseVoucherList(DateTime? fromdate, DateTime? todate, string search, int pageno, int pagesize, out int totalrows, string SortCol = "doc_date", string SortDir = "ASC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@from", fromdate.Value) : new SqlParameter("@from", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@to", todate.Value) : new SqlParameter("@to", DBNull.Value),
+                    new SqlParameter("@search", search),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "EXPLIST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_business_snapshot_report", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[0].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[0].Rows[0]["total_record"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        #endregion
 
         public static DataTable AccountjournalvoucherList(DateTime? fromdate, DateTime? todate, int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {

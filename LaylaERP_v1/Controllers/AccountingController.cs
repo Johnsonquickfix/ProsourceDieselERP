@@ -1514,7 +1514,7 @@ namespace LaylaERP.Controllers
                     {
                         ws.Cell("A" + i).Value = i - 5;
                         ws.Cell("B" + i).Value = dtRow["doc_date"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                        ws.Cell("C" + i).Value = dtRow["doc_type"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                        ws.Cell("C" + i).Value = dtRow["doc_type_desc"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Cell("D" + i).Value = dtRow["PO_SO_ref"].ToString(); ws.Cell("C" + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                         ws.Cell("E" + i).Value = dtRow["subledger_label"].ToString();
                         ws.Cell("F" + i).Value = dtRow["amount"].ToString();

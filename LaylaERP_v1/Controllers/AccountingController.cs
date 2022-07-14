@@ -1357,12 +1357,10 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        [HttpGet, Route("accounting/profitloss-export")]
+        [HttpPost, Route("accounting/profitloss-export")]
         public ActionResult ProfitLossReportExport(AccountingReportSearchModal model)
-        {
-            //Name of File  
-            FileContentResult robj;
-            string fileName = "Sample.xlsx";
+        {            
+            string fileName = "Profit_Loss_detail.xlsx";
             try
             {
                 if (string.IsNullOrEmpty(model.report_type)) model.report_type = "TRIALBAL";
@@ -1391,8 +1389,8 @@ namespace LaylaERP.Controllers
 
                     //Add header
                     ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
-                    ws.Cell("A5").Value = "";
-                    ws.Cell("B5").Value = "Date";
+                    ws.Cell("A5").Value = "Account";
+                    ws.Cell("B5").Value = "Date"; 
                     ws.Cell("C5").Value = "Transaction Type";
                     ws.Cell("D5").Value = "Num";
                     ws.Cell("E5").Value = "Name";
@@ -1412,20 +1410,18 @@ namespace LaylaERP.Controllers
                         ws.Cell("H" + i).Value = dtRow["balance"].ToString();
                         i++;
                     }
-
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
                     using (MemoryStream stream = new MemoryStream())
                     {
                         wb.SaveAs(stream);
-                        var bytesdata = File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                        robj = bytesdata;
-                        //Return xlsx Excel File  
-                        //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
                     }
                 }
                 //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch (Exception ex) { throw ex; }
-            return Json(robj, JsonRequestBehavior.AllowGet);
+            //return Json(robj, JsonRequestBehavior.AllowGet);
         }
 
         #region [Business Snapshot Report]

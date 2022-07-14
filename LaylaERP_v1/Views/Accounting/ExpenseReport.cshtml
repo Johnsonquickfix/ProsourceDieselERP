@@ -84,7 +84,7 @@
                 strValue1: $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), strValue2: $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY'),
                 sSearch: '', sSortColName: 'doc_date', sSortDir_0: 'asc'
             };
-            $.when(dataGridLoad($("#loader").show())).done(function () {
+            $.when($("#loader").show()).done(function () {
                 var url = "/accounting/expense-list-export?strValue1=" + _object.strValue1 + "&strValue2=" + _object.strValue2 + "&sSortColName=doc_date&sSortDir_0=asc";
                 $("#fileForm").attr('action', url);
                 $("#fileForm").submit();

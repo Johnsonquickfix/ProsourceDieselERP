@@ -132,6 +132,7 @@
         </div>
 
     </div>
+    <form action="" id="fileForm" method="post" style="display: none;"></form>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#loader").hide(); $('.select2').select2();
@@ -325,21 +326,11 @@
             else {
                 option = { fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, from_date: '', to_date: '', report_type: 'PLDREPORT' };
             }
-            $.ajax({
-                url: "/accounting/profitloss-export", type: "get", data: option, beforeSend: function () { $("#loader").show(); },
-                dataType: 'json',// contentType: "application/json; charset=utf-8",
-                success: function (result) {
-                    //debugger;
-                    var bytes = new Uint8Array(result.FileContents);
-                    var blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "myFileName.xlsx";
-                    link.click();
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (xhr, status, err) { $("#loader").hide(); console.log(xhr, status, err) }, async: true
-            });
+            $.when($("#loader").show()).done(function () {
+                let url = "/accounting/profitloss-export?fiscalyear_id=" + option.fiscalyear_id + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type;
+                $("#fileForm").attr('action', url);
+                $("#fileForm").submit();
+            }).done(function () { $("#loader").hide(); });
         }
     </script>
 </section>

@@ -217,7 +217,18 @@ function bindOtherItems(proc_type, row_num) {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function freeQtyUpdate() {
+    $("#line_items > tr.free_item").each(function (index, row) {
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        $("#line_items  > tr.paid_item").each(function (i, prow) {
+            if ($(prow).data('freeitems')[pid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_itemqty]").val()) * parseFloat($(prow).data('freeitems')[pid]); }
+        });
+        if (zQty <= 0) $('#tritemid_' + pid).remove();
+        else $(row).find("[name=txt_itemqty]").val(zQty.toFixed(0));
+    });
+}
 function calculateFinal() {
+    freeQtyUpdate();
     let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
@@ -328,7 +339,7 @@ function getPurchaseOrderInfo() {
                 $.each(data['pod'], function (index, row) {
                     let itemHtml = '';
                     if (row.fk_product > 0) {
-                        itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
+                        itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '" data-freeitems=\'' + row.free_itmes + '\'>';
                         //itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                         itemHtml += '<td>' + row.description + '<br>Tag/Lot/Serial No. :- ' + row.product_serialno + '</td><td>' + row.product_sku + '</td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
@@ -339,6 +350,7 @@ function getPurchaseOrderInfo() {
                         itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
+                        $.each(JSON.parse(row.free_itmes), function (key, value) { $('#tritemid_' + key).removeClass('paid_item').addClass('free_item'); $('#tritemid_' + key).find('.btnDeleteItem').remove(); });
                     }
                     else {
                         let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';

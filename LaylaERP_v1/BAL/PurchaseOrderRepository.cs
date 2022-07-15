@@ -40,11 +40,11 @@ namespace LaylaERP.BAL
                 {
                     new SqlParameter("@vendor_id", vendor_id)
                 };
-                string strSQl = "SELECT p.id id,CONCAT(p.post_title, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                string strSQl = "SELECT distinct p.id id,CONCAT(p.post_title, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
                                 + " FROM wp_posts as p"
                                 + " inner join Product_Purchase_Items ir on ir.fk_product = p.id and ir.fk_vendor=@vendor_id"
                                 + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
-                                + " WHERE p.post_type in ('product', 'product_variation') AND p.post_status = 'publish' ORDER BY id; ";
+                                + " WHERE p.post_type in ('product', 'product_variation') ORDER BY id; ";//AND p.post_status = 'publish' 
                 DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -57,17 +57,27 @@ namespace LaylaERP.BAL
             try
             {
                 PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                //SqlParameter[] parameters =
+                //{
+                //    new SqlParameter("@product_id", product_id),new SqlParameter("@vendor_id", vendor_id)
+                //};
+                //string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,1 qty,cost_price purchase_price,0 salestax,0 shipping_price,discount"
+                //            + " FROM wp_posts as p"
+                //            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                //            + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
+                //            + " WHERE p.post_type in('product', 'product_variation') AND p.id = @product_id "
+                //            + " union all"
+                //            + " select p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,free_it.free_quantity qty,cost_price purchase_price,0 salestax,0 shipping_price,discount"
+                //            + " FROM wp_product_free free_it"
+                //            + " inner join wp_posts as p on p.id = free_it.free_product_id"
+                //            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                //            + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor = 0 or ir.fk_vendor = @vendor_id) and effective_date <= getdate() and ir.date_to >= getdate()"
+                //            + " WHERE free_it.status = 1 and free_it.product_id = @product_id";
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@product_id", product_id),new SqlParameter("@vendor_id", vendor_id)
+                    new SqlParameter("@Flag", "ITEMDETAIL"),new SqlParameter("@id",product_id),new SqlParameter("@userid", vendor_id)
                 };
-                string strSQl = "SELECT top 1 p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,cost_price purchase_price,0 salestax,0 shipping_price,discount"
-                            + " FROM wp_posts as p"
-                            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
-                            + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
-                            + " WHERE p.post_type in('product', 'product_variation') AND p.post_status = 'publish'"
-                            + " AND p.id = @product_id ORDER BY fk_vendor desc;";
-                SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                SqlDataReader sdr = SQLHelper.ExecuteReader("erp_purchase_order_search", parameters);
                 while (sdr.Read())
                 {
                     productsModel = new PurchaseOrderProductsModel();
@@ -101,12 +111,23 @@ namespace LaylaERP.BAL
                         productsModel.discount_percent = decimal.Parse(sdr["discount"].ToString().Trim());
                     else
                         productsModel.discount_percent = 0;
-                    productsModel.qty = 1;
+                    if (sdr["qty"] != DBNull.Value)
+                        productsModel.qty = decimal.Parse(sdr["qty"].ToString().Trim());
+                    else
+                        productsModel.qty = 1;
                     productsModel.total_ht = productsModel.localtax1_tx * productsModel.qty;
                     productsModel.discount = productsModel.total_ht * (productsModel.discount_percent / 100);
                     productsModel.total_localtax1 = productsModel.localtax1_tx * productsModel.qty;
                     productsModel.total_localtax2 = productsModel.localtax2_tx * productsModel.qty;
                     productsModel.total_ttc = productsModel.total_ht - productsModel.discount + productsModel.total_localtax1 + productsModel.total_localtax2;
+                    if (sdr["free_itmes"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["free_itmes"].ToString().Trim()))
+                        productsModel.free_itmes = sdr["free_itmes"].ToString().Trim();
+                    else
+                        productsModel.free_itmes = "{}";
+                    if (sdr["is_free"] != DBNull.Value)
+                        productsModel.is_free = Convert.ToBoolean(sdr["is_free"].ToString());
+                    else
+                        productsModel.is_free = false;
                     _list.Add(productsModel);
                 }
             }
@@ -195,12 +216,12 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex)
             {
-                if(qFlag == "POP")
+                if (qFlag == "POP")
                     UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePayment/" + Pkey + "", "Payment taken from invoice");
                 if (qFlag == "POAMD")
                     UserActivityLog.ExpectionErrorLog(ex, "PurchaseOrder/POAmendment/" + Pkey + "", "PO Amendment");
                 if (qFlag == "I")
-                    UserActivityLog.ExpectionErrorLog(ex, "PurchaseOrder/NewPurchase/" + Pkey + "", "New Purchase Order"); 
+                    UserActivityLog.ExpectionErrorLog(ex, "PurchaseOrder/NewPurchase/" + Pkey + "", "New Purchase Order");
                 throw new Exception(ex.Message);
             }
             return dt;
@@ -302,7 +323,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate,int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(DateTime? fromdate, DateTime? todate, int statusid, string userstatus, string salestatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;

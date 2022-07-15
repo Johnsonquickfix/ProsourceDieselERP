@@ -147,15 +147,25 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code, pwrd.country, pwrd.state "
-                                  +" FROM wp_posts as p"
-                                  +" LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
-                                  +" left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                  +" INNER join product_warehouse_rule pwr on pwr.product_id = ps.id"
-                                  +" INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
-                                  +" inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
-                                  +" inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
-                                  +" WHERE p.post_type = 'product' AND p.post_status = 'publish'";
+                //string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code, pwrd.country, pwrd.state "
+                //                  +" FROM wp_posts as p"
+                //                  +" LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                //                  +" left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                  +" INNER join product_warehouse_rule pwr on pwr.product_id = ps.id"
+                //                  +" INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
+                //                  +" inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
+                //                  +" inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
+                //                  +" WHERE p.post_type = 'product' AND p.post_status = 'publish'";
+
+                string strquery = "SELECT pwrd.rowid as id, COALESCE(p.id,p.id) id,COALESCE(p.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code, pwrd.country, pwrd.state "
+                                 + " FROM wp_posts as p"
+                                 //+ " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                 //+ " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                 + " INNER join product_warehouse_rule pwr on pwr.product_id = p.id"
+                                 + " INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
+                                 + " inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
+                                 + " inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
+                                 + " WHERE p.post_type in('product_variation' ,'product') AND p.post_status = 'publish'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -170,15 +180,25 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT pwrd.rowid as id, pwrd.fk_product_rule, COALESCE(ps.id,p.id) pid,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
+                //string strquery = "SELECT pwrd.rowid as id, pwrd.fk_product_rule, COALESCE(ps.id,p.id) pid,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
+                //                  + " FROM wp_posts as p"
+                //                  + " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                //                  + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                  + " INNER join product_warehouse_rule pwr on pwr.product_id = ps.id"
+                //                  + " INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
+                //                  + " inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
+                //                  + " inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
+                //                  + " WHERE pwrd.rowid='"+id+"' AND p.post_type = 'product' AND p.post_status = 'publish'";
+
+                string strquery = "SELECT pwrd.rowid as id, pwrd.fk_product_rule, COALESCE(p.id,p.id) pid,COALESCE(p.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
                                   + " FROM wp_posts as p"
-                                  + " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
-                                  + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                  + " INNER join product_warehouse_rule pwr on pwr.product_id = ps.id"
+                                  //+ " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                  //+ " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                  + " INNER join product_warehouse_rule pwr on pwr.product_id = p.id"
                                   + " INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
                                   + " inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
                                   + " inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
-                                  + " WHERE pwrd.rowid='"+id+"' AND p.post_type = 'product' AND p.post_status = 'publish'";
+                                  + " WHERE pwrd.rowid='" + id + "' AND p.post_type in('product_variation' ,'product') AND p.post_status = 'publish'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -628,6 +648,75 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable Getaccountingclasstransactionlist(string ID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid, account_class, account_tag,department,location,event,others from erp_accounting_class_transaction where 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (account_class like '%" + searchid + "%' OR account_tag like '%" + searchid  + "%' OR department like '%" + searchid  + "%' OR location like '%" + searchid + "%')";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_accounting_class_transaction where 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetclasstransactionById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT rowid, account_class, account_tag,department,location,event,others FROM erp_accounting_class_transaction where rowid =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int Addtclassransacion(AccountingClassTransaction model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", model.flag),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@account_class", model.account_class),
+                    new SqlParameter("@account_tag", model.account_tag),
+                    new SqlParameter("@department", model.department),
+                    new SqlParameter("@location", model.location),
+                    new SqlParameter("@event", model.events),
+                    new SqlParameter("@others", model.others),
+
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery("erp_accounting_class_transaction_iud", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
 
     }
 }

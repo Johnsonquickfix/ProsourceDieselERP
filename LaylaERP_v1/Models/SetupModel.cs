@@ -40,4 +40,16 @@ namespace LaylaERP.Models
         public string product_type_name { get; set; }
         public string product_type_code { get; set; }
     }
+    public class AccountingClassTransaction
+    {
+        public int rowid { get; set; }
+        public string flag { get; set; }
+        public string account_class { get; set; }
+        public string account_tag { get; set; }
+        public string department { get; set; }
+        public string location { get; set; }
+        public string events { get; set; }
+        public string others { get; set; }
+
+    }
 }

@@ -84,7 +84,7 @@ function Search() {
             "style": 'multi',
             "selector": 'td:first-child',
         },
-        "order": [1, 'desc'],
+        "order": [6, 'desc'],
 
         "dom": 'lBfrtip',
         //"buttons": [

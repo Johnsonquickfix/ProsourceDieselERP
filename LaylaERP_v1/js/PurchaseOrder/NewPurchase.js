@@ -222,7 +222,7 @@ function getItemList(product_id, vender_id) {
         success: function (data) { bindItems(data); },
         complete: function () { $("#loader").hide(); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-        async: false
+        async: true
     });
 }
 function bindItems(data) {
@@ -231,8 +231,9 @@ function bindItems(data) {
         $.each(data, function (key, row) {
             if (row.fk_product > 0) {
                 if ($('#tritemid_' + row.fk_product).length <= 0) {
-                    itemHtml += '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '" data-freeitems=\'' + row.free_itmes + '\'>';
-                    itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    itemHtml += '<tr id="tritemid_' + row.fk_product + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '" data-freeitems=\'' + row.free_itmes + '\'>';
+                    if (row.is_free) itemHtml += '<td class="text-center"></td>';
+                    else itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty + '" name="txt_itemqty" placeholder="Qty."></td>';
@@ -246,8 +247,8 @@ function bindItems(data) {
             }
         });
         $('#line_items').append(itemHtml); $("#divAddItemFinal").find(".rowCalulate").change(function (e) {
-            let _freeitems = $(this).closest('tr').data('freeitems'), _qty = parseInt($(this).closest('tr').find("[name=txt_itemqty]").val()) || 0;
-            $.each(_freeitems, function (key, value) { $('#tritemid_' + key).find("[name=txt_itemqty]").val((parseInt(value) || 0) * _qty); });
+            //let _freeitems = $(this).closest('tr').data('freeitems'), _qty = parseInt($(this).closest('tr').find("[name=txt_itemqty]").val()) || 0;
+            //$.each(_freeitems, function (key, value) { $('#tritemid_' + key).find("[name=txt_itemqty]").val((parseInt(value) || 0) * _qty); });
             calculateFinal();
         });
     }
@@ -258,31 +259,26 @@ function removeItems(id) {
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
-                let _freeitems = $('#tritemid_' + id).data('freeitems');
-                $.each(_freeitems, function (key, value) { $('#tritemid_' + key).remove(); });
-                $('#tritemid_' + id).remove();
-                calculateFinal();
+                $('#tritemid_' + id).remove(); calculateFinal();
                 ActivityLog('delete other product id (' + id + ') in new purchase order', '/PurchaseOrder/NewPurchaseOrder');
             }
         });
 }
 function freeQtyUpdate() {
-    let _freeitems = $(prow).data('freeitems')
-
-    //$("#order_line_items > tr.free_item").each(function (index, row) {
-    //    let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;
-    //    $("#order_line_items  > tr.paid_item").each(function (i, prow) {
-    //        if ($(prow).data('freeitems')[pid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]); }
-    //        else if ($(prow).data('freeitems')[vid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[vid]); }
-    //    });
-    //    if (zQty <= 0) $('#tritemId_' + $(row).data('id')).remove();
-    //    else $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
-    //});
+    $("#line_items > tr.free_item").each(function (index, row) {
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        $("#line_items  > tr.paid_item").each(function (i, prow) {
+            if ($(prow).data('freeitems')[pid] != undefined) { zQty += parseFloat($(prow).find("[name=txt_itemqty]").val()) * parseFloat($(prow).data('freeitems')[pid]); }
+        });
+        if (zQty <= 0) $('#tritemid_' + pid).remove();
+        else $(row).find("[name=txt_itemqty]").val(zQty.toFixed(0));
+    });
 }
 function calculateFinal() {
+    freeQtyUpdate();
     let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00;
     //main item
-    $("#line_items > tr.paid_item").each(function (index, row) {
+    $("#line_items > tr").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
@@ -521,7 +517,7 @@ function getPurchaseOrderInfo() {
                 $.each(data['pod'], function (key, row) {
                     let itemHtml = ''; let _total = formatCurrency(row.total_ttc);
                     if (row.fk_product > 0) {
-                        itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
+                        itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '" data-freeitems=\'' + row.free_itmes + '\'>';
                         itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');" data-toggle="tooltip" title="Delete product"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                         itemHtml += '<td>' + row.description + '<br>Tag/Lot/Serial No. :- ' + row.product_serialno + '</td><td>' + row.product_sku + '</td>';
                         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
@@ -532,6 +528,7 @@ function getPurchaseOrderInfo() {
                         itemHtml += '<td class="text-right row-total" data-total="' + row.total_ttc.toFixed(2) + '">' + _total + '</td>';
                         itemHtml += '</tr>';
                         $('#line_items').append(itemHtml);
+                        $.each(JSON.parse(row.free_itmes), function (key, value) { $('#tritemid_' + key).removeClass('paid_item').addClass('free_item'); $('#tritemid_' + key).find('.btnDeleteItem').remove(); });
                     }
                     else {
                         let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
@@ -550,7 +547,6 @@ function getPurchaseOrderInfo() {
                         itemHtml += '</tr>';
                         $('#product_line_items').append(itemHtml);
                     }
-                    console.log(_total);
                 });
                 getPurchaseOrderPayments(oid);
                 //}

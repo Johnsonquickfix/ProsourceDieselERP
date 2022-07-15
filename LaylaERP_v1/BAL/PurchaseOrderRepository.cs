@@ -124,6 +124,10 @@ namespace LaylaERP.BAL
                         productsModel.free_itmes = sdr["free_itmes"].ToString().Trim();
                     else
                         productsModel.free_itmes = "{}";
+                    if (sdr["is_free"] != DBNull.Value)
+                        productsModel.is_free = Convert.ToBoolean(sdr["is_free"].ToString());
+                    else
+                        productsModel.is_free = false;
                     _list.Add(productsModel);
                 }
             }

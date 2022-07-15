@@ -55,6 +55,12 @@
                                 <input type="text" class="form-control" id="txtdetailtype" placeholder="Enter Detail Type">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div title="Enter E-mail">
+                                <label for="name">Transaction Class</label>
+                                <select class="form-control select2" id="ddltransactionclass"></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -129,7 +135,8 @@
             EditAccount();
         });
         isEdit(true);
-        getsubaccount();
+       // getsubaccount();
+        filldropdown();
     });
 
     function isEdit(val) {
@@ -152,6 +159,26 @@
             }, async: false
         });
     }
+    function filldropdown() {
+        $.ajax({
+            url: "/Accounting/Getfillaccount",
+            type: "Get", beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                let dt = JSON.parse(data);
+                //Product
+                $("#ddlSubAccount").html('<option value="0">Please select sub account</option>');
+                for (i = 0; i < dt['Table'].length; i++) { $("#ddlSubAccount").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+
+                $("#ddltransactionclass").html('<option value="0">Please select transaction class</option>');
+                for (i = 0; i < dt['Table1'].length; i++) { $("#ddltransactionclass").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+            }, async: false,
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); }
+        });
+
+
+    }
     function EditAccount() {
         debugger
         var rowid = $("#hfid").val();
@@ -167,6 +194,7 @@
         var bstype = $("#ddlbstype").val();
         var accountcategory = $("#ddlaccountcategory").val();
         var subaccount = $("#ddlSubAccount").val();
+        var transactionclass = $("#ddltransactionclass").val();
         if (pcgversion == "") {
             swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
         }
@@ -196,6 +224,7 @@
                 bs_type: bstype,
                 fk_accounting_category: accountcategory,
                 Sub_Account: subaccount,
+                transaction_class: transactionclass
             }
             $.ajax({
                 url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
@@ -254,6 +283,7 @@
                         $("#ddlbstype").val(d[0].bs_type).trigger('change');
                         setTimeout(function () { $("#ddlaccountcategory").val(d[0].fk_accounting_category).trigger('change') }, 500);
                         setTimeout(function () { $("#ddlSubAccount").val(d[0].Sub_Account).trigger('change') }, 550);
+                        setTimeout(function () { $("#ddltransactionclass").val(d[0].transaction_class).trigger('change') }, 550);
                         //console.log(d[0].rowid);
                     }
                 },

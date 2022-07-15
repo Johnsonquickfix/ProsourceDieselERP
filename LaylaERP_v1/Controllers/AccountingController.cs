@@ -1424,6 +1424,19 @@ namespace LaylaERP.Controllers
             //return Json(robj, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult Getfillaccount()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = AccountingRepository.Getfillaccount();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
         #region [Business Snapshot Report]
         [Route("accounting/business-snapshot-report")]
         public ActionResult BusinessSnapshotReport()

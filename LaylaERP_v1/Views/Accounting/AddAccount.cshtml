@@ -54,6 +54,12 @@
                                             <input type="text" class="form-control" id="txtdetailtype" placeholder="Enter Detail Type">
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div title="Enter E-mail">
+                                            <label for="name">Transaction Class</label>
+                                            <select class="form-control select2" id="ddltransactionclass"></select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -98,6 +104,7 @@
                                             <select class="form-control select2" id="ddlSubAccount"></select>
                                         </div>
                                     </div>
+                                
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnSave"><span title="Save details of chart of accounts" data-placement="left" data-toggle="tooltip"><b>Submit</b></span></a>
@@ -130,7 +137,8 @@
                 });
 
                 isEdit(true);
-                getsubaccount();
+               // getsubaccount();
+                filldropdown();
             });
 
             function getsubaccount() {
@@ -145,6 +153,24 @@
                     }, async: false
                 });
             }
+            function filldropdown() {
+                $.ajax({
+                    url: "/Accounting/Getfillaccount",
+                    type: "Get", beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        let dt = JSON.parse(data);
+                        //Product
+                        $("#ddlSubAccount").html('<option value="0">Please select sub account</option>');
+                        for (i = 0; i < dt['Table'].length; i++) { $("#ddlSubAccount").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+
+                        $("#ddltransactionclass").html('<option value="0">Please select transaction class</option>');
+                        for (i = 0; i < dt['Table1'].length; i++) { $("#ddltransactionclass").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+
+                    }, async: false,
+                    complete: function () { $("#loader").hide(); },
+                    error: function (xhr, status, err) { $("#loader").hide(); }
+                });
+
 
             function isEdit(val) {
                 localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -166,6 +192,7 @@
                 var bstype = $("#ddlbstype").val();
                 var accountcategory = $("#ddlaccountcategory").val();
                 var subaccount = $("#ddlSubAccount").val();
+                var transactionclass = $("#ddltransactionclass").val();
                 if (pcgversion == "") {
                     swal('Alert', 'Please enter chart of account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
                 }
@@ -196,6 +223,7 @@
                         bs_type: bstype,
                         fk_accounting_category: accountcategory,
                         Sub_Account: subaccount,
+                        transaction_class: transactionclass
                     }
                     $.ajax({
                         url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',

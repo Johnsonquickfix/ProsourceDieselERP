@@ -843,7 +843,8 @@ function GenerateTicketNo() {
     let _file = [], _gdrive_link = [];
     var file = Dropzone.forElement("#kt_dropzonejs_example_3").getAcceptedFiles();
     $.each(file, function (i, r) {
-        _file.push({ dataURL: r.dataURL.split(',')[1], name: r.name, type: r.type });
+        //_file.push({ dataURL: r.dataURL.split(',')[1], name: r.name, type: r.type });
+        _file.push({ dataURL: r.dataURL, name: r.name, type: r.type });
         _gdrive_link.push({ files: 'Content/tickets/{tid}/' + r.name });
     });
     //console.log(_file, _gdrive_link); return false;

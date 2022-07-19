@@ -690,6 +690,8 @@
     <Content Include="Content\journalvoucher\default.png" />
     <Content Include="Content\jspdf\html2canvas.js" />
     <Content Include="Content\jspdf\jspdf.debug.js" />
+    <Content Include="Content\lightbox\lightbox.min.css" />
+    <Content Include="Content\lightbox\lightbox.min.js" />
     <Content Include="Content\MiscBillsFiles\default.png" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
@@ -1028,6 +1030,7 @@
     <Content Include="Scripts\intlTelInput.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\common.scss" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\mixins.scss" />
+    <Content Include="Content\lightbox\lightbox.min.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

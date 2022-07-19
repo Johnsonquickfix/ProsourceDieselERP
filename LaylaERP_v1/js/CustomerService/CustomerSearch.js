@@ -120,11 +120,11 @@ function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
     if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
     $.ajaxSetup({ async: true });
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
-        response = JSON.parse(response); console.log(response);
+        response = JSON.parse(response); //console.log(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
-            let _detail = JSON.parse(row.user_details); console.log(_detail);
+            let _detail = JSON.parse(row.user_details);
             let billing_Details = '<strong>' + (isNullUndefAndSpace(_detail.billing_first_name) ? _detail.billing_first_name : '') + ' ' + (isNullUndefAndSpace(_detail.billing_last_name) ? _detail.billing_last_name : '') + '</strong><br>';
             billing_Details += (isNullUndefAndSpace(_detail.billing_company) ? _detail.billing_company + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_address_1) ? _detail.billing_address_1 + '<br>' : '')
                 + (isNullUndefAndSpace(_detail.billing_address_2) ? _detail.billing_address_2 + '<br>' : '') + (isNullUndefAndSpace(_detail.billing_city) ? _detail.billing_city + ', ' : '') + (isNullUndefAndSpace(_detail.billing_state) ? _detail.billing_state + ' ' : '')
@@ -225,6 +225,9 @@ function dataGridLoad() {
                 }
             },
             {
+                data: 'tickets', title: 'Open Tickets', sWidth: "8%", class: '', 'render': function (id, type, row, meta) { return '<div class="text-gray-800 fw-boldest">' + id + '</div>'; }
+            },
+            {
                 data: 'id', title: 'Action', sWidth: "8%", class: 'text-center', 'render': function (id, type, row, meta) {
                     return '<a href="javascript:void(0);" onclick="OrderInfo(' + id + ');" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
@@ -248,11 +251,12 @@ function OrderInfo(ord_id) {
         let _html = '', _coupon = '', _refundHtml = '';
         $.each(response['order'], function (i, row) {
             //Add header
-            $(".order-id,.order-right-id").text('Order #' + row.order_id); $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
+            $(".order-right-id").empty().append('Order #' + row.order_id + ' <a href="javascript:void(0);" onclick="OrderInfo(' + row.order_id + ');" data-toggle="tooltip" title = "Refersh Order" class="fw-boldest text-gray-600 text-hover-primary"> <i class="glyphicon glyphicon-refresh"></i></a>');
+            $(".order-id").text('Order #' + row.order_id); $(".order-id").data('order_id', row.order_id); $(".order-id-comment").text('Order #' + row.order_id + ' Comments');
             _order_date = moment(row.date_created, 'MM/DD/YYYY'); $(".order-date").text(row.date_created); $(".order-status").text(row.status_desc);
             $(".order-right-tool").empty().append('<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="StolenPackageModal(' + row.order_id + ');">Stolen Package</a> <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="backOrderList();">Back To List</a>');
             //Add Address
-            let _json = JSON.parse(row.order_details); //console.log(_json);
+            let _json = JSON.parse(row.order_details);
             _html = '<strong>' + _json._billing_first_name + ' ' + _json._billing_last_name + '</strong><br>';
             if (isNullUndefAndSpace(_json._billing_address_1)) _html += _json._billing_address_1 + '<br>';
             if (isNullUndefAndSpace(_json._billing_address_2)) _html += _json._billing_address_2 + '<br>';
@@ -568,7 +572,7 @@ function WarrantyInfoModal(id, _action) {
 function WarrantyInfoModalData(id, _action) {
     let _html = ''; $("#loader").show(); _is_open = false;
     $.get('/customer-service/ticket-info', { strValue1: id }).then(response => {
-        response = JSON.parse(response); console.log(response);
+        response = JSON.parse(response);
         _is_open = response[0].ticket_is_open;
         _html += '<div class="row">';
         let _chat_history = isNullUndefAndSpace(response[0].chat_history) ? JSON.parse(response[0].chat_history) : [];
@@ -1045,8 +1049,7 @@ function ReturnGenereate() {
         url: "/customer-service/create-order-return",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            //data = JSON.parse(data); //
-            console.log(data);
+            //data = JSON.parse(data); //console.log(data);
             if (data.status == true) {
                 $("#myModal").modal('hide'); OrderInfo(_oid);
                 swal('Success!', 'Refunded order placed successfully.', "success");//.then(function () { window.location.href = window.location.origin + "/OrdersMySQL/OrdersHistory"; }, 50);
@@ -1200,8 +1203,7 @@ function ReplacementGenereate() {
         url: "/customer-service/create-order-replacement",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            //data = JSON.parse(data); //
-            console.log(data);
+            //data = JSON.parse(data); //console.log(data);
             if (data.status == true) {
                 $("#myModal").modal('hide'); OrderInfo(_oid);
                 swal('Success!', 'Replacement order placed successfully.', "success");

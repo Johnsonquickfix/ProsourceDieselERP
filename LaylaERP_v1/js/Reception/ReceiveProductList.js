@@ -242,7 +242,7 @@ function GenratedProductGrid() {
             { data: 'tagno', title: 'Tag/Lot/Batch No', sWidth: "10%" },
             { data: 'display', title: 'Product Name', sWidth: "15%" },
             { data: 'Quenty', title: 'Quantity', sWidth: "10%" },
-            { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+            { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
 
         ],
 
@@ -327,7 +327,7 @@ function Search() {
             //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
             { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
-            { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+            { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
             { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
         ],
@@ -410,7 +410,7 @@ function Searchproduct() {
                 //{ data: 'order_qty', title: 'Order Qty', sWidth: "10%" },
                 { data: 'status', title: 'Status', sWidth: "10%" },
                 { data: 'issue_order_no', title: 'Issue No.', sWidth: "10%" },
-                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
                 { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],
@@ -536,7 +536,7 @@ function Searchorder() {
                         return '#' + data;
                     }
                 },
-                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
                 { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],
@@ -623,7 +623,7 @@ function Searchproductorder() {
                         return '#' + data;
                     }
                 },
-                { data: 'cost_price_cogs', title: 'Cost Price(Batch)', sWidth: "10%" },
+                { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
                 { data: 'tagno', class: 'tagno', title: 'tagno', sWidth: "10%" },
 
             ],

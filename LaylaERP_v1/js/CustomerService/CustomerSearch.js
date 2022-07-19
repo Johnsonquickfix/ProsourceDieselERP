@@ -555,7 +555,7 @@ function StolenPackageTicketMailBody(name, chat_history) {
 function WarrantyInfoModal(id, _action) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-9 modal-dialog-scrollable">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Ticket No.: #' + id + ', Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Ticket No.: #' + id + ', Refunds/Returns/Warranty claim details.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3 d-flex"></div>';
     //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Send to Retention</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Return</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Replacement</button><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '">Create new order</button></div>';
@@ -676,7 +676,7 @@ function ClaimWarrantyModal(ele) {
     let _qty = (parseInt($(ele).data('qty')) || 0) + (parseInt($(ele).data('returnqty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your refunds/returns/warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body py-1"></div>';
     modalHtml += '<div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
@@ -753,9 +753,6 @@ function ClaimWarrantyModal(ele) {
 
     $('#myModal .modal-body').append(modalHtml);
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
-    //$("#kt_warranty_claim").accordion({
-    //    collapsible: true
-    //});
 
     $('#kt_warranty_claim .collapsed').on('click', function () {
         $('#kt_warranty_claim .collapse').removeClass('show');
@@ -821,7 +818,7 @@ function ClaimWarranty(chk) {
     $('#btnclaimwarranty').remove();
     $(chk).prop("checked", isChecked);
     if (isChecked == false) $(chk).parent().parent().find('.order-claim-warranty').empty();
-    else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Claim Warranty</button>');
+    else $('.order-claim-warranty-' + $(chk).data('id')).empty().append('<button type="button" id="btnclaimwarranty" class="btn btn-primary btn-sm " onclick="ClaimWarrantyModal(this);" data-id="' + $(chk).data('id') + '" data-name="' + $(chk).data('name') + '" data-qty="' + $(chk).data('qty') + '">Begin Retention/Refunds/Claim Warranty</button>');
 }
 function ClaimWarranty_next() {
     let _chk = $("input[name='chk-reason']:checked").data('code');
@@ -859,7 +856,7 @@ function GenerateTicketNo() {
     });
 
     let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') + ' X ' + (parseInt($("#kt_warranty_claim_qty").val()) || 0) },
-    { from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
+    //{ from: 'Help Desk', content: 'Please select a reason for your warranty claim.' },
     { from: _user, content: _reason }, { from: _user, content: _questions }];
     let option = {
         id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#kt_warranty_claim_qty").val()) || 0, order_item_sku: '',

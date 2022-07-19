@@ -143,7 +143,7 @@ function dataGridLoad() {
 function ClaimWarrantyModal(id, _action) {
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Warranty claim detail.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Refunds/Returns/Warranty claim details.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body"></div>';
     modalHtml += '<div class="modal-footer py-3"></div>';
     modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="UpdateTicketAction(this);"><i class="fa fa-paper-plane"></i> Submit</button></div>';

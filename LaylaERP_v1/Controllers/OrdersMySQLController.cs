@@ -328,7 +328,7 @@
                 model.post_modified_gmt = model.post_date_gmt;
                 model.post_content_filtered = string.Empty;
                 model.post_parent = parent_id.ToString();
-                model.post_type = "shop_order_replace";
+                model.post_type = "shop_order";//shop_order_replace
                 //model.guid = string.Format("{0}?{1}={2}", Net.Host, model.post_type, model.post_name);
                 model.guid = string.Format("{0}?post_type={1}&p={2}", "http://173.247.242.204/~rpsisr/woo/", "shop_order_refund&p", "");
                 model.menu_order = "0";
@@ -382,7 +382,8 @@
             try
             {
                 long n_orderid = 0;
-                if (string.IsNullOrEmpty(model.OrderPostStatus.status)) model.OrderPostStatus.status = "wc-completed";
+                //if (string.IsNullOrEmpty(model.OrderPostStatus.status)) model.OrderPostStatus.status = "wc-completed";
+                if (string.IsNullOrEmpty(model.OrderPostStatus.status)) model.OrderPostStatus.status = "auto-draft";
                 n_orderid = AddReplacementOrderPost(model.OrderPostStatus.order_id, model.OrderPostStatus.status);
                 if (n_orderid > 0)
                 {
@@ -393,13 +394,12 @@
                             model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.customer_id, n_orderid));
                     var i = 0;
                     /// step 2 : wp_postmeta 
+                    strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from wp_postmeta where post_id= {1} and (meta_key like '_billing_%' or  meta_key like '_shipping_%'); ", n_orderid, model.OrderPostStatus.order_id));
                     strSql.Append("insert into wp_postmeta (post_id,meta_key,meta_value) values");
                     foreach (OrderPostMetaModel obj in model.OrderPostMeta)
                     {
-                        if (++i == model.OrderPostMeta.Count)
-                            strSql.Append(string.Format("('{0}','{1}','{2}'); ", n_orderid, obj.meta_key, obj.meta_value));
-                        else
-                            strSql.Append(string.Format("('{0}','{1}','{2}'), ", n_orderid, obj.meta_key, obj.meta_value));
+                        if (++i == model.OrderPostMeta.Count) strSql.Append(string.Format("('{0}','{1}','{2}'); ", n_orderid, obj.meta_key, obj.meta_value));
+                        else strSql.Append(string.Format("('{0}','{1}','{2}'), ", n_orderid, obj.meta_key, obj.meta_value));
                     }
                     /// step 3 : wp_woocommerce_order_items
                     foreach (OrderProductsModel obj in model.OrderProducts)
@@ -456,7 +456,8 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
                     //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
-                    strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
+                    //strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
+                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',customer_id = {3} where id = {4}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.customer_id, n_orderid));
 
                     result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }

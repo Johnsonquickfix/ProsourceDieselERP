@@ -222,7 +222,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult CompanyOverview()
+        {
+            return View();
+        }
 
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
@@ -1170,6 +1173,20 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
             return Json(result, 0);
+        }
+        [HttpGet]
+        public JsonResult getcompanyoverview(AccountingReportSearchModal model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                
+                DataSet ds = ReportsRepository.getcompanyoverview(model.from_date, model.to_date, model.fiscalyear_id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 

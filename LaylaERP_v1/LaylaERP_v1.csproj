@@ -1354,6 +1354,7 @@
     <Content Include="Views\DonationHaul\UploadedList.cshtml" />
     <Content Include="Views\Accounting\ExpenseReport.cshtml" />
     <Content Include="Views\Setup\accountingclasstransaction.cshtml" />
+    <Content Include="Views\Reports\CompanyOverview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

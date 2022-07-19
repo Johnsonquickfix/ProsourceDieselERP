@@ -225,7 +225,10 @@ function dataGridLoad() {
                 }
             },
             {
-                data: 'tickets', title: 'Open Tickets', sWidth: "8%", class: '', 'render': function (id, type, row, meta) { return '<div class="text-gray-800 fw-boldest">' + id + '</div>'; }
+                data: 'tickets', title: 'Open Tickets', sWidth: "8%", class: '', 'render': function (id, type, row, meta) {
+                    if (id != null) return '<div class="text-gray-800 fw-boldest">' + id + '</div>';
+                    else return '<div class="text-gray-800 fw-boldest">-</div>';
+                }
             },
             {
                 data: 'id', title: 'Action', sWidth: "8%", class: 'text-center', 'render': function (id, type, row, meta) {

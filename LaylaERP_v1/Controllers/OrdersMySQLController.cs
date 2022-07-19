@@ -315,13 +315,13 @@
                 model.post_date = CommonDate.CurrentDate();
                 model.post_date_gmt = CommonDate.UtcDate();
                 model.post_content = string.Empty;
-                model.post_title = "Replacement &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
+                model.post_title = "Order &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");//Replacement
                 model.post_excerpt = string.Empty;
                 model.post_status = post_status;// "draft";
                 model.comment_status = "closed";
                 model.ping_status = "closed";
                 model.post_password = "wc_order_" + Guid.NewGuid().ToString().Replace("-", "");
-                model.post_name = "replacement-" + model.post_date_gmt.ToString("MMM-dd-yyyy-HHmm-tt").ToLower();
+                model.post_name = "order-" + model.post_date_gmt.ToString("MMM-dd-yyyy-HHmm-tt").ToLower();//replacement
                 model.to_ping = string.Empty;
                 model.pinged = string.Empty;
                 model.post_modified = model.post_date;
@@ -456,8 +456,8 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',customer_id from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
                     //strSql.Append(" union all select order_item_id,'_line_tax_data',concat('a:2:{s:5:\"total\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}s:8:\"subtotal\";a:1:{i:',0,';s:',length(tax_amount),':\"',tax_amount,'\";}}') from wp_wc_order_product_lookup where order_id=" + n_orderid + "; ");
 
-                    //strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
-                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',customer_id = {3} where id = {4}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.customer_id, n_orderid));
+                    strSql.Append(string.Format(" update wp_wc_order_product_lookup set customer_id = {0} where order_id = {1};", model.OrderPostStatus.customer_id, n_orderid));
+                    strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), n_orderid));
 
                     result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }

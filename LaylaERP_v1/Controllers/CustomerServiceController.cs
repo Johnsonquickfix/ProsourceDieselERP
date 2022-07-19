@@ -227,6 +227,7 @@ namespace LaylaERP.Controllers
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_order_type", meta_value = "Replacement" });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_refunded_by", meta_value = om.UserID.ToString() });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_ticket_id", meta_value = model.ticket_id.ToString() });
 

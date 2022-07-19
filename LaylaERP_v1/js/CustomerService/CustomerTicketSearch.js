@@ -17,6 +17,7 @@
     $(document).on("click", "[name='ticke_action']", function (t) {
         $("[name='ticke_action']").not(this).prop("checked", false)
     });
+    lightbox.option({ resizeDuration: 200, wrapAround: true, showImageNumberLabel: false,  alwaysShowNavOnTouchDevices: true });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function formatCurrency(total) {
@@ -226,10 +227,10 @@ function ClaimWarrantyModal(id, _action) {
         try {
             let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];
             if (_gdrive_link.length > 0) {
-                modalHtml += '<div class="d-flex align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
+                modalHtml += '<div class="d-flex flex-wrap align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
                 $.each(_gdrive_link, function (i, row) {
                     modalHtml += '  <div class="overlay me-10">';
-                    modalHtml += '      <div class="overlay-wrapper"><img alt="img" class="rounded w-150px" src="../' + row.files + '"></div >';
+                    modalHtml += '      <div class="overlay-wrapper"><a class="example-image-link" href="../' + row.files + '" data-lightbox="example-set" data-title=""><img class="example-image rounded w-150px" src="../' + row.files + '" alt="-"></a></div>';
                     modalHtml += '  </div>';
                 });
                 modalHtml += '</div>';

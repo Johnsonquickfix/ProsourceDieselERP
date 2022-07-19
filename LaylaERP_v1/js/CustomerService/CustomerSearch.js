@@ -58,6 +58,7 @@
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
         else { $('.podiumchannel').addClass('hidden'); }
     });
+    lightbox.option({ resizeDuration: 200, wrapAround: true, showImageNumberLabel: false, alwaysShowNavOnTouchDevices: true });
     //$("#myModal").on("click", "[name='box_is_opened']", function (t) { $("[name='box_is_opened']").not(this).prop("checked", false) });
 });
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
@@ -606,13 +607,14 @@ function WarrantyInfoModalData(id, _action) {
         try {
             let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];
             if (_gdrive_link.length > 0) {
-                _html += '<div class="d-flex align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
+                _html += '<div class="d-flex flex-wrap align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
                 $.each(_gdrive_link, function (i, row) {
                     _html += '  <div class="overlay me-10">';
-                    _html += '      <div class="overlay-wrapper"><img alt="img" class="rounded w-150px" src="../' + row.files + '"></div >';
+                    _html += '      <div class="overlay-wrapper"><a class="example-image-link" href="../' + row.files + '" data-lightbox="example-set" data-title=""><img class="example-image rounded w-150px" src="../' + row.files + '" alt="-"></a></div >';
                     _html += '  </div>';
                 });
                 _html += '</div>';
+
             }
         }
         catch { };

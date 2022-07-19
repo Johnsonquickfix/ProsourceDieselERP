@@ -4,6 +4,8 @@
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 <link href="~/css/style.bundle.css" rel="stylesheet" />
+<!-- lightbox CSS -->
+<link href="~/Content/lightbox/lightbox.min.css" rel="stylesheet" />
 <!-- datatables CSS -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -80,4 +82,7 @@
 </section>
 <div class="modal in printable" id="myModal" role="dialog" aria-hidden="true"></div>
 <script src="~/js/common.js"></script>
+<!-- lightbox JS -->
+<script src="~/Content/lightbox/lightbox.min.js"></script>
+
 <script src="@Url.Content("~/js/CustomerService/CustomerTicketSearch.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

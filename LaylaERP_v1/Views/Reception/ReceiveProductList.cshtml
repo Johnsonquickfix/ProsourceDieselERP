@@ -109,36 +109,41 @@
                         <div class="col-md-12">
                             <div class="user-top-section">
                                 <div class="tablenav top tablenav-top2">
-                                    <div class="alignleft actions">
-                                        <div class="input-group">
-                                            <select class="form-control select2" id="ddlpofill">
-                                                <option value="0" selected="selected">Select Purchases Order </option>
-                                            </select>
-                                        </div>
+                                    <div class="alignleft actions col-md-2">
+
+                                        <select class="form-control select2" id="ddlpofill" style="width: 100%;">
+                                            <option value="0" selected="selected">Select Purchases Order </option>
+                                        </select>
+
                                     </div>
-                                    <div class="alignleft actions">
-                                        <select class="form-control select2" id="ddlbatchno">
+                                    <div class="alignleft actions col-md-3">
+                                        <select class="form-control select2" id="ddlbatchno" style="width: 100%;">
                                             <option value="0" selected="selected">Select Batch No.</option>
 
                                         </select>
                                         @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                                        <button type="button" id="btnsearch" data-toggle="tooltip" title="Search  by selection criteria." onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+                                    </div>
+                                    <div class="alignleft actions col-md-1">
+                                        <button type="button" id="btnsearch" style="width: 100%;" data-toggle="tooltip" title="Search  by selection criteria." onclick="Search();" class="btn btn-primary btn-flat button">Filter</button>
+
                                     </div>
 
-                                    <div class="alignleft actions">
-                                        <select class="form-control select2" id="ddlproduct">
+                                    <div class="alignleft actions col-md-3">
+                                        <select class="form-control select2" id="ddlproduct" style="width: 100%;">
                                             <option value="0" selected="selected">Select Product</option>
 
                                         </select>
                                         @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                                        <button type="button" id="btnbtnsearch" data-toggle="tooltip" title="Search  by product selection criteria." onclick="Searchproduct();" class="btn btn-primary btn-flat button">Get Details</button>
                                     </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnbtnsearch" style="width: 100%;" data-toggle="tooltip" title="Search  by product selection criteria." onclick="Searchproduct();" class="btn btn-primary btn-flat button">Get Details</button>
 
-                                    <div class="alignright actions bulkactions">
-                                        <button type="button" id="btnreload" data-toggle="tooltip" title="Refresh." onclick="Reload();" class="btn btn-primary btn-flat button">Refresh</button>
+                                    </div>
+                                        <div class="alignright actions bulkactions">
+                                            <button type="button" id="btnreload" data-toggle="tooltip" title="Refresh." onclick="Reload();" class="btn btn-primary btn-flat button">Refresh</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <div id="divprdata" class="row">
@@ -177,36 +182,43 @@
                         <div class="col-md-12">
                             <div class="user-top-section">
                                 <div class="tablenav top tablenav-top2">
-                                    <div class="alignleft actions">
-                                        <div class="input-group">
-                                            <select class="form-control select2" id="ddlpofillorder">
-                                                <option value="0" selected="selected">Select Purchases Order </option>
-                                            </select>
-                                        </div>
+
+                                    <div class="alignleft actions col-md-2">
+                                        <select class="form-control select2" id="ddlpofillorder" style="width: 100%;">
+                                            <option value="0" selected="selected">Select Purchases Order </option>
+                                        </select>
                                     </div>
-                                    <div class="alignleft actions">
-                                        <select class="form-control select2" id="ddlbatchnoorder">
+
+                                    <div class="alignleft actions col-md-3">
+                                        <select class="form-control select2" id="ddlbatchnoorder" style="width: 100%;">
                                             <option value="0" selected="selected">Select Batch No.</option>
 
                                         </select>
                                         @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                                        <button type="button" id="btnsearchorder" data-toggle="tooltip" title="Search  by selection criteria." onclick="Searchorder();" class="btn btn-primary btn-flat button">Filter</button>
+
+                                    </div>
+                                    <div class="alignleft actions col-md-1">
+
+                                        <button type="button" id="btnsearchorder" style="width: 100%;" data-toggle="tooltip" title="Search  by selection criteria." onclick="Searchorder();" class="btn btn-primary btn-flat button">Filter</button>
                                     </div>
 
-                                    <div class="alignleft actions">
-                                        <select class="form-control select2" id="ddlproductorder">
+                                    <div class="alignleft actions col-md-3">
+                                        <select class="form-control select2" id="ddlproductorder" style="width: 100%;">
                                             <option value="0" selected="selected">Select Product</option>
 
                                         </select>
                                         @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
-                                        <button type="button" id="btnbtnsearchorder" data-toggle="tooltip" title="Search  by product selection criteria." onclick="Searchproductorder();" class="btn btn-primary btn-flat button">Get Details</button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnbtnsearchorder" style="width: 100%;" data-toggle="tooltip" title="Search  by product selection criteria." onclick="Searchproductorder();" class="btn btn-primary btn-flat button">Get Details</button>
+
                                     </div>
 
-                                    <div class="alignright actions bulkactions">
-                                        <button type="button" id="btnreloadorder" data-toggle="tooltip" title="Refresh." onclick="Reloadorder();" class="btn btn-primary btn-flat button">Refresh</button>
+                                        <div class="alignright actions bulkactions">
+                                            <button type="button" id="btnreloadorder" data-toggle="tooltip" title="Refresh." onclick="Reloadorder();" class="btn btn-primary btn-flat button">Refresh</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <div id="divprdata" class="row">

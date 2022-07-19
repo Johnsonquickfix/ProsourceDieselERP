@@ -533,7 +533,7 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT rowid, post_title, returndays, warrantydays, remarks FROM erp_product_return_days eprd Left join wp_posts wp on wp.id = eprd.productid where 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    //strWhr += " and (J.code like '%" + searchid + "%' OR N.Nature like '%" + searchid + "%' OR J.label like '%" + searchid + "%')";
+                    strWhr += " and (post_title like '%" + searchid + "%' OR returndays like '%" + searchid + "%' OR warrantydays like '%" + searchid + "%'  OR remarks like '%" + searchid + "%')";
                 }
                 //if (userstatus != null)
                 //{

@@ -475,7 +475,7 @@ function Searchorder() {
     if (batchnoid != '0' && pofillid != '0') {
         let gentable = $('#dtdataorderlisting').DataTable({
             /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"], [3, "asc"]],
+            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[5, "desc"] ],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -563,7 +563,7 @@ function Searchproductorder() {
     if (productid != '0') {
         let gentable = $('#dtdataorderlisting').DataTable({
             /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[7, "desc"], [3, "asc"]],
+            columnDefs: [{ 'visible': false, 'targets': [7] }], order: [[5, "desc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
             responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],

@@ -227,6 +227,7 @@ namespace LaylaERP.Controllers
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_order_type", meta_value = "Replacement" });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_refunded_by", meta_value = om.UserID.ToString() });
                 model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "_ticket_id", meta_value = model.ticket_id.ToString() });
 
@@ -253,6 +254,15 @@ namespace LaylaERP.Controllers
                 //loop through all the files
                 foreach (var file in files)
                 {
+                    var filetype = "png";
+                    if (file.dataURL.StartsWith("data:image/jpeg;base64")) filetype = "jpeg";
+                    else if (file.dataURL.StartsWith("data:image/png;base64")) filetype = "png";
+                    else if (file.dataURL.StartsWith("data:image/jpg;base64")) filetype = "jpg";
+
+
+                    file.dataURL = file.dataURL.Replace("data:image/jpeg;base64,", "");
+                    file.dataURL = file.dataURL.Replace("data:image/png;base64,", "");
+                    file.dataURL = file.dataURL.Replace("data:image/jpg;base64,", "");
                     //Save file content goes here
                     //if (file != null && file.ContentLength > 0)
                     {
@@ -269,18 +279,45 @@ namespace LaylaERP.Controllers
                         //file.SaveAs(path);
                         byte[] bytes = Convert.FromBase64String(file.dataURL);
 
-                        Image image;
-                        using (MemoryStream ms = new MemoryStream(bytes))
+                        if (filetype == "png")
                         {
-                            image = Image.FromStream(ms);
+                            Image image;
+                            using (MemoryStream ms = new MemoryStream(bytes))
+                            {
+                                image = Image.FromStream(ms);
+                            }
+                            image.Save(path);
                         }
-                        image.Save(path);
+                        else if (filetype == "jpeg" || filetype == "jpg")
+                        {
+                            int width = 480;
+                            var height = 480; //succeeds at 65499, 65500
+
+                            //var image = new Bitmap(width, height);
+                            //Image image;
+                            using (MemoryStream ms = new MemoryStream(bytes))
+                            {
+                                var image = new Bitmap(ms);
+                                //image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                //image = Image.FromStream(ms);
+                                image.Save(path);
+                            }
+                            
+
+                            //MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length);
+
+                            //System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)Image.FromStream(ms);
+                            
+                            //ms.Close();
+
+                            //bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        }
                     }
 
                 }
 
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
             }
         }

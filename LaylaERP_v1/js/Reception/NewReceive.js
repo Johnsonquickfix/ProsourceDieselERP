@@ -711,6 +711,22 @@ function getPurchaseOrderInfo() {
                             $("#avgcost").html(data['pods'][i].avgcost.toFixed(2));
                         }
                     }
+                    if (data['poshtx'].length > 0) {
+                        for (let i = 0; i < data['poshtx'].length; i++) {
+                            if (data['poshtx'][i].shipping > 0) {
+                                $("#txtshippingfee").val(data['poshtx'][i].shipping.toFixed(2));
+                                $("#shippingTotal").text(data['poshtx'][i].shipping.toFixed(2));
+                               
+                            }
+                            if (data['poshtx'][i].tax > 0) {
+                                $("#salesTaxTotal").text(data['poshtx'][i].tax.toFixed(2));
+                                $("#txtotherfee").val(data['poshtx'][i].tax.toFixed(2));
+                            }
+                            
+                         
+                        }
+                    }
+
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");

@@ -371,7 +371,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };              
                 ds = SQLHelper.ExecuteDataSet("erp_receiveorderdatabyid", para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "pods";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "pods"; ds.Tables[3].TableName = "poshtx";
             }
             catch (Exception ex)
             {

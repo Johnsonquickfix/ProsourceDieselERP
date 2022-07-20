@@ -290,6 +290,74 @@
 </div>
 <div class="modal in printable" id="myModal" role="dialog" aria-hidden="true"></div>
 
+<div class="modal in printable" id="myFileModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen p-12">
+        <div class="modal-content modal-rounded">
+            <div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please uplaod files for your refunds/returns/warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>'
+            <div class="modal-body py-1">
+                @*<div class="dropzone-panel mb-lg-0 mb-2">
+                        <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>
+                        <a id="dropzone-upload" class="btn btn-sm btn-light-primary me-2" style="display: none;">Upload All</a>
+                        <a class="dropzone-remove-all btn btn-sm btn-light-primary" style="display: none;">Remove All</a>
+                    </div>
+                    <form action="~/CustomerService/SaveDropzoneJsUploadedFiles" class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="dropzoneJsForm" method="post" enctype="multipart/form-data">
+                    </form>*@
+                <div class="row">
+                    <div class="col-md-12 modal-body-msg alert alert-success alert-dismissible">
+                    </div>
+                </div>
+                <div id="actions" class="row">
+                    <div class="col-lg-6">
+                        <div class="btn-group w-100">
+                            <span class="btn btn-success col fileinput-button dz-clickable"><i class="fas fa-plus"></i>Add files</span>
+                            <button type="submit" class="btn btn-primary col start"><i class="fas fa-upload"></i>Start upload</button>
+                            <button type="reset" class="btn btn-warning col cancel"><i class="fas fa-times-circle"></i>Cancel upload</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex align-items-center">
+                        <div class="fileupload-process w-100">
+                            <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress=""></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table table-striped files" id="previews">
+                    <div id="template" class="row mt-2">
+                        <div class="col-auto">
+                            <span class="preview"><img src="data:," alt="" data-dz-thumbnail /></span>
+                        </div>
+                        <div class="col d-flex align-items-center">
+                            <p class="mb-0">
+                                <span class="lead fs-5" data-dz-name></span>
+                                (<span data-dz-size></span>)
+                            </p>
+                            <strong class="error text-danger" data-dz-errormessage></strong>
+                        </div>
+                        <div class="col-4 d-flex align-items-center">
+                            <div class="progress progress-striped active w-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                            </div>
+                        </div>
+                        <div class="col-auto d-flex align-items-center">
+                            <div class="btn-group">
+                                <button class="btn btn-primary start"><i class="fas fa-upload"></i>Start</button>
+                                <!--<button data-dz-remove class="btn btn-warning cancel"><i class="fas fa-times-circle"></i>Cancel</button>-->
+                                <button data-dz-remove class="btn btn-danger delete"><i class="fas fa-trash"></i>Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2 d-flex"></div>
+        </div>
+    </div>
+</div>
+
+@*<form action="~/CustomerService/SaveDropzoneJsUploadedFiles" class="dropzone" id="dropzoneJsForm"></form>
+
+    <button id="submit-all">Submit All Files</button>*@
+
 <script src="~/js/serializePHP.js"></script>
 <script src="~/js/common.js"></script>
 
@@ -300,3 +368,13 @@
 <script src="@Url.Content("~/js/CustomerService/WarrantyQuestions.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/CustomerService/CustomerSearch.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
+<script type="text/javascript">
+    // DropzoneJS Demo Code Start
+    Dropzone.autoDiscover = false
+
+    // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+    var previewNode = document.querySelector("#template")
+    //previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+</script>

@@ -115,7 +115,7 @@ namespace LaylaERP.Controllers
                     {
                         if (dt.Rows[0]["response"].ToString() == "success")
                         {
-                            UploadedFile(dt.Rows[0]["id"].ToString(), model.files);
+                            //UploadedFile(dt.Rows[0]["id"].ToString(), model.files);
                             SendEmail.SendEmails_outer(model.receipient_email, model.subject + " (#" + dt.Rows[0]["id"].ToString() + ").", model.body, string.Empty);
                         }
                     }
@@ -247,6 +247,40 @@ namespace LaylaERP.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// to Save DropzoneJs Uploaded Files
+        /// </summary>
+        public ActionResult SaveDropzoneJsUploadedFiles(long id)
+        {
+            bool isSavedSuccessfully = false;
+
+            foreach (string fileName in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[fileName];
+
+                var originalDirectory = new DirectoryInfo(string.Format("{0}Content\\tickets\\", Server.MapPath(@"\")));
+
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), id.ToString());
+
+                bool isExists = System.IO.Directory.Exists(pathString);
+
+                if (!isExists) System.IO.Directory.CreateDirectory(pathString);
+
+                var path = string.Format("{0}\\{1}", pathString, file.FileName);
+                file.SaveAs(path);
+                try
+                {
+                    DataTable dt = CustomerServiceRepository.UpdateTicketFiles(id, file.FileName, "IMAGEUPLOAD");
+                }
+                catch { }
+                //You can Save the file content here
+
+                isSavedSuccessfully = true;
+            }
+            if (isSavedSuccessfully) return Json(new { Message = "File saved successfully." });
+            else return Json(new { Message = "Error in saving file." });
+
+        }
         public void UploadedFile(string ticket_id, List<CustomerServiceFilesModel> files)
         {
             try
@@ -302,12 +336,12 @@ namespace LaylaERP.Controllers
                                 //image = Image.FromStream(ms);
                                 image.Save(path);
                             }
-                            
+
 
                             //MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length);
 
                             //System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)Image.FromStream(ms);
-                            
+
                             //ms.Close();
 
                             //bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);

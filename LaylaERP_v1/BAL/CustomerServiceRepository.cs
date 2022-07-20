@@ -177,5 +177,26 @@
             }
             return dt;
         }
+
+        public static DataTable UpdateTicketFiles(long ticket_id, string fileurl, string flag = "TICKETINFO")
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@ticket_id", ticket_id),
+                    new SqlParameter("@filename", fileurl),
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

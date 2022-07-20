@@ -750,15 +750,15 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '  </div>';
     modalHtml += '</div>';
 
-    modalHtml += '<div class="claimwarranty-step3 hide">';
-    modalHtml += '  <div class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="kt_dropzonejs_example_3">';
-    modalHtml += '      <div class="dropzone-panel mb-lg-0 mb-2">';
-    modalHtml += '          <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>';
-    modalHtml += '          <a class="dropzone-remove-all btn btn-sm btn-primary">Remove All</a>';
-    modalHtml += '      </div>';
-    modalHtml += '      <div class="dropzone-items wm-200px"></div>';
-    modalHtml += '  </div><span class="form-text fs-6 text-muted">Max file size is 2MB per file.</span>';
-    modalHtml += '</div>';
+    //modalHtml += '<div class="claimwarranty-step3 hide">';
+    //modalHtml += '  <div class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="kt_dropzonejs_example_3">';
+    //modalHtml += '      <div class="dropzone-panel mb-lg-0 mb-2">';
+    //modalHtml += '          <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>';
+    //modalHtml += '          <a class="dropzone-remove-all btn btn-sm btn-primary">Remove All</a>';
+    //modalHtml += '      </div>';
+    //modalHtml += '      <div class="dropzone-items wm-200px"></div>';
+    //modalHtml += '  </div><span class="form-text fs-6 text-muted">Max file size is 2MB per file.</span>';
+    //modalHtml += '</div>';
 
     $('#myModal .modal-body').append(modalHtml);
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
@@ -793,33 +793,6 @@ function ClaimWarrantyModal(ele) {
         }
         checkSiblings(container);
     });
-
-    let _id = "#kt_dropzonejs_example_3";
-    let previewTemplate = '<div class="dropzone-item bg-light-primary rounded border-primary border border-dashed d-block d-flex flex-stack my-2 p-4">';
-    previewTemplate += '    <div class="dropzone-file">';
-    previewTemplate += '        <div class="dropzone-filename text-gray-800 fw-bolder" title = "some_image_file_name.jpg"><span data-dz-name>some_image_file_name.jpg</span><strong> (<span data-dz-size>340kb</span>)</strong></div>';
-    previewTemplate += '        <div class="dropzone-error text-danger" data-dz-errormessage></div>';
-    previewTemplate += '    </div>';
-    previewTemplate += '    <div class="dropzone-toolbar">';
-    previewTemplate += '    <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>';
-    previewTemplate += '        <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>';
-    previewTemplate += '        <span class="dropzone-delete" data-dz-remove><i class="fa fa-times"></i></span>';
-    previewTemplate += '    </div>';
-    previewTemplate += '</div>';
-
-    let myDropzone = new Dropzone(_id, {
-        url: "/CustomerService/SaveUploadedFile", // Set the url for your upload script location
-        paramName: "files",
-        autoProcessQueue: false,
-        parallelUploads: 20, acceptedFiles: 'image/*',
-        previewTemplate: previewTemplate,
-        maxFilesize: 2, // Max filesize in MB
-        autoQueue: false, // Make sure the files aren't queued until manually added
-        previewsContainer: _id + " .dropzone-items", // Define the container to display the previews
-        clickable: _id + " .dropzone-select", // Define the element that should be used as click trigger to select files.       
-    });
-    $('#myModal .dropzone-remove-all').on('click', function () { myDropzone.removeAllFiles(true); });
-    $('#myModal .dropzone.dropzone-queue .dz-message').addClass('hide');
 }
 function ClaimWarranty(chk) {
     var isChecked = $(chk).prop("checked");
@@ -843,25 +816,62 @@ function ClaimWarranty_previous() {
     $('#myModal .claimwarranty_previous').addClass('hide'); $('#myModal .claimwarranty_next').removeClass('hide');
     $('#myModal .claimwarranty-step3').addClass('hide');
 }
+function ClaimWarranty_uplaodfiles(ticket_id) {
+    $("#myModal").modal('hide');
+    $("#myFileModal").modal({ backdrop: 'static', keyboard: false });
+    $("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '.');
+    $("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
+   
+    var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+        url: "/CustomerService/SaveDropzoneJsUploadedFiles?id=" + ticket_id, // Set the url
+        thumbnailWidth: 80, thumbnailHeight: 80, parallelUploads: 20, previewTemplate: previewTemplate, acceptedFiles: 'image/*',
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewsContainer: "#previews", // Define the container to display the previews
+        clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+    });
+
+    myDropzone.on("addedfile", function (file) {
+        // Hookup the start button
+        file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); document.querySelector("#total-progress .progress-bar").style.width = 0 + "%"; }
+    });
+
+    // Update the total progress bar
+    myDropzone.on("totaluploadprogress", function (progress) { document.querySelector("#total-progress .progress-bar").style.width = progress + "%" });
+
+    myDropzone.on("sending", function (file) {
+        // Show the total progress bar when upload starts
+        document.querySelector("#total-progress").style.opacity = "1"
+        // And disable the start button
+        file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+    })
+
+    // Hide the total progress bar when nothing's uploading anymore
+    myDropzone.on("queuecomplete", function (progress) {
+        document.querySelector("#total-progress").style.opacity = "1"; myDropzone.removeAllFiles(true);
+        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+    });
+
+    // Setup the buttons for all transfers
+    // The "add files" button doesn't need to be setup because the config
+    // `clickable` has already been specified.
+    document.querySelector("#actions .start").onclick = function () { myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED)) }
+    document.querySelector("#actions .cancel").onclick = function () { myDropzone.removeAllFiles(true); document.querySelector("#total-progress .progress-bar").style.width = 0 + "%"; }
+}
 
 //generete Ticket for order warranty claim
 function GenerateTicketNo() {
     let _file = [], _gdrive_link = [];
-    var file = Dropzone.forElement("#kt_dropzonejs_example_3").getAcceptedFiles();
-    $.each(file, function (i, r) {
-        //_file.push({ dataURL: r.dataURL.split(',')[1], name: r.name, type: r.type });
-        _file.push({ dataURL: r.dataURL, name: r.name, type: r.type });
-        _gdrive_link.push({ files: 'Content/tickets/{tid}/' + r.name });
-    });
+    //var file = Dropzone.forElement("#kt_dropzonejs_example_3").getAcceptedFiles();
+    //$.each(file, function (i, r) {
+    //    //_file.push({ dataURL: r.dataURL.split(',')[1], name: r.name, type: r.type });
+    //    _file.push({ dataURL: r.dataURL, name: r.name, type: r.type });
+    //    _gdrive_link.push({ files: 'Content/tickets/{tid}/' + r.name });
+    //});
     //console.log(_file, _gdrive_link); return false;
-    let _chk = $("input[name='chk-reason']:checked");
+    let _chk = $("input[name='chk-reason']:checked"), _questions = '';
     let _user = $(".order-id").data('name'), _reason = _chk.data('title'), _reason_code = _chk.data('code');
-    let _questions = '';
     _chk.parents('li').find('ul').find('.warranty-checkbox:checked').each(function (i, row) {
-        //console.log(i, row);
-        //_questions.push({ pkey: $(row).attr("id"), id: $(row).data('id'), title: $(row).data('title') });
-        if (i == 0) _questions += $(row).data('title') + ' <br/>';
-        else _questions += '    🗸   ' + $(row).data('title') + ' <br/>';
+        _questions += (i == 0 ? '' : '    🗸   ') + $(row).data('title') + ' <br/>'
     });
 
     let _chat = [{ from: _user, content: 'Name: ' + $("#btnGenerateTicket").data('name') + ' X ' + (parseInt($("#kt_warranty_claim_qty").val()) || 0) },
@@ -875,18 +885,16 @@ function GenerateTicketNo() {
     let _body = TicketMailDetails(_user, _chat);
     //console.log(option, _questions, _file, file); return false;
     swal.queue([{
-        title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.",
-        showLoaderOnConfirm: true, showCancelButton: true,
+        title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.", showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
                 let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep Warranty Information', body: _body, files: _file };
-                $.ajax(
-                    { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
-                ).done(function (result) {
+                $.ajax({ url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
-                        OrderInfo(option.order_id); $("#myModal").modal('hide');
-                        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+                        swal.hideLoading(); swal.close(); ClaimWarranty_uplaodfiles(result[0].id);
+                        //OrderInfo(option.order_id); $("#myModal").modal('hide');
+                        //swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
                 }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });

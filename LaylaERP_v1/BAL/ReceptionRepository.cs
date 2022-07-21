@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace LaylaERP.BAL
 {
@@ -547,6 +548,32 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
             return result;
+        }
+
+        //Save and update Purchase order
+        public static DataTable AddNewReception(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_receive_order_iud", parameters);
+            }
+            catch (Exception ex)
+            { 
+                if (qFlag == "I")
+                    UserActivityLog.ExpectionErrorLog(ex, "Reception/AddNewReception/" + Pkey + "", "New Receive");
+                throw new Exception(ex.Message);
+            }
+            return dt;
         }
 
 

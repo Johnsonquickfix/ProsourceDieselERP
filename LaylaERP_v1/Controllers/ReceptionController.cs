@@ -112,6 +112,23 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
+        [HttpPost]
+        public JsonResult AddNewReception(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(ReceptionRepository.AddNewReception(id, "I", u_id, orderXML, orderdetailsXML));
+
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public JsonResult UpdateStatusReceptionPurchase(PurchaseReceiceOrderModel model)

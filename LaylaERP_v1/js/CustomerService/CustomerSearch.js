@@ -817,13 +817,15 @@ function ClaimWarranty_previous() {
     $('#myModal .claimwarranty-step3').addClass('hide');
 }
 function ClaimWarranty_uplaodfiles(ticket_id) {
+    let order_id= parseInt($(".order-id").data('order_id')) || 0
     $("#myModal").modal('hide');
     $("#myFileModal").modal({ backdrop: 'static', keyboard: false });
-    $("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '.');
-    $("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
-   
+    $("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '. Order #' + order_id);
+    $("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
+    $("#myFileModal .modal-title").data('ticket_id', ticket_id);
+
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "/CustomerService/SaveDropzoneJsUploadedFiles?id=" + ticket_id, // Set the url
+        url: "/CustomerService/SaveDropzoneJsUploadedFiles?id=" + $("#myFileModal .modal-title").data('ticket_id'), // Set the url
         thumbnailWidth: 80, thumbnailHeight: 80, parallelUploads: 20, previewTemplate: previewTemplate, acceptedFiles: 'image/*',
         autoQueue: false, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
@@ -848,7 +850,7 @@ function ClaimWarranty_uplaodfiles(ticket_id) {
     // Hide the total progress bar when nothing's uploading anymore
     myDropzone.on("queuecomplete", function (progress) {
         document.querySelector("#total-progress").style.opacity = "1"; myDropzone.removeAllFiles(true);
-        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+        swal('Success', 'Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + $("#myFileModal .modal-title").data('ticket_id') + '. Your warranty claim will be processed within the next 3 business days.', "success");
     });
 
     // Setup the buttons for all transfers

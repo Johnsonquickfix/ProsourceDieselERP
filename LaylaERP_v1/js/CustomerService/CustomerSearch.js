@@ -174,7 +174,7 @@ function dataGridLoad() {
             {
                 data: 'id', title: 'OrderID', sWidth: "8%",
                 render: function (id, type, full, meta) {
-                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '<div class="text-gray-800 fw-boldest">#' + id + '</div><i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp' || full.post_mime_type == 'shop_order_replace_erp' || full.post_mime_type == 'shoporderreplaceerp') return '<div class="text-gray-800 fw-boldest">#' + id + '</div><i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
                     else return '<div class="text-gray-800 fw-boldest">#' + id + '</div>';
                 }
             },

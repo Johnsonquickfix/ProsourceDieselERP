@@ -330,9 +330,9 @@
                 model.post_parent = parent_id.ToString();
                 model.post_type = "shop_order";//shop_order_replace
                 //model.guid = string.Format("{0}?{1}={2}", Net.Host, model.post_type, model.post_name);
-                model.guid = string.Format("{0}?post_type={1}&p={2}", "http://173.247.242.204/~rpsisr/woo/", "shop_order_refund&p", "");
+                model.guid = string.Format("{0}?post_type={1}&p={2}", "http://173.247.242.204/~rpsisr/woo/", "shop_order&p", "");
                 model.menu_order = "0";
-                model.post_mime_type = model.post_type + "_erp";
+                model.post_mime_type = model.post_type + "_replace_erp";
                 model.comment_count = "0";
 
                 string strSQL = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,"

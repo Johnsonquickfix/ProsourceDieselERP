@@ -239,20 +239,21 @@ function AccountJournalList(is_date) {
             { data: 'sort_no', title: 'Sort_no', sWidth: "2%" },
             { data: 'id', title: 'ID', sWidth: "2%" },            
             { data: 'datesort', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
-            {
-                data: 'code_journal', title: 'Journal', sWidth: "5%",
-                render: function (data, type, full) {
-                    if (type === "sort" || type === 'type') { return full.sort_no; }
-                    else if (full.doc_type == 'SO') return 'Sale Order';
-                    else if (full.doc_type == 'SR') return 'Refund Order';
-                    else if (full.doc_type == 'PO') return 'Purchase Order';
-                    else if (full.doc_type == 'PR') return 'Purchase Order Refund';
-                    else if (full.doc_type == 'FT') return 'Fund Transfer';
-                    else if (full.doc_type == 'IP') return 'Payment Bill';
-                    else if (full.doc_type == 'MB') return 'Miscellaneous Bill';
-                    else return full.doc_type;
-                }
-            },
+            //{
+            //    data: 'code_journal', title: 'Journal', sWidth: "5%",
+            //    render: function (data, type, full) {
+            //        if (type === "sort" || type === 'type') { return full.sort_no; }
+            //        else if (full.doc_type == 'SO') return 'Sale Order';
+            //        else if (full.doc_type == 'SR') return 'Refund Order';
+            //        else if (full.doc_type == 'PO') return 'Purchase Order';
+            //        else if (full.doc_type == 'PR') return 'Purchase Order Refund';
+            //        else if (full.doc_type == 'FT') return 'Fund Transfer';
+            //        else if (full.doc_type == 'IP') return 'Payment Bill';
+            //        else if (full.doc_type == 'MB') return 'Miscellaneous Bill';
+            //        else return full.doc_type;
+            //    }
+            //},
+            { data: 'label_name', title: 'Journal', sWidth: "5%" },
             {
                 data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
                 'render': function (inv_num, type, full, meta) {
@@ -262,13 +263,15 @@ function AccountJournalList(is_date) {
 
                     if (full.code_journal == "AC" || full.code_journal == "BQ") {
 
-                        if (full.code_journal == "AC")
+                        if (full.code_journal == "AC" &&   full.PO_SO_ref.substring(0, 2) !=  "PR")
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
                         else if (full.PO_SO_ref.substring(0, 2) != "PO" && full.doc_type == 'FT')
                             return inv_num;
+                        else if (full.PO_SO_ref.substring(0, 2) == "PR")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getInvoicePrintnew(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';
                         else if (full.PO_SO_ref.substring(0, 2) == "PO")
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
-                        //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';
                         else
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + full.PO_SO_ref.toString() + '\', false);"><i class="fas fa-search-plus"></i></a></span>';
                         //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + full.PO_SO_ref.toString() + '\', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';

@@ -187,7 +187,7 @@ function GenratedProductGrid() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let gentable = $('#dtdatagenrated').DataTable({
         /*   columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "asc"]],*/
-        columnDefs: [], order: [[0, "desc"]],
+        columnDefs: [{ targets: [0], visible: false }], order: [[0, "desc"] ],
         destroy: true, bProcessing: true, bServerSide: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[20, 40, 60, 100], [20, 40, 60, 100]],
@@ -233,14 +233,18 @@ function GenratedProductGrid() {
             });
         },
         aoColumns: [
+            { data: 'batchid', title: '#', sWidth: "10%" },
             {
+
                 data: 'ref', title: 'PO No', class: 'text-left', sWidth: "10%", render: function (data, type, row) {
                     return row.ref + '<a title="Click here to view order preview" data-toggle="tooltip" href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
-            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            
             { data: 'tagno', title: 'Tag/Lot/Batch No', sWidth: "10%" },
             { data: 'display', title: 'Product Name', sWidth: "15%" },
+            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'date_junrated', title: 'Generated Date', sWidth: "10%" },
             { data: 'Quenty', title: 'Quantity', sWidth: "10%" },
             { data: 'cost_price_cogs', title: 'Batch (Cost Price)', sWidth: "10%" },
 

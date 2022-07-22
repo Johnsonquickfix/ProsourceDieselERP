@@ -19,21 +19,18 @@
 function InventoryReport(is_date) {
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
-    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
-    var ID = $("#hfid").val();
-    var obj = { id: ID, sMonth: dfa };
+
+    //var ID = $("#hfid").val();
+    //var obj = { id: ID, sMonth: dfa };
+    let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed };// console.log(obj);
     //var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     var table_EL = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[20, 50], [20, 50]],
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
             $('#dtdata_filter input').unbind();
@@ -59,16 +56,18 @@ function InventoryReport(is_date) {
             });
         },*/
         ajax: {
-            url: '/Inventory/InventoryReportProduct', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+            url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
         },
         aoColumns: [
             { data: 'id', title: 'Id', sWidth: "5%", },
             { data: 'post_title', title: 'Product', sWidth: "20%", class: "text-left" },
             { data: 'sku', title: 'SKU', sWidth: "10%", class: "text-left" },
-            { data: 'stock', title: 'Qty On Hand', sWidth: "10%", class: "text-left" },
-            { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-left" },
-            { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-left" },
+            {
+                data: 'stock', title: 'Qty On Hand', sWidth: "10%", className: "text-right", render: function (data, type, row) { return (row.op_stock + row.stock + row.SaleUnits).toFixed(0) }
+            },
+            { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-right" },
+            { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-right" },
         ],
 
         "dom": 'lBftipr',

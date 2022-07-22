@@ -682,10 +682,11 @@ function TicketCommentPost(element) {
 
 //Customer Warranty claim details
 function ClaimWarrantyModal(ele) {
+    let order_id = parseInt($(".order-id").data('order_id')) || 0;
     let _qty = (parseInt($(ele).data('qty')) || 0) + (parseInt($(ele).data('returnqty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your refunds/returns/warranty claim.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your refunds/returns/warranty claim. Order #' + order_id + '</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body py-1"></div>';
     modalHtml += '<div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
@@ -817,13 +818,16 @@ function ClaimWarranty_previous() {
     $('#myModal .claimwarranty-step3').addClass('hide');
 }
 function ClaimWarranty_uplaodfiles(ticket_id) {
+    document.querySelector("#total-progress .progress-bar").style.width = 0 + "%";
+    let order_id = parseInt($(".order-id").data('order_id')) || 0;
     $("#myModal").modal('hide');
     $("#myFileModal").modal({ backdrop: 'static', keyboard: false });
-    $("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '.');
-    $("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
-   
+    $("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '. Order #' + order_id);
+    $("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
+    $("#myFileModal .modal-title").data('ticket_id', ticket_id);
+
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-        url: "/CustomerService/SaveDropzoneJsUploadedFiles?id=" + ticket_id, // Set the url
+        url: "/CustomerService/SaveDropzoneJsUploadedFiles?id=" + $("#myFileModal .modal-title").data('ticket_id'), // Set the url
         thumbnailWidth: 80, thumbnailHeight: 80, parallelUploads: 20, previewTemplate: previewTemplate, acceptedFiles: 'image/*',
         autoQueue: false, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
@@ -848,7 +852,9 @@ function ClaimWarranty_uplaodfiles(ticket_id) {
     // Hide the total progress bar when nothing's uploading anymore
     myDropzone.on("queuecomplete", function (progress) {
         document.querySelector("#total-progress").style.opacity = "1"; myDropzone.removeAllFiles(true);
-        swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+        let order_id = parseInt($(".order-id").data('order_id')) || 0;
+        swal('Success', 'Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + order_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+        $("#myFileModal").modal('hide');
     });
 
     // Setup the buttons for all transfers
@@ -893,7 +899,7 @@ function GenerateTicketNo() {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
                         swal.hideLoading(); swal.close(); ClaimWarranty_uplaodfiles(result[0].id);
-                        //OrderInfo(option.order_id); $("#myModal").modal('hide');
+                        OrderInfo(option.order_id); 
                         //swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }

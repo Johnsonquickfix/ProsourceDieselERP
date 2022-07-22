@@ -77,17 +77,17 @@ function InventoryReport() {
             { data: 'post_title', title: 'Product', sWidth: "20%", class: "text-left" },
             {
                 data: 'qty', title: 'Qty', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return $.fn.dataTable.render.number(',', '.', 0, '').display(data); else return '';
+                    if (row.total_variation > 0) return ''; else return $.fn.dataTable.render.number(',', '.', 0, '').display(data);
                 }
             },
             {
                 data: 'asset_value', title: 'Asset Value', sWidth: "10%", class: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); else return '';
+                    if (row.total_variation > 0) return ''; else return $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
                 }
             },
             {
                 data: 'calc_avg', title: 'Calc. Avg', sWidth: "10%", class: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); else return '';
+                    if (row.total_variation > 0) return ''; else return $.fn.dataTable.render.number(',', '.', 2, '$').display(data);
                 }
             },
         ],

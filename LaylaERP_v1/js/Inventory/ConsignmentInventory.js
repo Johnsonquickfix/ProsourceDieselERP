@@ -13,7 +13,7 @@
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
         opens: 'left',
         orientation: "left auto",
-    });
+    }, function (start, end, label) { ProductStockGrid(); });
     $.when(getProducts(), getVendor()).done(function () { ProductStockGrid() });
     $(".select2").select2();
     $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); ProductStockGrid(); });
@@ -75,10 +75,7 @@ function getVendor() {
 }
 
 function ProductStockGrid() {
-    var dfa = $('#txtDate').val().split('-');
-    //let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
-    //let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
-    let sd = dfa[0], ed = dfa[1];
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('YYYY-MM-DD'), ed = $('#txtDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0, vnid = parseInt($("#ddlVendor").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed };// console.log(obj);
     $('#dtdata').DataTable({
@@ -96,7 +93,9 @@ function ProductStockGrid() {
         },
         destroy: true, ajax: {
             url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { return JSON.parse(data); }
+            dataSrc: function (data) { return JSON.parse(data); }, beforeSend: function () { $("#loader").show(); },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
@@ -112,28 +111,29 @@ function ProductStockGrid() {
             { data: 'post_title', title: 'Product Name', sWidth: "28%" },
             {
                 data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                    //if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                    if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);
                 }
             },
             {
                 data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
+                    if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
                 }
             },
             {
                 data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
+                    if (row.total_variation > 0) return ''; else return row.SaleUnits.toFixed(0);
                 }
             },
             {
                 data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
+                    if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);
                 }
             },
             {
                 data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
-                    if (row.post_parent > 0) return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                    if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
                 }
             },
         ],

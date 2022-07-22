@@ -1050,7 +1050,7 @@ function saveVendorPO() {
                         // $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="../ReceiveOrder/1000011" data-toggle="tooltip" title="Back to List">Back to List</a>');
                         $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="../ReceiveOrder/1000011">Back to List</a>');
                     }
-                    swal('Success', data.message, 'success');
+                    swal('Success', 'Purchase record  updated successfully', 'success');
                     // getPurchaseOrderInfo();
                     // swal('Alert!', data.message, 'success').then(function () { swal.close(); });
                     //swal('Success!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });

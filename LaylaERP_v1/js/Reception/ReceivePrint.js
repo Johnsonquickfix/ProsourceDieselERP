@@ -903,7 +903,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
 
 
 
-function printinvoice(id, result, is_mail, is_inv) {
+function printinvoice_1(id, result, is_mail, is_inv) {
     let data = JSON.parse(result.data); //console.log(data);
     let inv_title = is_inv ? 'Bill' : 'Receive Order';
     var modalHtml = '';

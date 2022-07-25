@@ -852,8 +852,8 @@ function ClaimWarranty_uplaodfiles(ticket_id) {
     // Hide the total progress bar when nothing's uploading anymore
     myDropzone.on("queuecomplete", function (progress) {
         document.querySelector("#total-progress").style.opacity = "1"; myDropzone.removeAllFiles(true);
-        let order_id = parseInt($(".order-id").data('order_id')) || 0;
-        swal('Success', 'Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + order_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+        let ticket_id = parseInt($("#myFileModal .modal-title").data('ticket_id')) || 0;
+        swal('Success', 'Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
         $("#myFileModal").modal('hide');
     });
 

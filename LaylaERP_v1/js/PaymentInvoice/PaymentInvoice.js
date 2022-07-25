@@ -130,16 +130,19 @@ function PurchaseOrderGrid() {
     });
 }
 function formatPO(d) {
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Bill No</th><th style="width:35%; text-align:left; visibility:inherit; opacity:1;">Receive Date</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Paid Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table1 table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:20%; text-align:left; visibility:inherit; opacity:1;">Payment/Bill No</th><th style="width:10%; text-align:left; visibility:inherit; opacity:1;">Type</th><th style="width:35%; text-align:left; visibility:inherit; opacity:1;">Receive Date</th><th style="width:15%; text-align:left; visibility:inherit; opacity:1;">Debit</th><th style="width:30%; text-align:left; visibility:inherit; opacity:1;">Credit</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPOOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
             result = JSON.parse(result);
+            let total_dbtamount = 0, total_crdamount = 0.00;
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="3" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
-                wrHTML += '<tr><td style="width:20%; text-align:left;"> ' + row.ref + ' </td><td style="width:35%; text-align:left;">' + row.date_creation + '</td>';
-                wrHTML += '<td style="width:30%; text-align:left;">' + '$' + row.amount + '</td></tr > ';
-            });
+                wrHTML += '<tr><td style="width:20%; text-align:left;"> ' + row.ref + ' </td><td style="width:10%; text-align:left;"> ' + row.Paid + ' </td><td style="width:35%; text-align:left;">' + row.date_creation + '</td>';
+                wrHTML += '<td style="width:15%; text-align:left;">' + '$' + row.damount.toFixed(2) + '</td><td style="width:15%; text-align:left;">' + '$' + row.camount.toFixed(2) + '</td></tr > ';
+                total_dbtamount +=  row.damount, total_crdamount += row.camount;
+
+            }); wrHTML += '<tr><td style="width:20%; text-align:left;"><strong>Total</strong></td><td></td><td></td><td style="width:15%; text-align:left;"><strong>' + '$' + total_dbtamount.toFixed(2) + '</strong></td><td style="width:15%; text-align:left;"><strong>' + '$' + total_crdamount.toFixed(2) +'</strong></td> </tr > ';
         },
         error: function (xhr, status, err) { alert(err); },
         complete: function () { }, async: false
@@ -194,7 +197,8 @@ function PoPartiallyColleps() {
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             { 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
-            { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'total_ttc', title: 'PO Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'totalrecieved', title: 'Reception PO Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }

@@ -195,7 +195,7 @@ function PoPartiallyColleps() {
             { 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%" },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'totalrecieved', title: 'Total Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'totalrecieved', title: 'Received Qty. Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }

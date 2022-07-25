@@ -60,8 +60,8 @@ function AccountJournalList_Old(is_date) {
     var obj = { strValue1: sd, strValue2: ed, strValue3: account_num, strValue4: vrid }
     var table_EL = $('#JournalListdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
-        columnDefs: [{ "searchable": false, "targets": 4 }],
-        order: [[0, "desc"], [2, "desc"], [1, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
+        columnDefs: [{ "searchable": false, "targets": 4 }],// order: [[0, "desc"], [2, "desc"], [1, "asc"]],
+        order: [[0, "desc"], [1, "asc"]], ordering: true, destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -193,16 +193,12 @@ function AccountJournalList(is_date) {
     var account_num = $("#ddlAccount").val();
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2).display;
     var table_EL = $('#JournalListdata').DataTable({
-        destroy: true, bProcessing: true, bServerSide: true,
-        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[20, 50, 100, 200, 999, 4500], [20, 50, 100, 200, 999, 4500]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        responsive: true, lengthMenu: [[20, 50, 100, 200, 999, 4500], [20, 50, 100, 200, 999, 4500]], order: [[0, "desc"]],
+        //columnDefs: [{ targets: [0, 1], visible: false }], order: [[2, "desc"]],// order: [[2, "desc"], [4, "asc"], [0, "asc"], [1, "asc"]],
         language: {
-            lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
-            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-            infoFiltered: "",
-            infoEmpty: "No records found",
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)", infoFiltered: "",
+            infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
             $('#JournalListdata_filter input').unbind();
@@ -215,13 +211,12 @@ function AccountJournalList(is_date) {
             var api = this.api(), data;
             var intVal = function (i) { return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0; };
 
-            let DebitTotal = api.column(8, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
-            let CreditTotal = api.column(9, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let DebitTotal = api.column(6, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
+            let CreditTotal = api.column(7, { page: 'current' }).data().reduce(function (a, b) { return intVal(a) + intVal(b); }, 0);
 
             $(api.column(2).footer()).html('Page Total');
             $(api.column(6).footer()).html('$' + numberRenderer(DebitTotal));
             $(api.column(7).footer()).html('$' + numberRenderer(CreditTotal));
-            //console.log(DebitTotal, CreditTotal);
         },
         sAjaxSource: "/Accounting/JournalAccountList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -236,8 +231,8 @@ function AccountJournalList(is_date) {
             });
         },
         columns: [
-            { data: 'sort_no', title: 'Sort_no', sWidth: "2%" },
-            { data: 'id', title: 'ID', sWidth: "2%" },            
+            //{ data: 'sort_no', title: 'Sort_no', sWidth: "2%" },
+            //{ data: 'id', title: 'ID', sWidth: "2%" },
             { data: 'datesort', title: 'Date', sWidth: "10%", class: 'text-left', render: function (data, type, full) { if (type === "sort" || type === 'type') { return data; } else return full.datecreation; } },
             //{
             //    data: 'code_journal', title: 'Journal', sWidth: "5%",
@@ -263,7 +258,7 @@ function AccountJournalList(is_date) {
 
                     if (full.code_journal == "AC" || full.code_journal == "BQ") {
 
-                        if (full.code_journal == "AC" &&   full.PO_SO_ref.substring(0, 2) !=  "PR")
+                        if (full.code_journal == "AC" && full.PO_SO_ref.substring(0, 2) != "PR")
                             return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
                         else if (full.PO_SO_ref.substring(0, 2) != "PO" && full.doc_type == 'FT')
                             return inv_num;
@@ -298,7 +293,7 @@ function AccountJournalList(is_date) {
         buttons: [
             {
                 extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
-                exportOptions: { columns: [2, 3, 4, 5, 6, 7,8,9], },
+                exportOptions: { columns: [2, 3, 4, 5, 6, 7, 8, 9], },
                 filename: function () {
                     let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Journals' + e;
@@ -317,7 +312,7 @@ function AccountJournalList(is_date) {
             }
         ],
         /* columnDefs: [{ targets: [0], searchable: false, orderable: false }], order: [[0, "desc"], [2, "desc"]]*/
-        columnDefs: [{ targets: [0,1], visible: false }], order: [[2, "desc"], [4, "asc"],  [0, "asc"],  [1, "asc"]]
+
     });
 }
 

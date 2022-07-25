@@ -115,7 +115,7 @@
                         + " FROM wp_posts p inner join split_record sr on sr.main_order_id = p.ID inner join split_detail sd on sd.split_id = sr.split_id  "
                         + " inner join split_detail_items sdi on sdi.split_detail_id = sd.split_detail_id and product_id != 888864 "
                         + " inner join wp_postmeta pm on pm.post_id = p.ID "
-                        + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' AND post_mime_type = 'shop_order_erp' "
+                        + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' AND post_mime_type in ('shop_order_erp','shopordererp','shop_order_replace_erp','shoporderreplaceerp') "
                         + " and convert(varchar,p.post_modified_gmt,20) BETWEEN convert(varchar,'" + from_date.ToString("yyyy-MM-dd HH:mm:ss") + "',20)  AND convert(varchar,'" + to_date.ToString("yyyy-MM-dd HH:mm:ss") + "',20) "
                         + " group by p.ID,p.post_date_gmt,p.post_modified_gmt,sd.split_detail_id,sd.order_name order by p.ID desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);

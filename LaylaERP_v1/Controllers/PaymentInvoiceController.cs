@@ -426,7 +426,7 @@ namespace LaylaERP.Controllers
             {
                 long id = 0, u_id = 0;
                 if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
-               // u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                // u_id = CommanUtilities.Provider.GetCurrent().UserID;
                 System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
                 System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
                 JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.NewMiscBill(id, "I", orderXML, orderdetailsXML));
@@ -589,8 +589,8 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                
-                 String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
+
+                String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
 
                 var result = string.Empty;
                 ////long i = 1;
@@ -605,7 +605,7 @@ namespace LaylaERP.Controllers
 
                     if (model.SortDir == "7" || model.SortDir == "8")
                     {
-                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6),model.SortCol,model.PageNo,model.PageSize);
+                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, model.strValue5, model.strValue4, Convert.ToDecimal(model.strValue6), model.SortCol, model.PageNo, model.PageSize);
                     }
                     if (model.SortDir == "1" || model.SortDir == "4")
                     {
@@ -614,20 +614,72 @@ namespace LaylaERP.Controllers
 
                     //if (!string.IsNullOrEmpty(result))
                     //{
-                        long id = 0, u_id = 0;
-                        if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Misc Payment", "/PaymentInvoice/TakePaymentMisc/" + id + "" + ", " + Net.BrowserInfo);
-                        u_id = CommanUtilities.Provider.GetCurrent().UserID;
-                        System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
-                        System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
-                        JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(result, id, "POP", u_id, orderXML, orderdetailsXML));
+                    long id = 0, u_id = 0;
+                    if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Pay Invoice Misc Payment", "/PaymentInvoice/TakePaymentMisc/" + id + "" + ", " + Net.BrowserInfo);
+                    u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                    System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                    JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(result, id, "POP", u_id, orderXML, orderdetailsXML));
                     //}
-                                     
+
                 }
                 else
                 {
                     return Json(JSONresult, 0);
                 }
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SavePaymentMiscBill(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0; string sender_batch_id = System.Guid.NewGuid().ToString();
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                var result = string.Empty;
+
+                String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
+                if (model.strValue3 == "7" || model.strValue3 == "8")
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(model.strValue4);
+                    foreach (var o in dyn)
+                    {
+                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value), o.cardNumber.Value.ToString(), o.expirationDate.Value, o.cardCode.Value);
+                    }
+                }
+                else if (model.strValue3 == "1" || model.strValue3 == "4")
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(model.strValue4);
+                    foreach (var o in dyn)
+                    {
+                        result = clsAuthorizeNet.Fundtransfer(ApiLoginID, ApiTransactionKey, "0", o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value));
+                    }
+                }
+                else if (model.strValue3 == "10")
+                {
+                    result = clsPayPal.PaymentsPayouts(sender_batch_id, model.strValue4);
+                }
+                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(id, "MBPAY", u_id, result, model.strValue2));
+
+
+                //DataTable dt = PaymentInvoiceRepository.AddNewMiscPayment(id, "MBPAY", u_id, model.strValue2);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    if (dt.Rows[0]["Response"].ToString() == "Success")
+                //    {
+                //        string result = clsPayPal.PaymentsPayouts(sender_batch_id, model.strValue3);
+                //    }
+                //    else
+                //    {
+                //        return Json(new { id = 0, Response = dt.Rows[0]["Response"].ToString() }, JsonRequestBehavior.AllowGet); ;
+                //    }
+                //}
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);

@@ -1002,9 +1002,33 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pkey", Pkey),
                     new SqlParameter("@qflag", qFlag),
                     new SqlParameter("@userid", UserID),
-                     new SqlParameter("@responseid", responseid),
+                    new SqlParameter("@responseid", responseid),
                     new SqlParameter("@orderXML", orderXML.OuterXml),
                     new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_misc_payment_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePaymentMisc/" + Pkey + "", "Payment taken from misc invoice");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
+
+        public static DataTable AddNewMiscPayment(long Pkey, string qFlag, long UserID, string responseid, string json_data)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@responseid", responseid),
+                    new SqlParameter("@json_data", json_data)
                 };
                 dt = SQLHelper.ExecuteDataTable("erp_misc_payment_iud", parameters);
             }

@@ -174,6 +174,35 @@ namespace LaylaERP.UTILITIES
             }
             return invoice_info;
         }
+
+        public static string PaymentsPayouts(string sender_batch_id, string json_items)
+        {
+            string client_id = string.Empty, client_secret = string.Empty;
+            System.Data.DataTable dt = BAL.Users.AppSystemSetting();
+            if (dt.Rows.Count > 0)
+            {
+                client_id = (dt.Rows[0]["PaypalClientId"] != Convert.DBNull) ? dt.Rows[0]["PaypalClientId"].ToString().Trim() : string.Empty;
+                client_secret = (dt.Rows[0]["PaypalSecret"] != Convert.DBNull) ? dt.Rows[0]["PaypalSecret"].ToString().Trim() : string.Empty;
+            }
+            var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:{client_secret}"));
+
+            string invoice_info = string.Empty;
+            var client_rest = new RestClient(base_url + "/v1/payments/payouts");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Basic " + base64String);
+            request.AddParameter("application/json", "{ \"sender_batch_header\": { \"sender_batch_id\": \"" + sender_batch_id + "\", \"email_subject\": \"You have a payout!\", \"email_message\": \"You have received a payout! Thanks for using our service!\" }, \"items\": " + json_items + " }", ParameterType.RequestBody);
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            IRestResponse response_rest = client_rest.Execute(request);
+
+            if (response_rest.StatusCode == HttpStatusCode.Created)
+            {
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(response_rest.Content);
+                invoice_info = obj.batch_header.payout_batch_id.Value;
+            }
+            return invoice_info;
+        }
     }
     public class clsAccessToken
     {

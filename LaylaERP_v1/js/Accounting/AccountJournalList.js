@@ -194,7 +194,7 @@ function AccountJournalList(is_date) {
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2).display;
     var table_EL = $('#JournalListdata').DataTable({
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true, lengthMenu: [[20, 50, 100, 200, 999, 4500], [20, 50, 100, 200, 999, 4500]], order: [[0, "asc"]],
+        responsive: true, lengthMenu: [[20, 50, 100, 200, 999, 4500], [20, 50, 100, 200, 999, 4500]], order: [[0, "desc"]],
         //columnDefs: [{ targets: [0, 1], visible: false }], order: [[2, "desc"]],// order: [[2, "desc"], [4, "asc"], [0, "asc"], [1, "asc"]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)", infoFiltered: "",

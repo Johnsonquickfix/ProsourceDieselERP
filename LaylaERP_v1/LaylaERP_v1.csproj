@@ -240,6 +240,7 @@
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\AccountingController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
+    <Compile Include="Controllers\AmazonordersController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -1365,6 +1366,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
+    <Folder Include="Views\Amazonorders\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

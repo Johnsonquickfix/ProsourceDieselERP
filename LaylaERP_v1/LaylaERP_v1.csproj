@@ -1358,6 +1358,7 @@
     <Content Include="Views\Accounting\ExpenseReport.cshtml" />
     <Content Include="Views\Setup\accountingclasstransaction.cshtml" />
     <Content Include="Views\Reports\CompanyOverview.cshtml" />
+    <Content Include="Views\Reports\AvalaraOrderList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

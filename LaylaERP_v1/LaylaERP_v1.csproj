@@ -1360,13 +1360,13 @@
     <Content Include="Views\Setup\accountingclasstransaction.cshtml" />
     <Content Include="Views\Reports\CompanyOverview.cshtml" />
     <Content Include="Views\Reports\AvalaraOrderList.cshtml" />
+    <Content Include="Views\Amazonorders\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
-    <Folder Include="Views\Amazonorders\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -919,6 +919,63 @@ namespace LaylaERP.BAL
             catch (Exception ex) { throw ex; }
         }
 
+        public static void GetAvalaraOrder(string from_date, string to_date, string txtState)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+                    DataSet ds1 = new DataSet();
+                    
+                    SqlParameter[] parameters =
+                       {
+                            new SqlParameter("@qflag", txtState),
+                            new SqlParameter("@fromdate", fromdate),
+                             new SqlParameter("@todate", todate)
+                        };
+
+                    ds1 = SQLHelper.ExecuteDataSet("erp_AvalaraOrder_List", parameters);
+
+
+                    //ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                    {
+                        Export_Details uobj = new Export_Details();
+                        uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
+                        uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString());
+                        uobj.tax = ds1.Tables[0].Rows[i]["Tax"].ToString();
+                        uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+                        uobj.shipping_address_1 = ds1.Tables[0].Rows[i]["shiptostreet"].ToString();
+                        uobj.shipping_city = ds1.Tables[0].Rows[i]["shiptocity"].ToString();
+                        uobj.shipping_state = ds1.Tables[0].Rows[i]["shiptostate"].ToString();
+                        uobj.shipping_postcode = ds1.Tables[0].Rows[i]["shiptozip"].ToString();
+                        uobj.shipping_country = ds1.Tables[0].Rows[i]["shiptocountrycode"].ToString();
+                        uobj.billing_address_1 = ds1.Tables[0].Rows[i]["billingstreet"].ToString();
+                        uobj.billing_city = ds1.Tables[0].Rows[i]["billingcity"].ToString();
+                        uobj.billing_country = ds1.Tables[0].Rows[i]["billingcountry"].ToString();
+                        uobj.billing_state = ds1.Tables[0].Rows[i]["billingstate"].ToString();
+                        uobj.billing_postcode = ds1.Tables[0].Rows[i]["billingzip"].ToString();
+                        uobj.provider = ds1.Tables[0].Rows[i]["provider"].ToString();
+                        uobj.transaction_type = ds1.Tables[0].Rows[i]["transaction_type"].ToString();
+                        uobj.transaction_reference_id = ds1.Tables[0].Rows[i]["transaction_reference_id"].ToString();
+                        uobj.shipping_amount = ds1.Tables[0].Rows[i]["shipping_amount"].ToString();
+                        uobj.handling_amount = ds1.Tables[0].Rows[i]["handling_amount"].ToString();
+                        uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
+                        uobj.Discount = ds1.Tables[0].Rows[i]["Discount"].ToString();
+                        uobj.total = ds1.Tables[0].Rows[i]["Total"].ToString();
+                        exportorderlist.Add(uobj);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public static void GetSalesTaxRefunded(string from_date, string to_date, string txtState)
         {
             try

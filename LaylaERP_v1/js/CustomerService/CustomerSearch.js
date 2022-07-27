@@ -660,7 +660,7 @@ function WarrantyInfoModalData(id, _action) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
             else if (_action == 'wp_return_to_vender') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return to vendor</button>'); }
             else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
-            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrderModal(' + id + ');">Create new order</button>'); }
+            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrder(' + id + ');">Create new order</button>'); }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
         }
@@ -899,7 +899,7 @@ function GenerateTicketNo() {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
                         swal.hideLoading(); swal.close(); ClaimWarranty_uplaodfiles(result[0].id);
-                        OrderInfo(option.order_id); 
+                        OrderInfo(option.order_id);
                         //swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -1235,6 +1235,22 @@ function ReplacementGenereate() {
 }
 
 //create new order
+function CreateNewOrder(_id) {
+    //ActivityLog('Refund order id (' + _id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + _id);
+    swal({
+        title: "New Order Create", text: "Do you want to go with the New Order create?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to normal order create!"
+    }).then(function (isConfirm) {
+        console.log(isConfirm);
+        if (isConfirm.value) {
+            let _email = $(".order-id").data('email');
+            window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email);
+        } else {
+            CreateNewOrderModal(_id)
+        }
+    });
+    return false;
+}
 function CreateNewOrderModal(id) {
     let _html = '', _ct = '', _st = ''; $("#loader").show();
     let _customer_id = 0;

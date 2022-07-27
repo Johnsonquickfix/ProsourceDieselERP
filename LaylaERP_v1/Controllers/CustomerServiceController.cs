@@ -189,8 +189,7 @@ namespace LaylaERP.Controllers
         }
 
         #region Order Ticket Action
-        [HttpPost]
-        [Route("customer-service/create-order-return")]
+        [HttpPost, Route("customer-service/create-order-return")]
         public JsonResult CreateOrderReturn(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;
@@ -217,8 +216,7 @@ namespace LaylaERP.Controllers
             return Json(new { status = status, message = JSONresult }, 0);
         }
 
-        [HttpPost]
-        [Route("customer-service/create-order-replacement")]
+        [HttpPost, Route("customer-service/create-order-replacement")]
         public JsonResult CreateOrderReplacement(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;
@@ -244,6 +242,24 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { return Json(new { status = false, message = ex.Message }, 0); }
             return Json(new { status = status, message = JSONresult }, 0);
+        }
+
+        [HttpPost,Route("customer-service/ticket-close")]
+        public JsonResult TicketClose(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                if (!string.IsNullOrEmpty(model.strValue1))
+                {
+                    long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETCLOSE");
+                    JSONresult = JsonConvert.SerializeObject(dt);
+                }
+                else { JSONresult = "[{\"id\":0,\"response\":\"Please select action.\"}]"; }
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
         #endregion
 

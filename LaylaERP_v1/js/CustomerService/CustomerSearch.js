@@ -660,7 +660,10 @@ function WarrantyInfoModalData(id, _action) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
             else if (_action == 'wp_return_to_vender') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return to vendor</button>'); }
             else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
-            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrder(' + id + ');">Create new order</button>'); }
+            else if (_action == 'wp_createorder') {
+                $('#myModal .modal-footer').empty().append('<div class="d-flex flex-fill align-items-start"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CloseTicket(' + id + ');"><i class="fa fa-window-close mr-1"></i>Close Ticket</button></div>');
+                $('#myModal .modal-footer').append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrder(' + id + ');"><i class="fa fa-shopping-cart mr-1"></i>Create new order</button>');
+            }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
         }
@@ -1236,25 +1239,37 @@ function ReplacementGenereate() {
 
 //create new order
 function CreateNewOrder(_id) {
-    //ActivityLog('Refund order id (' + _id + ') in order history.\',\'/OrdersMySQL/OrdersHistory/' + _id);
     swal({
-        title: "New Order Create", text: "Do you want to go with the New Order create?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to normal order create!"
+        title: "New Order Create", text: "Do you want to go with the New Order create?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to normal order create!"
     }).then(function (isConfirm) {
         if (isConfirm.value) {
             let _email = $(".order-id").data('email');
-            if ($.isFunction(window.parent.setTab)) {
-                window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email);
-            }
-            else {
-                localStorage.setItem('_search', _email);
-                window.open(window.location.origin + '/OrdersMySQL/minesofmoria', '_blank');
-            }
-        } else {
-            CreateNewOrderModal(_id)
+            if ($.isFunction(window.parent.setTab)) { window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email); }
+            else { localStorage.setItem('_search', _email); window.open(window.location.origin + '/OrdersMySQL/minesofmoria', '_blank'); }
         }
+        else { CreateNewOrderModal(_id) }
     });
     return false;
+}
+function CloseTicket(_id) {
+    let _oid = parseInt($(".order-id").data('order_id')) || 0
+    swal({
+        title: 'Ticket No #' + _id, showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Submit', cancelButtonText: "Cancel",
+        html: '<input type="number" id="swal-orderno" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==10) return false;" class="form-control my-2" autofocus placeholder="New Order No"><textarea id="swal-remark" class="form-control my-2" rows="3"  maxlength="250" placeholder="Remark"></textarea>',
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                if (true) {
+                    let obj = { strValue1: JSON.stringify({ ticket_id: _id, new_order_id: parseInt($('#swal-orderno').val()) || 0, ticket_is_open: 0, comment: $('#swal-remark').val(), comment_by: 'agent' }) };
+                    $.post('/customer-service/ticket-close', obj).then(response => {
+                        response = JSON.parse(response);
+                        if (response[0].response == 'success') { $("#myModal").modal('hide'); OrderInfo(_oid); swal('Success!', 'Ticket No #' + _id + ' closed successfully.', "success"); }
+                        else { swal('Error', result[0].response, "error"); }
+                    }).catch(err => { }).always(function () { swal.hideLoading(); });
+                    resolve(obj);
+                }
+            });
+        }
+    }).then(function (result) { });
 }
 function CreateNewOrderModal(id) {
     let _html = '', _ct = '', _st = ''; $("#loader").show();

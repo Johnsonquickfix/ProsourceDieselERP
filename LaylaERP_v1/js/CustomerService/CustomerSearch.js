@@ -1241,10 +1241,15 @@ function CreateNewOrder(_id) {
         title: "New Order Create", text: "Do you want to go with the New Order create?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55',
         confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to normal order create!"
     }).then(function (isConfirm) {
-        console.log(isConfirm);
         if (isConfirm.value) {
             let _email = $(".order-id").data('email');
-            window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email);
+            if ($.isFunction(window.parent.setTab)) {
+                window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email);
+            }
+            else {
+                localStorage.setItem('_search', _email);
+                window.open(window.location.origin + '/OrdersMySQL/minesofmoria', '_blank');
+            }
         } else {
             CreateNewOrderModal(_id)
         }

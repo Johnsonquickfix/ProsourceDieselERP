@@ -497,7 +497,7 @@ function searchOrderModal() {
 
     $('#billModal .modal-body').append(modalHtml);
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
-    let searchText = localStorage.getItem('_search'); console.log(searchText);
+    let searchText = localStorage.getItem('_search'); 
     $('#ddlCustomerSearch').select2('open'); $('#billModal').find('[type=search]').val(searchText);
     localStorage.setItem('_search', '');
 }

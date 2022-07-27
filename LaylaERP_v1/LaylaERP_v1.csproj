@@ -337,6 +337,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
     <Compile Include="UTILITIES\clsAffirm.cs" />
+    <Compile Include="UTILITIES\clsAmazonMws.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
     <Compile Include="UTILITIES\clsAvalara.cs" />
@@ -1361,6 +1362,7 @@
     <Content Include="Views\Reports\CompanyOverview.cshtml" />
     <Content Include="Views\Reports\AvalaraOrderList.cshtml" />
     <Content Include="Views\Amazonorders\Index.cshtml" />
+    <Content Include="Views\Ship\AmazonOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

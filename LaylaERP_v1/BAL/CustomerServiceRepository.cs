@@ -62,6 +62,21 @@
             return dt;
         }
 
+        public static DataTable GetHelpdeskQuestions(string flag, int wr_typeid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", flag), new SqlParameter("@ticket_id", wr_typeid) };
+                dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static DataTable GetCustomerInfo(long customer_id, long order_id, string billing_email, string phone_no)
         {
             DataTable dt = new DataTable();

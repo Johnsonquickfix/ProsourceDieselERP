@@ -123,19 +123,6 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        [HttpGet, Route("customer-service/helpdesk-questions")]
-        public JsonResult GetHelpdeskQuestions(SearchModel model)
-        {
-            string result = string.Empty;
-            try
-            {
-                int wr_typeid = 0;
-                if (!string.IsNullOrEmpty(model.strValue1)) wr_typeid = Convert.ToInt32(model.strValue1);
-                result = JsonConvert.SerializeObject(CustomerServiceRepository.GetHelpdeskQuestions("HELPDESQUES", wr_typeid), Formatting.Indented);
-            }
-            catch { }
-            return Json(result, 0);
-        }
         [HttpPost, Route("customer-service/ticket-action")]
         public JsonResult TicketAction(SearchModel model)
         {
@@ -422,6 +409,108 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(new { id = result, status = status, message = JSONresult }, 0);
+        }
+        #endregion
+
+        #region helpdesk questions Master
+        [Route("customer-service/questions-list")]
+        public ActionResult QuestionsList()
+        {
+            return View();
+        }
+        [Route("customer-service/questions-master"), Route("customer-service/questions-master/{id}")]
+        public ActionResult QuestionsMaster(int id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
+        [HttpGet, Route("customer-service/questions-type")]
+        public JsonResult GetQuestionsType(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = JsonConvert.SerializeObject(CustomerServiceRepository.GetQuestionsMaster(), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet, Route("customer-service/questions")]
+        public JsonResult getQuestions(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                string flag = "QUESLIST"; int _id = 0;
+                if (model.strValue1 == "DETAIL")
+                {
+                    flag = "QUESDETAIL";
+                    _id = !string.IsNullOrEmpty(model.strValue2) ? Convert.ToInt32(model.strValue2) : 0;
+                }
+                result = JsonConvert.SerializeObject(CustomerServiceRepository.GetHelpdeskQuestions(flag, _id), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost, Route("customer-service/addquestion")]
+        public JsonResult AddQuestion(SearchModel model)
+        {
+            bool _status = false; string _message = string.Empty;
+            int _id = 0;
+            try
+            {
+                int wr_titleid = 0, wr_typeid = 0, parent_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) wr_titleid = Convert.ToInt32(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) wr_typeid = Convert.ToInt32(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue4)) parent_id = Convert.ToInt32(model.strValue4);
+                _id = CustomerServiceRepository.AddQuestions(wr_titleid, wr_typeid, model.strValue3, parent_id, model.strValue5);
+                if (_id > 0)
+                {
+                    _status = true; _message = "Record updated successfully!!";
+                }
+                else
+                {
+                    _status = false; _message = "Invalid Details.";
+                }
+            }
+            catch { }
+            return Json(new { status = _status, message = _message,id= _id }, 0);
+        }
+        [HttpPost, Route("customer-service/deletequestion")]
+        public JsonResult DeleteQuestion(SearchModel model)
+        {
+            bool _status = false; string _message = string.Empty;
+            int _id = 0;
+            try
+            {
+                int wr_titleid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) wr_titleid = Convert.ToInt32(model.strValue1);
+                _id = CustomerServiceRepository.DeleteQuestions(wr_titleid);
+                if (_id > 0)
+                {
+                    _status = true; _message = "Record deleted successfully!!";
+                }
+                else
+                {
+                    _status = false; _message = "Invalid Details.";
+                }
+            }
+            catch { }
+            return Json(new { status = _status, message = _message, id = _id }, 0);
+        }
+
+        [HttpGet, Route("customer-service/helpdesk-questions")]
+        public JsonResult GetHelpdeskQuestions(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                int wr_typeid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) wr_typeid = Convert.ToInt32(model.strValue1);
+                result = JsonConvert.SerializeObject(CustomerServiceRepository.GetHelpdeskQuestions("HELPDESQUES", wr_typeid), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
         #endregion
     }

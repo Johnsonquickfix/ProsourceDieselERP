@@ -7,14 +7,18 @@
     //isEdit(true);
     $('#ddlPaymentType').change(function (t) {
         let Paymentype = $("#ddlPaymentType").val();
-        if (Paymentype == "7") {
+        if (Paymentype == "1") {
             $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
+            $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
+            $('#btnSave').show();
 
         }
         else if (Paymentype == '8') {
             $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
+            $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
+            $('#btnSave').show();
 
         }
         else if (Paymentype == '10') {
@@ -23,6 +27,17 @@
             //$('#txtpaymentdate').daterangepicker({ startDate: moment(), endDate: moment() });
             $('#txtpaymentdate').data('daterangepicker').setStartDate(moment());
             $('#txtpaymentdate').data('daterangepicker').setEndDate(moment());
+
+            if ($("#hfpaypal_id").val() == 'N') {
+                swal('Alert!', "you can't payment without paypal_id please remove that bill", "error");
+                $('#btnSave').hide();
+                $('.btnUndoRecord').hide();
+                $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a>');
+            }
+            else {
+                $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
+                $('#btnSave').show();
+            }
         }
         else {
             $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
@@ -101,6 +116,12 @@ function getPurchaseOrderInfo() {
                 $.each(data['pod'], function (i, r) {
                     let itemHtml = '';
                     if (r.rowid > 0) {
+
+                        papalid = r.paypal_id.trim();
+                        console.log(papalid);
+                        if (r.paypal_id.trim() == '' || r.paypal_id.trim() == "" || r.paypal_id.trim() == null) {
+                            $("#hfpaypal_id").val('N');
+                        }
 
                         itemHtml = '<tr id="tritemid_' + r.rowid + '" class="paid_item" data-id="' + r.rowid + '" data-supplier="' + r.ref_supplier + '" data-billno="' + r.ref + '" data-discount2able="' + r.discount2able + '" data-dayapply="' + r.dayapply + '" data-Beforeday="' + r.Beforeday + '" data-discountType1="' + r.DiscountType1 + '" data-defaultdiscount="' + r.DefaultDiscount + '" data-discountminimumorderamount="' + r.DiscountMinimumOrderAmount + '" data-discounttype2="' + r.DiscountType2 + '" data-discount="' + r.Discount + '" data-subtotal="' + r.subtotal + '">';
                         itemHtml += '<td>' + r.ref + ' <a href="#" title="Click here to print" data-toggle="tooltip" onclick="getBillPrintDetails(' + r.rowid + ', false);"><i class="fas fa-search-plus"></i></a></td>';
@@ -199,6 +220,11 @@ function calculateFinal() {
                 if (dayapply == 0 && discount2able == 1)
                     rPrice = subtotal * Discount / 100
             }
+            
+            if (payment < rPrice) {
+                rPrice = 0;
+            }
+         
             $(row).find(".row-discountval").text(rPrice.toFixed(2));
             rTotl = remaing - rPrice;
             $(row).find(".row-total").text(rTotl.toFixed(2));
@@ -231,6 +257,10 @@ function savePayment() {
     let paydate = $("#txtpaymentdate").val();
     let Numbertransfer = $("#txtNumbertransfer").val(), Comments = $("#txtComments").val();
     let Transmitter = $("#txtTransmitter").val(), BankCheck = $("#txtBankCheck").val();
+    let accountno = $("#txt_cardNumber").val();
+    let expimmyy = $("#expires_mmyy").val();
+    let expimmyyval = expimmyy.replace('/', '');
+    let cardcode = $("#txtcardcode").val();
 
     let _list = createItemsList(), _payment_list = createPaymentItems();
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
@@ -242,7 +272,8 @@ function savePayment() {
             amount: parseFloat($("#Total").text()) || 0.00, discount: parseFloat($("#Discount").text()) || 0.00, sub_total: parseFloat($("#SubTotal").text()) || 0.00,
             items: _list
         }
-        let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: parseInt(PaymentTypeid) || 0, strValue4: JSON.stringify(_payment_list) }
+       // let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: parseInt(PaymentTypeid) || 0, strValue4: JSON.stringify(_payment_list) }
+          let option = { strValue1: 0, strValue2: JSON.stringify(_order), strValue3: parseInt(PaymentTypeid) || 0, strValue4: JSON.stringify(_payment_list), strValue5: JSON.stringify(_list), SortDir: PaymentTypeid, SortCol: accountno, PageNo: expimmyyval, PageSize: cardcode }
         //console.log(option); return;
         swal.queue([{
             title: 'Are you sure?', confirmButtonText: 'Yes', text: 'Would you like to pay for the $' + parseFloat($("#SubTotal").text()) + ' amount?',

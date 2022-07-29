@@ -650,7 +650,9 @@ namespace LaylaERP.Controllers
                     var dyn = JsonConvert.DeserializeObject<dynamic>(model.strValue4);
                     foreach (var o in dyn)
                     {
-                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value), o.cardNumber.Value.ToString(), o.expirationDate.Value, o.cardCode.Value);
+                        //result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value), o.cardNumber.Value.ToString(), o.expirationDate.Value, o.cardCode.Value);
+                        result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value), model.SortCol, model.PageNo, model.PageSize);
+
                     }
                 }
                 else if (model.strValue3 == "1" || model.strValue3 == "4")
@@ -684,6 +686,113 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult SavePaymentMiscBillDetails(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0, u_id = 0; string sender_batch_id = System.Guid.NewGuid().ToString();
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                var result = string.Empty;
+
+                String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
+                if (model.strValue3 == "7" || model.strValue3 == "8")
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(model.strValue4);
+
+                    var dyndt = JsonConvert.DeserializeObject<dynamic>(model.strValue5);
+                    DataTable dt = PaymentInvoiceRepository.AddNewMiscPayment(id, "MBP", u_id, result, model.strValue2);
+                    int pkey = Convert.ToInt32(dt.Rows[0]["id"]);
+                    bool resetLoop = false;
+                    foreach (var o in dyn)
+                    {
+                        //bool flag = false;
+                        var billno = o.invoice_Number.Value.ToString();
+
+                        foreach (var det in dyndt)
+                        {
+                            var bilnod = det.fk_invoceso.Value.ToString();
+                            if (billno == bilnod)
+                            {
+                                result = clsAuthorizeNet.CreditCardPayment(ApiLoginID, ApiTransactionKey, o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value), model.SortCol, model.PageNo, model.PageSize);
+
+                                var j = det;
+                                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + det + "}", "Items");
+                                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddAuthoriseMiscPayment(result, pkey, "MBPD", u_id, result, orderdetailsXML));
+                                break;
+                            }
+                            //resetLoop = true;
+
+                        }
+                    }
+                        
+                }
+                else if (model.strValue3 == "1" || model.strValue3 == "4")
+                {
+                    var dyn = JsonConvert.DeserializeObject<dynamic>(model.strValue4);
+                    var dyndt = JsonConvert.DeserializeObject<dynamic>(model.strValue5);
+                    DataTable dt = PaymentInvoiceRepository.AddNewMiscPayment(id, "MBP", u_id, result, model.strValue2);
+                    int pkey = Convert.ToInt32(dt.Rows[0]["id"]);
+                    bool resetLoop = false;
+                    foreach (var o in dyn)
+                    {
+                        //bool flag = false;
+                        var billno = o.invoice_Number.Value.ToString();
+
+                        foreach (var det in dyndt)
+                        {
+                            var bilnod = det.fk_invoceso.Value.ToString();
+                            result = clsAuthorizeNet.Fundtransfer(ApiLoginID, ApiTransactionKey, "0", o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value));
+                            if (billno == bilnod)
+                            {
+                                var j = det;
+                                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + det + "}", "Items");
+                                JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddAuthoriseMiscPayment(result, pkey, "MBPD", u_id, result, orderdetailsXML));
+                                break;
+                            }
+                            //resetLoop = true;
+
+                        }
+                        //if (resetLoop) continue;
+
+
+
+                        // result = clsAuthorizeNet.Fundtransfer(ApiLoginID, ApiTransactionKey, "0", o.invoice_Number.Value.ToString(), o.coustomer.Value.ToString(), Convert.ToDecimal(o.amount.Value));
+                    }
+
+
+
+                }
+                else if (model.strValue3 == "10")
+                {
+                    result = clsPayPal.PaymentsPayouts(sender_batch_id, model.strValue4);
+                    JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(id, "MBPAY", u_id, result, model.strValue2));
+                }
+                //  JSONresult = JsonConvert.SerializeObject(PaymentInvoiceRepository.AddNewMiscPayment(id, "MBPAY", u_id, result, model.strValue2));
+
+
+                //DataTable dt = PaymentInvoiceRepository.AddNewMiscPayment(id, "MBPAY", u_id, model.strValue2);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    if (dt.Rows[0]["Response"].ToString() == "Success")
+                //    {
+                //        string result = clsPayPal.PaymentsPayouts(sender_batch_id, model.strValue3);
+                //    }
+                //    else
+                //    {
+                //        return Json(new { id = 0, Response = dt.Rows[0]["Response"].ToString() }, JsonRequestBehavior.AllowGet); ;
+                //    }
+                //}
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpGet]
         public JsonResult GetcheckList(JqDataTableModel model)

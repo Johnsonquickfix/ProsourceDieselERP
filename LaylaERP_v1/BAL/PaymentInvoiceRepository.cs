@@ -192,7 +192,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select id,PaymentType text from wp_PaymentType where id in (1,8) order by id;"
+                string strSQl = "Select id,PaymentType text from wp_PaymentType where id in (1,8,10) order by id;"
                           + " Select rowid id, label text from erp_bank_account order by rowid;";
 
                 DS = SQLHelper.ExecuteDataSet(strSQl);
@@ -1015,7 +1015,30 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
+        public static DataTable AddAuthoriseMiscPayment(string responseid, long Pkey, string qFlag, long UserID, string transaction_id, XmlDocument orderdetailsXML)
+        {
+            var dt = new DataTable();
+            try
+            {
+                long id = Pkey;
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@responseid", responseid),
+                    new SqlParameter("@transaction_id", transaction_id),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_misc_payment_iud", parameters);
+            }
+            catch (Exception ex)
+            {
+                UserActivityLog.ExpectionErrorLog(ex, "PaymentInvoice/TakePaymentMisc/" + Pkey + "", "Payment taken from misc invoice");
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
         public static DataTable AddNewMiscPayment(long Pkey, string qFlag, long UserID, string responseid, string json_data)
         {
             var dt = new DataTable();

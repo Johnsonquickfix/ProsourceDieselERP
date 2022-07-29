@@ -1363,6 +1363,8 @@
     <Content Include="Views\Reports\AvalaraOrderList.cshtml" />
     <Content Include="Views\Amazonorders\Index.cshtml" />
     <Content Include="Views\Ship\AmazonOrders.cshtml" />
+    <Content Include="Views\CustomerService\QuestionsList.cshtml" />
+    <Content Include="Views\CustomerService\QuestionsMaster.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

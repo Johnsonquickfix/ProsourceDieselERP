@@ -105,6 +105,7 @@
         else
             $('#tblCusOrders').dataTable().fnClearTable();
     });
+    //$("#billModal").on("change", ".select2-search__field:eq(1)", function () { alert("Hello World!"); })
     $("#billModal").on("click", "#btnaddcustomer", function (t) {
         t.preventDefault();
         let cus_text = $("#ddlCustomerSearch").data("select2").dropdown.$search.val();
@@ -496,6 +497,9 @@ function searchOrderModal() {
 
     $('#billModal .modal-body').append(modalHtml);
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
+    let searchText = localStorage.getItem('_search'); 
+    $('#ddlCustomerSearch').select2('open'); $('#billModal').find('[type=search]').val(searchText);
+    localStorage.setItem('_search', '');
 }
 function bindCustomerOrders(id) {
     let opt = { strValue1: parseInt(id) || 0 };
@@ -1155,7 +1159,7 @@ function calcFinalTotals() {
         else { $(li).find('#gift_amt').text(_orderTotal); zGiftAmt += 0; }
     });
 
-    $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2)); $("#orderTotal").data('tax',zTotalTax.toFixed(2));
+    $("#giftCardTotal").html(zGiftAmt.toFixed(2)); $("#orderTotal").html((zTotal - zGiftAmt).toFixed(2)); $("#orderTotal").data('tax', zTotalTax.toFixed(2));
     let zRefundAmt = parseFloat($("#refundedTotal").text()) || 0.00; $("#netPaymentTotal").html((zTotal - zGiftAmt + zRefundAmt).toFixed(2));
     $('[data-toggle="tooltip"]').tooltip();
 }

@@ -240,6 +240,7 @@
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\AccountingController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
+    <Compile Include="Controllers\AmazonordersController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
     <Compile Include="UTILITIES\clsAffirm.cs" />
+    <Compile Include="UTILITIES\clsAmazonMws.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
     <Compile Include="UTILITIES\clsAvalara.cs" />
@@ -1359,6 +1361,8 @@
     <Content Include="Views\Setup\accountingclasstransaction.cshtml" />
     <Content Include="Views\Reports\CompanyOverview.cshtml" />
     <Content Include="Views\Reports\AvalaraOrderList.cshtml" />
+    <Content Include="Views\Amazonorders\Index.cshtml" />
+    <Content Include="Views\Ship\AmazonOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

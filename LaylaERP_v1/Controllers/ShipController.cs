@@ -632,5 +632,18 @@ namespace LaylaERP.Controllers
             return View();
         }
         #endregion
+
+        #region get Amazon MWS Orders
+        [Route("ship/amzon-order-sync")]
+        public ActionResult AmazonOrders()
+        {
+            try
+            {
+                clsAmazonMws.FetchOrders();
+            }
+            catch { }
+            return View();
+        }
+        #endregion
     }
 }

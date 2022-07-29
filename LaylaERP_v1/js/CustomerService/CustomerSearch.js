@@ -58,6 +58,40 @@
         if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
         else { $('.podiumchannel').addClass('hidden'); }
     });
+    $("#myModal").on("change", ".warranty-checkbox", function (t) {
+        //var checkboxes = $(this).parents().children('.warranty-checkbox');
+        //console.log(checkboxes);
+        //if ($this.is(":checked")) { return checkboxes.prop("checked", true); }
+        //checkboxes.prop("checked", false);
+
+        var checked = $(this).prop("checked"), container = $(this).parent();
+        //if (checked) { return $(this).parents().children('.warranty-checkbox').prop("checked", true); }
+        if ($(this).attr('type') == 'radio') $('.warranty-checkbox').prop("checked", false);
+        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false);
+        container.find('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
+        $(this).parents().children('.warranty-checkbox').prop("checked", checked);
+
+        //function checkSiblings(el) {
+        //    var parent = el.parent().parent(), all = true;
+        //    el.siblings().each(function () {
+        //        let returnValue = all = ($(this).children('.warranty-checkbox').prop("checked") === checked);
+        //        return returnValue;
+        //    });
+        //    if (all && checked) {
+        //        //parent.children('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
+        //        parent.children('.warranty-checkbox').prop("checked", checked);
+        //        checkSiblings(parent);
+
+        //    } else if (all && !checked) {
+        //        parent.children('.warranty-checkbox').prop("checked", checked);
+        //        parent.children('.warranty-checkbox').prop("indeterminate", (parent.find('.warranty-checkbox:checked').length > 0));
+        //        checkSiblings(parent);
+        //    } else {
+        //        el.parents("li").children('.warranty-checkbox').prop({ indeterminate: true, checked: true });
+        //    }
+        //}
+        //checkSiblings(container);
+    });
     lightbox.option({ resizeDuration: 200, wrapAround: true, showImageNumberLabel: false, alwaysShowNavOnTouchDevices: true });
     //$("#myModal").on("click", "[name='box_is_opened']", function (t) { $("[name='box_is_opened']").not(this).prop("checked", false) });
 });
@@ -484,13 +518,13 @@ function StolenPackageModal(order_id) {
     $("#myModal").empty().html(_html);
 
     _html = '<div id="kt_warranty_claim" class="claimwarranty-step1 card-body">';
-    $.each(StolenPackageQuestions, function (i, row) {
-        _html += '<label class="form-check-custom form-check-solid d-flex" for="chk-' + i + '">';
-        _html += '  <input type="checkbox" class="form-check-input me-3 warranty-checkbox" id="chk-' + i + '" name="chk-' + i + '" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/>';
-        _html += '  <span class="form-check-label d-flex flex-fill align-items-start fs-5 my-1">' + row.title + '</span>';
-        _html += '</label>';
-        _html += '<div class="separator separator-dashed my-2"></div>';
-    });
+    //$.each(StolenPackageQuestions, function (i, row) {
+    //    _html += '<label class="form-check-custom form-check-solid d-flex" for="chk-' + i + '">';
+    //    _html += '  <input type="checkbox" class="form-check-input me-3 warranty-checkbox" id="chk-' + i + '" name="chk-' + i + '" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/>';
+    //    _html += '  <span class="form-check-label d-flex flex-fill align-items-start fs-5 my-1">' + row.title + '</span>';
+    //    _html += '</label>';
+    //    _html += '<div class="separator separator-dashed my-2"></div>';
+    //});
     _html += '</div>';
 
     _html += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 ">';
@@ -504,6 +538,36 @@ function StolenPackageModal(order_id) {
 
     $('#myModal .modal-body').append(_html);
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
+
+    //bind questions
+    _html = '';
+    $.get('/customer-service/helpdesk-questions', { strValue1: 3 }).then(response => {
+        response = JSON.parse(response);
+        _html = '<ul>'
+        $.each(response.filter(x => x.parent_id == 0 || x.parent_id == null), function (i, r) {
+            _html += '<li>';
+            _html += '  <input type="' + (r.flag == 'Q' ? 'checkbox' : 'radio') + '" id="chk-' + r.wr_titleid + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + r.wr_titleid + '" data-code="' + r.wr_typeid + '" data-title="' + r.titlename + '"/>';
+            _html += '  <label for="chk-' + r.wr_titleid + '">' + r.titlename + '</label>';
+            _html += '  <ul>';
+            $.each(response.filter(x => x.parent_id == r.wr_titleid), function (i_1, r_1) {
+                _html += '<li>';
+                _html += '  <input type="' + (r_1.flag == 'Q' ? 'checkbox' : 'radio') + '" id="chk-' + r_1.wr_titleid + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + r_1.wr_titleid + '" data-code="' + r_1.wr_typeid + '" data-title="' + r_1.titlename + '"/>';
+                _html += '  <label for="chk-' + r_1.wr_titleid + '">' + r_1.titlename + '</label>';
+                _html += '  <ul>';
+                $.each(response.filter(x => x.parent_id == r_1.wr_titleid), function (r_1_1, r_1_1) {
+                    _html += '<li>';
+                    _html += '  <input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + r_1_1.wr_titleid + '" name="chk-' + i + '-' + i_1 + '-' + r_1_1 + '" data-id="' + r_1_1.wr_titleid + '" data-code="' + r_1_1.wr_typeid + '" data-title="' + r_1_1.titlename + '"/>';
+                    _html += '  <label for="chk-' + r_1_1.wr_titleid + '">' + r_1_1.titlename + '</label>';
+                    _html += '</li>';
+                });
+                _html += '  </ul>';
+                _html += '</li>';
+            });
+            _html += '  </ul>';
+            _html += '</li>';
+        });
+        _html += '</ul>';
+    }).catch(err => { }).always(function () { $('#kt_warranty_claim').empty().append(_html); });
 }
 function GenerateStolenPackageTicket(order_id) {
     let _user = $(".order-id").data('name'), _reason = 'Packages not received by customer.', _reason_code = '9000';
@@ -660,7 +724,10 @@ function WarrantyInfoModalData(id, _action) {
             if (_action == 'wp_return') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return</button>'); }
             else if (_action == 'wp_return_to_vender') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReturnModal(' + id + ');">Create Return to vendor</button>'); }
             else if (_action == 'wp_replacement') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateReplacementModal(' + id + ');">Replacement</button>'); }
-            else if (_action == 'wp_createorder') { $('#myModal .modal-footer').empty().append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrderModal(' + id + ');">Create new order</button>'); }
+            else if (_action == 'wp_createorder') {
+                $('#myModal .modal-footer').empty().append('<div class="d-flex flex-fill align-items-start"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CloseTicket(' + id + ');"><i class="fa fa-window-close mr-1"></i>Close Ticket</button></div>');
+                $('#myModal .modal-footer').append('<button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="CreateNewOrder(' + id + ');"><i class="fa fa-shopping-cart mr-1"></i>Create new order</button>');
+            }
             else if (_action == 'wp_declined') { $('#myModal .modal-footer').empty().append('Order declined by retention specialist.'); }
             else { $('#myModal .modal-footer').empty().append('<div class="text-danger">Wait for the action of the retention specialist.</div>'); }
         }
@@ -693,35 +760,7 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
 
-    modalHtml = '<div id="kt_warranty_claim" class="claimwarranty-step1 card-body pt-0">';
-
-    modalHtml += '<ul>';
-    $.each(WarrantyQuestions, function (i, row) {
-        modalHtml += '<li>';
-        modalHtml += '<input type="radio" id="chk-' + i + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + row.id + '" data-code="' + row.code + '" data-title="' + row.title + '"/>';
-        modalHtml += '<label for="chk-' + i + '">' + row.title + '</label>';
-        modalHtml += '  <ul>';
-        $.each(row.questions, function (q_i, q_row) {
-            modalHtml += '<li>';
-            if (q_row.sub_questions != null) modalHtml += '<input type="radio" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '" name="chk-' + i + '" data-id="' + q_row.id + '" data-code="' + q_row.code + '" data-title="' + q_row.title + '"/>';
-            else modalHtml += '<input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '" name="chk-' + i + '-' + q_i + '" data-id="' + q_row.id + '" data-code="' + q_row.code + '" data-title="' + q_row.title + '"/>';
-            modalHtml += '<label for="chk-' + i + '-' + q_i + '">' + q_row.title + '</label>';
-            modalHtml += '  <ul>';
-            $.each(q_row.sub_questions, function (sq_i, sq_row) {
-                modalHtml += '<li>';
-                modalHtml += '<input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + i + '-' + q_i + '-' + sq_i + '" name="chk-' + i + '-' + q_i + '-' + sq_i + '" data-id="' + sq_row.id + '" data-code="' + sq_row.code + '" data-title="' + sq_row.title + '"/>';
-                modalHtml += '<label for="chk-' + i + '-' + q_i + '-' + sq_i + '">' + sq_row.title + '</label>';
-                modalHtml += '</li>';
-            });
-            modalHtml += '  </ul>';
-            modalHtml += '</li>';
-        });
-        modalHtml += '  </ul>';
-        modalHtml += '</li>';
-    });
-    modalHtml += '</ul>';
-    modalHtml += '</div>';
-    //modalHtml += '<div class="separator separator-dashed my-5"></div>';
+    modalHtml = '<div id="kt_warranty_claim" class="claimwarranty-step1 card-body pt-0"></div>';
 
     modalHtml += '<div class="claimwarranty-step2 bg-light-primary rounded border-primary border border-dashed p-6 mb-2 hide">';
     modalHtml += '  <div class="d-flex align-items-center me-5">';
@@ -751,49 +790,37 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '  </div>';
     modalHtml += '</div>';
 
-    //modalHtml += '<div class="claimwarranty-step3 hide">';
-    //modalHtml += '  <div class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="kt_dropzonejs_example_3">';
-    //modalHtml += '      <div class="dropzone-panel mb-lg-0 mb-2">';
-    //modalHtml += '          <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>';
-    //modalHtml += '          <a class="dropzone-remove-all btn btn-sm btn-primary">Remove All</a>';
-    //modalHtml += '      </div>';
-    //modalHtml += '      <div class="dropzone-items wm-200px"></div>';
-    //modalHtml += '  </div><span class="form-text fs-6 text-muted">Max file size is 2MB per file.</span>';
-    //modalHtml += '</div>';
+    $('#myModal .modal-body').append(modalHtml); $("#myModal").modal({ backdrop: 'static', keyboard: false });
 
-    $('#myModal .modal-body').append(modalHtml);
-    $("#myModal").modal({ backdrop: 'static', keyboard: false });
-
-    $('#kt_warranty_claim .collapsed').on('click', function () {
-        $('#kt_warranty_claim .collapse').removeClass('show');
-        $('#kt_warranty_claim_body_' + $(this).data('id')).addClass('show');
-    });
-    $('#myModal .warranty-checkbox').change(function (e) {
-        var checked = $(this).prop("checked"), container = $(this).parent(), siblings = container.siblings();
-        if ($(this).attr('type') == 'radio') $('.warranty-checkbox').prop("checked", false);
-        $('.warranty-checkbox').not($(this).parent('li').parent('ul').find('.warranty-checkbox:checked')).prop("checked", false);
-        container.find('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
-        function checkSiblings(el) {
-            var parent = el.parent().parent(), all = true;
-            el.siblings().each(function () {
-                let returnValue = all = ($(this).children('.warranty-checkbox').prop("checked") === checked);
-                return returnValue;
+    //bind questions
+    let _html = '';
+    $.get('/customer-service/helpdesk-questions', { strValue1: 1 }).then(response => {
+        response = JSON.parse(response); 
+        _html = '<ul>'
+        $.each(response.filter(x => x.parent_id == 0 || x.parent_id == null), function (i, r) {
+            _html += '<li>';
+            _html += '  <input type="' + (r.flag == 'Q' ? 'checkbox' : 'radio') + '" id="chk-' + r.wr_titleid + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + r.wr_titleid + '" data-code="' + r.wr_typeid + '" data-title="' + r.titlename + '"/>';
+            _html += '  <label for="chk-' + r.wr_titleid + '">' + r.titlename + '</label>';
+            _html += '  <ul>';
+            $.each(response.filter(x => x.parent_id == r.wr_titleid), function (i_1, r_1) {
+                _html += '<li>';
+                _html += '  <input type="' + (r_1.flag == 'Q' ? 'checkbox' : 'radio') + '" id="chk-' + r_1.wr_titleid + '" class="form-check-input m-0 me-3 warranty-checkbox" name="chk-reason" data-id="' + r_1.wr_titleid + '" data-code="' + r_1.wr_typeid + '" data-title="' + r_1.titlename + '"/>';
+                _html += '  <label for="chk-' + r_1.wr_titleid + '">' + r_1.titlename + '</label>';
+                _html += '  <ul>';
+                $.each(response.filter(x => x.parent_id == r_1.wr_titleid), function (r_1_1, r_1_1) {
+                    _html += '<li>';
+                    _html += '  <input type="checkbox" class="form-check-input m-0 me-3 warranty-checkbox" id="chk-' + r_1_1.wr_titleid + '" name="chk-' + i + '-' + i_1 + '-' + r_1_1 + '" data-id="' + r_1_1.wr_titleid + '" data-code="' + r_1_1.wr_typeid + '" data-title="' + r_1_1.titlename + '"/>';
+                    _html += '  <label for="chk-' + r_1_1.wr_titleid + '">' + r_1_1.titlename + '</label>';
+                    _html += '</li>';
+                });
+                _html += '  </ul>';
+                _html += '</li>';
             });
-            if (all && checked) {
-                //parent.children('.warranty-checkbox').prop({ indeterminate: false, checked: checked });
-                parent.children('.warranty-checkbox').prop("checked", checked);
-                checkSiblings(parent);
-
-            } else if (all && !checked) {
-                parent.children('.warranty-checkbox').prop("checked", checked);
-                parent.children('.warranty-checkbox').prop("indeterminate", (parent.find('.warranty-checkbox:checked').length > 0));
-                checkSiblings(parent);
-            } else {
-                el.parents("li").children('.warranty-checkbox').prop({ indeterminate: true, checked: true });
-            }
-        }
-        checkSiblings(container);
-    });
+            _html += '  </ul>';
+            _html += '</li>';
+        });
+        _html += '</ul>';
+    }).catch(err => { }).always(function () { $('#kt_warranty_claim').empty().append(_html); });
 }
 function ClaimWarranty(chk) {
     var isChecked = $(chk).prop("checked");
@@ -899,7 +926,7 @@ function GenerateTicketNo() {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
                         swal.hideLoading(); swal.close(); ClaimWarranty_uplaodfiles(result[0].id);
-                        OrderInfo(option.order_id); 
+                        OrderInfo(option.order_id);
                         //swal('Success', 'Thank you for submitting your warranty claim. For reference, your ticket number is #' + result[0].id + '. Your warranty claim will be processed within the next 3 business days.', "success");
                     }
                     else { swal('Error', 'Something went wrong, please try again.', "error"); }
@@ -1235,6 +1262,39 @@ function ReplacementGenereate() {
 }
 
 //create new order
+function CreateNewOrder(_id) {
+    swal({
+        title: "New Order Create", text: "Do you want to go with the New Order create?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes, I am sure!', cancelButtonText: "No, go to normal order create!"
+    }).then(function (isConfirm) {
+        if (isConfirm.value) {
+            let _email = $(".order-id").data('email');
+            if ($.isFunction(window.parent.setTab)) { window.parent.setTab(69, 'Quick Orders', '/OrdersMySQL/minesofmoria', _email); }
+            else { localStorage.setItem('_search', _email); window.open(window.location.origin + '/OrdersMySQL/minesofmoria', '_blank'); }
+        }
+        else { CreateNewOrderModal(_id) }
+    });
+    return false;
+}
+function CloseTicket(_id) {
+    let _oid = parseInt($(".order-id").data('order_id')) || 0
+    swal({
+        title: 'Ticket No #' + _id, showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Submit', cancelButtonText: "Cancel",
+        html: '<input type="number" id="swal-orderno" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==10) return false;" class="form-control my-2" autofocus placeholder="New Order No"><textarea id="swal-remark" class="form-control my-2" rows="3"  maxlength="250" placeholder="Remark"></textarea>',
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                if (true) {
+                    let obj = { strValue1: JSON.stringify({ ticket_id: _id, new_order_id: parseInt($('#swal-orderno').val()) || 0, ticket_is_open: 0, comment: $('#swal-remark').val(), comment_by: 'agent' }) };
+                    $.post('/customer-service/ticket-close', obj).then(response => {
+                        response = JSON.parse(response);
+                        if (response[0].response == 'success') { $("#myModal").modal('hide'); OrderInfo(_oid); swal('Success!', 'Ticket No #' + _id + ' closed successfully.', "success"); }
+                        else { swal('Error', result[0].response, "error"); }
+                    }).catch(err => { }).always(function () { swal.hideLoading(); });
+                    resolve(obj);
+                }
+            });
+        }
+    }).then(function (result) { });
+}
 function CreateNewOrderModal(id) {
     let _html = '', _ct = '', _st = ''; $("#loader").show();
     let _customer_id = 0;

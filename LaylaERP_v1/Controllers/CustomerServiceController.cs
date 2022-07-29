@@ -56,8 +56,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
-        [HttpGet]
-        [Route("customer-service/customer-info")]
+        [HttpGet, Route("customer-service/customer-info")]
         public JsonResult GetCustomerInfo(SearchModel model)
         {
             string result = string.Empty;
@@ -74,8 +73,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
-        [HttpPost]
-        [Route("customer-service/order")]
+        [HttpPost, Route("customer-service/order")]
         public JsonResult GetOrderInfo(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -99,8 +97,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-        [HttpPost]
-        [Route("customer-service/generate-ticket")]
+        [HttpPost, Route("customer-service/generate-ticket")]
         public JsonResult GenerateOrderTicket(CustomerServiceModel model)
         {
             string JSONresult = string.Empty;
@@ -125,8 +122,21 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-        [HttpPost]
-        [Route("customer-service/ticket-action")]
+
+        [HttpGet, Route("customer-service/helpdesk-questions")]
+        public JsonResult GetHelpdeskQuestions(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                int wr_typeid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) wr_typeid = Convert.ToInt32(model.strValue1);
+                result = JsonConvert.SerializeObject(CustomerServiceRepository.GetHelpdeskQuestions("HELPDESQUES", wr_typeid), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost, Route("customer-service/ticket-action")]
         public JsonResult TicketAction(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -189,8 +199,7 @@ namespace LaylaERP.Controllers
         }
 
         #region Order Ticket Action
-        [HttpPost]
-        [Route("customer-service/create-order-return")]
+        [HttpPost, Route("customer-service/create-order-return")]
         public JsonResult CreateOrderReturn(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;
@@ -217,8 +226,7 @@ namespace LaylaERP.Controllers
             return Json(new { status = status, message = JSONresult }, 0);
         }
 
-        [HttpPost]
-        [Route("customer-service/create-order-replacement")]
+        [HttpPost, Route("customer-service/create-order-replacement")]
         public JsonResult CreateOrderReplacement(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;
@@ -244,6 +252,24 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { return Json(new { status = false, message = ex.Message }, 0); }
             return Json(new { status = status, message = JSONresult }, 0);
+        }
+
+        [HttpPost, Route("customer-service/ticket-close")]
+        public JsonResult TicketClose(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                if (!string.IsNullOrEmpty(model.strValue1))
+                {
+                    long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETCLOSE");
+                    JSONresult = JsonConvert.SerializeObject(dt);
+                }
+                else { JSONresult = "[{\"id\":0,\"response\":\"Please select action.\"}]"; }
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
         #endregion
 

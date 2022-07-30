@@ -1,72 +1,71 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide(); 
-    $('#txtEndingDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    let today = new Date();
-    $('#txtEndingDate').val();
-    getbankaccount() 
-    $(".select2").select2();
-    $('#ddlaccount').change(function (t) {
-        getdata();
-    });
-    $(document).on('click', "#btnreconciling", function () {
-        reconciling();
-    })
+    $("#loader").hide(); $(".select2").select2();
+    $('#txtEndingDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, minDate: '01/01/2022', locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+    //$('#txtEndingDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+    //let today = new Date();
+    //$('#txtEndingDate').val();
+    $.when(getbankaccount()).done(function () { });
+
+    $(document).on('change', "#ddlaccount", function (t) { t.preventDefault(); getdata(); })
+    $(document).on('click', "#btnreconciling", function (t) { t.preventDefault(); reconciling(); })
 
     $("#txtEndingbalance").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.-]/g, ''));
         $this.val($this.val().substring(0, 10));
     });
-   
+
 });
 function getbankaccount() {
+    $('#ddlaccount').empty().append('<option value="0">Select Account</option>');
     $.ajax({
-        url: "/PaymentInvoice/getbankaccount",
-        type: "Get",
+        url: "/PaymentInvoice/getbankaccount", type: "Get",
         success: function (data) {
-            $('#ddlaccount').append('<option value="0">Select Account</option>');
-            for (var i = 0; i < data.length; i++) {
-                $('#ddlaccount').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
-            }
+            $.each(data, function (key, row) {
+                $('#ddlaccount').append('<option value="' + row.Value + '">' + row.Text + '</option>');
+            });
         }, async: false
     });
 }
 
 function getdata() {
-    var ID = $("#ddlaccount").val();   
-    var obj = { strVal: ID }
-    $.ajax({ 
-        url: '/Accounting/GetDataByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
+    $("#hfvalconform,#lblbeginningbalance").val("0");
+    $('#lblendingdata').text("01/31/2022");
+    $('#lblbeginningbalance').data('id', 0); $('#lblbillNo').data('id', 0); $('#lblendingdata').data('id', '');
+    $('#txtEndingDate').data('daterangepicker').setStartDate(moment());
+    $('#txtEndingDate').data('daterangepicker').setEndDate(moment());
+    $('#txtEndingDate').data('daterangepicker').minDate = moment('01/01/2022', 'MM/DD/YYYY');
+    //$('#txtEndingDate').daterangepicker({ startDate: moment(), endDate: moment(), minDate: '01/01/2022' });
+    let ID = $("#ddlaccount").val();
+    let obj = { strVal: ID }
+    $.ajax({
+        url: '/Accounting/GetDataByID/' + ID, type: 'post', contentType: "application/json; charset=utf-8", dataType: 'JSON',
+        beforeSend: function (xhr) { $("#loader").show(); },
         data: JSON.stringify(obj),
         success: function (data) {
-            var i = JSON.parse(data);
-            console.log(i.length);
-            if (i.length > 0) {
-                $('#lblbeginningbalance').data('id', i[0].bank_ending_balance);
-                $('#lblbeginningbalance').text(i[0].bank_ending_balance);
-                $('#lblbillNo').data('id', i[0].rowid);
-                $("#hfvalconform").val(i[0].bank_reconciliation);
-                
-                $('#lblendingdata').data('id', i[0].ending_date);
-                $('#lblendingdata').text(i[0].ending_date);
-            }
-            else {
-                $("#hfvalconform").val("0");
-                $('#lblbeginningbalance').text("0");
-                    $('#lblendingdata').text("01/31/2022");
-            }            
+            data = JSON.parse(data);
+            $.each(data, function (key, row) {
+                $('#lblbeginningbalance').data('id', row.bank_ending_balance);
+                $('#lblbeginningbalance').text(row.bank_ending_balance);
+                $('#lblbillNo').data('id', row.rowid);
+                $("#hfvalconform").val(row.bank_reconciliation);
+
+                $('#lblendingdata').data('id', row.ending_date);
+                $('#lblendingdata').text(row.ending_date);
+                //$('#txtEndingDate').daterangepicker({ startDate: moment(), endDate: moment(), minDate: row.ending_date });
+                $('#txtEndingDate').data('daterangepicker').setStartDate(moment());
+                $('#txtEndingDate').data('daterangepicker').setEndDate(moment());
+                $('#txtEndingDate').data('daterangepicker').minDate = moment(row.ending_date, 'MM/DD/YYYY');
+            });
         },
-        error: function (msg) { alert(msg); },
+        error: function (msg) { $("#loader").hide(); alert(msg); }, complete: function () { $("#loader").hide(); },
         async: false
     });
 
 }
 
-function reconciling() {     
-   // ID = $("#hfid").val();     
+function reconciling() {
+    // ID = $("#hfid").val();     
     //console.log('ll');
     acountID = $("#ddlaccount").val();
     beginningbalanceval = $('#lblbeginningbalance').text();
@@ -94,81 +93,14 @@ function reconciling() {
     //    swal('Alert', 'Already reconciliation done.', 'error').then(function () { swal.close(); $('#txtEndingDate').focus(); });
     //}
     else {
-        var obj = {
-            //ID: ID,
-            //updatedID: UpdatedIDval,
-            //post_title: productname,
-            //post_name: productname,
-            //ProductTypeID: ProductTypeval,
-            //post_content: formetcustom,
-            //regular_price: regularprice,
-            //sale_price: saleprice,
-            //tax_status: taxstatus,
-            //tax_class: classtax,
-            //sku: sku,
-            //manage_stock: enableStockval,
-            //backorders: allowbackorders,
-            //stock: Stockquantity,
-            //stock_status: stockstatus,
-            //low_stock_amount: Lowstockthreshold,
-            //sold_individually: solidIndividuallyval,
-            //ShippingclassID: Shipping,
-            //weight: weigh,
-            //length: Length,
-            //width: Width,
-            //height: Height,
-            //upsell_ids: upsellsval,
-            //crosssell_ids: Crosssellsval,
-            //price: saleprice,
-            //CategoryID: categorydataval,
-            //PublishDate: date_publish,
-            //_gift_card: giftcard,
-            //_gift_card_expiration_days: dayexpire,
-            //_gift_card_template_default_use_image: Recipientemail,
-            //post_status: pdstatus
-        }
-        var checkstr = confirm('Do you want to reconcile?');
-        if (checkstr == true) {
-
-            var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname + "&acountID=" + acountID ;
-            window.location.href = url;
-            //$.ajax({
-            //    url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',
-            //    contentType: "application/json; charset=utf-8",
-            //    data: JSON.stringify(obj),
-            //    dataType: "json",
-            //    beforeSend: function () {
-            //        $("#loader").show();
-            //    },
-            //    success: function (data) {
-            //        if (data.status == true) {
-            //            if (data.url == "Manage") {
-            //                swal('Success!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
-            //            }
-            //            else {
-            //                $('#fetch_results > input:text').val('');
-            //                swal('Success!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
-            //            }
-            //            //$('#ddlProduct').val(null).trigger('change');
-            //            //clear_fetch();
-
-            //        }
-            //        else {
-            //            swal('Alert!', data.message, 'error')
-            //        }
-            //    },
-            //    complete: function () {
-            //        $("#loader").hide();
-            //        //location.href = '/Users/Users/';
-            //        //window.location.href = '/Users/Users/';
-            //        isEdit(false);
-            //    },
-            //    error: function (error) {
-            //        swal('Error!', 'something went wrong', 'error');
-            //    },
-            //})
-        } else {
-            return false;
-        }
-    } 
+        swal({
+            title: "", text: "Do you want to reconcile?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes, I do!', cancelButtonText: "No"
+        }).then(function (isConfirm) {
+            if (isConfirm.value) {
+                var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname + "&acountID=" + acountID;
+                window.location.href = url;
+            }
+        });
+        return false;
+    }
 }

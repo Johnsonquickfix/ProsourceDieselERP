@@ -97,7 +97,7 @@ function reconciling() {
             title: "", text: "Do you want to reconcile?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55', confirmButtonText: 'Yes, I do!', cancelButtonText: "No"
         }).then(function (isConfirm) {
             if (isConfirm.value) {
-                var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname + "&acountID=" + acountID;
+                var url = "/Accounting/BankReconciliationprocess?edate=" + sd + "&id=" + id + "&endbailance=" + endingbal + "&stdate=" + endingdata + "&accountname=" + accountname + "&accountid=" + acountID;
                 window.location.href = url;
             }
         });

@@ -1132,10 +1132,10 @@ namespace LaylaERP.Controllers
                 DateTime? fromdate = null; DateTime? todate = null;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     fromdate = Convert.ToDateTime(model.strValue1);
-                if (!string.IsNullOrEmpty(model.strValue4))
-                    todate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
                 DataSet ds = new DataSet();
-                ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue2, model.strValue5);
+                ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue3, model.strValue4);
 
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
@@ -1150,6 +1150,7 @@ namespace LaylaERP.Controllers
             {
                 long id = 0; string flag = "";
                 if (model.strValue1 == "TC") flag = "TRANCLEARED";
+                else if (model.strValue1 == "BR") flag = "BANKRECONCILE";
                 if (!string.IsNullOrEmpty(model.strValue2)) id = Convert.ToInt64(model.strValue2);
 
                 JSONresult = JsonConvert.SerializeObject(AccountingRepository.BankReconciliationUpdate(flag, id, model.strValue3));

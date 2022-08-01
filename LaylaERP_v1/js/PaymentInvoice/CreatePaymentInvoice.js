@@ -28,21 +28,21 @@
         if (Paymentype == "1") {
             // console.log(Coustomertype);
             $('#divcred').hide();
-            $('#divpaypal').hide();
+            $('#divpaypal').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             //$('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/MultipleBillPaymentList">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
             //$('#btnSave').show();
 
         }
         else if (Paymentype == '8') {
-            $('#divcred').show();
-            $('#divpaypal').hide();
+            $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', true);
+            $('#divpaypal').hide(); $('#ddlaccount').val('0').trigger('change'); $('#txtNumbertransfer').val('');
             //$('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/MultipleBillPaymentList">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
             //$('#btnSave').show();
 
         }
         else if (Paymentype == '10') {
             $('#divcred').hide();
-            $('#divpaypal').show();
+            $('#divpaypal').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', true); $('#ddlaccount').val('0').trigger('change'); $('#txtNumbertransfer').val('');
             //if ($("#hfpaypal_id").val() == 'N') {
             //    swal('Alert!', "you can't payment without paypal_id please remove that bill", "error");
             //    $('#btnSave').hide();
@@ -55,7 +55,7 @@
             //}
         }
         else {
-            $('#divcred').hide();
+            $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
         }
     });
@@ -345,7 +345,7 @@ function savePayment() {
     let status = $("#hfstatus").val();
     let _list = createItemsList(), _payment_list = createPaymentItems();
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (PaymentTypeid != 10 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
+    else if (PaymentTypeid != 10 && PaymentTypeid != 8 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
     else if (_list.length <= 0) { swal('Error', 'Receive payment should not be zero', 'error').then(function () { swal.close(); }) }
     else {
         let _order = {

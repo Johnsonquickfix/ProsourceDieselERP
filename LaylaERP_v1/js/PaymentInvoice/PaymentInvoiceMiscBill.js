@@ -15,8 +15,8 @@
 
         }
         else if (Paymentype == '8') {
-            $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
-            $('#divpaypal').hide();
+            $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', true);
+            $('#divpaypal').hide(); $('#ddlaccount').val('0').trigger('change'); $('#txtNumbertransfer').val('');
             $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
             $('#btnSave').show();
 
@@ -50,6 +50,7 @@
         $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" title="Click for pay" data-toggle="tooltip" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
         $(".top-action").empty().append('<button type="button" title="Click for cancel" data-toggle="tooltip" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
         $("#loader").hide(); isEdit(true);
+        setTimeout(function () { getpaymenttp($("#hfpaytype").val()) }, 1000);
     });
     $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); isEdit(false); });
     //$(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });
@@ -264,7 +265,7 @@ function savePayment() {
 
     let _list = createItemsList(), _payment_list = createPaymentItems();
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (PaymentTypeid != 10 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
+    else if (PaymentTypeid != 10 && PaymentTypeid != 8 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
     else if (_list.length <= 0) { swal('Error', 'Receive payment should not be zero', 'error').then(function () { swal.close(); }) }
     else {
         let _order = {

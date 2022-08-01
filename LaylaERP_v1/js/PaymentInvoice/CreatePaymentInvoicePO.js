@@ -27,24 +27,24 @@
         let Paymentype = $("#ddlPaymentType").val();
         if (Paymentype == "1") {
             // console.log(Coustomertype);
-            $('#divcred').hide();
+            $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
  
 
         }
         else if (Paymentype == '8') {
-            $('#divcred').show();
-            $('#divpaypal').hide();
+            $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', true);
+            $('#divpaypal').hide(); $('#ddlaccount').val('0').trigger('change'); $('#txtNumbertransfer').val('');
  
 
         }
         else if (Paymentype == '10') {
-            $('#divcred').hide();
-            $('#divpaypal').show();
+            $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', true);
+            $('#divpaypal').show(); $('#ddlaccount').val('0').trigger('change'); $('#txtNumbertransfer').val('');
 
         }
         else {
-            $('#divcred').hide();
+            $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
         }
     });
@@ -269,7 +269,7 @@ function savePayment() {
     let status = $("#hfstatus").val();
     let _list = createItemsList(), _payment_list = createPaymentItems();
     if (PaymentTypeid <= 0) { swal('Error', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (PaymentTypeid != 10 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
+    else if (PaymentTypeid != 10 && PaymentTypeid != 8 && accountid <= 0) { swal('Error', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
     else if (_list.length <= 0) { swal('Error', 'Receive payment should not be zero', 'error').then(function () { swal.close(); }) }
     else {
         let _order = {

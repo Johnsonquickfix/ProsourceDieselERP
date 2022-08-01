@@ -2,13 +2,13 @@
     $('#txtpaymentdate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $('#divcred,#divpaypal').hide();
     $('.billinfo').prop("disabled", true);
-    $.when(filldropdown(), setURLPara()).done(function () { getPurchaseOrderInfo(); });
+    $.when(filldropdown(), setURLPara()).done(function () { getPurchaseOrderInfo(); setTimeout(function () { getpaymenttp($("#hfpaytype").val()) }, 1000);});
 
     //isEdit(true);
     $('#ddlPaymentType').change(function (t) {
         let Paymentype = $("#ddlPaymentType").val();
         if (Paymentype == "1") {
-            $('#divcred').show(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
+            $('#divcred').hide(); $('#ddlaccount,#txtNumbertransfer,#txtpaymentdate').prop('disabled', false);
             $('#divpaypal').hide();
             $('.footer-finalbutton').empty().append('<a title="Back to list"  data-toggle="tooltip" data-placement="top"  class="btn btn-danger back_to_list" href="/PaymentInvoice/PayBillsMisc">Back to List</a><button title="Click for cancel" data-toggle="tooltip" type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Click for pay"><i class="far fa-save"></i> Pay</button>');
             $('#btnSave').show();
@@ -110,7 +110,7 @@ function getPurchaseOrderInfo() {
                     if (r.rowid > 0) {
                         $("#hfbilno").val(r.ref); $("#hfvname").val(r.displayname);
                         $("#hfpaytype").val(r.payaccount);
-                        $('#ddlPaymentType').val(r.payaccount).trigger('change');
+                       // $('#ddlPaymentType').val(r.payaccount).trigger('change');
                     }
                 });
                 $.each(data['pod'], function (i, r) {

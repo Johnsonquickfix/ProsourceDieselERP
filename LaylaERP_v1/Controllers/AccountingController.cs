@@ -1121,6 +1121,8 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        #region [Expense Report]
         [HttpGet]
         public JsonResult GetBankReconciliationprocess(SearchModel model)
         {
@@ -1136,6 +1138,21 @@ namespace LaylaERP.Controllers
                 ds = AccountingRepository.GetBankReconciliationprocess(fromdate, todate, model.strValue2, model.strValue5);
 
                 JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult BankReconciliationUpdate(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0; string flag = "";
+                if (model.strValue1 == "TC") flag = "TRANCLEARED";
+                if (!string.IsNullOrEmpty(model.strValue2)) id = Convert.ToInt64(model.strValue2);
+
+                JSONresult = JsonConvert.SerializeObject(AccountingRepository.BankReconciliationUpdate(flag, id, model.strValue3));
             }
             catch { }
             return Json(JSONresult, 0);
@@ -1157,6 +1174,8 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
+        #endregion
+
         public JsonResult AccountBalanceTotalBydate(string strValue1, string strValue2, string strValue3)
         {
             string JSONResult = string.Empty;
@@ -1359,7 +1378,7 @@ namespace LaylaERP.Controllers
 
         [HttpPost, Route("accounting/profitloss-export")]
         public ActionResult ProfitLossReportExport(AccountingReportSearchModal model)
-        {            
+        {
             string fileName = "Profit_Loss_detail.xlsx";
             try
             {
@@ -1390,7 +1409,7 @@ namespace LaylaERP.Controllers
                     //Add header
                     ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
                     ws.Cell("A5").Value = "Account";
-                    ws.Cell("B5").Value = "Date"; 
+                    ws.Cell("B5").Value = "Date";
                     ws.Cell("C5").Value = "Transaction Type";
                     ws.Cell("D5").Value = "Num";
                     ws.Cell("E5").Value = "Name";

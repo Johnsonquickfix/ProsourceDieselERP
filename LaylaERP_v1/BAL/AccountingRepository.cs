@@ -1769,6 +1769,25 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+        public static DataTable BankReconciliationUpdate(string flag,long id, string json_data)
+        {
+            var dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@json_data", json_data),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_bankreconciliationprocess_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return dt;
+        }
 
         public static DataTable Reconciliationprocess(long Pkey, string qFlag, XmlDocument orderXML)
         {

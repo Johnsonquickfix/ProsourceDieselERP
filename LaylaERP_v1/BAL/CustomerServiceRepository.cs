@@ -62,19 +62,92 @@
             return dt;
         }
 
+        public static DataSet GetQuestionsMaster()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters = { new SqlParameter("@flag", "HELPDESKTYPE") };
+                ds = SQLHelper.ExecuteDataSet("erp_helpdesk_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
         public static DataTable GetHelpdeskQuestions(string flag, int wr_typeid)
         {
             DataTable dt = new DataTable();
             try
             {
-                SqlParameter[] parameters = { new SqlParameter("@flag", flag), new SqlParameter("@ticket_id", wr_typeid) };
-                dt = SQLHelper.ExecuteDataTable("erp_order_customer_search", parameters);
+                SqlParameter[] parameters = { new SqlParameter("@flag", flag), new SqlParameter("@id", wr_typeid) };
+                dt = SQLHelper.ExecuteDataTable("erp_helpdesk_search", parameters);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
             return dt;
+        }
+        public static int AddQuestions(int wr_titleid, int wr_typeid, string titlename, int parent_id, string flag)
+        {
+            int result = 0;
+            try
+            {
+                if (wr_titleid > 0)
+                {
+                    string strsql = "update erp_helpdesk_title set wr_typeid=@wr_typeid, titlename=@titlename, parent_id=@parent_id, sub_title=@titlename, flag=@flag where wr_titleid = @wr_titleid";
+
+                    SqlParameter[] para =
+                    {
+                        wr_titleid > 0 ? new SqlParameter("@wr_titleid",wr_titleid) : new SqlParameter("@parent_id",DBNull.Value),
+                        new SqlParameter("@wr_typeid", wr_typeid),
+                        new SqlParameter("@titlename", titlename),
+                        parent_id > 0 ? new SqlParameter("@parent_id",parent_id) : new SqlParameter("@parent_id",DBNull.Value),
+                        new SqlParameter("@flag", flag),
+                    };
+                    if (SQLHelper.ExecuteNonQuery(strsql, para) > 0) result = wr_titleid;
+                }
+                else
+                {
+                    string strsql = "INSERT into erp_helpdesk_title(wr_typeid,titlename,parent_id,sub_title,flag) values(@wr_typeid,@titlename,@parent_id, @titlename, @flag); SELECT SCOPE_IDENTITY();";
+
+                    SqlParameter[] para =
+                    {
+                        //wr_titleid > 0 ? new SqlParameter("@wr_titleid",wr_titleid) : new SqlParameter("@parent_id",DBNull.Value),
+                        new SqlParameter("@wr_typeid", wr_typeid),
+                        new SqlParameter("@titlename", titlename),
+                        parent_id > 0 ? new SqlParameter("@parent_id",parent_id) : new SqlParameter("@parent_id",DBNull.Value),
+                        new SqlParameter("@flag", flag),
+                    };
+                    result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static int DeleteQuestions(int wr_titleid)
+        {
+            int result = 0;
+            try
+            {
+                string strsql = "delete from erp_helpdesk_title where wr_titleid = @wr_titleid";
+
+                SqlParameter[] para =
+                {
+                        wr_titleid > 0 ? new SqlParameter("@wr_titleid",wr_titleid) : new SqlParameter("@parent_id",DBNull.Value),
+                    };
+                if (SQLHelper.ExecuteNonQuery(strsql, para) > 0) result = wr_titleid;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return result;
         }
 
         public static DataTable GetCustomerInfo(long customer_id, long order_id, string billing_email, string phone_no)

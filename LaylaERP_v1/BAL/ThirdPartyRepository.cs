@@ -1142,7 +1142,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public static DataTable GetPurchaseOrder(string userstatus,string VendorID, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPurchaseOrder(string userstatus,string VendorID, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -1158,7 +1158,8 @@ namespace LaylaERP.BAL
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
+                    //strWhr += " and (p.ref like '%" + searchid + "%' OR convert(date, p.date_livraison) like '%" + searchid + "%')";
+                    strWhr += " and concat(convert(varchar,p.rowid),'',isnull(p.ref,''),isnull(s.Status,''),'', CONVERT(VARCHAR(12),p.date_livraison,101)) like '%" + searchid + "%'";
                 }
                 if (userstatus != null)
                 {  if(userstatus == "3")
@@ -1166,6 +1167,10 @@ namespace LaylaERP.BAL
                    else
                         strWhr += " and (s.id='" + userstatus + "') ";
 
+                }
+                if (fromdate != null)
+                {
+                    strWhr += " and convert(date, p.date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101)) ";
                 }
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
                 strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
@@ -1193,6 +1198,24 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT (Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6)) as PurchaseOrder, " +
                     "(coalesce(sum(ep.amount), 0)) as PaidAmount, " +
                     "((Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6)) -coalesce(sum(ep.amount), 0)) as OutstandingAmount " +
+                    "from erp_payment ep inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable DateWiseAmountsView(DateTime? fromdate, DateTime? todate, string vendorcode)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT (Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6) and convert(date, date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101))) as PurchaseOrder, " +
+                    "(coalesce(sum(ep.amount), 0)) as PaidAmount, " +
+                    "((Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6) and convert(date, date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101))) -coalesce(sum(ep.amount), 0)) as OutstandingAmount " +
                     "from erp_payment ep inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

@@ -618,7 +618,13 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = ThirdPartyRepository.GetPurchaseOrder(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    fromdate = Convert.ToDateTime(model.strValue3);
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    todate = Convert.ToDateTime(model.strValue4);
+
+                DataTable dt = ThirdPartyRepository.GetPurchaseOrder(model.strValue1, model.strValue2, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -631,6 +637,22 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = ThirdPartyRepository.AmountsView(vendorcode1);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult DateWiseAmountsView(string vendorcode1, string vendorcode2, string vendorcode3)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(vendorcode1))
+                    fromdate = Convert.ToDateTime(vendorcode1);
+                if (!string.IsNullOrEmpty(vendorcode2))
+                    todate = Convert.ToDateTime(vendorcode2);
+                DataTable dt = ThirdPartyRepository.DateWiseAmountsView(fromdate, todate, vendorcode3);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

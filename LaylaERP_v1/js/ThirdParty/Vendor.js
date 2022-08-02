@@ -23,7 +23,7 @@
     VendorWarehouseList();
     VendorRelatedProduct();
     VendorLinkedFiles();
-    InvoiceGrid();
+   
     $(document).on('click', '#btnChange', function () { orderStatus(); });
     isEdit(true);
 
@@ -43,9 +43,27 @@
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
         PurchaseOrderGrid();
     });
+
+    $('#txtvendorePaymentDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'This Year': [moment().startOf('year'), moment().endOf('year')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+        $('#txtvendorePaymentDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
+         
+    });
+
     PurchaseOrderGrid();
     SalesOrderGrid();
-
+    InvoiceGrid();
     $("#txtDefaultDiscount").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
@@ -1621,6 +1639,9 @@ function DeleteVendorLinkedFiles(id) {
 
 function InvoiceGrid() {
     let VendorID = $("#hfid").val();
+    let sd = $('#txtvendorePaymentDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtvendorePaymentDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    if ($('#txtvendorePaymentDate').val() == '') { sd = ''; ed = '' };
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }],
@@ -1646,6 +1667,8 @@ function InvoiceGrid() {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             aoData.push({ name: "strValue2", value: VendorID });
+            aoData.push({ name: "strValue3", value: sd });
+            aoData.push({ name: "strValue4", value: ed });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 1 ? "refordervendor" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
@@ -1742,6 +1765,7 @@ function VendorBookkipping() {
 }
 
 setTimeout(function () { CalculateAmount(); }, 2000);
+setTimeout(function () { CalculateAmountDateWise(); }, 2500);
 function CalculateAmount() {
     var vendor_code = $("#hfvendorcode").val();
     console.log(vendor_code);
@@ -1760,6 +1784,36 @@ function CalculateAmount() {
             $("#txtpurchaseorder").text('$' + parseFloat(d[0].PurchaseOrder).toFixed(2));
             $("#txtpaidamount").text('$' + parseFloat(d[0].PaidAmount).toFixed(2));
             $("#txtoutstandingamount").text('$' + parseFloat(d[0].OutstandingAmount).toFixed(2));
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}
+function CalculateAmountDateWise() {
+    var vendor_code = $("#hfvendorcode").val();
+    console.log(vendor_code);
+    let sd = $('#txtvendorePaymentDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let end = $('#txtvendorePaymentDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    $("#txtoutstanding").text('Outstanding bill payment from ' + sd + ' to ' + end );
+    //if ($('#txtvendorePaymentDate').val() == '') { sd = ''; end = '' };
+    //var obj = { strValue1: sd, strValue2: end, strValue3: vendor_code  }
+    var obj = { vendorcode1: sd, vendorcode2: end, vendorcode3: vendor_code }
+    $.ajax({
+        url: '/ThirdParty/DateWiseAmountsView',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        processing: true,
+        success: function (data) {
+            console.log(data);
+            var d = JSON.parse(data);
+
+            $("#txtmthpurchaseorder").text('$' + parseFloat(d[0].PurchaseOrder).toFixed(2));
+            $("#txtmthpaidamount").text('$' + parseFloat(d[0].PaidAmount).toFixed(2));
+            $("#txtmthoutstandingamount").text('$' + parseFloat(d[0].OutstandingAmount).toFixed(2));
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.responseText);
@@ -2010,4 +2064,9 @@ $("#btnPosearch").click(function () {
 
 $("#btnSalesPosearch").click(function () {
     SalesOrderGrid();
+});
+
+$("#btnvendorePaymentPosearch").click(function () {
+    InvoiceGrid();
+    CalculateAmountDateWise();
 });

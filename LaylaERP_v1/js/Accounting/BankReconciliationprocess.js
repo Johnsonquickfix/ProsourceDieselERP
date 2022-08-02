@@ -5,6 +5,7 @@
             $('#lbldateending').text(start.format('MM/DD/YYYY'));
             getbankreconcilationInfo();
         });
+    //$('.clearing_date').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, minDate: '01/01/2022', locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $.when(LoadDataBind()).done(function () { getbankreconcilationInfo(); });
 
     /*filldropdown();*/
@@ -76,6 +77,7 @@ function getbankreconcilationInfo() {
                     itemHtml = '<tr id="tritemid_' + row.rowid + '" class="paid_item" data-pid="' + row.rowid + '" data-supplier="' + row.label_complete + '" data-rowid="' + row.PO_SO_ref + '" data-credit="' + row.credit.toFixed(2) + '" data-debit="' + row.debit.toFixed(2) + '">';
                     itemHtml += '   <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck(this);" value="' + row.rowid + '" ' + (row.is_cleared ? 'checked' : '') + '></td>';
                     itemHtml += '   <td>' + row.doc_date + '</td>';
+                    itemHtml += '   <td><input class="form-control clearing_date" style="padding: 5px;" id="txt_clearing_date_' + row.rowid + '" value="' + moment(row.cleared_date).format('MM/DD/YYYY') + '" name="txt_clearing_date"></td>';
                     itemHtml += '   <td class="text-left">' + row.doc_type + '</td>';
                     itemHtml += '   <td>' + row.PO_SO_ref + '</td>';
                     itemHtml += '   <td>' + row.label_complete + '</td>';
@@ -97,6 +99,8 @@ function getbankreconcilationInfo() {
                     //itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].remaining.toFixed(2) + '" name="txt_itemprice" placeholder="Payment"></td>';
                     itemHtml += '</tr>';
                     $('#line_items').append(itemHtml);
+                    //$('#lbldateending').data('daterangepicker').setStartDate(moment(row.cleared_date, 'MM/DD/YYYY'));
+                    //$('#lbldateending').data('daterangepicker').setEndDate(moment(row.cleared_date, 'MM/DD/YYYY'));
                 });
             }
             catch (error) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }
@@ -105,6 +109,7 @@ function getbankreconcilationInfo() {
             $("#loader").hide();
             $('#lblcleared').text(CurrencyFormat(_cleared)); $('#lbluncleared').text(CurrencyFormat(_uncleared));
             $('#lblclearedbal').text(CurrencyFormat(_cleared + _uncleared)); $('#lblclearedbal').data('amt', (_cleared + _uncleared).toFixed(2));
+            $('.clearing_date').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
         },
         error: function (xhr, status, err) { $("#loader").hide(); swal('Error', "something went wrong.", "error"); }, //async: false
     });
@@ -148,7 +153,9 @@ function reconciling() {
     let _ob = parseFloat($('#lblBeginnigbal').data('bob')) || 0.00, _eb = parseFloat($('#txt_statementendingbal').val()) || 0.00;
 
     let _list = [];
-    $('#line_items :checkbox').each(function () { _list.push({ id: parseInt($(this).val()) || 0, is_cleared: this.checked }); });
+    $('#line_items :checkbox').each(function () {
+        _list.push({ id: parseInt($(this).val()) || 0, is_cleared: this.checked, cleared_date: $(this).closest('tr').find('.clearing_date').val() });
+    });
     //rowid: id,
     let _reconciling = {
         rowid: 0, bank_code: accid, bank_opening_balance: _ob, opening_date: stdate, bank_ending_balance: _eb, ending_date: edate, trans: _list
@@ -160,7 +167,7 @@ function reconciling() {
         preConfirm: function () {
             return new Promise(function (resolve) {
                 $.post('/Accounting/BankReconciliationUpdate', option).done(function (result) {
-                    result = JSON.parse(result); 
+                    result = JSON.parse(result);
                     if (result[0].response == "success") {
                         swal('Success', 'Final reconcile has been taken successfully!!', 'success').then((result) => { location.href = 'BankReconciliation'; });
 
@@ -178,11 +185,9 @@ function reconciling() {
 
 function updatetransaction() {
     let _list = [];
-    $('#line_items :checkbox').each(function () { _list.push({ id: parseInt($(this).val()) || 0, is_cleared: this.checked }); });
+    $('#line_items :checkbox').each(function () { _list.push({ id: parseInt($(this).val()) || 0, is_cleared: this.checked, cleared_date: $(this).closest('tr').find('.clearing_date').val() }); });
     let option = { strValue1: 'TC', strValue2: 0, strValue3: JSON.stringify(_list) }
-
-    console.log(option); //return;
-
+    //console.log(option); return;
     swal.queue([{
         title: '', text: "Do you want update transaction status?", confirmButtonText: 'Yes, update it!',
         showLoaderOnConfirm: true, showCancelButton: true,

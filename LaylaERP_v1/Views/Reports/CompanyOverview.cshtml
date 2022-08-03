@@ -196,13 +196,13 @@
 
                                 if (data['pods'].length > 0) {
                                     for (let i = 0; i < data['pods'].length; i++) {
-                                        $("#totaltevenue").text("$" +data['pods'][i].income.toFixed(2));
-                                        $("#totalexpense").text("$" +data['pods'][i].expense.toFixed(2));
-                                        $("#totaltax").text("$" +data['pods'][i].Tax.toFixed(2));
-                                        $("#totalshipping").text("$" +data['pods'][i].Ship.toFixed(2));
-                                        $("#totalcoupondiscount").text("$" +data['pods'][i].Coupon.toFixed(2));
-                                        $("#totalfee").text("$" +data['pods'][i].Fee.toFixed(2));
-                                        $("#totalgiftcard").text("$" +data['pods'][i].GiftCard.toFixed(2));
+                                        $("#totaltevenue").text("$" + (data['pods'][i].income.toFixed(2)).replace('-', ''));
+                                        $("#totalexpense").text("$" + (data['pods'][i].expense.toFixed(2)).replace('-', ''));
+                                        $("#totaltax").text("$" + (data['pods'][i].Tax.toFixed(2)).replace('-', ''));
+                                        $("#totalshipping").text("$" + (data['pods'][i].Ship.toFixed(2)).replace('-', ''));
+                                        $("#totalcoupondiscount").text("$" + (data['pods'][i].Coupon.toFixed(2)).replace('-', ''));
+                                        $("#totalfee").text("$" +(data['pods'][i].Fee.toFixed(2)).replace('-',''));
+                                        $("#totalgiftcard").text("$" + (data['pods'][i].GiftCard.toFixed(2)).replace('-', ''));
                                       //  $("#avgcost").html(data['pods'][i].PayRoll.toFixed(2));
                                    
                                     }

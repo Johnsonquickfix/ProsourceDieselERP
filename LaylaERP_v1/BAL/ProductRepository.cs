@@ -1074,7 +1074,7 @@ namespace LaylaERP.BAL
                 string strSql = "Select *, cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2)) Margin,cast(regula_price as numeric(18,2)) - cast(cast_prise as numeric(18,2)) regulaMargin,coalesce(convert(numeric(18,2),( ((cast(sale_price as numeric(18,2)) - cast(cast_prise as numeric(18,2))) * 100) / NULLIF(cast(sale_price as numeric(18,2)),0))),0) marginpersantage,coalesce(convert(numeric(18,2),( ((cast(regula_price as numeric(18,2)) - cast(cast_prise as numeric(18,2))) * 100) / NULLIF(cast(regula_price as numeric(18,2)),0))),0) regularmarginpersantage "
               + " from ( select p.id,max(p.post_type)post_type,max(p.post_title)post_title,"
               + " max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '0' end) sale_price,max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '0' end) regula_price, "
+              + " max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '0' end) sale_price,max(case when p.id = s.post_id and s.meta_key = '_regular_price' and s.meta_value != 'undefined' then s.meta_value else '0' end) regula_price, "
               + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status,coalesce(convert(numeric(18,2),max(cost_price)),0) cast_prise,(select name from wp_vendor where rowid = (select top 1 fk_vendor from Product_Purchase_Items where fk_product = p.id and is_setprise = 1)) vname"
               + " FROM wp_posts p "
               + " left join wp_postmeta as s on p.id = s.post_id "

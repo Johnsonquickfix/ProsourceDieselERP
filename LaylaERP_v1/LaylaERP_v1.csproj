@@ -787,6 +787,7 @@
     <Content Include="js\CustomerService\CustomerSearch.js" />
     <Content Include="js\CustomerService\WarrantyQuestions.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\CustomSearch\OrderSearch.js" />
     <Content Include="js\DonationHaul\DonationHaulList.js" />
     <Content Include="js\DonationHaul\UploadedList.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />

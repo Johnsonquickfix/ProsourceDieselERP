@@ -3231,5 +3231,26 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+        public static DataSet getordercollectionlist(DateTime? from_date, DateTime? to_date, int fiscalyear_id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] param = {
+                        from_date.HasValue ? new SqlParameter("@from", from_date) :new SqlParameter("@from",DBNull.Value),
+                        to_date.HasValue ? new SqlParameter("@to", to_date) :new SqlParameter("@to",DBNull.Value),
+                        fiscalyear_id > 0 ? new SqlParameter("@rowid", fiscalyear_id) :new SqlParameter("@rowid",DBNull.Value)
+
+                    };
+
+                ds = SQLHelper.ExecuteDataSet("erp_ordercollection_list", param);
+                ds.Tables[0].TableName = "podium"; ds.Tables[1].TableName = "paypal"; ds.Tables[2].TableName = "amazon"; ds.Tables[3].TableName = "credit_card";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

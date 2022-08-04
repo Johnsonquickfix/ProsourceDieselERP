@@ -9,7 +9,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2> Summary Of Orders Collection </h2>
+    <h2> Summary Of Orders </h2>
 </div>
 <section class="content section-content neworder-section table-design">
     <div class="panel">
@@ -42,24 +42,32 @@
             <thead>
                 <tr>
                     <th class="text-left"><span class=""> <h4>By Podium</h4></span> <span style="font-size:8px">(Processing + Complete)</span></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>No. Of Orders</span><h3 id="totalnopodium"></h3></div></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Total Amount</span><h3 id="totalamtpodium"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnopodium"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtpodium"></h3></div></th>
                 </tr>
                 <tr>
                     <th class="text-left"><span class=""> <h4>By Paypal</h4> </span> <span style="font-size:8px">(Processing + Complete)</span></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>No. Of Orders</span><h3 id="totalnopaypal"></h3></div></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Total Amount</span><h3 id="totalamtpaypal"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnopaypal"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtpaypal"></h3></div></th>
                 </tr>
                 <tr>
                     <th class="text-left"><span class=""> <h4>By Amazon </h4></span> <span style="font-size:8px">(Processing + Complete)</span></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>No. Of Orders</span><h3 id="totalnoamazon"></h3></div></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Total Amount</span><h3 id="totalamtamazon"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnoamazon"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtamazon"></h3></div></th>
                 </tr>
                 <tr>
-                    @*<th valign="top" style="position:fixed" class="text-left"></th>*@
+                    @*
+                    <th valign="top" style="position:fixed" class="text-left"></th>*@
                     <th class="text-left"><span class=""> <h4>By Credit Card </h4></span> <span style="font-size:8px">(Processing + Complete)</span></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>No. Of Orders</span><h3 id="totalnoCreditcard"></h3></div></th>
-                    <th class="text-left"><div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Total Amount</span><h3 id="totalamtCreditcard"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnoCreditcard"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtCreditcard"></h3></div></th>
+
+                </tr>
+                <tr>
+                    
+                    <th class="text-left"><span class=""> <h4>Total </h4></span></th>
+                    <th class="text-left"><div class="bxa"><span class=""></span><h3 id="totalno"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class=""></span><h3 id="totalamt"></h3></div></th>
 
                 </tr>
             </thead>
@@ -175,6 +183,13 @@
                                         $("#totalamtCreditcard").text("$" + (data['credit_card'][i].total.toFixed(2)).replace('-', ''));
                                     }
                                 }
+                                if (data['total'].length > 0) {
+                                    for (let i = 0; i < data['total'].length; i++) {
+                                        $("#totalno").text((data['total'][i].Id));
+                                        $("#totalamt").text("$" + (data['total'][i].total.toFixed(2)).replace('-', ''));
+                                    }
+                                }
+
                             }
                             catch (error) { throw error; }
                         },

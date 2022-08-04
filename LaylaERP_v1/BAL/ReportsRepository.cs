@@ -3244,7 +3244,7 @@ namespace LaylaERP.BAL
                     };
 
                 ds = SQLHelper.ExecuteDataSet("erp_ordercollection_list", param);
-                ds.Tables[0].TableName = "podium"; ds.Tables[1].TableName = "paypal"; ds.Tables[2].TableName = "amazon"; ds.Tables[3].TableName = "credit_card";
+                ds.Tables[0].TableName = "podium"; ds.Tables[1].TableName = "paypal"; ds.Tables[2].TableName = "amazon"; ds.Tables[3].TableName = "credit_card"; ds.Tables[4].TableName = "total";
             }
             catch (Exception ex)
             {

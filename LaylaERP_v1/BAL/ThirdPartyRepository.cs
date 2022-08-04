@@ -1216,7 +1216,7 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT (Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6) and convert(date, date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101))) as PurchaseOrder, " +
                     "(coalesce(sum(ep.amount), 0)) as PaidAmount, " +
                     "((Select coalesce(sum(total_ttc), 0) from[dbo].[commerce_purchase_order] where ref_supplier = '" + vendorcode + "' and fk_status in (3, 5, 6) and convert(date, date_creation) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101))) -coalesce(sum(ep.amount), 0)) as OutstandingAmount " +
-                    "from erp_payment ep inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "'";
+                    "from erp_payment ep inner join erp_payment_invoice epi on epi.fk_payment = ep.rowid where epi.thirdparty_code = '" + vendorcode + "' and convert(date, datec) between convert(date,CONVERT(VARCHAR,'" + fromdate + "',101)) and convert(date,CONVERT(VARCHAR,'" + todate + "',101))";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

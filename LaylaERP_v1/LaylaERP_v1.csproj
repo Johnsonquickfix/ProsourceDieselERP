@@ -1365,6 +1365,7 @@
     <Content Include="Views\Ship\AmazonOrders.cshtml" />
     <Content Include="Views\CustomerService\QuestionsList.cshtml" />
     <Content Include="Views\CustomerService\QuestionsMaster.cshtml" />
+    <Content Include="Views\Reports\OrdercollectionList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

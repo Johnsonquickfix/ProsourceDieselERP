@@ -156,13 +156,8 @@ function ExportList() {
     option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
     //console.log(option); return;
     $("#loader").show();
+    setTimeout(function () { $("#loader").hide(); }, 2000);
     postForm(option, '/customsearch/order-list-export');
-
-    //$.when($("#loader").show()).done(function () {
-    //    let url = "/accounting/profitloss-export?fiscalyear_id=" + option.fiscalyear_id + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type;
-    //    $("#fileForm").attr('action', url);
-    //    $("#fileForm").submit();
-    //}).done(function () { $("#loader").hide(); });
 }
 
 /**
@@ -239,6 +234,6 @@ function postForm(parameters, url) {
     var generatedForm = getForm(url, parameters);
 
     $('body').append(generatedForm);
-    generatedForm.submit(); $("#loader").hide();
+    generatedForm.submit();
     generatedForm.remove();
 }

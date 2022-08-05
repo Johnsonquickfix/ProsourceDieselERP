@@ -56,15 +56,21 @@
                     <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtamazon"></h3></div></th>
                 </tr>
                 <tr>
+                    <th class="text-left"><span class=""> <h4>By Monthly Payments </h4></span> <span style="font-size:8px">(Processing + Complete)</span></th>
+                    <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnoaffirm"></h3></div></th>
+                    <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtaffirm"></h3></div></th>
+
+                </tr>
+                <tr>
                     @*
-                    <th valign="top" style="position:fixed" class="text-left"></th>*@
+            <th valign="top" style="position:fixed" class="text-left"></th>*@
                     <th class="text-left"><span class=""> <h4>By Credit Card </h4></span> <span style="font-size:8px">(Processing + Complete)</span></th>
                     <th class="text-left"><div class="bxa"><span class="">Orders</span><h3 id="totalnoCreditcard"></h3></div></th>
                     <th class="text-left"><div class="bxa"><span class="">Total Amount</span><h3 id="totalamtCreditcard"></h3></div></th>
 
                 </tr>
                 <tr>
-                    
+
                     <th class="text-left"><span class=""> <h4>Total </h4></span></th>
                     <th class="text-left"><div class="bxa"><span class=""></span><h3 id="totalno"></h3></div></th>
                     <th class="text-left"><div class="bxa"><span class=""></span><h3 id="totalamt"></h3></div></th>
@@ -181,6 +187,12 @@
                                     for (let i = 0; i < data['credit_card'].length; i++) {
                                         $("#totalnoCreditcard").text((data['credit_card'][i].Id));
                                         $("#totalamtCreditcard").text("$" + (data['credit_card'][i].total.toFixed(2)).replace('-', ''));
+                                    }
+                                }
+                                if (data['affirm'].length > 0) {
+                                    for (let i = 0; i < data['affirm'].length; i++) {
+                                        $("#totalnoaffirm").text((data['affirm'][i].Id));
+                                        $("#totalamtaffirm").text("$" + (data['affirm'][i].total.toFixed(2)).replace('-', ''));
                                     }
                                 }
                                 if (data['total'].length > 0) {

@@ -78,13 +78,13 @@
                     <div class="row row-filter">
                         <div class="col-md-3 offset-1">
                             <div class="form-group">
-                                <select class="form-control select2-old" id="ddlSearchField" placeholder="Search Field" style="width: 100%;">
+                                <select class="form-control SearchField" id="ddlSearchField" placeholder="Search Field" style="width: 100%;">
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <select class="form-control select2-old" id="ddlSearchBy" placeholder="Search By" style="width: 100%;">
+                                <select class="form-control SearchBy" id="ddlSearchBy" placeholder="Search By" style="width: 100%;">
                                     <option value="equal to">equal to</option>
                                     <option value="start with">start with</option>
                                     <option value="end with">end with</option>
@@ -99,13 +99,13 @@
                         </div>
                         <div class="col-md-2 filter-action">
                             <button type="button" id="btnAddFilterRow" class="btn btn-danger"  title="Add filter row." data-placement="top" data-toggle="tooltip"><i class="fa fa-plus"></i></button>
-                            <button type="button" id="btnRemoveFilterRow" class="btn btn-danger" title="Delete filter row." data-placement="top" data-toggle="tooltip"><i class="fa fa-trash"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="box-footer with-border">
-                <button type="button" id="btnSearch" class="btn btn-danger pull-right"><i class="fa fa-search"></i> Search</button>
+                <button type="button" title="Click here to export order list." data-placement="right" data-toggle="tooltip" id="btnExportList" class="btn btn-primary button"><i class="far fa-file-excel"></i> Export</button>
+                <button type="button" id="btnSearch" class="btn btn-danger pull-right" title="Click here to show order list." data-placement="left" data-toggle="tooltip" ><i class="fa fa-search"></i> Search</button>
             </div>
         </div>
     </div>
@@ -129,6 +129,7 @@
         </div>
     </div>
 </div>
+<form action="" id="fileForm" method="post" style="display: none;"></form>
 
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/CustomSearch/OrderSearch.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

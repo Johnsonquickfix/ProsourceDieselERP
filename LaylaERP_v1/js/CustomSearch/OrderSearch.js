@@ -14,13 +14,7 @@
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
-        //let order_type = $('#hfOrderType').val();
-        //$.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
     });
-    //$('#txtOrderDate').on('cancel.daterangepicker', function (ev, picker) {
-    //    $(this).val(''); let order_type = $('#hfOrderType').val();
-    //    $.when(GetOrderDetails()).done(function () { dataGridLoad(order_type); });
-    //});
     $.when(getMasters()).done(function () { dataGridLoad() });
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); dataGridLoad();
@@ -30,17 +24,12 @@
         let _html = '<div class="row">';
         _html += '    <div class="col-md-3">';
         _html += '        <div class="form-group">';
-        _html += '            <select class="select2" id="ddlSearchField" placeholder="Search Field" style="width: 100%;">' + $("#ddlSearchField").clone() + '</select>';
+        _html += '            <select class="form-control SearchField" id="ddlSearchField_1" placeholder="Search Field" style="width: 100%;">' + $("#ddlSearchField").html() + '</select>';
         _html += '        </div>';
         _html += '    </div>';
         _html += '    <div class="col-md-3">';
         _html += '        <div class="form-group">';
-        _html += '            <select class="form-control select2" id="ddlSearchBy" placeholder="Search By" style="width: 100%;">';
-        _html += '                <option value="equal to">equal to</option>';
-        _html += '                <option value="start with">start with</option>';
-        _html += '                <option value="end with">end with</option>';
-        _html += '                <option value="any where" selected="selected">any where</option>';
-        _html += '            </select>';
+        _html += '            <select class="form-control SearchBy" id="ddlSearchBy_1" placeholder="Search By" style="width: 100%;">' + $("#ddlSearchBy").html() + '</select>';
         _html += '        </div>';
         _html += '    </div>';
         _html += '    <div class="col-md-3">';
@@ -49,42 +38,16 @@
         _html += '        </div>';
         _html += '    </div>';
         _html += '    <div class="col-md-3 filter-action">';
-        _html += '        <button type="button" id="btnAddFilterRow" class="btn btn-danger"><i class="fa fa-plus"></i> Add Filter Row</button>';
-        _html += '        <button type="button" id="btnSearch" class="btn btn-danger pull-right">Search</button>';
+        _html += '        <button type="button" id="btnAddFilterRow" class="btn btn-danger"  title="Add filter row." data-placement="top" data-toggle="tooltip"><i class="fa fa-plus"></i></button>';
+        _html += '        <button type="button" id="btnRemoveFilterRow" class="btn btn-danger" title="Delete filter row." data-placement="top" data-toggle="tooltip"><i class="fa fa-trash"></i></button>';
         _html += '    </div>';
         _html += '</div>';
-        //$('#dynamic-filter').append(_html);
-        //$("#ddlSearchField").select2();
-        //let $myClone = $(".row-filter").html();
-        ////$myClone.find("span").remove();
-        ////$myClone.find(".select2").select2();
-        ////$('#btnAddFilterRow,#btnSearch').remove();
-        //$('#dynamic-filter').append('<div class="row row-filter">' + $myClone + '</div>');
-        //$('span.select2').remove();
-        //$('select.select2').removeAttr('data-select2-id'); $('select2').select2();
-        ////$('select.select2').select2();
-        ////$(".select2-dyn").select2();
-
-        //var row = $(".row-filter");
-
-        //row.find(".select2").each(function (index) { $(this).select2('destroy'); });
-
-        //var newrow = row.clone();
-        //$('#dynamic-filter').append(newrow);
-        ////$("#table1").append(newrow);
-
-        //$("select.select2").select2();
-
-
-        let $myClone = $(".row-filter").clone();
-        $myClone.removeClass("row-filter");
-        $myClone.find(".select2").each(function (index, r) { console.log(index, r); $myClone.find("span").remove(); $(r).removeClass("select2-hidden-accessible"); });
-        //$myClone.removeClass("row-filter");
-        //$myClone.find("span").remove();
-        //$myClone.find(".select2").select2();
-        $('#dynamic-filter').append($myClone);
-        $(".select2").select2();
+        $('#dynamic-filter').append(_html);
     });
+    $(document).on("click", "#btnRemoveFilterRow", function (t) {
+        t.preventDefault(); $(this).closest(".row").remove();
+    });
+    $(document).on("click", "#btnExportList", function (t) { t.preventDefault(); ExportList(); });
 });
 function getMasters() {
     $("#ddlStatus,#ddlPaymentType,#ddlSearchField,#ddlDisplayField").empty();
@@ -114,19 +77,19 @@ function dataGridLoad() {
         $('.box-body-table').empty().append('<table id="dtordersearch" class="table dataTable table-blue table-row-dashed no-footer text-propercase" width="100%"></table>');
     }
 
-
     let _columns = [];
     let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlPaymentType").val().map(d => `'${d}'`).join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+        //_columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (id, type, full, meta) { return (moment(id)._isValid) ? moment(id).format('MM/DD/YYYY') : id; } });
         _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
     });
     if (_order_payment != '') { _where_field.push({ strType: 'wp_postmeta', strKey: '_payment_method', strOperator: 'in', strValue: _order_payment }); }
     //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
     $("#dynamic-filter .row").each(function (e, r) {
         if ($(r).find("#txtSearchValue").val() != '') {
-            _where_field.push({ strType: $(r).find('#ddlSearchField :selected').data('tb_type'), strKey: $(r).find('#ddlSearchField').val(), strOperator: $(r).find('#ddlSearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
+            _where_field.push({ strType: $(r).find('.SearchField :selected').data('tb_type'), strKey: $(r).find('.SearchField').val(), strOperator: $(r).find('.SearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
         }
     });
     let sd = null, ed = null;
@@ -156,7 +119,7 @@ function dataGridLoad() {
             option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
             //option.sSortColName = oSettings.oAjaxData.mDataProp_0;
             option.sSortColName = "[" + _columns[0].data + "]";
-            console.log(option);
+            //console.log(option);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "POST", url: sSource, data: option,
                 success: function (data) {
@@ -168,4 +131,114 @@ function dataGridLoad() {
         },
         columns: _columns
     });
+}
+function ExportList() {
+    let _columns = [];
+    let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlPaymentType").val().map(d => `'${d}'`).join(',');
+    let _display_field = [], _where_field = [];
+    $("#ddlDisplayField :selected").each(function (e, r) {
+        _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+        //_columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (id, type, full, meta) { return (moment(id)._isValid) ? moment(id).format('MM/DD/YYYY') : id; } });
+        _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
+    });
+    if (_order_payment != '') { _where_field.push({ strType: 'wp_postmeta', strKey: '_payment_method', strOperator: 'in', strValue: _order_payment }); }
+    //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
+    $("#dynamic-filter .row").each(function (e, r) {
+        if ($(r).find("#txtSearchValue").val() != '') {
+            _where_field.push({ strType: $(r).find('.SearchField :selected').data('tb_type'), strKey: $(r).find('.SearchField').val(), strOperator: $(r).find('.SearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
+        }
+    });
+    let sd = null, ed = null;
+    if ($('#txtDate').val() != '') {
+        sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    }
+    let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
+    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
+    //console.log(option); return;
+    $("#loader").show();
+    postForm(option, '/customsearch/order-list-export');
+
+    //$.when($("#loader").show()).done(function () {
+    //    let url = "/accounting/profitloss-export?fiscalyear_id=" + option.fiscalyear_id + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type;
+    //    $("#fileForm").attr('action', url);
+    //    $("#fileForm").submit();
+    //}).done(function () { $("#loader").hide(); });
+}
+
+/**
+     * Original code found here: https://github.com/mgalante/jquery.redirect/blob/master/jquery.redirect.js
+     * I just simplified it for my own taste.
+     */
+function postForm(parameters, url) {
+
+    // generally we post the form with a blank action attribute
+    if ('undefined' === typeof url) { url = ''; }
+
+
+    //----------------------------------------
+    // SOME HELPER FUNCTIONS
+    //----------------------------------------
+    var getForm = function (url, values) {
+        values = removeNulls(values);
+        var form = $('<form>').attr("method", 'POST').attr("action", url);
+        iterateValues(values, [], form, null);
+        return form;
+    };
+
+    var removeNulls = function (values) {
+        var propNames = Object.getOwnPropertyNames(values);
+        for (var i = 0; i < propNames.length; i++) {
+            var propName = propNames[i];
+            if (values[propName] === null || values[propName] === undefined) {
+                delete values[propName];
+            } else if (typeof values[propName] === 'object') {
+                values[propName] = removeNulls(values[propName]);
+            } else if (values[propName].length < 1) {
+                delete values[propName];
+            }
+        }
+        return values;
+    };
+
+    var iterateValues = function (values, parent, form, isArray) {
+        var i, iterateParent = [];
+        Object.keys(values).forEach(function (i) {
+            if (typeof values[i] === "object") {
+                iterateParent = parent.slice();
+                iterateParent.push(i);
+                iterateValues(values[i], iterateParent, form, Array.isArray(values[i]));
+            } else {
+                form.append(getInput(i, values[i], parent, isArray));
+            }
+        });
+    };
+
+    var getInput = function (name, value, parent, array) {
+        var parentString;
+        if (parent.length > 0) {
+            parentString = parent[0];
+            var i;
+            for (i = 1; i < parent.length; i += 1) {
+                parentString += "[" + parent[i] + "]";
+            }
+
+            if (array) {
+                name = parentString + "[" + name + "]";
+            } else {
+                name = parentString + "[" + name + "]";
+            }
+        }
+
+        return $("<input>").attr("type", "hidden").attr("name", name).attr("value", value);
+    };
+
+
+    //----------------------------------------
+    // NOW THE SYNOPSIS
+    //----------------------------------------
+    var generatedForm = getForm(url, parameters);
+
+    $('body').append(generatedForm);
+    generatedForm.submit(); $("#loader").hide();
+    generatedForm.remove();
 }

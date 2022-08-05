@@ -64,7 +64,7 @@ function InventoryReport(is_date) {
             { data: 'post_title', title: 'Product', sWidth: "20%", class: "text-left" },
             { data: 'sku', title: 'SKU', sWidth: "10%", class: "text-left" },
             {
-                data: 'stock', title: 'Qty On Hand', sWidth: "10%", className: "text-right", render: function (data, type, row) { return (row.op_stock + row.stock + row.SaleUnits).toFixed(0) }
+                data: 'stock', title: 'Qty On Hand', sWidth: "10%", className: "text-right", render: function (data, type, row) { return (row.op_stock + row.stock - row.SaleUnits).toFixed(0) }
             },
             { data: 'UnitsinPO', title: 'Qty PO', sWidth: "10%", class: "text-right" },
             { data: 'Damage', title: 'Qty Damage', sWidth: "10%", class: "text-right" },

@@ -204,6 +204,7 @@
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\CustomerServiceRepository.cs" />
+    <Compile Include="BAL\CustomSearchRepository.cs" />
     <Compile Include="BAL\DaRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\DonationHaulRepository.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\CustomerServiceController.cs" />
+    <Compile Include="Controllers\CustomSearchController.cs" />
     <Compile Include="Controllers\DataImportController.cs" />
     <Compile Include="Controllers\DonationHaulController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
@@ -305,6 +307,7 @@
     <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\CustomerServiceModel.cs" />
+    <Compile Include="Models\CustomSearchModel.cs" />
     <Compile Include="Models\DaModel.cs" />
     <Compile Include="Models\EmailSettingModel.cs" />
     <Compile Include="Models\EventsModel.cs" />
@@ -448,6 +451,8 @@
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.svg" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.svg" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.svg" />
+    <Content Include="Content\AdminLTE-3.1.0\fSelect\fSelect.css" />
+    <Content Include="Content\AdminLTE-3.1.0\fSelect\fSelect.js" />
     <Content Include="Content\AdminLTE-3.1.0\icheck-bootstrap.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\inputmask.js" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
@@ -782,6 +787,7 @@
     <Content Include="js\CustomerService\CustomerSearch.js" />
     <Content Include="js\CustomerService\WarrantyQuestions.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\CustomSearch\OrderSearch.js" />
     <Content Include="js\DonationHaul\DonationHaulList.js" />
     <Content Include="js\DonationHaul\UploadedList.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
@@ -1366,6 +1372,7 @@
     <Content Include="Views\CustomerService\QuestionsList.cshtml" />
     <Content Include="Views\CustomerService\QuestionsMaster.cshtml" />
     <Content Include="Views\Reports\OrdercollectionList.cshtml" />
+    <Content Include="Views\CustomSearch\OrderSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

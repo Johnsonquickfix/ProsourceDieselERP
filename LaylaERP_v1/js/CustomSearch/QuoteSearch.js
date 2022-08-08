@@ -83,7 +83,13 @@ function dataGridLoad() {
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
         //_columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (id, type, full, meta) { return (moment(id)._isValid) ? moment(id).format('MM/DD/YYYY') : id; } });
-        _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
+        _columns.push({
+            data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
+                //if ($.type(data) == "string") {  return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mm A') : data; }
+                //else return data;
+                return data;
+            }
+        });
     });
     if (_order_payment != '') { _where_field.push({ strType: 'erp_order_quote', strKey: 'payment_method', strOperator: 'in', strValue: _order_payment }); }
     //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }

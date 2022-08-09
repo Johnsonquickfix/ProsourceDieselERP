@@ -2097,5 +2097,27 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable GetjournalDetails(DateTime? from_date, DateTime? to_date, string vendorid, string report_type, int accountid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] param = {
+                        from_date.HasValue ? new SqlParameter("@from", from_date) :new SqlParameter("@from",DBNull.Value),
+                        to_date.HasValue ? new SqlParameter("@to", to_date) :new SqlParameter("@to",DBNull.Value),
+                        accountid > 0 ? new SqlParameter("@account_num", vendorid) :new SqlParameter("@account_num",DBNull.Value),
+                        new SqlParameter("@flag", report_type),
+                        new SqlParameter("@thirdparty_code", vendorid)
+                    };
+
+                dt = SQLHelper.ExecuteDataTable("erp_Journalexport_account_report", param);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

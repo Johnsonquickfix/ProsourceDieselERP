@@ -40,7 +40,7 @@
         AccountJournalList(true);
         getGrandTotal(true);
     })
-
+    $(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportProfitLoss(); });
     //$("#btnExport").click(function () {
     //    window.location = '/Export/ExportInventory';
     //}) 
@@ -293,7 +293,7 @@ function AccountJournalList(is_date) {
         buttons: [
             {
                 extend: 'csv', className: 'button', text: '<i class="fas fa-file-csv"></i> CSV',
-                exportOptions: { columns: [2, 3, 4, 5, 6, 7, 8, 9], },
+              //  exportOptions: { columns: [2, 3, 4, 5, 6, 7, 8, 9], },
                 filename: function () {
                     let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Journals' + e;
@@ -303,7 +303,7 @@ function AccountJournalList(is_date) {
                 extend: 'print',
                 //title: '<h3 style="text-align:center">Layla Sleep Inc.</h3><br /><h3 style="text-align:left">Chart of accounts</h3>',
                 title: '', className: 'button', text: '<i class="fas fa-file-csv"></i> Print', footer: false,
-                exportOptions: { columns: [2, 3, 4, 5, 6, 7, 8, 9], },
+              //  exportOptions: { columns: [2, 3, 4, 5, 6, 7, 8, 9], },
                 filename: function () {
                     let d = new Date(); let e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                     return 'Account Journal' + e;
@@ -390,4 +390,21 @@ function getChartofaccount() {
             }
         }, async: false
     });
+}
+
+function ExportProfitLoss() {
+    let _income = 0, _expense = 0;
+    //let _searchby = parseInt($('#ddlSearchBy').val()) || 0, _date_from = moment(), _date_to = moment();
+    let vendorid = parseInt($('#ddlVendor').val()) || 0;
+    let accountid = parseInt($('#ddlAccount').val()) || 0;
+    let option = {};
+    
+    _date_from = $('#txtOrderDate').data('daterangepicker').startDate, _date_to = $('#txtOrderDate').data('daterangepicker').endDate;
+    option = { vendor: vendorid, account: accountid, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'JOURNAL' };
+    console.log(option);
+   // $.when($("#loader").show()).done(function () {
+    let url = "/accounting/Journal-export?vendor=" + option.vendor + "&account=" + option.account + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type;
+        $("#fileForm").attr('action', url);
+        $("#fileForm").submit();
+    //}).done(function () { $("#loader").hide(); });
 }

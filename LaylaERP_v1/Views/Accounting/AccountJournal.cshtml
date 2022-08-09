@@ -37,6 +37,7 @@
                             <select class="form-control select2" id="ddlAccount"></select>
                         </div>
                         <button type="submit" class="btn btn-danger" id="btnSearch">Reload</button>
+                        <button type="button" title="Click here to export journals" data-placement="top" data-toggle="tooltip" id="btnExportDetails" class="btn btn-danger">Export Details</button>
                     </div>
                     @*</form>*@
                     @*<input type="button" id="btnExport" value="Export" class="btn btn-primary" />*@
@@ -52,7 +53,7 @@
                         <thead>
                             <tr>
                                 @*<th class="text-left">Sort</th>
-                                <th class="text-left">ID</th>*@
+                                    <th class="text-left">ID</th>*@
                                 <th class="text-left">Date</th>
                                 <th class="text-left">Journal</th>
                                 <th class="text-left">Accounting Doc</th>
@@ -102,6 +103,7 @@
             </div>
         </div>
     </div>
+    <form action="" id="fileForm" method="post" style="display: none;"></form>
 </section>
 
 <link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />

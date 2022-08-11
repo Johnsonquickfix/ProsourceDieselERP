@@ -94,5 +94,6 @@ namespace LaylaERP.Models
         public DateTime? from_date { get; set; }
         public DateTime? to_date { get; set; }
         public string report_type { get; set; }
+        public string filter { get; set; }
     }
 }

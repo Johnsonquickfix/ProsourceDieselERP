@@ -1584,7 +1584,7 @@ namespace LaylaERP.Controllers
             {
                 //if (string.IsNullOrEmpty(model.report_type)) model.report_type = "JOURNAL";
                 //else if (model.report_type.Equals("JOURNAL")) model.report_type = "PROFITLOSS";              
-                DataTable dt = AccountingRepository.GetjournalDetails(model.from_date, model.to_date, model.vendor, model.report_type, model.account);
+                DataTable dt = AccountingRepository.GetjournalDetails(model.from_date, model.to_date, model.vendor, model.report_type, model.account,model.filter);
                 dt.TableName = "Journal_export";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
@@ -1597,6 +1597,70 @@ namespace LaylaERP.Controllers
                     ws.Cell("A1").Style.Font.Bold = true; ws.Cell("A1").Style.Font.FontSize = 14; ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     ws.Range("A1:H1").Merge();
                     ws.Cell("A2").Value = "Journals Detail";
+                    ws.Cell("A2").Style.Font.Bold = true; ws.Cell("A2").Style.Font.FontSize = 14; ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A2:H2").Merge();
+                    ws.Cell("A3").Value = "";
+                    ws.Cell("A3").Style.Font.Bold = true; ws.Cell("A3").Style.Font.FontSize = 10; ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A3:H3").Merge();
+
+                    //Add header
+                    ws.Range("A5:H5").Style.Font.Bold = true; ws.Range("A5:H5").Style.Font.FontSize = 9;
+                    ws.Cell("A5").Value = "Date";
+                    ws.Cell("B5").Value = "Journal";
+                    ws.Cell("C5").Value = "Accounting Doc";
+                    ws.Cell("D5").Value = "Label";
+                    ws.Cell("E5").Value = "Operation Label";
+                    ws.Cell("F5").Value = "Account";
+                    ws.Cell("G5").Value = "Debit($)";
+                    ws.Cell("H5").Value = "Credit($)";
+                    int i = 6;
+                    foreach (DataRow dtRow in dt.Rows)
+                    {
+                        ws.Cell("A" + i).Value = dtRow["datesort"].ToString();
+                        ws.Cell("B" + i).Value = dtRow["label_name"].ToString();
+                        ws.Cell("C" + i).Value = dtRow["PO_SO_ref"].ToString();
+                        ws.Cell("D" + i).Value = dtRow["subledger_label"].ToString();
+                        ws.Cell("E" + i).Value = dtRow["label_operation"].ToString();
+                        ws.Cell("F" + i).Value = dtRow["label"].ToString();
+                        ws.Cell("G" + i).Value = dtRow["debit"].ToString();
+                        ws.Cell("H" + i).Value = dtRow["credit"].ToString();
+                        i++;
+                    }
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
+                    }
+                }
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            //return Json(robj, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost, Route("accounting/ChartOffAcount-export")]
+        public ActionResult ChartOffAcountReportExport(AccountingReportJournalSearchModal model)
+        {
+            string fileName = "Chart_of_accounts_detail.xlsx";
+            try
+            {
+                //if (string.IsNullOrEmpty(model.report_type)) model.report_type = "JOURNAL";
+                //else if (model.report_type.Equals("JOURNAL")) model.report_type = "PROFITLOSS";              
+                DataTable dt = AccountingRepository.GetjournalDetails(model.from_date, model.to_date, model.vendor, model.report_type, model.account, model.filter);
+                dt.TableName = "Chart_of_accounts_detail_export";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    var ws = wb.Worksheets.Add("Chart_of_accounts_detail_export");
+                    ws.Style.Font.FontName = "Arial"; ws.Style.Font.FontSize = 8;
+
+                    ws.Cell("A1").Value = CommanUtilities.Provider.GetCurrent().CompanyName;
+                    ws.Cell("A1").Style.Font.Bold = true; ws.Cell("A1").Style.Font.FontSize = 14; ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range("A1:H1").Merge();
+                    ws.Cell("A2").Value = "Chart of accounts detail Detail";
                     ws.Cell("A2").Style.Font.Bold = true; ws.Cell("A2").Style.Font.FontSize = 14; ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     ws.Range("A2:H2").Merge();
                     ws.Cell("A3").Value = "";

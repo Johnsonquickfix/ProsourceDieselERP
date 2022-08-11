@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
+    $("#loader").hide();
     var loc = window.location.pathname;
     $.when(CheckPermissions("#AddChartOfAccount", "#hfEdit", "", loc)).then(ChartOfAccountGrid());
+    $(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportChartOfAccount(''); });
 })
 
 function ChartOfAccountGrid() {
@@ -147,6 +149,7 @@ function ChangeStatus(id, status) {
 }
 
 function model(account_num) {
+    $("#hfaccountid").val(account_num);
     $('#AccountModal').modal('show');
     $('#txtOrderDate').daterangepicker({
         ranges: {
@@ -346,4 +349,22 @@ function name(account_num) {
         complete: function () { },
         error: function (error) { },
     })
+}
+
+function ExportChartOfAccount(search) {
+    let _income = 0, _expense = 0;
+   let vendorid = '';
+    let accountid = parseInt($("#hfaccountid").val()) || 0;
+     let option = {};
+
+    _date_from = $('#txtOrderDate').data('daterangepicker').startDate, _date_to = $('#txtOrderDate').data('daterangepicker').endDate;
+    search = $('#EmployeeListdata_filter input').val();
+    option = { vendor: vendorid, account: accountid, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'JOURNAL', filter: search };
+   // console.log(option);
+    $.when($("#loader").show()).done(function () {
+    let url = "/accounting/ChartOffAcount-export?vendor=" + option.vendor + "&account=" + option.account + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type + "&filter=" + option.filter;
+    $("#fileForm").attr('action', url);
+        $("#fileForm").submit();
+    }).done(function () { $("#loader").hide(); });
+    
 }

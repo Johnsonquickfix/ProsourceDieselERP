@@ -40,7 +40,7 @@
         AccountJournalList(true);
         getGrandTotal(true);
     })
-    $(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportProfitLoss(); });
+    $(document).on("click", "#btnExportDetails", function (t) { t.preventDefault(); ExportJournal(''); });
     //$("#btnExport").click(function () {
     //    window.location = '/Export/ExportInventory';
     //}) 
@@ -204,7 +204,8 @@ function AccountJournalList(is_date) {
             $('#JournalListdata_filter input').unbind();
             $('#JournalListdata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
+               // if (code == 13) { table_EL.search(this.value).draw(); ExportJournal(this.value);}
+                if (code == 13) { table_EL.search(this.value).draw();   }
             });
         },
         footerCallback: function (row, data, start, end, display) {
@@ -392,19 +393,20 @@ function getChartofaccount() {
     });
 }
 
-function ExportProfitLoss() {
+function ExportJournal(search) {
     let _income = 0, _expense = 0;
     //let _searchby = parseInt($('#ddlSearchBy').val()) || 0, _date_from = moment(), _date_to = moment();
-    let vendorid = parseInt($('#ddlVendor').val()) || 0;
+    let vendorid = $('#ddlVendor').val();
     let accountid = parseInt($('#ddlAccount').val()) || 0;
     let option = {};
     
     _date_from = $('#txtOrderDate').data('daterangepicker').startDate, _date_to = $('#txtOrderDate').data('daterangepicker').endDate;
-    option = { vendor: vendorid, account: accountid, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'JOURNAL' };
+    search =  $('#JournalListdata_filter input').val() ;
+    option = { vendor: vendorid, account: accountid, from_date: _date_from.format('MM-DD-YYYY'), to_date: _date_to.format('MM-DD-YYYY'), report_type: 'JOURNAL', filter: search };
     console.log(option);
    // $.when($("#loader").show()).done(function () {
-    let url = "/accounting/Journal-export?vendor=" + option.vendor + "&account=" + option.account + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type;
-        $("#fileForm").attr('action', url);
-        $("#fileForm").submit();
+    let url = "/accounting/Journal-export?vendor=" + option.vendor + "&account=" + option.account + "&from_date=" + option.from_date + "&to_date=" + option.to_date + "&report_type=" + option.report_type + "&filter=" + option.filter;
+     $("#fileForm").attr('action', url);
+     $("#fileForm").submit();
     //}).done(function () { $("#loader").hide(); });
 }

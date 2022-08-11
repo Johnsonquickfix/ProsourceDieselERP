@@ -66,8 +66,8 @@ function getMasters() {
             //Where Field
             $.each(data['Table2'], function (i, row) { $("#ddlSearchField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
 
-            //Where Field
-            $.each(data['Table3'], function (i, row) { $("#ddlDisplayField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
+            //Display Field
+            $.each(data['Table3'], function (i, row) { $("#ddlDisplayField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" data-datatype="' + row.datatype + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
         },
         complete: function () { $("#loader").hide(); $(".multi-select2").fSelect(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -82,12 +82,13 @@ function dataGridLoad() {
     let _product_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _cat_type = $("#ddlCategory").val().join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
+        console.log($(r).data('datatype'));
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
         _columns.push({
             data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
-                //if ($.type(data) == "string") {  return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mm A') : data; }
-                //else return data;
-                return data;
+                if ($(r).data('datatype') == "datetime") {  return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mmA') : data; }
+                else return data;
+                //return data;
             }
         });
     });
@@ -103,7 +104,7 @@ function dataGridLoad() {
     let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _product_status, order_types: _cat_type, display_field: _display_field, where_field: _where_field };
     //console.log(option); return;
     let table_oh = $('#dtordersearch').DataTable({
-        searching: false, lengthChange: false, order: [[0, "asc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        searching: false, lengthChange: false, lengthMenu: [[10, 20, 50], [10, 20, 50]],// order: [[0, "asc"]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         //language: {
         //    lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -121,7 +122,9 @@ function dataGridLoad() {
             option.iDisplayStart = oSettings._iDisplayStart; option.iDisplayLength = oSettings._iDisplayLength;
             option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
             //option.sSortColName = oSettings.oAjaxData.mDataProp_0;
-            option.sSortColName = "[" + _columns[0].data + "]";
+            console.log(oSettings.oAjaxData, oSettings);
+            //option.sSortColName = "[p_id]";
+            option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data  + "]";
             //console.log(option);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "POST", url: sSource, data: option,

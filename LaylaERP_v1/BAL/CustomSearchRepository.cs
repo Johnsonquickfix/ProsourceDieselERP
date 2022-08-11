@@ -290,7 +290,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string sql = string.Empty, _select = string.Empty, _joins = string.Empty, _where = string.Empty;
+                string sql = string.Empty, _select = string.Empty, _joins = string.Empty, _join_type = "LEFT OUTER", _where = string.Empty;
                 foreach (CustomDisplayFieldModel o in model.display_field)
                 {
                     if (o.strType.ToLower() == "wp_posts")
@@ -300,7 +300,7 @@ namespace LaylaERP.BAL
                     else if (o.strType.ToLower() == "wp_postmeta")
                     {
                         _select += (!string.IsNullOrEmpty(_select) ? ", " : "") + string.Format("meta_{0}.meta_value as [{1}]", o.strValue, o.strKey);
-                        _joins += string.Format(" INNER JOIN wp_postmeta AS meta_{0} ON ( posts.ID = meta_{0}.post_id AND meta_{0}.meta_key = '{0}' )", o.strValue);
+                        _joins += string.Format(" {0} JOIN wp_postmeta AS meta_{1} ON ( posts.ID = meta_{1}.post_id AND meta_{1}.meta_key = '{1}' )", _join_type, o.strValue);
                     }
                 }
 
@@ -351,7 +351,7 @@ namespace LaylaERP.BAL
                     }
                 }
 
-                sql = "SELECT COUNT(*) OVER() total_count," + _select + " FROM wp_posts AS posts" + _joins;
+                sql = "SELECT COUNT(*) OVER() total_count, (case when posts.post_parent = 0 then posts.id else posts.post_parent end) p_id," + _select + " FROM wp_posts AS posts" + _joins;
                 sql += " WHERE posts.post_type IN ( 'product','product_variation' ) AND posts.post_status != 'draft'";
                 if (!string.IsNullOrEmpty(model.order_status))
                 {

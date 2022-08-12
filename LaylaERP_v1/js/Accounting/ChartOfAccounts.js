@@ -174,7 +174,7 @@ function model(account_num) {
     gttotal(account_num);
 }
 
-function AccountBalanceList(account_num, is_date) {
+function AccountBalanceList_Old(account_num, is_date) {
     let j = $("#exampleModalLongTitle").text();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -281,6 +281,136 @@ function AccountBalanceList(account_num, is_date) {
                 },
             },
             ],
+    });
+}
+
+function AccountBalanceList(account_num, is_date) {
+    let j = $("#exampleModalLongTitle").text();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+  //  var obj = { strValue2: dfa, strValue3: account_num };
+  //  var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
+    var table_EL = $('#EmployeeListdata').DataTable({
+        //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [0] }, { "searchable": false, "targets": 3 }], order: [[0, "desc"]],
+        //destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true,
+        //responsive: true, lengthMenu: [[20, 50], [20, 50]], scrollX: true, scrollY: ($(window).height() - 215),
+        //language: {
+        //    lengthMenu: "_MENU_ per page",
+        //    zeroRecords: "Sorry no records found",
+        //    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+        //    infoFiltered: "",
+        //    infoEmpty: "No records found",
+        //    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        //},
+        //initComplete: function () {
+        //    $('#EmployeeListdata_filter input').unbind();
+        //    $('#EmployeeListdata_filter input').bind('keyup', function (e) {
+        //        var code = e.keyCode || e.which;
+        //        if (code == 13) { table_EL.search(this.value).draw(); console.log(this.value); total(account_num, true, this.value); }
+
+        //    });
+        //},
+        //ajax: {
+        //    url: '/Accounting/ChartOfAccountBalanceList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+        //    dataSrc: function (data) { console.log(JSON.parse(data)); return JSON.parse(data); }
+        //}, 
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        responsive: true, lengthMenu: [[20, 50, 100, 200, 999, 4500], [20, 50, 100, 200, 999, 4500]], order: [[0, "desc"]],
+        //columnDefs: [{ targets: [0, 1], visible: false }], order: [[2, "desc"]],// order: [[2, "desc"], [4, "asc"], [0, "asc"], [1, "asc"]],
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)", infoFiltered: "",
+            infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#EmployeeListdata_filter input').unbind();
+            $('#EmployeeListdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                // if (code == 13) { table_EL.search(this.value).draw(); ExportJournal(this.value);}
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        },
+        
+        sAjaxSource: "/Accounting/JournalAccountList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: 'CRTAC' }, { name: "strValue2", value: sd }, { name: "strValue3", value: ed }, { name: "strValue4", value: account_num }, { name: "strValue5", value: '' });
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+
+        columns: [
+            { data: 'id', title: 'ID', sWidth: "5%" },
+            { data: 'datesort', title: 'Date', sWidth: "5%", class: "text-left", render: function (inv_num, type, full, meta) { return full.docdate; } },
+            {
+                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "15%",
+                'render': function (inv_num, type, full, meta) {
+                    //if (full.code_journal == "AC") return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                    //else return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
+                    ////return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    console.log(full.code_journal);
+                    if (full.code_journal == "AC" || full.code_journal == "BQ") {
+
+                        if (full.code_journal == "AC" && full.PO_SO_ref.substring(0, 2) != "PR")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        else if (full.PO_SO_ref.substring(0, 2) != "PO" && full.doc_type == 'FT')
+                            return inv_num;
+                        else if (full.PO_SO_ref.substring(0, 2) == "PR")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getInvoicePrintnew(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';
+                        else if (full.PO_SO_ref.substring(0, 2) == "PO")
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        else
+                            return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + full.PO_SO_ref.toString() + '\', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        //wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getaccountsoPrintDetails(\'' + full.PO_SO_ref.toString() + '\', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';
+                    }
+                    else if (full.code_journal == "OD") {
+                        return '' + inv_num + '<span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getBillPrintDetails(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a></span>';
+                        // wrHTML += '<td style="width:10%; text-align:left;"><span title="Click here to view order preview" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="getBillPrintDetails(' + full.inv_num + ', false);"><i class="fas fa - search - plus"></i>' + full.PO_SO_ref + '</a></span></td>';
+                    }
+                    else {
+                        return '' + inv_num + '<a href="#" onclick="PurchaseSalesPrint(' + full.inv_num + ',\'' + full.datecreation + '\');"><i class="fas fa-search-plus"></i></a>';
+                    }
+                }
+            },
+            { data: 'label_operation', title: 'Label', sWidth: "15%", class: "text-left" },
+            //{ data: 'account', title: 'Accounting Account', sWidth: "5%", class: "text-left" },
+            { data: 'debit', title: 'Debit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+            { data: 'credit', title: 'Credit ($)', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, ''), class: "text-right" },
+        ],
+
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account' + e;
+                },
+            },
+            {
+                extend: 'print',
+                className: 'button',
+                title: '',
+                text: '<i class="fas fa-file-csv"></i> Print',
+                filename: function () {
+                    var d = new Date();
+                    var e = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
+                    return 'Account' + e;
+                },
+                messageTop: function () {
+                    return '<h3 style = "text-align:center"> Layla Sleep Inc.</h3 ><br /><h3 style="text-align:left">' + j + '</h3>';
+                },
+            },
+        ],
     });
 }
 

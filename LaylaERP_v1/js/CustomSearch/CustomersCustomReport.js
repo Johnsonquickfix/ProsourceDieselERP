@@ -16,9 +16,13 @@
         $('#txtDate').val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
     });
     $.when(getMasters()).done(function () { dataGridLoad() });
+    $(document).on("change", "#ddlCountry", function (t) {
+        t.preventDefault(); getState();
+    });
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); dataGridLoad();
     });
+
     $(document).on("click", "#btnAddFilterRow", function (t) {
         t.preventDefault();
         let _html = '<div class="row">';
@@ -50,25 +54,41 @@
     $(document).on("click", "#btnExportList", function (t) { t.preventDefault(); ExportList(); });
 });
 function getMasters() {
-    $("#ddlStatus,#ddlPaymentType,#ddlSearchField,#ddlDisplayField").empty();
+    $("#ddlSearchField,#ddlDisplayField").empty();
+    $('#ddlStatus').empty().append('<option value="">Please select status</option>');
+    $('#ddlCountry').empty().append('<option value="">Please select country</option>');
+    $('#ddlState').empty().append('<option value="">Please select state</option>');
     $.ajax({
-        url: "/customsearch/filtermasters", type: "Get", data: { strValue1: 'ORDER' },
+        url: "/customsearch/filtermasters", type: "Get", data: { strValue1: 'CUSTOMER' },
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             data = JSON.parse(data);
             //Status
             $.each(data['Table'], function (i, row) { $("#ddlStatus").append('<option value="' + row.id + '">' + row.text + '</option>'); });
 
-            //Payment Type
-            $.each(data['Table1'], function (i, row) { $("#ddlPaymentType").append('<option value="' + row.id + '">' + row.text + '</option>'); });
+            //Country
+            $.each(data['Table1'], function (i, row) { $("#ddlCountry").append('<option value="' + row.id + '">' + row.text + '</option>'); });
 
             //Where Field
             $.each(data['Table2'], function (i, row) { $("#ddlSearchField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
 
-            //Where Field
+            //Display Field
             $.each(data['Table3'], function (i, row) { $("#ddlDisplayField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" data-datatype="' + row.datatype + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
         },
         complete: function () { $("#loader").hide(); $(".multi-select2").fSelect(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }, async: false
+    });
+}
+function getState() {
+    $('#ddlState').empty().append('<option value="">Please select state</option>');
+    $.ajax({
+        url: "/customsearch/getstate", type: "Get", data: { strValue1: $('#ddlCountry').val() },
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            data = JSON.parse(data);
+            $.each(data, function (i, row) { $("#ddlState").append('<option value="' + row.id + '">' + row.text + '</option>'); });
+        },
+        complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
     });
 }
@@ -78,22 +98,19 @@ function dataGridLoad() {
     }
 
     let _columns = [];
-    let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlPaymentType").val().map(d => `'${d}'`).join(',');
+    let _product_status = $("#ddlStatus").val(), _country = $("#ddlCountry").val(), _state = $("#ddlState").val().map(d => `'${d}'`).join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
-        let _className = $(r).data('datatype') == "float" ? 'text-right' : 'text-left';
         _columns.push({
-            data: $(r).text(), title: $(r).text(), sWidth: "10%", className: _className, render: function (data, type, row) {
-                console.log($(r).data('datatype'))
-                if ($(r).data('datatype') == "datetime") { return moment(data).format('MM/DD/YYYY hh:mmA'); }
-                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2,'$').display(data); }
+            data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
+                if ($(r).data('datatype') == "datetime") { return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mmA') : data; }
                 else return data;
             }
         });
     });
-    if (_order_payment != '') { _where_field.push({ strType: 'wp_postmeta', strKey: '_payment_method', strOperator: 'in', strValue: _order_payment }); }
-    //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
+    if (_country != '') _where_field.push({ strType: 'wp_usermeta', strKey: 'billing_country', strOperator: 'equal to', strValue: _country });
+    if (_state != '') _where_field.push({ strType: 'wp_usermeta', strKey: 'billing_state', strOperator: 'in', strValue: _state });
     $("#dynamic-filter .row").each(function (e, r) {
         if ($(r).find("#txtSearchValue").val() != '') {
             _where_field.push({ strType: $(r).find('.SearchField :selected').data('tb_type'), strKey: $(r).find('.SearchField').val(), strOperator: $(r).find('.SearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
@@ -103,11 +120,10 @@ function dataGridLoad() {
     if ($('#txtDate').val() != '') {
         sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     }
-    let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
+    let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _product_status, display_field: _display_field, where_field: _where_field };
     //console.log(option); return;
-    //let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0);
     let table_oh = $('#dtordersearch').DataTable({
-        searching: false, lengthChange: false, order: [[0, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        searching: false, lengthChange: false, lengthMenu: [[10, 20, 50], [10, 20, 50]],// order: [[0, "asc"]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         //language: {
         //    lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -120,12 +136,14 @@ function dataGridLoad() {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/customsearch/order-list",
+        sAjaxSource: "/customsearch/customer-list",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             option.iDisplayStart = oSettings._iDisplayStart; option.iDisplayLength = oSettings._iDisplayLength;
             option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
             //option.sSortColName = oSettings.oAjaxData.mDataProp_0;
-            option.sSortColName = "[" + _columns[0].data + "]";
+            console.log(oSettings.oAjaxData, oSettings);
+            //option.sSortColName = "[p_id]";
+            option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data + "]";
             //console.log(option);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "POST", url: sSource, data: option,
@@ -141,14 +159,13 @@ function dataGridLoad() {
 }
 function ExportList() {
     let _columns = [];
-    let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlPaymentType").val().map(d => `'${d}'`).join(',');
+    let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlCountry").val().map(d => `'${d}'`).join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
-        //_columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (id, type, full, meta) { return (moment(id)._isValid) ? moment(id).format('MM/DD/YYYY') : id; } });
         _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
     });
-    if (_order_payment != '') { _where_field.push({ strType: 'wp_postmeta', strKey: '_payment_method', strOperator: 'in', strValue: _order_payment }); }
+    if (_order_payment != '') { _where_field.push({ strType: 'erp_accounting_bookkeeping', strKey: 'inv_complete', strOperator: 'in', strValue: _order_payment }); }
     //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
     $("#dynamic-filter .row").each(function (e, r) {
         if ($(r).find("#txtSearchValue").val() != '') {
@@ -164,7 +181,7 @@ function ExportList() {
     //console.log(option); return;
     $("#loader").show();
     setTimeout(function () { $("#loader").hide(); }, 2000);
-    postForm(option, '/customsearch/order-list-export');
+    postForm(option, '/customsearch/product-list-export');
 }
 
 /**

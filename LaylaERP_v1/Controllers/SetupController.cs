@@ -40,6 +40,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult MerchantFee()
+        {
+            return View();
+        }
         public ActionResult accountingclasstransaction()
         {
             return View();
@@ -482,6 +486,47 @@ namespace LaylaERP.Controllers
             else
             {
                 return Json(new { status = true, message = "Accounting class transacion save successfully!", url = "save" }, 0);
+            }
+        }
+
+        public JsonResult GetMerchantFeeList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = SetupRepostiory.GetMerchantFeeList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetMerchantFeeById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = SetupRepostiory.GetMerchantFeeById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
+
+        public JsonResult AddMerchantFee(MerchantfeeModel model)
+        {
+            SetupRepostiory.AddMerchantFee(model);
+            if (model.rowid > 0)
+            {
+                return Json(new { status = true, message = "Merchant fee updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = true, message = "Merchant fee save successfully!", url = "" }, 0);
             }
         }
 

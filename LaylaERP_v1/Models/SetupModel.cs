@@ -52,4 +52,11 @@ namespace LaylaERP.Models
         public string others { get; set; }
 
     }
+    public class MerchantfeeModel
+    {
+        public int rowid { get; set; }
+        public string flag { get; set; }
+        public string merchant_name { get; set; }
+        public string threshold { get; set; }
+    }
 }

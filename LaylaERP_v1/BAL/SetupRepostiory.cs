@@ -717,6 +717,69 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable GetMerchantFeeList(string ID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid, merchant_name, threshold from erp_merchant_fee where 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (merchant_name like '%" + searchid + "%' OR threshold like '%" + searchid + "%')";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_merchant_fee where 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetMerchantFeeById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT rowid, merchant_name,threshold FROM erp_merchant_fee where rowid =" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int AddMerchantFee(MerchantfeeModel model)
+        {
+            try
+            {
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", model.flag),
+                    new SqlParameter("@rowid", model.rowid),
+                    new SqlParameter("@merchant_name", model.merchant_name),
+                    new SqlParameter("@threshold", model.threshold),
+
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery("erp_merchant_fee_iud", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
 
     }
 }

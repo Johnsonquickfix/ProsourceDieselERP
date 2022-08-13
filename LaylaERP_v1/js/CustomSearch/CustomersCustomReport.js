@@ -102,9 +102,11 @@ function dataGridLoad() {
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+        let _className = $(r).data('datatype') == "float" ? 'text-right' : 'text-left';
         _columns.push({
-            data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
-                if ($(r).data('datatype') == "datetime") { return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mmA') : data; }
+            data: $(r).text(), title: $(r).text(), sWidth: "10%", className: _className, render: function (data, type, row) {
+                if ($(r).data('datatype') == "datetime") { return moment(data).format('MM/DD/YYYY hh:mmA'); }
+                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); }
                 else return data;
             }
         });
@@ -159,14 +161,14 @@ function dataGridLoad() {
 }
 function ExportList() {
     let _columns = [];
-    let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlCountry").val().map(d => `'${d}'`).join(',');
+    let _product_status = $("#ddlStatus").val(), _country = $("#ddlCountry").val(), _state = $("#ddlState").val().map(d => `'${d}'`).join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
         _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
     });
-    if (_order_payment != '') { _where_field.push({ strType: 'erp_accounting_bookkeeping', strKey: 'inv_complete', strOperator: 'in', strValue: _order_payment }); }
-    //if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
+    if (_country != '') _where_field.push({ strType: 'wp_usermeta', strKey: 'billing_country', strOperator: 'equal to', strValue: _country });
+    if (_state != '') _where_field.push({ strType: 'wp_usermeta', strKey: 'billing_state', strOperator: 'in', strValue: _state });
     $("#dynamic-filter .row").each(function (e, r) {
         if ($(r).find("#txtSearchValue").val() != '') {
             _where_field.push({ strType: $(r).find('.SearchField :selected').data('tb_type'), strKey: $(r).find('.SearchField').val(), strOperator: $(r).find('.SearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
@@ -176,12 +178,13 @@ function ExportList() {
     if ($('#txtDate').val() != '') {
         sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     }
-    let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
-    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
+    let table = $('#dtordersearch').DataTable().order();
+    let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _product_status, display_field: _display_field, where_field: _where_field };
+    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = table[0][1]; option.sSortColName = "[" + _columns[table[0][0]].data + "]";
     //console.log(option); return;
     $("#loader").show();
     setTimeout(function () { $("#loader").hide(); }, 2000);
-    postForm(option, '/customsearch/product-list-export');
+    postForm(option, '/customsearch/customer-list-export');
 }
 
 /**

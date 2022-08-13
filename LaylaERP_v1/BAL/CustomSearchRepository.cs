@@ -410,7 +410,7 @@ namespace LaylaERP.BAL
                     else if (o.strType.ToLower() == "wp_usermeta")
                     {
                         _select += (!string.IsNullOrEmpty(_select) ? ", " : "") + string.Format("meta_{0}.meta_value as [{1}]", o.strValue, o.strKey);
-                        _joins += string.Format(" {0} JOIN wp_usermeta AS meta_{1} ON ( posts.ID = meta_{1}.post_id AND meta_{1}.meta_key = '{1}' )", _join_type, o.strValue);
+                        _joins += string.Format(" {0} JOIN wp_usermeta AS meta_{1} ON ( users.ID = meta_{1}.user_id AND meta_{1}.meta_key = '{1}' )", _join_type, o.strValue);
                     }
                 }
 
@@ -455,7 +455,7 @@ namespace LaylaERP.BAL
                                 break;
                         }
                         if (model.display_field.FindIndex(item => o.strKey.ToLower() == item.strValue.ToLower()) < 0)
-                            _joins += string.Format(" INNER JOIN wp_usermeta AS meta_{0} ON ( posts.ID = meta_{0}.post_id AND meta_{0}.meta_key = '{0}' )", o.strKey);
+                            _joins += string.Format(" INNER JOIN wp_usermeta AS meta_{0} ON ( users.ID = meta_{0}.user_id AND meta_{0}.meta_key = '{0}' )", o.strKey);
                         //_select += (!string.IsNullOrEmpty(_select) ? ", " : "") + string.Format("meta_{0}.meta_value as [{1}]", o.strValue, o.strKey);
                         //_joins += string.Format(" INNER JOIN wp_postmeta AS meta_{0} ON ( posts.ID = meta_{0}.post_id AND meta_{0}.meta_key = '{0}' )", o.strValue);
                     }

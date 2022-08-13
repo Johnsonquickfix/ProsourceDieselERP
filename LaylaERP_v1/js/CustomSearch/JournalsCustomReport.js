@@ -67,7 +67,7 @@ function getMasters() {
             $.each(data['Table2'], function (i, row) { $("#ddlSearchField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
 
             //Where Field
-            $.each(data['Table3'], function (i, row) { $("#ddlDisplayField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
+            $.each(data['Table3'], function (i, row) { $("#ddlDisplayField").append('<option value="' + row.id + '" data-tb_type="' + row.tb_type + '" data-datatype="' + row.datatype + '" ' + (row.is_default ? 'selected' : '') + '>' + row.text + '</option>'); });
         },
         complete: function () { $("#loader").hide(); $(".multi-select2").fSelect(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -83,11 +83,12 @@ function dataGridLoad() {
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+        let _className = $(r).data('datatype') == "float" ? 'text-right' : 'text-left';
         _columns.push({
-            data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
-                //if ($.type(data) == "string") {  return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mm A') : data; }
-                //else return data;
-                return data;
+            data: $(r).text(), title: $(r).text(), sWidth: "10%", className: _className, render: function (data, type, row) {
+                if ($(r).data('datatype') == "datetime") { return moment(data).format('MM/DD/YYYY hh:mmA'); }
+                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); }
+                else return data;
             }
         });
     });
@@ -158,8 +159,9 @@ function ExportList() {
     if ($('#txtDate').val() != '') {
         sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     }
+    let table = $('#dtordersearch').DataTable().order();
     let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
-    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
+    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = table[0][1]; option.sSortColName = "[" + _columns[table[0][0]].data + "]";
     //console.log(option); return;
     $("#loader").show();
     setTimeout(function () { $("#loader").hide(); }, 2000);

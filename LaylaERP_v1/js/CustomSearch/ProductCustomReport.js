@@ -82,13 +82,13 @@ function dataGridLoad() {
     let _product_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _cat_type = $("#ddlCategory").val().join(',');
     let _display_field = [], _where_field = [];
     $("#ddlDisplayField :selected").each(function (e, r) {
-        console.log($(r).data('datatype'));
         _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+        let _className = $(r).data('datatype') == "float" ? 'text-right' : 'text-left';
         _columns.push({
-            data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (data, type, row) {
-                if ($(r).data('datatype') == "datetime") {  return moment(data)._isValid ? moment(data).format('MM/DD/YYYY hh:mmA') : data; }
+            data: $(r).text(), title: $(r).text(), sWidth: "10%", className: _className, render: function (data, type, row) {
+                if ($(r).data('datatype') == "datetime") { return moment(data).format('MM/DD/YYYY hh:mmA'); }
+                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); }
                 else return data;
-                //return data;
             }
         });
     });
@@ -121,10 +121,7 @@ function dataGridLoad() {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             option.iDisplayStart = oSettings._iDisplayStart; option.iDisplayLength = oSettings._iDisplayLength;
             option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
-            //option.sSortColName = oSettings.oAjaxData.mDataProp_0;
-            console.log(oSettings.oAjaxData, oSettings);
-            //option.sSortColName = "[p_id]";
-            option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data  + "]";
+            option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data + "]";
             //console.log(option);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "POST", url: sSource, data: option,
@@ -157,8 +154,9 @@ function ExportList() {
     if ($('#txtDate').val() != '') {
         sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     }
+    let table = $('#dtordersearch').DataTable().order();
     let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
-    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
+    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = table[0][1]; option.sSortColName = "[" + _columns[table[0][0]].data + "]";
     //console.log(option); return;
     $("#loader").show();
     setTimeout(function () { $("#loader").hide(); }, 2000);

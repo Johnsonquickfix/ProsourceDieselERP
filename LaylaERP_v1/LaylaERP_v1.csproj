@@ -787,6 +787,7 @@
     <Content Include="js\CustomerService\CustomerSearch.js" />
     <Content Include="js\CustomerService\WarrantyQuestions.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\CustomSearch\CustomersCustomReport.js" />
     <Content Include="js\CustomSearch\JournalsCustomReport.js" />
     <Content Include="js\CustomSearch\OrderSearch.js" />
     <Content Include="js\CustomSearch\ProductCustomReport.js" />
@@ -1379,6 +1380,7 @@
     <Content Include="Views\CustomSearch\JournalsCustomReport.cshtml" />
     <Content Include="Views\CustomSearch\QuoteOrderSearch.cshtml" />
     <Content Include="Views\CustomSearch\ProductCustomReport.cshtml" />
+    <Content Include="Views\CustomSearch\CustomersCustomReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

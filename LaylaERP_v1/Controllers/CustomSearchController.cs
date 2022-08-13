@@ -32,6 +32,7 @@ namespace LaylaERP.Controllers
                 else if (model.strValue1 == "QUOTE") flag = "QUOTEMASTER";
                 else if (model.strValue1 == "JOURNAL") flag = "JOURNALMASTER";
                 else if (model.strValue1 == "PRODUCT") flag = "PRODUCTMASTER";
+                else if (model.strValue1 == "CUSTOMER") flag = "CUSTOMERMASTER";
                 result = JsonConvert.SerializeObject(CustomSearchRepository.GetFilterMasters(flag), Formatting.Indented);
             }
             catch { }
@@ -215,6 +216,38 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             //return Json(robj, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region [Customers custom reports]
+        [Route("customsearch/customerscustomreport")]
+        public ActionResult CustomersCustomReport()
+        {
+            return View();
+        }
+        [HttpGet, Route("customsearch/getstate")]
+        public JsonResult GetStateByCountry(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable DT = CustomSearchRepository.GetStateByCountry("COUNTRYSTATE", model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost, Route("customsearch/customer-list")]
+        public JsonResult GetCustomerList(CustomSearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                result = JsonConvert.SerializeObject(CustomSearchRepository.GetCustomerList(model), Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
         #endregion
     }

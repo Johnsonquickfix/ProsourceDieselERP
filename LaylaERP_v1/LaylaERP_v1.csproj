@@ -919,6 +919,7 @@
     <Content Include="js\Setup\accountingclasstransaction.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
+    <Content Include="js\Setup\MerchantFee.js" />
     <Content Include="js\Setup\ProductReturn.js" />
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Setup\ProductType.js" />
@@ -1381,6 +1382,7 @@
     <Content Include="Views\CustomSearch\QuoteOrderSearch.cshtml" />
     <Content Include="Views\CustomSearch\ProductCustomReport.cshtml" />
     <Content Include="Views\CustomSearch\CustomersCustomReport.cshtml" />
+    <Content Include="Views\Setup\MerchantFee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -249,6 +249,34 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpPost, Route("customsearch/customer-list-export")]
+        public ActionResult ExportcustomerList(CustomSearchModel model)
+        {
+            string fileName = String.Format("Customer_{0}.xlsx", DateTime.Now.ToString("dd_MMMM_yyyy_hh_mm_tt"));
+            try
+            {
+                DataTable dt = CustomSearchRepository.GetCustomerList(model);
+                dt.TableName = "Customer";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    dt.Columns.Remove("total_count");
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    //var ws = wb.Worksheets.Add("Orders");
+                    var ws = wb.Worksheets.Add(dt);
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
+                    }
+                }
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            //return Json(robj, JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }

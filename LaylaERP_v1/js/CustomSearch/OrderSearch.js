@@ -85,9 +85,8 @@ function dataGridLoad() {
         let _className = $(r).data('datatype') == "float" ? 'text-right' : 'text-left';
         _columns.push({
             data: $(r).text(), title: $(r).text(), sWidth: "10%", className: _className, render: function (data, type, row) {
-                console.log($(r).data('datatype'))
                 if ($(r).data('datatype') == "datetime") { return moment(data).format('MM/DD/YYYY hh:mmA'); }
-                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2,'$').display(data); }
+                else if ($(r).data('datatype') == "float") { return $.fn.dataTable.render.number(',', '.', 2, '$').display(data); }
                 else return data;
             }
         });
@@ -105,7 +104,6 @@ function dataGridLoad() {
     }
     let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
     //console.log(option); return;
-    //let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0);
     let table_oh = $('#dtordersearch').DataTable({
         searching: false, lengthChange: false, order: [[0, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
@@ -124,8 +122,7 @@ function dataGridLoad() {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             option.iDisplayStart = oSettings._iDisplayStart; option.iDisplayLength = oSettings._iDisplayLength;
             option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
-            //option.sSortColName = oSettings.oAjaxData.mDataProp_0;
-            option.sSortColName = "[" + _columns[0].data + "]";
+            option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data + "]";
             //console.log(option);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "POST", url: sSource, data: option,
@@ -159,9 +156,10 @@ function ExportList() {
     if ($('#txtDate').val() != '') {
         sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
     }
+    let table = $('#dtordersearch').DataTable().order();
     let option = { flag: 'ORDER', start_date: sd, end_date: ed, order_status: _order_status, display_field: _display_field, where_field: _where_field };
-    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = 'desc'; option.sSortColName = "[" + _columns[0].data + "]";
-    //console.log(option); return;
+    option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = table[0][1]; option.sSortColName = "[" + _columns[table[0][0]].data + "]";
+
     $("#loader").show();
     setTimeout(function () { $("#loader").hide(); }, 2000);
     postForm(option, '/customsearch/order-list-export');

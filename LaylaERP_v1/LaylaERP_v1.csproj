@@ -881,6 +881,7 @@
     <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ProductOpeningStock.js" />
     <Content Include="js\Product\ShippingClass.js" />
+    <Content Include="js\Proposals\OrderProductReconciled.js" />
     <Content Include="js\Proposals\ProposalPrint.js" />
     <Content Include="js\Proposals\ProposalView.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
@@ -1383,6 +1384,7 @@
     <Content Include="Views\CustomSearch\ProductCustomReport.cshtml" />
     <Content Include="Views\CustomSearch\CustomersCustomReport.cshtml" />
     <Content Include="Views\Setup\MerchantFee.cshtml" />
+    <Content Include="Views\Proposals\OrderProductReconciled.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -136,7 +136,7 @@
                 DataTable dt = ProposalsRepository.manualgeneratesalespoinvoice(strID);
                 if (dt.Rows[0]["Response"].ToString() == "Success")
                     return Json(new { status = true, message = "Invoice generate successfully!", type = "All" }, 0);
-               else
+                else
                     return Json(new { status = true, message = "Invoice not generate!", url = "" }, 0);
             }
             else
@@ -229,6 +229,44 @@
             }
             catch (Exception ex) { }
             return View();
+        }
+
+        // GET: Order Product Reconciled
+        [Route("proposals/orderproductreconciled")]
+        public ActionResult OrderProductReconciled()
+        {
+            return View();
+        }
+        [HttpGet, Route("proposals/getmasters")]
+        public JsonResult GetVendorAndProduct(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataSet ds = ProposalsRepository.GetReconciledMaster();
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(JSONresult, 0);
+        }
+        [HttpGet, Route("proposals/orderproductreconciled-list")]
+        public JsonResult GetOrderProductReconciledList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long vendorid = 0, productid = 0;
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1)) fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) todate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3)) vendorid = Convert.ToInt64(model.strValue3);
+                if (!string.IsNullOrEmpty(model.strValue4)) productid = Convert.ToInt64(model.strValue4);
+                DataTable dt = ProposalsRepository.GetOrderProductReconciled(fromdate, todate, vendorid, productid, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
     }
 }

@@ -1363,6 +1363,7 @@
             return dt;
         }
 
+        #region Split Order
         //Split Order on Status Change Processing
         public static int SplitOrder(OrderPostStatusModel model)
         {
@@ -1489,6 +1490,34 @@
             }
             return result;
         }
+        //Order with Split details
+        public static DataTable SplitOrderList(DateTime? fromdate, DateTime? todate, string search, int pageno, int pagesize, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    !string.IsNullOrEmpty(search) ? new SqlParameter("@search", search) : new SqlParameter("@search", DBNull.Value),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "ORDERLIST")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_order_split_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        #endregion
+
 
         //Sent Invoice in mail
         public static void OrderInvoiceMail(long OrderID)
@@ -1660,5 +1689,7 @@
             return dt;
         }
         #endregion
+
+
     }
 }

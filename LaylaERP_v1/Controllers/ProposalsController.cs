@@ -11,7 +11,8 @@
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
-
+    using ClosedXML.Excel;
+    using System.IO;
 
     public class ProposalsController : Controller
     {
@@ -231,6 +232,7 @@
             return View();
         }
 
+        #region [Order Product Reconciled Reports]
         // GET: Order Product Reconciled
         [Route("proposals/orderproductreconciled")]
         public ActionResult OrderProductReconciled()
@@ -268,5 +270,41 @@
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+        [HttpPost, Route("proposals/orderproductreconciled-export")]
+        public ActionResult ExportOrderProductReconciledList(JqDataTableModel model)
+        {
+            int TotalRecord = 0;
+            string fileName = String.Format("Order_Product_Reconciled_{0}.xlsx", DateTime.Now.ToString("dd_MMMM_yyyy_hh_mm_tt"));
+            try
+            {
+                long vendorid = 0, productid = 0;
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1)) fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2)) todate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3)) vendorid = Convert.ToInt64(model.strValue3);
+                if (!string.IsNullOrEmpty(model.strValue4)) productid = Convert.ToInt64(model.strValue4);
+                model.iDisplayLength = 1000000;
+                DataTable dt = ProposalsRepository.GetOrderProductReconciled(fromdate, todate, vendorid, productid, model.strValue5, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+
+                dt.TableName = "Order_Product_Reconciled";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    dt.Columns.Remove("total_records"); dt.Columns.Remove("total_amount");
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    //var ws = wb.Worksheets.Add("Orders");
+                    var ws = wb.Worksheets.Add(dt);
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
+                    }
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+        #endregion
     }
 }

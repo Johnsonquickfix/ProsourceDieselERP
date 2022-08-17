@@ -33,56 +33,61 @@
 </div>
 
 <section class="content section-content table-design customer-section">
-
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Date</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+    <div class="box box-primary box-outline">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Vendor</label>
+                        <div class="">
+                            <select class="form-control select2" id="ddlVendor" placeholder="Select Vendor" style="width: 100%;"><option value="0">Please Select Vendor</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Product</label>
+                        <div class="">
+                            <select class="form-control select2" id="ddlProduct" placeholder="Select Product" style="width: 100%;"><option value="0">Please Select Product</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div class="">
+                            <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;">
+                                <option value="0" selected>All</option>
+                                <option value="matched">Matched</option>
+                                <option value="unmatched">Unmatched</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Vendor</label>
-                <div class="">
-                    <select class="form-control select2" id="ddlVendor" placeholder="Select Vendor" style="width: 100%;"><option value="0">Please Select Vendor</option></select>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Product</label>
-                <div class="">
-                    <select class="form-control select2" id="ddlProduct" placeholder="Select Product" style="width: 100%;"><option value="0">Please Select Product</option></select>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Status</label>
-                <div class="">
-                    <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;">
-                        <option value="0" selected>All</option>
-                        <option value="matched">Matched</option>
-                        <option value="unmatched">Unmatched</option>
-                    </select>
-                </div>
-            </div>
+        <div class="box-footer text-right">
+            <button type="button" title="Click here to export order list." data-placement="left" data-toggle="tooltip" id="btnExportList" class="btn btn-primary button"><i class="far fa-file-excel"></i> Export</button>
+            <a id="btnSearch" class="btn btn-danger" data-toggle="tooltip" title="Search products by selection criteria."><i class="fa fa-search"></i> Filter</a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <a id="btnSearch" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Search products by selection criteria."><i class="fa fa-search"></i> Filter</a>
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        <div class="col-md-12">
-            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
-            </table>
+    <div class="box box-primary box-outline">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="dtdata" class="inventory-table table-blue table able-bordered table-striped dataTable " width="100%">
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </section>

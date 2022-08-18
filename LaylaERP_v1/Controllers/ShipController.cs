@@ -216,6 +216,33 @@ namespace LaylaERP.Controllers
             catch { }
             return View();
         }
+
+        #region Split Orders List
+        [Route("ship/splitorders")]
+        public ActionResult SplitOrders()
+        {
+            return View();
+        }
+        [HttpGet, Route("ship/splitorders-list")]
+        public JsonResult GetSplitOrdersList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                DataTable dt = OrderRepository.SplitOrderList(fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        #endregion
+
         public static void LogData(string order_number, string tracking_number, string carrier, string jsonData)
         {
             try
@@ -644,6 +671,6 @@ namespace LaylaERP.Controllers
             catch { }
             return View();
         }
-        #endregion
+        #endregion        
     }
 }

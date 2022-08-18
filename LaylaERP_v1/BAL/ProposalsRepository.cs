@@ -46,7 +46,7 @@
         }
 
         //Get Purchase order Print 
-        public static DataSet GetSupplierProposalsDetails(long id,string flag= "GETPO")
+        public static DataSet GetSupplierProposalsDetails(long id, string flag = "GETPO")
         {
             DataSet ds = new DataSet();
             try
@@ -68,7 +68,7 @@
         public static int generateinvoice(string ID)
         {
             try
-            {               
+            {
                 string strsql = String.Empty;
                 int result = 0;
                 //strsql = "update commerce_purchase_enquiry set ref_ext = REPLACE(ref, 'PO','PI'),billed = 1 where  rowid in(" + ID + ")";
@@ -78,7 +78,7 @@
                 {
                 new SqlParameter("@id", ID)
                 };
-                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));  
+                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -92,7 +92,7 @@
             try
             {
                 string strsql = String.Empty;
-                int result = 0; 
+                int result = 0;
                 strsql = "erp_updatesalesinvoice_salespo";
                 SqlParameter[] para =
                 {
@@ -134,8 +134,8 @@
             {
                 SqlParameter[] parameters = {
                     new SqlParameter("@fedexorders", SqlDbType.NVarChar, -1),
-                    id.HasValue ? new SqlParameter("@id", id.Value) : new SqlParameter("@id", DBNull.Value), 
-                    new SqlParameter("@flag", "FEDEX") 
+                    id.HasValue ? new SqlParameter("@id", id.Value) : new SqlParameter("@id", DBNull.Value),
+                    new SqlParameter("@flag", "FEDEX")
                 };
                 parameters[0].Direction = ParameterDirection.Output;
                 dt = SQLHelper.ExecuteDataTable("erp_Proposals_search", parameters);
@@ -159,6 +159,53 @@
             }
             catch (Exception ex)
             { throw ex; }
+            return dt;
+        }
+
+        public static DataSet GetReconciledMaster()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "MASTER"),
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_order_product_reconciled_report", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataTable GetOrderProductReconciled(DateTime? fromdate, DateTime? todate, long vendorid, long productid, string status, string search, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "PRODUCTRECON"),
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    vendorid > 0 ? new SqlParameter("@vendorid", vendorid) : new SqlParameter("@vendorid",DBNull.Value),
+                    productid > 0 ? new SqlParameter("@productid", productid) : new SqlParameter("@productid",DBNull.Value),
+                    !string.IsNullOrEmpty(status) ? new SqlParameter("@status", status) : new SqlParameter("@status", DBNull.Value),
+                    !string.IsNullOrEmpty(search) ? new SqlParameter("@search", search) : new SqlParameter("@search", DBNull.Value),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_order_product_reconciled_report", parameters);
+                if (dt.Rows.Count > 0) totalrows = Convert.ToInt32(dt.Rows[0]["total_records"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return dt;
         }
     }

@@ -421,7 +421,7 @@ function send_mail(id, result) {
         //myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemvendor_name">' + tr.transaction_id + '</td>';
         myHtml += '    <td style="padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemwarehouse_name">' + tr.settlement_date + '</td>';
         myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdestination">' + '$' + tr.order_amount + '</td>';
-        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + '$' + numberRenderer(tr.payment_amount) + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$'   + numberRenderer(tr.payment_amount) + '</td>';
         myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + '$' + tr.payment_fee + '</td>';
         myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + '$'+ tr.refund_amount + '</td>';
         //myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.threshold + '</td>';

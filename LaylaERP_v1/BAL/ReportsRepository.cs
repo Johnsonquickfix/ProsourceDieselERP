@@ -3252,5 +3252,52 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+
+        public static DataTable GetThresholdlist(DateTime? fromdate, DateTime? todate, string payment_method, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    !string.IsNullOrEmpty(payment_method) ? new SqlParameter("@payment_method", payment_method) : new SqlParameter("@payment_method", DBNull.Value),
+                    new SqlParameter("@flag", "SEARCH")
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_payment_merchant_search", parameters);
+                dt = ds.Tables[1];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataSet GetSendMailThreshold(DateTime? fromdate, DateTime? todate ,string payment_method)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    !string.IsNullOrEmpty(payment_method) ? new SqlParameter("@payment_method", payment_method) : new SqlParameter("@payment_method", DBNull.Value),
+                    new SqlParameter("@flag", "SEARCH")
+                };
+                ds = SQLHelper.ExecuteDataSet("erp_payment_merchant_search", parameters);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
     }
 }

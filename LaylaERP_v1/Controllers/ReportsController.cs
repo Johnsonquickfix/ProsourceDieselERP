@@ -234,7 +234,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult ThresholdMerchantFeeReport()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult GetAjBaseData(string Month, string Year)
         {
@@ -1220,6 +1223,71 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetThresholdlist(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+                DataTable dt = ReportsRepository.GetThresholdlist(fromdate, todate, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetSendMailThreshold(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                DataSet ds = ReportsRepository.GetSendMailThreshold(fromdate, todate, model.strValue3);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { data = JSONresult }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SendThresholdMail(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                //string strBody = "Hello sir,<br /> Purchase order number <b>#" + model.strValue2 + "</b> is waiting for your approval.<br />Please see below attached file.<br /><br /><br /><br />"
+                string strBody = "Hi,<br /> Threshold Merchant Fee <b>#" + model.strValue2 + "</b><br />Please see below attached file.<br /><br /><br /><br />";
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(model.strValue1);
+                foreach (var o in obj)
+                {
+                    string _mail = o.user_email, _uid = o.user_id;
+                    if (!string.IsNullOrEmpty(o.user_email.Value))
+                    {
+                        _uid = "&uid=" + UTILITIES.CryptorEngine.Encrypt(_uid);
+                        string _html = model.strValue3.Replace("{_para}", _uid);
+
+                        result = SendEmail.SendEmails_outer(o.user_email.Value, "Threshold Merchant Fee #" + model.strValue2 + ".", strBody, _html, "threshold-merchant-fee.html");
+                    }
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
         }
     }
 

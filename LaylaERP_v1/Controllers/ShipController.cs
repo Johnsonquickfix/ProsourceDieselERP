@@ -241,6 +241,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpPost, Route("ship/splitorders-create")]
+        public JsonResult SplitOrdersManuallyCreate(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = OrderRepository.SplitOrdersManuallyCreate(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
         #endregion
 
         public static void LogData(string order_number, string tracking_number, string carrier, string jsonData)

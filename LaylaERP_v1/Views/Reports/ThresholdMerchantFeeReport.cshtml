@@ -39,7 +39,7 @@
                                     <option value="0" selected="selected">Select</option>
                                     <option value="podium">Podium</option>
                                     <option value="ppec_paypal">Paypal</option>
-                                    <option value="amazon_payments_advanced">Amazon</option>
+                                    <option value="amazon_payments_advanced">Amazon Pay</option>
                                     <option value="authorize_net_cim_credit_card">Credit Card</option>
                                     <option value="affirm">Monthly Payments</option>
                                 </select>
@@ -52,6 +52,13 @@
                         <div class="alignleft actions right">
                             @*<button type="button" id="btnsearch" class="btn btn-primary btn-flat button">Send Mail</button>*@
                             <button type="button" class="btn btn-danger" id="btnsearch" data-toggle="tooltip" title="Send non-invoiced Sales PO in mail"><i class="fas fa-envelope"></i> Send Mail</button>
+                        </div>
+                        <div class="alignleft actions right">
+                            <label class="col-sm-10 control-label">Threshold Fee(%)</label>
+                            <b> <span id="thresholdfee">0.00</span> </b>
+                            @*<div class="col-sm-2 controls text-right">
+
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -76,8 +83,8 @@
                                                 <th>Settle Amt.</th>
                                                 <th>Merchant Fees</th>
                                                 <th>Refund Amt.</th>
-                                                <th>Threshold</th>
-                                                <th>Exide Amount</th>
+                                                <th>Merchant Fees(%)</th>
+                                                <th>Exceed(%)</th>
                                             </tr>
                                         </thead>
                                     </table>

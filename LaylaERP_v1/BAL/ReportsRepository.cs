@@ -3299,5 +3299,21 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+        public static DataTable GetthresholdById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "SELECT threshold FROM erp_merchant_fee where merchant_name ='" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

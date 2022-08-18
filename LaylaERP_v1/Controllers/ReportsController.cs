@@ -1289,6 +1289,22 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+
+        public JsonResult GetthresholdById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = ReportsRepository.GetthresholdById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
     }
 
 

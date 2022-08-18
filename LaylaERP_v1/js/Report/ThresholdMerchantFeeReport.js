@@ -33,6 +33,8 @@
     $('#btnsearchdetails').click(function () {
         //dataGridLoad();
         dataGridLoad();
+        GetFee();
+
     });
 });
 
@@ -45,7 +47,7 @@ function dataGridLoad() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
-        order: [[0, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        order: [[0, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -94,9 +96,14 @@ function dataGridLoad() {
             { data: 'payment_amount', title: 'Settle Amt.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'payment_fee', title: 'Merchant Fees', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             { data: 'refund_amount', title: 'Refund Amt.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'threshold', title: 'Threshold', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            { data: 'avgval', title: 'Exide Amount.', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
-            //{ data: 'payment_fee', title: 'Fee', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 3, '$') },
+            //{ data: 'threshold', title: 'Threshold', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            { data: 'avgval', title: 'Merchant Fees(%)', className: 'text-right', sWidth: "8%", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            {
+                data: 'avgval', title: 'Exceed(%)', sWidth: "10%", render: function (data, type, row) {
+
+                    return (row.avgval - row.threshold).toFixed(2);
+                }
+                },
             //{
             //    data: 'payment_stauts', title: 'Settlement State', sWidth: "10%", render: function (data, type, row) {
             //        if (data == 'paid') return '<span class="badge bg-success">Settled</span>';
@@ -352,6 +359,7 @@ function SendPO_Approval() {
 function send_mail(id, result) {
     let data = JSON.parse(result.data);
     //console.log('jsondata', result);
+    let exseed = 0.00;
     var numberRenderer = $.fn.dataTable.render.number(',', '.', 2,).display;
     //let inv_title = 'Bill'; // is_inv ? 'Bill' : 'Receive Order';
     let inv_titleNew = 'Threshold Merchant Fee', po_authmail = data['po'][0].po_authmail;
@@ -375,17 +383,17 @@ function send_mail(id, result) {
     myHtml += '    <table class="product-tables" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">';
     myHtml += '        <thead class="itemdetailsheader" style="border: 1px solid #ddd;background-color: #f9f9f9;">';
     myHtml += '            <tr>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">Order#</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Order Date</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">Status</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">Trans. ID</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Settle Date</th>';
-    myHtml += '                <th style="width:30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Order Amt.</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Settle Amt.</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Merchant Fees</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Refund Amt</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Threshold</th>';
-    myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Exide Amount</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">Order#</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Order Date</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">Status</th>';
+    //myHtml += '                <th style="width:10%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">Trans. ID</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Settle Date</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Order Amt.</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Settle Amt.</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Merchant Fees</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Refund Amt</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Merchant Fees(%)</th>';
+    myHtml += '                <th style="width:10%;padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Exceed(%)</th>';
 
     //myHtml += '                <th style="width:10%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Modified Date</th>';
     myHtml += '            </tr>';
@@ -394,8 +402,8 @@ function send_mail(id, result) {
     $(data['pod']).each(function (index, tr) {
         //if (tr.product_type == 0) {
         myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">' + tr.id + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_creation">' + tr.post_date + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">' + tr.id + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_creation">' + tr.post_date + '</td>';
         if (tr.post_status == 'wc-pending') status = 'Pending payment';
         else if (tr.post_status == 'wc-processing') status = 'Processing';
         else if (tr.post_status == 'wc-on-hold') status = 'On hold';
@@ -409,16 +417,17 @@ function send_mail(id, result) {
         else if (tr.post_status == 'wc-podiumrefund') status = 'Podium Refunded';
         else if (tr.post_status == 'draft') status = 'draft';
         else status = '-';
-        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_fk_projet">' + status + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemvendor_name">' + tr.transaction_id + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemwarehouse_name">' + tr.settlement_date + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdestination">' + tr.order_amount + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + numberRenderer(tr.payment_amount) + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.payment_fee + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.refund_amount + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.threshold + '</td>';
-        myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + numberRenderer(tr.avgval)  + '</td>';
-
+        myHtml += '    <td style="padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdate_fk_projet">' + status + '</td>';
+        //myHtml += '    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemvendor_name">' + tr.transaction_id + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemwarehouse_name">' + tr.settlement_date + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdestination">' + '$' + tr.order_amount + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$' + '$' + numberRenderer(tr.payment_amount) + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + '$' + tr.payment_fee + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + '$'+ tr.refund_amount + '</td>';
+        //myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.threshold + '</td>';
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + numberRenderer(tr.avgval) + '</td>';
+        exseed = tr.avgval - tr.threshold;
+        myHtml += '    <td style="padding:5px 10px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + numberRenderer(exseed) + '</td>';
         //myHtml += '    <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">' + tr.date_modified_s + '</td>';
 
         myHtml += '</tr>';
@@ -449,4 +458,25 @@ function send_mail(id, result) {
             complete: function () { swal('Success!', 'E-mail sent.', 'success'); $("#loader").hide(); }//, async: false
         });
     }
+}
+
+
+function GetFee() {
+    //let id = $("#ddlstatus").text();
+    let id = $("#ddlstatus option:selected").text();
+    var obj = { strValue1: id }
+    $.ajax({
+        url: '/Reports/GetthresholdById/',
+        datatype: 'json',
+        type: 'Post',
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var jobj = JSON.parse(data); 
+           // $('#txtMerchantname').val(jobj[0].merchant_name);
+            $("#thresholdfee").text(jobj[0].threshold);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
 }

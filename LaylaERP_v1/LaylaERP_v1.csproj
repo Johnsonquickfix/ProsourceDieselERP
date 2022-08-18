@@ -914,6 +914,7 @@
     <Content Include="js\Report\SalesRepresentative.js" />
     <Content Include="js\Report\SalesRepresentativeQuoteReport.js" />
     <Content Include="js\Report\Searchcouponorders.js" />
+    <Content Include="js\Report\ThresholdMerchantFeeReport.js" />
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
@@ -925,6 +926,7 @@
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Setup\ProductType.js" />
     <Content Include="js\Ship\ShipStation.js" />
+    <Content Include="js\Ship\SplitOrders.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
     <Content Include="js\UserActivity.js" />
@@ -1385,6 +1387,8 @@
     <Content Include="Views\CustomSearch\CustomersCustomReport.cshtml" />
     <Content Include="Views\Setup\MerchantFee.cshtml" />
     <Content Include="Views\Proposals\OrderProductReconciled.cshtml" />
+    <Content Include="Views\Ship\SplitOrders.cshtml" />
+    <Content Include="Views\Reports\ThresholdMerchantFeeReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

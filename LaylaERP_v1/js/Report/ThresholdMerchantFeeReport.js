@@ -37,7 +37,7 @@
 
     });
 });
-
+  
 
 function dataGridLoad() {
     let paymentmethod =  $("#ddlstatus").val();
@@ -47,7 +47,7 @@ function dataGridLoad() {
     if ($('#txtDate').val() == '') { sd = ''; ed = '' };
     let table = $('#dtdata').DataTable({
         //columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': false, 'targets': [9] }], order: [[9, "desc"]],
-        order: [[0, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100], [20, 50, 100]],
+        order: [[0, "desc"]], destroy: true, bProcessing: true, bServerSide: false, bAutoWidth: false, searching: true, responsive: true, lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
@@ -113,7 +113,7 @@ function dataGridLoad() {
             //},
             //{ data: 'delivery_status', title: 'Delivery Status', sWidth: "10%", render: function (data, type, row) { if (row.delivery_status) return '<span class="badge bg-success">Delivered</span>'; else return '<span class="badge bg-warning">Non Delivered</span>'; } },
         ],
-        "dom": 'Bfrtip',
+        "dom": 'lBftip',
         "buttons": [
             {
                 extend: 'csv',

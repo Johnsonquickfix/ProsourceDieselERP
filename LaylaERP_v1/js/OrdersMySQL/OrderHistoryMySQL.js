@@ -196,7 +196,7 @@ function dataGridLoad(order_type) {
                 data: 'id', title: 'OrderID', sWidth: "10%",
                 render: function (id, type, full, meta) {
                     if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
-                    else if (full.post_mime_type == 'shop_order_replace_erp' || full.post_mime_type == 'shoporderreplaceerp') return '#REP' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else if (full.post_mime_type == 'shop_order_replace_erp' || full.post_mime_type == 'shoporderreplaceerp') return 'REP#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
                     else return '#' + id;
                 }
 

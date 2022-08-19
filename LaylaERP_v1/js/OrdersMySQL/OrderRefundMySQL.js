@@ -204,7 +204,7 @@ function getOrderItemList(oid) {
             else if (row.product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
-                refundHtml += '<td>' + row.product_name + '</td><td></td><td></td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
+                refundHtml += '<td colspan="3">' + row.product_name.split(/,[ ]{0,}/).join('</br>') + '</td><td></td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(row.total) || 0.00);
                 $('#order_refunds').append(refundHtml);

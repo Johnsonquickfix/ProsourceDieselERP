@@ -203,7 +203,8 @@ function dataGridLoad(order_type) {
             },
             {
                 data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    return row.first_name + ' ' + row.last_name;
+                    if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')';
+                    else return row.first_name + ' ' + row.last_name;
                 }
             },
             {

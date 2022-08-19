@@ -37,7 +37,7 @@
 
     });
 });
-
+  
 
 function dataGridLoad() {
     let paymentmethod =  $("#ddlstatus").val();

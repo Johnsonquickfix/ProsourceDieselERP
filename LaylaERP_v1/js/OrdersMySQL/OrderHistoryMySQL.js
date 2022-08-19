@@ -188,14 +188,15 @@ function dataGridLoad(order_type) {
         },
         columns: [
             {
-                'data': 'id', sWidth: "7%   ", 'render': function (id, type, full, meta) {
+                'data': 'id', sWidth: "5%   ", 'render': function (id, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(id).html() + '"><label></label>';
                 }
             },
             {
-                data: 'id', title: 'OrderID', sWidth: "8%",
+                data: 'id', title: 'OrderID', sWidth: "10%",
                 render: function (id, type, full, meta) {
-                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp' || full.post_mime_type == 'shop_order_replace_erp' || full.post_mime_type == 'shoporderreplaceerp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    if (full.post_mime_type == 'shop_order_erp' || full.post_mime_type == 'shopordererp') return '#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
+                    else if (full.post_mime_type == 'shop_order_replace_erp' || full.post_mime_type == 'shoporderreplaceerp') return 'REP#' + id + ' <i class="glyphicon glyphicon-user" title="Order created from ERP Admin." aria-hidden="true" data-placement="top" data-toggle="tooltip"></i>';
                     else return '#' + id;
                 }
 

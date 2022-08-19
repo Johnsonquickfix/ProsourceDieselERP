@@ -394,7 +394,7 @@
                             model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.customer_id, n_orderid));
                     var i = 0;
                     /// step 2 : wp_postmeta 
-                    strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from wp_postmeta where post_id= {1} and (meta_key like '_billing_%' or  meta_key like '_shipping_%'); ", n_orderid, model.OrderPostStatus.order_id));
+                    strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from wp_postmeta where post_id= {1} and (meta_key like '_billing_%' or  meta_key like '_shipping_%' or meta_key like '_payment_method%'); ", n_orderid, model.OrderPostStatus.order_id));
                     strSql.Append("insert into wp_postmeta (post_id,meta_key,meta_value) values");
                     foreach (OrderPostMetaModel obj in model.OrderPostMeta)
                     {

@@ -213,7 +213,12 @@ function dataGridLoad() {
                     else return '<div class="text-gray-800 fw-boldest">#' + id + '</div>';
                 }
             },
-            { data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) { return '<div class="text-gray-800 fw-boldest">' + row.first_name + ' ' + row.last_name + '</div>'; } },
+            {
+                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
+                    if (row.post_mime_type == 'shop_order_replace_erp' || row.post_mime_type == 'shoporderreplaceerp') return '<div class="text-gray-800 fw-boldest">' + row.first_name + ' ' + row.last_name + ' (#' + row.post_parent + ')</div>';
+                    else return '<div class="text-gray-800 fw-boldest">' + row.first_name + ' ' + row.last_name + '</div>';
+                }
+            },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
                     let phone = isNullUndefAndSpace(id) ? id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") : id;

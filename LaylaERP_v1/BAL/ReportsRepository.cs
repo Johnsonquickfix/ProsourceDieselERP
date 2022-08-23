@@ -3315,5 +3315,30 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetBillDetailslist(DateTime? fromdate, DateTime? todate, string payment_method, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    //!string.IsNullOrEmpty(payment_method) ? new SqlParameter("@payment_method", payment_method) : new SqlParameter("@payment_method", DBNull.Value),
+                    new SqlParameter("@flag",payment_method)
+                };
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_misc_bill_search", parameters);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

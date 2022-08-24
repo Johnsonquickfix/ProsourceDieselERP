@@ -200,6 +200,7 @@
     <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\BankRepository.cs" />
+    <Compile Include="BAL\BudgetRepository.cs" />
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
     <Compile Include="Controllers\CommonAPIController.cs" />
@@ -301,6 +303,7 @@
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Attributes.cs" />
     <Compile Include="Models\BankModel.cs" />
+    <Compile Include="Models\BudgetModel.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CommercialProposalModel.cs" />
@@ -780,6 +783,8 @@
     <Content Include="js\Bank\BankEntries.js" />
     <Content Include="js\Bank\BankPaymentVoucher.js" />
     <Content Include="js\Bank\BankPaymentVoucherList.js" />
+    <Content Include="js\Budget\AddBudget.js" />
+    <Content Include="js\Budget\BudgetList.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1389,6 +1394,8 @@
     <Content Include="Views\Ship\SplitOrders.cshtml" />
     <Content Include="Views\Reports\ThresholdMerchantFeeReport.cshtml" />
     <Content Include="Views\Reports\BillPaidDetails.cshtml" />
+    <Content Include="Views\Budget\AddBudget.cshtml" />
+    <Content Include="Views\Budget\BudgetList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

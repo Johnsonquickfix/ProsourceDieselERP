@@ -38,16 +38,24 @@
                             </div>
 
                         </div>
-                        <div class="alignleft actions">
+                        <div style="display:none" class="alignleft actions">
                             <div class="input-group">
                                 <select class="form-control" id="ddlstatus">
-                                    @*<option value="0" selected="selected">Select</option>*@
+                                    @*
+                                    <option value="0" selected="selected">Select</option>*@
                                     <option value="PN">Pending</option>
-                                    <option value="PD">Paid</option> 
+                                    <option value="PD">Paid</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="alignleft actions left"> 
+                        <div  class="alignleft actions">
+                            <div class="input-group">
+                                <select class="form-control" id="ddlbill"> 
+                                    <option value="0" selected="selected">Select Bill</option>  
+                                </select>
+                            </div>
+                        </div>
+                        <div class="alignleft actions left">
                             <button type="button" class="btn btn-danger" id="btnsearchdetails" data-toggle="tooltip" title="Search Details">Search</button>
                         </div>
                     </div>
@@ -77,7 +85,7 @@
                                                 <th>Discount</th>
                                                 <th>Paid Amount</th>
                                                 @*<th>Total Paid Amount</th>*@
-                                                @*<th>Balance Amount</th>*@
+                                                 <th>Balance Amount</th> 
 
                                             </tr>
                                         </thead>

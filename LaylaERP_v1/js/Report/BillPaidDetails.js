@@ -30,6 +30,7 @@
         else {
            // console.log('hh');
             MiscBillGrid();
+            Gettotal();
         }
     });
 
@@ -42,8 +43,7 @@ function MiscBillGrid() {
     //    paymentmethod = 'SERPB';
     //else
     //    paymentmethod = 'SFRPB';
-    paymentmethod = 'SFRCH';
-    
+    paymentmethod = 'SFRCH';    
     let billno = $("#ddlbill").val();
     let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
     let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
@@ -82,7 +82,7 @@ function MiscBillGrid() {
             { data: 'displayname', title: 'Name', sWidth: "10%" },
            /* { data: 'ext_payment_site', title: 'Transaction Id', sWidth: "15%" },*/
             { data: 'PaymentType', title: 'Payment Type', sWidth: "10%" },
-            { data: 'total_ttc', title: 'Total Amt.', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            //{ data: 'total_ttc', title: 'Total Amt.', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'discount', title: 'Discount', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'sub_total', title: 'Paid Amt.', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
          //   { data: 'sub_total', title: 'Paid Amt.', class: 'text-right', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
@@ -112,22 +112,28 @@ function MiscBillGrid() {
         ],
         "dom": 'lBftip',
         "buttons": [
-            {
-                extend: 'csv',
-                className: 'button',
-                text: '<i class="fas fa-file-csv"></i> Export',
-                filename: function () {
-                    // var d = new Date();
-                    return 'Misc_Bill_Report_' + $("#txtOrderDate").val().replaceAll('/', '.');
-                },
+            //{
+            //    extend: 'copy',
+            //    className: 'button',
+            //    text: '<i class="fas fa-file-csv"></i> Copy',
+                 
+            //    title: function () {
+            //        return "Layla Sleep Inc - Bill Paid Details (Total Bill Amount($) : " + $("#totalfee").text() + ") " ;
+            //    },
+            //   // messageTop: function () { return "Layla Sleep Inc - Bill Paid Details Total Bill Amount($) : " + $("#totalfee").text() + " " },
+            //    filename: function () {
+            //        // var d = new Date();
+            //        return 'Misc_Bill_Report_' + $("#txtOrderDate").val().replaceAll('/', '.');
+            //    },
 
-            },
+            //},
             {
                 extend: 'print',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> Print',
+                messageTop: function () { return "Total Bill Amount($) : " + $("#totalfee").text() + " " },
                 title: function () {
-                    return "Layla Sleep Inc - Misc Bill Report";
+                    return "Layla Sleep Inc - Bill Paid Details ";
                 },
                 footer: true,
                 exportOptions: {
@@ -143,6 +149,10 @@ function MiscBillGrid() {
                 extend: 'pdfHtml5',
                 className: 'button',
                 text: '<i class="fas fa-file-csv"></i> PDF',
+                messageTop: function () { return "Total Bill Amount($) : " + $("#totalfee").text() + " " },
+                title: function () {
+                    return "Layla Sleep Inc - Bill Paid Details ";
+                },
                 footer: true,
                 exportOptions: {
                     columns: [0, 1, 2, 3,4,5,  7, 8],
@@ -181,4 +191,23 @@ function getbill() {
     });
 }
 
+function Gettotal() {
+    //let id = $("#ddlstatus").text();
+    let id = $("#ddlbill option:selected").text();
+    var obj = { strValue1: id }
+    $.ajax({
+        url: '/Reports/GetbilltotalById/',
+        datatype: 'json',
+        type: 'Post',
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var jobj = JSON.parse(data);
+            // $('#txtMerchantname').val(jobj[0].merchant_name);
+            $("#totalfee").text(jobj[0].total_ttc.toFixed(2));
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+}
  

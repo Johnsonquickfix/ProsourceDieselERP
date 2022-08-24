@@ -3360,7 +3360,21 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
-
+        public static DataTable GetbilltotalById(string id)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                strQuery = "select total_ttc  from erp_commerce_miscellaneous_bill where ref ='" + id + "'";
+                dt = SQLHelper.ExecuteDataTable(strQuery);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

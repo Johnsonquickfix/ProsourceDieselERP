@@ -42,24 +42,32 @@
                             <div class="input-group">
                                 <select class="form-control" id="ddlstatus">
                                     @*
-                                    <option value="0" selected="selected">Select</option>*@
+                    <option value="0" selected="selected">Select</option>*@
                                     <option value="PN">Pending</option>
                                     <option value="PD">Paid</option>
                                 </select>
                             </div>
                         </div>
-                        <div  class="alignleft actions">
+                        <div class="alignleft actions">
                             <div class="input-group">
-                                <select class="form-control" id="ddlbill"> 
-                                    <option value="0" selected="selected">Please Select Bill</option>  
+                                <select class="form-control" id="ddlbill">
+                                    <option value="0" selected="selected">Please Select Bill</option>
                                 </select>
                             </div>
                         </div>
                         <div class="alignleft actions left">
                             <button type="button" class="btn btn-danger" id="btnsearchdetails" data-toggle="tooltip" title="Search Details">Search</button>
                         </div>
+
+                        <div class="alignleft actions left">
+                            <label >Total Bill Amount($) :</label>
+                            
+                        </div>
+                        <div class="alignleft actions left">
+                            <b> <span id="totalfee">0.00</span> </b>
+                        </div>
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
    
@@ -81,7 +89,7 @@
                                                 <th>Name</th>
                                                 @*<th>Transaction Id</th>*@
                                                 <th>Payment Type</th>
-                                                <th>Total Amount</th>
+                                                @*<th>Total Amount</th>*@
                                                 <th>Discount</th>
                                                 <th>Paid Amount</th>
                                                 @*<th>Total Paid Amount</th>*@

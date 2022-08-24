@@ -1345,6 +1345,23 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetbilltotalById(string strValue1)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = ReportsRepository.GetbilltotalById(strValue1);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
+
+
 
     }
 

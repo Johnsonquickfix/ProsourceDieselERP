@@ -3341,13 +3341,20 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataSet getbill()
+        public static DataSet getbill(DateTime? fromdate, DateTime? todate)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select ref ID, ref from erp_commerce_miscellaneous_bill ORDER BY ref desc;";
-                DS = SQLHelper.ExecuteDataSet(strSQl);
+                 
+                SqlParameter[] parameters =
+             {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value), 
+                    new SqlParameter("@flag","GETBILL")
+                };
+                DS = SQLHelper.ExecuteDataSet("erp_misc_bill_search", parameters);
+                //DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }

@@ -1331,11 +1331,16 @@ namespace LaylaERP.Controllers
 
         public JsonResult getbill(SearchModel model)
         {
-            DataSet ds = ReportsRepository.getbill();
+            DateTime? fromdate = null, todate = null;
+            if (!string.IsNullOrEmpty(model.strValue1))
+                fromdate = Convert.ToDateTime(model.strValue1);
+            if (!string.IsNullOrEmpty(model.strValue2))
+                todate = Convert.ToDateTime(model.strValue2);
+            DataSet ds = ReportsRepository.getbill(fromdate, todate);
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                productlist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["ID"].ToString() });
+                productlist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["ref"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }

@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    getbill();
+    
  
     $('#txtOrderDate').daterangepicker({
         ranges: {
@@ -13,59 +13,22 @@
         startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     },
-        //function (start, end, label) {
-        //    $.when(MiscBillGrid()).done(function () { MiscBillFullyGrid(); });
-
-        //}
+        function (start, end, label) {
+            //$.when(getbill()).done(function () { MiscBillGrid(); });
+            getbill();
+        }
+         
     );
 
-  //  $.when(MiscBillGrid()).done(function () { MiscBillFullyGrid(); });
-    MiscBillGrid();
-  
-    // Add event listener for opening and closing details
-    $('#dtdata tbody').on('click', '.pdetailspo-control', function () {
-        // console.log('svvvd');
-        var tr = $(this).closest('tr');
-        var row = $('#dtdata').DataTable().row(tr);
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            tr.find('.pdetailspo-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open this row
-            tr.find('.pdetailspo-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
-            row.child(formatPO(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    // Add event listener for opening and closing details
-    $('#dtfullypaid tbody').on('click', '.pdetailbill-control', function () {
-        // console.log('svvvd');
-        var tr = $(this).closest('tr');
-        var row = $('#dtfullypaid').DataTable().row(tr);
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            tr.find('.pdetailbill-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open this row
-            tr.find('.pdetailbill-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
-            //row.child(formatPartially(row.data())).show();
-            row.child(formatPO(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
+    setTimeout(function () { getbill(); }, 50);
+     
     $('#btnsearchdetails').click(function () {
         bill = $("#ddlbill").val();
         if (bill == "0") {
             swal('Alert', 'Please select billno', 'error').then(function () { swal.close(); $('#ddlbill').focus(); });
         }
         else {
-            console.log('hh');
+           // console.log('hh');
             MiscBillGrid();
         }
     });
@@ -201,11 +164,14 @@ function MiscBillGrid() {
 }
  
 function getbill() {
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    let option = { strValue1: sd, strValue2: ed };
     $.ajax({
-        url: "/Reports/getbill",
+        url: "/Reports/getbill", data: option, type: "Get", beforeSend: function () { $("#loader").show(); },
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please Select Sales</option>';
+            var opt = '<option value="0">Please Select Bill</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }

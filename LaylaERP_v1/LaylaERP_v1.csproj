@@ -899,6 +899,7 @@
     <Content Include="js\Reception\SalesPurchaseList.js" />
     <Content Include="js\Report\Agingorders.js" />
     <Content Include="js\Report\AgingordersNonDepositedFunds.js" />
+    <Content Include="js\Report\BillPaidDetails.js" />
     <Content Include="js\Report\CancelRefund.js" />
     <Content Include="js\Report\ForecastInventory.js" />
     <Content Include="js\Report\ForecastInventoryHistorical.js" />
@@ -1387,6 +1388,7 @@
     <Content Include="Views\Proposals\OrderProductReconciled.cshtml" />
     <Content Include="Views\Ship\SplitOrders.cshtml" />
     <Content Include="Views\Reports\ThresholdMerchantFeeReport.cshtml" />
+    <Content Include="Views\Reports\BillPaidDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -39,27 +39,27 @@ function BindData() {
     _header += '</tbody>';
     $('#dtBudget').append(_header);
     if (_interval == 'M') {
-        _header = '        <th style="width: 7%;">JAN</th>';
-        _header += '        <th style="width: 7%;">FEB</th>';
-        _header += '        <th style="width: 7%;">MAR</th>';
-        _header += '        <th style="width: 7%;">APR</th>';
-        _header += '        <th style="width: 7%;">MAY</th>';
-        _header += '        <th style="width: 7%;">JUN</th>';
-        _header += '        <th style="width: 7%;">JUL</th>';
-        _header += '        <th style="width: 7%;">AUG</th>';
-        _header += '        <th style="width: 7%;">SEP</th>';
-        _header += '        <th style="width: 7%;">OCT</th>';
-        _header += '        <th style="width: 7%;">NOV</th>';
-        _header += '        <th style="width: 7%;">DEC</th>';
+        _header = '        <th class="text-right" style="width: 7%;">JAN</th>';
+        _header += '        <th class="text-right" style="width: 7%;">FEB</th>';
+        _header += '        <th class="text-right" style="width: 7%;">MAR</th>';
+        _header += '        <th class="text-right" style="width: 7%;">APR</th>';
+        _header += '        <th class="text-right" style="width: 7%;">MAY</th>';
+        _header += '        <th class="text-right" style="width: 7%;">JUN</th>';
+        _header += '        <th class="text-right" style="width: 7%;">JUL</th>';
+        _header += '        <th class="text-right" style="width: 7%;">AUG</th>';
+        _header += '        <th class="text-right" style="width: 7%;">SEP</th>';
+        _header += '        <th class="text-right" style="width: 7%;">OCT</th>';
+        _header += '        <th class="text-right" style="width: 7%;">NOV</th>';
+        _header += '        <th class="text-right" style="width: 7%;">DEC</th>';
         _header += '        <th class="text-right" style="width: 7%;">TOTAL</th>';
         $('#dtBudget thead tr').append(_header);
     }
     else if (_interval == 'Q') {
-        _header = '        <th class="whitespace" style="width: 15%;">JAN-MAR</th>';
-        _header += '        <th class="whitespace" style="width: 15%;">APR-JUN</th>';
-        _header += '        <th class="whitespace" style="width: 15%;">JUL-SEP</th>';
-        _header += '        <th class="whitespace" style="width: 15%;">OCT-DEC</th>';
-        _header += '        <th class="whitespace text-right" style="width: 15%;">TOTAL</th>';
+        _header = '        <th class="text-right" style="width: 15%;">JAN-MAR</th>';
+        _header += '        <th class="text-right" style="width: 15%;">APR-JUN</th>';
+        _header += '        <th class="text-right" style="width: 15%;">JUL-SEP</th>';
+        _header += '        <th class="text-right" style="width: 15%;">OCT-DEC</th>';
+        _header += '        <th class="text-right" style="width: 15%;">TOTAL</th>';
         $('#dtBudget thead tr').append(_header);
     }
     else if (_interval == 'Y') {
@@ -87,30 +87,31 @@ function BindData() {
 
                     if (_interval == 'M') {
                         _sum = parseFloat(row.JAN) + parseFloat(row.FEB) + parseFloat(row.MAR) + parseFloat(row.APR) + parseFloat(row.MAY) + parseFloat(row.JUN) + parseFloat(row.JUL) + parseFloat(row.AUG) + parseFloat(row.SEP) + parseFloat(row.OCT) + parseFloat(row.NOV) + parseFloat(row.DEC);
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.JAN + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.FEB + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.MAR + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.APR + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.MAY + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.JUN + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.JUL + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.AUG + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.SEP + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.OCT + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.NOV + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.DEC + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JAN + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.FEB + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.MAR + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.APR + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.MAY + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JUN + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JUL + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.AUG + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.SEP + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.OCT + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.NOV + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.DEC + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (_interval == 'Q') {
                         _sum = parseFloat(row.quarter1) + parseFloat(row.quarter2) + parseFloat(row.quarter3) + parseFloat(row.quarter4);
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.quarter1 + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.quarter2 + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.quarter3 + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number rowCalulate" type="number" id="txt_amt" value="' + row.quarter4 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter1 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter2 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter3 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter4 + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (_interval == 'Y') {
-                        _row += '    <td class="d-flex justify-content-end"><input autocomplete="off" class="form-control number rowCalulateYear" type="number" id="txt_amt" value="' + row.amount + '" name="txt_amt"></td>';
+                        _sum = parseFloat(row.amount) ||0;
+                        _row += '    <td class="d-flex justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulateYear" id="txt_amt" value="' + _sum.toFixed(2) + '" name="txt_amt"></td>';
                     }
                 }
                 _row += '</tr>';
@@ -124,7 +125,6 @@ function BindData() {
 }
 
 function RowCalculate(ele) {
-    console.log($(ele));
     let $row = $(ele).closest('tr');
     let sum = 0;
     $row.find(".rowCalulate").each(function () {

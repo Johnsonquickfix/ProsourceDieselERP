@@ -27,7 +27,7 @@
             }
             return ds;
         }
-        public static DataTable GetAccountBudget(int fiscalyear_id, string interval, DateTime? fromdate, DateTime? todate)
+        public static DataTable GetAccountBudget(int fiscalyear_id, string interval, int data_year)
         {
             DataTable dt = new DataTable();
             try
@@ -37,8 +37,9 @@
                         new SqlParameter("@flag", "ALLPLACC"),
                         fiscalyear_id > 0 ? new SqlParameter("@fiscalyear_id", fiscalyear_id) : new SqlParameter("@fiscalyear_id", DBNull.Value),
                         !string.IsNullOrEmpty (interval) ? new SqlParameter("@interval", interval) : new SqlParameter("@interval", interval),
-                        fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
-                        todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value)
+                        data_year > 0 ? new SqlParameter("@year", data_year) : new SqlParameter("@year", DBNull.Value),
+                        //fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                        //todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value)
                     };
                 dt = SQLHelper.ExecuteDataTable("erp_budget_search", parameters);
             }

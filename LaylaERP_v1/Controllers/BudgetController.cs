@@ -39,7 +39,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.fiscalyear_id, model.interval, model.fromdate, model.todate));
+                JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.fiscalyear_id, model.interval, model.data_year));
             }
             catch { }
             return Json(JSONresult, 0);

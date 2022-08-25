@@ -827,6 +827,7 @@
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\ImportOrderinvoice\CompareSalesPO.js" />
+    <Content Include="js\ImportOrderinvoice\ImportBankcheckstatement.js" />
     <Content Include="js\ImportOrderinvoice\orderinvoice.js" />
     <Content Include="js\ImportPo\ImportPo.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
@@ -1396,6 +1397,7 @@
     <Content Include="Views\Reports\BillPaidDetails.cshtml" />
     <Content Include="Views\Budget\AddBudget.cshtml" />
     <Content Include="Views\Budget\BudgetList.cshtml" />
+    <Content Include="Views\ImportOrderinvoice\ImportBankcheckstatement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

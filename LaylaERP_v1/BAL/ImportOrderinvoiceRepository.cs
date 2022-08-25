@@ -117,5 +117,35 @@ namespace LaylaERP_v1.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable GetBankcheckList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT cp.rowid,check_no, CONVERT(varchar,doc_date,112) chkdatesort, CONVERT(varchar,doc_date, 101) chkdate,check_amount"
+                               + " from erp_import_bank_check_statement cp  WHERE 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (concat(check_no,CONVERT(varchar,doc_date, 101), check_amount) like '%" + searchid + "%')";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+
+                strSql += "; SELECT (Count(cp.rowid)/" + pagesize.ToString() + ") TotalPage,Count(cp.rowid) TotalRecord FROM erp_import_bank_check_statement cp WHERE 1=1" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

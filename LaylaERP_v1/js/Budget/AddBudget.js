@@ -1,6 +1,12 @@
 ﻿$(document).ready(function () {
     $("#loader").hide(); $(".select2").select2();
     $.when(getfinaceyear()).done(function () { BindData() });
+    $(document).on("click", "#btnSearch", function (t) {
+        t.preventDefault(); BindData();
+    });
+    $(document).on("click", "#btnSave", function (t) {
+        t.preventDefault(); SaveBudget();
+    });
     $(document).on("change", "#ddlInterval,#ddlPrefillData", function (t) {
         t.preventDefault(); BindData();
     });
@@ -75,7 +81,7 @@ function BindData() {
             //let _list = listToTree(data);
             //console.log(_list);
             $.each(data, function (i, row) {
-                _row = '<tr>';
+                _row = '<tr data-id="' + row.account_number + '">';
                 if (row.level == 0) {
                     _row += '    <td class="" style="width: 220px;background:#D5DBDB;"><b>' + row.account_name + '</b></td>';
                     if (_interval == 'M') _row += '<td style="background:#D5DBDB;"></td>'.repeat(13);
@@ -87,31 +93,31 @@ function BindData() {
 
                     if (_interval == 'M') {
                         _sum = parseFloat(row.JAN) + parseFloat(row.FEB) + parseFloat(row.MAR) + parseFloat(row.APR) + parseFloat(row.MAY) + parseFloat(row.JUN) + parseFloat(row.JUL) + parseFloat(row.AUG) + parseFloat(row.SEP) + parseFloat(row.OCT) + parseFloat(row.NOV) + parseFloat(row.DEC);
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JAN + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.FEB + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.MAR + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.APR + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.MAY + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JUN + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.JUL + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.AUG + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.SEP + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.OCT + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.NOV + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.DEC + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.JAN + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_feb_amt" value="' + row.FEB + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_mar_amt" value="' + row.MAR + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.APR + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_may_amt" value="' + row.MAY + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jun_amt" value="' + row.JUN + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.JUL + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_aug_amt" value="' + row.AUG + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_sep_amt" value="' + row.SEP + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.OCT + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_nov_amt" value="' + row.NOV + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_dec_amt" value="' + row.DEC + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (_interval == 'Q') {
                         _sum = parseFloat(row.quarter1) + parseFloat(row.quarter2) + parseFloat(row.quarter3) + parseFloat(row.quarter4);
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter1 + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter2 + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter3 + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_amt" value="' + row.quarter4 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.quarter1 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.quarter2 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.quarter3 + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.quarter4 + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (_interval == 'Y') {
-                        _sum = parseFloat(row.amount) ||0;
-                        _row += '    <td class="d-flex justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulateYear" id="txt_amt" value="' + _sum.toFixed(2) + '" name="txt_amt"></td>';
+                        _sum = parseFloat(row.amount) || 0;
+                        _row += '    <td class="d-flex justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulateYear" id="txt_jan_amt" value="' + _sum.toFixed(2) + '" name="txt_amt"></td>';
                     }
                 }
                 _row += '</tr>';
@@ -131,6 +137,60 @@ function RowCalculate(ele) {
         sum += parseFloat(this.value) || 0;
     });
     $row.find(".rowTotal").text(sum.toFixed(2));
+}
+
+function SaveBudget() {
+    //let oid = parseInt($('#hfOrderNo').val()) || 0; $('#hfOrderNo').data('qt', 'm')
+    //if (!ValidateData()) { $("#loader").hide(); return false };
+    //let quote = QuoteHeader(oid), _list = QuoteProducts(oid);
+    //if (_list.length <= 0) { swal('Error!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
+    let obj = {
+        budget_id: 0, budget_name: $('#txtBudgetName').val(), fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, interval: $('#ddlInterval').val(), filled_year: $('#ddlPrefillData').val(),
+        budget_details: []
+    };
+    let _jan = 0.00, _feb = 0.00, _mar = 0.00, _apr = 0.00, _may = 0.00, _jun = 0.00, _jul = 0.00, _aug = 0.00, _sep = 0.00, _oct = 0.00, _nov = 0.00, _dec = 0.00;
+    $('#dtBudget tbody tr').each(function (index, tr) {
+        _jan = parseFloat($(tr).find("#txt_jan_amt").val()) || 0.00;
+        _feb = parseFloat($(tr).find("#txt_feb_amt").val()) || 0.00;
+        _mar = parseFloat($(tr).find("#txt_mar_amt").val()) || 0.00;
+        _apr = parseFloat($(tr).find("#txt_apr_amt").val()) || 0.00;
+        _may = parseFloat($(tr).find("#txt_may_amt").val()) || 0.00;
+        _jun = parseFloat($(tr).find("#txt_jun_amt").val()) || 0.00;
+        _jul = parseFloat($(tr).find("#txt_jul_amt").val()) || 0.00;
+        _aug = parseFloat($(tr).find("#txt_aug_amt").val()) || 0.00;
+        _sep = parseFloat($(tr).find("#txt_sep_amt").val()) || 0.00;
+        _oct = parseFloat($(tr).find("#txt_oct_amt").val()) || 0.00;
+        _nov = parseFloat($(tr).find("#txt_nov_amt").val()) || 0.00;
+        _dec = parseFloat($(tr).find("#txt_dec_amt").val()) || 0.00;
+        obj.budget_details.push({
+            budget_details_id: 0, account_number: parseInt($(tr).data("id")) || 0, jan_amt: _jan, feb_amt: _feb, mar_amt: _mar, apr_amt: _apr, may_amt: _may, jun_amt: _jun, jul_amt: _jul, aug_amt: _aug, sep_amt: _sep, oct_amt: _oct, nov_amt: _nov, dec_amt: _dec
+        });
+    });
+
+    //console.log(obj); return false;
+
+    if ($('#txtBudgetName').val() == '') { swal('Error!', 'Please enter budget name.', "error").then((result) => { $('#txtBudgetName').focus(); return false; }); return false; }
+    else if ($('#ddlfinaceyear').val() == '0') { swal('Error!', 'Please select Financial Year.', "error").then((result) => { $('#ddlfinaceyear').select2('open'); return false; }); return false; }
+    else {
+        let option = { budget_id: 0, budget_name: JSON.stringify(obj) };
+        swal.queue([{
+            title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save this budget?", showLoaderOnConfirm: true, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    $.post('/budget/save-budget', option).done(function (result) {
+                        result = JSON.parse(result);
+                        if (result[0].response == "success") {
+                            swal('Success', 'Your budget saved successfully.', "success").then((result) => {
+                                window.location.href = window.location.origin + "/Budget/BudgetList";
+                            });
+                        }
+                        else { swal('Error', result[0].response, "error"); }
+                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+                });
+            }
+        }]);
+    }
+    return false;
 }
 
 

@@ -52,14 +52,15 @@
             }
             return dt;
         }
-        public static DataTable GetAccountBudget(int fiscalyear_id, string interval, int data_year)
+        public static DataTable GetAccountBudget(string flag, int budget_id, int fiscalyear_id, string interval, int data_year)
         {
             DataTable dt = new DataTable();
             try
             {
                 SqlParameter[] parameters =
                     {
-                        new SqlParameter("@flag", "ALLPLACC"),
+                        new SqlParameter("@flag", flag),
+                        budget_id > 0 ? new SqlParameter("@id", budget_id) : new SqlParameter("@id", DBNull.Value),
                         fiscalyear_id > 0 ? new SqlParameter("@fiscalyear_id", fiscalyear_id) : new SqlParameter("@fiscalyear_id", DBNull.Value),
                         !string.IsNullOrEmpty (interval) ? new SqlParameter("@interval", interval) : new SqlParameter("@interval",  DBNull.Value),
                         data_year > 0 ? new SqlParameter("@year", data_year) : new SqlParameter("@year", DBNull.Value),

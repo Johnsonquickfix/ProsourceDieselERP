@@ -59,10 +59,10 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Name<span class="text-red">*</span></label>
-                        <input type="text" class="form-control billinfo" id="txtBudgetName" placeholder="Budget Name">
+                        <input type="text" class="form-control billinfo" id="txtBudgetName" placeholder="Budget Name" data-id="@ViewBag.id">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 budget-info">
                     <div class="form-group">
                         <label>Financial Year<span class="text-red">*</span></label>
                         <div class="input-group">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 budget-info">
                     <div class="form-group">
                         <label>Interval<span class="text-red">*</span></label>
                         <select class="form-control select2" id="ddlInterval">
@@ -83,7 +83,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 budget-info">
                     <div class="form-group">
                         <label>Pre-fill Data?</label>
                         <select class="form-control select2" id="ddlPrefillData">
@@ -91,7 +91,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 budget-info">
                     <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnSearch" class="btn btn-primary">Search</button>
                 </div>
             </div>

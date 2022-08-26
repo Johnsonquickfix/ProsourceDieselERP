@@ -7,6 +7,7 @@ namespace LaylaERP.Models
 {
     public class BudgetModel 
     {
+        public string flag { get; set; }
         public int budget_id { get; set; }
         public string budget_name { get; set; }
         public int fiscalyear_id { get; set; }

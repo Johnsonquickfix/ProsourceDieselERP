@@ -75,7 +75,13 @@ function BindData() {
     let _row = '', _sum = 0;
     let option = { budget_id: parseInt($('#txtBudgetName').data('id')) || 0, fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, interval: _interval, data_year: parseInt($('#ddlPrefillData').val()) || 0 };
     option.flag = option.budget_id > 0 ? 'EDIT' : 'NEW';
-    if (option.budget_id > 0) $('.budget-info').remove();
+    if (option.budget_id > 0) {
+        $('.budget-info').remove();
+        $('.budget-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
+    }
+    else {
+        $('.budget-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSearch" class="btn btn-primary" data-original-title="Click here to print">Search</button><button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
+    }
     //console.log(option);
     $.ajax({
         dataType: 'json', type: "POST", url: '/budget/get-accountbudget', data: option,

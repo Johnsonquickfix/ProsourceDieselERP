@@ -18,8 +18,9 @@ namespace LaylaERP.Controllers
             return View();
         }
         // GET: Add/Edit Budget
-        public ActionResult AddBudget()
+        public ActionResult AddBudget(int id = 0)
         {
+            ViewBag.id = id;
             return View();
         }
 
@@ -40,7 +41,9 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.fiscalyear_id, model.interval, model.data_year));
+                if (model.flag == "EDIT") { model.flag = "BUDGETDETAILS"; }
+                else if (model.flag == "NEW") { model.flag = "ALLPLACC"; }
+                JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.flag, model.budget_id, model.fiscalyear_id, model.interval, model.data_year));
             }
             catch { }
             return Json(JSONresult, 0);

@@ -18,9 +18,9 @@ namespace LaylaERP.Controllers
             return View();
         }
         // GET: Add/Edit Budget
-        public ActionResult AddBudget(int id = 0)
+        public ActionResult AddBudget(int id = 0, string qt = "m")
         {
-            ViewBag.id = id;
+            ViewBag.id = id; ViewBag.qt = qt;
             return View();
         }
 
@@ -68,7 +68,20 @@ namespace LaylaERP.Controllers
             {
                 long user_id = CommanUtilities.Provider.GetCurrent().UserID;
 
-                JSONresult = JsonConvert.SerializeObject(BudgetRepository.SaveBudget(model.budget_id, user_id, model.budget_name));
+                JSONresult = JsonConvert.SerializeObject(BudgetRepository.SaveBudget("SAVEBUDGET", model.budget_id, user_id, model.budget_name));
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost, Route("budget/delete-budget")]
+        public JsonResult DeleteBudget(BudgetModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+
+                JSONresult = JsonConvert.SerializeObject(BudgetRepository.SaveBudget("DELETEBUDGET", 0, user_id, model.budget_name));
             }
             catch { }
             return Json(JSONresult, 0);

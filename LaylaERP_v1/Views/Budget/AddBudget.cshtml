@@ -62,10 +62,10 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Name<span class="text-red">*</span></label>
-                        <input type="text" class="form-control billinfo" id="txtBudgetName" placeholder="Budget Name" data-id="@ViewBag.id">
+                        <input type="text" class="form-control" id="txtBudgetName" placeholder="Budget Name" data-id="@ViewBag.id" data-qt="@ViewBag.qt">
                     </div>
                 </div>
-                <div class="col-md-3 budget-info">
+                <div class="col-md-3 budget-info-fy">
                     <div class="form-group">
                         <label>Financial Year<span class="text-red">*</span></label>
                         <div class="input-group">
@@ -105,7 +105,7 @@
             <table id="dtBudget" class="table table-bordered table-striped dataTable table-budget" width="100%">
             </table>
         </div>
-        <div class="box-footer text-right">
+        <div class="box-footer text-right budget-table-action">
             <button type="button" title="Click here to save budget" data-placement="left" data-toggle="tooltip" id="btnSave" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
         </div>
     </div>

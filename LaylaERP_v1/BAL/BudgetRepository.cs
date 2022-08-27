@@ -73,14 +73,14 @@
             }
             return dt;
         }
-        public static DataTable SaveBudget(int budget_id, long user_id, string json_data)
+        public static DataTable SaveBudget(string flag, int budget_id, long user_id, string json_data)
         {
             DataTable dt = new DataTable();
             try
             {
                 SqlParameter[] parameters =
                     {
-                        new SqlParameter("@flag", "SAVEBUDGET"),
+                        new SqlParameter("@flag", flag),
                         budget_id > 0 ? new SqlParameter("@id", budget_id) : new SqlParameter("@id", DBNull.Value),
                         !string.IsNullOrEmpty (json_data) ? new SqlParameter("@json_data", json_data) : new SqlParameter("@json_data", DBNull.Value),
                         user_id > 0 ? new SqlParameter("@user_id", user_id) : new SqlParameter("@user_id", DBNull.Value),

@@ -10,7 +10,10 @@
     $(document).on("click", "#btnSave", function (t) {
         t.preventDefault(); SaveBudget();
     });
-    $(document).on("change", "#ddlInterval,#ddlPrefillData", function (t) {
+    $(document).on("change", "#ddlInterval", function (t) {
+        t.preventDefault(); BindData();
+    });
+    $(document).on("change", "#ddlPrefillData", function (t) {
         t.preventDefault(); BindData();
     });
     $(document).on("change", "#dtBudget .rowCalulate", function (t) {
@@ -37,6 +40,7 @@ function getfinaceyear() {
     });
 }
 function BindData() {
+    console.log('abc');
     let _interval = $('#ddlInterval').val();
     $('#dtBudget').empty();
     let _header = '<thead>';
@@ -79,11 +83,15 @@ function BindData() {
     let option = { budget_id: parseInt($('#txtBudgetName').data('id')) || 0, fiscalyear_id: parseInt($('#ddlfinaceyear').val()) || 0, interval: _interval, data_year: parseInt($('#ddlPrefillData').val()) || 0 };
     option.flag = option.budget_id > 0 ? 'EDIT' : 'NEW';
     if (option.budget_id > 0) {
-        $('.budget-info').remove();
-        $('.budget-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
+        $('.budget-info,.budget-info-fy').addClass('hide');
+        $('.budget-action,.budget-table-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
+        if ($('#txtBudgetName').data('qt') == 'c') { createClone(); }
     }
+    //else if ((option.budget_id == 0 || option.budget_id > 0) && $('#txtBudgetName').data('qt') == 'c') { $('.budget-info-fy').removeClass('hide'); }
     else {
+        $('.budget-info,.budget-info-fy').removeClass('hide');
         $('.budget-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSearch" class="btn btn-primary" data-original-title="Click here to print">Search</button><button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
+        $('.budget-table-action').empty().append('<button type="button" title="" data-placement="top" data-toggle="tooltip" id="btnSave" class="btn btn-primary" data-original-title="Click here to save budget"><i class="fa fa-save"></i> Save</button>');
     }
     //console.log(option);
     $.ajax({
@@ -91,7 +99,9 @@ function BindData() {
         success: function (data) {
             data = JSON.parse(data);
             if (parseInt(data[0].budget_id) > 0) {
-                $('#txtBudgetName').val(data[0].budget_name);
+                if ($('#txtBudgetName').data('qt') == 'c') { $('#txtBudgetName').val(data[0].budget_name + ' (Copy)'); }
+                else $('#txtBudgetName').val(data[0].budget_name);
+
                 _header = '<th class="whitespace" style="width: 220px;">ACCOUNTS</th>';
                 if (data[0].interval == 'M') {
                     _header += '<th class="text-right" style="width: 7%;">JAN</th>';
@@ -119,9 +129,12 @@ function BindData() {
                     _header += '<th class="whitespace text-right" style="width: 75%;">JAN-DEC</th>';
                 }
                 $('#dtBudget thead tr').empty().append(_header);
+                $('#ddlfinaceyear').val(data[0].fiscalyear_id).trigger('change');
+                //$('#ddlInterval').val(data[0].interval).trigger('change');
+                $('#ddlInterval').val(data[0].interval).select2();
             }
             $.each(data, function (i, row) {
-                _row = '<tr data-id="' + row.account_number + '" data-bdid="' + row.budget_details_id + '">';
+                _row = '<tr data-id="' + row.account_number + '" data-bdid="' + (($('#txtBudgetName').data('qt') == 'c') ? 0 : row.budget_details_id) + '">';
                 if (row.level == 0) {
                     _row += '    <td class="" style="width: 220px;background:#D5DBDB;"><b>' + row.account_name + '</b></td>';
                     if (row.interval == 'M') _row += '<td style="background:#D5DBDB;"></td>'.repeat(13);
@@ -168,6 +181,10 @@ function BindData() {
         complete: function () { $("#loader").hide(); }, async: true
     });
     return;
+}
+function createClone() {
+    $('.budget-info-fy').removeClass('hide');
+    let _val = $('#txtBudgetName').val(); $('#txtBudgetName').val(_val + ' (Copy)'); $('#txtBudgetName').data('id', 0);
 }
 
 function RowCalculate(ele) {

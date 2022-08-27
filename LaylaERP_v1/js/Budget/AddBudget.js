@@ -1,6 +1,9 @@
 ﻿$(document).ready(function () {
     $("#loader").hide(); $(".select2").select2();
     $.when(getfinaceyear()).done(function () { BindData() });
+    $(document).on("click", "#btnBackList", function (t) {
+        t.preventDefault(); window.location.href = window.location.origin + "/Budget/BudgetList";
+    });
     $(document).on("click", "#btnSearch", function (t) {
         t.preventDefault(); BindData();
     });
@@ -130,26 +133,26 @@ function BindData() {
 
                     if (row.interval == 'M') {
                         _sum = parseFloat(row.jan_amt) + parseFloat(row.feb_amt) + parseFloat(row.mar_amt) + parseFloat(row.apr_amt) + parseFloat(row.may_amt) + parseFloat(row.jun_amt) + parseFloat(row.jul_amt) + parseFloat(row.aug_amt) + parseFloat(row.sep_amt) + parseFloat(row.oct_amt) + parseFloat(row.nov_amt) + parseFloat(row.dec_amt);
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.jan_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_feb_amt" value="' + row.feb_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_mar_amt" value="' + row.mar_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.apr_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_may_amt" value="' + row.may_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jun_amt" value="' + row.jun_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.jul_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_aug_amt" value="' + row.aug_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_sep_amt" value="' + row.sep_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.oct_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_nov_amt" value="' + row.nov_amt + '" name="txt_amt"></td>';
-                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_dec_amt" value="' + row.dec_amt + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.jan_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_feb_amt" value="' + row.feb_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_mar_amt" value="' + row.mar_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.apr_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_may_amt" value="' + row.may_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jun_amt" value="' + row.jun_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.jul_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_aug_amt" value="' + row.aug_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_sep_amt" value="' + row.sep_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.oct_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_nov_amt" value="' + row.nov_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_dec_amt" value="' + row.dec_amt.toFixed(2) + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (row.interval == 'Q') {
                         _sum = parseFloat(row.jan_amt) + parseFloat(row.apr_amt) + parseFloat(row.jul_amt) + parseFloat(row.oct_amt);
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.jan_amt + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.apr_amt + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.jul_amt + '" name="txt_amt"></td>';
-                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.oct_amt + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jan_amt" value="' + row.jan_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_apr_amt" value="' + row.apr_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_jul_amt" value="' + row.jul_amt.toFixed(2) + '" name="txt_amt"></td>';
+                        _row += '    <td class="justify-content-end"><input autocomplete="off" class="form-control number text-right rowCalulate" id="txt_oct_amt" value="' + row.oct_amt.toFixed(2) + '" name="txt_amt"></td>';
                         _row += '    <td class="text-right rowTotal">' + _sum.toFixed(2) + '</td>';
                     }
                     else if (row.interval == 'Y') {
@@ -162,7 +165,7 @@ function BindData() {
             });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); },
-        complete: function () { $("#loader").hide(); }
+        complete: function () { $("#loader").hide(); }, async: true
     });
     return;
 }
@@ -242,86 +245,3 @@ function listToTree(arr) {
     };
     return res;
 };
-
-
-function BindData_old() {
-    if ($.fn.DataTable.isDataTable('#dtBudget')) {
-        $('.box-body-table').empty().append('<table id="dtBudget" class="table dataTable table-blue table-row-dashed no-footer text-propercase" width="100%"></table>');
-    }
-
-    let _columns = [], _interval = $('#ddlInterval').val();
-    _columns.push(
-        {
-            data: 'account_name', title: 'ACCOUNTS', sWidth: '150', className: 'whitespace',
-            render: function (data, type, row) {
-                if (row.level == 0) { return '<b>' + data + '</b>'; }
-                else if (row.level > 0) { return ' '.repeat(row.level * 5) + data; }
-                else return data;
-            }
-        }
-    );
-    if (_interval == 'M') {
-        _columns.push(
-            { data: 'JAN', title: 'JAN', sWidth: '7%', className: '' },
-            { data: 'FEB', title: 'FEB', sWidth: '7%', className: '' },
-            { data: 'MAR', title: 'MAR', sWidth: '7%', className: '' },
-            { data: 'APR', title: 'APR', sWidth: '7%', className: '' },
-            { data: 'MAY', title: 'MAY', sWidth: '7%', className: '' },
-            { data: 'JUN', title: 'JUN', sWidth: '7%', className: '' },
-            { data: 'JUL', title: 'JUL', sWidth: '7%', className: '' },
-            { data: 'AUG', title: 'AUG', sWidth: '7%', className: '' },
-            { data: 'SEP', title: 'SEP', sWidth: '7%', className: '' },
-            { data: 'OCT', title: 'OCT', sWidth: '7%', className: '' },
-            { data: 'NOV', title: 'NOV', sWidth: '7%', className: '' },
-            { data: 'DEC', title: 'DEC', sWidth: '7%', className: '' },
-            { data: 'account_number', title: 'TOTAL', sWidth: '7%', className: 'text-right', render: function (data, type, row) { return ''; } }
-        );
-    }
-    else if (_interval == 'Q') {
-        _columns.push(
-            { data: 'JAN-MAR', title: 'JAN-MAR', sWidth: '10%', className: '' },
-            { data: 'APR-JUN', title: 'APR-JUN', sWidth: '10%', className: '' },
-            { data: 'JUL-SEP', title: 'JUL-SEP', sWidth: '10%', className: '' },
-            { data: 'OCT-DEC', title: 'OCT-DEC', sWidth: '10%', className: '' },
-            { data: 'account_number', title: 'TOTAL', sWidth: '10%', className: 'text-right', render: function (data, type, row) { return ''; } }
-        );
-    }
-    else if (_interval == 'Y') {
-        _columns.push(
-            { data: 'JAN-DEC', title: 'JAN-DEC', sWidth: '50%', className: 'text-right' }
-        );
-    }
-    let option = { fiscalyear_id: 0, interval: _interval, data_year: parseInt($('#ddlPrefillData').val()) || 0 };
-    //console.log(option, _columns); //return;
-    $('#dtBudget').DataTable({
-        searching: false, lengthChange: false, paging: false, info: false, sort: false,
-        destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: false, scrollX: true, //scrollY: ($(window).height() - 215),
-        //language: {
-        //    lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-        //    infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
-        //},
-        //initComplete: function () {
-        //    $('.dataTables_filter input').unbind();
-        //    $('.dataTables_filter input').bind('keyup', function (e) {
-        //        var code = e.keyCode || e.which;
-        //        if (code == 13) { table_oh.search(this.value).draw(); }
-        //    });
-        //},
-        sAjaxSource: "/budget/get-accountbudget",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            //option.iDisplayStart = oSettings._iDisplayStart; option.iDisplayLength = oSettings._iDisplayLength;
-            //option.sEcho = oSettings.oAjaxData.sEcho; option.sSortDir_0 = oSettings.oAjaxData.sSortDir_0;
-            //option.sSortColName = "[" + oSettings.aoColumns[oSettings.aaSorting[0][0]].data + "]";
-            console.log(option);
-            oSettings.jqXHR = $.ajax({
-                dataType: 'json', type: "POST", url: sSource, data: option,
-                success: function (data) {
-                    data = JSON.parse(data);
-                    let dtOption = { sEcho: option.sEcho, recordsTotal: 0, recordsFiltered: 0, aaData: data };
-                    return fnCallback(dtOption);
-                }
-            });
-        },
-        columns: _columns
-    });
-}

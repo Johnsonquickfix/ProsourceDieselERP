@@ -40,7 +40,6 @@ function getfinaceyear() {
     });
 }
 function BindData() {
-    console.log('abc');
     let _interval = $('#ddlInterval').val();
     $('#dtBudget').empty();
     let _header = '<thead>';
@@ -225,7 +224,7 @@ function SaveBudget() {
     if ($('#txtBudgetName').val() == '') { swal('Error!', 'Please enter budget name.', "error").then((result) => { $('#txtBudgetName').focus(); return false; }); return false; }
     else if (obj.fiscalyear_id == 0 && obj.budget_id == 0) { swal('Error!', 'Please select Financial Year.', "error").then((result) => { $('#ddlfinaceyear').select2('open'); return false; }); return false; }
     else {
-        let option = { budget_id: 0, budget_name: JSON.stringify(obj) };
+        let option = { budget_id: obj.budget_id, budget_name: JSON.stringify(obj) };
         swal.queue([{
             title: '', confirmButtonText: 'Yes, Update it!', text: "Do you want to save this budget?", showLoaderOnConfirm: true, showCancelButton: true,
             preConfirm: function () {
@@ -233,7 +232,8 @@ function SaveBudget() {
                     $.post('/budget/save-budget', option).done(function (result) {
                         result = JSON.parse(result);
                         if (result[0].response == "success") {
-                            swal('Success', 'Your budget saved successfully.', "success").then((result) => {
+                            ActivityLog('Save Budget id (' + result[0].id + ')', '/Budget/AddBudget');
+                            swal('Success', 'Your budget saved successfully.', "success").then((result) => {                               
                                 window.location.href = window.location.origin + "/Budget/BudgetList";
                             });
                         }

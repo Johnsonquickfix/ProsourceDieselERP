@@ -55,7 +55,7 @@ function dataGridLoad() {
             },
             {
                 data: 'budget_id', title: 'Action', sWidth: "10%", orderable: false, render: function (id, type, row, meta) {
-                    return '<a href="AddBudget/' + id + '" data-toggle="tooltip" title="Edit Budget"><i class="fas fa-edit"></i></a> <a href="AddBudget?qt=c&id=' + id + '" data-toggle="tooltip" title="Create clone of this quote"><i class="fas fa-copy"></i></a>';
+                    return '<a href="AddBudget/' + id + '" data-toggle="tooltip" title="Edit Budget" onclick="ActivityLog(\'Edit Budget id (' + id + ') in Budget List.\',\'/Budget/BudgetList\'); return true;"><i class="fas fa-edit"></i></a> <a href="AddBudget?qt=c&id=' + id + '" data-toggle="tooltip" title="Create clone of this budget" onclick="ActivityLog(\'Copy Budget id (' + id + ') in Budget List.\',\'/Budget/BudgetList\'); return true;"><i class="fas fa-copy"></i></a>';
                 }
             }
         ]

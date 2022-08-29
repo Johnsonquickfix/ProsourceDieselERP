@@ -23,6 +23,12 @@ namespace LaylaERP.Controllers
             ViewBag.id = id; ViewBag.qt = qt;
             return View();
         }
+        // GET: Budget Overview
+        public ActionResult BudgetOverview(int id = 0)
+        {
+            ViewBag.id = id; 
+            return View();
+        }
 
         [HttpGet, Route("budget/get-fiscalyear")]
         public JsonResult GetFiscalYear(SearchModel model)
@@ -55,6 +61,8 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
+                //UserActivityLog.WriteDbLog(LogType.Submit, "Budget List", "/Budget/BudgetList" + ", " + Net.BrowserInfo);
+
                 result = JsonConvert.SerializeObject(BudgetRepository.GetBudgets(model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0), Formatting.Indented);
             }
             catch { }
@@ -67,6 +75,10 @@ namespace LaylaERP.Controllers
             try
             {
                 long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                //if (model.budget_id > 0)
+                //    UserActivityLog.WriteDbLog(LogType.Submit, "Update Budget id (" + model.budget_id + ")", "/Budget/AddBudget" + ", " + Net.BrowserInfo);
+                //else
+                //    UserActivityLog.WriteDbLog(LogType.Submit, "Add New Budget", "/Budget/AddBudget" + ", " + Net.BrowserInfo);
 
                 JSONresult = JsonConvert.SerializeObject(BudgetRepository.SaveBudget("SAVEBUDGET", model.budget_id, user_id, model.budget_name));
             }
@@ -80,6 +92,7 @@ namespace LaylaERP.Controllers
             try
             {
                 long user_id = CommanUtilities.Provider.GetCurrent().UserID;
+                UserActivityLog.WriteDbLog(LogType.Submit, "Delete Budget id (" + model.budget_id + ") in budget list.", "/Budget/BudgetList" + ", " + Net.BrowserInfo);
 
                 JSONresult = JsonConvert.SerializeObject(BudgetRepository.SaveBudget("DELETEBUDGET", 0, user_id, model.budget_name));
             }

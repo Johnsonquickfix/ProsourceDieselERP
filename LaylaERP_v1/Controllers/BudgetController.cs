@@ -49,6 +49,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.flag == "EDIT") { model.flag = "BUDGETDETAILS"; }
                 else if (model.flag == "NEW") { model.flag = "ALLPLACC"; }
+                else if (model.flag == "BDDL") { model.flag = "BUDGETDDL"; }
+                else model.flag = "BUDGETDDL";
                 JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.flag, model.budget_id, model.fiscalyear_id, model.interval, model.data_year));
             }
             catch { }

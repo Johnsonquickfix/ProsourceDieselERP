@@ -29,6 +29,12 @@ namespace LaylaERP.Controllers
             ViewBag.id = id; 
             return View();
         }
+        // GET: Budget vs. Actuals
+        public ActionResult BudgetVsActuals(int id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
 
         [HttpGet, Route("budget/get-fiscalyear")]
         public JsonResult GetFiscalYear(SearchModel model)
@@ -50,6 +56,7 @@ namespace LaylaERP.Controllers
                 if (model.flag == "EDIT") { model.flag = "BUDGETDETAILS"; }
                 else if (model.flag == "NEW") { model.flag = "ALLPLACC"; }
                 else if (model.flag == "OVERVIEW") { model.flag = "BUDGETOVERVIEW"; }
+                else if (model.flag == "BVA") { model.flag = "BUDGETVSACTUALS"; }
                 else if (model.flag == "BDDL") { model.flag = "BUDGETDDL"; }
                 else model.flag = "BUDGETDDL";
                 JSONresult = JsonConvert.SerializeObject(BudgetRepository.GetAccountBudget(model.flag, model.budget_id, model.fiscalyear_id, model.interval, model.data_year));

@@ -1,9 +1,10 @@
 ﻿
 @{
-    ViewBag.Title = "Budget Overview";
+    ViewBag.Title = "Budget vs. Actuals";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
+
 <link href="~/css/style.bundle.css" rel="stylesheet" />
 <style>
     .table-budget thead th, .table-budget tbody td {
@@ -69,19 +70,18 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <h2 class="company_name" colspan="12">@user.CompanyName</h2>
-                    <h4 class="rpt_title">Budget Overview</h4>
+                    <h4 class="rpt_title">Budget vs. Actuals</h4>
                     <h4 class="reportPeriod">-</h4>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table id="dtBudget" class="table table-bordered table-striped dataTable table-budget" width="100%">
-                    </table>
-                </div>
-            </div>
+        </div>
+        <div class="box-body table-responsive" id="print-report">
+            <table id="dtBudget" class="table table-bordered table-striped dataTable table-budget" width="100%">
+            </table>
         </div>
     </div>
 </section>
 <script src="~/js/linq.js"></script>
-<script src="@Url.Content("~/js/Budget/BudgetOverview.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Budget/BudgetVsActuals.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 

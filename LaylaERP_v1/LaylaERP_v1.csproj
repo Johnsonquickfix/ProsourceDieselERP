@@ -786,6 +786,7 @@
     <Content Include="js\Budget\AddBudget.js" />
     <Content Include="js\Budget\BudgetList.js" />
     <Content Include="js\Budget\BudgetOverview.js" />
+    <Content Include="js\Budget\BudgetVsActuals.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1400,6 +1401,7 @@
     <Content Include="Views\Budget\BudgetList.cshtml" />
     <Content Include="Views\ImportOrderinvoice\ImportBankcheckstatement.cshtml" />
     <Content Include="Views\Budget\BudgetOverview.cshtml" />
+    <Content Include="Views\Budget\BudgetVsActuals.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

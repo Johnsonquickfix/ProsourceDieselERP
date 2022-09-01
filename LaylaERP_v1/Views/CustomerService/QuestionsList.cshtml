@@ -73,7 +73,7 @@
             title: "", text: "Do you want to delete this question?", type: "warning", showCancelButton: true, confirmButtonColor: '#DD6B55',
             confirmButtonText: 'Yes, I do!', cancelButtonText: "No"
         }).then(function (isConfirm) {
-            console.log(isConfirm);
+            //console.log(isConfirm);
             if (isConfirm.value) {
                 let obj = { strValue1: _id }
                 $.ajax({

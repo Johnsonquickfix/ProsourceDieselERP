@@ -6,15 +6,15 @@
 }
 <!-- datatables CSS -->
 @*<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />*@
+    <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />*@
 <!-- datatables js -->
 @*<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>*@
+    <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>*@
 <style>
     .table-budget thead th, .table-budget tbody td {
         padding: 5px 2px !important;
         border: 1px solid #ccd0d4 !important;
-        vertical-align: middle!important;
+        vertical-align: middle !important;
     }
 
     .table-budget thead th {
@@ -24,16 +24,21 @@
         font-weight: 300;
     }
 
-    .table-budget .rowCalulate {
+    .table-budget .rowCalulate, .table-budget .rowCalulateYear {
         border-radius: 0px !important;
-        max-width: 120px !important;
         font-size: 11px !important;
         padding: 0px 2px;
+    }
+
+    .table-budget .rowCalulateYear {
+        max-width: 120px !important;
+        height: 28px !important;
     }
 
     td.whitespace {
         white-space: pre;
     }
+
     .justify-content-end {
         -webkit-box-pack: end !important;
         -ms-flex-pack: end !important;
@@ -46,20 +51,23 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">Add Budget</h2>
+    <div>
+        <a title="Click here to back to list" data-placement="right" data-toggle="tooltip" id="btnBackList" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Back Budget List</a>
+    </div>
 </div>
 <section class="content section-content neworder-section table-design">
     <div class="box box-primary">
         <div class="box-body">
-            <div class="row row mb-1">
+            <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control billinfo" id="txtBudgetName" placeholder="Budget Name">
+                        <label>Name<span class="text-red">*</span></label>
+                        <input type="text" class="form-control" id="txtBudgetName" placeholder="Budget Name" data-id="@ViewBag.id" data-qt="@ViewBag.qt">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 budget-info-fy">
                     <div class="form-group">
-                        <label>Financial Year</label>
+                        <label>Financial Year<span class="text-red">*</span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <select class="form-control select2" id="ddlfinaceyear">
@@ -68,9 +76,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 budget-info">
                     <div class="form-group">
-                        <label>Interval</label>
+                        <label>Interval<span class="text-red">*</span></label>
                         <select class="form-control select2" id="ddlInterval">
                             <option value="M" selected>Monthly</option>
                             <option value="Q">Quarterly</option>
@@ -78,7 +86,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 budget-info">
                     <div class="form-group">
                         <label>Pre-fill Data?</label>
                         <select class="form-control select2" id="ddlPrefillData">
@@ -86,8 +94,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                <div class="col-md-2 budget-action" style="margin-top: 22px;">
+                    <button type="button" title="Click here to print" data-placement="left" data-toggle="tooltip" id="btnSearch" class="btn btn-primary">Search</button>
                 </div>
             </div>
         </div>
@@ -96,6 +104,9 @@
         <div class="box-body box-body-table">
             <table id="dtBudget" class="table table-bordered table-striped dataTable table-budget" width="100%">
             </table>
+        </div>
+        <div class="box-footer text-right budget-table-action">
+            <button type="button" title="Click here to save budget" data-placement="left" data-toggle="tooltip" id="btnSave" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
         </div>
     </div>
 </section>

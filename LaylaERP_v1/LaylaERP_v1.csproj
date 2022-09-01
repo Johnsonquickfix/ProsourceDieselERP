@@ -785,6 +785,8 @@
     <Content Include="js\Bank\BankPaymentVoucherList.js" />
     <Content Include="js\Budget\AddBudget.js" />
     <Content Include="js\Budget\BudgetList.js" />
+    <Content Include="js\Budget\BudgetOverview.js" />
+    <Content Include="js\Budget\BudgetVsActuals.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -827,6 +829,7 @@
     <Content Include="js\Hrms\LeaveType.js" />
     <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\ImportOrderinvoice\CompareSalesPO.js" />
+    <Content Include="js\ImportOrderinvoice\ImportBankcheckstatement.js" />
     <Content Include="js\ImportOrderinvoice\orderinvoice.js" />
     <Content Include="js\ImportPo\ImportPo.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
@@ -1396,6 +1399,9 @@
     <Content Include="Views\Reports\BillPaidDetails.cshtml" />
     <Content Include="Views\Budget\AddBudget.cshtml" />
     <Content Include="Views\Budget\BudgetList.cshtml" />
+    <Content Include="Views\ImportOrderinvoice\ImportBankcheckstatement.cshtml" />
+    <Content Include="Views\Budget\BudgetOverview.cshtml" />
+    <Content Include="Views\Budget\BudgetVsActuals.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

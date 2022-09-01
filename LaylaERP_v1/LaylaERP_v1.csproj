@@ -714,6 +714,7 @@
     <Content Include="css\layoutStyle.css" />
     <Content Include="css\layoutStyle_17032022.css" />
     <Content Include="css\login_style.css" />
+    <Content Include="css\monthpicker.css" />
     <Content Include="css\order_style.css" />
     <Content Include="css\rolebase.css" />
     <Content Include="css\style.bundle.css" />
@@ -772,6 +773,7 @@
     <Content Include="js\Accounting\ChartAccountEntry.js" />
     <Content Include="js\Accounting\ChartAccountEntryList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
+    <Content Include="js\Accounting\CheckReconciliation.js" />
     <Content Include="js\Accounting\Funddeposit.js" />
     <Content Include="js\Accounting\journalvoucher.js" />
     <Content Include="js\Accounting\journalvoucherlist.js" />
@@ -847,6 +849,7 @@
     <Content Include="js\Marketing\NewAutoGenerate.js" />
     <Content Include="js\MiscellaneousBill\AutoBillConfig.js" />
     <Content Include="js\MiscellaneousBill\AutoBillConfigList.js" />
+    <Content Include="js\monthpicker.min.js" />
     <Content Include="js\OrderQuote\AddQuote.js" />
     <Content Include="js\OrderQuote\QuoteList.js" />
     <Content Include="js\OrdersMySQL\OrderHistoryMySQL.js" />
@@ -1402,6 +1405,7 @@
     <Content Include="Views\ImportOrderinvoice\ImportBankcheckstatement.cshtml" />
     <Content Include="Views\Budget\BudgetOverview.cshtml" />
     <Content Include="Views\Budget\BudgetVsActuals.cshtml" />
+    <Content Include="Views\Accounting\CheckReconciliation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

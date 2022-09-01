@@ -34,6 +34,7 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue2))
                     order_id = Convert.ToInt64(model.strValue2);
 
+                UserActivityLog.WriteDbLog(LogType.Submit, "Customer Service (Help Desk)", "Search Orders, URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
                 DataTable dt = CustomerServiceRepository.CustomerOrders(customer_id, order_id, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
@@ -105,6 +106,8 @@ namespace LaylaERP.Controllers
             {
                 if (!string.IsNullOrEmpty(model.json_data))
                 {
+                    UserActivityLog.WriteDbLog(LogType.Create, "Customer Service (Help Desk)", "Generate ticket for Begin Retention/Refunds/Claim Warranty and Stolen Package, URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     model.user_id = CommanUtilities.Provider.GetCurrent().UserID;
                     DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.json_data, model.user_id, "GENTICKET");
                     JSONresult = JsonConvert.SerializeObject(dt);
@@ -119,7 +122,10 @@ namespace LaylaERP.Controllers
                 }
                 else { JSONresult = "[{\"id\":0,\"response\":\"Please select product.\"}]"; }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                UserActivityLog.WriteDbLog(LogType.Create, "Customer Service (Help Desk)", "Generate ticket Exception : " + ex.Message + ", URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+            }
             return Json(JSONresult, 0);
         }
 
@@ -131,6 +137,8 @@ namespace LaylaERP.Controllers
             {
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
+                    UserActivityLog.WriteDbLog(LogType.Update, "Customer Service (Help Desk)", "Update ticket status and comments, URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     long user_id = CommanUtilities.Provider.GetCurrent().UserID;
                     DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETACT");
                     JSONresult = JsonConvert.SerializeObject(dt);
@@ -201,6 +209,8 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveRefundOrder(model);
                 if (result > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Create, "Customer Service (Help Desk)", "Create Order Return #" + model.new_order_id.ToString() + ", URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
 
@@ -229,6 +239,8 @@ namespace LaylaERP.Controllers
                 int result = OrdersMySQLController.MySQLSaveReplacementOrder(model);
                 if (result > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Create, "Customer Service (Help Desk)", "Create Replacement Order #" + model.new_order_id.ToString() + ", URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + model.new_order_id.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
 
@@ -249,6 +261,8 @@ namespace LaylaERP.Controllers
             {
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
+                    UserActivityLog.WriteDbLog(LogType.Update, "Customer Service (Help Desk)", "Ticket status update Closed, URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     long user_id = CommanUtilities.Provider.GetCurrent().UserID;
                     DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.strValue1, user_id, "TICKETCLOSE");
                     JSONresult = JsonConvert.SerializeObject(dt);
@@ -401,6 +415,8 @@ namespace LaylaERP.Controllers
                 result = OrdersMySQLController.SaveComponentOrders(host, model);
                 if (result > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Create, "Customer Service (Help Desk)", "Create New Order #" + model.new_order_id.ToString() + ", URL : /customer-service/search-customer" + ", " + Net.BrowserInfo);
+
                     string json_data = "{\"ticket_id\":" + model.ticket_id.ToString() + ",\"new_order_id\":" + result.ToString() + ", \"is_confirmed_by_vendor\":0 , \"ticket_is_open\":0 }";
                     CustomerServiceRepository.GenerateOrderTicket(json_data, om.UserID, "TICKETCLOSE");
                     status = true; JSONresult = "Order placed successfully.";
@@ -466,6 +482,7 @@ namespace LaylaERP.Controllers
                 _id = CustomerServiceRepository.AddQuestions(wr_titleid, wr_typeid, model.strValue3, parent_id, model.strValue5);
                 if (_id > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Create, "Add Questions", "Create and Modify Question, URL : /customer-service/questions-master" + ", " + Net.BrowserInfo);
                     _status = true; _message = "Record updated successfully!!";
                 }
                 else
@@ -474,7 +491,7 @@ namespace LaylaERP.Controllers
                 }
             }
             catch { }
-            return Json(new { status = _status, message = _message,id= _id }, 0);
+            return Json(new { status = _status, message = _message, id = _id }, 0);
         }
         [HttpPost, Route("customer-service/deletequestion")]
         public JsonResult DeleteQuestion(SearchModel model)
@@ -488,6 +505,7 @@ namespace LaylaERP.Controllers
                 _id = CustomerServiceRepository.DeleteQuestions(wr_titleid);
                 if (_id > 0)
                 {
+                    UserActivityLog.WriteDbLog(LogType.Delete, "Questions List", "Delete Question #" + wr_titleid.ToString() + ", URL : /customer-service/questions-list" + ", " + Net.BrowserInfo);
                     _status = true; _message = "Record deleted successfully!!";
                 }
                 else

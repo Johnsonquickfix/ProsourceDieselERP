@@ -500,7 +500,7 @@ namespace LaylaERP_v1.Controllers
                             {
                                 document_id = objDataRow["Check No"].ToString(),
                                 payer_id = bankidid,
-                                doc_date = objDataRow["Doc Date"].ToString(), 
+                                doc_date = objDataRow["Clear Date"].ToString(), 
                                 net_amount = objDataRow["Check Amount"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Check Amount"].ToString()) ? Convert.ToDecimal(objDataRow["Check Amount"].ToString()) : 0) : 0,
                                 
                             });

@@ -22,11 +22,18 @@
             </div>
         </div>
     </div>
-    <div class="row index_col_row"> 
+    <div class="row index_col_row">
         <div class="col-md-3">
             <div class="form-group">
                 <label for="userid">Upload (Excel file)<span style="color:red">*</span></label>
                 <input type="file" class="form-control" id="importEstFile" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="userid">Bank<span style="color:red">*</span></label>
+                <select class="form-control " id="ddlbankaccount">
+                </select>
             </div>
         </div>
         <div class="col-md-3">
@@ -71,12 +78,15 @@
 <script>
     $(document).on("click", "#btnEstUpload", function () {
         let files = $("#importEstFile").get(0).files;
-        //let vendor_id = $("#ddlVendor").val();
+        let bankid_id = $("#ddlbankaccount").val();
         let formData = new FormData();
+        console.log(files.length);
         formData.append('importFile', files[0]);
-       // formData.append('vendorid', vendor_id);
-        //if (vendor_id == "-1") { swal("Alert!", "Please select the vendor.", "error"); }
-        //else {
+        formData.append('bankidid', bankid_id);
+        
+        if (files.length == 0) { swal("Alert!", "Please upload excel file.", "error"); }
+         else if (bankid_id == "0") { swal("Alert!", "Please select the bank.", "error"); }
+        else {
             $.ajax({
                 url: '/ImportOrderinvoice/checkuploadfile/', data: formData, type: 'POST', contentType: false, processData: false,
                 beforeSend: function () { $("#loader").show(); },
@@ -92,13 +102,26 @@
                 error: function (errormessage) { $("#loader").hide(); swal("Alert!", "Something went wrong .", "error"); },
                 complete: function () { $("#loader").hide(); }
             });
-        //}
+         }
     });
 
 </script>
 <script>
-    $(document).ready(function () { $("#loader").hide(); ImportCheckList();  $(".select2").select2(); })
+    $(document).ready(function () { $("#loader").hide(); ImportCheckList(); $(".select2").select2(); filldropdown();})
 
+    function filldropdown() {
+        $.ajax({
+            url: "/PaymentInvoice/GetPaymentType",
+            type: "Get", beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                let dt = JSON.parse(data);
+                $("#ddlbankaccount").html('<option value="0">Select Account</option>');
+                for (i = 0; i < dt['Table1'].length; i++) { $("#ddlbankaccount").append('<option value="' + dt['Table1'][i].id + '">' + dt['Table1'][i].text + '</option>'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); }
+        });
+    }
 </script>
 <script src="@Url.Content("~/js/ImportOrderinvoice/ImportBankcheckstatement.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

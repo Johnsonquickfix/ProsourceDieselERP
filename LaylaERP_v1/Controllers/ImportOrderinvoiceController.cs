@@ -448,7 +448,7 @@ namespace LaylaERP_v1.Controllers
 
         [HttpPost]
         [ActionName("checkuploadfile")]
-        public ActionResult ImportcheckFile(HttpPostedFileBase importFile)
+        public ActionResult ImportcheckFile(HttpPostedFileBase importFile, string bankidid)
         {
             if (importFile == null) return Json(new { Status = 0, Message = "No File Selected" });
             long size = importFile.ContentLength;
@@ -457,7 +457,7 @@ namespace LaylaERP_v1.Controllers
             {
                 try
                 {
-                    var fileData = GetDataFromcheckExcelFile(importFile.InputStream);
+                    var fileData = GetDataFromcheckExcelFile(importFile.InputStream, bankidid);
                     XmlDocument xmlDoc = CommonClass.ToXml(fileData);
                     var dt = UploadCheckXMLData("IDEST", xmlDoc);
                     if (dt.Rows.Count > 0)
@@ -477,7 +477,7 @@ namespace LaylaERP_v1.Controllers
             else { return Json(new { Status = 0, Message = "Not excel file or size of file is larger than 2MB" }); }
         }
 
-        private List<ImportOrderinvoiceModel> GetDataFromcheckExcelFile(Stream stream)
+        private List<ImportOrderinvoiceModel> GetDataFromcheckExcelFile(Stream stream,string bankidid)
         {
             var poList = new List<ImportOrderinvoiceModel>();
             try
@@ -499,6 +499,7 @@ namespace LaylaERP_v1.Controllers
                             poList.Add(new BAL.ImportOrderinvoiceModel()
                             {
                                 document_id = objDataRow["Check No"].ToString(),
+                                payer_id = bankidid,
                                 doc_date = objDataRow["Doc Date"].ToString(), 
                                 net_amount = objDataRow["Check Amount"] != DBNull.Value ? (!string.IsNullOrEmpty(objDataRow["Check Amount"].ToString()) ? Convert.ToDecimal(objDataRow["Check Amount"].ToString()) : 0) : 0,
                                 
@@ -530,6 +531,21 @@ namespace LaylaERP_v1.Controllers
             catch (SqlException ex)
             { throw ex; }
             return dt;
+        }
+
+        public JsonResult Verifycheck(JqDataTableModel model)
+        {
+            DateTime? fromdate = null, todate = null;
+            if (!string.IsNullOrEmpty(model.strValue2))
+                fromdate = Convert.ToDateTime(model.strValue2);
+            if (!string.IsNullOrEmpty(model.strValue3))
+                todate = Convert.ToDateTime(model.strValue3);
+            ImportOrderinvoiceRepository.Verifycheck(model.strValue1, fromdate, todate);
+
+            // if (model.updatedID > 0)
+            return Json(new { status = true, message = "updated successfully!!", url = "" }, 0);
+            //else
+            //    return Json(new { status = true, message = "Product record updated successfully!!", url = "Manage" }, 0); 
         }
 
     }

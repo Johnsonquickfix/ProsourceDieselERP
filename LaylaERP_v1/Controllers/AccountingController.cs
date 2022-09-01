@@ -128,6 +128,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult CheckReconciliation()
+        {
+            return View();
+        }
 
         public JsonResult GetNatureofJournal(SearchModel model)
         {

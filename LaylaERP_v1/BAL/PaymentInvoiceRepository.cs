@@ -1319,5 +1319,149 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable CheckReconciliationList(string bank, string status, DateTime? fromdate, DateTime? todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@searchcriteria", searchid),
+                     new SqlParameter("@status", status),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@fk_bank", bank),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", "id"),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "CLS")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_checkdeposit_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable Verifystatus(string bank, DateTime? fromdate, DateTime? todate)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                //strQuery = "select total_ttc  from erp_commerce_miscellaneous_bill where ref ='" + id + "'";
+                //dt = SQLHelper.ExecuteDataTable(strQuery);
+
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value), 
+                     new SqlParameter("@fk_bank", bank),
+                     new SqlParameter("@sortcol", "id"),
+                     new SqlParameter("@flag", "CNT")
+                };
+
+               dt = SQLHelper.ExecuteDataTable("erp_checkdeposit_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int Rejectcheck(CustomerModel model)
+        {
+            try
+            {
+                //string strsql = "update wp_usermeta set meta_value= CONCAT(@meta_value, meta_value) where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                //SqlParameter[] para =
+                //{
+                //    new SqlParameter("@meta_value", model.user_status + ',')
+                //};
+                //int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                string strsql = "erp_verify_check";
+                SqlParameter[] para =
+                { 
+                    new SqlParameter("@qflag", "R"),
+                    new SqlParameter("@rejectids", model.strVal ),
+                    new SqlParameter("@status", model.user_status)
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Users/Grantrole/" + model.ID + "", "check status update.");
+                throw Ex;
+            }
+        }
+
+        public static int Reconcile(CustomerModel model)
+        {
+            try
+            {
+                //string strsql = "update wp_usermeta set meta_value= CONCAT(@meta_value, meta_value) where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                //SqlParameter[] para =
+                //{
+                //    new SqlParameter("@meta_value", model.user_status + ',')
+                //};
+                //int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                string strsql = "erp_verify_check";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "RCN"),
+                    new SqlParameter("@rejectids", model.strVal ),
+                    new SqlParameter("@month", model.SortDir),
+                    new SqlParameter("@year", model.SortCol),
+                     new SqlParameter("@id", model.user_status),
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CheckDeposit/Reconcile/" + model.ID + "", "Check Reconcile");
+                throw Ex;
+            }
+        }
+
+        public static DataTable Reconcilestatus(string bank, string monthyear)
+        {
+            DataTable dt = new DataTable();
+            string strQuery = string.Empty;
+            try
+            {
+                //strQuery = "select total_ttc  from erp_commerce_miscellaneous_bill where ref ='" + id + "'";
+                //dt = SQLHelper.ExecuteDataTable(strQuery);
+
+                SqlParameter[] parameters =
+                {
+                     
+                     new SqlParameter("@fk_bank", bank),
+                     new SqlParameter("@sortcol", monthyear),
+                     new SqlParameter("@flag", "RCCNT")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_checkdeposit_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

@@ -147,5 +147,28 @@ namespace LaylaERP_v1.BAL
             }
             return dt;
         }
+
+        public static int Verifycheck(string val, DateTime? fromdate, DateTime? todate)
+        {
+            try
+            {
+                string strsql = "erp_verify_check";
+                SqlParameter[] para =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@id", val)
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "ImportOrderinvoiceRepository/Verifycheck/" + 0 + "", "Update invoice");
+                throw Ex;
+            }
+        }
     }
 }

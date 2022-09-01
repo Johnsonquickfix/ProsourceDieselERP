@@ -235,5 +235,93 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [HttpGet]
+        public JsonResult CheckReconciliationList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+
+                DataTable dt = PaymentInvoiceRepository.CheckReconciliationList(model.strValue1, model.strValue4, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult Verifystatus(string strValue1, string strValue2, string strValue3)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(strValue2))
+                    fromdate = Convert.ToDateTime(strValue2);
+                if (!string.IsNullOrEmpty(strValue3))
+                    todate = Convert.ToDateTime(strValue3);
+                dt = PaymentInvoiceRepository.Verifystatus(strValue1, fromdate, todate);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Rejectcheck(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                PaymentInvoiceRepository.Rejectcheck(model);
+                return Json(new { status = true, message = "Check status change successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+        [HttpPost]
+        public JsonResult Reconcile(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+               PaymentInvoiceRepository.Reconcile(model);
+                return Json(new { status = true, message = "Check reconcile successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult Reconcilestatus(string strValue1, string strValue2)
+        {
+            string JSONResult = string.Empty;
+            DataTable dt = new DataTable();
+            try
+            { 
+                dt = PaymentInvoiceRepository.Reconcilestatus(strValue1, strValue2);
+                JSONResult = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JSONResult, 0);
+        }
     }
 }

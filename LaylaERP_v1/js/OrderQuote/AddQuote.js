@@ -893,8 +893,8 @@ function AddGiftCardProductModal(p_name, pid) {
     $("#txtGiftAmt").focus();
 }
 function bindGiftCardProduct(p_name, pid, vid) {
-    let _rate = parseFloat($('#txtGiftAmt').val()) || 0.00;
-    let email = $('#txtGiftTo').val(); let emailsCollection = email.split(",");
+    let _rate = parseFloat($('#txtGiftAmt').val()) || 0.00, email = $('#txtGiftTo').val();
+    let emailsCollection = email.split(",");
     let _qty = emailsCollection.length;
     let _meta = { wc_gc_giftcard_amount: _rate, wc_gc_giftcard_from: $('#txtGiftFrom').val(), wc_gc_giftcard_message: $('#txtGiftMessage').val(), wc_gc_giftcard_to_multiple: email, wc_gc_giftcards: '' }
     let option = {
@@ -902,33 +902,33 @@ function bindGiftCardProduct(p_name, pid, vid) {
         shipping_amount: 0, is_free: false, free_itmes: '{}', order_item_id: 0, sr_fee: 0, sr_fee_istaxable: 0, order_id: parseInt($('#hfOrderNo').val()) || 0,
         meta_data: JSON.stringify(_meta)
     };
-    let layoutHtml = '';
-    if (option.product_id > 0) {
-        if ($('#tritemId_' + option.PKey).length <= 0) {
-            layoutHtml += '<tr id="tritemId_' + option.PKey + '" data-id="' + option.PKey + '" class="gift_item" data-pid="' + option.product_id + '" data-vid="' + option.variation_id + '" data-pname="' + option.product_name + '" data-freeitem="false" data-freeitems=\'{}\' data-orderitemid="' + option.order_item_id + '" data-img="' + option.product_img + '" data-srfee="' + option.sr_fee + '" data-sristaxable="' + option.sr_fee_istaxable + '" data-meta_data=\'' + option.meta_data + '\'>';
-            layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + option.PKey + '" onclick="removeItemsInTable(\'' + option.PKey + '\');" data-toggle="tooltip" data-original-title="Delete product"> <i class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete product"></i> </button></td>';
-            layoutHtml += '<td>' + option.product_name + '<div class="view-giftmeta" style="word-wrap: break-word;"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + option.total + '</div></td>';
-            layoutHtml += '<td class="text-right">' + option.reg_price.toFixed(2) + '</td>';
-            layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + option.PKey + '" value="' + option.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-            layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + option.reg_price + '"data-salerate="' + option.sale_rate + '" data-discount="' + option.discount + '" data-amount="' + option.total + '" data-taxamount="' + option.tax_amount + '" data-shippingamt="' + option.shipping_amount + '">' + option.total.toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + option.discount_type + '" data-couponamt="0">' + option.discount.toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right linetotal">' + (option.total - option.discount).toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right RowTax">' + option.tax_amount + '</td>';
-            layoutHtml += '</tr>';
-            $('#order_line_items').append(layoutHtml);
-        }
-        else {
-            layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + option.PKey + '" onclick="removeItemsInTable(\'' + option.PKey + '\');" data-toggle="tooltip" data-original-title="Delete product"> <i class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete product"></i> </button></td>';
-            layoutHtml += '<td>' + option.product_name + '<div class="view-giftmeta"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + option.total + '</div></td>';
-            layoutHtml += '<td class="text-right">' + option.reg_price.toFixed(2) + '</td>';
-            layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + option.PKey + '" value="' + option.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-            layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + option.reg_price + '"data-salerate="' + option.sale_rate + '" data-discount="' + option.discount + '" data-amount="' + option.total + '" data-taxamount="' + option.tax_amount + '" data-shippingamt="' + option.shipping_amount + '">' + option.total.toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + option.discount_type + '" data-couponamt="0">' + option.discount.toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right linetotal">' + (option.total - option.discount).toFixed(2) + '</td>';
-            layoutHtml += '<td class="text-right RowTax">' + option.tax_amount + '</td>';
-            $('#tritemId_' + option.PKey).empty().append(layoutHtml); $('#tritemId_' + option.PKey).data('meta_data', option.meta_data)
-        }
-    }
+    let _html = '';
+    //if (option.product_id > 0) {
+    //    if ($('#tritemId_' + option.PKey).length <= 0) {
+    _html += '<tr id="tritemId_' + option.PKey + '" data-id="' + option.PKey + '" class="gift_item" data-pid="' + option.product_id + '" data-vid="' + option.variation_id + '" data-pname="' + option.product_name + '" data-freeitem="false" data-freeitems=\'{}\' data-orderitemid="' + option.order_item_id + '" data-img="' + option.product_img + '" data-srfee="' + option.sr_fee + '" data-sristaxable="' + option.sr_fee_istaxable + '" data-meta_data=\'' + option.meta_data + '\'>';
+    _html += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + option.PKey + '" onclick="removeItemsInTable(\'' + option.PKey + '\');" data-toggle="tooltip" data-original-title="Delete product"> <i class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete product"></i> </button></td>';
+    _html += '<td>' + option.product_name + '<div class="view-giftmeta" style="word-wrap: break-word;"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + option.total + '</div></td>';
+    _html += '<td class="text-right">' + option.reg_price.toFixed(2) + '</td>';
+    _html += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + option.PKey + '" value="' + option.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+    _html += '<td class="TotalAmount text-right" data-regprice="' + option.reg_price + '"data-salerate="' + option.sale_rate + '" data-discount="' + option.discount + '" data-amount="' + option.total + '" data-taxamount="' + option.tax_amount + '" data-shippingamt="' + option.shipping_amount + '">' + option.total.toFixed(2) + '</td>';
+    _html += '<td class="text-right RowDiscount" data-disctype="' + option.discount_type + '" data-couponamt="0">' + option.discount.toFixed(2) + '</td>';
+    _html += '<td class="text-right linetotal">' + (option.total - option.discount).toFixed(2) + '</td>';
+    _html += '<td class="text-right RowTax">' + option.tax_amount + '</td>';
+    _html += '</tr>';
+    $('#order_line_items').append(_html);
+    //    }
+    //    else {
+    //        _html += '<td class="text-center"><button class="btn menu-icon-gr p-0 text-red btnDeleteItem billinfo" tabitem_itemid="' + option.PKey + '" onclick="removeItemsInTable(\'' + option.PKey + '\');" data-toggle="tooltip" data-original-title="Delete product"> <i class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete product"></i> </button></td>';
+    //        _html += '<td>' + option.product_name + '<div class="view-giftmeta"> <b>To:</b> ' + _meta.wc_gc_giftcard_to_multiple + '<br><b>From:</b> ' + _meta.wc_gc_giftcard_from + '<br><b>Amount:</b> $' + option.total + '</div></td>';
+    //        _html += '<td class="text-right">' + option.reg_price.toFixed(2) + '</td>';
+    //        _html += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + option.PKey + '" value="' + option.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+    //        _html += '<td class="TotalAmount text-right" data-regprice="' + option.reg_price + '"data-salerate="' + option.sale_rate + '" data-discount="' + option.discount + '" data-amount="' + option.total + '" data-taxamount="' + option.tax_amount + '" data-shippingamt="' + option.shipping_amount + '">' + option.total.toFixed(2) + '</td>';
+    //        _html += '<td class="text-right RowDiscount" data-disctype="' + option.discount_type + '" data-couponamt="0">' + option.discount.toFixed(2) + '</td>';
+    //        _html += '<td class="text-right linetotal">' + (option.total - option.discount).toFixed(2) + '</td>';
+    //        _html += '<td class="text-right RowTax">' + option.tax_amount + '</td>';
+    //        $('#tritemId_' + option.PKey).empty().append(_html); $('#tritemId_' + option.PKey).data('meta_data', option.meta_data)
+    //    }
+    //}
     $("#myModal").modal('hide');
     $.when(RemoveCouponAndGiftCard()).done(function () { calculateDiscountAcount(); });
 }
@@ -1796,18 +1796,19 @@ function QuoteProducts(id) {
 
     //Add Product /Gift Card Product
     $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
+        let p_id = parseInt($(tr).data('pid')) || 0, qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00, rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
         //let grossAmount = parseFloat($(tr).find(".TotalAmount").data('amount')) || 0.00;
         let grossAmount = (qty * rate), discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00, shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         let rNetAmt = grossAmount - discountAmount + taxAmount;
         _taxdata = { total: {}, subtotal: {} };
         $.each(_taxes, function (i, r) {
-            _taxdata.total[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4);
+            if (p_id == 888864) { _taxdata.total[r.label] = '0.00'; _taxdata.subtotal[r.label] = '0.00'; }
+            else { _taxdata.total[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4); _taxdata.subtotal[r.label] = ((grossAmount - discountAmount) * r.percent).toFixed(4); }
         });
         //if ($(tr).hasClass("gift_item")) { $.each($(tr).data('meta_data'), function (name, value) { _itemmeta.push({ key: name, value: value }); }); }
         _list.push({
-            quote_no: id, item_sequence: index + 1, item_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data')),
+            quote_no: id, item_sequence: index + 1, item_type: 'line_item', product_id: p_id, variation_id: $(tr).data('vid'), item_name: $(tr).data('pname'), product_qty: qty, product_rate: rate, gross_total: grossAmount, discount: discountAmount, shipping_total: shippinAmount * qty, fee_total: 0, tax_total: taxAmount, net_total: rNetAmt, item_meta: JSON.stringify($(tr).data('meta_data')),
             tax_data: serialize(_taxdata)
         });
     });

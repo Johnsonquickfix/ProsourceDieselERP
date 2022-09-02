@@ -198,61 +198,62 @@
                     strSql.Append(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", dr["item_qty"], dr["gross_total"].ToString(), dr["tax_total"].ToString(), dr["shipping_total"].ToString(), dr["net_total"].ToString(), "wc-processing", dr["customer_id"].ToString(), order_id));
 
                     /// step 2 : wp_postmeta 
-                    strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value)");
-                    strSql.Append(string.Format(" select {0},'{1}','{2}'", order_id, "_customer_user", dr["customer_id"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_company", dr["billing_company"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_first_name", dr["billing_first_name"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_last_name", dr["billing_last_name"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_address_1", dr["billing_address_1"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_address_2", dr["billing_address_2"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_city", dr["billing_city"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_state", dr["billing_state"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_country", dr["billing_country"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_postcode", dr["billing_postcode"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_email", dr["billing_email"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_phone", dr["billing_phone"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_billing_address_index", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_company", dr["shipping_company"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_first_name", dr["shipping_first_name"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_last_name", dr["shipping_last_name"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_address_1", dr["shipping_address_1"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_address_2", dr["shipping_address_2"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_city", dr["shipping_city"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_state", dr["shipping_state"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_country", dr["shipping_country"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_postcode", dr["shipping_postcode"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_shipping_address_index", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_key", "wc_order_"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_created_via", "checkout"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_customer_ip_address", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_customer_user_agent", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_recorded_coupon_usage_counts", "yes"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_stock_reduced", "yes"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_currency", "USD"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_cart_discount", dr["discount"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_cart_discount_tax", "0"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_shipping", dr["shipping_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_shipping_tax", "0"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_tax", dr["tax_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_order_total", dr["net_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_gift_amount", dr["giftcard_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "total_gcamt", dr["giftcard_total"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_id", dr["created_by"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "employee_name", ""));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method", dr["payment_method"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_payment_method_title", "Podium Payments"));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'", order_id, "_podium_uid", dr["transaction_id"]));
-                    strSql.Append(string.Format(" union all select {0},'{1}','{2}'; ", order_id, "_tax_api", dr["tax_api"]));
+                    strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value) ");
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_customer_user", dr["customer_id"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_company", dr["billing_company"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_first_name", dr["billing_first_name"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_last_name", dr["billing_last_name"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_address_1", dr["billing_address_1"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_address_2", dr["billing_address_2"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_city", dr["billing_city"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_state", dr["billing_state"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_country", dr["billing_country"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_postcode", dr["billing_postcode"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_email", dr["billing_email"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_phone", dr["billing_phone"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_address_index", ""));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_company", dr["shipping_company"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_first_name", dr["shipping_first_name"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_last_name", dr["shipping_last_name"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_address_1", dr["shipping_address_1"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_address_2", dr["shipping_address_2"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_city", dr["shipping_city"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_state", dr["shipping_state"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_country", dr["shipping_country"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_postcode", dr["shipping_postcode"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_shipping_address_index", ""));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_key", "wc_order_"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_created_via", "checkout"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_customer_ip_address", ""));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_customer_user_agent", ""));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_recorded_coupon_usage_counts", "yes"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_stock_reduced", "yes"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_currency", "USD"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_cart_discount", dr["discount"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_cart_discount_tax", "0"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_shipping", dr["shipping_total"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_shipping_tax", "0"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_tax", dr["tax_total"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_order_total", dr["net_total"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_gift_amount", dr["giftcard_total"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "total_gcamt", dr["giftcard_total"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "employee_id", dr["created_by"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "employee_name", ""));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_payment_method", dr["payment_method"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_payment_method_title", "Podium Payments"));
+                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_podium_uid", dr["transaction_id"]));
+                    strSql.Append(string.Format("({0},'{1}','{2}')", order_id, "_tax_api", dr["tax_api"]));
 
                     if (dr["payment_meta"] != DBNull.Value)
                     {
                         dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["payment_meta"].ToString());
                         foreach (var inputAttribute in _json)
                         {
-                            strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select {0},'{1}','{2}';", order_id, inputAttribute.meta_key.Value.ToString(), inputAttribute.meta_value.Value.ToString()));
+                            strSql.Append(string.Format(", ({0},'{1}','{2}')", order_id, inputAttribute.meta_key.Value.ToString(), inputAttribute.meta_value.Value.ToString()));
                         }
                     }
                 }
+                strSql.Append(strSql.Length > 0 ? "; " : "");
                 foreach (DataRow dr in ds.Tables[1].Rows)
                 {
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", dr["item_name"].ToString().Trim(), dr["item_type"].ToString().Trim(), order_id));

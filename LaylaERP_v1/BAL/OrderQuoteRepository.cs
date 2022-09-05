@@ -199,7 +199,7 @@
 
                     /// step 2 : wp_postmeta 
                     strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value) ");
-                    strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_customer_user", dr["customer_id"]));
+                    strSql.Append(string.Format("VALUES ({0},'{1}','{2}'), ", order_id, "_customer_user", dr["customer_id"]));
                     strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_company", dr["billing_company"]));
                     strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_first_name", dr["billing_first_name"]));
                     strSql.Append(string.Format("({0},'{1}','{2}'), ", order_id, "_billing_last_name", dr["billing_last_name"]));
@@ -260,16 +260,18 @@
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", dr["item_name"].ToString().Trim(), dr["item_type"].ToString().Trim(), order_id));
                     if (dr["item_type"].ToString().Trim() == "line_item")
                     {
-                        //strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
-                        //strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
-                        //        cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
+                        long variation_id = 0;
+                        if (dr["item_meta"] != DBNull.Value && dr["product_id"].ToString() == "888864")
+                            variation_id = Convert.ToInt64(dr["item_sequence"]);
+                        else
+                            variation_id = Convert.ToInt64(dr["variation_id"]);
+                        strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
+                        strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], variation_id, customer_id,
+                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
                         //Insert tax data in serialize format
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax_data','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", dr["tax_data"], order_id, dr["item_type"], dr["item_name"]));
                         if (dr["item_meta"] != DBNull.Value && dr["product_id"].ToString() == "888864")
                         {
-                            strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
-                            strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["item_sequence"], customer_id,
-                                    cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
                             dynamic _json = JsonConvert.DeserializeObject<dynamic>(dr["item_meta"].ToString());
                             foreach (var inputAttribute in _json)
                             {
@@ -280,12 +282,6 @@
                                 else if (inputAttribute.Name.Equals("wc_gc_giftcard_message")) _giftcard_message = inputAttribute.Value;
                                 else if (inputAttribute.Name.Equals("wc_gc_giftcard_amount")) _giftcard_amt = inputAttribute.Value;
                             }
-                        }
-                        else
-                        {
-                            strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
-                            strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", order_id, dr["product_id"], dr["variation_id"], customer_id,
-                                    cDate.ToString("yyyy/MM/dd HH:mm:ss"), dr["product_qty"], (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"])), (Convert.ToDecimal(dr["gross_total"]) - Convert.ToDecimal(dr["discount"]) + Convert.ToDecimal(dr["tax_total"])), dr["discount"], dr["tax_total"], dr["shipping_total"], 0));
                         }
                     }
                     else if (dr["item_type"].ToString().Trim() == "coupon")
@@ -322,7 +318,7 @@
                 }
 
                 /// step 4 : wp_woocommerce_order_itemmeta
-                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id={0}", order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',CAST(product_id as VARCHAR(250))  from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(string.Format(" union all select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(string.Format(" union all select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id={0}", order_id));
                 strSql.Append(string.Format(" union all select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id={0}", order_id));
@@ -340,7 +336,7 @@
 
                 /// step 7 : wp_posts
                 strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", "wc-processing", cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), "", order_id));
-                strSql.Append(string.Format(" update wp_wc_order_product_lookup set variation_id = 0 where id = {0} and product_id = 888864; ", order_id));
+                strSql.Append(string.Format(" update wp_wc_order_product_lookup set variation_id = 0 where order_id = {0} and product_id = 888864; ", order_id));
 
                 result = DAL.MYSQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 if (result > 0)
@@ -353,8 +349,10 @@
                         string _code = Guid.NewGuid().ToString().ToUpper().Replace("-", "");
                         _code = _code.Substring(1, 4) + "-" + _code.Substring(4, 4) + "-" + _code.Substring(8, 4) + "-" + _code.Substring(12, 4);
 
-                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active,modifieddate)");
-                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off',current_timestamp() from wp_wc_order_product_lookup where order_id=" + order_id + " and product_id = 888864;");
+                        strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active)");
+                        strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off' from wp_wc_order_product_lookup where order_id=" + order_id + " and product_id = 888864;");
+                        //strSql.Append(" insert into wp_woocommerce_gc_cards (code,order_id,order_item_id,recipient,redeemed_by,sender,sender_email,message,balance,remaining,template_id,create_date,deliver_date,delivered,expire_date,redeem_date,is_virtual,is_active,modifieddate)");
+                        //strSql.Append(" Select '" + _code + "',order_id,order_item_id,'" + address + "',0,'" + _giftcard_from + "','" + _giftcard_from_mail + "','" + _giftcard_message + "','" + _giftcard_amt + "','" + _giftcard_amt + "','default',UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),0,0,0,'on','off',current_timestamp() from wp_wc_order_product_lookup where order_id=" + order_id + " and product_id = 888864;");
 
                         strSql.Append("insert into wp_woocommerce_gc_activity (type,user_id,user_email,object_id,gc_id,gc_code,amount,date)");
                         strSql.Append(" Select 'issued',0,'" + _giftcard_from_mail + "','" + order_id + "',LAST_INSERT_ID(),'" + _code + "','" + _giftcard_amt + "',UNIX_TIMESTAMP();");

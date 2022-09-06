@@ -5,10 +5,13 @@
     Layout = null;
 }
 <h2 class="lbl-tilte" data-id="@ViewBag.id">Please Upload The Donation Receipt</h2>
- 
+<link href="~/Content/AdminLTE-3.1.0/dropzone/dropzone.min.css" rel="stylesheet" />
+<link href="~/css/style.bundle.css" rel="stylesheet" />
+<!-- lightbox CSS -->
+<link href="~/Content/lightbox/lightbox.min.css" rel="stylesheet" />
 
-<section id="target" class="content section-content new-donate-section">
-    <div id="divuploade" class="form-group d-flex profile-flex">
+<section id="target" style="display:none" class="content section-content new-donate-section">
+    <div id="divuploadeeee" class="form-group d-flex profile-flex">
         <div class="col">
             @*<label class="control-label">Donate Receipt</label>*@
             <div class="add-profile">
@@ -21,11 +24,15 @@
         </div>
 
         <div class="col">
-             <br />
-                <textarea id="txtdescription" class="textarea" placeholder="Description"
-                          style="width: 100%; height: 40px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+            <br />
+            <textarea id="txtdescriptiondfs" class="textarea" placeholder="Description"
+                      style="width: 100%; height: 40px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+
 
             
+        </div>
+
+
         </div>
 
         <div class="col">
@@ -34,90 +41,313 @@
         </div>
     </div>
 </section>
+@*<div class="modal in printable" id="myModal" role="dialog" aria-hidden="true"></div>
+<div class="modal in printable" id="myFileModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen p-12">
+        <div class="modal-content modal-rounded">*@
+            @*<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please Upload The Donation Receipt.</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>*@'
+<div id="divuploade" class="modal-body py-1">
+    <input type="hidden" id="hfid" />
+    @*<div class="dropzone-panel mb-lg-0 mb-2">
+            <a class="dropzone-select btn btn-sm btn-primary me-2">Attach files</a>
+            <a id="dropzone-upload" class="btn btn-sm btn-light-primary me-2" style="display: none;">Upload All</a>
+            <a class="dropzone-remove-all btn btn-sm btn-light-primary" style="display: none;">Remove All</a>
+        </div>
+        <form action="~/CustomerService/SaveDropzoneJsUploadedFiles" class="dropzone dropzone-queue my-4 p-0 no-border min-h-auto" id="dropzoneJsForm" method="post" enctype="multipart/form-data">
+        </form>*@
+    <textarea id="txtdescription" class="textarea" placeholder="Description"
+              style="width: 100%; height: 40px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
 
-<script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
-@*<script src="~/js/common.js"></script>*@
-<script type="text/javascript">
-    //$(document).ready(function () {
-    //    let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
-    //    if (_status == "Success") {
-    //        $('.lbl-tilte').empty().append('Your order quote approved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
-    //    }
-    //    else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>'); }
-    //});
-    $(document).ready(function () {
-        id = parseInt($('.lbl-tilte').data('id')) || 0;
-        console.log(id);
-    $(document).on('click', "#btndonateuploade", function () {
-        AdddonateImages();
-       
+    <div class="row">
+        <div class="col-md-12 modal-body-msg alert alert-success alert-dismissible">
+            <button id="btndonateprocessuploade" title="Click here to process" data-toggle="tooltip" style="float: left;" class="btn btn-danger">Upload Process</button>
+        </div>
+    </div>
+    <div id="actions" class="row">
+        <div class="col-lg-6">
+            <div class="btn-group w-100">
+                <span class="btn btn-success col fileinput-button dz-clickable"><i class="fas fa-plus"></i>Add files</span>
+                <button type="submit" id="btnsubmit" class="btn btn-primary col start"><i class="fas fa-upload"></i>Start upload</button>
+                <button type="reset" class="btn btn-warning col cancel"><i class="fas fa-times-circle"></i>Cancel upload</button>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex align-items-center">
+            <div class="fileupload-process w-100">
+                <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress=""></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table table-striped files" id="previews">
+        <div id="template" class="row mt-2">
+            <div class="col-auto">
+                <span class="preview"><img src="data:," alt="" data-dz-thumbnail /></span>
+            </div>
+            <div class="col d-flex align-items-center">
+                <p class="mb-0">
+                    <span class="lead fs-5" data-dz-name></span>
+                    (<span data-dz-size></span>)
+                </p>
+                <strong class="error text-danger" data-dz-errormessage></strong>
+            </div>
+            <div class="col-4 d-flex align-items-center">
+                <div class="progress progress-striped active w-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                <div class="btn-group">
+                    <button class="btn btn-primary start"><i class="fas fa-upload"></i>Start</button>
+                    <!--<button data-dz-remove class="btn btn-warning cancel"><i class="fas fa-times-circle"></i>Cancel</button>-->
+                    <button data-dz-remove class="btn btn-danger delete"><i class="fas fa-trash"></i>Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*</div>*@
+    <div class="modal-footer py-2 d-flex"></div>
+</div>
+        @*</div>
+    </div>
 
-    })
+    </div>*@
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    @*<script src="~/js/common.js"></script>*@
+    <script src="~/js/serializePHP.js"></script>
+    <script src="~/js/common.js"></script>
 
-        
-    });
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#show_picture').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(input.files[0]);
+    <script src="~/Content/AdminLTE-3.1.0/dropzone/dropzone.min.js"></script>
+    <!-- lightbox JS -->
+    <script src="~/Content/lightbox/lightbox.min.js"></script>
+    <script type="text/javascript">
+        // DropzoneJS Demo Code Start
+        Dropzone.autoDiscover = false
 
-        }
-    }
-    function AdddonateImages() {
-        var formData = new FormData();
-        var ImageFile = document.getElementById("ImageFile").files[0];
-        formData.append("ImageFile", ImageFile);
-       // id = parseInt($('.lbl-tilte').data('id')) || 0;
-        var cusmerid = $('.lbl-tilte').data('id');
-        formData.append("cusmerid", cusmerid);
-        var desc = $("#txtdescription").val();
-        formData.append("desc", desc);
-
-        if (ImageFile == "") {
-            swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); });
-        }
-        else {
-           // ActivityLog('Attach file in Product list Kits & Buying Prices ', '/Product/AddNewProduct/');
-            $.ajax({
-                type: "POST",
-                url: '/DonationHaul/FileUploade/',
-                data: formData,
-                processData: false,
-                contentType: false,
-                //beforeSend: function () {
-                //    $("#loader").show();
-                //},
-                success: function (data) {
-                    if (data.status == true) {
-                        //if (data.url == "Manage") {
-                        //    swal('Success!', data.message, 'success');
-
-                        //}
-                        //else {
-                        //    swal('Success!', data.message, 'success');
-                        //}
-                       // <h2> 'Success' </h2>
-                        $("#divuploade").hide();
-                        $('.lbl-tilte').empty().append('Thanks for the upload your donation receipt. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
-                        
-                    }
-                    else {
-                       // <h2> error </h2>
-                       // swal('Alert!', data.message, 'error')
-                        $("#divuploade").hide();
-                        $('.lbl-tilte').empty().append('Something went wrong . <a title="Click here" href="' + window.location.origin + '">Click here</a>');
-                    }
-                },
-                complete: function () {
-                   // $("#loader").hide();
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
+        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+        var previewNode = document.querySelector("#template")
+        //previewNode.id = "";
+        var previewTemplate = previewNode.parentNode.innerHTML;
+        previewNode.parentNode.removeChild(previewNode);
+    </script>
+    <script type="text/javascript">
+        //$(document).ready(function () {
+        //    let _status = $('.lbl-tilte').data('status'), _id = parseInt($('.lbl-tilte').data('id')) || 0;
+        //    if (_status == "Success") {
+        //        $('.lbl-tilte').empty().append('Your order quote approved. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+        //    }
+        //    else { $('.lbl-tilte').empty().append(_status + ' <a title="Click here" href="' + window.location.origin + '">Click here</a>'); }
+        //});
+        $(document).ready(function () {
+            
+            $("#actions").hide();
+            id = parseInt($('.lbl-tilte').data('id')) || 0;
+            var desc = $("#txtdescription").val();
+            console.log(id);
+            $(document).on('click', "#btndonateuploade", function () {
+                AdddonateImages(); 
             })
+
+            $(document).on('click', "#btndonateprocessuploade", function () {
+                var desc = $("#txtdescription").val();
+                console.log();
+                if (desc == '') { $('#txtdescription').focus(); }
+                else {
+                    AdddupdateImages();
+                    // multipalupload();
+                    setTimeout(function () { $("#actions").show(); multipalupload(); console.log($("#hfid").val()); }, 3000);
+                }
+            })
+
+            //$(document).on('click', "#btnsubmit", function () {
+            //    AdddupdateImages();
+            //})
+
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#show_picture').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            }
         }
-    }
-</script>
+        //function AdddupdateImages() {
+        //    id = parseInt($('.lbl-tilte').data('id')) || 0;
+        //    var desc = $("#txtdescription").val();
+
+        //    if (desc == '') { swal('Alert', 'Please write some description', 'error').then(function () { swal.close(); $('#txtdescription').focus(); }); }
+        //    else {
+        //        let obj = { strValue1: id, strValue2: desc }
+        //        $.ajax({
+        //            url: '/donation-haul/multipalupload', dataType: 'json', type: 'Post',
+        //            contentType: "application/json; charset=utf-8",
+        //            data: JSON.stringify(obj),
+        //            dataType: "json",
+        //            beforeSend: function () { $("#loader").show(); },
+        //            success: function (data) {
+        //                if (data.status == true) {
+        //                    //$('#parent > input:text').val('');
+        //                    swal('Success!', data.message, 'success').then((result) => { location.href = location.origin + '/customer-service/questions-list'; });
+        //                }
+        //                else {
+        //                    swal('Error!', data.message, 'error');
+        //                }
+        //            },
+        //            complete: function () { $("#loader").hide(); isEdit(false); },
+        //            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        //        });
+        //    }  
+        //}
+        function AdddonateImages() {
+            var formData = new FormData();
+            var ImageFile = document.getElementById("ImageFile").files[0];
+            formData.append("ImageFile", ImageFile);
+            // id = parseInt($('.lbl-tilte').data('id')) || 0;
+            var cusmerid = $('.lbl-tilte').data('id');
+            formData.append("cusmerid", cusmerid);
+            var desc = $("#txtdescription").val();
+            formData.append("desc", desc);
+
+            if (ImageFile == "") {
+                swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); });
+            }
+            else {
+                // ActivityLog('Attach file in Product list Kits & Buying Prices ', '/Product/AddNewProduct/');
+                $.ajax({
+                    type: "POST",
+                    url: '/DonationHaul/FileUploade/',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    //beforeSend: function () {
+                    //    $("#loader").show();
+                    //},
+                    success: function (data) {
+                        if (data.status == true) {
+                            //if (data.url == "Manage") {
+                            //    swal('Success!', data.message, 'success');
+
+                            //}
+                            //else {
+                            //    swal('Success!', data.message, 'success');
+                            //}
+                            // <h2> 'Success' </h2>
+                            $("#divuploade").hide();
+                            $('.lbl-tilte').empty().append('Thanks for the upload your donation receipt. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+
+                        }
+                        else {
+                            // <h2> error </h2>
+                            // swal('Alert!', data.message, 'error')
+                            $("#divuploade").hide();
+                            $('.lbl-tilte').empty().append('Something went wrong . <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+                        }
+                    },
+                    complete: function () {
+                        // $("#loader").hide();
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+        }
+
+        function AdddupdateImages() {
+            id = parseInt($('.lbl-tilte').data('id')) || 0;
+            var desc = $("#txtdescription").val();
+
+            if (desc == '') {  $('#txtdescription').focus(); }
+            else {
+                let obj = { strValue1: id, strValue2: desc }
+                $.ajax({
+                    url: '/donation-haul/multipalupload', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                   // beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        //console.log(data);
+                        if (data.status == true) {
+                            //$('#parent > input:text').val('');
+                            // swal('Success!', data.message, 'success').then((result) => { location.href = location.origin + '/customer-service/questions-list'; });
+                            //console.log(data.message);
+                            setTimeout(function () { fillid(data.message); }, 1000);
+                             
+                            //console.log(data.message);
+                          // multipalupload(data.message);
+                        }
+                        else {
+                            console.log('else');
+                            // swal('Error!', data.message, 'error');
+                        }
+                    },
+                    //complete: function () { $("#loader").hide();   },
+                    /*error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },*/
+                    error: function (error) {  console.log(error) },
+                });
+            }
+
+
+
+        }
+
+        function fillid(id) {
+            //console.log(id, id);
+            $("#hfid").val(id);
+        }
+
+        function multipalupload() {
+            let id = $("#hfid").val() ;
+            console.log('555',id);
+            document.querySelector("#total-progress .progress-bar").style.width = 0 + "%";
+            //let order_id = parseInt($(".order-id").data('order_id')) || 0;
+            $("#myFileModal").show();
+            // $("#myFileModal").modal({ backdrop: 'static', keyboard: false });
+            //$("#myFileModal .modal-title").empty().append('Please uplaod files for your refunds/returns/warranty claim #' + ticket_id + '. Order #' + order_id);
+            //$("#myFileModal .modal-body-msg").empty().append('<h4><i class="icon fa fa-check"></i> Success!</h4> Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.');
+            //$("#myFileModal .modal-title").data('ticket_id', ticket_id);
+          //  console.log(desc);
+            var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+                url: "/DonationHaul/UpdateDonationFiles?id=" + id, // Set the url
+                thumbnailWidth: 80, thumbnailHeight: 80, parallelUploads: 20, previewTemplate: previewTemplate, acceptedFiles: 'image/*',
+                autoQueue: false, // Make sure the files aren't queued until manually added
+                previewsContainer: "#previews", // Define the container to display the previews
+                clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+            });
+
+            myDropzone.on("addedfile", function (file) {
+                // Hookup the start button
+                 file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); document.querySelector("#total-progress .progress-bar").style.width = 0 + "%"; }
+            });
+
+            // Update the total progress bar
+            myDropzone.on("totaluploadprogress", function (progress) { document.querySelector("#total-progress .progress-bar").style.width = progress + "%" });
+
+            myDropzone.on("sending", function (file) {
+                // Show the total progress bar when upload starts
+                document.querySelector("#total-progress").style.opacity = "1"
+                // And disable the start button
+                file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+            })
+
+            // Hide the total progress bar when nothing's uploading anymore
+            myDropzone.on("queuecomplete", function (progress) {
+                document.querySelector("#total-progress").style.opacity = "1"; myDropzone.removeAllFiles(true);
+                let ticket_id = parseInt($("#myFileModal .modal-title").data('ticket_id')) || 0;
+                // swal('Success', 'Thank you for submitting your refunds/returns/warranty claim. For reference, your ticket number is #' + ticket_id + '. Your warranty claim will be processed within the next 3 business days.', "success");
+                $('.lbl-tilte').empty().append('Thanks for the upload your donation receipt. <a title="Click here" href="' + window.location.origin + '">Click here</a>');
+                  $("#divuploade").hide();
+            });
+
+            // Setup the buttons for all transfers
+            // The "add files" button doesn't need to be setup because the config
+            // `clickable` has already been specified.
+            document.querySelector("#actions .start").onclick = function () { myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED)) }
+            document.querySelector("#actions .cancel").onclick = function () { myDropzone.removeAllFiles(true); document.querySelector("#total-progress .progress-bar").style.width = 0 + "%"; }
+
+        }
+    </script>

@@ -117,6 +117,69 @@ using System.Text;
             { throw ex; }
             return dtr;
         }
+        public static DataTable SaveDonationFiles(long customer_id, string Discription)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@customer_id", customer_id),
+                    new SqlParameter("@discription", Discription),
+                    new SqlParameter("@flag", "IMAGESAVE")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_donation_file_uplode", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable UpdateDonationFiles(long id, string fileurl)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@id", id),
+                    new SqlParameter("@filename", fileurl),
+                    new SqlParameter("@flag", "IMAGEUPLOAD")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("erp_donation_file_uplode", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int Multipalupload(string customer_id, string discription)
+        {
+            int result = 0;
+            try
+            { 
+                    string strsql = "Insert into erp_donation_haul(fk_customerid,FileName,Length,FileType,FilePath,discription) values(@customer_id,'file.jpg',150, '.jpg', '[]',@discription); SELECT SCOPE_IDENTITY();";
+
+                    SqlParameter[] para =
+                    {
+                        //wr_titleid > 0 ? new SqlParameter("@wr_titleid",wr_titleid) : new SqlParameter("@parent_id",DBNull.Value),
+                        new SqlParameter("@customer_id", customer_id),
+                        new SqlParameter("@discription", discription),  
+                    };
+                    result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
     }
 }

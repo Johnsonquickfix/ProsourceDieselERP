@@ -4,7 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
-
+<link href="~/css/style.bundle.css" rel="stylesheet" />
+<!-- lightbox CSS -->
+<link href="~/Content/lightbox/lightbox.min.css" rel="stylesheet" />
+<!-- datatables CSS -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 @*datatables js*@
@@ -13,16 +16,16 @@
 
 <input type="hidden" id="hfEdit" value="" />
 <div class="page-title">
-    <h2>Uploaded List<span class="text-gray"></span></h2> 
+    <h2>Uploaded List<span class="text-gray"></span></h2>
 </div>
-<section class="content section-content journal-section table-design"> 
+<section class="content section-content journal-section table-design">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
                 <div class="box-body">
 
                     <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
-                        <thead> 
+                        <thead>
                             <tr>
                                 <th class="text-left">Customer ID</th>
                                 <th class="text-left">Customer Name</th>
@@ -31,31 +34,31 @@
                                 <th class="text-left">Discription</th>
                                 <th>View</th>
                             </tr>
-                        </thead> 
+                        </thead>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<section>
-    <div class="modal fade bd-example-modal-lg" style="overflow:auto" id="AccountModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div style="line-height:60px"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
-                    <object id="aa" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="650" height="400">
-                        <embed frameborder="0" width="100%" height="400px">
-                    </object>
+@*<section>
+        <div class="modal fade bd-example-modal-lg" style="overflow:auto" id="AccountModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div style="line-height:60px"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                        <object id="aa" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="650" height="400">
+                            <embed frameborder="0" width="100%" height="400px">
+                        </object>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>*@
+<div class="modal in printable" id="myModal" role="dialog" aria-hidden="true"></div>
 <script>
 
 </script>
-
+<script src="~/Content/lightbox/lightbox.min.js"></script>
 <script src="@Url.Content("~/js/DonationHaul/UploadedList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
- 
+

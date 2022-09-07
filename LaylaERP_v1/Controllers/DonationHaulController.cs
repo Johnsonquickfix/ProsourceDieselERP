@@ -220,5 +220,23 @@ namespace LaylaERP_v1.Controllers
             return Json(new { status = _status, message = _message, id = _id }, 0);
         }
 
+        [HttpGet]
+        [Route("donation-haul/multipal-receipt")]
+        public JsonResult Getmultipalreceipt(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                int id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt32(model.strValue1);
+
+                DataTable dt = DonationHaulRepository.Getmultipalreceipt(id);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
     }
 }

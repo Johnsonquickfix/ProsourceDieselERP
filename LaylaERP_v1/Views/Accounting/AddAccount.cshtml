@@ -120,25 +120,24 @@
 
         <script>
             $(document).ready(function () {
+          
                 $("#loader").hide();
-                $(".select2").select2();
-                getAccountCategory();
+                $(".select2").select2(); 
+                getAccountCategory(); 
                 $(document).on('click', "#btnSave", function () {
                     AddAccount();
                     
-                });
-
+                }); 
                 $.get('/Accounting/GetParentAccount', function (data) {
                     var items = "";
                     $.each(data, function (index, value) {
                         items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlParentAccount");
 
                     })
-                });
-
+                }); 
                 isEdit(true);
                // getsubaccount();
-                filldropdown();
+                filldropdown(); 
             });
 
             function getsubaccount() {
@@ -171,7 +170,7 @@
                     error: function (xhr, status, err) { $("#loader").hide(); }
                 });
 
-
+            }
             function isEdit(val) {
                 localStorage.setItem('isEdit', val ? 'yes' : 'no');
             }

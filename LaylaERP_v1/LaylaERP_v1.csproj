@@ -210,6 +210,7 @@
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\DonationHaulRepository.cs" />
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
+    <Compile Include="BAL\EntityRepositry.cs" />
     <Compile Include="BAL\EventsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Controllers\DonationHaulController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
+    <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
@@ -805,6 +807,8 @@
     <Content Include="js\DonationHaul\UploadedList.js" />
     <Content Include="js\EmailSetting\EmailSetting.js" />
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
+    <Content Include="js\Entity\CreateEntity.js" />
+    <Content Include="js\Entity\EntityList.js" />
     <Content Include="js\Events\Events.js" />
     <Content Include="js\Events\EventsList.js" />
     <Content Include="js\FeeNTax\Fee.js" />
@@ -930,6 +934,7 @@
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
+    <Content Include="js\Setting\Usercompany.js" />
     <Content Include="js\Setup\accountingclasstransaction.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\freeproduct.js" />
@@ -1406,11 +1411,16 @@
     <Content Include="Views\Budget\BudgetOverview.cshtml" />
     <Content Include="Views\Budget\BudgetVsActuals.cshtml" />
     <Content Include="Views\Accounting\CheckReconciliation.cshtml" />
+    <Content Include="Views\Entity\Index.cshtml" />
+    <Content Include="Views\Entity\CreateNew.cshtml" />
+    <Content Include="Views\Setting\CompanyInfo.cshtml" />
+    <Content Include="Views\Setting\UserCompanyAllot.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
+    <Folder Include="Content\Entity\" />
     <Folder Include="Files\" />
   </ItemGroup>
   <ItemGroup>

@@ -682,6 +682,10 @@
     <Content Include="Content\easyui\jquery.easyui.min.js" />
     <Content Include="Content\EmployeeLinkedFiles\default.png" />
     <Content Include="Content\EmployeeProfileImage\default.png" />
+    <Content Include="Content\Entity\052423032256-eliIcon.png" />
+    <Content Include="Content\Entity\052623014616-logo.png" />
+    <Content Include="Content\Entity\052623014849-logo.png" />
+    <Content Include="Content\Entity\052623014929-logo.png" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\fullcalendar\fullcalendar.css" />
     <Content Include="Content\fullcalendar\fullcalendar.js" />
@@ -1420,7 +1424,6 @@
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
-    <Folder Include="Content\Entity\" />
     <Folder Include="Files\" />
   </ItemGroup>
   <ItemGroup>

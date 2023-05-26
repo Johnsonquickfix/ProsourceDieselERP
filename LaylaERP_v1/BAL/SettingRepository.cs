@@ -633,5 +633,22 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataTable Getentitylogo(long ID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    new SqlParameter("@id", ID)
+                };
+                string strquery = "select logo_url from erp_entityinfo where entity = " + ID;
+                DT = SQLHelper.ExecuteDataTable(strquery, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
     }
 }

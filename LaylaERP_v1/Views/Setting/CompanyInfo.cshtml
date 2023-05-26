@@ -13,7 +13,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">Company Details</h2>
-    <a class="btn btn-danger" href="Users"><span title="Click here to back to user's list" data-placement="bottom" data-toggle="tooltip">Back to List</span></a>
+    @*<a class="btn btn-danger" href="Users"><span title="Click here to back to user's list" data-placement="bottom" data-toggle="tooltip">Back to List</span></a>*@
 </div>
 <div class="createuser-section section_wrapper">
     <div class="create-user-box">
@@ -33,35 +33,35 @@
                     else
                     {
                         <img runat="server" id="show_picture" src="~/Images/userprofile2.png" alt="User profile picture">
-                     }
+                    }
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
-                                @*<canvas style="visibility: hidden" width="100%" height="100%" id="canvas"></canvas>
+                    @*<canvas style="visibility: hidden" width="100%" height="100%" id="canvas"></canvas>
 
-                    <div class="box-body box-profile">
-                        <div class="user-box-profile">
-                            <div class="add-profile">
+                <div class="box-body box-profile">
+                    <div class="user-box-profile">
+                        <div class="add-profile">
 
 
-                            </div>
                         </div>
+                    </div>
 
-                    </div>*@
+                </div>*@
 
                     @*<h3 class="profile-username text-center">Layla Sleep</h3>
-        <p class="text-muted text-center">laylasleep@acb.com</p>
-        <p class="text-center">Washington Dc</p>*@
+                <p class="text-muted text-center">laylasleep@acb.com</p>
+                <p class="text-center">Washington Dc</p>*@
                 </div>
                 <!-- /.box-body -->
             </div>
-
+            <a href="javascript:void(0);" class="btn btn-danger" id="btnSave"><span title="Click here to update user's details" data-placement="left" data-toggle="tooltip"><b>Update Logo</b></span></a>
             <!-- /.col -->
-            <div class="col-md-7">
+            <div class="col-md-7" style="display:none">
                 <div class="box box-primary create-user-primary">
                     <div class="box-header with-border">
-                        <div class="col-sm-4"> 
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <input type="hidden" id="hfid" value="@Model.ID" />
-                                <input type="hidden" id="hfzipstatus" /> 
+                                <input type="hidden" id="hfzipstatus" />
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">E-mail<span style="color:red;"> *</span></label>
@@ -71,7 +71,7 @@
                                 <label for="exampleInputEmail1">Name<span style="color:red;"> *</span></label>
                                 <input type="text" class="form-control" value="@Model.name" id="txtName" placeholder="First Name">
                             </div>
-                            
+
                             <div class="form-group">
                                 @{
                                     var selected = "";
@@ -112,14 +112,13 @@
                             </div>
 
                         </div>
-                         
+
                     </div>
-                    <div class="box-footer text-right">
-                        <a href="javascript:void(0);" class="btn btn-danger" id="btnSave"><span title="Click here to update user's details" data-placement="left" data-toggle="tooltip"><b>Update User</b></span></a>
-                    </div>
+
                 </div>
                 <!-- /.nav-tabs-custom -->
             </div>
+    
             <!-- /.col -->
         </div>
     </div>

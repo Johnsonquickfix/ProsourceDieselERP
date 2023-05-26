@@ -139,7 +139,7 @@
         }
 
         public ActionResult Index(string strValue1, string strValue2)
-        {
+         {
             clsUserDetails model = new clsUserDetails();
 
             //ViewBag.id = Session["UserId"];
@@ -153,9 +153,10 @@
             //GetUsersDetails(strValue1, strValue2);
             ViewBag.Type = strValue1;
 
+
             dynamic myModel = new ExpandoObject(); 
-            DataTable dt = BAL.SettingRepository.GetDetailscompany(3);
-            myModel.User_Image = dt.Rows[0]["image"];
+            DataTable dt = BAL.SettingRepository.Getentitylogo(CommanUtilities.Provider.GetCurrent().login_company_id);
+            myModel.User_Image = "/Content/Entity/" + dt.Rows[0]["logo_url"];
             return View(myModel);
              
         }

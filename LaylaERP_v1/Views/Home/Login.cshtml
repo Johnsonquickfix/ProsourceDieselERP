@@ -1,6 +1,6 @@
-﻿@model LaylaERP.Models.LoginModel
+﻿ 
 @*@using LaylaERP.recaptcha*@
-
+@model dynamic
 @{
     ViewBag.Title = "Login";
     Layout = null;
@@ -67,7 +67,17 @@
                     <div class="a-section a-spacing-medium a-text-center">
 
                         <a class="a-link-nav-icon" tabindex="-1" href="">
-                            <img src="~/Images/layla1-logo.png" />
+                            @*<img src="~/Images/layla1-logo.png" />*@
+
+                            @if (Model.User_Image.Length > 0 && Model.User_Image != null)
+                            {
+                                <img runat="server" id="show_picture"  src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
+                            }
+                            else
+                            {
+                                <img runat="server" id="show_picture"  src="~/Images/userprofile2.png" alt="User profile picture">
+                            }
+                            
                         </a>
                     </div>
                 </div>
@@ -402,7 +412,7 @@
                 }
             });
 
-        
+
 
         });
     </script>

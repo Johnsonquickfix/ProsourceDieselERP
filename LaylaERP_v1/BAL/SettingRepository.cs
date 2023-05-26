@@ -487,5 +487,151 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static int UpdateCompany(clsUserDetails model)
+        {
+            try
+            {
+
+                string strsql = "erp_company_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@id", model.ID),
+                    new SqlParameter("@user_nicename", model.user_nicename),
+                    new SqlParameter("@user_email", model.user_email),
+                    new SqlParameter("@display_name", model.user_nicename),
+                    new SqlParameter("@user_image", model.User_Image),
+                    new SqlParameter("@user_status", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/UpdateCompany/" + model.ID + "", "Update Setting");
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetDetailscompany(long ID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+               {
+                    new SqlParameter("@id", ID)
+                };
+                 string strquery = "select * from wp_company where id = " + ID ;
+                 DT = SQLHelper.ExecuteDataTable(strquery, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetUserCompany(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "wp_userscompanylist";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        //public static DataSet Getcompany(string optType)
+        //{
+        //    DataSet DS = new DataSet();
+        //    try
+        //    { 
+        //        string strSQl = "Select entity ID, CompanyName label from erp_entityinfo ;";
+        //        DS = SQLHelper.ExecuteDataSet(strSQl);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DS;
+        //}
+        public static DataTable GetcompanyData(string optType)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strSQl = "Select entity ID, CompanyName label from erp_entityinfo ;";
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable Selectcompanybiyid(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            { 
+                string strquery = "SELECT ID as id, user_id,company_id"
+                                  + " FROM cms_usercompany"
+                                  + " WHERE user_id='" + id + "' ";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int Updateusertocompany(SetupModel model)
+        {
+
+            try
+            {
+                string strsql = "cms_companyuser_iud"; 
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@user_id",model.searchid), 
+                    new SqlParameter("@company_id",model.state),
+                    new SqlParameter("@company",model.country),
+            };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setup/erp_company_iud/" + model.searchid + "", "Update user company details.");
+                throw Ex;
+            }
+        }
+
+        public static DataSet GetCompany(string id)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "cms_userscompany";
+                SqlParameter[] para =
+                  {
+                        new SqlParameter("@qflag", "I"),
+                        new SqlParameter("@id",id), 
+                };
+                // + " WHERE p.post_type = 'product' AND p.post_status = 'publish'"; 
+                DS = SQLHelper.ExecuteDataSet(strSQl, para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

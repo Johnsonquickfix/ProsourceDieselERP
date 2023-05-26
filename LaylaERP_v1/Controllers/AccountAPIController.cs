@@ -24,6 +24,64 @@
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     OperatorModel op = new OperatorModel();
+                    if (ds.Tables[0].Rows[0]["user_companyid"] != DBNull.Value)
+                        op.user_companyid = ds.Tables[0].Rows[0]["user_companyid"].ToString();
+                    else
+                        op.user_companyid = string.Empty;
+                    if (ds.Tables[0].Rows[0]["user_status"].ToString().Trim() == "1")
+                        op.IsActive = true;
+                    else
+                        op.IsActive = false;
+                    if (op.IsActive == false)
+                    {
+                        if (ds.Tables[1].Rows[0]["SenderEmailID"] != DBNull.Value)
+                            op.SenderEmailID = ds.Tables[1].Rows[0]["SenderEmailID"].ToString();
+                        else
+                            op.SenderEmailID = string.Empty;
+                        if (ds.Tables[1].Rows[0]["SenderEmailPwd"] != DBNull.Value)
+                            op.SenderEmailPwd = ds.Tables[1].Rows[0]["SenderEmailPwd"].ToString();
+                        else
+                            op.SenderEmailPwd = string.Empty;
+                        if (ds.Tables[1].Rows[0]["SMTPServerName"] != DBNull.Value)
+                            op.SMTPServerName = ds.Tables[1].Rows[0]["SMTPServerName"].ToString();
+                        else
+                            op.SMTPServerName = string.Empty;
+                        if (ds.Tables[1].Rows[0]["SMTPServerPortNo"] != DBNull.Value)
+                            op.SMTPServerPortNo = ds.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
+                        else
+                            op.SMTPServerPortNo = string.Empty;
+
+                        if (ds.Tables[1].Rows[0]["SSL"].ToString() == "1")
+                            op.SSL = true;
+                        else
+                            op.SSL = false;
+                        op.UserName = model.UserName;
+                        op.UserPassword = model.PassWord; 
+                        op.GetUrl = "home/MobileVerification";  
+                        CommanUtilities.Provider.AddCurrent(op); 
+                       // string loginDesc = op.UserName + " Login on " + DateTime.UtcNow.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
+                        //UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);
+
+                        return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);
+                    }
+                    else
+                        return Json(new { status = false, message = "Please contact to your administrator", url = "" }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Please check username or password!", url = "" }, 0);
+
+            }
+            return Json(new { status = false, message = "Invalid User", url = "" }, 0);
+        }
+        [HttpPost]
+        public JsonResult Login_Old(LoginModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                DataSet ds = Users.VerifyUser(model.UserName, model.PassWord);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    OperatorModel op = new OperatorModel();
                     op = ds.Tables[0].AsEnumerable().Select(m => new OperatorModel
                     {
                         UserID = long.Parse(m["id"].ToString()),

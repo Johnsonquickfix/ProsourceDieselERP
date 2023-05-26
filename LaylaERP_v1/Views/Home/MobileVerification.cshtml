@@ -1,4 +1,4 @@
-﻿
+﻿@model dynamic
 @{
     ViewBag.Title = "MobileVerification";
     Layout = null;
@@ -16,8 +16,13 @@
     <link href="~/Content/Style11.css" rel="stylesheet" />
     <link href="~/Content/Style12.css" rel="stylesheet" />
     <link href="~/css/login_style.css" rel="stylesheet" />
+    <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
     <script type="text/javascript"></script>
+    <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script> 
+    <script src="~/Content/alert/sweetalert2.all.min.js"></script>
 </head>
+ 
 <body class="login-page login-varification">
     <div id="a-page" class="login_box-section">
         <div class="a-section a-padding-medium auth-workflow main-login-box">
@@ -25,7 +30,8 @@
                 <div class="a-section a-spacing-none auth-navbar">
                     <div class="a-section a-spacing-medium a-text-center">
                         <a class="a-link-nav-icon" tabindex="-1" href="">
-                            <img src="~/Images/layla1-logo.png" />
+                            @*<img src="~/Images/layla1-logo.png" />*@
+                            <img runat="server" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
                             @*<i class="a-icon a-icon-logo" role="img" aria-label="Amazon"></i>
                                 <i class="a-icon a-icon-domain-in a-icon-domain" role="presentation"></i>*@
                         </a>
@@ -75,8 +81,15 @@
 
                                 <div class="a-box a-spacing-extra-large" id="varification-box">
                                     <div class="a-box-inner">
+                                        <div class="form-group">
+                                            <label for="ddlcompany">Company<span style="color:red">*</span></label>
+                                            <select class="form-control select1" id="ddlcompany" style="width:100%;"></select>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="a-box-inner">
                                         <h1 class="login-h1">
-                                            Verify OTP
+                                        Verify OTP
                                         </h1>
                                         <p>
                                             OTP (one time password) has been sent to your e-mail.
@@ -159,31 +172,41 @@
     <div id="a-popover-root" style="z-index:-1;position:absolute;"></div>
     @ViewBag.Result
 </body>
+
 </html>
 
 <script>
     var Counter =600;
     $(document).ready(function () {
+        $(".select1").select2();
+   
+        getcompany();
         $('#auth-pv-enter-code').focus();
         $('#auth-pv-enter-code').val(@ViewBag.otp);
         $(document).on("click", "#auth-verify-button", function (t) {
-            t.preventDefault(); 
-            $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
-            let option = { OTP: $('#auth-pv-enter-code').val() };
-            $.ajax({
-                type: "POST", url: "/Home/MobileVerification", contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-                beforeSend: function () { $("#loader").show(); },
-                success: function (result) {
-                    if (result.status == true) {
-                        window.location.href = result.url;
-                    }
-                    else {                        
-                        $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(result.message);
-                    }
-                },
-                complete: function () { },
-                error: function (xhr, status, err) { $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(err); }, async: false
-            });
+            t.preventDefault();
+            company = $("#ddlcompany").val(); 
+            if (company == 0 ) {
+                swal('Alert', 'Please select company', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+            }
+            else {
+                $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
+                let option = { OTP: $('#auth-pv-enter-code').val(), company_id: company };
+                $.ajax({
+                    type: "POST", url: "/Home/MobileVerification", contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (result) {
+                        if (result.status == true) {
+                            window.location.href = result.url;
+                        }
+                        else {
+                            $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(result.message);
+                        }
+                    },
+                    complete: function () { },
+                    error: function (xhr, status, err) { $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(err); }, async: false
+                });
+            }
         });
         setInterval(function () {
             if (Counter > 0) {
@@ -193,16 +216,24 @@
             else {
                 location.href = 'Login'
             }
-        }, 1000);
-
-
-
-
-
-
+        }, 1000); 
 
     });
 
+    function getcompany() {
+        $.ajax({
+            url: "/Setting/GetCompany",
+            type: "Get",
+            success: function (data) {
+                var opt = '<option value="0">Please Select Company</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $('#ddlcompany').html(opt);
+            }
+
+        });
+    }
 </script>
 
 

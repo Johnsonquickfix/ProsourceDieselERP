@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -83,6 +84,26 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult CompanyInfo()
+        {
+            dynamic myModel = new ExpandoObject();
+             myModel.user_status = null;
+             myModel.first_name = null;
+            myModel.last_name = null; 
+            myModel.User_Image = null;
+            myModel.user_email = null;
+            myModel.phone = null;
+            myModel.ID = null; 
+            //myModel.user_email = null;
+            DataTable dt = BAL.SettingRepository.GetDetailscompany(3); 
+            myModel.User_Image = dt.Rows[0]["image"];
+            myModel.email = dt.Rows[0]["email"];
+            myModel.user_status = dt.Rows[0]["status"];
+            myModel.name = dt.Rows[0]["name"];
+            myModel.display_name = dt.Rows[0]["display_name"];
+            myModel.phone = dt.Rows[0]["phone"]; 
+            return View(myModel);
+        }
         [HttpGet]
         public ActionResult ExceptionLog()
         {
@@ -134,6 +155,12 @@ namespace LaylaERP.Controllers
         // UpdateAttribute
         public ActionResult UpdateAttribute()
         {
+            return View();
+        }
+        public ActionResult UserCompanyAllot()
+        {
+           int cmid= CommanUtilities.Provider.GetCurrent().login_company_id;
+            string cmids = CommanUtilities.Provider.GetCurrent().user_companyid;
             return View();
         }
         [HttpPost]
@@ -572,5 +599,100 @@ namespace LaylaERP.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult UpdateCompany(clsUserDetails model)
+        {
+
+            int ID = SettingRepository.UpdateCompany(model);
+            if (ID > 0)
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "company id (" + model.ID + ") updated in company.", "/Setting/UpdateCompany?id=" + model.ID + "" + ", " + Net.BrowserInfo);
+                 
+                return Json(new { status = true, message = "User record updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        [HttpGet]
+        public JsonResult GetUserCompany(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetUserCompany(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        //public JsonResult Getcompany(SearchModel model)
+        //{
+        //    string optType = model.strValue1;
+        //    DataSet ds = BAL.SettingRepository.Getcompany(optType);
+        //    List<SelectListItem> productlist = new List<SelectListItem>();
+        //    foreach (DataRow dr in ds.Tables[0].Rows)
+        //    {
+        //        productlist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["ID"].ToString() });
+        //    }
+        //    return Json(productlist, JsonRequestBehavior.AllowGet);
+        //}
+
+        public JsonResult GetcompanyData(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.SettingRepository.GetcompanyData(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult Selectcompanybiyid(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.Selectcompanybiyid(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult Updateusertocompany(SetupModel model)
+        {
+            if (model.searchid > 0)
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update user company", "UserCompanyAllot/" + ", " + Net.BrowserInfo);
+
+                SettingRepository.Updateusertocompany(model);
+                    return Json(new { status = true, message = "User company updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult GetCompany()
+        {
+            string user_companyid = CommanUtilities.Provider.GetCurrent().user_companyid;
+            DataSet ds = SettingRepository.GetCompany(user_companyid);
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["text"].ToString(), Value = dr["id"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
     }
 }

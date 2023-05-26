@@ -71,6 +71,8 @@
         public string logo_url { get; set; }
         public string additional_notes { get; set; }
         public string po_email { get; set; }
+        public int login_company_id { get; set; }
+        public string user_companyid { get; set; }
     }
     [Serializable]
     public class CommanUtilities

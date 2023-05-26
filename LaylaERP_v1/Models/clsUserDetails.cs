@@ -150,4 +150,42 @@ namespace LaylaERP.Models
         }
 
     }
+    public class entityDetails
+    {
+        int active;
+        string _email = string.Empty;
+        string _companyname = string.Empty; 
+        string _address = string.Empty; 
+        string _phone = string.Empty;
+        string _status = string.Empty;
+        public string email
+        {
+            get { return _email; }
+            set { _email = value; }
+        }
+        public string companyname
+        {
+            get { return _companyname; }
+            set { _companyname = value; }
+        }
+        public string address
+        {
+            get { return _address; }
+            set { _address = value; }
+        }
+        public string phone
+        {
+            get { return _phone; }
+            set { _phone = value; }
+        }
+        public string status
+        {
+            get { return _status; }
+            set { _status = value; }
+        }
+        public long ID
+        {
+            get; set;
+        } 
+    }
 }

@@ -63,9 +63,9 @@
                 <!-- logo for regular state and mobile devices -->
 
                 <span class="logo-lg">
-                    @*<img runat="server" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">*@
+                    <img runat="server" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
 
-                    <img src="@Model.User_Image" />
+                    @*<img src="@Model.User_Image" />*@
                      @*<img src="~/Content/Entity/052423032256-eliIcon.png" />*@ 
                 </span>
             </a>

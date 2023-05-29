@@ -151,14 +151,16 @@
             GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
             // if (!string.IsNullOrEmpty(modeldetails.strValue2))
             //GetUsersDetails(strValue1, strValue2);
-            ViewBag.Type = strValue1;
-
+            ViewBag.Type = strValue1; 
 
             dynamic myModel = new ExpandoObject(); 
-            DataTable dt = BAL.SettingRepository.Getentitylogo(CommanUtilities.Provider.GetCurrent().login_company_id);
-            myModel.User_Image = "/Content/Entity/" + dt.Rows[0]["logo_url"];
+            //DataTable dt = BAL.SettingRepository.Getentitylogo(CommanUtilities.Provider.GetCurrent().login_company_id);
+            //myModel.User_Image = "/Content/Entity/" + dt.Rows[0]["logo_url"];
+            //return View(myModel);
+            DataTable dt = BAL.SettingRepository.GetDetailscompany(3);
+            myModel.User_Image = dt.Rows[0]["image"];
             return View(myModel);
-             
+
         }
         public ActionResult Dashboard(JqDataTableModel model)
         {
@@ -664,7 +666,8 @@
                                     op.user_companyid = ds.Tables[0].Rows[0]["user_companyid"].ToString();
                                 else
                                     op.user_companyid = string.Empty;
-                                op.login_company_id = company_id;
+                                //op.login_company_id = company_id;
+                                op.login_company_id = 1;
                                 op.LoginIPAddress = Net.Ip;
                                 op.LoginMacAddress = string.Empty;
                                 CommanUtilities.Provider.AddCurrent(op);

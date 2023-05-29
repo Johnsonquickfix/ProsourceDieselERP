@@ -80,7 +80,7 @@
                                 </div>
 
                                 <div class="a-box a-spacing-extra-large" id="varification-box">
-                                    <div class="a-box-inner">
+                                    <div style="display:none" st class="a-box-inner">
                                         <div class="form-group">
                                             <label for="ddlcompany">Company<span style="color:red">*</span></label>
                                             <select class="form-control select1" id="ddlcompany" style="width:100%;"></select>
@@ -186,10 +186,10 @@
         $(document).on("click", "#auth-verify-button", function (t) {
             t.preventDefault();
             company = $("#ddlcompany").val(); 
-            if (company == 0 ) {
-                swal('Alert', 'Please select company', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
-            }
-            else {
+            //if (company == 0 ) {
+            //    swal('Alert', 'Please select company', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+            //}
+            //else {
                 $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
                 let option = { OTP: $('#auth-pv-enter-code').val(), company_id: company };
                 $.ajax({
@@ -206,7 +206,7 @@
                     complete: function () { },
                     error: function (xhr, status, err) { $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(err); }, async: false
                 });
-            }
+            //}
         });
         setInterval(function () {
             if (Counter > 0) {

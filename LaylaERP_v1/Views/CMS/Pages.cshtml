@@ -12,34 +12,11 @@
  
 
 <head>
-
+    <script src="@Url.Content("~/js/CMS/Pages.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
     <script src='~/js/tinymce/tinymce.min.js'></script>
 
     <script type="text/javascript">
-
-        $(document).ready(function () {
-            $("#loader").hide();
-            $(document).on('click', "#btnSave", function () {
-                let val = GetContent();
-                console.log(val);
-            })
-        })
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#show_picture').attr('src', e.target.result);
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        function GetContent() {
-            return tinyMCE.get('editorcontent').getContent();
-        }
-        function SetContent(htmlContent) {
-            //alert('ok');
-            tinyMCE.get('editorcontent').setContent(htmlContent);
-        }</script>
+    </script>
     <script>
         tinyMCE.init({
             selector: '#editorcontent',
@@ -85,13 +62,10 @@
             <div class="col-md-9">
                 <div class="page-title">
                     <h2 class="page-heading" id="lbltitle">Add New Page</h2>
-                    <a id="btnbacklist" title="Click here to go back" data-toggle="tooltip" data-placement="bottom" class="backtoback btn btn-danger">Back to list</a>
-                    <a class="btn btn-danger" style="display:none" id="btnAdd" href="#">Add New</a>
-                    <input type="hidden" id="hfid" />
-
-                    @*<a class="btn btn-danger" id="btnPurchase">Purchase Prices </a>*@
-
-                    <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>
+                    <span title="Click here to back to list" data-placement="left" data-toggle="tooltip">@Html.ActionLink("Back to List", "List", null, new { @class = "btn btn-danger" })</span>
+                     <input type="hidden" id="hfid" />
+                     <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
+                     <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>
                     @*<button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>*@
                     @*<button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>*@
                 </div>
@@ -115,7 +89,7 @@
                     <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                 </span>
 
-                <img runat="server" id="show_picture">
+                <img runat="server" id="show_picture"  style="height: 200px;">
 
                 <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
 

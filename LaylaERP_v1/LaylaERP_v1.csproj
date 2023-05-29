@@ -201,6 +201,7 @@
     <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\BankRepository.cs" />
     <Compile Include="BAL\BudgetRepository.cs" />
+    <Compile Include="BAL\CMSRepository.cs" />
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
@@ -802,6 +803,8 @@
     <Content Include="js\Budget\BudgetList.js" />
     <Content Include="js\Budget\BudgetOverview.js" />
     <Content Include="js\Budget\BudgetVsActuals.js" />
+    <Content Include="js\CMS\List.js" />
+    <Content Include="js\CMS\Pages.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1514,12 +1517,14 @@
     <Content Include="Views\Setting\UserCompanyAllot.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\CMS\Pages.cshtml" />
+    <Content Include="Views\CMS\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
+    <Folder Include="Views\CMSRepository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

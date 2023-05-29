@@ -717,6 +717,9 @@
     <Content Include="Content\lightbox\lightbox.min.css" />
     <Content Include="Content\lightbox\lightbox.min.js" />
     <Content Include="Content\MiscBillsFiles\default.png" />
+    <Content Include="Content\Pages\PageBannerLink\052923054837-Prosourcediesel.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\052923062419-Zibbix.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\052923064032-Spoologic.jpg" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />

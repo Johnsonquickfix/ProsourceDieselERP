@@ -31,6 +31,8 @@
 function Add() { 
     title = $("#txttitle").val();
     entity = $("#ddlcompany").val();
+    content = $("#txtcontent").val();
+    seo = $("#txtseo").val();
     let post_contentval = GetContent();
     ID = $("#hfid").val(); 
     if (title == "") {
@@ -53,6 +55,8 @@ function Add() {
         obj.append("post_title", title);
         obj.append("post_content", encodeURIComponent(post_contentval));
         obj.append("entity_id", entity);
+        obj.append("SEO", seo);
+        obj.append("Content", content);
         console.log(post_contentval);
         $.ajax({
             url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
@@ -126,28 +130,11 @@ function GetDataByID(ID) {
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
             setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
-            
-            //$("#txtState").empty().append('<option value="' + i[0].fk_state + '" selected>' + i[0].fk_state + '</option>');
-            //$("#txtUserEmail").val(i[0].post_title);
-            //$("#txtcompanyname").val(i[0].CompanyName);
-            //$("#txtFirstName").val(i[0].firstname);
-            //$("#txtLastName").val(i[0].lastname);
-            //$("#txtAddress").val(i[0].address);
-            //$("#txtCountrycode").val(i[0].country_code_phone);
-            ////$("#txtPhone").mask("(999) 999-9999");
-            //// $("#txtPhone").val(i[0].user_mobile);
-            //$("#txtPhone").val(i[0].user_mobile).trigger('input');
-            ////$("#txtPhone").val(i[0].user_mobile).mask("(999) 999-9999");
-            //$("#txtAddress2").val(i[0].address1);
-            //$("#txtwebsite").val(i[0].website);
-            //$("#txtAdditionalNotes").val(i[0].additional_notes);
-            //$("#txtpoemail").val(i[0].po_email);
-            //$("#txtbaseurl").val(i[0].base_url);
+            $("#txtcontent").val(i[0].page_content);
+            $("#txtseo").val(i[0].page_seo);
+            //$("#txtcompanyname").val(i[0].CompanyName);  
             var path = i[0].meta_value;
-            url = "../../Content/Pages/PageBannerLink/" + path + "";
-            ////$('#show_picture').attr('src', url);
-
-            ////$('#ImageFile').val(url); // Bind the URL to the input field
+            url = "../../Content/Pages/PageBannerLink/" + path + ""; 
              $('#show_picture').attr('src', url);
 
 

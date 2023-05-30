@@ -56,16 +56,15 @@
 </head>
 
 <body>
-
     <section id="target" class="content section-content new-product-section">
         <div class="row flex-row_box">
             <div class="col-md-9">
                 <div class="page-title">
                     <h2 class="page-heading" id="lbltitle">Add New Page</h2>
                     <span title="Click here to back to list" data-placement="left" data-toggle="tooltip">@Html.ActionLink("Back to List", "List", null, new { @class = "btn btn-danger" })</span>
-                     <input type="hidden" id="hfid" />
-                     <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
-                     <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>
+                    <input type="hidden" id="hfid" />
+                    <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
+                    <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>
                     @*<button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>*@
                     @*<button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>*@
                 </div>
@@ -81,7 +80,7 @@
             <textarea id="editorcontent"></textarea>
         </form>
         <h2 class="page-heading"> Upload Page Banner Image</h2>
-       
+
         <div class="col-md-8">
             <div class="box box-primary">
                 <span class="edit-pic-profile">
@@ -89,14 +88,36 @@
                     <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                 </span>
 
-                <img runat="server" id="show_picture"  style="height: 200px;">
+                <img runat="server" id="show_picture" style="height: 150px;">
 
                 <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
 
             </div>
             @*<a href="javascript:void(0);" class="btn btn-danger" id="btnupload"><span title="Click here to update user's details" data-placement="left" data-toggle="tooltip"><b>Update Logo</b></span></a>*@
         </div>
-        <br />
+
+        <div class="col-md-8">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active" title="Click here to see Content" data-toggle="tooltip"><a href="#tab_1" data-toggle="tab">Content</a></li>
+                    <li title="Click here to see SEO" data-toggle="tooltip"><a href="#tab_2" data-toggle="tab">SEO</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="custom-editor">
+                            <textarea id="txtcontent" class="textarea" placeholder=""
+                                      style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px; "></textarea>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_2"> 
+                        <textarea id="txtseo" class="textarea" placeholder="Meta Description"
+                                  style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </body>
 

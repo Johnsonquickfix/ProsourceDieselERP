@@ -64,7 +64,7 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult CreatePages(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id)
+        public JsonResult CreatePages(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string SEO, string Content)
         {
             var ImagePath = "";
             //var ImagePaththum = "";
@@ -102,7 +102,7 @@ namespace LaylaERP_v1.Controllers
                     ImageFile.SaveAs(pathimage);
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id);
+                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id,SEO,Content);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -114,7 +114,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id);
+                        entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -137,7 +137,7 @@ namespace LaylaERP_v1.Controllers
                     return Json(new { status = false, message = "Please upload file", url = "Pages" }, 0);
                 else
                 {
-                    entity = CMSRepository.CreatePage("UP",  ID, post_title, post_content, FileName, entity_id);
+                    entity = CMSRepository.CreatePage("UP",  ID, post_title, post_content, FileName, entity_id, SEO, Content);
 
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
                 }

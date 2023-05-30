@@ -720,6 +720,8 @@
     <Content Include="Content\Pages\PageBannerLink\052923054837-Prosourcediesel.jpg" />
     <Content Include="Content\Pages\PageBannerLink\052923062419-Zibbix.jpg" />
     <Content Include="Content\Pages\PageBannerLink\052923064032-Spoologic.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053023010435-eliIcon.png" />
+    <Content Include="Content\Pages\PageBannerLink\053023010736-Prosourcediesel.jpg" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />
@@ -1521,6 +1523,7 @@
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\CMS\Pages.cshtml" />
     <Content Include="Views\CMS\List.cshtml" />
+    <Content Include="Views\CMS\PostList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

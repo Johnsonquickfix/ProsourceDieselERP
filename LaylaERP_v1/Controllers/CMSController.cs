@@ -23,6 +23,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult PostList()
+        {
+            return View();
+        }
 
         [HttpPost]
         public JsonResult GetCount(SearchModel model)

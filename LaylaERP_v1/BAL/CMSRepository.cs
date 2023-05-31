@@ -216,6 +216,17 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
-
+        public static DataTable GetcategoryData(string optType)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strSQl = "SELECT t.term_id ID, name label FROM wp_term_taxonomy tx left join wp_terms t on t.term_id = tx.term_id WHERE taxonomy='product_cat' and name like '%" + optType + "%';";
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

@@ -340,5 +340,16 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult GetcategoryData(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CMSRepository.GetcategoryData(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

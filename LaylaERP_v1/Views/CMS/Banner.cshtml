@@ -18,23 +18,31 @@
         text-align: right;
         min-width: 600px;
     }
+        .compBox .select2 {
+            text-align: left;
+        }
 </style>       
 </head> 
 <body>
     <section id="target" class="content section-content new-product-section">
         <div class="row flex-row_box">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="page-title">
                     <h2 class="page-heading" id="lbltitle">Add New Banner</h2>
-                    <span title="Click here to back to list" data-placement="left" data-toggle="tooltip">@Html.ActionLink("Back to List", "BannerList", null, new { @class = "btn btn-danger" })</span>
+                    @*<span title="Click here to back to list" data-placement="left" data-toggle="tooltip">@Html.ActionLink("Back to List", "BannerList", null, new { @class = "btn btn-danger" })</span>*@
                     <div class="compBox">
                         <input type="hidden" id="hfid" />
                         <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
-                        <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>
+                        @*<button id="btnSave"  title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>*@
                     </div>
                     @*<button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>*@
                     @*<button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>*@
-                </div>
+                </div> 
+            </div> 
+
+        </div>
+        <div class="row flex-row_box">
+            <div class="col-md-9">
                 <div class="box box-primary">
                     <div class="box-header">
                         <label class="control-label " for="City">Add title<span style="color:red;"> *</span></label>
@@ -42,18 +50,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" style="vertical-align: text-top; top: 0;">
                 <h4 class="page-heading">Banner for mobile</h4>
                 <div class="box box-primary">
                     <span class="edit-pic-profile">
                         <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
                         <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
-                    </span> 
-                    <img runat="server" id="show_picture" style="height: 150px;"> 
-                    <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" /> 
-                </div> 
+                    </span>
+                    <img runat="server" id="show_picture" style="height: 150px;">
+                    <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
+                </div>
             </div>
-        </div> 
+        </div>
         <div class="row flex-row_box" style="vertical-align: text-top; top: 0;">
             <div class="col-md-9">
                 <div class="box box-primary">
@@ -92,7 +100,7 @@
                     <img runat="server" id="featuredshow_picture" style="height: 150px;">
                 </div>
             </div>
-            </div> 
-</section>
+        </div>
+    </section>
 </body>
 

@@ -5,9 +5,7 @@
         $(this).addClass('current');
     });
     $("#loader").hide();
-    $(".select1").select2();
-    getcompany();
-   // getParentCategory();
+    // getParentCategory();
     GetDetails();
     dataGridLoad('');
     /* setTimeout(function () { dataGridLoad(''); }, 1000);*/
@@ -18,9 +16,7 @@
     $('#trash').click(function () { var order_type = "trash"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#draft').click(function () { var order_type = "draft"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfType').val(); dataGridLoad(order_type); });
-    $(document).on('click', "#btnsearch", function () {
-        dataGridLoad(''); 
-    })
+    $("#loader").hide();
 });
 
 //function space(noOfSpaces) {
@@ -53,7 +49,7 @@
 function GetDetails() {
     var opt = { strValue1: '' };
     $.ajax({
-        type: "POST", url: '/CMS/GetCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        type: "POST", url: '/CMS/GetBannerCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var data = JSON.parse(result);
             // console.log(data);
@@ -63,33 +59,20 @@ function GetDetails() {
                 $('#private').find(".count").text(number_format(data[0].Private));
                 $('#trash').find(".count").text(number_format(data[0].Trash));
                 $('#draft').find(".count").text(number_format(data[0].Draft));
-                
+
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
 }
-function getcompany() {
-    $.ajax({
-        url: "/Setting/GetCompany",
-        type: "Get",
-        success: function (data) {
-            var opt = '<option value="0">Please Select Company</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
-            }
-            $('#ddlcompany').html(opt);
-        }
 
-    });
-}
 function dataGridLoad(order_type) {
-    var company = $('#ddlcompany').val();
+    var types = $('#ddltype').val();
     let prodctype = $('#ddlproducttype').val();
-    let stockstatus = $('#ddstockstatus').val(); 
+    let stockstatus = $('#ddstockstatus').val();
     let _items = [];
-    let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj);
+    let obj = { strValue1: types, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj); 
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
@@ -108,7 +91,7 @@ function dataGridLoad(order_type) {
         sAjaxSource: "/CMS/GetList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             //aoData.push({ name: "strValue1", value: monthYear });
-            aoData.push({ name: "strValue1", value: company });
+            aoData.push({ name: "strValue1", value: types });
             aoData.push({ name: "strValue2", value: order_type });
             aoData.push({ name: "strValue3", value: null });
             var col = 'order_id';
@@ -129,15 +112,15 @@ function dataGridLoad(order_type) {
             { data: 'ID', title: 'ID', sWidth: "3%" },
             {
                 'data': 'ID', sWidth: "3%   ",
-                'render': function (data, type, row) { 
-                        return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
-                 }
+                'render': function (data, type, row) {
+                    return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+                }
             },
-             
+
             { data: 'post_title', title: 'Title', sWidth: "12%" },
-            { data: 'user_login', title: 'Author', sWidth: "5%" },
-            { data: 'post_date', title: 'Post Date', sWidth: "8%" },
-             
+            { data: 'user_login', title: 'Banner', sWidth: "5%" },
+            { data: 'user_login', title: 'Selected Page', sWidth: "5%" },
+            { data: 'post_date', title: 'Post Date', sWidth: "8%" }, 
             {
                 'data': 'ID', title: 'Action', sWidth: "5%",
                 'render': function (id, type, row) {
@@ -219,7 +202,7 @@ function Status() {
 
         var obj = { strVal: id, status: status }
         const updatestatus = status == 'publish' ? 'Active' : 'Inactive';
-        ActivityLog('Change product status as ' + updatestatus + '', '/Product/ListProduct'); 
+        ActivityLog('Change product status as ' + updatestatus + '', '/Product/ListProduct');
         swal({ title: "", text: 'Would you like to ' + statusval + ' this product?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {

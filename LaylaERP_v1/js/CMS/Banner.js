@@ -3,10 +3,11 @@
     $(".select1").select2();
     getcompany();
     var url = window.location.pathname;
-    var id = url.substring(url.lastIndexOf('/') + 1);
+    var id = url.substring(url.lastIndexOf('/') + 1); 
+    getcompany(); 
 
     if (id != "") {
-        if (id == 'Pages') {
+        if (id == 'Banner') {
             $("#hfid").val(0);
         }
         else {
@@ -20,21 +21,70 @@
         $("#hfid").val(0);
     }
 
+
+    $('input[type=radio][name=banner]').change(function () {
+        if ($("input[name='banner']:checked").val() == "1") {
+            $("#dvpage").show();
+           
+            $("#ddlpage").select2({
+                allowClear: true, minimumInputLength: 0, placeholder: "Search company",
+                ajax: {
+                    url: '/CMS/GetpageData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
+                    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
+            $('#dvcategory').hide();
+        }
+        else { 
+            $("#dvcategory").show();
+            //$("#ddlCategory").select2({
+            //    allowClear: true, minimumInputLength: 2, placeholder: "Search companydd",
+            //    ajax: {
+            //        url: '/Setting/GetcompanyData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            //        data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
+            //        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
+            //        error: function (xhr, status, err) { }, cache: true
+            //    }
+            //});
+            $('#dvpage').hide();
+        }
+        $(document).on('click', "#btndivprv", function () {
+            $(".step1Right").show();
+            $(".step1Left").hide();
+
+        })
+    });
+
     // $("#btnbacklist").prop("href", "List")
- 
+
     $(document).on('click', "#btnSave", function () {
         Add();
-        
+
     })
 })
+function getcompany() {
+    $.ajax({
+        url: "/Setting/GetCompany",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Company</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlcompany').html(opt);
+        }
 
-function Add() { 
+    });
+}
+function Add() {
     title = $("#txttitle").val();
     entity = $("#ddlcompany").val();
     content = $("#txtcontent").val();
     seo = $("#txtseo").val();
     let post_contentval = GetContent();
-    ID = $("#hfid").val(); 
+    ID = $("#hfid").val();
     if (title == "") {
         swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
@@ -49,10 +99,8 @@ function Add() {
     //}
     else {
         var file = document.getElementById("file").files[0];
-        var featuredfile = document.getElementById("Featuredfile").files[0];
         var obj = new FormData();
         obj.append("ImageFile", file);
-        obj.append("FeaturedFile", featuredfile);
         obj.append("ID", ID);
         obj.append("post_title", title);
         obj.append("post_content", encodeURIComponent(post_contentval));
@@ -61,7 +109,7 @@ function Add() {
         obj.append("Content", content);
         console.log(post_contentval);
         $.ajax({
-            url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
+            url: '/CMS/CreateBanner/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: obj,
             processData: false,
@@ -116,21 +164,14 @@ function getcompany() {
 
     });
 }
-function GetContent() {
-    return tinyMCE.get('editorcontent').getContent();
-}
-function SetContent(htmlContent) {
-    //alert('ok');
-    tinyMCE.get('editorcontent').setContent(htmlContent);
-}
-
+ 
 function GetDataByID(ID) {
 
     //var ID = ID;
     var obj = {};
     $.ajax({
 
-        url: '/CMS/GetDataByID/' + ID,
+        url: '/CMS/GetBannerDataByID/' + ID,
         type: 'GET',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
@@ -145,12 +186,8 @@ function GetDataByID(ID) {
             $("#txtseo").val(i[0].page_seo);
             //$("#txtcompanyname").val(i[0].CompanyName);  
             var path = i[0].meta_value;
-            url = "../../Content/Pages/PageBannerLink/" + path + ""; 
+            url = "../../Content/Pages/PageBannerLink/" + path + "";
             $('#show_picture').attr('src', url);
-
-            var urlpath = i[0].featured_image_url;
-            furl = "../../Content/Pages/Featured/" + urlpath + "";
-            $('#featuredshow_picture').attr('src', furl);
 
 
 

@@ -717,6 +717,7 @@
     <Content Include="Content\lightbox\lightbox.min.css" />
     <Content Include="Content\lightbox\lightbox.min.js" />
     <Content Include="Content\MiscBillsFiles\default.png" />
+    <Content Include="Content\Pages\Featured\053123045216-ZIBBIX-BRAND-BANNER.jpg" />
     <Content Include="Content\Pages\PageBannerLink\052923054837-Prosourcediesel.jpg" />
     <Content Include="Content\Pages\PageBannerLink\052923062419-Zibbix.jpg" />
     <Content Include="Content\Pages\PageBannerLink\052923064032-Spoologic.jpg" />
@@ -808,6 +809,8 @@
     <Content Include="js\Budget\BudgetList.js" />
     <Content Include="js\Budget\BudgetOverview.js" />
     <Content Include="js\Budget\BudgetVsActuals.js" />
+    <Content Include="js\CMS\Banner.js" />
+    <Content Include="js\CMS\BannerList.js" />
     <Content Include="js\CMS\List.js" />
     <Content Include="js\CMS\Pages.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
@@ -1524,6 +1527,8 @@
     <Content Include="Views\CMS\Pages.cshtml" />
     <Content Include="Views\CMS\List.cshtml" />
     <Content Include="Views\CMS\PostList.cshtml" />
+    <Content Include="Views\CMS\BannerList.cshtml" />
+    <Content Include="Views\CMS\Banner.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

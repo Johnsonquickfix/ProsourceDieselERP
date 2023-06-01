@@ -20,7 +20,10 @@
     else {
         $("#hfid").val(0);
     }
-
+    $('#featuredshow_picture').click(function () {
+        console.log('ss');
+        $('#Featuredfile').click(); // Trigger click event on file input element
+    });
 
     $('input[type=radio][name=banner]').change(function () {
         if ($("input[name='banner']:checked").val() == "1") {
@@ -63,7 +66,7 @@
         Add();
 
     })
-})
+}) 
 function getcompany() {
     $.ajax({
         url: "/Setting/GetCompany",

@@ -114,7 +114,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                SqlParameter[] para = { new SqlParameter("@qflag", "CNT"), };
+                SqlParameter[] para = { new SqlParameter("@qflag", "CNTBN"), };
                 string strSql = "cms_countpages";
                 dt = SQLHelper.ExecuteDataTable(strSql, para);
             }
@@ -141,7 +141,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pagesize", pagesize),
                     new SqlParameter("@sortcol", SortCol),
                     new SqlParameter("@sortdir", SortDir),
-                    new SqlParameter("@flag", "PLS")
+                    new SqlParameter("@flag", "BLS")
                 };
 
                 DataSet ds = SQLHelper.ExecuteDataSet("cms_page_search", parameters);

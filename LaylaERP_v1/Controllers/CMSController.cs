@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+ 
 
 namespace LaylaERP_v1.Controllers
 {
@@ -29,7 +30,41 @@ namespace LaylaERP_v1.Controllers
         }
         public ActionResult BannerList()
         {
+            //string numbersString = "51909,325019";
+
+            //// Split the string into individual numbers
+            //string[] numberStrings = numbersString.Split(',');
+
+            //// Convert the numbers to the serialized format
+            //List<string> serializedNumbers = new List<string>();
+            //for (int i = 0; i < numberStrings.Length; i++)
+            //{
+            //    int number = int.Parse(numberStrings[i]);
+            //    string serializedNumber = $"i:{i};s:{number.ToString().Length}:\"{number}\";";
+            //    serializedNumbers.Add(serializedNumber);
+            //}
+
+            //// Construct the final serialized string
+            //string serializedString = $"a:{numberStrings.Length}:{{{string.Join("", serializedNumbers)}}}";
+
+            //string[] numberStrings1 = ExtractNumbers(serializedString);
+
+            //// Combine the numbers into a comma-separated string
+            //string numbersString2 = string.Join(",", numberStrings1);
             return View();
+        }
+
+        static string[] ExtractNumbers(string serializedString)
+        {
+            var matches = Regex.Matches(serializedString, @"""([^""]+)""");
+            string[] numberStrings = new string[matches.Count];
+
+            for (int i = 0; i < matches.Count; i++)
+            {
+                numberStrings[i] = matches[i].Groups[1].Value;
+            }
+
+            return numberStrings;
         }
         public ActionResult Banner()
         {

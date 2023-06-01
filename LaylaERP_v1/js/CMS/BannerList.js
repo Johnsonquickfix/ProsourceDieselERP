@@ -6,6 +6,8 @@
     });
     $("#loader").hide();
     // getParentCategory();
+    $(".select1").select2();
+    getcompany();
     GetDetails();
     dataGridLoad('');
     /* setTimeout(function () { dataGridLoad(''); }, 1000);*/
@@ -17,8 +19,25 @@
     $('#draft').click(function () { var order_type = "draft"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfType').val(); dataGridLoad(order_type); });
     $("#loader").hide();
+    $(document).on('click', "#btnsearch", function () {
+        dataGridLoad('');
+    })
 });
 
+function getcompany() {
+    $.ajax({
+        url: "/Setting/GetCompany",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="">Please Select Company</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlcompany').html(opt);
+        }
+
+    });
+}
 //function space(noOfSpaces) {
 //    var space = "# ", returnValue = "";
 //    for (var index = 0; index < noOfSpaces; index++) {
@@ -68,11 +87,11 @@ function GetDetails() {
 }
 
 function dataGridLoad(order_type) {
-    var types = $('#ddltype').val();
+    var company = $('#ddlcompany').val();
     let prodctype = $('#ddlproducttype').val();
     let stockstatus = $('#ddstockstatus').val();
     let _items = [];
-    let obj = { strValue1: types, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj); 
+    let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj);
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
@@ -88,10 +107,10 @@ function dataGridLoad(order_type) {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        sAjaxSource: "/CMS/GetList",
+        sAjaxSource: "/CMS/GetBannerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             //aoData.push({ name: "strValue1", value: monthYear });
-            aoData.push({ name: "strValue1", value: types });
+            aoData.push({ name: "strValue1", value: company });
             aoData.push({ name: "strValue2", value: order_type });
             aoData.push({ name: "strValue3", value: null });
             var col = 'order_id';
@@ -118,8 +137,28 @@ function dataGridLoad(order_type) {
             },
 
             { data: 'post_title', title: 'Title', sWidth: "12%" },
-            { data: 'user_login', title: 'Banner', sWidth: "5%" },
-            { data: 'user_login', title: 'Selected Page', sWidth: "5%" },
+
+            {
+                "data": "mobileimage", sWidth: "7%   ",
+                //'render': function (data, type, full, meta) {
+                //    return '<i class="glyphicon glyphicon-picture"></i>';
+                //}
+                "render": function (data) {
+
+                    url = "../../Content/Pages/MobileBanner/" + data + "";
+                    //if (data.indexOf('product') == -1)
+                    // var result = checkFileExist(url);
+                    //if (data.indexOf('product') != -1) {
+                    //    return '<img src="../../Content/ProductCategory/default.png" width="65" height="50" />';
+                    //}
+                    //else {
+                    if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
+                    else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50"  height="50"/>'; }
+                    else { return '<img src="../../Content/ProductCategory/default.png" width="65" height="50"/>'; }
+                    //}
+                }
+            },
+            { data: 'type_banner', title: 'Selected Page', sWidth: "5%" },
             { data: 'post_date', title: 'Post Date', sWidth: "8%" }, 
             {
                 'data': 'ID', title: 'Action', sWidth: "5%",
@@ -128,7 +167,7 @@ function dataGridLoad(order_type) {
                     //    return ' <b></b>';
                     //else {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to view pages details" data-toggle="tooltip" href="Pages/' + id + '" onclick="ActivityLog(\'Edit pages id (' + id + ') in pages list\',\'Pages/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a title="Click here to view pages details" data-toggle="tooltip" href="Banner/' + id + '" onclick="ActivityLog(\'Edit banner id (' + id + ') in banner list\',\'Banner/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     //    }
                     //    else { return "No Permission"; }
                     //}

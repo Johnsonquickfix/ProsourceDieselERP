@@ -7,9 +7,12 @@
 
     if (id != "") {
         if (id == 'Pages') {
+            $("#lblpermalink").hide();
+            
             $("#hfid").val(0);
         }
         else {
+            $("#lblpermalink").show();
             GetDataByID(id);
             $("#hfid").val(id);
         }
@@ -23,9 +26,24 @@
     // $("#btnbacklist").prop("href", "List")
  
     $(document).on('click', "#btnSave", function () {
-        Add();
-        
+        Add(); 
     })
+
+    $('#lblpermalink').click(function (event) {
+        // Prevent the default behavior of the link
+        event.preventDefault();
+        // Get the parameter value
+        var parameterValue = 'exampleParameter';
+
+        // Make an AJAX request to the controller action
+        /*  window.location.href = '/Test/Index/' + id+'';*/
+
+        var url = '/CMS/Page/' + id;
+
+        // Open the URL in a new tab
+        window.open(url, '_blank');
+     
+    });
 })
 
 function Add() { 
@@ -151,7 +169,8 @@ function GetDataByID(ID) {
             var urlpath = i[0].featured_image_url;
             furl = "../../Content/Pages/Featured/" + urlpath + "";
             $('#featuredshow_picture').attr('src', furl);
-
+            
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title +"");
 
 
         },

@@ -728,6 +728,8 @@
     <Content Include="Content\Pages\Featured\053123052931-Tracktech.jpg" />
     <Content Include="Content\Pages\Featured\053123053012-eliIcon.png" />
     <Content Include="Content\Pages\Featured\053123053258-Tracktech.jpg" />
+    <Content Include="Content\Pages\footer.png" />
+    <Content Include="Content\Pages\header.png" />
     <Content Include="Content\Pages\MobileBanner\052923064032-Spoologic.jpg" />
     <Content Include="Content\Pages\MobileBanner\053123053204-Zibbix.jpg" />
     <Content Include="Content\Pages\MobileBanner\default.png" />
@@ -738,6 +740,17 @@
     <Content Include="Content\Pages\PageBannerLink\052923064032-Spoologic.jpg" />
     <Content Include="Content\Pages\PageBannerLink\053023010435-eliIcon.png" />
     <Content Include="Content\Pages\PageBannerLink\053023010736-Prosourcediesel.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123050617-ZIBBIX-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123051228-Spoologic.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123051341-PROSOURCE-BRAND-BANNER.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123051524-SPOOLOGIC-BRAND-BANNER-MOBILE-4.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123052001-TRACKTECH-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123052345-ZIBBIX-BRAND-BANNER.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123052411-PROSOURCE-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123052539-ZIBBIX-BRAND-BANNER.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123052904-Zibbix.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123053012-Prosourcediesel.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\053123053204-Zibbix.jpg" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />
@@ -1200,6 +1213,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
+    <Content Include="Templates\ProductReviewReminder.html" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Web.config" />
@@ -1544,6 +1558,7 @@
     <Content Include="Views\CMS\PostList.cshtml" />
     <Content Include="Views\CMS\BannerList.cshtml" />
     <Content Include="Views\CMS\Banner.cshtml" />
+    <Content Include="Views\CMS\Page.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -1,70 +1,18 @@
-﻿
+﻿@model string
+
 @{
-    ViewBag.Title = "Index";
+    Layout = null;
 }
 
+<!DOCTYPE html>
 <html>
 <head>
-    <script src='~/js/tinymce/tinymce.min.js'></script>
-     
-    <script type="text/javascript">
-    function GetContent() {
-            return tinyMCE.get('editorcontent').getContent();
-        }
-
-
-        function SetContent(htmlContent) {
-            //alert('ok');
-            tinyMCE.get('editorcontent').setContent(htmlContent);
-        }</script>
-    <script>
-    tinyMCE.init({
-            selector: '#editorcontent',
-        plugins: [
-            'image',  
-                'autolink link lists charmap hr anchor',
-                'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
-                'table contextmenu directionality template paste textcolor'
-            ],
-            menubar: "edit insert view format table tools",
-            //language: 'cs_CZ',
-        //toolbar: 'image',
-        //image_list: [
-        //    { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
-        //    { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
-        //],
-        file_picker_types: 'image',
-        file_picker_callback: function (callback, value, meta) {
-            if (meta.filetype === 'image') {
-                // Trigger the file dialog to allow the user to select an image file
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-                input.onchange = function () {
-                    var file = this.files[0];
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                        var imageDataUrl = reader.result;
-                        callback(imageDataUrl, { alt: '' }); // Pass the selected image data URL to the editor
-                    };
-                    reader.readAsDataURL(file);
-                };
-                input.click();
-            }
-        },
-        paste_data_images: true,
-            setup: function (ed) {
-                ed.on('init', function (e) {
-                    ed.execCommand('mceFullScreen');
-                });
-            }
-        });</script>
+    <title>View with HTML Content</title> 
 </head>
-
 <body>
-    <form method="post">
-        <textarea id="editorcontent"></textarea>
-    </form>
+    <div>
+        @*<a href="https://localhost:44351/Test/Index">ddd</a>*@
+        @Html.Raw(Model)
+    </div>
 </body>
 </html>
-

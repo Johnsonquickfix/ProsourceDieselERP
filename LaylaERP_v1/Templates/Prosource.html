@@ -1,81 +1,121 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body> 
-    <table class="main-div" bgcolor="#e2e4ec" cellspacing="0" cellpadding="0" border="0" role="none" style="width:100%;margin:0;font-size:16px">
-        <tbody>
-            <tr>
-                <td style="font-family:Trebuchet MS;color:#051146">
-                    <table cellspacing="0" class="main-table" role="none" align="center" width="600" style="background-color: #EBF7FE; width: 100%; max-width: 100%; margin: 15px auto">
-                        <tbody>
-                            <tr>
-                                <td class="main-td" style="font-family:Trebuchet MS;color:#051146;padding:0">
-                                    <div class="header-logo" style="width:100%;max-height:50px;padding:20px 0;border-top-right-radius:5px;border-top-left-radius:5px;background-color:#ffffff;text-align:center;-moz-border-top-right-radius:5px;-moz-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;-webkit-border-top-left-radius:5px">
-                                        <!--<img src="{base_url}/{header_logo}" alt="Logo" class="logo-img" style="max-width:250px;max-height:50px">-->
-                                        <!--<img src="{base_url}/{header_logo}" alt="Logo"   height="50">-->
-                                        <!--Header-->
-                                        <img src="../../Content/Pages/header.png" alt="Logo" style="max-width:550px;max-height:80px">
-                                    </div>
-                                    <table class="form-table full-width" cellspacing="0" cellpadding="0" border="0" role="none" style="margin:50px auto;width:100%;min-width:100%">
-                                        <tbody>
-                                            <tr>
-                                                <td width="50" style="font-family:Trebuchet MS;color:#051146"></td>
-                                                <td class="form-container" style="font-family:Trebuchet MS;color:#051146;border:solid 1px #d3d5dc;border-radius:8px;background-color:#ffffff;min-width:320px">
-                                                    <table width="100%" role="none">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td width="5%" style="font-family:Trebuchet MS;color:#051146"></td>
-                                                                <td class="content-header" style="font-family:Trebuchet MS;color:#051146;padding:40px 0;font-size:16px;text-align:center">
-                                                                    <!--Hi {user},<br><br>Thanks again for shopping at <a href="{store_website}" style="text-decoration:none;color:#2f84ed"></a>.<br><br>We’d love to hear what you think about your new <a href="{product_url}" style="text-decoration:none;color:#2f84ed">{product}</a>.<br><br>Once you’ve submitted your review, why not share it to Facebook or Twitter for others to see?-->
-                                                                    {body}
-                                                                </td>
-                                                                <td width="5%" style="font-family:Trebuchet MS;color:#051146"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="ratenreview-readonly-start"></div> 
-                                                </td>
-                                                <td width="50" style="font-family:Trebuchet MS;color:#051146"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="content-bottom gray-text-centered" style="background-color:#ffffff;padding:40px;text-align:center;color:#97a6b4;line-height:1.5em;font-size:15px">
-                                        <p class="feedback" style="margin:0;line-height:1;margin:0 auto;max-width:350px">
-                                            <!--Thanks for your feedback.<br><br>We hope you shop with us again at <a href="{store_website}" style="text-decoration:none;color:#2f84ed"></a> soon-->
-                                          
-                                            <img src="../../Content/Pages/footer.png" alt="Logo" style="max-width:550px;max-height:80px">
-                                        </p> 
-                                    </div> 
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table> 
-                    <!--<div class="powered-by-container" style="width:100%;margin:0 auto;padding-bottom:10px;text-align:center;color:#97a6b4;line-height:1.5em;font-size:15px">
-                        <table cellspacing="0" cellpadding="0" border="0" align="center" role="none">
-                            <tbody>
-                                <tr>
-                                    <td class="powered-by" style="font-family:Trebuchet MS;color:#051146;font-size:18px;font-weight:100;letter-spacing:0.5px">
-                                        <a href="{base_url}" style="text-decoration:none;color:#2f84ed">Powered by</a>
-                                        BBB
-                                    </td>
-                                    <td width="5" style="font-family:Trebuchet MS;color:#051146"></td>
-                                    <td style="font-family:Trebuchet MS;color:#051146">
-                                        <a href="{base_url}" style="text-decoration:none;color:#2f84ed">
-                                            <img src="{base_url}/{Powered_logo}" alt="company" class="company-logo" width="36" height="36" style="max-width:36px;max-height:36px">
-                                            <img src="{base_url}/{Powered_logo}" alt="company"   height="50" >
-                                            CCC
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>-->
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</body>
-</html>
+﻿<style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        background-color: #EBF7FE;
+    }
+    header {
+        text-align: center;
+        padding: 20px 15px;
+        background-color: #fff;
+    }
+    .logo a {
+        display: inline-block;
+    }
+        .logo a img {
+            max-width: 200px;
+        }
+    footer .footer-copyright {
+        background-color: #252525;
+        padding: 15px;
+        color: #fff;
+        text-align: center;
+        margin-top: 10px;
+    }
+    .footer-copyright a {
+        color: #fff;
+        text-decoration: none;
+    }
+    .container {
+        max-width: 1440px;
+        padding: 0 15px;
+        margin: auto;
+    }
+
+    .bodyCont {
+        padding: 15px 0;
+        min-height: calc(100vh - 180px);
+    }
+    .bodyCont img {
+        max-width: 100%;
+    }
+        .bodyContInner {
+        border: solid 1px #d3d5dc;
+        border-radius: 12px;
+        background-color: #ffffff;
+        padding: 20px;
+    }
+
+    .products .row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+    .products .category-product {
+        border: #d9d9d9 solid 1px;
+        padding: 15px 20px;
+        height: 100%;
+        border-radius: 10px;
+    }
+        .products .category-product img {
+            max-height: 180px;
+            width: auto;
+            margin: auto;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    .products h2 {
+        margin: 0;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: #e2091a;
+    }
+    @media only screen and (max-width:991px) {
+        .products .row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .products h2 {
+            font-size: 16px;
+        }
+        }
+    @media only screen and (max-width:767px) {
+        .products .row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media only screen and (max-width:545px) {
+        .products .row {
+            grid-template-columns: 100%;
+        }
+    }
+</style>
+<header>
+    <div class="logo">
+        <a href="https://prosourcediesel.com">
+            <picture>
+                <source data-lazy-srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" type="image/webp" srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp">
+                <source data-lazy-srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp 1x" type="image/png" srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp 1x">
+                <img src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" alt="Logo" data-lazy-src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" data-ll-status="loaded" class="entered lazyloaded">
+                <noscript><img src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" alt="Logo"></noscript>
+            </picture>
+        </a>
+    </div>
+</header>
+<div class="bodyCont">
+    <div class="container">
+        <div class="bodyContInner">
+            {body}
+        </div>
+    </div>
+</div>
+
+    <footer>
+        <div class="footer-copyright">
+            ©2023 <a href="https://prosourcediesel.com">Prosource Diesel</a>
+        </div>
+    </footer>

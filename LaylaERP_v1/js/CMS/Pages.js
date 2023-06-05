@@ -164,15 +164,26 @@ function GetDataByID(ID) {
             //$("#txtcompanyname").val(i[0].CompanyName);  
             var path = i[0].meta_value;
             url = "../../Content/Pages/PageBannerLink/" + path + ""; 
-            $('#show_picture').attr('src', url);
+            $('<img>').on('load', function () {
+                // Image exists
+                $('#show_picture').attr('src', url);
+            }).on('error', function () {
+                // Image does not exist
+                $('#show_picture').attr('src', "../../Content/Product/default.png"); // Set a default image or do something else
+            }).attr('src', url); 
 
+           // $('#show_picture').attr('src', url); 
             var urlpath = i[0].featured_image_url;
-            furl = "../../Content/Pages/Featured/" + urlpath + "";
-            $('#featuredshow_picture').attr('src', furl);
-            
-            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title +"");
-
-
+            furl = "../../Content/Pages/Featured/" + urlpath + ""; 
+            $('<img>').on('load', function () {
+                // Image exists
+                $('#featuredshow_picture').attr('src', furl);
+            }).on('error', function () {
+                // Image does not exist
+                $('#featuredshow_picture').attr('src', "../../Content/Product/default.png"); // Set a default image or do something else
+            }).attr('src', furl); 
+           // $('#featuredshow_picture').attr('src', furl); 
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title +""); 
         },
         error: function (msg) { alert(msg); }
     });

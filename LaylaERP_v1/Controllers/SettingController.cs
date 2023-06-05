@@ -163,6 +163,10 @@ namespace LaylaERP.Controllers
             string cmids = CommanUtilities.Provider.GetCurrent().user_companyid;
             return View();
         }
+        public ActionResult ProductCompanyAllot()
+        { 
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -693,6 +697,50 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["text"].ToString(), Value = dr["id"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetProductCompany(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetProductCompany(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProducttocompany(SetupModel model)
+        {
+            if (model.searchid > 0)
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update Product company", "ProductCompanyAllot/" + ", " + Net.BrowserInfo);
+
+                SettingRepository.UpdateProducttocompany(model);
+                return Json(new { status = true, message = "Product company updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult Selectproductcompanybiyid(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.Selectproductcompanybiyid(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

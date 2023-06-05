@@ -984,6 +984,7 @@
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
+    <Content Include="js\Setting\Productcompany.js" />
     <Content Include="js\Setting\Usercompany.js" />
     <Content Include="js\Setup\accountingclasstransaction.js" />
     <Content Include="js\Setup\editproductrule.js" />
@@ -1213,7 +1214,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
-    <Content Include="Templates\ProductReviewReminder.html" />
+    <Content Include="Templates\Prosource.html" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
     <Content Include="Web.config" />
@@ -1559,6 +1560,7 @@
     <Content Include="Views\CMS\BannerList.cshtml" />
     <Content Include="Views\CMS\Banner.cshtml" />
     <Content Include="Views\CMS\Page.cshtml" />
+    <Content Include="Views\Setting\ProductCompanyAllot.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

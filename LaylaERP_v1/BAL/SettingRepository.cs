@@ -650,5 +650,63 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+
+        public static DataTable GetProductCompany(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "cms_productcompanylist";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int UpdateProducttocompany(SetupModel model)
+        {
+
+            try
+            {
+                string strsql = "cms_companyproduct_iud";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@qflag", "I"),
+                    new SqlParameter("@product_id",model.searchid),
+                    new SqlParameter("@company_id",model.state),
+                    new SqlParameter("@company",model.country),
+            };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/cms_companyproduct_iud/" + model.searchid + "", "Update product company details.");
+                throw Ex;
+            }
+        }
+
+        public static DataTable Selectproductcompanybiyid(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID as id, product_id,company_id"
+                                  + " FROM cms_productcompany"
+                                  + " WHERE product_id='" + id + "' and company_id is not null ";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
     }
 }

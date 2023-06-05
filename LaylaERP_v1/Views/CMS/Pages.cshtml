@@ -28,14 +28,71 @@
     <script type="text/javascript">
     </script>
     <script>
+
+        // Create a custom shortcode plugin
+        tinymce.PluginManager.add('shortcode', function (editor) {
+            // Register a command to insert the shortcode
+            editor.addCommand('insertShortcode', function (ui, value) {
+                // Parse the shortcode options
+                var options = value.split(',');
+                var shortcode = '[' + options.shift() + ' ';
+
+                // Add the options as attributes to the shortcode
+                for (var i = 0; i < options.length; i++) {
+                    var parts = options[i].split('=');
+                    if (parts.length === 2) {
+                        var attr = parts[0].trim();
+                        var val = parts[1].trim();
+                        shortcode += attr + '="' + val + '" ';
+                    }
+                }
+
+                shortcode += ']';
+
+                // Insert the shortcode at the current cursor position
+                editor.execCommand('mceInsertContent', false, shortcode);
+            });
+
+            //// Add a button to the toolbar for inserting the shortcode
+            //editor.addButton('shortcode', {
+            //    text: 'Insert Shortcode',
+            //    icon: false,
+            //    onclick: function () {
+            //        // Prompt the user to enter the shortcode with options
+            //        var shortcodeWithOpts = prompt('Enter the shortcode with options:');
+            //        if (shortcodeWithOpts) {
+            //            // Execute the insertShortcode command with the provided shortcode and options
+            //            editor.execCommand('insertShortcode', false, shortcodeWithOpts);
+            //        }
+            //    }
+            //});
+
+            // Add a menu item to the context menu for inserting the shortcode
+            editor.addMenuItem('shortcode', {
+                text: 'Insert Shortcode',
+                icon: false,
+                context: 'insert',
+                onclick: function () {
+                    // Prompt the user to enter the shortcode with options
+                    var shortcodeWithOpts = prompt('Enter the shortcode with options:');
+                    if (shortcodeWithOpts) {
+                        // Execute the insertShortcode command with the provided shortcode and options
+                        editor.execCommand('insertShortcode', false, shortcodeWithOpts);
+                    }
+                }
+            });
+        });
+
+
         tinyMCE.init({
             selector: '#editorcontent',
             plugins: [
                 'image',
                 'autolink link lists charmap hr anchor',
                 'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking',
-                'table contextmenu directionality template paste textcolor'
+                'table contextmenu directionality template paste textcolor shortcode'
             ],
+            toolbar: 'shortcode | insert | ...',
             menubar: "edit insert view format table tools",
             file_picker_types: 'image',
             file_picker_callback: function (callback, value, meta) {

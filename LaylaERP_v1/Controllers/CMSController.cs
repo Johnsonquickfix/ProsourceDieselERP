@@ -39,7 +39,7 @@ namespace LaylaERP_v1.Controllers
 
                 };
             DataSet ds = SQLHelper.ExecuteDataSet("cms_pagelink_search", parameters);
-             string FilePath = Path.Combine(Server.MapPath("~/Templates/ProductReviewReminder.html"));
+             string FilePath = Path.Combine(Server.MapPath("~/Templates/Prosource.html"));
               StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();

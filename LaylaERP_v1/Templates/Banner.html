@@ -1,0 +1,137 @@
+﻿<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        background-color: #EBF7FE;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px 15px;
+        background-color: #fff;
+    }
+
+    .logo a {
+        display: inline-block;
+    }
+
+        .logo a img {
+            max-width: 200px;
+        }
+
+    footer .footer-copyright {
+        background-color: #252525;
+        padding: 15px;
+        color: #fff;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .footer-copyright a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .container {
+        max-width: 1440px;
+        padding: 0 15px;
+        margin: auto;
+    }
+
+    .bodyCont {
+        padding: 15px 0;
+        min-height: calc(100vh - 180px);
+    }
+
+        .bodyCont img {
+            max-width: 100%;
+        }
+
+    .bodyContInner {
+        border: solid 1px #d3d5dc;
+        border-radius: 12px;
+        background-color: #ffffff;
+        padding: 20px;
+    }
+
+    .products .row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .products .category-product {
+        border: #d9d9d9 solid 1px;
+        padding: 15px 20px;
+        height: 100%;
+        border-radius: 10px;
+    }
+
+        .products .category-product img {
+            max-height: 180px;
+            width: auto;
+            margin: auto;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+    .products h2 {
+        margin: 0;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: #e2091a;
+    }
+
+    @media only screen and (max-width:991px) {
+        .products .row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .products h2 {
+            font-size: 16px;
+        }
+    }
+
+    @media only screen and (max-width:767px) {
+        .products .row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media only screen and (max-width:545px) {
+        .products .row {
+            grid-template-columns: 100%;
+        }
+    }
+</style>
+<header>
+    <div class="logo">
+        <a href="https://prosourcediesel.com">
+            <picture>
+                <source data-lazy-srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" type="image/webp" srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp">
+                <source data-lazy-srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp 1x" type="image/png" srcset="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp 1x">
+                <img src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" alt="Logo" data-lazy-src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" data-ll-status="loaded" class="entered lazyloaded">
+                <noscript><img src="https://e4w8u4k7.stackpathcdn.com/wp-content/themes/ydg-theme-child/img/logo.webp" alt="Logo"></noscript>
+            </picture>
+        </a>
+    </div>
+</header>
+<div class="bodyCont">
+    <div class="container">
+        <div class="bodyContInner">
+            <img src="{body}" alt="Logo"> 
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-copyright">
+        ©2023 <a href="https://prosourcediesel.com">Prosource Diesel</a>
+    </div>
+</footer>

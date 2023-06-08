@@ -480,6 +480,12 @@
     <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
     <Content Include="Content\BankLinkedFiles\default.png" />
+    <Content Include="Content\Banner\Featured\060723052539-ZIBBIX-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Banner\Featured\060723053522-Zibbix.jpg" />
+    <Content Include="Content\Banner\Featured\060723053748-image_2023_06_01T13_56_23_256Z.png" />
+    <Content Include="Content\Banner\MobileBanner\060723052539-image_2023_06_01T13_56_23_256Z.png" />
+    <Content Include="Content\Banner\MobileBanner\060723053437-Spoologic.jpg" />
+    <Content Include="Content\Banner\MobileBanner\default.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -1216,6 +1222,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
+    <Content Include="Templates\Banner.html" />
     <Content Include="Templates\Prosource.html" />
     <Content Include="Views\Reports\PeriodCalculateChart.cshtml" />
     <Content Include="Views\Setting\ExceptionLog.cshtml" />
@@ -1563,6 +1570,7 @@
     <Content Include="Views\CMS\Banner.cshtml" />
     <Content Include="Views\CMS\Page.cshtml" />
     <Content Include="Views\Setting\ProductCompanyAllot.cshtml" />
+    <Content Include="Views\CMS\Banners.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

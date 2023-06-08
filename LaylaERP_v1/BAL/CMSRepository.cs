@@ -171,7 +171,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@id",ID),
                 };
                 DataTable ds = new DataTable();
-                dt = DAL.SQLHelper.ExecuteDataTable("cms_pagebyid", parameters);
+                dt = DAL.SQLHelper.ExecuteDataTable("cms_bannerbyid", parameters);
 
             }
             catch (Exception ex)
@@ -181,28 +181,28 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int CreateBanner(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content)
-        {
-            try
-            {
-                SqlParameter[] para = {
-                    new SqlParameter("@qflag",qflag),
-                    new SqlParameter("@ID", ID),
-                    new SqlParameter("@post_title",post_title),
-                    new SqlParameter("@post_content",post_content),
-                    new SqlParameter("@InnerPageBannerLink",InnerPageBannerLink),
-                    new SqlParameter("@entity_id",entity_id) ,
-                    new SqlParameter("@SEO",SEO),
-                    new SqlParameter("@Content",Content)
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_pages_iud", para));
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
+        //public static int CreateBanner(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content)
+        //{
+        //    try
+        //    {
+        //        SqlParameter[] para = {
+        //            new SqlParameter("@qflag",qflag),
+        //            new SqlParameter("@ID", ID),
+        //            new SqlParameter("@post_title",post_title),
+        //            new SqlParameter("@post_content",post_content),
+        //            new SqlParameter("@InnerPageBannerLink",InnerPageBannerLink),
+        //            new SqlParameter("@entity_id",entity_id) ,
+        //            new SqlParameter("@SEO",SEO),
+        //            new SqlParameter("@Content",Content)
+        //        };
+        //        int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_pages_iud", para));
+        //        return result;
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
 
         public static DataTable GetpageData(string optType)
         {
@@ -227,6 +227,31 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DS;
+        }
+
+        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@ID", ID),
+                    new SqlParameter("@post_title",post_title),
+                    new SqlParameter("@InnerPageBannerLink",bannerurl),
+                    new SqlParameter("@for_mobile",FileName),
+                    new SqlParameter("@InnerPageBannerImage",featured_image_url),
+                    new SqlParameter("@InnerPageBannerType",btypeof) ,
+                     new SqlParameter("@entity_id",entity_id), 
+                     new SqlParameter("@InnerPageBannerSelection",type),
+                    //new SqlParameter("@Content",Content)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_banner_iud", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

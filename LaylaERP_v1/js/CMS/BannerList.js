@@ -144,18 +144,9 @@ function dataGridLoad(order_type) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}
                 "render": function (data) {
-
-                    url = "../../Content/Pages/MobileBanner/" + data + "";
-                    //if (data.indexOf('product') == -1)
-                    // var result = checkFileExist(url);
-                    //if (data.indexOf('product') != -1) {
-                    //    return '<img src="../../Content/ProductCategory/default.png" width="65" height="50" />';
-                    //}
-                    //else {
-                    if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
-                    else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50"  height="50"/>'; }
-                    else { return '<img src="../../Content/ProductCategory/default.png" width="65" height="50"/>'; }
-                    //}
+                    var url = "../../Content/Banner/MobileBanner/" + data;
+                    var defaultImageUrl = "../../Content/ProductCategory/default.png"; 
+                    return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
                 }
             },
             { data: 'type_banner', title: 'Selected Page', sWidth: "5%" },

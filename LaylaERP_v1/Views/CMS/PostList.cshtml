@@ -22,6 +22,10 @@
     tr.shown td.details-control {
         background: url('https://cdn.rawgit.com/DataTables/DataTables/6c7ada53ebc228ea9bc28b1b216e793b1825d188/examples/resources/details_close.png') no-repeat center center;
     }
+    .text-wrap {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
 </style>
 <style>
     .uppercase {
@@ -31,7 +35,7 @@
 
 <div class="page-title">
     <h2>All Post</h2>
-    <a class="btn btn-danger" id="btnAdd" title="Click here to add pages" data-placement="bottom" data-toggle="tooltip" href="Pages" onclick="return ActivityLog('Create new pages in list ','/Product/ListProduct/');">Add New</a>
+    <a class="btn btn-danger" id="btnAdd" title="Click here to add post" data-placement="bottom" data-toggle="tooltip" href="Post" onclick="return ActivityLog('Create new posts in list ','/Product/ListPost/');">Add New</a>
 </div>
 
 <section class="content section-content neworder-section table-design">
@@ -94,6 +98,19 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control select1" id="ddlcompany" style="width:100%;"></select>
+                        <button type="button" title="Click here for search" data-placement="bottom" data-toggle="tooltip" id="btnsearch" class="btn btn-primary btn-flat button">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- end top-->
     <div class="row">
         <div class="col-md-12">
@@ -108,6 +125,7 @@
                                         <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
                                         <th>Title</th>
                                         <th>Author</th>
+                                        <th>Categories</th>
                                         <th>Creation Date</th>
                                         <th></th>
                                     </tr>
@@ -128,7 +146,7 @@
     </div>
 </section>
 <script src="~/js/common.js"></script>
-<script src="@Url.Content("~/js/CMS/List.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/CMS/PostList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     //$(document).ready(function () {

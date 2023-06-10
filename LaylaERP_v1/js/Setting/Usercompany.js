@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#loader").hide();
      $(".select2").select2(); 
     $("#ddlcompany").select2({
-        allowClear: true, minimumInputLength: 2, placeholder: "Search company",
+        allowClear: true, minimumInputLength: 2, placeholder: "Search website",
         ajax: {
             url: '/Setting/GetcompanyData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
@@ -45,7 +45,7 @@ function UserGrid() {
             { data: 'user_login', title: 'User Login', sWidth: "20%", },
             { data: 'user_email', title: 'Email', sWidth: "20%", },
             { data: 'user_status', title: 'Status', sWidth: "20%", },
-            { data: 'company', title: 'Company', sWidth: "10%" },
+            { data: 'company', title: 'Website', sWidth: "10%" },
             //{
             //    'data': '#', sWidth: "20%",
             //    'render': function (id, type, full, meta) {
@@ -61,7 +61,7 @@ function UserGrid() {
             {
                 'data': 'ID', sWidth: "7%",
                 'render': function (id, type, full, meta) {
-                    return ' <span title="Click here to add company" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model(' + id + ');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
+                    return ' <span title="Click here to add website" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="model(' + id + ');" ><i class="glyphicon glyphicon-eye-open"></i></a></span>';
                 }
             },
 

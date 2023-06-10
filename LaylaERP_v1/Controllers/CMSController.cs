@@ -78,6 +78,41 @@ namespace LaylaERP_v1.Controllers
             return View();
         }
 
+        public ActionResult Post()
+        {
+            DataTable dt = new DataTable();
+            // dt = BAL.ProductRepository.GetProductcategoriesList();
+            string id = "";
+            dt = CMSRepository.GetParentCategory(id);
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = space(Convert.ToInt32(dt.Rows[i]["level"])) + dt.Rows[i]["name"].ToString()
+
+                });
+            }
+            ViewBag.product = usertype.Select(N => new SelectListItem { Text = N.Text, Value = N.Value.ToString() });
+            return View();
+            
+        }
+        public string space(int noOfSpaces)
+        {
+            //try
+            //{
+            string returnValue = string.Empty;
+            string space = "#";
+            for (var index = 0; index < noOfSpaces; index++)
+            {
+                returnValue += space;
+            }
+            //}
+            //catch { }
+            return returnValue;
+        }
+
         static string[] ExtractNumbers(string serializedString)
         {
             var matches = Regex.Matches(serializedString, @"""([^""]+)""");
@@ -487,6 +522,248 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetPostCount(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = CMSRepository.GetPostCount();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetPostList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = CMSRepository.GetPostList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetPostDataByID(int ID)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = CMSRepository.GetPostDataByID(ID);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        private void Add_term(string CategoryID, int ID)
+        {            
+            string CommaStr = CategoryID;
+            if (!string.IsNullOrEmpty(CommaStr))
+            {
+                var myarray = CommaStr.Split(',');
+                for (var i = 0; i < myarray.Length; i++)
+                {
+                    ProductRepository.Add_term(Convert.ToInt32(myarray[i]), ID);
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+
+                }
+            }
+        }
+
+        private void update_term(string CategoryID, int ID)
+        {
+            update_countdes(CategoryID, ID);
+            delete_term(CategoryID, ID); 
+            string CommaStr = CategoryID;
+            var myarray = CommaStr.Split(',');
+            for (var i = 0; i < myarray.Length; i++)
+            {
+                if (string.IsNullOrEmpty(myarray[i]) || myarray[i] == "undefined" || myarray[i] == "")
+                { }
+                else
+                {
+                    ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                }
+            }
+        }
+        private void update_countdes(string CategoryID, long ID)
+        {
+            string CommaStr = new CMSRepository().GetCountforupdate(ID);
+
+            var myarray = CommaStr.Split(',');
+
+            for (var i = 0; i < myarray.Length; i++)
+            {
+                if (myarray[i] == "")
+                {
+
+                }
+                else
+                {
+                    ProductRepository.update_count(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                }
+            }
+        }
+        private void delete_term(string CategoryID, long ID)
+        {
+            ProductRepository.Edit_term(0, Convert.ToInt32(ID));           
+        }
+
+        public JsonResult CreatePost(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string category, HttpPostedFileBase FeaturedFile)
+        {
+            var ImagePath = "";
+            //var ImagePaththum = "";
+            int entity = 0;
+            string FileName = "";
+            string featuerimg = "";
+            string pathimage = "";
+            string futherpathimage = "";
+            //string FileNamethumb = "";
+            string FileExtension = "";
+            string FeatuerFileExtension = "";
+            //string encodedHtml = "%3Cp%3Ehi%20this%20is%26nbsp%3B%3C%2Fp%3E%0D%0A%3Cp%3Etest%3C%2Fp%3E%0D%0A%3Cp%3Eeditore%20save%3C%2Fp%3E";
+            post_content = HttpUtility.UrlDecode(post_content);
+
+            //string decodedHtml = HttpUtility.UrlDecode(post_content);
+            if (ImageFile != null)
+            {
+                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                FileName = Regex.Replace(FileName, @"\s+", "");
+
+
+
+
+                string size = (ImageFile.ContentLength / 1024).ToString();
+                FileExtension = Path.GetExtension(ImageFile.FileName);
+
+                // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                {
+                    //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Post/SingalImage"));
+
+                    UploadPath = UploadPath + "\\";
+                    pathimage = UploadPath + FileName;
+                    // model.ImagePathOut = UploadPath + FileNamethumb;
+
+                    if (FileName == "")
+                    {
+                        FileName = "default.png";
+                    }
+                    ImagePath = "~/Content/Post/SingalImage/" + FileName;
+                    //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
+                    ImageFile.SaveAs(pathimage);
+
+                    if (FeaturedFile != null)
+                    {
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Post/Featured"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
+
+                    if (Convert.ToInt32(ID) > 0)
+                    {
+                        entity = CMSRepository.CreatePost("U", ID, post_title, post_content, FileName, entity_id, category,  featuerimg);
+                        update_term(category,Convert.ToInt32(ID));
+                        if (entity > 0)
+                        {
+                            return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
+                    }
+                    else
+                    {
+                        entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category,  featuerimg);
+                        Add_term(category, Convert.ToInt32(entity));
+                        if (entity > 0)
+                        {
+                            return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                }
+            }
+            else
+            {
+                if (Convert.ToInt64(ID) == 0)
+                {
+                    entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                    Add_term(category, Convert.ToInt32(entity));
+                    if (entity > 0)
+                    {
+                        return Json(new { status = true, message = "Update successfully.", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    if (FeaturedFile != null)
+                    {
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Post/Featured"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                        entity = CMSRepository.CreatePost("UF", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                        update_term(category, Convert.ToInt32(ID));
+                    }
+                    else
+                    {
+                        entity = CMSRepository.CreatePost("UP", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                        update_term(category, Convert.ToInt32(ID));
+                    }
+                    return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
+                }
+            }
+
         }
 
 

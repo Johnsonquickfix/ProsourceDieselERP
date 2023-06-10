@@ -485,6 +485,8 @@
     <Content Include="Content\Banner\Featured\060723053748-image_2023_06_01T13_56_23_256Z.png" />
     <Content Include="Content\Banner\MobileBanner\060723052539-image_2023_06_01T13_56_23_256Z.png" />
     <Content Include="Content\Banner\MobileBanner\060723053437-Spoologic.jpg" />
+    <Content Include="Content\Banner\MobileBanner\060723060020-TRACKTECH-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Banner\MobileBanner\060723061433-Prosourcediesel.jpg" />
     <Content Include="Content\Banner\MobileBanner\default.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -735,6 +737,7 @@
     <Content Include="Content\Pages\Featured\053123053012-eliIcon.png" />
     <Content Include="Content\Pages\Featured\053123053258-Tracktech.jpg" />
     <Content Include="Content\Pages\Featured\060523060128-PROSOURCE-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Pages\Featured\060723045425-TRACKTECH-BRAND-BANNER.jpg" />
     <Content Include="Content\Pages\footer.png" />
     <Content Include="Content\Pages\header.png" />
     <Content Include="Content\Pages\MobileBanner\052923064032-Spoologic.jpg" />
@@ -759,6 +762,19 @@
     <Content Include="Content\Pages\PageBannerLink\053123053012-Prosourcediesel.jpg" />
     <Content Include="Content\Pages\PageBannerLink\053123053204-Zibbix.jpg" />
     <Content Include="Content\Pages\PageBannerLink\060523051651-PROSOURCE-BRAND-BANNER.jpg" />
+    <Content Include="Content\Pages\PageBannerLink\060723045425-TRACKTECH-BRAND-BANNER-MOBILE.jpg" />
+    <Content Include="Content\Post\Featured\060923031253-Spoologic.jpg" />
+    <Content Include="Content\Post\Featured\060923033037-Zibbix.jpg" />
+    <Content Include="Content\Post\Featured\060923070529-Spoologic.jpg" />
+    <Content Include="Content\Post\Featured\060923074156-Spoologic.jpg" />
+    <Content Include="Content\Post\SingalImage\060923031806-Tracktech.jpg" />
+    <Content Include="Content\Post\SingalImage\060923032531-Zibbix.jpg" />
+    <Content Include="Content\Post\SingalImage\060923032624-Zibbix.jpg" />
+    <Content Include="Content\Post\SingalImage\060923032930-Zibbix.jpg" />
+    <Content Include="Content\Post\SingalImage\060923033037-Spoologic.jpg" />
+    <Content Include="Content\Post\SingalImage\060923070600-Zibbix.jpg" />
+    <Content Include="Content\Post\SingalImage\060923070808-Zibbix.jpg" />
+    <Content Include="Content\Post\SingalImage\060923074156-Zibbix.jpg" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />
@@ -849,6 +865,8 @@
     <Content Include="js\CMS\BannerList.js" />
     <Content Include="js\CMS\List.js" />
     <Content Include="js\CMS\Pages.js" />
+    <Content Include="js\CMS\Post.js" />
+    <Content Include="js\CMS\PostList.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1571,6 +1589,7 @@
     <Content Include="Views\CMS\Page.cshtml" />
     <Content Include="Views\Setting\ProductCompanyAllot.cshtml" />
     <Content Include="Views\CMS\Banners.cshtml" />
+    <Content Include="Views\CMS\Post.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

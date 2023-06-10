@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "ProductCompanyAllot";
+    ViewBag.Title = "ProductWebsiteAllot";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2>Company Product Assign</h2>
+    <h2>Website Product Assign</h2>
 </div>
 <section class="content section-content product-acctount-section table-design">
     <div class="row">
@@ -30,7 +30,7 @@
                                 <th class="text-left">ID</th>
                                 <th class="text-left">Product</th> 
                                 <th class="text-left">SKU</th>
-                                <th class="text-left">Company to assign</th>
+                                <th class="text-left">Website to assign</th>
                                 <th class="text-left">Action</th>
                             </tr>
                         </thead>
@@ -46,10 +46,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="form-inline">
-                        <h4 class="modal-title" id="exampleModalLongTitle">Company assign to Product</h4>
+                        <h4 class="modal-title" id="exampleModalLongTitle">Website assign to Product</h4>
                         <div class="text-right"><button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button></div>
                         <input type="hidden" id="hfProductid" />
-                        <label for="state">Company<span style="color:red"></span></label>
+                        <label for="state">Website<span style="color:red"></span></label>
                         <Select class="form-control" multiple id="ddlcompany" style="width: 100%;">
                             <option></option>
                         </Select>

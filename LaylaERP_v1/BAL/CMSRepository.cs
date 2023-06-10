@@ -253,5 +253,141 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable GetPostCount()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para = { new SqlParameter("@qflag", "CNTPT"), };
+                string strSql = "cms_countpages";
+                dt = SQLHelper.ExecuteDataTable(strSql, para);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetPostList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "ID", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+
+                    new SqlParameter("@post_status", userstatus),
+                   new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@strValue1", strValue1),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "PST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("cms_page_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetParentCategory(string term_taxonomy_id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+
+                string strSQl = "erp_ProductCategory";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "CategoryPostList")
+                };
+                DS = SQLHelper.ExecuteDataTable(strSQl, para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+
+        public static DataTable GetPostDataByID(int ID)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@condition", ""),
+                    new SqlParameter("@flag", "ByID"),
+                    new SqlParameter("@id",ID),
+                };
+                DataTable ds = new DataTable();
+                dt = DAL.SQLHelper.ExecuteDataTable("cms_postbyid", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
+        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category,  string featured_image_url)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@ID", ID),
+                    new SqlParameter("@post_title",post_title),
+                    new SqlParameter("@post_content",post_content),
+                    new SqlParameter("@InnerPageBannerLink",InnerPageBannerLink),
+                    new SqlParameter("@featured_image_url",featured_image_url),
+                    new SqlParameter("@entity_id",entity_id) ,
+                    new SqlParameter("@Category",Category)
+                    //new SqlParameter("@Content",Content)
+                };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_post_iud", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public string GetCountforupdate(long PostID)
+        {
+            string result = "";
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select string_agg(tm. term_taxonomy_id,',') ID from wp_term_relationships tr inner join wp_term_taxonomy tm on tm. term_taxonomy_id = tr.term_taxonomy_id  and taxonomy = 'product'  WHERE object_id =" + PostID + "; ";
+                result = SQLHelper.ExecuteScalar(strSQl).ToString();
+                //return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
     }
 }

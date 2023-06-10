@@ -40,7 +40,7 @@
         // Make an AJAX request to the controller action
         /*  window.location.href = '/Test/Index/' + id+'';*/
 
-        var url = '/CMS/Page/' + id;
+        var url = '/CMS/Posts/' + id;
 
         // Open the URL in a new tab
         window.open(url, '_blank');

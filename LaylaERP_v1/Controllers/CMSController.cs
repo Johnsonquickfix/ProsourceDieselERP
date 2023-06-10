@@ -98,6 +98,28 @@ namespace LaylaERP_v1.Controllers
             return View();
             
         }
+        public ActionResult Posts(int id)
+        {
+            SqlParameter[] parameters =
+               {
+                    new SqlParameter("@flag", "POS"),
+                    new SqlParameter("@id", id)
+
+                };
+            DataSet ds = SQLHelper.ExecuteDataSet("cms_pagelink_search", parameters);
+            string FilePath = Path.Combine(Server.MapPath("~/Templates/Prosource.html"));
+            StreamReader str = new StreamReader(FilePath);
+            string MailText = str.ReadToEnd();
+            str.Close();
+            string strTemp = string.Empty, _body = string.Empty;
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                strTemp = MailText;
+                _body = dr["post_content"] != DBNull.Value ? dr["post_content"].ToString().Trim() : "";
+                strTemp = strTemp.Replace("{body}", _body);
+            }
+            return View((object)strTemp);
+        }
         public string space(int noOfSpaces)
         {
             //try

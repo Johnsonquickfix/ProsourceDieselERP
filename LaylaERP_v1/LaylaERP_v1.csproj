@@ -1590,6 +1590,7 @@
     <Content Include="Views\Setting\ProductCompanyAllot.cshtml" />
     <Content Include="Views\CMS\Banners.cshtml" />
     <Content Include="Views\CMS\Post.cshtml" />
+    <Content Include="Views\CMS\Posts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

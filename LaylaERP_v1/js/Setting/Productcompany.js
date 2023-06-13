@@ -4,7 +4,16 @@ $(document).ready(function () {
     $("#loader").hide();
     $(".select2").select2();
     $("#ddlcompany").select2({
-        allowClear: true, minimumInputLength: 2, placeholder: "Search website",
+        allowClear: true, minimumInputLength: 0, placeholder: "Search website",
+        ajax: {
+            url: '/Setting/GetcompanyData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
+            error: function (xhr, status, err) { }, cache: true
+        }
+    });
+    $("#ddlwebcompany").select2({
+        allowClear: true, minimumInputLength: 0, placeholder: "Search website",
         ajax: {
             url: '/Setting/GetcompanyData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
@@ -46,7 +55,15 @@ function ProductGrid() {
         lengthMenu: [[20, 50, 100], [20, 50, 100]],
         columns: [
             //{ data: 'ID', title: 'Parent ID', sWidth: "10%" },
+            {
+                'data': 'ID', sWidth: "3%   ",
+                'render': function (data, type, row) {
+                    return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+                }
+            },
             { data: 'ID', title: 'ID', sWidth: "10%" },
+            
+
             { data: 'post_title', title: 'Product', sWidth: "20%", },
             { data: 'sku', title: 'SKU', sWidth: "20%", }, 
             { data: 'company', title: 'Website', sWidth: "10%" },
@@ -178,9 +195,13 @@ function updatecompnay() {
             success: function (data) {
                 if (data.status == true) {
                     //swal('Success', data.message, 'success').then((result) => { location.href = 'ProductCompanyAllot'; });
-                    swal('Success', data.message, 'success');
-                    $('#ProductcompanyModal').modal('hide');
-                    ProductGrid();
+                    //swal('Success', data.message, 'success');
+                    //$('#ProductcompanyModal').modal('hide');
+                    //ProductGrid();
+
+                    swal('Alert', data.message, 'success').then((result) => {
+                        $('#ProductcompanyModal').modal('hide');
+                        ProductGrid(); });
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -213,4 +234,76 @@ function SelectedProductcompany() {
     });
 
 
+}
+
+function CheckAll() {
+    var isChecked = $('#checkall').prop("checked");
+    $('#ProductGriddata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+}
+function Singlecheck(chk) {
+    var isChecked = $(chk).prop("checked");
+    var isHeaderChecked = $("#checkall").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkall").prop('checked', isChecked);
+    else {
+        $('#ProductGriddata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkall").prop('checked', isChecked);
+    }
+}
+
+function AllotWebsite() {
+    var id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        id += $(this).val() + ",";
+    });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    //var status = $('#ddlbulkaction').val();
+    //var statusval = $("#ddlbulkaction :selected").text();
+    var companyarray = $('#ddlwebcompany option:selected')
+        .toArray().map(item => item.value).join();
+    company = companyarray;
+
+    var companytextarray = $('#ddlwebcompany option:selected')
+        .toArray().map(item => item.text).join();
+    companytext = companytextarray;
+    if (id == "") { swal('Alert', 'Please select product from list', 'error'); }
+    else if (company == "") { swal('Alert', 'Please select website', 'error'); }
+    else {
+        console.log(id);
+        var obj = { companyid: company, company: companytext, ids: id }
+       // const updatestatus = status == 'publish' ? 'Active' : 'Inactive';
+       // ActivityLog('Change product status as ' + updatestatus + '', '/Product/ListProduct');
+        //var checkstr = confirm('are you sure want to update this?');
+        //if (checkstr == true) {
+        swal({ title: "", text: 'Would you like to assign' + companytext + ' this product?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '/Setting/UpdateWebsite', dataType: 'JSON', type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                swal('Alert', data.message, 'success').then((result) => { ProductGrid(); $("#ddlwebcompany").empty(); });
+
+                            }
+                            else {
+                                swal('Alert', 'something went wrong!', 'success');
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+
+                    })
+                     
+                }
+            });
+    }
 }

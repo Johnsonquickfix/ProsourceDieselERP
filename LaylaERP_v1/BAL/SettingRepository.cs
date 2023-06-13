@@ -566,7 +566,7 @@ namespace LaylaERP.BAL
             DataTable DS = new DataTable();
             try
             {
-                string strSQl = "Select entity ID, CompanyName label from erp_entityinfo ;";
+                string strSQl = "Select entity ID, CompanyName label from erp_entityinfo where CompanyName like '%" + optType + "%' ;";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -707,6 +707,29 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public int UpdateWebsite(string companyid, string company, string ID)
+        {
+            try
+            {
+                //string strsql = string.Format("update cms_productcompany set company_id=@companyid,company=@company where ID  in ({0}); ", ID);
+                string strsql = "cms_companyproduct_iud";
+                SqlParameter[] para =
+                {
+                     new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@company_id", companyid),
+                     new SqlParameter("@company", company),
+                     new SqlParameter("@product_ids", ID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para)); 
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/web site product assign/" + "0" + "", "Update Product Website");
+                throw Ex;
+            }
         }
     }
 }

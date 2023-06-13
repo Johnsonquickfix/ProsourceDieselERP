@@ -742,5 +742,21 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [HttpPost]
+        public JsonResult UpdateWebsite(string companyid, string company, string ids)
+        { 
+            if (companyid != "")
+            {
+                SettingRepository or = new SettingRepository();
+                or.UpdateWebsite(companyid, company, ids);
+                return Json(new { status = true, message = "Website update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
     }
 }

@@ -1,0 +1,15 @@
+
+==========================================================================================================
+                                               LaylaERP                                                   
+                                             Expection Log                                    
+==========================================================================================================
+ ==========================================================================================================
+ Date Time: 6/13/2023 3:46:59 PM
+ URL: Setting/web site product assign/0
+ Host: LAPTOP-KPLPSEPJ
+ IP: 192.168.18.12
+ Error Query: Update Product Website
+ Error: The COMMIT TRANSACTION request has no corresponding BEGIN TRANSACTION.
+ Source : .Net SqlClient Data Provider
+ StackTrace:    at LaylaERP.DAL.SQLHelper.ExecuteNonQuery(String query, SqlParameter[] parameters)
+   at LaylaERP.BAL.SettingRepository.UpdateWebsite(String companyid, String company, String ID)

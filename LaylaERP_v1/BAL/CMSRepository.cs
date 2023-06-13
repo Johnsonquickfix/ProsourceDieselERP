@@ -389,5 +389,25 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        public static DataTable ParentCategory(string optType)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    
+                    new SqlParameter("@flag", "CategoryProductList"),
+                    new SqlParameter("@parent",optType)
+                };
+
+                //string strSQl = "erp_ProductCategory";
+                DS = SQLHelper.ExecuteDataTable("erp_ProductCategory", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
     }
 }

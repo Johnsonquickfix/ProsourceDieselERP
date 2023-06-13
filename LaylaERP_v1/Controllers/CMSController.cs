@@ -1,6 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,12 @@ namespace LaylaERP_v1.Controllers
         }
         public ActionResult BannerList()
         {
+
+            //DataTable dt = SQLHelper.ExecuteDataTable("select meta_value from wp_postmeta where post_id = 134771 and meta_key = '_product_attributes'");
+            //string att = dt.Rows[0]["meta_value"].ToString();
+            //Serializer sr = new Serializer();
+            //string fd = sr.Deserialize(att).ToString();
+            //string f =  sr.Serialize(dt.Rows[0]["meta_value"].ToString());
             //string numbersString = "51909,325019";
 
             //// Split the string into individual numbers
@@ -72,6 +79,7 @@ namespace LaylaERP_v1.Controllers
             //string serializedString = $"a:{numberStrings.Length}:{{{string.Join("", serializedNumbers)}}}";
 
             //string[] numberStrings1 = ExtractNumbers(serializedString);
+
 
             //// Combine the numbers into a comma-separated string
             //string numbersString2 = string.Join(",", numberStrings1);
@@ -788,6 +796,16 @@ namespace LaylaERP_v1.Controllers
 
         }
 
-
+        public JsonResult GetParentCategory(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CMSRepository.ParentCategory(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

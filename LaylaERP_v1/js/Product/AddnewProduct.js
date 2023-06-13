@@ -46,11 +46,12 @@
         //  console.log($("#hfprodcid").val());
 
         GetProdctByID($("#hfprodcid").val());
-        GetExProdctByID($("#hfcategid").val());
-        if ($("#hfvproductattributes").val() != null || $("#hfvproductattributes").val() != '') {
-            GetAttributesID($("#hfvproductattributes").val());
-        }
-        GetProductvariationID(id);
+
+        ////GetExProdctByID($("#hfcategid").val());
+        ////if ($("#hfvproductattributes").val() != null || $("#hfvproductattributes").val() != '') {
+        ////    GetAttributesID($("#hfvproductattributes").val());
+        ////}
+        ////GetProductvariationID(id);
 
         //setTimeout(function () { GetDataByID(id); }, 3000);
         //console.log($("#hfprodcid").val());
@@ -1378,6 +1379,7 @@ function GetProdctByID(ProdctID) {
 
     var ID = ProdctID;
     var obj = { strVal: ProdctID }
+    console.log(ProdctID);
     $.ajax({
 
         url: '/Product/GetProdctByID/' + ID,

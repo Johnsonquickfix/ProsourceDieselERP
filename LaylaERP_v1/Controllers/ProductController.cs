@@ -2199,6 +2199,32 @@ namespace LaylaERP.Controllers
             return Json(JSONString, JsonRequestBehavior.AllowGet);
         }
 
+        //public JsonResult GetpageData(SearchModel model)
+        //{
+        //    string JSONresult = string.Empty;
+        //    try
+        //    {
+        //        DataTable DT = CMSRepository.GetpageData(model.strValue1);
+        //        JSONresult = JsonConvert.SerializeObject(DT);
+        //    }
+        //    catch { }
+        //    return Json(JSONresult, 0);
+        //}
+
+        [HttpGet]
+        public JsonResult GetProductList(JqDataTableModel model)
+        { 
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = ProductRepository.GetProductList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
     }
 
 }

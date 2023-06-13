@@ -18,6 +18,28 @@
 <section class="content section-content product-acctount-section table-design">
     <div class="row">
         <div class="col-md-12">
+            <div class="user-top-section" >
+                <div class="tablenav top tablenav-top2" >
+                    <div>
+                        <Select class="form-control" multiple id="ddlwebcompany" style="width: 60%;">
+                            <option>Select Website</option>
+                        </Select>
+                        @*<button type="button" title="Click here to update" data-placement="top" data-toggle="tooltip" id="btnwebUpdate" class="btn btn-danger">Apply</button>*@
+                        <button type="button" title="Click here for update" data-placement="bottom" data-toggle="tooltip" id="btnwebUpdate" onclick="AllotWebsite();" class="btn btn-primary btn-flat button">Apply</button>
+                     </div>
+
+                    <!--<div class="alignleft actions">
+                        <select class="form-control select2" style="width:200px" id="ddltype">-->
+                    @*<option value="0">Select a category</option>*@
+                    <!--</select>
+                        <input type="submit" title="Click here for filter" data-placement="bottom" data-toggle="tooltip" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
+                    </div>-->
+                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="page-title">
                 @*<h2>List of Product<span class="text-gray" id="lblTotalProducts"></span></h2>*@
                 <h2>List of Product</h2>
@@ -27,8 +49,9 @@
                     <table id="ProductGriddata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                         <thead>
                             <tr>
+                                <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
                                 <th class="text-left">ID</th>
-                                <th class="text-left">Product</th> 
+                                <th class="text-left">Product</th>
                                 <th class="text-left">SKU</th>
                                 <th class="text-left">Website to assign</th>
                                 <th class="text-left">Action</th>
@@ -39,6 +62,7 @@
             </div>
         </div>
     </div>
+
 </section>
 <section>
     <div class="modal fade bd-example-modal-lg" style="overflow:auto" id="ProductcompanyModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">

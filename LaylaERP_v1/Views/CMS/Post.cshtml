@@ -154,26 +154,29 @@
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
 
                 </div>
-                @*<div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active" title="Click here to see Content" data-toggle="tooltip"><a href="#tab_1" data-toggle="tab">Content</a></li>
-                        <li title="Click here to see SEO" data-toggle="tooltip"><a href="#tab_2" data-toggle="tab">SEO</a></li>
-
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
-                            <div class="custom-editor">
-                                <textarea id="txtcontent" class="textarea" placeholder=""
-                                          style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px; "></textarea>
-
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab_2">
-                            <textarea id="txtseo" class="textarea" placeholder="Meta Description"
-                                      style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
-                        </div>
-                    </div>
-                </div>*@
+                <h2 class="sm-heading"> Focus keyphrase</h2>
+                <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
+                <h2 class="sm-heading"> SEO title</h2>
+                @*<input type="text" id="txtseotitle" class="form-control" placeholder="SEO title">*@
+                <Select class="form-control select2" multiple id="ddlseotitle" style="width: 100%">
+                    <option value="title">Title</option>
+                    <option value="sitename">Site Name</option>
+                    <option value="separator">Separator</option>
+                    <option value="primary_category">Primary Category</option>
+                </Select>
+                <h2 class="sm-heading"> Slug</h2>
+                <input type="text" id="txtslug" class="form-control" placeholder="Slug">
+                <h2 class="sm-heading"> Meta description</h2>
+                <Select class="form-control select2" multiple id="ddlmetadescription" style="width: 100%">
+                    <option value="title">Title</option>
+                    <option value="sitename">Site Name</option>
+                    <option value="separator">Separator</option>
+                    <option value="primary_category">Primary Category</option>
+                </Select>
+                <h2 class="sm-heading">Keyphrase synonyms</h2>
+                 <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
+                <h2 class="sm-heading">Add related Keyphrase</h2>
+                 <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">
 
             </div>
             <div class="col-md-3">

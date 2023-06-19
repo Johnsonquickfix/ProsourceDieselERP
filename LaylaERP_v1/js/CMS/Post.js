@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $(".select2").select2();
     $(".select1").select2();
     getcompany();
     var url = window.location.pathname;

@@ -731,5 +731,65 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable GetCategoryCompany(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "cms_categorycompanylist";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable SelectCategorycompanybiyid(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID as id, term_id,company_id"
+                                  + " FROM cms_categorycompany"
+                                  + " WHERE term_id='" + id + "' and company_id is not null ";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+        public static int UpdateCategorytocompany(string companyid, string company, string ID,string qflag,string term_ids)
+        {
+
+            try
+            {
+                string strsql = "cms_companycategory_iud";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@qflag", qflag),
+                    new SqlParameter("@term_id",ID),
+                    new SqlParameter("@company_id",companyid),
+                    new SqlParameter("@company",company),
+                    new SqlParameter("@term_ids",term_ids),
+               };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/cms_companyproduct_iud/" + ID + "", "Update category company details.");
+                throw Ex;
+            }
+        }
+         
     }
 }

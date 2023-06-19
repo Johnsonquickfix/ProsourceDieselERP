@@ -1011,6 +1011,7 @@
     <Content Include="js\Report\ThresholdMerchantFeeReport.js" />
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
+    <Content Include="js\Setting\Categorycompany.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setting\Productcompany.js" />
     <Content Include="js\Setting\Usercompany.js" />
@@ -1594,6 +1595,7 @@
     <Content Include="Views\CMS\Post.cshtml" />
     <Content Include="Views\CMS\Posts.cshtml" />
     <Content Include="Views\CMS\Category.cshtml" />
+    <Content Include="Views\Setting\PostCategoryCompanyAllot.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

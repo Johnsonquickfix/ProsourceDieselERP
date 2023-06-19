@@ -167,6 +167,10 @@ namespace LaylaERP.Controllers
         { 
             return View();
         }
+        public ActionResult PostCategoryCompanyAllot()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -758,5 +762,51 @@ namespace LaylaERP.Controllers
             }
 
         }
+
+        [HttpGet]
+        public JsonResult GetCategoryCompany(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetCategoryCompany(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        public JsonResult SelectCategorycompanybiyid(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.SelectCategorycompanybiyid(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateCategorytocompany(string companyid, string company, string ids,string flag,string term_ids)
+        {
+            if (companyid != "")
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update Category company", "CategoryCompanyAllot/" + ", " + Net.BrowserInfo);
+
+                SettingRepository.UpdateCategorytocompany(companyid, company, ids, flag, term_ids);
+                return Json(new { status = true, message = "Category company updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        
     }
 }

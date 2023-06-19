@@ -865,6 +865,7 @@
     <Content Include="js\CMS\Banner.js" />
     <Content Include="js\CMS\BannerList.js" />
     <Content Include="js\CMS\List.js" />
+    <Content Include="js\CMS\PageCategory.js" />
     <Content Include="js\CMS\Pages.js" />
     <Content Include="js\CMS\Post.js" />
     <Content Include="js\CMS\PostList.js" />
@@ -1592,6 +1593,7 @@
     <Content Include="Views\CMS\Banners.cshtml" />
     <Content Include="Views\CMS\Post.cshtml" />
     <Content Include="Views\CMS\Posts.cshtml" />
+    <Content Include="Views\CMS\Category.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -6,6 +6,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using LaylaERP.Models;
+using LaylaERP.UTILITIES;
+using System.Text.RegularExpressions;
 
 namespace LaylaERP.BAL
 {
@@ -409,5 +412,267 @@ namespace LaylaERP.BAL
             return DS;
         }
 
+          public static DataTable GetParentCategoryList(string optType)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                 {
+                    
+                    new SqlParameter("@flag", "PageCategoryList"),
+                    new SqlParameter("@parent",optType)
+                };
+
+                //string strSQl = "erp_ProductCategory";
+                DS = SQLHelper.ExecuteDataTable("erp_ProductCategory", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable CategoryList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strSQl = "erp_ProductCategory";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "CategoryPagesListWithParameter")
+                };
+                dt = SQLHelper.ExecuteDataTable(strSQl, para);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetCategoryByID(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "erp_ProductCategory";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag", "getpageProductCategoryByID"),
+                    new SqlParameter("@term_id", id)
+                    };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public int EditPostCategory(ProductCategoryModel model, string name, string slug, string parent, string description, long thumbnailID)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_terms set name=@name,slug=@slug where term_id=" + model.term_id + "; update wp_term_taxonomy set description=@description,parent=@parent where term_id=" + model.term_id + ";" +
+                    " Update wp_termmeta set meta_value='" + model.display_type + "' where term_id=" + model.term_id + " and meta_key='display_type';";
+                    //" Update wp_termmeta set meta_value='" + thumbnailID + "' where term_id=" + model.term_id + " and meta_key='thumbnail_id';";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@name", model.name),
+                    new SqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "")),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CMS/AddPostCategory/" + model.parent + "", "Update post category meta data");
+                throw Ex;
+            }
+        }
+
+        public int AddPostCategoryDesc(ProductCategoryModel model, long term_id, int thumbnail_id)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "erp_ProductCategory";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "AddPostCategoryDescription"),
+                    new SqlParameter("@term_id", term_id),
+                    new SqlParameter("@taxonomy", "category"),
+                    new SqlParameter("@parent", model.parent),
+                    new SqlParameter("@description", model.description == null ? "" : model.description),
+                    new SqlParameter("@display_type", model.display_type.ToString()),
+                    new SqlParameter("@thumbnail_id",thumbnail_id),
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Product/AddProductCategory/" + "0" + "", "Add product category description");
+                throw Ex;
+            }
+        }
+        public int DeleteProductCategory(string val)
+        {
+            try
+            {
+                int result = 0;
+
+                string metaValue = GetTermID(val).ToString();
+                string[] value = metaValue.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var termID = value[i].ToString();
+                    string IsActiveID = GetIsActiveID(termID).ToString();
+                    string strsql = "";
+                    if (IsActiveID == termID)
+                    {
+                        strsql = "Update wp_termmeta set meta_value='0' where term_id=" + termID + " and meta_key='Is_Active';";
+                    }
+                    else
+                    {
+                        strsql = "insert into wp_termmeta(term_id,meta_key,meta_value) values(" + termID + ",'Is_Active','0');";
+                    }
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int DeleteProductfromCategory(string val)
+        {
+            try
+            {
+                int result = 0;
+                string metaValue = GetProductID(val).ToString();
+                if (metaValue != "")
+                {
+                    if (metaValue.CompareTo("0") != 0)
+                    {
+                        string[] value = metaValue.Split(',');
+                        for (int i = 0; i <= value.Length - 1; i++)
+                        {
+                            var ProductID = value[i].ToString();
+                            string strsql = "Delete r from wp_term_relationships r inner join wp_term_taxonomy t on t.term_id = r.term_taxonomy_id where t.taxonomy = 'category' and object_id =" + ProductID + "; " +
+                                "Insert into wp_term_relationships(object_id, term_taxonomy_id, term_order) values(" + ProductID + ", 80, 0);";
+                            result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                        }
+                    }
+                    else
+                    {
+                        result = 0;
+                    }
+                }
+                else
+                {
+                    result = 0;
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CMS/DeleteCategorywithProduct/" + "0" + "", "Delete category with product");
+                throw Ex;
+            }
+        }
+        public string GetTermID(string ID)
+        {
+            string result = "";
+            DataSet ds = new DataSet();
+            try
+            {
+                string[] value = ID.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var termID = value[i].ToString();
+                    string strSQl = "";
+                    strSQl = "erp_ProductCategory";
+                    SqlParameter[] para =
+                    {
+                    new SqlParameter("@Flag", "getpostTermID"),
+                    new SqlParameter("@Userterm_ID", termID)
+
+                   };
+                    ds = SQLHelper.ExecuteDataSet(strSQl, para);
+
+                    if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["term_id"].ToString()))
+                        result += ds.Tables[0].Rows[0]["term_id"].ToString() + ",";
+                    else
+                        result = "0";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result.TrimEnd(',');
+        }
+        public string GetProductID(string ID)
+        {
+            string result = "";
+            DataSet dt = new DataSet();
+            try
+            {
+                string[] value = ID.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var termID = value[i].ToString();
+                    string strSQl = "";
+                    strSQl = "erp_ProductCategory";
+                    SqlParameter[] para =
+                       {
+                        new SqlParameter("@Flag", "getpostID"),
+                        new SqlParameter("@Userterm_ID", termID)
+                       };
+                    DataSet ds = SQLHelper.ExecuteDataSet(strSQl, para);
+                    if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["object_id"].ToString()))
+                        result = ds.Tables[0].Rows[0]["object_id"].ToString() + ",";
+                    else
+                        result = "0";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result.TrimEnd(',');
+        }
+
+        public string GetIsActiveID(string ID)
+        {
+            string result = "";
+            DataSet dt = new DataSet();
+            try
+            {
+                string strSQl = "Select term_id from wp_termmeta where term_id=" + ID + " and meta_key='Is_Active';";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["term_id"].ToString();
+                else
+                    result = "0";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
 }

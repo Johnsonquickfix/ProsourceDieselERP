@@ -31,6 +31,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult Category()
+        {
+            return View();
+        }
         public ActionResult Page(int id)
         {
             SqlParameter[] parameters =
@@ -59,8 +63,11 @@ namespace LaylaERP_v1.Controllers
             //DataTable dt = SQLHelper.ExecuteDataTable("select meta_value from wp_postmeta where post_id = 134771 and meta_key = '_product_attributes'");
             //string att = dt.Rows[0]["meta_value"].ToString();
             //Serializer sr = new Serializer();
-            //string fd = sr.Deserialize(att).ToString();
-            //string f =  sr.Serialize(dt.Rows[0]["meta_value"].ToString());
+            //var fd = sr.Deserialize(att);
+            //string f = sr.Serialize(dt.Rows[0]["meta_value"].ToString());
+           
+            //string[] numberStrings1 = ExtractNumbers(dt.Rows[0]["meta_value"].ToString());
+            //string numbersString2 = string.Join(",", numberStrings1);
             //string numbersString = "51909,325019";
 
             //// Split the string into individual numbers
@@ -796,6 +803,7 @@ namespace LaylaERP_v1.Controllers
 
         }
 
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Post Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public JsonResult GetParentCategory(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -806,6 +814,130 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetParentCategoryList(string id)
+        {
+            DataTable ds = CMSRepository.GetParentCategoryList(id);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
+        }
+        public JsonResult CategoryList(ProductCategoryModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.term_id;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = CMSRepository.CategoryList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetCategoryByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = CMSRepository.GetCategoryByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string ParentText, string description)
+        {
+           
+            string checkname = new ProductRepository().GetName(name);
+            string checknameonEdit = new ProductRepository().GetNameonEdit(name, model.term_id);
+            if (ParentText.ToLower() == name.ToLower())
+            {
+                return Json(new { status = false, message = "Parent and category can not be same. Please select another parent category.", url = "", id = 0 }, 0);
+            }
+            if (model.term_id == 0 && checkname.ToLower() == name.ToLower())
+            {
+                return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
+            }
+            else if (model.term_id > 0 && checknameonEdit.ToLower() == name.ToLower())
+            {
+                return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
+            }
+            else
+            {
+               
+                if (model.term_id > 0)
+                {
+                    UserActivityLog.WriteDbLog(LogType.Submit, "Update post category (" + name + ")", "/CMS/PostCategories" + ", " + Net.BrowserInfo);
+
+                    //ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
+                    new CMSRepository().EditPostCategory(model, name, slug, parent, description, 0);
+                    return Json(new { status = true, message = "Product category updated successfully!!", url = "", id = model.term_id }, 0);
+                }
+                else
+                {
+
+                    int ID = new ProductRepository().AddProductCategory(model, name, slug);
+                    if (ID > 0)
+                    {
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Add new post category (" + name + ")", "/CMS/PostCategories" + ", " + Net.BrowserInfo);
+                        //int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
+                        //ProductRepository.postmeta(thumbnailID, ImagePath);
+                        new CMSRepository().AddPostCategoryDesc(model, ID, 0);
+                        return Json(new { status = true, message = "Post category saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
+                    }
+                }
+            }
+
+        }
+
+        public JsonResult DeleteCategorywithProduct(ProductCategoryModel model)
+        {
+            string termID = model.strVal;
+            if (termID != "")
+            {
+                int ProductID = new CMSRepository().DeleteProductfromCategory(termID);
+                int ID = new CMSRepository().DeleteProductCategory(termID);
+                if (ID > 0)
+                {
+
+                    return Json(new { status = true, message = "Post category deleted successfully!!", url = "", id = ID }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Post category not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult DeleteProductCategory(ProductCategoryModel model)
+        {
+            string termID = model.strVal;
+            if (termID != "")
+            {
+                int ID = new CMSRepository().DeleteProductCategory(termID);
+                if (ID > 0)
+                {
+                    return Json(new { status = true, message = "Post category deleted successfully!!", url = "", id = ID }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Post category not Found", url = "", id = 0 }, 0);
+            }
         }
     }
 }

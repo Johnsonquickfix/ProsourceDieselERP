@@ -847,7 +847,7 @@ namespace LaylaERP_v1.Controllers
                 DataTable dt = CMSRepository.GetCategoryByID(id);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
-            catch { }
+            catch { } 
             return Json(JSONresult, 0);
         }
 

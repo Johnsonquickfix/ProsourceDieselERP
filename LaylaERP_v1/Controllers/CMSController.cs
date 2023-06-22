@@ -657,7 +657,7 @@ namespace LaylaERP_v1.Controllers
             ProductRepository.Edit_term(0, Convert.ToInt32(ID));           
         }
 
-        public JsonResult CreatePost(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string category, HttpPostedFileBase FeaturedFile)
+        public JsonResult CreatePost(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string category, HttpPostedFileBase FeaturedFile, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist)
         {
             var ImagePath = "";
             //var ImagePaththum = "";
@@ -676,11 +676,7 @@ namespace LaylaERP_v1.Controllers
             if (ImageFile != null)
             {
                 FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
-                FileName = Regex.Replace(FileName, @"\s+", "");
-
-
-
-
+                FileName = Regex.Replace(FileName, @"\s+", "");  
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
 
@@ -727,8 +723,8 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreatePost("U", ID, post_title, post_content, FileName, entity_id, category,  featuerimg);
-                        update_term(category,Convert.ToInt32(ID));
+                        entity = CMSRepository.CreatePost("U", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist,synlist);
+                        update_term(category, Convert.ToInt32(ID));
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -740,7 +736,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category,  featuerimg);
+                        entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist);
                         Add_term(category, Convert.ToInt32(entity));
                         if (entity > 0)
                         {
@@ -762,7 +758,7 @@ namespace LaylaERP_v1.Controllers
             {
                 if (Convert.ToInt64(ID) == 0)
                 {
-                    entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                    entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist);
                     Add_term(category, Convert.ToInt32(entity));
                     if (entity > 0)
                     {
@@ -789,12 +785,12 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreatePost("UF", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                        entity = CMSRepository.CreatePost("UF", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist);
                         update_term(category, Convert.ToInt32(ID));
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePost("UP", ID, post_title, post_content, FileName, entity_id, category, featuerimg);
+                        entity = CMSRepository.CreatePost("UP", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist);
                         update_term(category, Convert.ToInt32(ID));
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);

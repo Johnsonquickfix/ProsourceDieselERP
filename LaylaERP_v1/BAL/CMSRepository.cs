@@ -350,7 +350,7 @@ namespace LaylaERP.BAL
         }
 
 
-        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category,  string featured_image_url)
+        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category,  string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist)
         {
             try
             {
@@ -362,8 +362,12 @@ namespace LaylaERP.BAL
                     new SqlParameter("@InnerPageBannerLink",InnerPageBannerLink),
                     new SqlParameter("@featured_image_url",featured_image_url),
                     new SqlParameter("@entity_id",entity_id) ,
-                    new SqlParameter("@Category",Category)
-                    //new SqlParameter("@Content",Content)
+                    new SqlParameter("@Category",Category),
+                    new SqlParameter("@yoast_wpseo_focuskw",fcsskey),
+                    new SqlParameter("@yoast_wpseo_title",seotitle),
+                    new SqlParameter("@yoast_wpseo_metadesc",metades),
+                    new SqlParameter("@yoast_wpseo_focuskeywords",keylist),
+                    new SqlParameter("@yoast_wpseo_keywordsynonyms",synlist)
                 };
 
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_post_iud", para));

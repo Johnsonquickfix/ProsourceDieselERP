@@ -17,11 +17,13 @@
             margin-left: auto;
             text-align: right;
             min-width: 600px;
-        }
-
+        } 
             .compBox .select2 {
                 text-align: left;
             }
+        .red-highlight::selection {
+            color: red;
+        }
     </style>
     <script src="@Url.Content("~/js/CMS/Post.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
     <script src='~/js/tinymce/tinymce.min.js'></script>
@@ -158,26 +160,36 @@
                 <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
                 <h2 class="sm-heading"> SEO title</h2>
                 @*<input type="text" id="txtseotitle" class="form-control" placeholder="SEO title">*@
-                <Select class="form-control select2" multiple id="ddlseotitle" style="width: 100%">
-                    <option value="title">Title</option>
-                    <option value="sitename">Site Name</option>
-                    <option value="separator">Separator</option>
-                    <option value="primary_category">Primary Category</option>
-                </Select>
+            <Select class="form-control select2" id="ddlseotitle" style="width: 100%">
+                <option value="">Insert variable</option>
+                <option value="title">Title</option>
+                <option value="sitename">Site Name</option>
+                <option value="separator">Separator</option>
+                <option value="primary_category">Primary Category</option>
+            </Select>
+                <input type="text" id="txtseotitle" class="form-control" placeholder="">
                 <h2 class="sm-heading"> Slug</h2>
                 <input type="text" id="txtslug" class="form-control" placeholder="Slug">
                 <h2 class="sm-heading"> Meta description</h2>
-                <Select class="form-control select2" multiple id="ddlmetadescription" style="width: 100%">
+                <Select class="form-control select2" id="ddlmetadescription" style="width: 100%">
+                    <option value="">Insert variable</option>
                     <option value="title">Title</option>
                     <option value="sitename">Site Name</option>
                     <option value="separator">Separator</option>
                     <option value="primary_category">Primary Category</option>
                 </Select>
-                <h2 class="sm-heading">Keyphrase synonyms</h2>
-                 <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
-                <h2 class="sm-heading">Add related Keyphrase</h2>
-                 <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">
+                <input type="text" id="txtmetadescription" class="form-control" placeholder="">
+                @*<h2 class="sm-heading">Keyphrase synonyms</h2>
+         <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
+        <h2 class="sm-heading">Add related Keyphrase</h2>
+         <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">*@
 
+
+                <h2 class="sm-heading">Keyphrase synonyms</h2>
+                <input type="text" id="txtsynonyms" class="form-control" placeholder="Keyphrase synonyms">
+                <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
+                <table id="tbhold" class="simple-table">
+                </table>
             </div>
             <div class="col-md-3">
                 <h4 class="page-heading">Featured image</h4>

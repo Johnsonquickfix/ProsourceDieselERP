@@ -79,7 +79,105 @@
         }
 
     })
+
+    $('#txttitle').keyup(function (event) {
+        var textBox = event.target;
+        var start = textBox.selectionStart;
+        var end = textBox.selectionEnd;
+        textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+        textBox.setSelectionRange(start, end);
+        var cat = $('#txttitle').val().toLowerCase().trim();
+        cat = cat.replace(/\s/g, '-');
+        $('#txtslug').val(cat);
+     
+    });
+    var itxtCnt = 0;
+    var i = 1;
+    $("#add").click(function (e) {
+        i++;
+        itxtCnt = itxtCnt + 1;
+        e.preventDefault();
+        /*$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');*/
+        // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text" class="input" id=tb' + itxtCnt + ' value="" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Keyphrase:</label><input type="text" class="input form-control" id=tbk' + itxtCnt + ' value="" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea  class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+
+    });
+
+    $(document).on('click', '.btn_remove', function () {
+        var button_id = $(this).attr("id");
+        $("#row" + button_id + '').remove();
+    });
+    $('#ddlseotitle').change(function () { 
+
+        //var selectedText = $(this).find('option:selected').text();
+        //var inputBox = $('#txtseotitle');
+
+        //// Append the selected text to the existing text in the input box
+        //var existingText = inputBox.val();
+        //var newText = existingText + ' ' + selectedText.trim();
+        //inputBox.val(newText.trim());
+
+        var selectedText = $(this).find('option:selected').text();
+        var inputBox = $('#txtseotitle');
+
+        // Get the current input value and caret position
+        var currentValue = inputBox.val();
+        var caretPos = inputBox[0].selectionStart;
+
+        // Append the selected text to the input value
+        var newValue = currentValue.slice(0, caretPos) + selectedText + currentValue.slice(caretPos);
+        inputBox.val(newValue.trim());
+
+        // Set the caret position and apply red color to the appended text
+        inputBox.focus();
+        inputBox[0].setSelectionRange(caretPos, caretPos + selectedText.length);
+
+        // Apply red color to the appended text
+        var startIndex = caretPos;
+        var endIndex = caretPos + selectedText.length;
+        var coloredText = newValue.substring(startIndex, endIndex);
+        var coloredHtml = '<span style="color: red;">' + coloredText + '</span>';
+        inputBox.html(inputBox.html().substring(0, startIndex) + coloredHtml + inputBox.html().substring(endIndex));
+
+        // Reset the caret position after modifying the input HTML
+        inputBox[0].setSelectionRange(endIndex, endIndex);
+
+    });
+    $('#ddlmetadescription').change(function () {
+
+        //var selectedText = $(this).find('option:selected').text();
+        //var inputBox = $('#txtseotitle');
+
+        //// Append the selected text to the existing text in the input box
+        //var existingText = inputBox.val();
+        //var newText = existingText + ' ' + selectedText.trim();
+        //inputBox.val(newText.trim());
+
+        var selectedText = $(this).find('option:selected').text();
+        var inputBox = $('#txtmetadescription'); 
+        // Get the current input value and caret position
+        var currentValue = inputBox.val();
+        var caretPos = inputBox[0].selectionStart;
+
+        // Append the selected text to the input value
+        var newValue = currentValue.slice(0, caretPos) + selectedText + currentValue.slice(caretPos);
+        inputBox.val(newValue.trim()); 
+        // Set the caret position and apply red color to the appended text
+        inputBox.focus();
+        inputBox[0].setSelectionRange(caretPos, caretPos + selectedText.length); 
+        // Apply red color to the appended text
+        var startIndex = caretPos;
+        var endIndex = caretPos + selectedText.length;
+        var coloredText = newValue.substring(startIndex, endIndex);
+        var coloredHtml = '<span style="color: red;">' + coloredText + '</span>';
+        inputBox.html(inputBox.html().substring(0, startIndex) + coloredHtml + inputBox.html().substring(endIndex)); 
+        // Reset the caret position after modifying the input HTML
+        inputBox[0].setSelectionRange(endIndex, endIndex);
+
+    });
+
 })
+
 
 function Add() {
     title = $("#txttitle").val();
@@ -89,6 +187,34 @@ function Add() {
     let post_contentval = GetContent();
     ID = $("#hfid").val();
 
+    //var seotitlearray = $('#ddlseotitle option:selected')
+    //    .toArray().map(item => item.value).join();
+    //seotitle = seotitlearray;
+
+    //var seometadesarray = $('#ddlmetadescription option:selected')
+    //    .toArray().map(item => item.value).join();
+    //metades = seometadesarray;
+    seotitle = $("#txtseotitle").val();
+    metades = $("#txtmetadescription").val();
+
+    fcsskey = $("#txtfocuskeyphras").val();
+    slug = $("#txtslug").val();
+
+    let _keylist = [];
+    let _synlist = [];
+    var firstElement = $("#txtsynonyms").val(); 
+    _synlist.push(firstElement);
+    $('#tbhold > tr').each(function (index, tr) {
+        _keylist.push({ keyword: $(tr).find('.input').val() , score: 'bad' });
+    });
+    $('#tbhold > tr').each(function (index, tr) {
+        //_synlist.push($("#txtsynonyms").val(), $(tr).find('.inputdes').val());
+        //if (index % 2 === 1) {
+            var value = $(tr).find('.inputdes').val();
+            _synlist.push(value);
+        //}
+    });
+    console.log(_keylist, _synlist);
     var v = '';
     $('input:checkbox:checked').each(function () {
         v = v + $(this).attr('value') + ",";
@@ -126,6 +252,13 @@ function Add() {
         obj.append("post_content", encodeURIComponent(post_contentval));
         obj.append("entity_id", entity);
         obj.append("category", categorydata);
+
+        obj.append("fcsskey", fcsskey);
+        obj.append("seotitle", seotitle);
+        obj.append("metades", metades);
+        obj.append("slug", slug);
+        obj.append("keylist", JSON.stringify(_keylist));
+        obj.append("synlist", JSON.stringify(_synlist));
         //obj.append("Content", content);
         console.log(post_contentval);
         $.ajax({
@@ -205,10 +338,10 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            // console.log(i);
+              console.log(i);
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
-            setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
+      
             $("#txtcontent").val(i[0].page_content);
             $("#txtseo").val(i[0].page_seo);
             //$("#txtcompanyname").val(i[0].CompanyName);  
@@ -245,6 +378,68 @@ function GetDataByID(ID) {
             }).attr('src', furl);
             // $('#featuredshow_picture').attr('src', furl); 
             $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title + "");
+           // var seotitle = i[0].cmsseotitle;
+           // var seometa = i[0].seometa;
+           // console.log(input);
+           // var pattern = /"(\d+)"/g;
+            //var matches = input.match(pattern);
+            //// Check if matches is not null
+           // console.log(matches);
+            //if (matches && matches.length > 0) {
+                // Join the matched numbers into a comma-separated string
+                //var numbersString = matches.map(match => match.replace(/"/g, '')).join(',');
+               // console.log(numbersString);
+            //if (seotitle != null) {
+            //    $("#ddlseotitle").select2("val", [seotitle.split(',')]);
+            //}
+            //if (seometa != null) {
+            //    $("#ddlmetadescription").select2("val", [seometa.split(',')]);
+            //}
+            $("#txtseotitle").val(i[0].cmsseotitle);
+            $("#txtmetadescription").val(i[0].seometa);
+
+            $("#txtfocuskeyphras").val(i[0].seofocus);
+             
+            setTimeout(function () { $("#ddlcompany").val(i[0].entity_ids).trigger('change'); }, 500);
+            //}
+            //if (matches && matches.length > 0) {
+            //    // Clear existing selections
+            //    $("#ddlseotitle option").prop('selected', false);
+
+            //    // Iterate through the values and select the corresponding options
+            //    matches.forEach(match => {
+            //        var value = match.replace(/"/g, '');
+            //        console.log(value);
+            //        $("#ddlseotitle option[value='" + value + "']").prop('selected', true);
+            //    });
+            //}
+
+             
+            var cat = $('#txttitle').val().toLowerCase().trim();
+            cat = cat.replace(/\s/g, '-');
+            $('#txtslug').val(cat);
+
+          //  var syn = ["synonyms", "", "", "test"];
+            var syn = i[0].cpmsyns;
+            var s = JSON.parse(syn);
+            $('#txtsynonyms').val(s[0]); 
+            var itxtCnt = 0;
+            //var Attributes = '[{"keyword":"ok1","synonyms":"bad"},{"keyword":"2","synonyms":"bad"}]';
+            var Attributes = i[0].cpmfoucskey;
+            //i++;
+            var i = 1;
+            itxtCnt = itxtCnt + 1;
+            //  var trainindIdArray = Attributes.split(',{'); 
+            //$.each(JSON.parse(Attributes), function (index1, value) {
+            //    var datalog = JSON.parse(Attributes);
+            //    console.log(datalog);
+            //    $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].keyword + '" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea placeholder="" class="inputdes form-control" id=tb' + itxtCnt + ' >' + datalog[index1].synonyms + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+            //});
+            $.each(JSON.parse(Attributes), function (index1, value) {
+                var datalog = JSON.parse(Attributes);
+                console.log(index1);
+                $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].keyword + '" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea placeholder="" class="inputdes form-control" id=tb' + itxtCnt + ' >' + s[index1+1] + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+            });
         },
         error: function (msg) { alert(msg); }
     });

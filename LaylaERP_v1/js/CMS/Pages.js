@@ -44,6 +44,68 @@
         window.open(url, '_blank');
      
     });
+
+
+ 
+
+    $('#txttitle').keyup(function (event) {
+        var textBox = event.target;
+        var start = textBox.selectionStart;
+        var end = textBox.selectionEnd;
+        textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+        textBox.setSelectionRange(start, end);
+        var cat = $('#txttitle').val().toLowerCase().trim();
+        cat = cat.replace(/\s/g, '-');
+        $('#txtslug').val(cat);
+
+    });
+    var itxtCnt = 0;
+    var i = 1;
+    $("#add").click(function (e) {
+        i++;
+        itxtCnt = itxtCnt + 1;
+        e.preventDefault();
+        $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Keyphrase:</label><input type="text" class="input form-control" id=tbk' + itxtCnt + ' value="" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea  class="inputdes form-control" id=tb' + itxtCnt + '></textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+
+    });
+
+    $(document).on('click', '.btn_remove', function () {
+        var button_id = $(this).attr("id");
+        $("#row" + button_id + '').remove();
+    });
+    $('#ddlseotitle').change(function () {
+        var selectedText = $(this).find('option:selected').text();
+        var inputBox = $('#txtseotitle');
+        var currentValue = inputBox.val();
+        var caretPos = inputBox[0].selectionStart;
+        var newValue = currentValue.slice(0, caretPos) + selectedText + currentValue.slice(caretPos);
+        inputBox.val(newValue.trim());
+        inputBox.focus();
+        inputBox[0].setSelectionRange(caretPos, caretPos + selectedText.length);
+        var startIndex = caretPos;
+        var endIndex = caretPos + selectedText.length;
+        var coloredText = newValue.substring(startIndex, endIndex);
+        var coloredHtml = '<span style="color: red;">' + coloredText + '</span>';
+        inputBox.html(inputBox.html().substring(0, startIndex) + coloredHtml + inputBox.html().substring(endIndex));
+        inputBox[0].setSelectionRange(endIndex, endIndex);
+
+    });
+    $('#ddlmetadescription').change(function () {
+        var selectedText = $(this).find('option:selected').text();
+        var inputBox = $('#txtmetadescription');
+        var currentValue = inputBox.val();
+        var caretPos = inputBox[0].selectionStart;
+        var newValue = currentValue.slice(0, caretPos) + selectedText + currentValue.slice(caretPos);
+        inputBox.val(newValue.trim());
+        inputBox.focus();
+        inputBox[0].setSelectionRange(caretPos, caretPos + selectedText.length);
+        var startIndex = caretPos;
+        var endIndex = caretPos + selectedText.length;
+        var coloredText = newValue.substring(startIndex, endIndex);
+        var coloredHtml = '<span style="color: red;">' + coloredText + '</span>';
+        inputBox.html(inputBox.html().substring(0, startIndex) + coloredHtml + inputBox.html().substring(endIndex));
+        inputBox[0].setSelectionRange(endIndex, endIndex);
+    });
 })
 
 function Add() { 
@@ -52,7 +114,30 @@ function Add() {
     content = $("#txtcontent").val();
     seo = $("#txtseo").val();
     let post_contentval = GetContent();
-    ID = $("#hfid").val(); 
+    ID = $("#hfid").val();
+
+    seotitle = $("#txtseotitle").val();
+    metades = $("#txtmetadescription").val();
+
+    fcsskey = $("#txtfocuskeyphras").val();
+    slug = $("#txtslug").val();
+
+    let _keylist = [];
+    let _synlist = [];
+    var firstElement = $("#txtsynonyms").val();
+    _synlist.push(firstElement);
+    $('#tbhold > tr').each(function (index, tr) {
+        _keylist.push({ keyword: $(tr).find('.input').val(), score: 'bad' });
+    });
+    $('#tbhold > tr').each(function (index, tr) {
+        //_synlist.push($("#txtsynonyms").val(), $(tr).find('.inputdes').val());
+        //if (index % 2 === 1) {
+        var value = $(tr).find('.inputdes').val();
+        _synlist.push(value);
+        //}
+    });
+
+
     if (title == "") {
         swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
@@ -77,6 +162,14 @@ function Add() {
         obj.append("entity_id", entity);
         obj.append("SEO", seo);
         obj.append("Content", content);
+
+        obj.append("fcsskey", fcsskey);
+        obj.append("seotitle", seotitle);
+        obj.append("metades", metades);
+        obj.append("slug", slug);
+        obj.append("keylist", JSON.stringify(_keylist));
+        obj.append("synlist", JSON.stringify(_synlist));
+
         console.log(post_contentval);
         $.ajax({
             url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
@@ -155,13 +248,12 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            // console.log(i);
+          console.log(i);
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
-            setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
-            $("#txtcontent").val(i[0].page_content);
-            $("#txtseo").val(i[0].page_seo);
-            //$("#txtcompanyname").val(i[0].CompanyName);  
+            //setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
+            let cmpid = i[0].entity_ids; 
+            $("#ddlcompany").val(cmpid).trigger('change');
             var path = i[0].meta_value;
             url = "../../Content/Pages/PageBannerLink/" + path + ""; 
             $('<img>').on('load', function () {
@@ -183,7 +275,37 @@ function GetDataByID(ID) {
                 $('#featuredshow_picture').attr('src', "../../Content/Product/default.png"); // Set a default image or do something else
             }).attr('src', furl); 
            // $('#featuredshow_picture').attr('src', furl); 
-            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title +""); 
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title + "");
+
+            $("#txtseotitle").val(i[0].cmsseotitle);
+            $("#txtmetadescription").val(i[0].seometa);
+
+            $("#txtfocuskeyphras").val(i[0].seofocus);
+            var cat = $('#txttitle').val().toLowerCase().trim();
+            cat = cat.replace(/\s/g, '-');
+            $('#txtslug').val(cat);
+
+            //  var syn = ["synonyms", "", "", "test"];
+            var syn = i[0].cpmsyns;
+            //console.log(syn);
+            if (syn === null) {
+            }
+            else {
+                var s = JSON.parse(syn);
+                $('#txtsynonyms').val(s[0]);
+                var itxtCnt = 0;
+            }
+            //var Attributes = '[{"keyword":"ok1","synonyms":"bad"},{"keyword":"2","synonyms":"bad"}]';
+            var Attributes = i[0].cpmfoucskey;
+            //i++;
+            var i = 1;
+            itxtCnt = itxtCnt + 1;
+            $.each(JSON.parse(Attributes), function (index1, value) {
+                var datalog = JSON.parse(Attributes);
+                //console.log(index1);
+                $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].keyword + '" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea placeholder="" class="inputdes form-control" id=tb' + itxtCnt + ' >' + s[index1 + 1] + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+            });
+          
         },
         error: function (msg) { alert(msg); }
     });

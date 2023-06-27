@@ -159,7 +159,7 @@
                 <form method="post">
                     <textarea id="editorcontent"></textarea>
                 </form>
-               
+
                 <a id="lblpermalink" href="#">Permalink:</a>
                 <h2 class="sm-heading"> Upload Page Banner Image</h2>
                 <div class="box box-primary">
@@ -173,7 +173,7 @@
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
 
                 </div>
-                <div class="nav-tabs-custom">
+                @*<div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active" title="Click here to see Content" data-toggle="tooltip"><a href="#tab_1" data-toggle="tab">Content</a></li>
                         <li title="Click here to see SEO" data-toggle="tooltip"><a href="#tab_2" data-toggle="tab">SEO</a></li>
@@ -192,7 +192,42 @@
                                       style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                         </div>
                     </div>
-                </div>
+                </div>*@
+
+                <h2 class="sm-heading"> Focus keyphrase</h2>
+                <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
+                <h2 class="sm-heading"> SEO title</h2>
+                @*<input type="text" id="txtseotitle" class="form-control" placeholder="SEO title">*@
+                <Select class="form-control select2" id="ddlseotitle" style="width: 100%">
+                    <option value="">Insert variable</option>
+                    <option value="title">Title</option>
+                    <option value="sitename">Site Name</option>
+                    <option value="separator">Separator</option>
+                    <option value="primary_category">Primary Category</option>
+                </Select>
+                <input type="text" id="txtseotitle" class="form-control" placeholder="">
+                <h2 class="sm-heading"> Slug</h2>
+                <input type="text" id="txtslug" class="form-control" placeholder="Slug">
+                <h2 class="sm-heading"> Meta description</h2>
+                <Select class="form-control select2" id="ddlmetadescription" style="width: 100%">
+                    <option value="">Insert variable</option>
+                    <option value="title">Title</option>
+                    <option value="sitename">Site Name</option>
+                    <option value="separator">Separator</option>
+                    <option value="primary_category">Primary Category</option>
+                </Select>
+                <input type="text" id="txtmetadescription" class="form-control" placeholder="">
+                @*<h2 class="sm-heading">Keyphrase synonyms</h2>
+         <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
+        <h2 class="sm-heading">Add related Keyphrase</h2>
+         <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">*@
+
+
+                <h2 class="sm-heading">Keyphrase synonyms</h2>
+                <input type="text" id="txtsynonyms" class="form-control" placeholder="Keyphrase synonyms">
+                <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
+                <table id="tbhold" class="simple-table">
+                </table>
 
             </div>
             <div class="col-md-3">

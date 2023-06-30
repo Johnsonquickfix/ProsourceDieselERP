@@ -1013,6 +1013,7 @@
     <Content Include="js\Report\Walmartreport.js" />
     <Content Include="js\serializePHP.js" />
     <Content Include="js\Setting\Categorycompany.js" />
+    <Content Include="js\Setting\Ordercompany.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setting\Productcompany.js" />
     <Content Include="js\Setting\Usercompany.js" />
@@ -1598,6 +1599,7 @@
     <Content Include="Views\CMS\Category.cshtml" />
     <Content Include="Views\Setting\PostCategoryCompanyAllot.cshtml" />
     <Content Include="Views\CMS\Shortcode.cshtml" />
+    <Content Include="Views\Setting\OrderCompanyAllot.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

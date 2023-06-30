@@ -171,6 +171,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult OrderCompanyAllot()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -807,6 +811,71 @@ namespace LaylaERP.Controllers
 
         }
 
-        
+        // ****************************************** Order Company *******************************************************
+
+        [HttpGet]
+        public JsonResult GetOrderCompany(JqDataTableModel model)
+        {
+            string optType = model.strValue1;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.GetCategoryCompany(optType);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet]
+        [Route("setting/order-list")]
+        public JsonResult GetOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime? fromdate = null, todate = null;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    fromdate = Convert.ToDateTime(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    todate = Convert.ToDateTime(model.strValue2);
+
+                //DataTable dt = OrderRepository.OrderList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = SettingRepository.OrderList(fromdate, todate, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateOrdertocompany(string companyid, string company, string ids, string flag, string term_ids)
+        {
+            if (companyid != "")
+            {
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update Ordert company", "OrdertCompanyAllot/" + ", " + Net.BrowserInfo);
+
+                SettingRepository.UpdateOrdertocompany(companyid, company, ids, flag, term_ids);
+                return Json(new { status = true, message = "Ordert company updated successfully!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult SelectOrdercompanybiyid(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SettingRepository.SelectOrdercompanybiyid(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

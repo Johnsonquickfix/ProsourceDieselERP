@@ -790,6 +790,97 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-         
+
+        public static DataTable GetOrderCompany(string optType)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "cms_categorycompanylist";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable OrderList(DateTime? fromdate, DateTime? todate, string customerid, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    fromdate.HasValue ? new SqlParameter("@fromdate", fromdate.Value) : new SqlParameter("@fromdate", DBNull.Value),
+                    todate.HasValue ? new SqlParameter("@todate", todate.Value) : new SqlParameter("@todate", DBNull.Value),
+                    new SqlParameter("@customer_id", customerid),
+                    new SqlParameter("@post_status", userstatus),
+                    new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "ORDLS")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("cms_order_company_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int UpdateOrdertocompany(string companyid, string company, string ID, string qflag, string term_ids)
+        {
+
+            try
+            {
+                string strsql = "cms_companyorder_iud";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@qflag", qflag),
+                    new SqlParameter("@term_id",ID),
+                    new SqlParameter("@company_id",companyid),
+                    new SqlParameter("@company",company),
+                    new SqlParameter("@term_ids",term_ids),
+            };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "Setting/cms_companyproduct_iud/" + term_ids + "", "Update order company details.");
+                throw Ex;
+            }
+        }
+
+        public static DataTable SelectOrdercompanybiyid(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID as id, term_id,company_id"
+                                  + " FROM cms_ordercompany"
+                                  + " WHERE term_id='" + id + "' and company_id is not null ";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

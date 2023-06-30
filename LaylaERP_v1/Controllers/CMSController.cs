@@ -35,6 +35,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult Shortcode()
+        {
+            return View();
+        }
         public ActionResult Page(int id)
         {
             SqlParameter[] parameters =
@@ -934,6 +938,52 @@ namespace LaylaERP_v1.Controllers
             {
                 return Json(new { status = false, message = "Post category not Found", url = "", id = 0 }, 0);
             }
+        }
+
+        //-----------------------Short Code -------------------------------------------------------- 
+
+        public JsonResult Getshortcode(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = CMSRepository.Getshortcode(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Addshortcode(string code,string disc,string id)
+        {
+            try
+            {
+                disc = HttpUtility.UrlDecode(disc);
+                int ID = CMSRepository.Addshortcode(code, disc,id);
+                if (ID > 0)
+                {
+                    return Json(new { status = true, message = "saved successfully.", url = "", id = ID }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+            }
+            catch (Exception ex) { return Json(new { status = false, message = ex.Message, url = "" }, 0); }
+        }
+        [HttpPost]
+        public JsonResult Selectshortcode(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CMSRepository.Selectshortcode(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT, Formatting.Indented);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

@@ -869,6 +869,7 @@
     <Content Include="js\CMS\Pages.js" />
     <Content Include="js\CMS\Post.js" />
     <Content Include="js\CMS\PostList.js" />
+    <Content Include="js\CMS\Shortcode.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
@@ -1596,6 +1597,7 @@
     <Content Include="Views\CMS\Posts.cshtml" />
     <Content Include="Views\CMS\Category.cshtml" />
     <Content Include="Views\Setting\PostCategoryCompanyAllot.cshtml" />
+    <Content Include="Views\CMS\Shortcode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

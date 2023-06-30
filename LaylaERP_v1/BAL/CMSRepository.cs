@@ -683,5 +683,75 @@ namespace LaylaERP.BAL
             }
             return result;
         }
+
+        
+        public static DataTable Getshortcode(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "SELECT id,code,description,created_on from cms_shortcode WHERE 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (code like '%" + searchid + "%' OR description like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+
+                strSql += "; SELECT (Count(id)/" + pagesize.ToString() + ") TotalPage,Count(id) TotalRecord FROM cms_shortcode WHERE 1=1" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int Addshortcode(string code, string disc,string id )
+        {
+            try
+            {
+                string qflag = "";
+                if (Convert.ToInt32(id) > 0)
+                    qflag = "U";
+                else
+                    qflag = "I";
+
+                    SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@code",code),
+                    new SqlParameter("@id",id),
+                    new SqlParameter("@description",disc), 
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_shortcode_insert", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable Selectshortcode(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT id, code, description from cms_shortcode WHERE id =" + strSearch + "");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
     }
 }

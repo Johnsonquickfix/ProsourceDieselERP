@@ -209,5 +209,36 @@ namespace LaylaERP.Models
             set;
         }
         public DateTime customerdate_created { get; set; }
+
+        public class BannerModel
+        {
+            public string id { get; set; } = string.Empty;
+            public string post_content { get; set; } = string.Empty;
+            public string post_title { get; set; } = string.Empty;
+            public string post_author { get; set; } = string.Empty;
+            public string user_login { get; set; } = string.Empty;
+            public string mobileimage { get; set; } = string.Empty;
+            public string post_date { get; set; } = string.Empty;
+            public string total { get; set; } = string.Empty;
+            public string pagebannertype { get; set; } = string.Empty;
+            public string type_banner { get; set; } = string.Empty;
+
+            public string entity_id { get; set; } = string.Empty;
+            public string _edit_last { get; set; } = string.Empty;
+            public string _edit_lock { get; set; } = string.Empty;
+            public string _for_mobile { get; set; } = string.Empty;
+            public string _thumbnail_id { get; set; } = string.Empty;
+            public string for_mobile { get; set; } = string.Empty;
+            public string InnerExcludeGlobalBanner { get; set; } = string.Empty;
+            public string InnerPageBannerImage { get; set; } = string.Empty;
+            public string InnerPageBannerLink { get; set; } = string.Empty;
+            public string InnerPageBannerSelection { get; set; } = string.Empty;
+            public string InnerPageBannerTitle { get; set; } = string.Empty;
+            public string InnerPageBannerType { get; set; } = string.Empty; 
+            public string remove_schema_page_specific { get; set; } = string.Empty;
+            public string slide_template { get; set; } = string.Empty;
+           
+
+        }
     }
 }

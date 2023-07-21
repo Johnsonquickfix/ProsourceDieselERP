@@ -87,7 +87,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content,string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist)
+        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content,string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string parent_id, string template, string order, string gmtkeyword, string comment)
         {
             try
             {
@@ -105,7 +105,12 @@ namespace LaylaERP.BAL
                     new SqlParameter("@yoast_wpseo_title",seotitle),
                     new SqlParameter("@yoast_wpseo_metadesc",metades),
                     new SqlParameter("@yoast_wpseo_focuskeywords",keylist),
-                    new SqlParameter("@yoast_wpseo_keywordsynonyms",synlist)
+                    new SqlParameter("@yoast_wpseo_keywordsynonyms",synlist),
+                    new SqlParameter("@parent_id",parent_id),
+                    new SqlParameter("@template",template),
+                    new SqlParameter("@order",order),
+                     new SqlParameter("@gmtkeyword",gmtkeyword),
+                    new SqlParameter("@comment",comment)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_pages_iud", para));
                 return result;
@@ -752,6 +757,44 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static DataTable Getbanner(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction)
+        {
+            DataTable dt;
+            try
+            { 
+                SqlParameter[] parameters =
+              {
+
+                    new SqlParameter("@post_status", post_status),
+                   new SqlParameter("@searchcriteria", ""),
+                    new SqlParameter("@strValue1", entity_id),
+                    new SqlParameter("@pageno", page),
+                    new SqlParameter("@pagesize", per_page),
+                    new SqlParameter("@sortcol", sort),
+                    new SqlParameter("@sortdir", direction),
+                    new SqlParameter("@flag", "BLS")
+                };
+
+                dt = SQLHelper.ExecuteDataTable("cms_page_api", parameters);
+                
+            }
+            catch { throw; }
+            return dt;
+        }
+
+        public static DataSet Getparentpage(string id)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
+                 DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
     }
 }

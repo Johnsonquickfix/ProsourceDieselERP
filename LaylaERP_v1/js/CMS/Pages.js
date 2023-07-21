@@ -2,6 +2,7 @@
     $("#loader").hide();
     $(".select1").select2();
     getcompany();
+    getpage();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
 
@@ -22,7 +23,7 @@
     else {
         $("#hfid").val(0);
     }
-
+    
     // $("#btnbacklist").prop("href", "List")
  
     $(document).on('click', "#btnSave", function () {
@@ -116,6 +117,14 @@ function Add() {
     let post_contentval = GetContent();
     ID = $("#hfid").val();
 
+    parent_id = $("#ddlparent").val();
+    template = $("#page_template").val();
+    order = $("#menu_order").val();
+
+
+    gmtkeyword = $("#txtgmtakeyword").val();
+    comment = $("#txtcomment").val();
+
     seotitle = $("#txtseotitle").val();
     metades = $("#txtmetadescription").val();
 
@@ -135,9 +144,7 @@ function Add() {
         var value = $(tr).find('.inputdes').val();
         _synlist.push(value);
         //}
-    });
-
-
+    }); 
     if (title == "") {
         swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
@@ -161,16 +168,19 @@ function Add() {
         obj.append("post_content", encodeURIComponent(post_contentval));
         obj.append("entity_id", entity);
         obj.append("SEO", seo);
-        obj.append("Content", content);
-
+        obj.append("Content", content); 
         obj.append("fcsskey", fcsskey);
         obj.append("seotitle", seotitle);
         obj.append("metades", metades);
         obj.append("slug", slug);
         obj.append("keylist", JSON.stringify(_keylist));
         obj.append("synlist", JSON.stringify(_synlist));
-
-        console.log(post_contentval);
+        obj.append("parent_id", parent_id);
+        obj.append("template", template);
+        obj.append("order", order);
+        obj.append("gmtkeyword", gmtkeyword);
+        obj.append("comment", comment);
+       // console.log(post_contentval);
         $.ajax({
             url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -248,12 +258,14 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-          console.log(i);
+         // console.log(i);
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
             //setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
             let cmpid = i[0].entity_ids; 
             $("#ddlcompany").val(cmpid).trigger('change');
+            //let parent = parseInt(i[0].post_parent) || 0;
+            $('#ddlparent').val(parseInt(i[0].post_parent)).trigger('change');
             var path = i[0].meta_value;
             url = "../../Content/Pages/PageBannerLink/" + path + ""; 
             $('<img>').on('load', function () {
@@ -285,6 +297,13 @@ function GetDataByID(ID) {
             cat = cat.replace(/\s/g, '-');
             $('#txtslug').val(cat);
 
+            $('#menu_order').val(i[0].menu_order);
+            $('#page_template').val(i[0].template);
+
+            $('#txtgmtakeyword').val(i[0].gmtkeyword);
+            $('#txtcomment').val(i[0].comment);
+            //console.log(i[0].post_parent);
+            //setTimeout(function () { }, 500);
             //  var syn = ["synonyms", "", "", "test"];
             var syn = i[0].cpmsyns;
             //console.log(syn);
@@ -305,8 +324,30 @@ function GetDataByID(ID) {
                 //console.log(index1);
                 $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].keyword + '" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea placeholder="" class="inputdes form-control" id=tb' + itxtCnt + ' >' + s[index1 + 1] + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
             });
+
           
         },
         error: function (msg) { alert(msg); }
+    });
+}
+
+
+function getpage() {
+    $.ajax({
+        url: "/CMS/GetPageAttributes",
+        type: "Get",
+        success: function (data) {
+           // console.log(data);
+            $.each(data, function (index, item) {
+                if (item.Text.startsWith("--")) {
+                    item.Text = "&nbsp;&nbsp;&nbsp;" + item.Text.slice(2);
+                }
+            });
+            var opt = '<option value="0">No Parent</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlparent').html(opt);
+        } 
     });
 }

@@ -258,14 +258,14 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-         // console.log(i);
+            let parent = parseInt(i[0].post_parent) || 0;
+            $('#ddlparent').val(parent).trigger('change');
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
             //setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
             let cmpid = i[0].entity_ids; 
             $("#ddlcompany").val(cmpid).trigger('change');
-            //let parent = parseInt(i[0].post_parent) || 0;
-            $('#ddlparent').val(parseInt(i[0].post_parent)).trigger('change');
+            
             var path = i[0].meta_value;
             url = "../../Content/Pages/PageBannerLink/" + path + ""; 
             $('<img>').on('load', function () {

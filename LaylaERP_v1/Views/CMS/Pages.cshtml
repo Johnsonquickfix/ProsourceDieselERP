@@ -110,7 +110,7 @@
             setup: function (ed) {
                 ed.on('init', function (e) {
                     ed.execCommand('mceScreen');
-                    ed.theme.resizeTo(750, 300); // Set the desired width and height
+                    ed.theme.resizeTo('100%', 300); // Set the desired width and height
                 });
             }
         });</script>
@@ -148,82 +148,101 @@
                         <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
                         <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                     </span>
-                    <img runat="server" id="show_picture" style="height: 150px;width:100%">
+                    <img runat="server" id="show_picture" style="margin:auto;">
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
                 </div>
-                <label class="control-label">Focus keyphrase</label>
-                <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
-                <label class="control-label">SEO title</label>
-                <Select class="form-control select2" id="ddlseotitle" style="width: 100%">
-                    <option value="">Insert variable</option>
-                    <option value="title">Title</option>
-                    <option value="sitename">Site Name</option>
-                    <option value="separator">Separator</option>
-                    <option value="primary_category">Primary Category</option>
-                </Select>
-                <input type="text" id="txtseotitle" class="form-control" placeholder="">
-                <label class="control-label">Slug</label>
-                <input type="text" id="txtslug" class="form-control" placeholder="Slug">
-                <label class="control-label">Meta description</label>
-                <Select class="form-control select2" id="ddlmetadescription" style="width: 100%">
-                    <option value="">Insert variable</option>
-                    <option value="title">Title</option>
-                    <option value="sitename">Site Name</option>
-                    <option value="separator">Separator</option>
-                    <option value="primary_category">Primary Category</option>
-                </Select>
-                <input type="text" id="txtmetadescription" class="form-control" placeholder="">
-                <label class="control-label">Keyphrase synonyms</label>
-                <input type="text" id="txtsynonyms" class="form-control" placeholder="Keyphrase synonyms">
-                <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
-                <table id="tbhold" class="simple-table">
-                </table>
-                <label class="control-label">G Meta Keywords</label>
-                <p>Please add comma separated meta keywords to show for this content.</p>
-                <input type="text" id="txtgmtakeyword" class="form-control" placeholder="">
-                <label class="control-label">Comment</label>
-                <p>Add new Comment.</p>
-                <textarea id="txtcomment"  style="width: 100%" rows="6" ></textarea>
-            </div>
-            <div class="col-md-3"> 
-                <label class="control-label">Featured image</label>
-                <div class="box box-primary">
-                    <span class="edit-pic-profile">
-                        <input type="file" onchange="readFeatURL(this);" name="Featuredfile" id="Featuredfile" class="inputfile" />
-                        <label id="btnFeatured" for="Featuredfile"><i class="fa fa-edit"></i>Edit</label>
-                    </span>
-                    <img runat="server" id="featuredshow_picture" style="height: 150px;">
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Focus keyphrase</label>
+                    <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
+                </div>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">SEO title</label>
+                    <Select class="form-control select2 mb-1" id="ddlseotitle" style="width: 100%">
+                        <option value="">Insert variable</option>
+                        <option value="title">Title</option>
+                        <option value="sitename">Site Name</option>
+                        <option value="separator">Separator</option>
+                        <option value="primary_category">Primary Category</option>
+                    </Select>
+                    <input type="text" id="txtseotitle" class="form-control" placeholder="">
+                </div>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Slug</label>
+                    <input type="text" id="txtslug" class="form-control" placeholder="Slug">
+                </div>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Meta description</label>
+                    <Select class="form-control select2 mb-1" id="ddlmetadescription" style="width: 100%">
+                        <option value="">Insert variable</option>
+                        <option value="title">Title</option>
+                        <option value="sitename">Site Name</option>
+                        <option value="separator">Separator</option>
+                        <option value="primary_category">Primary Category</option>
+                    </Select>
+                    <input type="text" id="txtmetadescription" class="form-control" placeholder="">
+                </div>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Keyphrase synonyms</label>
+                    <input type="text" id="txtsynonyms" class="form-control" placeholder="Keyphrase synonyms">
+                </div>
+                    <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
+                    <table id="tbhold" class="simple-table">
+                    </table>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">G Meta Keywords</label>
+                    <p>Please add comma separated meta keywords to show for this content.</p>
+                    <input type="text" id="txtgmtakeyword" class="form-control" placeholder="">
+                </div>
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Comment</label>
+                    <p>Add new Comment.</p>
+                    <textarea id="txtcomment" style="width: 100%" rows="6"></textarea>
                 </div>
 
-                <div id="pageparentdiv" class="postbox ">
-                    <div class="postbox-header"> 
-                        <label class="control-label">Page Attributes</label>
-                    </div>
-                    <div class="inside">
-                        <label class="control-label">Parent</label>
-                        <Select class="form-control select2" id="ddlparent" style="width: 100%">
-                        </Select>
-
-                        <label class="control-label">Template</label>
-                        <Select class="form-control select2" id="page_template" style="width: 100%">
-                            <option value="default">Default template</option>
-                            <option value="template-advance-search.php">Advance Search Template</option>
-                            <option value="template-contact.php">Contact</option>
-                            <option value="tpl-full-width.php">Front page</option>
-                            <option value="custom_page.php">New Design</option>
-                            <option value="tpl-no-header-footer.php">No Header/Footer</option>
-                            <option value="page-blog.php">Page - Blog Template</option>
-                            <option value="tpl-sidebar.php">Sidebar</option>
-                            <option value="template-viewpdf.php">View PDF</option>
-                        </Select>
-                  
-                        <label class="control-label">Order</label>
-                        <input name="menu_order" type="text" id="menu_order" value="0">
-
+            </div>
+            <div class="col-md-3">
+                <div class="card bg_none border-0 p-2">
+                    <label class="control-label">Featured image</label>
+                    <div class="box box-primary">
+                        <span class="edit-pic-profile">
+                            <input type="file" onchange="readFeatURL(this);" name="Featuredfile" id="Featuredfile" class="inputfile" />
+                            <label id="btnFeatured" for="Featuredfile"><i class="fa fa-edit"></i>Edit</label>
+                        </span>
+                        <img runat="server" id="featuredshow_picture" style="height: 150px;">
                     </div>
                 </div>
-            </div>
-        </div> 
+                    <div id="pageparentdiv" class="postbox ">
+                        <div class="postbox-header">
+                            <label class="control-label">Page Attributes</label>
+                        </div>
+                        <div class="inside">
+                            <div class="card bg_none border-0 p-2">
+                                <label class="control-label">Parent</label>
+                                <Select class="form-control select2" id="ddlparent" style="width: 100%">
+                                </Select>
+                            </div>
+                            <div class="card bg_none border-0 p-2">
+                                <label class="control-label">Template</label>
+                                <Select class="form-control select2" id="page_template" style="width: 100%">
+                                    <option value="default">Default template</option>
+                                    <option value="template-advance-search.php">Advance Search Template</option>
+                                    <option value="template-contact.php">Contact</option>
+                                    <option value="tpl-full-width.php">Front page</option>
+                                    <option value="custom_page.php">New Design</option>
+                                    <option value="tpl-no-header-footer.php">No Header/Footer</option>
+                                    <option value="page-blog.php">Page - Blog Template</option>
+                                    <option value="tpl-sidebar.php">Sidebar</option>
+                                    <option value="template-viewpdf.php">View PDF</option>
+                                </Select>
+                            </div>
+                            <div class="card bg_none border-0 p-2">
+                                <label class="control-label">Order</label>
+                                <input name="menu_order" type="text" id="menu_order" value="0">
+                            </div>
+                            </div>
+                        </div>
+                </div>
+            </div> 
     </section>
 </body>
 

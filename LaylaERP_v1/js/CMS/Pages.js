@@ -1,28 +1,30 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
     $(".select1").select2();
-    getcompany();
-    getpage();
-    var url = window.location.pathname;
-    var id = url.substring(url.lastIndexOf('/') + 1);
+    //getpage();
+    //getcompany();
 
-    if (id != "") {
-        if (id == 'Pages') {
-            $("#lblpermalink").hide();
-            
-            $("#hfid").val(0);
+    $.when(getpage()).then(function () {
+        getcompany();
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        if (id != "") {
+            if (id == 'Pages') {
+                $("#lblpermalink").hide();
+                $("#hfid").val(0);
+            }
+            else {
+                $("#lblpermalink").show();
+                GetDataByID(id);
+                $("#hfid").val(id);
+            }
         }
         else {
-            $("#lblpermalink").show();
-            GetDataByID(id);
-            $("#hfid").val(id);
+            $("#hfid").val(0);
         }
-        //GetFeeNTaxByID(id);
-        //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
-    }
-    else {
-        $("#hfid").val(0);
-    }
+    });
+  
+ 
     
     // $("#btnbacklist").prop("href", "List")
  
@@ -45,10 +47,6 @@
         window.open(url, '_blank');
      
     });
-
-
- 
-
     $('#txttitle').keyup(function (event) {
         var textBox = event.target;
         var start = textBox.selectionStart;
@@ -246,7 +244,6 @@ function SetContent(htmlContent) {
 }
 
 function GetDataByID(ID) {
-
     //var ID = ID;
     var obj = {};
     $.ajax({
@@ -258,8 +255,8 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            let parent = parseInt(i[0].post_parent) || 0;
-            $('#ddlparent').val(parent).trigger('change');
+            var parent = i[0].post_parent;
+            $('#ddlparent').val(parent).trigger('change'); 
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
             //setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
@@ -295,16 +292,13 @@ function GetDataByID(ID) {
             $("#txtfocuskeyphras").val(i[0].seofocus);
             var cat = $('#txttitle').val().toLowerCase().trim();
             cat = cat.replace(/\s/g, '-');
-            $('#txtslug').val(cat);
-
+            $('#txtslug').val(cat);     
+           // var ddlParent = document.getElementById('ddlparent');
+            //ddlParent.value = "3028";
             $('#menu_order').val(i[0].menu_order);
             $('#page_template').val(i[0].template);
-
             $('#txtgmtakeyword').val(i[0].gmtkeyword);
-            $('#txtcomment').val(i[0].comment);
-            //console.log(i[0].post_parent);
-            //setTimeout(function () { }, 500);
-            //  var syn = ["synonyms", "", "", "test"];
+            $('#txtcomment').val(i[0].comment);           
             var syn = i[0].cpmsyns;
             //console.log(syn);
             if (syn === null) {
@@ -324,8 +318,6 @@ function GetDataByID(ID) {
                 //console.log(index1);
                 $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].keyword + '" /><span></div></td><td><div class="form-group"><label class="control-balel">Synonyms:</label><textarea placeholder="" class="inputdes form-control" id=tb' + itxtCnt + ' >' + s[index1 + 1] + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
             });
-
-          
         },
         error: function (msg) { alert(msg); }
     });

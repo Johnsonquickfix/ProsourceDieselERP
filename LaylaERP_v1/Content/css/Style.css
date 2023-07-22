@@ -20,7 +20,7 @@
     background-color: #fff;
     background-clip: border-box;
     border: 1px solid rgba(0,0,0,.125);
-    border-radius: .25rem;
+    border-radius: .25rem; margin-bottom:18px;
 }
 
 .card-body {
@@ -28,7 +28,16 @@
     flex: 1 1 auto;
     padding: 1.25rem;
 }
-
+.bg_none {
+background:transparent !important;
+}
+.card:last-child {
+border:0px !important}
+.border-0 {
+    border: 0px !important;
+}
+.p-2 {padding:0px 6px !important
+}
 .select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de;
     border-radius: 0;

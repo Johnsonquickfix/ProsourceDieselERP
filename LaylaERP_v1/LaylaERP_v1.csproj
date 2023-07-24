@@ -250,6 +250,7 @@
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
+    <Compile Include="Controllers\CMSApiController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
     <Compile Include="Controllers\CommonAPIController.cs" />
@@ -1606,6 +1607,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
+    <Folder Include="Views\CMSApi\" />
     <Folder Include="Views\CMSRepository\" />
   </ItemGroup>
   <ItemGroup>

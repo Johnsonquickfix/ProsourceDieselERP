@@ -27,7 +27,7 @@ namespace LaylaERP
             routes.MapRoute(
                 name: "Banner",
                 url: "{controller}/{action}/{app_key}/{entity_id}",
-                defaults: new { controller = "Test", action = "Getbanner", app_key = UrlParameter.Optional, entity_id = UrlParameter.Optional }
+                defaults: new { controller = "CMSApi", action = "Getbanner", app_key = UrlParameter.Optional, entity_id = UrlParameter.Optional }
             );
         }
     }

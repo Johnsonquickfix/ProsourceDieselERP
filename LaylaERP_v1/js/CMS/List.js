@@ -28,9 +28,9 @@
         var id = "Pages"; // Replace this with the value of the first parameter
         let entiid = parseInt($('#ddlcompany').val()) || 0; // Replace this with the value of the second parameter 
         var url = '/CMS/Pages/' + id + '?entiid=' + entiid; 
-        //window.open(url);
+        //window.open(url);  
         window.location.href = url;
-    })
+    }) 
 });
 
 //function space(noOfSpaces) {

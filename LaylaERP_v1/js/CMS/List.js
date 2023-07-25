@@ -21,6 +21,16 @@
     $(document).on('click', "#btnsearch", function () {
         dataGridLoad(''); 
     })
+
+    $(document).on('click', "#btnAdd", function () {
+        var url = '/CMS/Pages/' + id;
+        // Open the URL in a new tab
+        var id = "Pages"; // Replace this with the value of the first parameter
+        let entiid = parseInt($('#ddlcompany').val()) || 0; // Replace this with the value of the second parameter 
+        var url = '/CMS/Pages/' + id + '?entiid=' + entiid; 
+        //window.open(url);
+        window.location.href = url;
+    })
 });
 
 //function space(noOfSpaces) {
@@ -75,7 +85,7 @@ function getcompany() {
         url: "/Setting/GetCompany",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="">Please Select Company</option>';
+            var opt = '<option value="">Please Select Store</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -145,9 +155,9 @@ function dataGridLoad(order_type) {
                     //    return ' <b></b>';
                     //else {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to view pages details" data-toggle="tooltip" href="Pages/' + id + '" onclick="ActivityLog(\'Edit pages id (' + id + ') in pages list\',\'Pages/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a title="Click here to view pages details" data-toggle="tooltip" href="Pages/' + id + '?entiid=' + row.entity_id +'" onclick="ActivityLog(\'Edit pages id (' + id + ') in pages list\',\'Pages/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
                     //    }
-                    //    else { return "No Permission"; }
+                    //    else { return "No Permission"; }     var url = '/CMS/Pages/' + id + '?entiid=' + entiid; 
                     //}
                     // }
                 }

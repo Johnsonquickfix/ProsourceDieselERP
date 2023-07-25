@@ -759,7 +759,7 @@ namespace LaylaERP.BAL
             return DT;
         }
 
-        public static DataTable Getbanner(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction)
+        public static DataTable Getapi(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction,string flag)
         {
             DataTable dt;
             try
@@ -774,7 +774,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@pagesize", per_page),
                     new SqlParameter("@sortcol", sort),
                     new SqlParameter("@sortdir", direction),
-                    new SqlParameter("@flag", "BLS")
+                    new SqlParameter("@flag", flag)
                 };
 
                 dt = SQLHelper.ExecuteDataTable("cms_page_api", parameters);
@@ -791,6 +791,23 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
                  DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet Getparentpagebyid(int id)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "";
+                if (id > 0)
+                    strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' and entity_id = "+ id +" order by ID,post_parent";
+                else
+                     strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }

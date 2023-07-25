@@ -266,7 +266,7 @@ namespace LaylaERP_v1.Controllers
                     if (FileName == "")
                     {
                         FileName = "default.png";
-                    } 
+                    }
                     ImagePath = "~/Content/Pages/PageBannerLink/" + FileName;
                     //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
                     ImageFile.SaveAs(pathimage);
@@ -293,7 +293,7 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id,SEO,Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment);
+                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -313,19 +313,29 @@ namespace LaylaERP_v1.Controllers
                         else
                         {
                             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                        } 
+                        }
                     }
                 }
                 else
                 {
                     return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
 
-                } 
+                }
             }
             else
             {
                 if (Convert.ToInt64(ID) == 0)
-                    return Json(new { status = false, message = "Please upload file", url = "Pages" }, 0);
+                {
+                    entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment);
+                    if (entity > 0)
+                    {
+                        return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
                 else
                 {
                     if (FeaturedFile != null)
@@ -342,7 +352,7 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist,parent_id, template, order, gmtkeyword, comment);
+                        entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment);
                     }
                     else
                     {
@@ -981,6 +991,17 @@ namespace LaylaERP_v1.Controllers
         {
             string user_companyid = CommanUtilities.Provider.GetCurrent().user_companyid;
             DataSet ds = CMSRepository.Getparentpage(user_companyid);
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["post_title"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetPageAttributesByID(int id)
+        {
+            //string user_companyid = CommanUtilities.Provider.GetCurrent().user_companyid;
+            DataSet ds = CMSRepository.Getparentpagebyid(id);
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {

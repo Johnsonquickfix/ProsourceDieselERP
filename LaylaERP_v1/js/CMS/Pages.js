@@ -3,26 +3,31 @@
     $(".select1").select2();
     //getpage();
     //getcompany();
-
-    $.when(getpage()).then(function () {
-        getcompany();
-        var url = window.location.pathname;
-        var id = url.substring(url.lastIndexOf('/') + 1);
+    var url = window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+    var searchParams = new URLSearchParams(window.location.search);
+    var entiid = searchParams.get('entiid'); 
+    $.when(getpage(entiid)).then(function () {
+        getcompany(entiid);
         if (id != "") {
             if (id == 'Pages') {
                 $("#lblpermalink").hide();
                 $("#hfid").val(0);
+                $("#btnSave").text("Add"); 
             }
-            else {
+            else { 
                 $("#lblpermalink").show();
                 GetDataByID(id);
                 $("#hfid").val(id);
+                $("#btnSave").text("Update");
+                 
             }
         }
         else {
             $("#hfid").val(0);
         }
     });
+
   
  
     
@@ -157,7 +162,7 @@ function Add() {
     //}
     else {
         var file = document.getElementById("file").files[0];
-        var featuredfile = document.getElementById("Featuredfile").files[0];
+        var featuredfile = document.getElementById("Featuredfile").files[0]; 
         var obj = new FormData();
         obj.append("ImageFile", file);
         obj.append("FeaturedFile", featuredfile);
@@ -204,7 +209,9 @@ function Add() {
     }
 }
 function readURL(input) {
+    //console.log(input);
     if (input.files && input.files[0]) {
+       // console.log(input.files, input.files[0]);
         var reader = new FileReader();
         reader.onload = function (e) {
             $('#show_picture').attr('src', e.target.result);
@@ -221,17 +228,19 @@ function readFeatURL(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function getcompany() {
+function getcompany(id) {
     $.ajax({
         url: "/Setting/GetCompany",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please Select Company</option>';
+            var opt = '<option value="0">Please Select Store</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlcompany').html(opt);
+            $('#ddlcompany').val(id);
         }
+      
 
     });
 }
@@ -284,7 +293,7 @@ function GetDataByID(ID) {
                 $('#featuredshow_picture').attr('src', "../../Content/Product/default.png"); // Set a default image or do something else
             }).attr('src', furl); 
            // $('#featuredshow_picture').attr('src', furl); 
-            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title + "");
+     
 
             $("#txtseotitle").val(i[0].cmsseotitle);
             $("#txtmetadescription").val(i[0].seometa);
@@ -292,7 +301,8 @@ function GetDataByID(ID) {
             $("#txtfocuskeyphras").val(i[0].seofocus);
             var cat = $('#txttitle').val().toLowerCase().trim();
             cat = cat.replace(/\s/g, '-');
-            $('#txtslug').val(cat);     
+            $('#txtslug').val(cat);
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + cat + "");
            // var ddlParent = document.getElementById('ddlparent');
             //ddlParent.value = "3028";
             $('#menu_order').val(i[0].menu_order);
@@ -324,9 +334,9 @@ function GetDataByID(ID) {
 }
 
 
-function getpage() {
+function getpage(id) {
     $.ajax({
-        url: "/CMS/GetPageAttributes",
+        url: "/CMS/GetPageAttributesByID/" + id,
         type: "Get",
         success: function (data) {
            // console.log(data);

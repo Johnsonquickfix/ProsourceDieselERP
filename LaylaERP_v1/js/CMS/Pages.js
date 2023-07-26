@@ -110,6 +110,12 @@
         inputBox.html(inputBox.html().substring(0, startIndex) + coloredHtml + inputBox.html().substring(endIndex));
         inputBox[0].setSelectionRange(endIndex, endIndex);
     });
+
+    $('#ddlcompany').change(function () {
+        let compid = $('#ddlcompany').val();
+        getpage(compid);
+
+    });
 })
 
 function Add() { 

@@ -326,6 +326,26 @@ namespace LaylaERP_v1.Controllers
             {
                 if (Convert.ToInt64(ID) == 0)
                 {
+                    if (FeaturedFile != null)
+                    {
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
                     entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment);
                     if (entity > 0)
                     {
@@ -419,22 +439,28 @@ namespace LaylaERP_v1.Controllers
             string FeatuerFileExtension = "";
             //string encodedHtml = "%3Cp%3Ehi%20this%20is%26nbsp%3B%3C%2Fp%3E%0D%0A%3Cp%3Etest%3C%2Fp%3E%0D%0A%3Cp%3Eeditore%20save%3C%2Fp%3E";
             bannerurl = HttpUtility.UrlDecode(bannerurl);
-
-            string numbersString = type;
-            string[] numberStrings = numbersString.Split(',');
-
-            // Convert the numbers to the serialized format
-            List<string> serializedNumbers = new List<string>();
-            for (int i = 0; i < numberStrings.Length; i++)
+            string serializedString = "";
+            if (!string.IsNullOrEmpty(type))
             {
-                int number = int.Parse(numberStrings[i]);
-                string serializedNumber = $"i:{i};s:{number.ToString().Length}:\"{number}\";";
-                serializedNumbers.Add(serializedNumber);
+
+                string numbersString = type;
+                string[] numberStrings = numbersString.Split(',');
+
+                // Convert the numbers to the serialized format
+                List<string> serializedNumbers = new List<string>();
+                for (int i = 0; i < numberStrings.Length; i++)
+                {
+                    if (numberStrings[i] != null || numberStrings[i] != "")
+                    {
+                        int number = int.Parse(numberStrings[i]);
+                        string serializedNumber = $"i:{i};s:{number.ToString().Length}:\"{number}\";";
+                        serializedNumbers.Add(serializedNumber);
+                    }
+                }
+
+                // Construct the final serialized string
+                serializedString = $"a:{numberStrings.Length}:{{{string.Join("", serializedNumbers)}}}";
             }
-
-            // Construct the final serialized string
-            string serializedString = $"a:{numberStrings.Length}:{{{string.Join("", serializedNumbers)}}}";
-
             //string decodedHtml = HttpUtility.UrlDecode(post_content);
             if (ImageFile != null)
             {
@@ -515,6 +541,26 @@ namespace LaylaERP_v1.Controllers
             {
                 if (Convert.ToInt64(ID) == 0)
                 {
+                    if (FeaturedFile != null)
+                    {
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Banner/Featured"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
                     entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg);
                     if (entity > 0)
                     {

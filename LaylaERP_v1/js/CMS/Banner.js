@@ -281,9 +281,12 @@ function GetDataByID(ID) {
                 selectepage();
                 $('#ddlpage').select2(); 
                 var input = i[0].InnerPageBannerSelection;
-                console.log(input);
-                if (input == null) {
+                console.log('dd',input);
+                if (input == null || input == "") {
+                   // console.log('ddcc');
                     $('#ddlpage').empty();
+                    $('input[name="banner"]').prop('checked', false);
+                    $('#dvpage').hide();
                 }
                 else {
                     var pattern = /"(\d+)"/g;

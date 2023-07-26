@@ -5,6 +5,7 @@
     line-height: 23px;
     font-weight: 400;
 }
+
 .card {
     word-wrap: break-word;
 }
@@ -20,7 +21,8 @@
     background-color: #fff;
     background-clip: border-box;
     border: 1px solid rgba(0,0,0,.125);
-    border-radius: .25rem; margin-bottom:18px;
+    border-radius: .25rem;
+    margin-bottom: 18px;
 }
 
 .card-body {
@@ -28,16 +30,31 @@
     flex: 1 1 auto;
     padding: 1.25rem;
 }
+
 .bg_none {
-background:transparent !important;
+    background: transparent !important;
 }
+
 .card:last-child {
-border:0px !important}
+    border: 0px !important
+}
+
 .border-0 {
     border: 0px !important;
 }
-.p-2 {padding:0px 6px !important
+
+.p-2 {
+    padding: 0px 6px !important
 }
+
+.box-box_primary .mb-1 {
+    margin-bottom: 5px !important;
+}
+
+.box-box_primary .card:not(:last-child) {
+    margin-bottom: 10px;
+}
+
 .select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de;
     border-radius: 0;
@@ -45,10 +62,53 @@ border:0px !important}
     height: 30px;
 }
 
+.keyphrase_box label {
+    margin: 0px;
+}
 
+.keyphrase_box button.btn_remove:focus {
+    outline: 0px !important;
+}
+
+.keyphrase_box button.btn_remove {
+    color: #585656;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.keyphrase_box .simple-table td:last-child {
+    width: 45px;
+    text-align: right;
+}
+
+#show_picture[src=""], [src=""].featured_side_image {
+    display: none;
+}
+
+.featured_side_image {
+    max-width: 120px;
+    height: auto;
+}
+
+#show_picture {
+    max-width: 290px;
+    height: auto;
+}
+
+.box-primary.mb-20 {
+    margin-bottom: 20px !important
+}
+
+.box-sidebar_box {
+    padding-top: 0px !important;
+}
 
 .input-group-addon {
     padding: 6px 8px !important;
+}
+
+.keyphrase_box button {
+    align-self: flex-start;
 }
 
 .form-group {
@@ -118,4 +178,3 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
     padding: 12px 10px;
     color: #555;
 }
-

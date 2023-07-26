@@ -198,7 +198,7 @@ function Add() {
                         swal('Success!', data.message, 'success').then((result) => { location.href = '../List'; });
                     }
                     else {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = 'List'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../List'; });
                     }
                 }
                 else { swal('Alert!', data.message, 'error') }

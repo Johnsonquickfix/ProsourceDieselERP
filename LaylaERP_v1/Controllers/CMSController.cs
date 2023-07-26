@@ -514,7 +514,17 @@ namespace LaylaERP_v1.Controllers
             else
             {
                 if (Convert.ToInt64(ID) == 0)
-                    return Json(new { status = false, message = "Please upload file", url = "Pages" }, 0);
+                {
+                    entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg);
+                    if (entity > 0)
+                    {
+                        return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                } 
                 else
                 {
                     if (FeaturedFile != null)

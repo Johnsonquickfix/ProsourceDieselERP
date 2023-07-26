@@ -134,5 +134,23 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable Getentitycount(string name)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                 
+                DataTable ds = new DataTable();
+                dt = DAL.SQLHelper.ExecuteDataTable("select count(companyname) Countid from erp_entityinfo where companyname = '"+name+"' ");
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

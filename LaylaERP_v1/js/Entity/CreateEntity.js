@@ -29,10 +29,12 @@ $(document).ready(function () {
     if (id != "") {
         if (id == 'CreateNew') {
             $("#hfid").val(0);
+            $("#txtcompanyname").prop("readonly", false);
         }
         else {
             GetDataByID(id);
             $("#hfid").val(id);
+            $("#txtcompanyname").prop("readonly", true);
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);

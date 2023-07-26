@@ -75,14 +75,23 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = EntityRepositry.CreateEntity("I", ID, Emailuser, companyname, FirstName, LastName, address, country, Countrycode, Phone, Zipcode, City, State, Website, FileName, AdditionalNotes, base_url, po_emailval, address2);
-                        if (entity > 0)
+                        DataTable cmname = new DataTable();
+                        cmname = EntityRepositry.Getentitycount(companyname);
+                        if (Convert.ToInt32(cmname.Rows[0]["Countid"]) == 0)
                         {
-                            return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                            entity = EntityRepositry.CreateEntity("I", ID, Emailuser, companyname, FirstName, LastName, address, country, Countrycode, Phone, Zipcode, City, State, Website, FileName, AdditionalNotes, base_url, po_emailval, address2);
+                            if (entity > 0)
+                            {
+                                return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
                         }
                         else
                         {
-                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            return Json(new { status = false, message = "company name already exists", url = "" }, 0);
                         }
 
                     }

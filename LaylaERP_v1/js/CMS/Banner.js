@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
     $(".select2").select2();
-  
+    $(".select1").select2();
  
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);

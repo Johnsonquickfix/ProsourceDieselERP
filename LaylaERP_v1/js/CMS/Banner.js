@@ -14,12 +14,14 @@
             $("#lblpermalink").hide();
             $("#dvlink").hide();
             $("#hfid").val(0);
+            $("#btnSave").text("Add");
         }
         else {
             $("#lblpermalink").show();
             $("#dvlink").show();
             GetDataByID(id);
             $("#hfid").val(id);
+            $("#btnSave").text("Update");
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
@@ -38,7 +40,7 @@
             let storeid = $("#ddlcompany").val();
             
             $("#ddlpage").select2({
-                allowClear: true, minimumInputLength: 0, placeholder: "Search company",
+                allowClear: true, minimumInputLength: 0, placeholder: "Search pages",
                 ajax: {
                     url: '/CMS/GetpagebannerData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                     data: function (params) { var obj = { strValue1: params.term, strValue2: storeid }; return JSON.stringify(obj); },
@@ -89,7 +91,7 @@
         console.log('AAA');
         let compid = $('#ddlcompany').val();
         $("#ddlpage").select2({
-            allowClear: true, minimumInputLength: 0, placeholder: "Search company",
+            allowClear: true, minimumInputLength: 0, placeholder: "Search page",
             ajax: {
                 url: '/CMS/GetpagebannerData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term, strValue2: compid }; return JSON.stringify(obj); },
@@ -363,8 +365,10 @@ function GetDataByID(ID) {
                 // Image does not exist
                 $('#featuredshow_picture').attr('src', "../../Content/Product/default.png"); // Set a default image or do something else
             }).attr('src', furl);
-
-            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_title + "");
+            var cat = $('#txttitle').val().toLowerCase().trim();
+            cat = cat.replace(/\s/g, '-');
+          
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + cat + "");
         
         },
         error: function (msg) { alert(msg); }

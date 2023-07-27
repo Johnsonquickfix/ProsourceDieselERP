@@ -1065,5 +1065,17 @@ namespace LaylaERP_v1.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetpagebannerData(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CMSRepository.GetpagebannerData(model.strValue1,Convert.ToInt32(model.strValue2));
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

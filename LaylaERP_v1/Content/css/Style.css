@@ -25,6 +25,20 @@
     margin-bottom: 18px;
 }
 
+.banner_input .inputWrap {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+    .banner_input .inputWrap input, .banner_input .inputWrap label {
+        margin: 0px;
+    }
+
+    .banner_input .inputWrap label {
+        padding-left: 5px;
+    }
+
 .card-body {
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
@@ -83,6 +97,23 @@
 
 #show_picture[src=""], [src=""].featured_side_image {
     display: none;
+}
+
+.banner_sidebar #show_picture {
+    max-width: 120px;
+}
+
+.flex_compBox {
+    display: flex;
+    justify-content: flex-end;
+}
+
+    .flex_compBox #btnSave {
+        margin-left: 3px;
+    }
+
+.width_100 {
+    width: 100% !important;
 }
 
 .featured_side_image {

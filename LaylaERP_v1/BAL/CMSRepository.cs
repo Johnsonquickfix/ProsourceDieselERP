@@ -813,5 +813,21 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataTable GetpagebannerData(string optType, int id)
+        {
+            DataTable DS = new DataTable();
+            try
+            {
+                string strSQl = "";
+                if (id > 0)
+                    strSQl = "Select ID, post_title label from cms_posts where post_type = 'page' and post_title like '%" + optType + "%' and entity_id = " + id + "";
+                else
+                    strSQl = "Select ID, post_title label from cms_posts where post_type = 'page' and post_title like '%" + optType + "%';";
+                DS = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

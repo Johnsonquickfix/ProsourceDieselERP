@@ -1,17 +1,23 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
     $(".select2").select2();
-    getcompany();
+  
+ 
     var url = window.location.pathname;
-    var id = url.substring(url.lastIndexOf('/') + 1);  
-    //$("#dvpage").show();
+    var id = url.substring(url.lastIndexOf('/') + 1);
+    var searchParams = new URLSearchParams(window.location.search);
+    var entiid = searchParams.get('entiid');
+    getcompany(entiid);
+    //$("#dvpage").show();  
     if (id != "") {
         if (id == 'Banner') {
             $("#lblpermalink").hide();
+            $("#dvlink").hide();
             $("#hfid").val(0);
         }
         else {
             $("#lblpermalink").show();
+            $("#dvlink").show();
             GetDataByID(id);
             $("#hfid").val(id);
         }
@@ -29,12 +35,13 @@
     $('input[type=radio][name=banner]').change(function () {
         if ($("input[name='banner']:checked").val() == "1") {
             $("#dvpage").show();
-           
+            let storeid = $("#ddlcompany").val();
+            
             $("#ddlpage").select2({
                 allowClear: true, minimumInputLength: 0, placeholder: "Search company",
                 ajax: {
-                    url: '/CMS/GetpageData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                    data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
+                    url: '/CMS/GetpagebannerData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) { var obj = { strValue1: params.term, strValue2: storeid }; return JSON.stringify(obj); },
                     processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
                     error: function (xhr, status, err) { }, cache: true
                 }
@@ -77,14 +84,30 @@
         window.open(url, '_blank');
 
     });
+
+    $('#ddlcompany').change(function () {
+        console.log('AAA');
+        let compid = $('#ddlcompany').val();
+        $("#ddlpage").select2({
+            allowClear: true, minimumInputLength: 0, placeholder: "Search company",
+            ajax: {
+                url: '/CMS/GetpagebannerData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term, strValue2: compid }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+
+    });
 })
 
 
 function selectepage() {
     $("#ddlpage").empty();
-    var obj = { strValue1: '' }
+    let storeid = $("#ddlcompany").val();
+    var obj = { strValue1: '', strValue2: storeid}
     $.ajax({
-        url: '/CMS/GetpageData',
+        url: '/CMS/GetpagebannerData',
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
@@ -118,18 +141,32 @@ function selectecategory() {
         async: false
     });
 }
-function getcompany() {
+//function getcompany() {
+//    $.ajax({
+//        url: "/Setting/GetCompany",
+//        type: "Get",
+//        success: function (data) {
+//            var opt = '<option value="0">Please Select Store</option>';
+//            for (var i = 0; i < data.length; i++) {
+//                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+//            }
+//            $('#ddlcompany').html(opt);
+//        }
+
+//    });
+//}
+function getcompany(id) {
     $.ajax({
         url: "/Setting/GetCompany",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please Select Company</option>';
+            var opt = '<option value="0">Please Select Store</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlcompany').html(opt);
-        }
-
+            $('#ddlcompany').val(id);
+        } 
     });
 }
 function Add() {
@@ -162,10 +199,10 @@ function Add() {
 
     ID = $("#hfid").val();
     if (title == "") {
-        swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
+        swal('Alert', 'Please enter page title!', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
     else if (entity == 0) {
-        swal('Alert', 'Please enter company name', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+        swal('Alert', 'Please select store!', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
     }
     //else if (Emailuser == "") {
     //    swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
@@ -201,7 +238,7 @@ function Add() {
                         swal('Success!', data.message, 'success').then((result) => { location.href = '../BannerList'; });
                     }
                     else {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = 'BannerList'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../BannerList'; });
                     }
                 }
                 else { swal('Alert!', data.message, 'error') }
@@ -229,20 +266,20 @@ function readFeatURL(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function getcompany() {
-    $.ajax({
-        url: "/Setting/GetCompany",
-        type: "Get",
-        success: function (data) {
-            var opt = '<option value="0">Please Select Company</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
-            }
-            $('#ddlcompany').html(opt);
-        }
+//function getcompany() {
+//    $.ajax({
+//        url: "/Setting/GetCompany",
+//        type: "Get",
+//        success: function (data) {
+//            var opt = '<option value="0">Please Select Company</option>';
+//            for (var i = 0; i < data.length; i++) {
+//                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+//            }
+//            $('#ddlcompany').html(opt);
+//        }
 
-    });
-}
+//    });
+//}
  
 function GetDataByID(ID) { 
     var obj = {};
@@ -254,7 +291,7 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i);
+            console.log('type',i[0].InnerPageBannerType);
             //var innerPageBannerSelection = i[0].InnerPageBannerSelection;
             //var value = innerPageBannerSelection.match(/"(\d+)"/)[1]; 
             var type = i[0].InnerPageBannerType;
@@ -296,6 +333,7 @@ function GetDataByID(ID) {
                     if (matches && matches.length > 0) {
                         // Join the matched numbers into a comma-separated string
                         var numbersString = matches.map(match => match.replace(/"/g, '')).join(',');
+                        console.log(numbersString);
                         $("#ddlpage").select2("val", [numbersString.split(',')]);
                     }
                 }

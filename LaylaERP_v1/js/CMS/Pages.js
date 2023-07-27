@@ -112,6 +112,7 @@
     });
 
     $('#ddlcompany').change(function () {
+        console.log('AAA');
         let compid = $('#ddlcompany').val();
         getpage(compid);
 
@@ -155,10 +156,10 @@ function Add() {
         //}
     }); 
     if (title == "") {
-        swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
+        swal('Alert', 'Please enter page title!', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
     else if (entity == 0) {
-        swal('Alert', 'Please enter company name', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+        swal('Alert', 'Please select store!', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
     }
     //else if (Emailuser == "") {
     //    swal('Alert', 'Please enter email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
@@ -275,8 +276,8 @@ function GetDataByID(ID) {
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
             //setTimeout(function () { $("#ddlcompany").val(i[0].entity_id).trigger('change'); }, 500);
-            let cmpid = i[0].entity_ids; 
-            $("#ddlcompany").val(cmpid).trigger('change');
+            //let cmpid = i[0].entity_ids; 
+            //$("#ddlcompany").val(cmpid).trigger('change');
             
             var path = i[0].meta_value;
             url = "../../Content/Pages/PageBannerLink/" + path + ""; 

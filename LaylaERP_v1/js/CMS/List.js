@@ -137,12 +137,12 @@ function dataGridLoad(order_type) {
         },
         columns: [
             { data: 'ID', title: 'ID', sWidth: "3%" },
-            {
-                'data': 'ID', sWidth: "3%   ",
-                'render': function (data, type, row) { 
-                        return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
-                 }
-            },
+            //{
+            //    'data': 'ID', sWidth: "3%   ",
+            //    'render': function (data, type, row) { 
+            //            return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+            //     }
+            //},
              
             { data: 'post_title', title: 'Title', sWidth: "12%" },
             { data: 'user_login', title: 'Author', sWidth: "5%" },

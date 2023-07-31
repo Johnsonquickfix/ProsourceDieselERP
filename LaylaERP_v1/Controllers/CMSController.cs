@@ -819,6 +819,27 @@ namespace LaylaERP_v1.Controllers
             {
                 if (Convert.ToInt64(ID) == 0)
                 {
+                    if (FeaturedFile != null)
+                    {
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Post/Featured"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
+
                     entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist);
                     Add_term(category, Convert.ToInt32(entity));
                     if (entity > 0)

@@ -17,10 +17,12 @@
             margin-left: auto;
             text-align: right;
             min-width: 600px;
-        } 
+        }
+
             .compBox .select2 {
                 text-align: left;
             }
+
         .red-highlight::selection {
             color: red;
         }
@@ -30,7 +32,7 @@
 
     <script type="text/javascript">
     </script>
-    <script> 
+    <script>
         // Create a custom shortcode plugin
         tinymce.PluginManager.add('shortcode', function (editor) {
             // Register a command to insert the shortcode
@@ -47,11 +49,11 @@
                         var val = parts[1].trim();
                         shortcode += attr + '="' + val + '" ';
                     }
-                } 
-                shortcode += ']'; 
+                }
+                shortcode += ']';
                 // Insert the shortcode at the current cursor position
                 editor.execCommand('mceInsertContent', false, shortcode);
-            }); 
+            });
             // Add a menu item to the context menu for inserting the shortcode
             editor.addMenuItem('shortcode', {
                 text: 'Insert Shortcode',
@@ -66,7 +68,7 @@
                     }
                 }
             });
-        }); 
+        });
         tinyMCE.init({
             selector: '#editorcontent',
             plugins: [
@@ -138,100 +140,130 @@
 
         </div>
         <div class="row flex-row_box">
-            <div class="col-md-9">
-                <form method="post">
-                    <textarea id="editorcontent"></textarea>
-                </form>
-
-                <a id="lblpermalink" href="#">Permalink:</a>
-                <h2 class="sm-heading"> Single Post Banner</h2>
+            <div class="col-md-9  post_md">
                 <div class="box box-primary">
-                    <span class="edit-pic-profile">
-                        <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
-                        <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
-                    </span>
-
-                    <img runat="server" id="show_picture" style="height: 150px;">
-
-                    <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
-
+                    <div class="box-header">
+                        <form method="post">
+                            <textarea id="editorcontent"></textarea>
+                        </form>
+                    </div>
                 </div>
-                <h2 class="sm-heading"> Focus keyphrase</h2>
-                <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
-                <h2 class="sm-heading"> SEO title</h2>
-                @*<input type="text" id="txtseotitle" class="form-control" placeholder="SEO title">*@
-            <Select class="form-control select2" id="ddlseotitle" style="width: 100%">
-                <option value="">Insert variable</option>
-                <option value="title">Title</option>
-                <option value="sitename">Site Name</option>
-                <option value="separator">Separator</option>
-                <option value="primary_category">Primary Category</option>
-            </Select>
-                <input type="text" id="txtseotitle" class="form-control" placeholder="">
-                <h2 class="sm-heading"> Slug</h2>
-                <input type="text" id="txtslug" class="form-control" placeholder="Slug">
-                <h2 class="sm-heading"> Meta description</h2>
-                <Select class="form-control select2" id="ddlmetadescription" style="width: 100%">
-                    <option value="">Insert variable</option>
-                    <option value="title">Title</option>
-                    <option value="sitename">Site Name</option>
-                    <option value="separator">Separator</option>
-                    <option value="primary_category">Primary Category</option>
-                </Select>
-                <input type="text" id="txtmetadescription" class="form-control" placeholder="">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <label class="control-label " for="permalink">Permalink</label>
+                        <a id="lblpermalink" href="#"></a>
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <label class="form-label width_100 d-flex">
+                            Single Post Banner&nbsp; &nbsp;&nbsp;<span class="edit-pic-profile">
+                                <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
+                                <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
+                            </span>
+                        </label>
+                        <img runat="server" id="show_picture" src="" class="featured_side_image">
+
+                        <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
+
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <label class="form-label">Focus keyphrase</label>
+                        <input type="text" id="txtfocuskeyphras" class="form-control" placeholder="Focus keyphrase">
+                    </div>
+                </div>
+                <div class="box box-primary box-box_primary">
+                    <div class="box-header">
+                        <label class="form-label">SEO title</label>
+                        @*<input type="text" id="txtseotitle" class="form-control" placeholder="SEO title">*@
+                        <Select class="form-control select2 " id="ddlseotitle" style="width: 100%">
+                            <option value="">Insert variable</option>
+                            <option value="title">Title</option>
+                            <option value="sitename">Site Name</option>
+                            <option value="separator">Separator</option>
+                            <option value="primary_category">Primary Category</option>
+                        </Select>
+                        <input type="text" id="txtseotitle" class="form-control mt-1" placeholder="">
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <label class="form-label">Slug</label>
+                        <input type="text" id="txtslug" class="form-control" placeholder="Slug">
+                    </div>
+                </div>
+                <div class="box box-primary box-box_primary">
+                    <div class="box-header">
+                        <label class="form-label">Meta description</label>
+                        <Select class="form-control select2" id="ddlmetadescription" style="width: 100%">
+                            <option value="">Insert variable</option>
+                            <option value="title">Title</option>
+                            <option value="sitename">Site Name</option>
+                            <option value="separator">Separator</option>
+                            <option value="primary_category">Primary Category</option>
+                        </Select>
+                        <input type="text" id="txtmetadescription" class="form-control mt-1" placeholder="">
+                    </div>
+                </div>
                 @*<h2 class="sm-heading">Keyphrase synonyms</h2>
-         <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
-        <h2 class="sm-heading">Add related Keyphrase</h2>
-         <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">*@
+                     <input type="text" id="txtKeyphrasesynonyms" class="form-control" placeholder="Keyphrase synonyms">
+                    <h2 class="sm-heading">Add related Keyphrase</h2>
+                     <input type="text" id="txtaddKeyphrase" class="form-control" placeholder="Keyphrase">*@
 
 
-                <h2 class="sm-heading">Keyphrase synonyms</h2>
-                <input type="text" id="txtsynonyms" class="form-control" placeholder="Keyphrase synonyms">
-                <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
-                <table id="tbhold" class="simple-table">
-                </table>
-            </div>
-            <div class="col-md-3">
-                <h4 class="page-heading">Featured image</h4>
-                <div class="box box-primary">
-                    <span class="edit-pic-profile">
-                        <input type="file" onchange="readFeatURL(this);" name="Featuredfile" id="Featuredfile" class="inputfile" />
-                        <label id="btnFeatured" for="Featuredfile"><i class="fa fa-edit"></i>Edit</label>
-                    </span>
-                    <img runat="server" id="featuredshow_picture" style="height: 150px;">
-                </div>
-          
-                    <div class="page-title">
-                        <h2 class="page-heading">Choose Category <span style="color:red;"> *</span></h2>
-
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-header">
-
-                            <div class="category-searchbox">
-                                <input id="txtsrc" type="text" value="" />
-                                <input id="btnsrc" type="button" value="Search" />
-                            </div>
-                            <div id="tblprodctype" class="form-check tblprodctype" style="height: 350px; overflow-y: auto;">
-
-                                @{
-                                    int i = 0;
-                                }
-                                <ul class="categorychecklist">
-                                    @foreach (var item in @ViewBag.product)
-                                    {
-                                        <li class="w3-check">
-                                            <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
-                                            <label for="chkproductID@(i++)">@item.Text</label>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-
+                <div class="box box-primary box-box_primary keyphrase_box">
+                    <div class="box-header">
+                        <div class="card bg_none border-0">
+                            <label class="form-label">Keyphrase synonyms</label>
+                            <input type="text" id="txtsynonyms" class="form-control mb-20" placeholder="Keyphrase synonyms">
                         </div>
+                        <button title="Click here to add related Keyphrase" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add Related Keyphrase</button>
+                        <table id="tbhold" class="simple-table">
+                        </table>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-3 box-sidebar_box">
+                <div class="box box-primary mb-20">
+                    <div class="box-header">
+                        <label class="form-label">
+                            Featured image&nbsp;&nbsp;&nbsp;<span class="edit-pic-profile">
+                                <input type="file" onchange="readFeatURL(this);" name="Featuredfile" id="Featuredfile" class="inputfile" />
+                                <label id="btnFeatured" for="Featuredfile"><i class="fa fa-edit"></i>Edit</label>
+                            </span>
+                        </label>
+                        <img runat="server" id="featuredshow_picture" class="featured_side_image">
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <label class="form-label">Choose Category</label>
+                        <div class="category-searchbox">
+                            <input id="txtsrc" type="text" value="" />
+                            <input id="btnsrc" type="button" value="Search" />
+                        </div>
+                        <div id="tblprodctype" class="form-check tblprodctype" style="height: 350px; overflow-y: auto;">
 
-                 
+                            @{
+                                int i = 0;
+                            }
+                            <ul class="categorychecklist">
+                                @foreach (var item in @ViewBag.product)
+                                {
+                                    <li class="w3-check">
+                                        <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
+                                        <label for="chkproductID@(i++)">@item.Text</label>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </section>

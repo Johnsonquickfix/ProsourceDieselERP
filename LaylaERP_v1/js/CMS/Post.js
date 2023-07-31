@@ -2,22 +2,23 @@
     $("#loader").hide();
     $(".select2").select2();
     $(".select1").select2();
-    getcompany();
+    //getcompany();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
-
+    var searchParams = new URLSearchParams(window.location.search);
+    var entiid = searchParams.get('entiid'); 
+    getcompany(entiid); 
     if (id != "") {
         if (id == 'Post') {
             $("#lblpermalink").hide();
-
             $("#hfid").val(0);
+            $("#btnSave").text("Add");
         }
         else {
             $("#lblpermalink").show();
             GetDataByID(id);
             $("#hfid").val(id);
-
-           
+            $("#btnSave").text("Update"); 
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
@@ -228,7 +229,7 @@ function Add() {
         swal('Alert', 'Please enter title', 'error').then(function () { swal.close(); $('#txttitle').focus(); });
     }
     else if (entity == 0) {
-        swal('Alert', 'Please enter company name', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
+        swal('Alert', 'Please enter Store name', 'error').then(function () { swal.close(); $('#ddlcompany').focus(); });
     }
 
     else if (categorydata == "") {
@@ -275,7 +276,7 @@ function Add() {
                         swal('Success!', data.message, 'success').then((result) => { location.href = '../PostList'; });
                     }
                     else {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = 'PostList'; });
+                        swal('Success!', data.message, 'success').then((result) => { location.href = '../PostList'; });
                     }
                 }
                 else { swal('Alert!', data.message, 'error') }
@@ -303,17 +304,19 @@ function readFeatURL(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-function getcompany() {
+function getcompany(id) {
     $.ajax({
         url: "/Setting/GetCompany",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="0">Please Select Company</option>';
+            var opt = '<option value="0">Please Select Store</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlcompany').html(opt);
+            $('#ddlcompany').val(id);
         }
+
 
     });
 }

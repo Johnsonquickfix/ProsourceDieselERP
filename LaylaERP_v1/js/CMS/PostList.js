@@ -17,6 +17,16 @@
     $(document).on('click', "#btnsearch", function () {
         dataGridLoad('');
     })
+
+    $(document).on('click', "#btnAdd", function () {
+        var url = '/CMS/Post/' + id;
+        // Open the URL in a new tab
+        var id = "Post"; // Replace this with the value of the first parameter
+        let entiid = parseInt($('#ddlcompany').val()) || 0; // Replace this with the value of the second parameter 
+        var url = '/CMS/Post/' + id + '?entiid=' + entiid;
+        //window.open(url);  
+        window.location.href = url;
+    })
 });
 
 function GetDetails() {
@@ -44,7 +54,7 @@ function getcompany() {
         url: "/Setting/GetCompany",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="">Please Select Company</option>';
+            var opt = '<option value="">Please Select Store</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -96,12 +106,12 @@ function dataGridLoad(order_type) {
         },
         columns: [
             { data: 'ID', title: 'ID', sWidth: "3%" },
-            {
-                'data': 'ID', sWidth: "3%   ",
-                'render': function (data, type, row) {
-                    return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
-                }
-            },
+            //{
+            //    'data': 'ID', sWidth: "3%   ",
+            //    'render': function (data, type, row) {
+            //        return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+            //    }
+            //},
 
             { data: 'post_title', title: 'Title', className: 'text-wrap', sWidth: "12%" },
             { data: 'user_login', title: 'Author', className: 'text-wrap' ,sWidth: "5%" },
@@ -115,8 +125,8 @@ function dataGridLoad(order_type) {
                     //    return ' <b></b>';
                     //else {
                     //if ($("#hfEdit").val() == "1") {
-                    return '<a title="Click here to view Post details" data-toggle="tooltip" href="Post/' + id + '" onclick="ActivityLog(\'Edit Post id (' + id + ') in Post list\',\'Post/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
-                    //    }
+                    return '<a title="Click here to view Post details" data-toggle="tooltip" href="Post/' + id + '?entiid=' + row.entity_id + '" onclick="ActivityLog(\'Edit Post id (' + id + ') in Post list\',\'Post/' + id + '\');"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                      //    }
                     //    else { return "No Permission"; }
                     //}
                     // }

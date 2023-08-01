@@ -159,5 +159,70 @@ namespace LaylaERP_v1.Controllers
                 return new HttpStatusCodeResult(400, "Bad Request");
             }
         }
+
+        [Route("get-post/{app_key}/{entity_id}")]
+        public ActionResult Getpost(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
+                { return new HttpStatusCodeResult(400, "Bad Request"); }
+                else
+                {
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                    else
+                    {
+                        string msg = string.Empty;
+                        var balResult = CMSRepository.Getapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST");
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                            List<PostModel> ReviewList = new List<PostModel>();
+                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            {
+                                PostModel Review = new PostModel();
+                                Review.id = balResult.Rows[i]["ID"].ToString();
+                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_title = balResult.Rows[i]["post_title"].ToString();
+                                Review.post_author = balResult.Rows[i]["post_author"].ToString();
+                                Review.user_login = balResult.Rows[i]["user_login"].ToString();
+                                Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
+                                Review.entity = balResult.Rows[i]["CompanyName"].ToString();
+                                Review.post_date = balResult.Rows[i]["post_date"].ToString();
+                                Review.category = balResult.Rows[i]["category"].ToString();
+                                //Review.order = balResult.Rows[i]["menu_order"].ToString();
+                                Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
+                                Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
+                                Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
+                                Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
+                                Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
+                                Review._yoast_wpseo_keywordsynonyms = balResult.Rows[i]["_yoast_wpseo_keywordsynonyms"].ToString();
+                                Review._yoast_wpseo_focuskeywords = balResult.Rows[i]["_yoast_wpseo_focuskeywords"].ToString();
+                                //Review._wp_page_template = balResult.Rows[i]["_wp_page_template"].ToString();
+                                //Review._gmk = balResult.Rows[i]["_gmk"].ToString();
+                                //Review._comment = balResult.Rows[i]["_comment"].ToString();
+                                Review.total = balResult.Rows[i]["total"].ToString();
+                                //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                ReviewList.Add(Review);
+                            }
+
+                            //return Json(ReviewList);
+                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+
+                        }
+                        else
+                        {
+                            return Json("[]", JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return new HttpStatusCodeResult(400, "Bad Request");
+            }
+        }
     }
 }

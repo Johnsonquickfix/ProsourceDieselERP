@@ -268,5 +268,33 @@ namespace LaylaERP.Models
             
         
         }
+
+        public class PostModel
+        {
+            public string id { get; set; } = string.Empty;
+            public string post_content { get; set; } = string.Empty;
+            public string post_title { get; set; } = string.Empty;
+            public string post_author { get; set; } = string.Empty;
+            public string user_login { get; set; } = string.Empty;
+            public string post_date { get; set; } = string.Empty;
+            public string total { get; set; } = string.Empty;
+            public string entity_id { get; set; } = string.Empty;
+            public string entity { get; set; } = string.Empty;
+            public string category { get; set; } = string.Empty;
+            //public string order { get; set; } = string.Empty;
+            public string single_image_url { get; set; } = string.Empty;
+            public string featured_image_url { get; set; } = string.Empty;
+            public string _yoast_wpseo_focuskw { get; set; } = string.Empty;
+            public string _yoast_wpseo_metadesc { get; set; } = string.Empty;
+            public string _yoast_wpseo_title { get; set; } = string.Empty;
+            public string _yoast_wpseo_keywordsynonyms { get; set; } = string.Empty;
+            public string _yoast_wpseo_focuskeywords { get; set; } = string.Empty;
+            //public string _wp_page_template { get; set; } = string.Empty;
+            //public string _gmk { get; set; } = string.Empty;
+            //public string _comment { get; set; } = string.Empty;
+
+
+
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace LaylaERP_v1.Controllers
                                 Review._thumbnail_id = balResult.Rows[i]["_thumbnail_id"].ToString();
                                 Review.for_mobile = balResult.Rows[i]["for_mobile"].ToString();
                                 Review.InnerExcludeGlobalBanner = balResult.Rows[i]["InnerExcludeGlobalBanner"].ToString();
-                                Review.FeaturedImage = balResult.Rows[i]["InnerPageBannerImage"].ToString();
+                                Review.BannerImage = balResult.Rows[i]["InnerPageBannerImage"].ToString();
                                 Review.InnerPageBannerLink = balResult.Rows[i]["InnerPageBannerLink"].ToString();
                                 Review.InnerPageBannerSelection = balResult.Rows[i]["InnerPageBannerSelection"].ToString();
                                 Review.InnerPageBannerTitle = balResult.Rows[i]["InnerPageBannerTitle"].ToString();

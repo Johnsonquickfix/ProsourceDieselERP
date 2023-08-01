@@ -230,7 +230,7 @@ namespace LaylaERP.Models
             public string _thumbnail_id { get; set; } = string.Empty;
             public string for_mobile { get; set; } = string.Empty;
             public string InnerExcludeGlobalBanner { get; set; } = string.Empty;
-            public string FeaturedImage { get; set; } = string.Empty;
+            public string BannerImage { get; set; } = string.Empty;
             public string InnerPageBannerLink { get; set; } = string.Empty;
             public string InnerPageBannerSelection { get; set; } = string.Empty;
             public string InnerPageBannerTitle { get; set; } = string.Empty;

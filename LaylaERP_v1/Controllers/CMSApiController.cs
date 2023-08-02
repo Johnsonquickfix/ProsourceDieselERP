@@ -58,6 +58,7 @@ namespace LaylaERP_v1.Controllers
                                 Review.BannerImage = balResult.Rows[i]["InnerPageBannerImage"].ToString();
                                 Review.Bannerimage_width = balResult.Rows[i]["Bannerimagewidth"].ToString();
                                 Review.Bannerimage_height = balResult.Rows[i]["Bannerimageheight"].ToString();
+                                Review.Banner_order = balResult.Rows[i]["menu_order"].ToString();
                                 Review.InnerPageBannerLink = balResult.Rows[i]["InnerPageBannerLink"].ToString();
                                 Review.InnerPageBannerSelection = balResult.Rows[i]["InnerPageBannerSelection"].ToString();
                                 Review.InnerPageBannerTitle = balResult.Rows[i]["InnerPageBannerTitle"].ToString();

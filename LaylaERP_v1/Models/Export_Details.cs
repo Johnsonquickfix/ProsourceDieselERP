@@ -298,5 +298,12 @@ namespace LaylaERP.Models
 
 
         }
+        public class StoreModel
+        {            
+            public string store_id { get; set; } = string.Empty;
+            public string store_name { get; set; } = string.Empty;
+            public string logo_url { get; set; } = string.Empty;
+            public string total { get; set; } = string.Empty;
+        }
     }
 }

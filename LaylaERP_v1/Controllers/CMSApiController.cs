@@ -226,5 +226,46 @@ namespace LaylaERP_v1.Controllers
                 return new HttpStatusCodeResult(400, "Bad Request");
             }
         }
+
+        [Route("get-store/{app_key}")]
+        public ActionResult Getstore(string app_key,  string per_page, string page, string post_status, string sort, string direction)
+        {
+            try
+            {
+                
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                    else
+                    {
+                        string msg = string.Empty;
+                        var balResult = CMSRepository.Getapi("0", app_key, post_status, per_page, page, sort, direction, "STOR");
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                            List<StoreModel> ReviewList = new List<StoreModel>();
+                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            {
+                               StoreModel Review = new StoreModel();
+                                Review.store_id = balResult.Rows[i]["entity"].ToString();
+                                Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
+                                Review.logo_url = balResult.Rows[i]["logo_url"].ToString();                                                                                        
+                                Review.total = balResult.Rows[i]["total"].ToString();
+                                ReviewList.Add(Review);
+                            } 
+                            return Json(ReviewList, JsonRequestBehavior.AllowGet); 
+                        }
+                        else
+                        {
+                            return Json("[]", JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                 
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return new HttpStatusCodeResult(400, "Bad Request");
+            }
+        }
     }
 }

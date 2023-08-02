@@ -236,7 +236,7 @@ namespace LaylaERP_v1.Controllers
                     if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
                         return Json("invalid app key", JsonRequestBehavior.AllowGet);
                     else
-                    {
+                    { 
                         string msg = string.Empty;
                         var balResult = CMSRepository.Getapi("0", app_key, post_status, per_page, page, sort, direction, "STOR");
                         int total = balResult.Rows.Count;

@@ -110,7 +110,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@template",template),
                     new SqlParameter("@order",order),
                      new SqlParameter("@gmtkeyword",gmtkeyword),
-                    new SqlParameter("@comment",comment)
+                    new SqlParameter("@comment",comment),
+                    new SqlParameter("@post_name",slug)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_pages_iud", para));
                 return result;

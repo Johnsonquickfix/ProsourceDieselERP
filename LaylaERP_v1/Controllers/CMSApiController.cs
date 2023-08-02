@@ -228,7 +228,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [Route("get-store/{app_key}")]
-        public ActionResult Getstore(string app_key,  string per_page, string page, string post_status, string sort, string direction)
+        public ActionResult Getstore(string app_key)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     { 
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi("0", app_key, post_status, per_page, page, sort, direction, "STOR");
+                        var balResult = CMSRepository.Getapi("0", app_key, "publish", "10", "0", "entity", "desc", "STOR");
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {

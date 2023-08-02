@@ -231,13 +231,15 @@ namespace LaylaERP.Models
             public string for_mobile { get; set; } = string.Empty;
             public string InnerExcludeGlobalBanner { get; set; } = string.Empty;
             public string BannerImage { get; set; } = string.Empty;
+            public string Bannerimage_width { get; set; } = string.Empty;
+            public string Bannerimage_height { get; set; } = string.Empty;
             public string InnerPageBannerLink { get; set; } = string.Empty;
             public string InnerPageBannerSelection { get; set; } = string.Empty;
             public string InnerPageBannerTitle { get; set; } = string.Empty;
             public string InnerPageBannerType { get; set; } = string.Empty; 
             public string remove_schema_page_specific { get; set; } = string.Empty;
             public string slide_template { get; set; } = string.Empty;
-           
+            
 
         }
 

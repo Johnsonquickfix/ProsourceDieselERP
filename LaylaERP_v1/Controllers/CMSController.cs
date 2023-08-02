@@ -426,7 +426,7 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult CreateBanner(HttpPostedFileBase ImageFile, string ID, string post_title, string bannerurl, string entity_id, string type,string btypeof, HttpPostedFileBase FeaturedFile)
+        public JsonResult CreateBanner(HttpPostedFileBase ImageFile, string ID, string post_title, string bannerurl, string entity_id, string type,string btypeof, HttpPostedFileBase FeaturedFile, string menu_order)
         {
             var ImagePath = "";
             //var ImagePaththum = "";
@@ -519,7 +519,7 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreateBanner("U", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString,  featuerimg, height.ToString(),width.ToString());
+                        entity = CMSRepository.CreateBanner("U", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString,  featuerimg, height.ToString(),width.ToString(), menu_order);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -531,7 +531,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id,  btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
+                        entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id,  btypeof, serializedString, featuerimg, height.ToString(), width.ToString(), menu_order);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -578,7 +578,7 @@ namespace LaylaERP_v1.Controllers
 
                         featuerimg = "";
                     }
-                    entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
+                    entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString(), menu_order);
                     if (entity > 0)
                     {
                         return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -610,11 +610,11 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreateBanner("UF", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
+                        entity = CMSRepository.CreateBanner("UF", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString(), menu_order);
                     }
                     else
                     {
-                        entity = CMSRepository.CreateBanner("UP", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
+                        entity = CMSRepository.CreateBanner("UP", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString(), menu_order);
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
                 }
@@ -1120,6 +1120,23 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult ChangeBannerstatus(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                CMSRepository or = new CMSRepository();
+                or.ChangeBannerstatus(model, strID);
+                return Json(new { status = true, message = "Banner stats update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
     }
 }

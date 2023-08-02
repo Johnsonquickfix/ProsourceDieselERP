@@ -242,7 +242,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url, string Bannerhight, string Bannerwidth)
+        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url, string Bannerhight, string Bannerwidth, string menu_order)
         {
             try
             {
@@ -257,7 +257,8 @@ namespace LaylaERP.BAL
                      new SqlParameter("@entity_id",entity_id), 
                      new SqlParameter("@InnerPageBannerSelection",type),
                      new SqlParameter("@Bannerhight",Bannerhight),
-                     new SqlParameter("@Bannerwidth ",Bannerwidth)
+                     new SqlParameter("@Bannerwidth ",Bannerwidth),
+                     new SqlParameter("@menu_order ",menu_order),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_banner_iud", para));
                 return result;
@@ -854,6 +855,31 @@ namespace LaylaERP.BAL
             }
             catch { throw; }
             return dt;
+        }
+
+        public int ChangeBannerstatus(OrderPostStatusModel model, string ID)
+        {
+            try
+            {
+                var actiontype = 1;
+                if (model.status == "trash")
+                    actiontype = 0;
+                string strsql = string.Format("update cms_posts set post_status=@status,actiontype=@actiontype,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@status", model.status),
+                    new SqlParameter("@actiontype",actiontype),
+                   // new SqlParameter("@post_modified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CMS/Changestatus/" + "0" + "", "Update Banner Status");
+                throw Ex;
+            }
         }
 
     }

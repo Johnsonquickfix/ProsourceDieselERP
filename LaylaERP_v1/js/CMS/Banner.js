@@ -176,6 +176,8 @@ function Add() {
     entity = $("#ddlcompany").val();
     bannerurl = $("#txturl").val();
 
+    menu_order = $("#menu_order").val();
+
     var pagesarray = $('#ddlpage option:selected')
         .toArray().map(item => item.value).join();
     pages = pagesarray;
@@ -222,7 +224,7 @@ function Add() {
         obj.append("post_title", title);
         obj.append("bannerurl", encodeURIComponent(bannerurl));
         obj.append("entity_id", entity);
-        //obj.append("pages", pages);
+        obj.append("menu_order", menu_order);
         //obj.append("futcher", category); 
         obj.append("type", Typeval);
         obj.append("btypeof", Typeof);
@@ -344,7 +346,7 @@ function GetDataByID(ID) {
  
             $("#txttitle").val(i[0].post_title); 
             $("#txturl").val(i[0].InnerPageBannerLink);
-
+            $("#menu_order").val(i[0].menu_order);
             var path = i[0].for_mobile;
             url = "../../Content/Banner/MobileBanner/" + path + "";
             $('<img>').on('load', function () {

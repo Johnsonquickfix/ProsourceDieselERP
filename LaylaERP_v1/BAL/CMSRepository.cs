@@ -242,7 +242,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url)
+        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url, string Bannerhight, string Bannerwidth)
         {
             try
             {
@@ -256,7 +256,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@InnerPageBannerType",btypeof) ,
                      new SqlParameter("@entity_id",entity_id), 
                      new SqlParameter("@InnerPageBannerSelection",type),
-                    //new SqlParameter("@Content",Content)
+                     new SqlParameter("@Bannerhight",Bannerhight),
+                     new SqlParameter("@Bannerwidth ",Bannerwidth)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_banner_iud", para));
                 return result;

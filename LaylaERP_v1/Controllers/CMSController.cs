@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -437,6 +438,8 @@ namespace LaylaERP_v1.Controllers
             //string FileNamethumb = "";
             string FileExtension = "";
             string FeatuerFileExtension = "";
+            int height = 0;
+            int width = 0;
             //string encodedHtml = "%3Cp%3Ehi%20this%20is%26nbsp%3B%3C%2Fp%3E%0D%0A%3Cp%3Etest%3C%2Fp%3E%0D%0A%3Cp%3Eeditore%20save%3C%2Fp%3E";
             bannerurl = HttpUtility.UrlDecode(bannerurl);
             string serializedString = "";
@@ -487,18 +490,26 @@ namespace LaylaERP_v1.Controllers
 
                     if (FeaturedFile != null)
                     {
-                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            height = image.Height;
+                            width = image.Width; 
+                        }
+                       featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
                         featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
                         string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Banner/Featured"));
                         FutcherUploadPath = FutcherUploadPath + "\\";
                         futherpathimage = FutcherUploadPath + featuerimg;
+                        
                         if (featuerimg == "")
                         {
                             featuerimg = "default.png";
                         }
-                        FeaturedFile.SaveAs(futherpathimage);
+                        FeaturedFile.SaveAs(futherpathimage); 
                     }
                     else
                     {
@@ -508,7 +519,7 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreateBanner("U", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString,  featuerimg);
+                        entity = CMSRepository.CreateBanner("U", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString,  featuerimg, height.ToString(),width.ToString());
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -520,7 +531,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id,  btypeof, serializedString, featuerimg);
+                        entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id,  btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -543,6 +554,12 @@ namespace LaylaERP_v1.Controllers
                 {
                     if (FeaturedFile != null)
                     {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            height = image.Height;
+                            width = image.Width;
+                        }
                         featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
@@ -561,7 +578,7 @@ namespace LaylaERP_v1.Controllers
 
                         featuerimg = "";
                     }
-                    entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg);
+                    entity = CMSRepository.CreateBanner("I", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
                     if (entity > 0)
                     {
                         return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -575,6 +592,12 @@ namespace LaylaERP_v1.Controllers
                 {
                     if (FeaturedFile != null)
                     {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            height = image.Height;
+                            width = image.Width;
+                        }
                         featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
@@ -587,11 +610,11 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreateBanner("UF", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg);
+                        entity = CMSRepository.CreateBanner("UF", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
                     }
                     else
                     {
-                        entity = CMSRepository.CreateBanner("UP", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg);
+                        entity = CMSRepository.CreateBanner("UP", ID, post_title, bannerurl, FileName, entity_id, btypeof, serializedString, featuerimg, height.ToString(), width.ToString());
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
                 }

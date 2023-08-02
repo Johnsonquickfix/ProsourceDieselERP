@@ -111,7 +111,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PLS");
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PLS");
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {

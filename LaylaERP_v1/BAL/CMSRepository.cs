@@ -830,5 +830,31 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataTable Getpageapi(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction, string flag)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+              {
+
+                    new SqlParameter("@post_status", post_status),
+                   new SqlParameter("@searchcriteria", ""),
+                    new SqlParameter("@strValue1", entity_id),
+                    new SqlParameter("@searchid", page),
+                    new SqlParameter("@pagesize", per_page),
+                    new SqlParameter("@sortcol", sort),
+                    new SqlParameter("@sortdir", direction),
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("cms_page_api", parameters);
+
+            }
+            catch { throw; }
+            return dt;
+        }
+
     }
 }

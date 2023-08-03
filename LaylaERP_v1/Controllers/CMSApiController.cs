@@ -266,9 +266,17 @@ namespace LaylaERP_v1.Controllers
                                 Review.address = balResult.Rows[i]["address"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 ReviewList.Add(Review);
-                            } 
-                            return Json(ReviewList, JsonRequestBehavior.AllowGet); 
+                            }
+                        //return Json(ReviewList, JsonRequestBehavior.AllowGet); 
+                        if (ReviewList.Count == 1)
+                        {
+                            return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
                         }
+                        else
+                        {
+                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                        }
+                    }
                         else
                         {
                             return Json("[]", JsonRequestBehavior.AllowGet);

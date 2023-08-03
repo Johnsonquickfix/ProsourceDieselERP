@@ -260,13 +260,14 @@ namespace LaylaERP.Models
             public string post_parent { get; set; } = string.Empty;
             public string order { get; set; } = string.Empty;
             public string upload_ad_image { get; set; } = string.Empty;
+            public string short_description { get; set; } = string.Empty;
             public string featured_image_url { get; set; } = string.Empty;
             public string _yoast_wpseo_focuskw { get; set; } = string.Empty;
             public string _yoast_wpseo_metadesc { get; set; } = string.Empty;
             public string _yoast_wpseo_title { get; set; } = string.Empty;
             public string _yoast_wpseo_keywordsynonyms { get; set; } = string.Empty;
             public string _yoast_wpseo_focuskeywords { get; set; } = string.Empty;
-            //public string _wp_page_template { get; set; } = string.Empty;
+            //public string _wp_page_template { get; set; } = string.Empty; 
             public string _gmk { get; set; } = string.Empty;
             public string _comment { get; set; } = string.Empty;
             

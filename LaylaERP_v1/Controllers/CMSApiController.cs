@@ -132,6 +132,7 @@ namespace LaylaERP_v1.Controllers
                                 Review.post_parent = balResult.Rows[i]["post_parent"].ToString();
                                 Review.order = balResult.Rows[i]["menu_order"].ToString();
                                 Review.upload_ad_image = balResult.Rows[i]["upload_ad_image"].ToString();
+                                Review.short_description = balResult.Rows[i]["short_description"].ToString();
                                 Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();

@@ -87,7 +87,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content,string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string parent_id, string template, string order, string gmtkeyword, string comment)
+        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content,string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string parent_id, string template, string order, string gmtkeyword, string comment, string shortdisc)
         {
             try
             {
@@ -111,7 +111,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@order",order),
                      new SqlParameter("@gmtkeyword",gmtkeyword),
                     new SqlParameter("@comment",comment),
-                    new SqlParameter("@post_name",slug)
+                    new SqlParameter("@post_name",slug),
+                    new SqlParameter("@shortdisc",shortdisc)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_pages_iud", para));
                 return result;

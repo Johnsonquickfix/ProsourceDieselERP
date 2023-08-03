@@ -13,13 +13,17 @@
             if (id == 'Pages') {
                 $("#lblpermalink").hide();
                 $("#hfid").val(0);
-                $("#btnSave").text("Add"); 
+                $("#btnSave").text("Add");
+                $('#txttitle').prop('readonly', false);
+                $('#txtslug').prop('readonly', false);
             }
             else { 
                 $("#lblpermalink").show();
                 GetDataByID(id);
                 $("#hfid").val(id);
                 $("#btnSave").text("Update");
+                $('#txttitle').prop('readonly', true);
+                $('#txtslug').prop('readonly', true);
                  
             }
         }
@@ -185,6 +189,7 @@ function Add() {
     template = $("#page_template").val();
     order = $("#menu_order").val();
 
+    srtdis = $("#txtshortdiscription").val();
 
     gmtkeyword = $("#txtgmtakeyword").val();
     comment = $("#txtcomment").val();
@@ -244,7 +249,8 @@ function Add() {
         obj.append("order", order);
         obj.append("gmtkeyword", gmtkeyword);
         obj.append("comment", comment);
-       // console.log(post_contentval);
+        obj.append("shortdic", srtdis);
+       // console.log(srtdis);
         $.ajax({
             url: '/CMS/CreatePages/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -369,7 +375,8 @@ function GetDataByID(ID) {
             $('#menu_order').val(i[0].menu_order);
             $('#page_template').val(i[0].template);
             $('#txtgmtakeyword').val(i[0].gmtkeyword);
-            $('#txtcomment').val(i[0].comment);           
+            $('#txtcomment').val(i[0].comment);
+            $('#txtshortdiscription').val(i[0].short_description);
             var syn = i[0].cpmsyns;
             //console.log(syn);
             if (syn === null) {

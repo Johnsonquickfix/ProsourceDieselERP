@@ -105,9 +105,9 @@
         cat = cat.replace(/\s/g, '-');
 
         var cleanedText = cat.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
-        if (cat !== cleanedText) {
+        //if (cat !== cleanedText) {
             $('#txtslug').val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
-        }
+        //}
         
 
     });

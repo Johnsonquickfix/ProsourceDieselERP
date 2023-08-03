@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc; 
 using static LaylaERP.Models.Export_Details;
 using LaylaERP.BAL;
+ 
 
 namespace LaylaERP_v1.Controllers
 {
@@ -145,8 +146,15 @@ namespace LaylaERP_v1.Controllers
                                 ReviewList.Add(Review);
                             }
 
-                            //return Json(ReviewList);
-                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            //return Json(ReviewList);                            
+                            if (ReviewList.Count == 1)
+                            {                                
+                                return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            }                            
 
                         }
                         else

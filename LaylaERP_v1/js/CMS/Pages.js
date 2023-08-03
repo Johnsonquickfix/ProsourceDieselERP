@@ -52,7 +52,46 @@
         window.open(url, '_blank');
      
     });
-    $('#txttitle').keyup(function (event) {
+    //$('#txttitle').keyup(function (event) {
+    //    //var regex = /^[a-zA-Z0-9\-._~]*$/; // Regular expression to match allowed characters
+    //    //var inputText = $(this).val(); // Get the input value
+
+    //    //// Check if the input value matches the regular expression
+    //    //if (!regex.test(inputText)) {
+    //    //    // Remove disallowed characters using the replace method
+    //    //    var cleanedText = inputText.replace(/[^a-zA-Z0-9\-._~]/g, '');
+    //    //    $(this).val(cleanedText); // Set the cleaned value back to the input field
+    //    //} 
+    //    var textBox = event.target;
+    //    var start = textBox.selectionStart;
+    //    var end = textBox.selectionEnd;
+    //    textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+    //    textBox.setSelectionRange(start, end);
+    //    var cat = $('#txttitle').val().toLowerCase().trim();
+    //    cat = cat.replace(/\s/g, '-');
+    //    $('#txtslug').val(cat);
+
+    //});
+
+    //$('#txtslug').keyup(function (event) {
+
+    //    var regex = /^[a-zA-Z0-9 \-._~]*$/; // Regular expression to match allowed characters
+    //    var inputText = $(this).val(); // Get the input value
+
+    //    // Check if the input value matches the regular expression
+    //    if (!regex.test(inputText)) {
+    //        // Remove disallowed characters using the replace method
+    //        var cleanedText = inputText.replace(/[^a-zA-Z0-9 \-._~]/g, '');
+    //        $(this).val(cleanedText); // Set the cleaned value back to the input field
+
+
+    //    }
+    //});
+
+    $('#txttitle').on('input', function (event) {
+       // var inputText = $(this).val(); // Get the input value for txttitle
+        //$('#txtslug').val(inputText); // Reflect the input value to txtslug without restrictions
+
         var textBox = event.target;
         var start = textBox.selectionStart;
         var end = textBox.selectionEnd;
@@ -60,9 +99,24 @@
         textBox.setSelectionRange(start, end);
         var cat = $('#txttitle').val().toLowerCase().trim();
         cat = cat.replace(/\s/g, '-');
-        $('#txtslug').val(cat);
+
+        var cleanedText = cat.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
+        if (cat !== cleanedText) {
+            $('#txtslug').val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
+        }
+        
 
     });
+
+    //$('#txtslug').on('input', function (event) {
+    //    var inputText = $(this).val(); // Get the input value for txtslug
+    //    console.log(inputText);
+    //    var cleanedText = inputText.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
+    //    if (inputText !== cleanedText) {
+    //        $(this).val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
+    //    }
+    //});
+
     var itxtCnt = 0;
     var i = 1;
     $("#add").click(function (e) {
@@ -308,8 +362,8 @@ function GetDataByID(ID) {
             $("#txtfocuskeyphras").val(i[0].seofocus);
             var cat = $('#txttitle').val().toLowerCase().trim();
             cat = cat.replace(/\s/g, '-');
-            $('#txtslug').val(cat);
-            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + cat + "");
+            $('#txtslug').val(i[0].post_name);
+            $('#lblpermalink').text("Permalink:https://erp.prosourcediesel.com/" + i[0].post_name + "");
            // var ddlParent = document.getElementById('ddlparent');
             //ddlParent.value = "3028";
             $('#menu_order').val(i[0].menu_order);

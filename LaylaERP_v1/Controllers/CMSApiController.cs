@@ -237,8 +237,8 @@ namespace LaylaERP_v1.Controllers
             }
         }
 
-        [Route("get-store/{app_key}")]
-        public ActionResult Getstore(string app_key)
+        [Route("get-store/{app_key}/{entity_id}")]
+        public ActionResult Getstore(string app_key, string entity_id)
         {
             try
             {
@@ -248,7 +248,7 @@ namespace LaylaERP_v1.Controllers
                     else 
                     { 
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi("0", app_key, "publish", "10", "0", "entity", "desc", "STOR");
+                        var balResult = CMSRepository.Getapi(entity_id, app_key, "publish", "10", "0", "entity", "desc", "STOR");
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
@@ -258,7 +258,12 @@ namespace LaylaERP_v1.Controllers
                                StoreModel Review = new StoreModel();
                                 Review.store_id = balResult.Rows[i]["entity"].ToString();
                                 Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
-                                Review.logo_url = balResult.Rows[i]["logo_url"].ToString();                                                                                        
+                                Review.logo_url = balResult.Rows[i]["logo_url"].ToString();
+                                Review.img_width = balResult.Rows[i]["img_width"].ToString();
+                                Review.img_height = balResult.Rows[i]["img_height"].ToString();
+                                Review.mobile = balResult.Rows[i]["user_mobile"].ToString();
+                                Review.email = balResult.Rows[i]["email"].ToString();
+                                Review.address = balResult.Rows[i]["address"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 ReviewList.Add(Review);
                             } 

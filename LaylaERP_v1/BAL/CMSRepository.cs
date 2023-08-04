@@ -884,5 +884,86 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable GetMediaList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "ID", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+
+                    new SqlParameter("@post_status", userstatus),
+                   new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@strValue1", strValue1),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "LST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("cms_media_search", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int AddMedia(string qflag, string ID, string FileName, string entity_id, string height, string width, string file_size, string FileExtension)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@ID", ID),                
+                    new SqlParameter("@file_name",FileName),                
+                     new SqlParameter("@entity_id",entity_id),
+                     new SqlParameter("@height",height),
+                     new SqlParameter("@width",width),
+                     new SqlParameter("@file_size ",file_size),
+                     new SqlParameter("@FileExtension ",FileExtension),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_media_add", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetMediaDataByID(int ID)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@condition", ""),
+                    new SqlParameter("@flag", "ByID"),
+                    new SqlParameter("@id",ID),
+                };
+                DataTable ds = new DataTable();
+                dt = DAL.SQLHelper.ExecuteDataTable("cms_mediabyid", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
+
     }
 }

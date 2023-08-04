@@ -866,6 +866,8 @@
     <Content Include="js\CMS\Banner.js" />
     <Content Include="js\CMS\BannerList.js" />
     <Content Include="js\CMS\List.js" />
+    <Content Include="js\CMS\Media.js" />
+    <Content Include="js\CMS\MediagalleryList.js" />
     <Content Include="js\CMS\PageCategory.js" />
     <Content Include="js\CMS\Pages.js" />
     <Content Include="js\CMS\Post.js" />
@@ -1601,6 +1603,8 @@
     <Content Include="Views\Setting\PostCategoryCompanyAllot.cshtml" />
     <Content Include="Views\CMS\Shortcode.cshtml" />
     <Content Include="Views\Setting\OrderCompanyAllot.cshtml" />
+    <Content Include="Views\CMS\Mediagallery.cshtml" />
+    <Content Include="Views\CMS\AddMedia.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

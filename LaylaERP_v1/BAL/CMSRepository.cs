@@ -915,7 +915,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int AddMedia(string qflag, string ID, string FileName, string entity_id, string height, string width, string file_size, string FileExtension)
+        public static int AddMedia(string qflag, string ID, string FileName, string entity_id, string height, string width, string file_size, string FileExtension, string thumbFileName, string mediumfilename, string largefilename, string post_title)
         {
             try
             {
@@ -928,6 +928,10 @@ namespace LaylaERP.BAL
                      new SqlParameter("@width",width),
                      new SqlParameter("@file_size ",file_size),
                      new SqlParameter("@FileExtension ",FileExtension),
+                     new SqlParameter("@thumb_file_name  ",thumbFileName),
+                     new SqlParameter("@medium_file_name ",mediumfilename),
+                     new SqlParameter("@large_file_name ",largefilename),
+                     new SqlParameter("@post_title ",post_title)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_media_add", para));
                 return result;

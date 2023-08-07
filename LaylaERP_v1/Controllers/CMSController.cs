@@ -1199,13 +1199,37 @@ namespace LaylaERP_v1.Controllers
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 string file_size = sizeInKB.ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
+
+            
+
+
+
                 // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                 if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
                 {
                     //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
-                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Media"));
-                    UploadPath = UploadPath + "\\";
+
+                    int currentYear = DateTime.Now.Year;
+                    int currentMonth = DateTime.Now.Month;
+                    string yearFolderPath = Path.Combine(Server.MapPath("~/Content/Media"), currentYear.ToString());
+                    string monthFolderPath = Path.Combine(yearFolderPath, currentMonth.ToString("00"));
+
+                    // Check if the year folder exists, if not, create it
+                    if (!Directory.Exists(yearFolderPath))
+                    {
+                        Directory.CreateDirectory(yearFolderPath);
+                    }
+
+                    // Check if the month folder exists, if not, create it
+                    if (!Directory.Exists(monthFolderPath))
+                    {
+                        Directory.CreateDirectory(monthFolderPath);
+                    }
+
+
+                    //string UploadPath = Path.Combine(Server.MapPath("~/Content/Media"));
+                    string UploadPath = monthFolderPath + "\\";
                     pathimage = UploadPath + FileName;
                     // model.ImagePathOut = UploadPath + FileNamethumb; 
                     if (FileName == "")
@@ -1213,11 +1237,30 @@ namespace LaylaERP_v1.Controllers
                         FileName = "default.png";
                     }
                     ImagePath = "~/Content/Media/" + FileName;
+
+
+                    string fileNamethumb = UploadPath + "thumb_" + FileName;  
+                    string fileNameMedium = UploadPath + "medium_" + FileName;   
+                    string fileNameLarge = UploadPath + "large_" + FileName;  
+
                     //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
                     ImageFile.SaveAs(pathimage); 
+
+                    // Create thumbnail and save it
+                    string thumbnailPath = Path.Combine(UploadPath, fileNamethumb);
+                    CreateThumbnail(pathimage, thumbnailPath, 1024, 1024);
+
+                    // Create medium-sized image and save it
+                    string mediumPath = Path.Combine(UploadPath, fileNameMedium);
+                    CreateResizedImage(pathimage, mediumPath, 2048, 2048);
+
+                    // Create large-sized image and save it
+                    string largePath = Path.Combine(UploadPath, fileNameLarge);
+                    CreateResizedImage(pathimage, largePath, 4096, 4096); 
+
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.AddMedia("U", ID,  FileName, entity_id,  height.ToString(), width.ToString(), file_size, FileExtension);
+                        entity = CMSRepository.AddMedia("U", ID, currentYear+"/"+ currentMonth.ToString("00")+ "/" + FileName, entity_id,  height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/"+ "thumb_"  + FileName, currentYear + "/" + currentMonth.ToString("00") + "/"  +"medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_"  + FileName, FileName);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -1229,7 +1272,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.AddMedia("I", ID, FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension);
+                        entity = CMSRepository.AddMedia("I", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -1250,7 +1293,7 @@ namespace LaylaERP_v1.Controllers
             {
                 //if (Convert.ToInt64(ID) == 0)
                 //{ 
-                 return Json(new { status = false, message = "Upload media garrery", url = "" }, 0); 
+                 return Json(new { status = false, message = "Upload media file", url = "" }, 0); 
                 //}
                 //else
                 //{
@@ -1263,6 +1306,74 @@ namespace LaylaERP_v1.Controllers
 
         }
 
+
+        // Helper method to create a thumbnail of the image
+        private void CreateThumbnail(string sourceImagePath, string destinationImagePath, int width, int height)
+        {
+            using (Image image = Image.FromFile(sourceImagePath))
+            using (Image thumbnail = image.GetThumbnailImage(width, height, () => false, IntPtr.Zero))
+            {
+                thumbnail.Save(destinationImagePath);
+            }
+        }
+
+        // Helper method to create a resized version of the image
+        private void CreateResizedImage(string sourceImagePath, string destinationImagePath, int maxWidth, int maxHeight)
+        {
+            using (Image image = Image.FromFile(sourceImagePath))
+            {
+                int newWidth, newHeight;
+
+                if (image.Width > image.Height)
+                {
+                    newWidth = maxWidth;
+                    newHeight = (int)((float)image.Height / image.Width * maxWidth);
+                }
+                else
+                {
+                    newHeight = maxHeight;
+                    newWidth = (int)((float)image.Width / image.Height * maxHeight);
+                }
+
+                using (Image resizedImage = new Bitmap(newWidth, newHeight))
+                using (Graphics graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+                    resizedImage.Save(destinationImagePath);
+                }
+            }
+        }
+        private void CreateResizedImagetest(string sourceImagePath, string destinationImagePath, int maxWidth, int maxHeight)
+        {
+            using (Image image = Image.FromFile(sourceImagePath))
+            {
+                int newWidth, newHeight;
+
+                if (image.Width > image.Height)
+                {
+                    newWidth = Math.Min(maxWidth, image.Width);
+                    newHeight = (int)((float)image.Height / image.Width * newWidth);
+                }
+                else
+                {
+                    newHeight = Math.Min(maxHeight, image.Height);
+                    newWidth = (int)((float)image.Width / image.Height * newHeight);
+                }
+
+                using (Image resizedImage = new Bitmap(newWidth, newHeight))
+                using (Graphics graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+                    resizedImage.Save(destinationImagePath);
+                }
+            }
+        }
         public JsonResult GetMediagalleryByID(int ID)
         {
             string JSONresult = string.Empty;

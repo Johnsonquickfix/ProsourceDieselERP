@@ -1163,8 +1163,136 @@ namespace LaylaERP_v1.Controllers
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
+        public JsonResult CreateMediagallery(IEnumerable<HttpPostedFileBase> ImageFiles, string ID, string entity_id)
+        {
+            var ImagePath = "";
+            //var ImagePaththum = "";
+            int entity = 0;
+            string FileName = "";
+            string featuerimg = "";
+            string pathimage = "";
+            string futherpathimage = "";
+            //string FileNamethumb = "";
+            string FileExtension = "";
+            string FeatuerFileExtension = "";
+            int height = 0;
+            int width = 0;
+            double sizeInKB = 0;
+            string dimensions = "";
+            foreach (var ImageFile in ImageFiles)
+            {
+                if (ImageFile != null && ImageFile.ContentLength > 0)
+                {
+                    using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
+                    {
+                        // Get the height and width
+                        height = image.Height;
+                        width = image.Width;
+                        long sizeInBytes = ImageFile.ContentLength;
+                        sizeInKB = sizeInBytes / 1024.0;
+                        //dimensions = $"{width} by {height} pixels";
+                    }
 
-        public JsonResult CreateMediagallery(HttpPostedFileBase ImageFile, string ID,  string entity_id)
+                    FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    string file_size = sizeInKB.ToString();
+                    FileExtension = Path.GetExtension(ImageFile.FileName); 
+                    // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                    if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
+                        //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                        FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                        int currentYear = DateTime.Now.Year;
+                        int currentMonth = DateTime.Now.Month;
+                        string yearFolderPath = Path.Combine(Server.MapPath("~/Content/Media"), currentYear.ToString());
+                        string monthFolderPath = Path.Combine(yearFolderPath, currentMonth.ToString("00"));
+
+                        // Check if the year folder exists, if not, create it
+                        if (!Directory.Exists(yearFolderPath))
+                        {
+                            Directory.CreateDirectory(yearFolderPath);
+                        }
+
+                        // Check if the month folder exists, if not, create it
+                        if (!Directory.Exists(monthFolderPath))
+                        {
+                            Directory.CreateDirectory(monthFolderPath);
+                        }
+
+                        //string UploadPath = Path.Combine(Server.MapPath("~/Content/Media"));
+                        string UploadPath = monthFolderPath + "\\";
+                        pathimage = UploadPath + FileName;
+                        // model.ImagePathOut = UploadPath + FileNamethumb; 
+                        if (FileName == "")
+                        {
+                            FileName = "default.png";
+                        }
+                        ImagePath = "~/Content/Media/" + FileName;
+
+                        string fileNamethumb = UploadPath + "thumb_" + FileName;
+                        string fileNameMedium = UploadPath + "medium_" + FileName;
+                        string fileNameLarge = UploadPath + "large_" + FileName;
+
+                        //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
+                        ImageFile.SaveAs(pathimage);
+
+                        // Create thumbnail and save it
+                        string thumbnailPath = Path.Combine(UploadPath, fileNamethumb);
+                        CreateThumbnail(pathimage, thumbnailPath, 1024, 1024);
+
+                        // Create medium-sized image and save it
+                        string mediumPath = Path.Combine(UploadPath, fileNameMedium);
+                        CreateResizedImage(pathimage, mediumPath, 2048, 2048);
+
+                        // Create large-sized image and save it
+                        string largePath = Path.Combine(UploadPath, fileNameLarge);
+                        CreateResizedImage(pathimage, largePath, 4096, 4096);
+
+                        if (Convert.ToInt32(ID) > 0)
+                        {
+                            entity = CMSRepository.AddMedia("U", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                            //if (entity > 0)
+                            //{
+                            //    return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                            //}
+                            //else
+                            //{
+                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            //}
+                        }
+                        else
+                        {
+                            entity = CMSRepository.AddMedia("I", ID, currentYear + "/" + currentMonth.ToString("00") + "/" + FileName, entity_id, height.ToString(), width.ToString(), file_size, FileExtension, currentYear + "/" + currentMonth.ToString("00") + "/" + "thumb_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "medium_" + FileName, currentYear + "/" + currentMonth.ToString("00") + "/" + "large_" + FileName, FileName);
+                            //if (entity > 0)
+                            //{
+                            //    return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                            //}
+                            //else
+                            //{
+                            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            //}
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Upload media file", url = "" }, 0);
+                }
+            }
+            if(Convert.ToInt16(ID) > 0)
+              return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+            else
+              return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+        }
+
+        public JsonResult CreateMediagalleryold(HttpPostedFileBase ImageFile, string ID,  string entity_id)
         {
             var ImagePath = "";
             //var ImagePaththum = "";

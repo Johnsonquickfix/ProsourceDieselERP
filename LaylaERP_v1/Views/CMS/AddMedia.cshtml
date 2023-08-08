@@ -22,6 +22,26 @@
             .compBox .select2 {
                 text-align: left;
             }
+        .drop-area {
+            width: 300px;
+            height: 150px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .image-container {
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -46,12 +66,18 @@
         <div class="row flex-row_box">
             <div class="col-md-6"> 
                 <div class="box-header">
+                    <div id="dropArea" ondrop="handleDrop(event);" ondragover="handleDragOver(event);" class="drop-area">
+                        Drag and drop files here or click to select files.
+                    </div>
                     <label class="form-label width_100 d-flex">
                         Media&nbsp;&nbsp;&nbsp;<span class="edit-pic-profile">
-                            <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
+                            @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
+                            <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
+
                             <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                         </span>
-                    </label> 
+                    </label>
+                    <div id="imagePreviewContainer"></div>
                     <img runat="server" id="show_picture" class="featured_side_image" src="">
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
                 </div> 

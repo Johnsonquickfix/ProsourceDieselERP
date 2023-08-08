@@ -1,4 +1,4 @@
-﻿$(document).ready(function () { 
+﻿$(document).ready(function () {
     $(".subsubsub li a").click(function (e) {
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
@@ -48,7 +48,7 @@ function getcompany() {
 
     });
 }
- 
+
 //function GetDetails() {
 //    var opt = { strValue1: '' };
 //    $.ajax({
@@ -113,14 +113,14 @@ function dataGridLoad(order_type) {
         },
         columns: [
             { data: 'ID', title: 'ID', sWidth: "3%" },
-            
+
             { data: 'post_title', title: 'File name', sWidth: "12%" },
             { data: 'file_type', title: 'File type', sWidth: "12%" },
             //{ data: 'file_size', title: 'File Size', sWidth: "5%" },
             {
                 "data": "file_size", sWidth: "7%   ",
                 "render": function (id, type, row) {
-                    
+
                     return Math.round(row.file_size) + ' KB'
                 }
             },
@@ -166,38 +166,38 @@ function dataGridLoad(order_type) {
 
 function viewModal(id, _action) {
     let modalHtml = '<div class="row flex-row_box">';
-   // modalHtml += '<div class="modal-content modal-rounded">';
+    // modalHtml += '<div class="modal-content modal-rounded">';
     modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Media details.</h4><button type="button" class="btn btn-sm" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
-     modalHtml += '<div class="modal-body"></div>';
-     //modalHtml += '<div class="modal-footer py-3"></div>';
+    modalHtml += '<div class="modal-body"></div>';
+    //modalHtml += '<div class="modal-footer py-3"></div>';
     //modalHtml += '<div class="modal-footer py-3"><button type="button" class="btn btn-sm btn-primary" data-id="' + id + '" onclick="UpdateTicketAction(this);"><i class="fa fa-paper-plane"></i> Submit</button></div>';
     //modalHtml += '</div>';
     modalHtml += '</div>';
     $("#myModal").empty().html(modalHtml);
 
     modalHtml = '';
-    $.get('/CMS/GetMediagalleryByID/' + id, ).then(response => {
+    $.get('/CMS/GetMediagalleryByID/' + id,).then(response => {
         response = JSON.parse(response);
         modalHtml += '<div class="row flex-row_box">';
-        modalHtml += '<div class="box-header">';
+        // modalHtml += '<div class="box-header">';
 
-        $.each(response, function (i, row) {        
-            modalHtml += '      <div class="box-header">'; 
-            modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name +'>';
-            modalHtml += '      </div></div>';
+        $.each(response, function (i, row) {
+            modalHtml += '      <div class="box-header">';
+            modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name + '>';
+            modalHtml += '      </div>';
             modalHtml += '      <div class="col-md-6 box-sidebar_box Media_sidebar">';
-            modalHtml += '        <div class="box box-primary">';
-            modalHtml += '          <div class="box-header">';
+            modalHtml += '        <div class="box">';
+            //modalHtml += '          <div class="box-header">';
             modalHtml += '          <div class="details">';
-            modalHtml += '      <h2 class="screen-reader-text">Details</h2>';
-            modalHtml += '      <div class="uploaded"><strong>Uploaded on:</strong><span id="uploadon"></span>' + row.post_date + '</div>';
-            modalHtml += '      <div class="uploaded"><strong>File name:</strong><span></span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</div>';
-            modalHtml += '      <div class="uploaded"><strong>File type:</strong><span></span>' + row.file_type + '</div>';
-            modalHtml += '      <div class="uploaded"><strong>File size:</strong><span></span>' + Math.round(row.file_size) + ' KB' + '</div>';
-            modalHtml += '      <div class="uploaded"><strong>Dimensions:</strong><span></span>' + row.file_width + ' by ' + row.file_width + ' pixels' + '</div>';
-             
+            modalHtml += '      <h3 class="screen-reader-text">Details</h3>';
+            modalHtml += '      <div class="uploaded"><strong>Uploaded on:</strong><span id="uploadon">' + row.post_date + '</span></div>';
+            modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</span></div>';
+            modalHtml += '      <div class="uploaded"><strong>File type:</strong><span>' + row.file_type + '</span></div>';
+            modalHtml += '      <div class="uploaded"><strong>File size:</strong><span>' + Math.round(row.file_size) + ' KB' + '</span></div>';
+            modalHtml += '      <div class="uploaded"><strong>Dimensions:</strong><span>' + row.file_width + ' by ' + row.file_height + ' pixels' + '</span></div>';
+
         });
-        modalHtml += '</div>';  
+        // modalHtml += '</div>';  
     }).catch(err => { }).always(function () { $('#myModal .modal-body').append(modalHtml); });
     $("#myModal").modal({ backdrop: 'static', keyboard: false });
 }

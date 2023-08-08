@@ -99,15 +99,14 @@
                         var file = this.files[0];
                         var reader = new FileReader();
                         reader.onload = function () {
-                           // var imageDataUrl = reader.result;
-                           // callback(imageDataUrl, { alt: '' }); //Pass the selected image data URL to the editor
-                            var imageURL = value;
-                            if (!/^https?:\/\//i.test(imageURL)) {
-                                var baseUrl = window.location.protocol + "//" + window.location.host;
-                                imageURL = baseUrl + imageURL;
-                            }
-
-                            callback(imageURL, { alt: '' });
+                            var imageDataUrl = reader.result;
+                            callback(imageDataUrl, { alt: '' }); //Pass the selected image data URL to the editor
+                            //var imageURL = value;
+                            //if (!/^https?:\/\//i.test(imageURL)) {
+                            //    var baseUrl = window.location.protocol + "//" + window.location.host;
+                            //    imageURL = baseUrl + imageURL;
+                            //}
+                            //callback(imageURL, { alt: '' });
                         };
                         reader.readAsDataURL(file);
                     };

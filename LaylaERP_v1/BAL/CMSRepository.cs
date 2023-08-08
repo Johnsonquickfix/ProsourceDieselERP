@@ -430,7 +430,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-          public static DataTable GetParentCategoryList(string optType)
+        public static DataTable GetParentCategoryList(string optType)
         {
             DataTable DS = new DataTable();
             try

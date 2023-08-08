@@ -726,6 +726,7 @@
     <Content Include="Content\jspdf\jspdf.debug.js" />
     <Content Include="Content\lightbox\lightbox.min.css" />
     <Content Include="Content\lightbox\lightbox.min.js" />
+    <Content Include="Content\Media\080423070018-homeBanner1new.jpg" />
     <Content Include="Content\MiscBillsFiles\default.png" />
     <Content Include="Content\Pages\Featured\053123045216-ZIBBIX-BRAND-BANNER.jpg" />
     <Content Include="Content\Pages\Featured\053123050545-SPOOLOGIC-BRAND-BANNER-2.jpg" />

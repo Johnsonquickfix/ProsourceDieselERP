@@ -864,8 +864,10 @@
     <Content Include="js\Budget\BudgetList.js" />
     <Content Include="js\Budget\BudgetOverview.js" />
     <Content Include="js\Budget\BudgetVsActuals.js" />
+    <Content Include="js\CMS\AddBlog.js" />
     <Content Include="js\CMS\Banner.js" />
     <Content Include="js\CMS\BannerList.js" />
+    <Content Include="js\CMS\Blog.js" />
     <Content Include="js\CMS\List.js" />
     <Content Include="js\CMS\Media.js" />
     <Content Include="js\CMS\MediagalleryList.js" />
@@ -1606,10 +1608,14 @@
     <Content Include="Views\Setting\OrderCompanyAllot.cshtml" />
     <Content Include="Views\CMS\Mediagallery.cshtml" />
     <Content Include="Views\CMS\AddMedia.cshtml" />
+    <Content Include="Views\CMS\Blog.cshtml" />
+    <Content Include="Views\CMS\AddBlog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Blog\Banner\" />
+    <Folder Include="Content\Blog\Other\" />
     <Folder Include="Content\DamageProductFiles\" />
     <Folder Include="Files\" />
     <Folder Include="Views\CMSApi\" />

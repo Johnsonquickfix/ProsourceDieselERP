@@ -40,7 +40,14 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
-       
+        public ActionResult Blog()
+        {
+            return View();
+        }
+        public ActionResult AddBlog()
+        {
+            return View();
+        }
         public ActionResult Page(int id)
         {
             SqlParameter[] parameters =
@@ -63,6 +70,7 @@ namespace LaylaERP_v1.Controllers
             }
             return View((object)strTemp);
         }
+
         public ActionResult BannerList()
         {
 
@@ -1515,5 +1523,225 @@ namespace LaylaERP_v1.Controllers
             return Json(JSONresult, 0);
         }
 
+        [HttpPost]
+        public JsonResult GetBlogCounts(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = CMSRepository.GetBlogCounts();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet]
+        public JsonResult GetBlogList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = CMSRepository.GetBlogList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult CreateBlog(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, HttpPostedFileBase FeaturedFile, string shortdic)
+        {
+            var ImagePath = "";
+            //var ImagePaththum = "";
+            int entity = 0;
+            string FileName = "";
+            string featuerimg = "";
+            string pathimage = "";
+            string futherpathimage = "";
+            //string FileNamethumb = "";
+            string FileExtension = "";
+            string FeatuerFileExtension = "";
+            //string encodedHtml = "%3Cp%3Ehi%20this%20is%26nbsp%3B%3C%2Fp%3E%0D%0A%3Cp%3Etest%3C%2Fp%3E%0D%0A%3Cp%3Eeditore%20save%3C%2Fp%3E";
+            post_content = HttpUtility.UrlDecode(post_content);
+            int fheight = 0;
+            int fwidth = 0;
+            int bheight = 0;
+            int bwidth = 0;
+
+            //string decodedHtml = HttpUtility.UrlDecode(post_content);
+            if (ImageFile != null)
+            {
+                using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
+                {
+                    // Get the height and width
+                    bheight = image.Height;
+                    bwidth = image.Width;
+                }
+
+                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                FileName = Regex.Replace(FileName, @"\s+", "");
+                string size = (ImageFile.ContentLength / 1024).ToString();
+                FileExtension = Path.GetExtension(ImageFile.FileName);
+                // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                {
+                    //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Blog/Banner"));
+                    UploadPath = UploadPath + "\\";
+                    pathimage = UploadPath + FileName;
+                    // model.ImagePathOut = UploadPath + FileNamethumb;
+                    if (FileName == "")
+                    {
+                        FileName = "default.png";
+                    }
+                    ImagePath = "~/Content/Blog/Banner/" + FileName;
+                    //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
+                    ImageFile.SaveAs(pathimage);
+                    if (FeaturedFile != null)
+                    {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
+
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Blog/Other"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
+
+                    if (Convert.ToInt32(ID) > 0)
+                    {
+                        entity = CMSRepository.CreateBlog("U", ID, post_title, post_content, FileName, entity_id, featuerimg, shortdic, bheight.ToString(),bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        if (entity > 0)
+                        {
+                            return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
+                    }
+                    else
+                    {
+                        entity = CMSRepository.CreateBlog("I", ID, post_title, post_content, FileName, entity_id, featuerimg, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        if (entity > 0)
+                        {
+                            return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                }
+            }
+            else
+            {
+                if (Convert.ToInt64(ID) == 0)
+                {
+                    if (FeaturedFile != null)
+                    {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Blog/Other"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                    }
+                    else
+                    {
+
+                        featuerimg = "";
+                    }
+                    entity = CMSRepository.CreateBlog("I", ID, post_title, post_content, FileName, entity_id, featuerimg, shortdic  ,bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                    if (entity > 0)
+                    {
+                        return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    if (FeaturedFile != null)
+                    {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
+                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Blog/Other"));
+                        FutcherUploadPath = FutcherUploadPath + "\\";
+                        futherpathimage = FutcherUploadPath + featuerimg;
+                        if (featuerimg == "")
+                        {
+                            featuerimg = "default.png";
+                        }
+                        FeaturedFile.SaveAs(futherpathimage);
+                        entity = CMSRepository.CreateBlog("UF", ID, post_title, post_content, FileName, entity_id, featuerimg, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                    }
+                    else
+                    {
+                        entity = CMSRepository.CreateBlog("UP", ID, post_title, post_content, FileName, entity_id, featuerimg, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                    }
+                    return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
+                }
+            }
+
+        }
+
+        public JsonResult GetDataBlogByID(int ID)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = CMSRepository.GetDataBlogByID(ID);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

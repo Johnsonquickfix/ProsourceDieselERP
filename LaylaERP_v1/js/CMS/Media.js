@@ -132,13 +132,17 @@ function readURL(input) {
         for (var i = 0; i < input.files.length; i++) {
             var reader = new FileReader();
             reader.onload = function (e) {
+                var tag = document.createElement("div");
+                tag.classList.add('rendered_imgs');
                 var imageURL = e.target.result;
                 // Create an image element and set its source
-                var imageElement = document.createElement("img");
-                imageElement.src = imageURL;
-                imageElement.style.maxWidth = "100%";
+                tag.innerHTML = '<img src="' + imageURL+'" />';
+                //var imageElement = document.createElement("img");
+                //imageElement.src = imageURL;
+             //var div_box =    document.createElement("div").appendChild(imageElement);
+                //imageElement.style.maxWidth = "100%";
                 // Append the image element to the container
-                imagePreviewContainer.appendChild(imageElement);
+                imagePreviewContainer.appendChild(tag);
             };
             reader.readAsDataURL(input.files[i]);
         }

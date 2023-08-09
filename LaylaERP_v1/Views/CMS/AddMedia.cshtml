@@ -64,20 +64,22 @@
                 </div>*@
         </div>
         <div class="row flex-row_box">
-            <div class="col-md-6"> 
-                <div class="box-header">
+            <div class="col-md-12"> 
+                <div class="box_drop">
                     <div id="dropArea" ondrop="handleDrop(event);" ondragover="handleDragOver(event);" class="drop-area">
                         Drag and drop files here or click to select files.
                     </div>
-                    <label class="form-label width_100 d-flex">
-                        Media&nbsp;&nbsp;&nbsp;<span class="edit-pic-profile">
-                            @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
-                            <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
+                    <div class="image_drop_list">
+                        <div id="imagePreviewContainer"></div>
+                        <label class="form-label d-flex list_box_edit_label">
+                            Media<span class="edit-pic-profile">
+                                @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
+                                <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
 
-                            <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
-                        </span>
-                    </label>
-                    <div id="imagePreviewContainer"></div>
+                                <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
+                            </span>
+                        </label>
+                    </div>
                     <img runat="server" id="show_picture" class="featured_side_image" src="">
                     <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
                 </div> 

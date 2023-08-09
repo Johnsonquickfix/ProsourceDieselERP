@@ -330,7 +330,7 @@ namespace LaylaERP.Models
             public string upload_ad_image { get; set; } = string.Empty;
             public string short_description { get; set; } = string.Empty;
             public string featured_image_url { get; set; } = string.Empty;
-            public dynamic image_details { get; set; } = string.Empty;
+            //public dynamic image_details { get; set; } = string.Empty;
             public ImageModel image { get; set; }
             public OtherImageModel other_image { get; set; }
         }

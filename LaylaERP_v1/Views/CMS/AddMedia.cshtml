@@ -28,7 +28,7 @@
             border: 2px dashed #ccc;
             text-align: center;
             padding: 10px;
-            cursor: pointer;
+           
         }
 
         .image-container {
@@ -67,12 +67,12 @@
             <div class="col-md-12"> 
                 <div class="box_drop">
                     <div id="dropArea" ondrop="handleDrop(event);" ondragover="handleDragOver(event);" class="drop-area">
-                        Drag and drop files here or click to select files.
+                        Drag and drop files here.
                     </div>
                     <div class="image_drop_list">
                         <div id="imagePreviewContainer"></div>
                         <label class="form-label d-flex list_box_edit_label">
-                            Media<span class="edit-pic-profile">
+                            Select files.<span class="edit-pic-profile">
                                 @*<input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />*@
                                 <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" multiple />
 

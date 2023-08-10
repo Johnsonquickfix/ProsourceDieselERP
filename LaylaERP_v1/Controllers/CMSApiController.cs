@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc; 
 using static LaylaERP.Models.Export_Details;
 using LaylaERP.BAL;
- 
+using System.Data;
 
 namespace LaylaERP_v1.Controllers
 {
@@ -186,7 +186,12 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST");
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST");
+                        List<Category> categoryList = new List<Category>();
+
+                        // First pass: Create a dictionary to hold category ID and index mapping
+                        Dictionary<int, int> categoryIndexMap = new Dictionary<int, int>();
+
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
@@ -202,8 +207,7 @@ namespace LaylaERP_v1.Controllers
                                 Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
                                 Review.entity = balResult.Rows[i]["CompanyName"].ToString();
                                 Review.post_date = balResult.Rows[i]["post_date"].ToString();
-                                Review.category = balResult.Rows[i]["category"].ToString();
-                                //Review.order = balResult.Rows[i]["menu_order"].ToString();
+                                Review.post_name = balResult.Rows[i]["post_name"].ToString();
                                 Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
                                 Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
@@ -216,11 +220,40 @@ namespace LaylaERP_v1.Controllers
                                 //Review._comment = balResult.Rows[i]["_comment"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                var balcategory = CMSRepository.Getcategory(balResult.Rows[i]["ID"].ToString());
+                                List<Category> categoryHierarchy = BuildCategoryHierarchy(0, balcategory, // Assuming this DataTable contains category data
+                                    categoryIndexMap);
+
+                               // Review.categories = categoryHierarchy;
+                                if (categoryHierarchy.Count == 1)
+                                {
+                                    //Review.categories = categoryHierarchy;
+                                    //List<Category> wrappedCategories = new List<Category> { Review.categories[0] };
+                                    //Review.categories = wrappedCategories;
+                                    //ReviewList.Add(Review);
+                                    // Clear any existing categories
+                                    Review.categories = new List<Category> { categoryHierarchy[0] };
+                                   // Review.categories = Review.categories[0];
+                                }
+                                else
+                                {
+                                    Review.categories = categoryHierarchy;
+                                }
+
                                 ReviewList.Add(Review);
+
                             }
 
                             //return Json(ReviewList);
-                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            if (ReviewList.Count == 1)
+                            {
+                                return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            }
 
                         }
                         else
@@ -235,6 +268,34 @@ namespace LaylaERP_v1.Controllers
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
                 return new HttpStatusCodeResult(400, "Bad Request");
             }
+        }
+
+        public List<Category> BuildCategoryHierarchy(int categoryId, DataTable categoryData, Dictionary<int, int> categoryIndexMap)
+        {
+            List<Category> categories = new List<Category>();
+
+            foreach (DataRow row in categoryData.Rows)
+            {
+                int category_id = Convert.ToInt32(row["term_id"]);
+                //int parent_id = Convert.ToInt32(row["parent_id"]);
+                string name = row["name"].ToString();
+                string slug = row["slug"].ToString();
+                //int count = Convert.ToInt32(row["count"]);
+                //if (parent_id == categoryId)
+                //{
+                    Category category = new Category
+                    {
+                        category_id = category_id,
+                        //parent_id = parent_id,
+                        name = name,
+                        slug = slug,
+                       // count = count,
+                        //subcategories = BuildCategoryHierarchy(category_id, categoryData, categoryIndexMap)
+                    };
+                    categories.Add(category);
+                //}
+            }
+            return categories;
         }
 
         [Route("get-store/{app_key}/{entity_id}")]

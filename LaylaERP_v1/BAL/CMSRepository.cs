@@ -1067,6 +1067,25 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable Getcategory(string term_id)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+              {
+
+                   
+                };
+
+                dt = SQLHelper.ExecuteDataTable("select * from wp_terms where term_id in (select term_id from wp_term_taxonomy where taxonomy = 'category' and term_taxonomy_id in (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = "+ term_id + "))");
+
+            }
+            catch { throw; }
+            return dt;
+        }
+
+
 
 
 

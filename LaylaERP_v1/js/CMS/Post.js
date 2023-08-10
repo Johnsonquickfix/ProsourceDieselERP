@@ -81,7 +81,21 @@
 
     })
 
-    $('#txttitle').keyup(function (event) {
+    //$('#txttitle').keyup(function (event) {
+    //    var textBox = event.target;
+    //    var start = textBox.selectionStart;
+    //    var end = textBox.selectionEnd;
+    //    textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+    //    textBox.setSelectionRange(start, end);
+    //    var cat = $('#txttitle').val().toLowerCase().trim();
+    //    cat = cat.replace(/\s/g, '-');
+    //    $('#txtslug').val(cat);
+     
+    //});
+    $('#txttitle').on('input', function (event) {
+        // var inputText = $(this).val(); // Get the input value for txttitle
+        //$('#txtslug').val(inputText); // Reflect the input value to txtslug without restrictions
+
         var textBox = event.target;
         var start = textBox.selectionStart;
         var end = textBox.selectionEnd;
@@ -89,8 +103,13 @@
         textBox.setSelectionRange(start, end);
         var cat = $('#txttitle').val().toLowerCase().trim();
         cat = cat.replace(/\s/g, '-');
-        $('#txtslug').val(cat);
-     
+
+        var cleanedText = cat.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
+        //if (cat !== cleanedText) {
+        $('#txtslug').val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
+        //}
+
+
     });
     var itxtCnt = 0;
     var i = 1;

@@ -286,7 +286,7 @@ namespace LaylaERP.Models
             public string total { get; set; } = string.Empty;
             public string entity_id { get; set; } = string.Empty;
             public string entity { get; set; } = string.Empty;
-            public string category { get; set; } = string.Empty;
+            public string post_name { get; set; } = string.Empty;
             //public string order { get; set; } = string.Empty;
             public string single_image_url { get; set; } = string.Empty;
             public string featured_image_url { get; set; } = string.Empty;
@@ -298,7 +298,7 @@ namespace LaylaERP.Models
             //public string _wp_page_template { get; set; } = string.Empty;
             //public string _gmk { get; set; } = string.Empty;
             //public string _comment { get; set; } = string.Empty;
-
+            public List<Category> categories { get; set; }
 
 
         }
@@ -347,6 +347,15 @@ namespace LaylaERP.Models
             public string height { get; set; }
             public string file { get; set; }
 
+        }
+        public class Category
+        {
+            public int category_id { get; set; }
+            //public int parent_id { get; set; }
+            public string name { get; set; }
+            public string slug { get; set; }
+           // public int count { get; set; }
+            //public List<Category> subcategories { get; set; }
         }
     }
 }

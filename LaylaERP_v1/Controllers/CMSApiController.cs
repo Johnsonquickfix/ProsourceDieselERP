@@ -208,8 +208,29 @@ namespace LaylaERP_v1.Controllers
                                 Review.entity = balResult.Rows[i]["CompanyName"].ToString();
                                 Review.post_date = balResult.Rows[i]["post_date"].ToString();
                                 Review.post_name = balResult.Rows[i]["post_name"].ToString();
-                                Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
-                                Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
+
+                                ImageModel image = new ImageModel
+                                {
+                                    width = balResult.Rows[i]["bwidth"].ToString(),
+                                    height = balResult.Rows[i]["bheight"].ToString(),
+                                    file = balResult.Rows[i]["single_image_url"].ToString(),
+
+                                };
+                                OtherImageModel OtherImageModel = new OtherImageModel
+                                {
+                                    width = balResult.Rows[i]["fwidth"].ToString(),
+                                    height = balResult.Rows[i]["fheight"].ToString(),
+                                    file = balResult.Rows[i]["featured_image_url"].ToString(),
+
+                                };
+
+                                Review.single_image_url = image;
+                                Review.featured_image_url = OtherImageModel;
+
+
+
+                             //   Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
+                               // Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
                                 Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();

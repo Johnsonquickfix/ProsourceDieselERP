@@ -100,7 +100,7 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [Route("get-pages/{app_key}/{entity_id}")]
-        public ActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        public ActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PLS");
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PLS", post_name);
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
@@ -173,7 +173,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [Route("get-post/{app_key}/{entity_id}")]
-        public ActionResult Getpost(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        public ActionResult Getpost(string app_key, string entity_id, string per_page, string page,string post_name, string post_status, string sort, string direction)
         {
             try
             {
@@ -186,7 +186,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST");
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST", post_name);
                         List<Category> categoryList = new List<Category>();
 
                         // First pass: Create a dictionary to hold category ID and index mapping
@@ -385,7 +385,7 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [Route("get-blog/{app_key}/{entity_id}")]
-        public ActionResult Getblog(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        public ActionResult Getblog(string app_key, string entity_id, string per_page, string page,string post_name, string post_status, string sort, string direction)
         {
             try
             {
@@ -398,7 +398,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "BLG");
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "BLG", post_name);
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {

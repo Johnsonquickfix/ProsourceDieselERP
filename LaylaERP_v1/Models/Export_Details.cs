@@ -254,14 +254,15 @@ namespace LaylaERP.Models
             public string post_author { get; set; } = string.Empty;
             public string user_login { get; set; } = string.Empty; 
             public string post_date { get; set; } = string.Empty;
+            public string post_name { get; set; } = string.Empty;
             public string total { get; set; } = string.Empty; 
             public string entity_id { get; set; } = string.Empty;
             public string entity { get; set; } = string.Empty;
             public string post_parent { get; set; } = string.Empty;
             public string order { get; set; } = string.Empty;
-            public string upload_ad_image { get; set; } = string.Empty;
-            public string short_description { get; set; } = string.Empty;
-            public string featured_image_url { get; set; } = string.Empty;
+            public ImageModel upload_ad_image { get; set; }
+            public OtherImageModel featured_image_url { get; set; }              
+            public string short_description { get; set; } = string.Empty;            
             public string _yoast_wpseo_focuskw { get; set; } = string.Empty;
             public string _yoast_wpseo_metadesc { get; set; } = string.Empty;
             public string _yoast_wpseo_title { get; set; } = string.Empty;

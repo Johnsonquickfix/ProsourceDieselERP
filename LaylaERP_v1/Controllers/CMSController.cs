@@ -267,9 +267,21 @@ namespace LaylaERP_v1.Controllers
             //string encodedHtml = "%3Cp%3Ehi%20this%20is%26nbsp%3B%3C%2Fp%3E%0D%0A%3Cp%3Etest%3C%2Fp%3E%0D%0A%3Cp%3Eeditore%20save%3C%2Fp%3E";
             post_content = HttpUtility.UrlDecode(post_content);
 
+            int fheight = 0;
+            int fwidth = 0;
+            int bheight = 0;
+            int bwidth = 0;
+
             //string decodedHtml = HttpUtility.UrlDecode(post_content);
             if (ImageFile != null)
             {
+                using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
+                {
+                    // Get the height and width
+                    bheight = image.Height;
+                    bwidth = image.Width;
+                }
+
                 FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
@@ -292,6 +304,13 @@ namespace LaylaERP_v1.Controllers
                     ImageFile.SaveAs(pathimage);
                     if (FeaturedFile != null)
                     {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
+
                         featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
@@ -313,7 +332,7 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic);
+                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
@@ -325,7 +344,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic);
+                        entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                         if (entity > 0)
                         {
                             return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -348,6 +367,12 @@ namespace LaylaERP_v1.Controllers
                 {
                     if (FeaturedFile != null)
                     {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
                         featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
@@ -366,7 +391,7 @@ namespace LaylaERP_v1.Controllers
 
                         featuerimg = "";
                     }
-                    entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic);
+                    entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                     if (entity > 0)
                     {
                         return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
@@ -380,6 +405,13 @@ namespace LaylaERP_v1.Controllers
                 {
                     if (FeaturedFile != null)
                     {
+                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        {
+                            // Get the height and width
+                            fheight = image.Height;
+                            fwidth = image.Width;
+                        }
+
                         featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
                         featuerimg = Regex.Replace(featuerimg, @"\s+", "");
                         FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
@@ -392,11 +424,11 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic);
+                        entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePage("UP", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic);
+                        entity = CMSRepository.CreatePage("UP", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
                 }

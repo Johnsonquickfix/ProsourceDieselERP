@@ -126,14 +126,30 @@ namespace LaylaERP_v1.Controllers
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();
                                 Review.post_author = balResult.Rows[i]["post_author"].ToString();
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
+                                Review.post_name = balResult.Rows[i]["post_name"].ToString();
                                 Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
                                 Review.entity = balResult.Rows[i]["CompanyName"].ToString();
                                 Review.post_date = balResult.Rows[i]["post_date"].ToString();
                                 Review.post_parent = balResult.Rows[i]["post_parent"].ToString();
                                 Review.order = balResult.Rows[i]["menu_order"].ToString();
-                                Review.upload_ad_image = balResult.Rows[i]["upload_ad_image"].ToString();
+                                ImageModel image = new ImageModel
+                                {
+                                    width = balResult.Rows[i]["bwidth"].ToString(),
+                                    height = balResult.Rows[i]["bheight"].ToString(),
+                                    file = balResult.Rows[i]["upload_ad_image"].ToString(),
+
+                                };
+                                OtherImageModel OtherImageModel = new OtherImageModel
+                                {
+                                    width = balResult.Rows[i]["fwidth"].ToString(),
+                                    height = balResult.Rows[i]["fheight"].ToString(),
+                                    file = balResult.Rows[i]["featured_image_url"].ToString(),
+
+                                };
+                                Review.upload_ad_image = image;
+                                Review.featured_image_url = OtherImageModel;                      
                                 Review.short_description = balResult.Rows[i]["short_description"].ToString();
-                                Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
+                  
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
                                 Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();

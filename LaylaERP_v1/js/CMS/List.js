@@ -145,6 +145,7 @@ function dataGridLoad(order_type) {
             //},
              
             { data: 'post_title', title: 'Title', sWidth: "12%" },
+            { data: 'CompanyName', title: 'Store', sWidth: "12%" },
             { data: 'user_login', title: 'Author', sWidth: "5%" },
             { data: 'post_date', title: 'Post Date', sWidth: "8%" },
              

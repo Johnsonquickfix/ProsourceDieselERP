@@ -148,7 +148,7 @@ function dataGridLoad(order_type) {
             },
 
             { data: 'post_title', title: 'Title', sWidth: "12%" },
-
+            { data: 'CompanyName', title: 'Store', sWidth: "12%" },
             {
                 "data": "mobileimage", sWidth: "7%   ",
                 //'render': function (data, type, full, meta) {

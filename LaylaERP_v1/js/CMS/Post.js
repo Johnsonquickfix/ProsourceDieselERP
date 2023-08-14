@@ -13,12 +13,16 @@
             $("#lblpermalink").hide();
             $("#hfid").val(0);
             $("#btnSave").text("Add");
+            $('#txttitle').prop('readonly', false);
+            $('#txtslug').prop('readonly', false);
         }
         else {
             $("#lblpermalink").show();
             GetDataByID(id);
             $("#hfid").val(id);
-            $("#btnSave").text("Update"); 
+            $("#btnSave").text("Update");
+            $('#txttitle').prop('readonly', true);
+            $('#txtslug').prop('readonly', true);
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
@@ -439,9 +443,7 @@ function GetDataByID(ID) {
             //}
 
              
-            var cat = $('#txttitle').val().toLowerCase().trim();
-            cat = cat.replace(/\s/g, '-');
-            $('#txtslug').val(cat);
+            $('#txtslug').val(i[0].post_name);
 
           //  var syn = ["synonyms", "", "", "test"];
             var syn = i[0].cpmsyns;

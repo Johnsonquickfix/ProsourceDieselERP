@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic; 
-using System.Web.Mvc; 
+ 
 using static LaylaERP.Models.Export_Details;
 using LaylaERP.BAL;
 using System.Data;
+using System.Web.Http;
 
 namespace LaylaERP_v1.Controllers
 {
-    public class CMSApiController : Controller
+    public class CMSApiController : ApiController
     {
         /// <summary>
         /// API for banner
@@ -21,16 +22,20 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [Route("get-banner/{app_key}/{entity_id}")]
-        public ActionResult Getbanner(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        public IHttpActionResult Getbanner(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
         {
             try
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
-                {  return new HttpStatusCodeResult(400, "Bad Request"); }
+                {
+                    
+              
+                    return BadRequest("Bad Request");
+                }
                 else
                 {
-                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")                         
-                          return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")                 
+                              return BadRequest("invalid app key");
                     else
                     {
                         string msg = string.Empty;
@@ -71,12 +76,14 @@ namespace LaylaERP_v1.Controllers
                             }
 
                             //return Json(ReviewList);
-                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                           // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            return Ok(ReviewList);
 
                         }
                         else
                         {
-                            return Json("[]", JsonRequestBehavior.AllowGet);
+                            //return Json("[]", JsonRequestBehavior.AllowGet);
+                            return Ok("[]");
                         }
                     }
                 }
@@ -84,7 +91,8 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
-                return new HttpStatusCodeResult(400, "Bad Request");
+
+                return BadRequest("Bad Request");
             }
         }
 
@@ -100,16 +108,20 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [Route("get-pages/{app_key}/{entity_id}")]
-        public ActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
+        public IHttpActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
-                { return new HttpStatusCodeResult(400, "Bad Request"); }
+                { 
+                    //return new HttpStatusCodeResult(400, "Bad Request");
+                    return BadRequest("Bad Request");
+                }
                 else
                 {
                     if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
-                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        //return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
                     else
                     {
                         string msg = string.Empty;
@@ -147,9 +159,9 @@ namespace LaylaERP_v1.Controllers
 
                                 };
                                 Review.upload_ad_image = image;
-                                Review.featured_image_url = OtherImageModel;                      
+                                Review.featured_image_url = OtherImageModel;
                                 Review.short_description = balResult.Rows[i]["short_description"].ToString();
-                  
+
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
                                 Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
@@ -165,18 +177,21 @@ namespace LaylaERP_v1.Controllers
 
                             //return Json(ReviewList);                            
                             if (ReviewList.Count == 1)
-                            {                                
-                                return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                            {
+                               // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList[0]);
                             }
                             else
                             {
-                                return Json(ReviewList, JsonRequestBehavior.AllowGet);
-                            }                            
+                               // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList[0]);
+                            }
 
                         }
                         else
                         {
-                            return Json("[]", JsonRequestBehavior.AllowGet);
+                            //return Json("[]", JsonRequestBehavior.AllowGet);
+                            return Ok("[]");
                         }
                     }
                 }
@@ -184,21 +199,25 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
-                return new HttpStatusCodeResult(400, "Bad Request");
+                return BadRequest("Bad Request");
             }
         }
 
         [Route("get-post/{app_key}/{entity_id}")]
-        public ActionResult Getpost(string app_key, string entity_id, string per_page, string page,string post_name, string post_status, string sort, string direction)
+        public IHttpActionResult Getpost(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
-                { return new HttpStatusCodeResult(400, "Bad Request"); }
+                {
+                    //return new HttpStatusCodeResult(400, "Bad Request"); 
+                    return BadRequest("Bad Request");
+                }
                 else
                 {
                     if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
-                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        // return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
                     else
                     {
                         string msg = string.Empty;
@@ -245,8 +264,8 @@ namespace LaylaERP_v1.Controllers
 
 
 
-                             //   Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
-                               // Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
+                                //   Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
+                                // Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
                                 Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
                                 Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
                                 Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
@@ -261,7 +280,7 @@ namespace LaylaERP_v1.Controllers
                                 List<Category> categoryHierarchy = BuildCategoryHierarchy(0, balcategory, // Assuming this DataTable contains category data
                                     categoryIndexMap);
 
-                               // Review.categories = categoryHierarchy;
+                                // Review.categories = categoryHierarchy;
                                 if (categoryHierarchy.Count == 1)
                                 {
                                     //Review.categories = categoryHierarchy;
@@ -270,7 +289,7 @@ namespace LaylaERP_v1.Controllers
                                     //ReviewList.Add(Review);
                                     // Clear any existing categories
                                     Review.categories = new List<Category> { categoryHierarchy[0] };
-                                   // Review.categories = Review.categories[0];
+                                    // Review.categories = Review.categories[0];
                                 }
                                 else
                                 {
@@ -285,17 +304,17 @@ namespace LaylaERP_v1.Controllers
                             // return Json(ReviewList, JsonRequestBehavior.AllowGet);
                             if (ReviewList.Count == 1)
                             {
-                                return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList[0]);
                             }
                             else
                             {
-                                return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList);
                             }
 
                         }
                         else
                         {
-                            return Json("[]", JsonRequestBehavior.AllowGet);
+                            return Ok("[]");
                         }
                     }
                 }
@@ -303,7 +322,7 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
-                return new HttpStatusCodeResult(400, "Bad Request");
+                return BadRequest("Bad Request");
             }
         }
 
@@ -320,72 +339,72 @@ namespace LaylaERP_v1.Controllers
                 //int count = Convert.ToInt32(row["count"]);
                 //if (parent_id == categoryId)
                 //{
-                    Category category = new Category
-                    {
-                        category_id = category_id,
-                        //parent_id = parent_id,
-                        name = name,
-                        slug = slug,
-                       // count = count,
-                        //subcategories = BuildCategoryHierarchy(category_id, categoryData, categoryIndexMap)
-                    };
-                    categories.Add(category);
+                Category category = new Category
+                {
+                    category_id = category_id,
+                    //parent_id = parent_id,
+                    name = name,
+                    slug = slug,
+                    // count = count,
+                    //subcategories = BuildCategoryHierarchy(category_id, categoryData, categoryIndexMap)
+                };
+                categories.Add(category);
                 //}
             }
             return categories;
         }
 
         [Route("get-store/{app_key}/{entity_id}")]
-        public ActionResult Getstore(string app_key, string entity_id)
+        public IHttpActionResult Getstore(string app_key, string entity_id)
         {
             try
             {
-                
-                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
-                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
-                    else 
-                    { 
-                        string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi(entity_id, app_key, "publish", "10", "0", "entity", "desc", "STOR");
-                        int total = balResult.Rows.Count;
-                        if (total > 0)
+
+                if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                    return BadRequest("invalid app key");
+                else
+                {
+                    string msg = string.Empty;
+                    var balResult = CMSRepository.Getapi(entity_id, app_key, "publish", "10", "0", "entity", "desc", "STOR");
+                    int total = balResult.Rows.Count;
+                    if (total > 0)
+                    {
+                        List<StoreModel> ReviewList = new List<StoreModel>();
+                        for (int i = 0; i < balResult.Rows.Count; i++)
                         {
-                            List<StoreModel> ReviewList = new List<StoreModel>();
-                            for (int i = 0; i < balResult.Rows.Count; i++)
-                            {
-                               StoreModel Review = new StoreModel();
-                                Review.store_id = balResult.Rows[i]["entity"].ToString();
-                                Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
-                                Review.logo_url = balResult.Rows[i]["logo_url"].ToString();
-                                Review.img_width = balResult.Rows[i]["img_width"].ToString();
-                                Review.img_height = balResult.Rows[i]["img_height"].ToString();
-                                Review.mobile = balResult.Rows[i]["user_mobile"].ToString();
-                                Review.email = balResult.Rows[i]["email"].ToString();
-                                Review.address = balResult.Rows[i]["address"].ToString();
-                                Review.total = balResult.Rows[i]["total"].ToString();
-                                ReviewList.Add(Review);
-                            }
+                            StoreModel Review = new StoreModel();
+                            Review.store_id = balResult.Rows[i]["entity"].ToString();
+                            Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
+                            Review.logo_url = balResult.Rows[i]["logo_url"].ToString();
+                            Review.img_width = balResult.Rows[i]["img_width"].ToString();
+                            Review.img_height = balResult.Rows[i]["img_height"].ToString();
+                            Review.mobile = balResult.Rows[i]["user_mobile"].ToString();
+                            Review.email = balResult.Rows[i]["email"].ToString();
+                            Review.address = balResult.Rows[i]["address"].ToString();
+                            Review.total = balResult.Rows[i]["total"].ToString();
+                            ReviewList.Add(Review);
+                        }
                         //return Json(ReviewList, JsonRequestBehavior.AllowGet); 
                         if (ReviewList.Count == 1)
                         {
-                            return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                            return Ok(ReviewList[0]);
                         }
                         else
                         {
-                            return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            return Ok(ReviewList);
                         }
                     }
-                        else
-                        {
-                            return Json("[]", JsonRequestBehavior.AllowGet);
-                        }
+                    else
+                    {
+                        return Ok("[]");
                     }
-                 
+                }
+
             }
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
-                return new HttpStatusCodeResult(400, "Bad Request");
+                return BadRequest("Bad Request");
             }
         }
 
@@ -401,16 +420,16 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [Route("get-blog/{app_key}/{entity_id}")]
-        public ActionResult Getblog(string app_key, string entity_id, string per_page, string page,string post_name, string post_status, string sort, string direction)
+        public IHttpActionResult Getblog(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
-                { return new HttpStatusCodeResult(400, "Bad Request"); }
+                { return BadRequest("Bad Request"); }
                 else
                 {
                     if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
-                        return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
                     else
                     {
                         string msg = string.Empty;
@@ -429,10 +448,10 @@ namespace LaylaERP_v1.Controllers
                                 Review.user_login = balResult.Rows[i]["user_login"].ToString();
                                 Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
                                 Review.entity = balResult.Rows[i]["CompanyName"].ToString();
-                                Review.post_date = balResult.Rows[i]["post_date"].ToString(); 
+                                Review.post_date = balResult.Rows[i]["post_date"].ToString();
                                 Review.upload_ad_image = balResult.Rows[i]["upload_ad_image"].ToString();
                                 Review.short_description = balResult.Rows[i]["short_description"].ToString();
-                                Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();                               
+                                Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
                                 ImageModel image = new ImageModel
@@ -440,8 +459,8 @@ namespace LaylaERP_v1.Controllers
                                     width = balResult.Rows[i]["bwidth"].ToString(),
                                     height = balResult.Rows[i]["bheight"].ToString(),
                                     file = balResult.Rows[i]["upload_ad_image"].ToString(),
-                                     
-                                 };
+
+                                };
                                 OtherImageModel OtherImageModel = new OtherImageModel
                                 {
                                     width = balResult.Rows[i]["fwidth"].ToString(),
@@ -458,17 +477,17 @@ namespace LaylaERP_v1.Controllers
                             //return Json(ReviewList);                            
                             if (ReviewList.Count == 1)
                             {
-                                return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList[0]);
                             }
                             else
                             {
-                                return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                                 return Ok(ReviewList);
                             }
 
                         }
                         else
                         {
-                            return Json("[]", JsonRequestBehavior.AllowGet);
+                            return Ok("[]");
                         }
                     }
                 }
@@ -476,7 +495,7 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
-                return new HttpStatusCodeResult(400, "Bad Request");
+                return BadRequest("Bad Request");
             }
         }
     }

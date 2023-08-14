@@ -14,7 +14,7 @@
                 $("#lblpermalink").hide();
                 $("#hfid").val(0);
                 $("#btnSave").text("Add");
-                $('#txttitle').prop('readonly', false);
+               // $('#txttitle').prop('readonly', false);
                 $('#txtslug').prop('readonly', false);
             }
             else { 
@@ -22,7 +22,7 @@
                 GetDataByID(id);
                 $("#hfid").val(id);
                 $("#btnSave").text("Update");
-                $('#txttitle').prop('readonly', true);
+               // $('#txttitle').prop('readonly', true);
                 $('#txtslug').prop('readonly', true);
                  
             }

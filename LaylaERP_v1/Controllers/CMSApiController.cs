@@ -22,7 +22,7 @@
         /// <param name="direction"></param>
         /// <returns></returns>
         [HttpGet, Route("get-banner/{app_key}/{entity_id}")]
-        public IHttpActionResult Getbanner(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
+        public IHttpActionResult Getbanner(string app_key, string entity_id, int per_page = 10, int page = 0, string post_status= "publish", string sort = "id", string direction = "desc")
         {
             try
             {
@@ -39,7 +39,7 @@
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getapi(entity_id, app_key, post_status, per_page, page, sort, direction, "BLS");
+                        var balResult = CMSRepository.Getapi(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "BLS");
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {

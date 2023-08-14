@@ -24,16 +24,7 @@ namespace LaylaERP
                 url: "{shortUrl}",
                 defaults:new { controller = "DataImport", action = "ShortUrlPage", shortUrl = UrlParameter.Optional }
             );
-            routes.MapRoute(
-                name: "Banner",
-                url: "{controller}/{action}/{app_key}/{entity_id}",
-                defaults: new { controller = "CMSApi", action = "Getbanner", app_key = UrlParameter.Optional, entity_id = UrlParameter.Optional }
-            );
-            routes.MapRoute(
-                name: "Pages",
-                url: "{controller}/{action}/{app_key}/{entity_id}",
-                defaults: new { controller = "CMSApi", action = "Getpages", app_key = UrlParameter.Optional, entity_id = UrlParameter.Optional }
-            );
+           
         }
     }
 }

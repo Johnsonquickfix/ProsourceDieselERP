@@ -13,12 +13,12 @@ namespace LaylaERP
         {
             // Web API configuration and services
             
-            // Web API routes
-            config.MapHttpAttributeRoutes();
+           
 
             var cors = new EnableCorsAttribute("*", "*", "GET,HEAD,POST");
             config.EnableCors(cors);
-
+            // Web API routes
+            config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

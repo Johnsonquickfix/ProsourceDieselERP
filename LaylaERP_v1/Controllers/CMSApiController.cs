@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace LaylaERP_v1.Controllers
 {
+    [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
     {
         /// <summary>
@@ -21,7 +22,7 @@ namespace LaylaERP_v1.Controllers
         /// <param name="sort"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        [Route("get-banner/{app_key}/{entity_id}")]
+        [HttpGet, Route("get-banner/{app_key}/{entity_id}")]
         public IHttpActionResult Getbanner(string app_key, string entity_id, string per_page, string page, string post_status, string sort, string direction)
         {
             try
@@ -107,7 +108,7 @@ namespace LaylaERP_v1.Controllers
         /// <param name="sort"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        [Route("get-pages/{app_key}/{entity_id}")]
+        [HttpGet, Route("get-pages/{app_key}/{entity_id}")]
         public IHttpActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
@@ -203,7 +204,7 @@ namespace LaylaERP_v1.Controllers
             }
         }
 
-        [Route("get-post/{app_key}/{entity_id}")]
+        [HttpGet, Route("get-post/{app_key}/{entity_id}")]
         public IHttpActionResult Getpost(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try
@@ -354,7 +355,7 @@ namespace LaylaERP_v1.Controllers
             return categories;
         }
 
-        [Route("get-store/{app_key}/{entity_id}")]
+        [HttpGet, Route("get-store/{app_key}/{entity_id}")]
         public IHttpActionResult Getstore(string app_key, string entity_id)
         {
             try
@@ -419,7 +420,7 @@ namespace LaylaERP_v1.Controllers
         /// <param name="sort"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        [Route("get-blog/{app_key}/{entity_id}")]
+        [HttpGet, Route("get-blog/{app_key}/{entity_id}")]
         public IHttpActionResult Getblog(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
         {
             try

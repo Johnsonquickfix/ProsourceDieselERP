@@ -184,7 +184,7 @@
                             else
                             {
                                 // return Json(ReviewList, JsonRequestBehavior.AllowGet);
-                                return Ok(ReviewList[0]);
+                                return Ok(ReviewList);
                             }
 
                         }

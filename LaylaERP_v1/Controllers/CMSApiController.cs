@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic; 
- 
-using static LaylaERP.Models.Export_Details;
-using LaylaERP.BAL;
-using System.Data;
-using System.Web.Http;
-
-namespace LaylaERP_v1.Controllers
+﻿namespace LaylaERP_v1.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using static LaylaERP.Models.Export_Details;
+    using LaylaERP.BAL;
+    using System.Data;
+    using System.Web.Http;
+
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
     {
@@ -29,14 +28,14 @@ namespace LaylaERP_v1.Controllers
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
                 {
-                    
-              
+
+
                     return BadRequest("Bad Request");
                 }
                 else
                 {
-                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")                 
-                              return BadRequest("invalid app key");
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        return BadRequest("invalid app key");
                     else
                     {
                         string msg = string.Empty;
@@ -77,7 +76,7 @@ namespace LaylaERP_v1.Controllers
                             }
 
                             //return Json(ReviewList);
-                           // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            // return Json(ReviewList, JsonRequestBehavior.AllowGet);
                             return Ok(ReviewList);
 
                         }
@@ -88,7 +87,7 @@ namespace LaylaERP_v1.Controllers
                         }
                     }
                 }
-            }      
+            }
             catch (Exception ex)
             {
                 //return BadRequest(new { error = "application_error", error_description = ex.Message });
@@ -109,12 +108,12 @@ namespace LaylaERP_v1.Controllers
         /// <param name="direction"></param>
         /// <returns></returns>
         [HttpGet, Route("get-pages/{app_key}/{entity_id}")]
-        public IHttpActionResult Getpages(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
+        public IHttpActionResult Getpages(string app_key, string entity_id, int per_page = 10, int page = 0, string post_name = "", string post_status = "publish", string sort = "id", string direction = "desc")
         {
             try
             {
                 if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
-                { 
+                {
                     //return new HttpStatusCodeResult(400, "Bad Request");
                     return BadRequest("Bad Request");
                 }
@@ -126,7 +125,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PLS", post_name);
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "PLS", post_name);
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
@@ -179,12 +178,12 @@ namespace LaylaERP_v1.Controllers
                             //return Json(ReviewList);                            
                             if (ReviewList.Count == 1)
                             {
-                               // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                                // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
                                 return Ok(ReviewList[0]);
                             }
                             else
                             {
-                               // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                                // return Json(ReviewList, JsonRequestBehavior.AllowGet);
                                 return Ok(ReviewList[0]);
                             }
 
@@ -205,7 +204,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpGet, Route("get-post/{app_key}/{entity_id}")]
-        public IHttpActionResult Getpost(string app_key, string entity_id, string per_page, string page, string post_name, string post_status, string sort, string direction)
+        public IHttpActionResult Getpost(string app_key, string entity_id, int per_page = 10, int page = 0, string post_name = "", string post_status = "publish", string sort = "id", string direction = "desc")
         {
             try
             {
@@ -222,7 +221,7 @@ namespace LaylaERP_v1.Controllers
                     else
                     {
                         string msg = string.Empty;
-                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page, page, sort, direction, "PST", post_name);
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "PST", post_name);
                         List<Category> categoryList = new List<Category>();
 
                         // First pass: Create a dictionary to hold category ID and index mapping
@@ -482,7 +481,7 @@ namespace LaylaERP_v1.Controllers
                             }
                             else
                             {
-                                 return Ok(ReviewList);
+                                return Ok(ReviewList);
                             }
 
                         }

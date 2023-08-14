@@ -389,7 +389,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@bheight",bheight),
                     new SqlParameter("@bwidth",bwidth),
                     new SqlParameter("@fheight",fheight),
-                    new SqlParameter("@fwidth",fwidth)
+                    new SqlParameter("@fwidth",fwidth),
+                    new SqlParameter("@post_name",slug)
                 };
 
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_post_iud", para));

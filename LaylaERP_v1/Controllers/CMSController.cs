@@ -271,79 +271,128 @@ namespace LaylaERP_v1.Controllers
             int fwidth = 0;
             int bheight = 0;
             int bwidth = 0;
-
-            //string decodedHtml = HttpUtility.UrlDecode(post_content);
-            if (ImageFile != null)
+            DataTable dt = CMSRepository.Getpages(Convert.ToInt32(ID), slug,Convert.ToInt32(entity_id));
+            if (dt.Rows.Count == 0)
             {
-                using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
+                //string decodedHtml = HttpUtility.UrlDecode(post_content);
+                if (ImageFile != null)
                 {
-                    // Get the height and width
-                    bheight = image.Height;
-                    bwidth = image.Width;
-                }
-
-                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
-                FileName = Regex.Replace(FileName, @"\s+", "");
-                string size = (ImageFile.ContentLength / 1024).ToString();
-                FileExtension = Path.GetExtension(ImageFile.FileName);
-                // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
-                if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
-                {
-                    //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
-                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
-                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Pages/PageBannerLink"));
-                    UploadPath = UploadPath + "\\";
-                    pathimage = UploadPath + FileName;
-                    // model.ImagePathOut = UploadPath + FileNamethumb;
-                    if (FileName == "")
+                    using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
                     {
-                        FileName = "default.png";
+                        // Get the height and width
+                        bheight = image.Height;
+                        bwidth = image.Width;
                     }
-                    ImagePath = "~/Content/Pages/PageBannerLink/" + FileName;
-                    //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
-                    ImageFile.SaveAs(pathimage);
-                    if (FeaturedFile != null)
+
+                    FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    FileExtension = Path.GetExtension(ImageFile.FileName);
+                    // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                    if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
                     {
-                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                        //FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                        FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+                        string UploadPath = Path.Combine(Server.MapPath("~/Content/Pages/PageBannerLink"));
+                        UploadPath = UploadPath + "\\";
+                        pathimage = UploadPath + FileName;
+                        // model.ImagePathOut = UploadPath + FileNamethumb;
+                        if (FileName == "")
                         {
-                            // Get the height and width
-                            fheight = image.Height;
-                            fwidth = image.Width;
+                            FileName = "default.png";
                         }
-
-                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
-                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
-                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
-                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
-                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
-                        FutcherUploadPath = FutcherUploadPath + "\\";
-                        futherpathimage = FutcherUploadPath + featuerimg;
-                        if (featuerimg == "")
+                        ImagePath = "~/Content/Pages/PageBannerLink/" + FileName;
+                        //ImagePaththum = "~/Content/Entity/" + FileNamethumb;
+                        ImageFile.SaveAs(pathimage);
+                        if (FeaturedFile != null)
                         {
-                            featuerimg = "default.png";
-                        }
-                        FeaturedFile.SaveAs(futherpathimage);
-                    }
-                    else
-                    {
+                            using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                            {
+                                // Get the height and width
+                                fheight = image.Height;
+                                fwidth = image.Width;
+                            }
 
-                        featuerimg = "";
-                    }
-
-                    if (Convert.ToInt32(ID) > 0)
-                    {
-                        entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
-                        if (entity > 0)
-                        {
-                            return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                            featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                            featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                            FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                            featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                            string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
+                            FutcherUploadPath = FutcherUploadPath + "\\";
+                            futherpathimage = FutcherUploadPath + featuerimg;
+                            if (featuerimg == "")
+                            {
+                                featuerimg = "default.png";
+                            }
+                            FeaturedFile.SaveAs(futherpathimage);
                         }
                         else
                         {
-                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+
+                            featuerimg = "";
+                        }
+
+                        if (Convert.ToInt32(ID) > 0)
+                        {
+                            entity = CMSRepository.CreatePage("U", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                            if (entity > 0)
+                            {
+                                return Json(new { status = true, message = "Update successfully.", url = "Pages", id = ID }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                        else
+                        {
+                            entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                            if (entity > 0)
+                            {
+                                return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
                         }
                     }
                     else
                     {
+                        return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                    }
+                }
+                else
+                {
+                    if (Convert.ToInt64(ID) == 0)
+                    {
+                        if (FeaturedFile != null)
+                        {
+                            using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                            {
+                                // Get the height and width
+                                fheight = image.Height;
+                                fwidth = image.Width;
+                            }
+                            featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                            featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                            FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                            featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                            string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
+                            FutcherUploadPath = FutcherUploadPath + "\\";
+                            futherpathimage = FutcherUploadPath + featuerimg;
+                            if (featuerimg == "")
+                            {
+                                featuerimg = "default.png";
+                            }
+                            FeaturedFile.SaveAs(futherpathimage);
+                        }
+                        else
+                        {
+
+                            featuerimg = "";
+                        }
                         entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
                         if (entity > 0)
                         {
@@ -354,86 +403,44 @@ namespace LaylaERP_v1.Controllers
                             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                         }
                     }
-                }
-                else
-                {
-                    return Json(new { status = false, message = "File formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+                    else
+                    {
+                        if (FeaturedFile != null)
+                        {
+                            using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
+                            {
+                                // Get the height and width
+                                fheight = image.Height;
+                                fwidth = image.Width;
+                            }
 
+                            featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
+                            featuerimg = Regex.Replace(featuerimg, @"\s+", "");
+                            FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
+                            featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
+                            string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
+                            FutcherUploadPath = FutcherUploadPath + "\\";
+                            futherpathimage = FutcherUploadPath + featuerimg;
+                            if (featuerimg == "")
+                            {
+                                featuerimg = "default.png";
+                            }
+                            FeaturedFile.SaveAs(futherpathimage);
+                            entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        }
+                        else
+                        {
+                            entity = CMSRepository.CreatePage("UP", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        }
+                        return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
+                    }
                 }
+
             }
             else
             {
-                if (Convert.ToInt64(ID) == 0)
-                {
-                    if (FeaturedFile != null)
-                    {
-                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
-                        {
-                            // Get the height and width
-                            fheight = image.Height;
-                            fwidth = image.Width;
-                        }
-                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
-                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
-                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
-                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
-                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
-                        FutcherUploadPath = FutcherUploadPath + "\\";
-                        futherpathimage = FutcherUploadPath + featuerimg;
-                        if (featuerimg == "")
-                        {
-                            featuerimg = "default.png";
-                        }
-                        FeaturedFile.SaveAs(futherpathimage);
-                    }
-                    else
-                    {
-
-                        featuerimg = "";
-                    }
-                    entity = CMSRepository.CreatePage("I", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
-                    if (entity > 0)
-                    {
-                        return Json(new { status = true, message = "Save successfully.", url = "", id = ID }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                }
-                else
-                {
-                    if (FeaturedFile != null)
-                    {
-                        using (Image image = Image.FromStream(FeaturedFile.InputStream, true, true))
-                        {
-                            // Get the height and width
-                            fheight = image.Height;
-                            fwidth = image.Width;
-                        }
-
-                        featuerimg = Path.GetFileNameWithoutExtension(FeaturedFile.FileName);
-                        featuerimg = Regex.Replace(featuerimg, @"\s+", "");
-                        FeatuerFileExtension = Path.GetExtension(FeaturedFile.FileName);
-                        featuerimg = DateTime.Now.ToString("MMddyyhhmmss") + "-" + featuerimg.Trim() + FeatuerFileExtension;
-                        string FutcherUploadPath = Path.Combine(Server.MapPath("~/Content/Pages/Featured"));
-                        FutcherUploadPath = FutcherUploadPath + "\\";
-                        futherpathimage = FutcherUploadPath + featuerimg;
-                        if (featuerimg == "")
-                        {
-                            featuerimg = "default.png";
-                        }
-                        FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreatePage("UF", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
-                    }
-                    else
-                    {
-                        entity = CMSRepository.CreatePage("UP", ID, post_title, post_content, FileName, entity_id, SEO, Content, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, parent_id, template, order, gmtkeyword, comment, shortdic, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
-                    }
-                    return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
-                }
-            }
-
+                return Json(new { status = false, message = "Slug must be unique", url = "" }, 0);
+            } 
         }
 
 
@@ -812,9 +819,12 @@ namespace LaylaERP_v1.Controllers
             int bheight = 0;
             int bwidth = 0;
 
+            DataTable dt = CMSRepository.Getpost(Convert.ToInt32(ID), slug, Convert.ToInt32(entity_id));
+            if (dt.Rows.Count == 0)
+            {
 
-            //string decodedHtml = HttpUtility.UrlDecode(post_content);
-            if (ImageFile != null)
+                //string decodedHtml = HttpUtility.UrlDecode(post_content);
+                if (ImageFile != null)
             {
                 using (Image image = Image.FromStream(ImageFile.InputStream, true, true))
                 {
@@ -909,7 +919,7 @@ namespace LaylaERP_v1.Controllers
 
                 }
             }
-            else
+               else
             {
                 if (Convert.ToInt64(ID) == 0)
                 {
@@ -985,6 +995,11 @@ namespace LaylaERP_v1.Controllers
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
                 }
+            }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Slug must be unique", url = "" }, 0);
             }
 
         }
@@ -1808,6 +1823,23 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Changepagestatus(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                CMSRepository or = new CMSRepository();
+                or.Changepagestatus(model, strID);
+                return Json(new { status = true, message = "status update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
     }
 }

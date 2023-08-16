@@ -1095,7 +1095,64 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable Getpages(int id,string post_name,int entity_id)
+        {
+            DataTable dt;
+            try
+            {
+                if (id > 0)
+                {
+                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'page' and  entity_id = "+ entity_id + " and id <> " + id + " and post_name = '" + post_name + "' ");
+        
+                }
+                else
+                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'page' and  entity_id = " + entity_id + " and post_name = '" + post_name + "' ");
+            }
+            catch { throw; }
+            return dt;
+        }
 
+        public int Changepagestatus(OrderPostStatusModel model, string ID)
+        {
+            try
+            {
+                var actiontype = 1;
+                if (model.status == "trash")
+                    actiontype = 0;
+                string strsql = string.Format("update cms_posts set post_status=@status,actiontype=@actiontype,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@status", model.status),
+                    new SqlParameter("@actiontype",actiontype),
+                   // new SqlParameter("@post_modified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CMS/Changestatus/" + "0" + "", "Status Updated");
+                throw Ex;
+            }
+        }
+
+        public static DataTable Getpost(int id, string post_name, int entity_id)
+        {
+            DataTable dt;
+            try
+            {
+                if (id > 0)
+                {
+                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'post' and  entity_id = " + entity_id + " and id <> " + id + " and post_name = '" + post_name + "' ");
+
+                }
+                else
+                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'post' and  entity_id = " + entity_id + " and post_name = '" + post_name + "' ");
+            }
+            catch { throw; }
+            return dt;
+        }
 
 
 

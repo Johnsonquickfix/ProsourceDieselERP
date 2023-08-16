@@ -137,12 +137,12 @@ function dataGridLoad(order_type) {
         },
         columns: [
             { data: 'ID', title: 'ID', sWidth: "3%" },
-            //{
-            //    'data': 'ID', sWidth: "3%   ",
-            //    'render': function (data, type, row) { 
-            //            return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
-            //     }
-            //},
+            {
+                'data': 'ID', sWidth: "3%   ",
+                'render': function (data, type, row) { 
+                        return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+                 }
+            },
              
             { data: 'post_title', title: 'Title', sWidth: "12%" },
             { data: 'CompanyName', title: 'Store', sWidth: "12%" },
@@ -224,18 +224,18 @@ function Status() {
     var status = $('#ddlbulkaction').val();
     var statusval = $("#ddlbulkaction :selected").text();
     console.log(statusval);
-    if (id == "") { swal('Alert', 'Please select product from list', 'error'); }
+    if (id == "") { swal('Alert', 'Please select pages from list', 'error'); }
     else if (status == "0") { swal('Alert', 'Please select bulk action', 'error'); }
     else {
 
         var obj = { strVal: id, status: status }
         const updatestatus = status == 'publish' ? 'Active' : 'Inactive';
-        ActivityLog('Change product status as ' + updatestatus + '', '/Product/ListProduct'); 
-        swal({ title: "", text: 'Would you like to ' + statusval + ' this product?', type: "question", showCancelButton: true })
+        ActivityLog('Change pages status as ' + updatestatus + '', '/Cms/List');
+        swal({ title: "", text: 'Would you like to ' + statusval + ' this page?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {
                     $.ajax({
-                        url: '/Product/Changestatus', dataType: 'JSON', type: 'POST',
+                        url: '/CMS/Changepagestatus', dataType: 'JSON', type: 'POST',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(obj),
                         beforeSend: function () { $("#loader").show(); },

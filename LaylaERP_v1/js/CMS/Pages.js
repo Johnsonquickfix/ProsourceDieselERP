@@ -96,19 +96,24 @@
        // var inputText = $(this).val(); // Get the input value for txttitle
         //$('#txtslug').val(inputText); // Reflect the input value to txtslug without restrictions
 
-        var textBox = event.target;
-        var start = textBox.selectionStart;
-        var end = textBox.selectionEnd;
-        textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
-        textBox.setSelectionRange(start, end);
-        var cat = $('#txttitle').val().toLowerCase().trim();
-        cat = cat.replace(/\s/g, '-');
+        //var textBox = event.target;
+        //var start = textBox.selectionStart;
+        //var end = textBox.selectionEnd;
+        //textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+        //textBox.setSelectionRange(start, end);
+        //var cat = $('#txttitle').val().toLowerCase().trim();
+        //cat = cat.replace(/\s/g, '-');
 
+        //var cleanedText = cat.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
+        ////if (cat !== cleanedText) {
+        //    $('#txtslug').val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
+        ////}
+
+        var cat = $(this).val().toLowerCase().trim();
+        cat = cat.replace(/\s+/g, '-');  // Replace consecutive spaces with a single hyphen       
         var cleanedText = cat.replace(/[^a-zA-Z0-9 \-._~]/g, ''); // Remove disallowed characters
-        //if (cat !== cleanedText) {
-            $('#txtslug').val(cleanedText); // Set the cleaned value back to txtslug if it has disallowed characters
-        //}
-        
+        cleanedText = cleanedText.replace(/--+/g, '-');
+        $('#txtslug').val(cleanedText);
 
     });
 

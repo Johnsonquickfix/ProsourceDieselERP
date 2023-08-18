@@ -542,8 +542,8 @@
                             slug = !string.IsNullOrEmpty(item["menu_name"].ToString()) ? item["menu_slug"].ToString() : item["post_name"].ToString(),
                             type = item["menu_type"].ToString(),
                             subcat = new List<dynamic>(),
-                            image = string.Empty,
-                            image_meta = new
+                            //image = string.Empty,image_meta = string.Empty
+                            image = new
                             {
                                 width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
                                 height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
@@ -562,7 +562,13 @@
                                 name = item1["menu_name"].ToString(),
                                 slug = item1["menu_slug"].ToString(),
                                 subcat = new List<dynamic>(),
-                                image = item1["img"].ToString()
+                                image = new
+                                {
+                                    width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
+                                    height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
+                                    file = item["file_name"].ToString(),
+                                    filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                                }
                             };
                             //level 3
                             DataTable tb3 = CMSRepository.GetMenuItems("category-menu", entity_id, menu_term_id, l2.term_id);
@@ -574,7 +580,13 @@
                                     name = item2["menu_name"].ToString(),
                                     slug = item2["menu_slug"].ToString(),
                                     subcat = new List<dynamic>(),
-                                    image = item2["img"].ToString()
+                                    image = new
+                                    {
+                                        width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
+                                        height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
+                                        file = item["file_name"].ToString(),
+                                        filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                                    }
                                 };
                                 l2.subcat.Add(l3);
                                 l1.subcat.Add(l2);

@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace LaylaERP.BAL
 {
-    public class CMSRepository  
+    public class CMSRepository
     {
         public static DataTable GetCounts()
         {
@@ -21,7 +21,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 SqlParameter[] para = { new SqlParameter("@qflag", "CNT"), };
-                string strSql = "cms_countpages"; 
+                string strSql = "cms_countpages";
                 dt = SQLHelper.ExecuteDataTable(strSql, para);
             }
             catch (Exception ex)
@@ -36,9 +36,9 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             totalrows = 0;
             try
-            { 
-              SqlParameter[] parameters =
-             {
+            {
+                SqlParameter[] parameters =
+               {
 
                     new SqlParameter("@post_status", userstatus),
                    new SqlParameter("@searchcriteria", searchid),
@@ -87,7 +87,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content,string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string parent_id, string template, string order, string gmtkeyword, string comment, string shortdisc, string bheight, string bwidth, string fheight, string fwidth)
+        public static int CreatePage(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string SEO, string Content, string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string parent_id, string template, string order, string gmtkeyword, string comment, string shortdisc, string bheight, string bwidth, string fheight, string fwidth)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace LaylaERP.BAL
             DataTable DS = new DataTable();
             try
             {
-                string strSQl = "Select ID, post_title label from cms_posts where post_type = 'page' and post_title like '%"+optType+"%';";
+                string strSQl = "Select ID, post_title label from cms_posts where post_type = 'page' and post_title like '%" + optType + "%';";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -248,7 +248,7 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id,string btypeof, string type, string featured_image_url, string Bannerhight, string Bannerwidth, string menu_order)
+        public static int CreateBanner(string qflag, string ID, string post_title, string bannerurl, string FileName, string entity_id, string btypeof, string type, string featured_image_url, string Bannerhight, string Bannerwidth, string menu_order)
         {
             try
             {
@@ -260,7 +260,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@for_mobile",FileName),
                     new SqlParameter("@InnerPageBannerImage",featured_image_url),
                     new SqlParameter("@InnerPageBannerType",btypeof) ,
-                     new SqlParameter("@entity_id",entity_id), 
+                     new SqlParameter("@entity_id",entity_id),
                      new SqlParameter("@InnerPageBannerSelection",type),
                      new SqlParameter("@Bannerhight",Bannerhight),
                      new SqlParameter("@Bannerwidth ",Bannerwidth),
@@ -368,7 +368,7 @@ namespace LaylaERP.BAL
         }
 
 
-        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category,  string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string bheight, string bwidth, string fheight, string fwidth)
+        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category, string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string bheight, string bwidth, string fheight, string fwidth)
         {
             try
             {
@@ -426,7 +426,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
                  {
-                    
+
                     new SqlParameter("@flag", "CategoryProductList"),
                     new SqlParameter("@parent",optType)
                 };
@@ -446,7 +446,7 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] parameters =
                  {
-                    
+
                     new SqlParameter("@flag", "PageCategoryList"),
                     new SqlParameter("@parent",optType)
                 };
@@ -509,7 +509,7 @@ namespace LaylaERP.BAL
                 string strsql = "";
                 strsql = "update wp_terms set name=@name,slug=@slug where term_id=" + model.term_id + "; update wp_term_taxonomy set description=@description,parent=@parent where term_id=" + model.term_id + ";" +
                     " Update wp_termmeta set meta_value='" + model.display_type + "' where term_id=" + model.term_id + " and meta_key='display_type';";
-                    //" Update wp_termmeta set meta_value='" + thumbnailID + "' where term_id=" + model.term_id + " and meta_key='thumbnail_id';";
+                //" Update wp_termmeta set meta_value='" + thumbnailID + "' where term_id=" + model.term_id + " and meta_key='thumbnail_id';";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@name", model.name),
@@ -702,7 +702,7 @@ namespace LaylaERP.BAL
             return result;
         }
 
-        
+
         public static DataTable Getshortcode(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -735,7 +735,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static int Addshortcode(string code, string disc,string id )
+        public static int Addshortcode(string code, string disc, string id)
         {
             try
             {
@@ -745,11 +745,11 @@ namespace LaylaERP.BAL
                 else
                     qflag = "I";
 
-                    SqlParameter[] para = {
+                SqlParameter[] para = {
                     new SqlParameter("@qflag",qflag),
                     new SqlParameter("@code",code),
                     new SqlParameter("@id",id),
-                    new SqlParameter("@description",disc), 
+                    new SqlParameter("@description",disc),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("erp_shortcode_insert", para));
                 return result;
@@ -772,11 +772,11 @@ namespace LaylaERP.BAL
             return DT;
         }
 
-        public static DataTable Getapi(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction,string flag)
+        public static DataTable Getapi(string entity_id, string client_secret, string post_status, string per_page, string page, string sort, string direction, string flag)
         {
             DataTable dt;
             try
-            { 
+            {
                 SqlParameter[] parameters =
               {
 
@@ -791,7 +791,7 @@ namespace LaylaERP.BAL
                 };
 
                 dt = SQLHelper.ExecuteDataTable("cms_page_api", parameters);
-                
+
             }
             catch { throw; }
             return dt;
@@ -803,7 +803,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
-                 DS = SQLHelper.ExecuteDataSet(strSQl);
+                DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
@@ -816,9 +816,9 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "";
                 if (id > 0)
-                    strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' and entity_id = "+ id +" order by ID,post_parent";
+                    strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' and entity_id = " + id + " order by ID,post_parent";
                 else
-                     strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
+                    strSQl = "select case when post_parent <> 0 then '--'+ post_title else post_title end post_title,ID,post_parent from cms_posts where   post_type = 'page' and post_status = 'publish' order by ID,post_parent";
 
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
@@ -931,8 +931,8 @@ namespace LaylaERP.BAL
             {
                 SqlParameter[] para = {
                     new SqlParameter("@qflag",qflag),
-                    new SqlParameter("@ID", ID),                
-                    new SqlParameter("@file_name",FileName),                
+                    new SqlParameter("@ID", ID),
+                    new SqlParameter("@file_name",FileName),
                      new SqlParameter("@entity_id",entity_id),
                      new SqlParameter("@height",height),
                      new SqlParameter("@width",width),
@@ -1025,7 +1025,7 @@ namespace LaylaERP.BAL
         }
 
 
-        public static int CreateBlog(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string featured_image_url,  string shortdisc,string bheight,string bwidth,string fheight,string fwidth)
+        public static int CreateBlog(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string featured_image_url, string shortdisc, string bheight, string bwidth, string fheight, string fwidth)
         {
             try
             {
@@ -1085,25 +1085,25 @@ namespace LaylaERP.BAL
                 SqlParameter[] parameters =
               {
 
-                   
+
                 };
 
-                dt = SQLHelper.ExecuteDataTable("select * from wp_terms where term_id in (select term_id from wp_term_taxonomy where taxonomy = 'category' and term_taxonomy_id in (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = "+ term_id + "))");
+                dt = SQLHelper.ExecuteDataTable("select * from wp_terms where term_id in (select term_id from wp_term_taxonomy where taxonomy = 'category' and term_taxonomy_id in (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = " + term_id + "))");
 
             }
             catch { throw; }
             return dt;
         }
 
-        public static DataTable Getpages(int id,string post_name,int entity_id)
+        public static DataTable Getpages(int id, string post_name, int entity_id)
         {
             DataTable dt;
             try
             {
                 if (id > 0)
                 {
-                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'page' and  entity_id = "+ entity_id + " and id <> " + id + " and post_name = '" + post_name + "' ");
-        
+                    dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'page' and  entity_id = " + entity_id + " and id <> " + id + " and post_name = '" + post_name + "' ");
+
                 }
                 else
                     dt = SQLHelper.ExecuteDataTable("select post_name from cms_posts where post_type = 'page' and  entity_id = " + entity_id + " and post_name = '" + post_name + "' ");
@@ -1155,6 +1155,26 @@ namespace LaylaERP.BAL
         }
 
 
+
+        public static DataTable GetMenuItems(string flag, long entity_id, long menu_term_id, long parent_id)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@entity_id", entity_id),
+                    new SqlParameter("@menu_term_id", menu_term_id),
+                    new SqlParameter("@parent_id", parent_id),
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("bulk_editor_menus", parameters);
+
+            }
+            catch { throw; }
+            return dt;
+        }
 
     }
 }

@@ -6,6 +6,7 @@
     using LaylaERP.BAL;
     using System.Data;
     using System.Web.Http;
+    using System.Net;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -22,7 +23,7 @@
         /// <param name="direction"></param>
         /// <returns></returns>
         [HttpGet, Route("get-banner/{app_key}/{entity_id}")]
-        public IHttpActionResult Getbanner(string app_key, string entity_id, int per_page = 10, int page = 0, string post_status= "publish", string sort = "id", string direction = "desc")
+        public IHttpActionResult Getbanner(string app_key, string entity_id, int per_page = 10, int page = 0, string post_status = "publish", string sort = "id", string direction = "desc")
         {
             try
             {
@@ -498,5 +499,99 @@
                 return BadRequest("Bad Request");
             }
         }
+
+        [HttpGet, Route("menu-items/{app_key}/{entity_id}")]
+        public IHttpActionResult MenuItems(string app_key, long entity_id = 0, long menu_term_id = 0)
+        {
+            try
+            {
+                if (entity_id == 1) menu_term_id = 61873;
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (menu_term_id == 0)
+                {
+                    return Ok(new { message = "Menu term id required", status = 500, code = "SUCCESS", data = new List<string>() });
+                }
+                else
+                {
+                    string msg = string.Empty;
+                    List<dynamic> categoryList = new List<dynamic>();
+                    //level 1
+                    DataTable tb1 = CMSRepository.GetMenuItems("category-menu", entity_id, menu_term_id, 0);
+                    foreach (DataRow item in tb1.Rows)
+                    {
+                        string menu_item_url = "";
+                        if (item["menu_item_url"] != DBNull.Value)
+                        {
+                            menu_item_url = item["menu_item_url"].ToString().Replace("(^https?://)", "");
+                        }
+                        var l1 = new
+                        {
+                            post_name = item["menu_item_url"].ToString().Equals("custom") ? menu_item_url : item["post_name"].ToString(),
+                            post_title = item["post_title"].ToString(),
+                            term_id = Convert.ToInt64(item["ID"].ToString()),
+                            name = !string.IsNullOrEmpty(item["menu_name"].ToString()) ? item["menu_name"].ToString() : item["post_title"].ToString(),
+                            slug = !string.IsNullOrEmpty(item["menu_name"].ToString()) ? item["menu_slug"].ToString() : item["post_name"].ToString(),
+                            type = item["menu_type"].ToString(),
+                            subcat = new List<dynamic>(),
+                            image = string.Empty,
+                            image_meta = new
+                            {
+                                width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
+                                height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
+                                file = item["file_name"].ToString(),
+                                filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                            }
+                        };
+
+                        //level 2
+                        DataTable tb2 = CMSRepository.GetMenuItems("category-menu", entity_id, menu_term_id, l1.term_id);
+                        foreach (DataRow item1 in tb2.Rows)
+                        {
+                            var l2 = new
+                            {
+                                term_id = Convert.ToInt64(item1["ID"].ToString()),
+                                name = item1["menu_name"].ToString(),
+                                slug = item1["menu_slug"].ToString(),
+                                subcat = new List<dynamic>(),
+                                image = item1["img"].ToString()
+                            };
+                            //level 3
+                            DataTable tb3 = CMSRepository.GetMenuItems("category-menu", entity_id, menu_term_id, l2.term_id);
+                            foreach (DataRow item2 in tb2.Rows)
+                            {
+                                var l3 = new
+                                {
+                                    term_id = Convert.ToInt64(item2["ID"].ToString()),
+                                    name = item2["menu_name"].ToString(),
+                                    slug = item2["menu_slug"].ToString(),
+                                    subcat = new List<dynamic>(),
+                                    image = item2["img"].ToString()
+                                };
+                                l2.subcat.Add(l3);
+                                l1.subcat.Add(l2);
+                            }
+                            l1.subcat.Add(l2);
+                        }
+
+                        categoryList.Add(l1);
+                    }
+                    return Ok(new { message = "Menu items retrived successfully", status = 200, code = "SUCCESS", data = categoryList });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
     }
 }

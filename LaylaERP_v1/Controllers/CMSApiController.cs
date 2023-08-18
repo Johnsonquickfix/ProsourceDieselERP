@@ -566,7 +566,7 @@
                             };
                             //level 3
                             DataTable tb3 = CMSRepository.GetMenuItems("category-menu", entity_id, menu_term_id, l2.term_id);
-                            foreach (DataRow item2 in tb2.Rows)
+                            foreach (DataRow item2 in tb3.Rows)
                             {
                                 var l3 = new
                                 {

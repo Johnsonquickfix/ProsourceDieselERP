@@ -564,10 +564,10 @@
                                 subcat = new List<dynamic>(),
                                 image = new
                                 {
-                                    width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
-                                    height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
-                                    file = item["file_name"].ToString(),
-                                    filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                                    width = !string.IsNullOrEmpty(item1["file_width"].ToString()) ? Convert.ToInt64(item1["file_width"].ToString()) : 0,
+                                    height = !string.IsNullOrEmpty(item1["file_height"].ToString()) ? Convert.ToInt64(item1["file_height"].ToString()) : 0,
+                                    file = item1["file_name"].ToString(),
+                                    filesize = !string.IsNullOrEmpty(item1["file_size"].ToString()) ? Convert.ToDouble(item1["file_size"].ToString()) : 0,
                                 }
                             };
                             //level 3
@@ -582,14 +582,13 @@
                                     subcat = new List<dynamic>(),
                                     image = new
                                     {
-                                        width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
-                                        height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
-                                        file = item["file_name"].ToString(),
-                                        filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                                        width = !string.IsNullOrEmpty(item2["file_width"].ToString()) ? Convert.ToInt64(item2["file_width"].ToString()) : 0,
+                                        height = !string.IsNullOrEmpty(item2["file_height"].ToString()) ? Convert.ToInt64(item2["file_height"].ToString()) : 0,
+                                        file = item2["file_name"].ToString(),
+                                        filesize = !string.IsNullOrEmpty(item2["file_size"].ToString()) ? Convert.ToDouble(item2["file_size"].ToString()) : 0,
                                     }
                                 };
                                 l2.subcat.Add(l3);
-                                l1.subcat.Add(l2);
                             }
                             l1.subcat.Add(l2);
                         }

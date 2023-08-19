@@ -653,7 +653,7 @@
                     if (obj.page_type == "product_cat")
                     {
                         Dictionary<String, Object> row;
-                        DataRow[] rows = ds.Tables[1].Select("level = 0", "");
+                        DataRow[] rows = ds.Tables[1].Select("level = 0", "name");
                         obj.child_categories = new List<dynamic>();
                         foreach (DataRow dr in rows)
                         {
@@ -708,7 +708,7 @@
         {
             List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
             Dictionary<String, Object> row;
-            DataRow[] rows = DT.Select("[parent] = " + ParentID.ToString(), "parent, term_order, name");
+            DataRow[] rows = DT.Select("[parent] = " + ParentID.ToString(), "name");
             foreach (DataRow dr in rows)
             {
                 row = new Dictionary<String, Object>();

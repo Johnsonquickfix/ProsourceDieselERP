@@ -696,7 +696,7 @@
                             obj.products.Add(row);
                         }
                     }
-                    return Ok(new { message = "Successfull", status = 200, code = "SUCCESS", data = obj });
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                 }
             }
             catch (Exception ex)

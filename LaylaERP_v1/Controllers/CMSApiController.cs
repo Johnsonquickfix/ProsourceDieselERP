@@ -7,6 +7,9 @@
     using System.Data;
     using System.Web.Http;
     using System.Net;
+    using Newtonsoft.Json;
+    using System.Dynamic;
+    using Newtonsoft.Json.Linq;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -604,5 +607,127 @@
             }
         }
 
+        [HttpGet, Route("page-items/{app_key}/{entity_id}")]
+        public IHttpActionResult PageItems(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (string.IsNullOrEmpty(slug))
+                {
+                    return Ok(new { message = "Required query param 'slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                }
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    //term_main
+                    DataSet ds = CMSRepository.GetPageItems("url-details", entity_id, parent_cat, slug);
+                    foreach (DataRow item in ds.Tables[0].Rows)
+                    {
+                        obj.page_type = item["page_type"].ToString().Trim();
+                        obj.term_main = new ExpandoObject();
+                        obj.term_main.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
+                        obj.term_main.parent = item["parent"] != DBNull.Value ? Convert.ToInt64(item["parent"].ToString()) : 0;
+                        obj.term_main.name = item["name"].ToString();
+                        obj.term_main.slug = item["slug"].ToString();
+                        obj.term_main.description = item["description"].ToString();
+                        obj.term_main.short_description = !string.IsNullOrEmpty(item["description"].ToString()) ? item["description"].ToString().Substring(0, 150) : "";
+                        obj.term_main.categories = !string.IsNullOrEmpty(item["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(item["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}");
+                        obj.term_main.image = new
+                        {
+                            width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
+                            height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
+                            file = item["file_name"].ToString(),
+                            filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                        };
+                    }
+                    if (obj.page_type == "product_cat")
+                    {
+                        Dictionary<String, Object> row;
+                        DataRow[] rows = ds.Tables[1].Select("level = 0", "");
+                        obj.child_categories = new List<dynamic>();
+                        foreach (DataRow dr in rows)
+                        {
+                            row = new Dictionary<String, Object>();
+                            row.Add("term_id", dr["term_id"]);
+                            row.Add("parent", dr["parent"]);
+                            row.Add("name", dr["name"]);
+                            row.Add("slug", dr["slug"]);
+                            row.Add("description", "description");
+                            Dictionary<String, Object> img = new Dictionary<String, Object>();
+                            img.Add("file_name", dr["file_name"]);
+                            img.Add("file_height", dr["file_height"]);
+                            img.Add("file_width", dr["file_width"]);
+                            img.Add("file_size", dr["file_size"]);
+                            row.Add("image", img);
+                            List<Dictionary<string, object>> list2 = GetSubCategory(ds.Tables[1], Convert.ToInt64(dr["term_id"]));
+                            row.Add("child_categories", list2);
+                            obj.child_categories.Add(row);
+                        }
+                    }
+                    else if (obj.page_type == "product_list")
+                    {
+                        Dictionary<String, Object> row;
+                        obj.products = new List<dynamic>();
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            row = new Dictionary<String, Object>();
+                            row.Add("ID", dr["ID"]);
+                            row.Add("post_name", dr["post_name"]);
+                            row.Add("post_title", dr["post_title"]);
+                            string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
+                            JObject keyValues = JObject.Parse(meta);
+                            foreach (var item in keyValues) row.Add(item.Key, item.Value);
+                            Dictionary<String, Object>  img = new Dictionary<String, Object>();
+                            img.Add("file_name", dr["file_name"]);
+                            img.Add("file_height", dr["file_height"]);
+                            img.Add("file_width", dr["file_width"]);
+                            img.Add("file_size", dr["file_size"]);
+                            row.Add("image", img);
+                            obj.products.Add(row);
+                        }
+                    }
+                    return Ok(new { message = "Successfull", status = 200, code = "SUCCESS", data = obj });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        public static List<Dictionary<string, object>> GetSubCategory(DataTable DT, long ParentID)
+        {
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            Dictionary<String, Object> row;
+            DataRow[] rows = DT.Select("[parent] = " + ParentID.ToString(), "parent, term_order, name");
+            foreach (DataRow dr in rows)
+            {
+                row = new Dictionary<String, Object>();
+                row.Add("term_id", dr["term_id"]);
+                row.Add("parent", dr["parent"]);
+                row.Add("name", dr["name"]);
+                row.Add("slug", dr["slug"]);
+                row.Add("description", "description");
+                Dictionary<String, Object> img = new Dictionary<String, Object>();
+                img.Add("file_name", dr["file_name"]);
+                img.Add("file_height", dr["file_height"]);
+                img.Add("file_width", dr["file_width"]);
+                img.Add("file_size", dr["file_size"]);
+                row.Add("image", img);
+                List<Dictionary<string, object>> list2 = GetSubCategory(DT, Convert.ToInt64(dr["term_id"]));
+                row.Add("child_categories", list2);
+                list.Add(row);
+            }
+            return list;
+        }
     }
 }

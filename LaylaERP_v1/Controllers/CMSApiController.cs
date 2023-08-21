@@ -755,10 +755,61 @@
                 }
                 else
                 {
-                    dynamic obj = new ExpandoObject();
+                    dynamic obj = new ExpandoObject(); int overall_count = 0;
                     //term_main
-                    //DataSet ds = CMSRepository.GetPageItems("url-details", entity_id, parent_cat, slug);
-                    
+                    DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, flter.limit, flter.page);
+                    foreach (DataRow item in ds.Tables[0].Rows)
+                    {
+                        obj.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
+                        obj.term_taxonomy_name = item["taxonomy"].ToString();
+
+                        obj.term_main = new ExpandoObject();
+                        obj.term_main.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
+                        obj.term_main.name = item["name"].ToString();
+                        obj.term_main.slug = item["slug"].ToString();
+                        obj.term_main.description = item["description"].ToString();
+                        obj.term_main.image = new
+                        {
+                            width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
+                            height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
+                            file = item["file_name"].ToString(),
+                            filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
+                        };
+                    }
+                    Dictionary<String, Object> row;
+                    obj.products = new List<dynamic>();
+                    foreach (DataRow dr in ds.Tables[1].Rows)
+                    {
+                        overall_count = dr["overall_count"] != DBNull.Value ? Convert.ToInt32(dr["overall_count"].ToString()) : 0;
+
+                        row = new Dictionary<String, Object>();
+                        row.Add("ID", dr["ID"]);
+                        row.Add("post_name", dr["post_name"]);
+                        row.Add("post_title", dr["post_title"]);
+                        string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
+                        JObject keyValues = JObject.Parse(meta);
+                        foreach (var item in keyValues) row.Add(item.Key, item.Value);
+
+                        Dictionary<String, Object> img = new Dictionary<String, Object>();
+                        meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                        keyValues = JObject.Parse(meta);
+                        foreach (var item in keyValues)
+                        {
+                            if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
+                            else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
+                            else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
+                            else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                        }
+                        row.Add("image", img);
+                        obj.products.Add(row);
+                    }
+                    //pagination
+                    obj.pagination = new ExpandoObject();
+                    obj.pagination.item_count = overall_count;
+                    obj.pagination.total_pages = Convert.ToInt32(Math.Ceiling((overall_count + 0.00) / flter.limit));
+                    obj.pagination.per_page = flter.limit;
+                    obj.pagination.page = flter.page;
+
                     return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                 }
             }

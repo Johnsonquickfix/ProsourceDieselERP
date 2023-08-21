@@ -22,5 +22,7 @@ namespace QuickfixSearch.Models.Product
         public List<string> product_cat { get; set; }
         [JsonProperty("product_tag")]
         public List<string> product_tag { get; set; }
+        [JsonProperty("product_type")]
+        public List<string> product_type { get; set; }
     }
 }

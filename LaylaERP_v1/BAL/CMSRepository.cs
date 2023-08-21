@@ -1175,7 +1175,7 @@ namespace LaylaERP.BAL
             catch { throw; }
             return dt;
         }
-        public static DataSet GetPageItems(string flag, long entity_id, string parent_cat, string slug)
+        public static DataSet GetPageItems(string flag, long entity_id, string parent_cat, string slug, int limit = 0, int page = 0)
         {
             DataSet ds;
             try
@@ -1185,6 +1185,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@entity_id", entity_id),
                     new SqlParameter("@parent_cat", parent_cat),
                     new SqlParameter("@slug", slug),
+                    new SqlParameter("@pagesize", limit),
+                    new SqlParameter("@pageno", page),
                     new SqlParameter("@flag", flag)
                 };
 

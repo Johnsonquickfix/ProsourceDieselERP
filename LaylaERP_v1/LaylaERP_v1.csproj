@@ -348,6 +348,7 @@
     <Compile Include="Models\PaymentInvoice.cs" />
     <Compile Include="Models\PoemailModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
+    <Compile Include="Models\Product\ProductFilterRequest.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
     <Compile Include="Models\Reports.cs" />

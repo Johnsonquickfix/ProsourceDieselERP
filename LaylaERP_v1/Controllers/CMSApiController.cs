@@ -10,6 +10,7 @@
     using Newtonsoft.Json;
     using System.Dynamic;
     using Newtonsoft.Json.Linq;
+    using QuickfixSearch.Models.Product;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -664,10 +665,10 @@
                             row.Add("slug", dr["slug"]);
                             row.Add("description", "description");
                             Dictionary<String, Object> img = new Dictionary<String, Object>();
-                            img.Add("file_name", dr["file_name"]);
-                            img.Add("file_height", dr["file_height"]);
-                            img.Add("file_width", dr["file_width"]);
-                            img.Add("file_size", dr["file_size"]);
+                            img.Add("name", dr["file_name"]);
+                            img.Add("height", dr["file_height"]);
+                            img.Add("width", dr["file_width"]);
+                            img.Add("filesize", dr["file_size"]);
                             row.Add("image", img);
                             List<Dictionary<string, object>> list2 = GetSubCategory(ds.Tables[1], Convert.ToInt64(dr["term_id"]));
                             row.Add("child_categories", list2);
@@ -687,11 +688,11 @@
                             string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
                             JObject keyValues = JObject.Parse(meta);
                             foreach (var item in keyValues) row.Add(item.Key, item.Value);
-                            Dictionary<String, Object>  img = new Dictionary<String, Object>();
-                            img.Add("file_name", dr["file_name"]);
-                            img.Add("file_height", dr["file_height"]);
-                            img.Add("file_width", dr["file_width"]);
-                            img.Add("file_size", dr["file_size"]);
+                            Dictionary<String, Object> img = new Dictionary<String, Object>();
+                            img.Add("name", dr["file_name"]);
+                            img.Add("height", dr["file_height"]);
+                            img.Add("width", dr["file_width"]);
+                            img.Add("filesize", dr["file_size"]);
                             row.Add("image", img);
                             obj.products.Add(row);
                         }
@@ -728,6 +729,43 @@
                 list.Add(row);
             }
             return list;
+        }
+        [HttpPost, Route("products/filter/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductsFilter(string app_key, long entity_id, ProductFilterRequest flter)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (flter == null)
+                {
+                    return Ok(new { message = "Required param 'cat_slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                }
+                else if (string.IsNullOrEmpty(flter.taxonomy.cat_slug))
+                {
+                    return Ok(new { message = "Required param 'cat_slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                }
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    //term_main
+                    //DataSet ds = CMSRepository.GetPageItems("url-details", entity_id, parent_cat, slug);
+                    
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

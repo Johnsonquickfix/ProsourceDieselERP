@@ -608,6 +608,43 @@
             }
         }
 
+        [HttpGet, Route("slug-type/{app_key}/{entity_id}")]
+        public IHttpActionResult SlugType(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (string.IsNullOrEmpty(slug))
+                {
+                    return Ok(new { message = "Required query param 'slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                }
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    //term_main
+                    DataSet ds = CMSRepository.GetPageItems("slug-type", entity_id, parent_cat, slug);
+                    foreach (DataRow item in ds.Tables[0].Rows)
+                    {
+                        obj.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
+                        obj.taxonomy = item["taxonomy"].ToString().Trim();
+                    }
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
         [HttpGet, Route("page-items/{app_key}/{entity_id}")]
         public IHttpActionResult PageItems(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
         {
@@ -665,11 +702,29 @@
                             row.Add("slug", dr["slug"]);
                             row.Add("description", "description");
                             Dictionary<String, Object> img = new Dictionary<String, Object>();
-                            img.Add("name", dr["file_name"]);
-                            img.Add("height", dr["file_height"]);
-                            img.Add("width", dr["file_width"]);
-                            img.Add("filesize", dr["file_size"]);
+                            string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                            JObject keyValues = JObject.Parse(meta);
+                            if (keyValues.Count == 0)
+                            {
+                                img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
+                            }
+                            else
+                            {
+                                foreach (var item in keyValues)
+                                {
+                                    if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
+                                    else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
+                                    else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
+                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                                }
+                            }
                             row.Add("image", img);
+                            //Dictionary<String, Object> img = new Dictionary<String, Object>();
+                            //img.Add("name", dr["file_name"]);
+                            //img.Add("height", dr["file_height"]);
+                            //img.Add("width", dr["file_width"]);
+                            //img.Add("filesize", dr["file_size"]);
+                            //row.Add("image", img);
                             List<Dictionary<string, object>> list2 = GetSubCategory(ds.Tables[1], Convert.ToInt64(dr["term_id"]));
                             row.Add("child_categories", list2);
                             obj.child_categories.Add(row);
@@ -689,11 +744,29 @@
                             JObject keyValues = JObject.Parse(meta);
                             foreach (var item in keyValues) row.Add(item.Key, item.Value);
                             Dictionary<String, Object> img = new Dictionary<String, Object>();
-                            img.Add("name", dr["file_name"]);
-                            img.Add("height", dr["file_height"]);
-                            img.Add("width", dr["file_width"]);
-                            img.Add("filesize", dr["file_size"]);
+                            meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                            keyValues = JObject.Parse(meta);
+                            if (keyValues.Count == 0)
+                            {
+                                img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
+                            }
+                            else
+                            {
+                                foreach (var item in keyValues)
+                                {
+                                    if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
+                                    else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
+                                    else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
+                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                                }
+                            }
                             row.Add("image", img);
+                            //Dictionary<String, Object> img = new Dictionary<String, Object>();
+                            //img.Add("name", dr["file_name"]);
+                            //img.Add("height", dr["file_height"]);
+                            //img.Add("width", dr["file_width"]);
+                            //img.Add("filesize", dr["file_size"]);
+                            //row.Add("image", img);
                             obj.products.Add(row);
                         }
                     }
@@ -719,11 +792,29 @@
                 row.Add("slug", dr["slug"]);
                 row.Add("description", "description");
                 Dictionary<String, Object> img = new Dictionary<String, Object>();
-                img.Add("name", dr["file_name"]);
-                img.Add("height", dr["file_height"]);
-                img.Add("width", dr["file_width"]);
-                img.Add("filesize", dr["file_size"]);
+                string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                JObject keyValues = JObject.Parse(meta);
+                if (keyValues.Count == 0)
+                {
+                    img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
+                }
+                else
+                {
+                    foreach (var item in keyValues)
+                    {
+                        if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
+                        else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
+                        else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
+                        else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                    }
+                }
                 row.Add("image", img);
+                //Dictionary<String, Object> img = new Dictionary<String, Object>();
+                //img.Add("name", dr["file_name"]);
+                //img.Add("height", dr["file_height"]);
+                //img.Add("width", dr["file_width"]);
+                //img.Add("filesize", dr["file_size"]);
+                //row.Add("image", img);
                 List<Dictionary<string, object>> list2 = GetSubCategory(DT, Convert.ToInt64(dr["term_id"]));
                 row.Add("child_categories", list2);
                 list.Add(row);
@@ -793,12 +884,19 @@
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
                         meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
                         keyValues = JObject.Parse(meta);
-                        foreach (var item in keyValues)
+                        if (keyValues.Count == 0)
                         {
-                            if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                            else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                            else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                            else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                            img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
+                        }
+                        else
+                        {
+                            foreach (var item in keyValues)
+                            {
+                                if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
+                                else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
+                                else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
+                                else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                            }
                         }
                         row.Add("image", img);
                         obj.products.Add(row);

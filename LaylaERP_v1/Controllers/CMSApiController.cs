@@ -636,6 +636,7 @@
                     {
                         obj.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;
                         obj.taxonomy = item["taxonomy"].ToString().Trim();
+                        obj.page_type = item["page_type"].ToString().Trim();
                     }
                     return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                 }

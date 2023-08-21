@@ -719,10 +719,10 @@
                 row.Add("slug", dr["slug"]);
                 row.Add("description", "description");
                 Dictionary<String, Object> img = new Dictionary<String, Object>();
-                img.Add("file_name", dr["file_name"]);
-                img.Add("file_height", dr["file_height"]);
-                img.Add("file_width", dr["file_width"]);
-                img.Add("file_size", dr["file_size"]);
+                img.Add("name", dr["file_name"]);
+                img.Add("height", dr["file_height"]);
+                img.Add("width", dr["file_width"]);
+                img.Add("filesize", dr["file_size"]);
                 row.Add("image", img);
                 List<Dictionary<string, object>> list2 = GetSubCategory(DT, Convert.ToInt64(dr["term_id"]));
                 row.Add("child_categories", list2);

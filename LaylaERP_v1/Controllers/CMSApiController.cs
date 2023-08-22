@@ -11,6 +11,7 @@
     using System.Dynamic;
     using Newtonsoft.Json.Linq;
     using QuickfixSearch.Models.Product;
+    using System.Text.RegularExpressions;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -848,6 +849,7 @@
                 }
                 else
                 {
+                    JObject original_o = JObject.FromObject(new { _sku = "", _price = "", _regular_price = "", _sale_price = "", _core_price = "", _manage_stock = "", _stock_status = "", _stock = "", _backorders = "", _weight = "", _height = "", _width = "", _length = "", _tax_status = "" });
                     dynamic obj = new ExpandoObject(); int overall_count = 0;
                     //term_main
                     DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, flter.limit, flter.page);
@@ -884,7 +886,12 @@
                         row.Add("product_type", dr["product_type"]);
                         string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
                         JObject keyValues = JObject.Parse(meta);
-                        foreach (var item in keyValues) row.Add(item.Key, item.Value);
+                        original_o.Merge(keyValues, new JsonMergeSettings
+                        {
+                            // union array values together to avoid duplicates
+                            MergeArrayHandling = MergeArrayHandling.Union
+                        });
+                        foreach (var item in original_o) row.Add(Regex.Replace(item.Key, @"^_", "") , item.Value);
 
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
                         meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
@@ -904,6 +911,8 @@
                             }
                         }
                         row.Add("image", img);
+                        row.Add("categories", !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
+                        row.Add("tags", !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
                         obj.products.Add(row);
                     }
                     //pagination

@@ -638,7 +638,8 @@
                         obj.taxonomy = item["taxonomy"].ToString().Trim();
                         obj.page_type = item["page_type"].ToString().Trim();
                     }
-                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    if (obj.term_id > 0) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    else return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });
                 }
             }
             catch (Exception ex)

@@ -829,6 +829,7 @@
         {
             try
             {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                 if (string.IsNullOrEmpty(app_key) || entity_id == 0)
                 {
                     return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
@@ -883,19 +884,47 @@
                         row.Add("ID", dr["ID"]);
                         row.Add("post_name", dr["post_name"]);
                         row.Add("post_title", dr["post_title"]);
+                        //Postmeta
                         row.Add("product_type", dr["product_type"]);
-                        string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
-                        JObject keyValues = JObject.Parse(meta);
-                        original_o.Merge(keyValues, new JsonMergeSettings
+                        row.Add("yoast_title", dr["yoast_title"]);
+                        row.Add("yoast_description", dr["yoast_description"]);
+                        row.Add("sku", dr["sku"]);
+                        row.Add("price", dr["price"]);
+                        row.Add("regular_price", dr["regular_price"]);
+                        row.Add("sale_price", dr["sale_price"]);
+                        row.Add("manage_stock", dr["_manage_stock"]);
+                        row.Add("backorders", dr["_backorders"]);
+                        row.Add("stock", dr["_stock"]);
+                        row.Add("stock_status", dr["_stock_status"]);
+                        row.Add("children", dr["_children"]);
+                        row.Add("core_price", dr["core_price"]);
+                        row.Add("weight", dr["weight"]);
+                        row.Add("length", dr["length"]);
+                        row.Add("width", dr["width"]);
+                        row.Add("height", dr["height"]);
+                        row.Add("tax_status", dr["tax_status"]);
+
+                        if (dr["product_type"].ToString().Equals("variable"))
                         {
-                            // union array values together to avoid duplicates
-                            MergeArrayHandling = MergeArrayHandling.Union
-                        });
-                        foreach (var item in original_o) row.Add(Regex.Replace(item.Key, @"^_", "") , item.Value);
+                            row.Add("price_range", new { min = 0, max = 0 });
+                        }
+                        else if (dr["product_type"].ToString().Equals("grouped"))
+                        {
+                            row.Add("price_range", new { min = 0, max = 0 });
+                        }
+
+                        //string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
+                        //JObject keyValues = JObject.Parse(meta);
+                        //original_o.Merge(keyValues, new JsonMergeSettings
+                        //{
+                        //    // union array values together to avoid duplicates
+                        //    MergeArrayHandling = MergeArrayHandling.Union
+                        //});
+                        //foreach (var item in original_o) row.Add(Regex.Replace(item.Key, @"^_", ""), item.Value);
 
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
-                        meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
-                        keyValues = JObject.Parse(meta);
+                        string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                        JObject keyValues = JObject.Parse(meta);
                         if (keyValues.Count == 0)
                         {
                             img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
@@ -911,8 +940,13 @@
                             }
                         }
                         row.Add("image", img);
-                        row.Add("categories", !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
-                        row.Add("tags", !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
+                        //row.Add("categories", !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
+                        //row.Add("tags", !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
+                        //if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
+                        //{
+                        //    var _att = serializer.Deserialize(dr["attributes"].ToString());
+                        //    row.Add("attributes", _att);
+                        //}
                         obj.products.Add(row);
                     }
                     //pagination

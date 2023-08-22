@@ -869,6 +869,7 @@
                             file = item["file_name"].ToString(),
                             filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
                         };
+                        obj.child_categories = !string.IsNullOrEmpty(item["child_categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(item["child_categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                     }
                     Dictionary<String, Object> row;
                     obj.products = new List<dynamic>();
@@ -880,6 +881,7 @@
                         row.Add("ID", dr["ID"]);
                         row.Add("post_name", dr["post_name"]);
                         row.Add("post_title", dr["post_title"]);
+                        row.Add("product_type", dr["product_type"]);
                         string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
                         JObject keyValues = JObject.Parse(meta);
                         foreach (var item in keyValues) row.Add(item.Key, item.Value);

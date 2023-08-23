@@ -402,24 +402,26 @@
                     int total = balResult.Rows.Count;
                     if (total > 0)
                     {
-                        dynamic obj = new ExpandoObject();
+                        dynamic obj = new List<dynamic>();
+                        Dictionary<String, Object> row;
                         //List<StoreModel> ReviewList = new List<StoreModel>();
                         for (int i = 0; i < balResult.Rows.Count; i++)
                         {
-                            obj.store_id = balResult.Rows[i]["entity"].ToString();
-                            obj.store_name = balResult.Rows[i]["CompanyName"].ToString();
-                            obj.image = new
+                            row = new Dictionary<string, object>();
+                            row.Add("store_id", balResult.Rows[i]["entity"]);
+                            row.Add("store_name", balResult.Rows[i]["CompanyName"]);
+                            row.Add("image", new
                             {
                                 name = balResult.Rows[i]["logo_url"].ToString(),
                                 width = balResult.Rows[i]["img_width"].ToString(),
                                 height = balResult.Rows[i]["img_height"].ToString(),
                                 filesize = 0
-                            };
-                            obj.mobile = balResult.Rows[i]["user_mobile"].ToString();
-                            obj.email = balResult.Rows[i]["email"].ToString();
-                            obj.address = balResult.Rows[i]["address"].ToString();
-                            obj.total = balResult.Rows[i]["total"].ToString();
-
+                            });
+                            row.Add("mobile", balResult.Rows[i]["user_mobile"]);
+                            row.Add("email", balResult.Rows[i]["email"]);
+                            row.Add("address", balResult.Rows[i]["address"]);
+                            row.Add("total", balResult.Rows[i]["total"]);
+                            obj.Add(row);
                             //StoreModel Review = new StoreModel();
                             //Review.store_id = balResult.Rows[i]["entity"].ToString();
                             //Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
@@ -432,10 +434,9 @@
                             //Review.total = balResult.Rows[i]["total"].ToString();
                             //ReviewList.Add(Review);
                         }
-                        return Ok(obj);
                         //return Json(ReviewList, JsonRequestBehavior.AllowGet); 
-                        //if (ReviewList.Count == 1) return Ok(ReviewList[0]);
-                        //else return Ok(ReviewList);
+                        if (obj.Count == 1) return Ok(obj[0]);
+                        else return Ok(obj);
                     }
                     else
                     {
@@ -1077,6 +1078,13 @@
                             }
 
                             obj.galData = new List<dynamic>();
+                            meta = dr["galData"] != DBNull.Value ? dr["galData"].ToString() : "[]";
+                            //JArray jArray = JArray.Parse(meta);
+                            //foreach (JToken jToken in jArray)
+                            //{
+                            //    obj.galData.Add(new { name = jToken["_file_name"], height = jToken["_file_height"], width = jToken["_file_width"], filesize = jToken["_file_size"] , thumbnail_name = jToken["_thumb_file_name"] , medium_name = jToken["_medium_file_name"] , large_name = jToken["_large_file_name"] });
+                            //}
+
                             obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             if (!string.IsNullOrEmpty(dr["attributes"].ToString()))

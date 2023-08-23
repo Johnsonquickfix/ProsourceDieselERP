@@ -9,6 +9,7 @@
     using System.Net;
     using Newtonsoft.Json;
     using System.Dynamic;
+    using System.Linq;
     using Newtonsoft.Json.Linq;
     using QuickfixSearch.Models.Product;
     using System.Text.RegularExpressions;
@@ -888,8 +889,7 @@
                         row.Add("product_type", dr["product_type"]);
                         row.Add("yoast_title", dr["yoast_title"]);
                         row.Add("yoast_description", dr["yoast_description"]);
-                        row.Add("sku", dr["sku"]);
-                        row.Add("price", dr["price"]);
+                        row.Add("sku", dr["sku"]);                        
                         row.Add("regular_price", dr["regular_price"]);
                         row.Add("sale_price", dr["sale_price"]);
                         row.Add("manage_stock", dr["_manage_stock"]);
@@ -906,12 +906,18 @@
 
                         if (dr["product_type"].ToString().Equals("variable"))
                         {
-                            row.Add("price_range", new { min = 0, max = 0 });
+                            double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                            row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
+                            row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
                         }
                         else if (dr["product_type"].ToString().Equals("grouped"))
                         {
-                            row.Add("price_range", new { min = 0, max = 0 });
+                            double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                            row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
+                            row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
                         }
+                        else { row.Add("price", dr["price"]); }
+                        row.Add("wholesale_details", "");
 
                         //string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
                         //JObject keyValues = JObject.Parse(meta);

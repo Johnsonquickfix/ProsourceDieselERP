@@ -688,7 +688,7 @@
                         {
                             width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
                             height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
-                            file = item["file_name"].ToString(),
+                            name = item["file_name"].ToString(),
                             filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
                         };
                     }
@@ -889,7 +889,7 @@
                         row.Add("product_type", dr["product_type"]);
                         row.Add("yoast_title", dr["yoast_title"]);
                         row.Add("yoast_description", dr["yoast_description"]);
-                        row.Add("sku", dr["sku"]);                        
+                        row.Add("sku", dr["sku"]);
                         row.Add("regular_price", dr["regular_price"]);
                         row.Add("sale_price", dr["sale_price"]);
                         row.Add("manage_stock", dr["_manage_stock"]);
@@ -963,6 +963,99 @@
                     obj.pagination.page = flter.page;
 
                     return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        [HttpGet, Route("product/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductDetails(string app_key, long entity_id, string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (string.IsNullOrEmpty(slug))
+                {
+                    return Ok(new { message = "Required query param 'slug'", status = 500, code = "Internal Server Error", data = new List<string>() });
+                }
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    //term_main
+                    DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0);
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            //Post
+                            obj.ID = dr["ID"];
+                            obj.post_name = dr["post_name"];
+                            obj.post_title = dr["post_title"];
+                            obj.post_content = dr["post_content"];
+                            obj.post_excerpt = dr["post_excerpt"];
+                            //
+                            obj.product_type = dr["product_type"];
+                            //Postmeta
+                            obj.yoast_title = dr["yoast_title"];
+                            obj.yoast_description = dr["yoast_description"];
+                            obj.sku = dr["sku"];
+                            obj.regular_price = dr["regular_price"];
+                            obj.sale_price = dr["sale_price"];
+                            obj.manage_stock = dr["manage_stock"];
+                            obj.backorders = dr["backorders"];
+                            obj.stock = dr["stock"];
+                            obj.stock_status = dr["stock_status"];
+                            obj.children = dr["children"];
+                            obj.core_price = dr["core_price"];
+                            obj.weight = dr["weight"];
+                            obj.length = dr["length"];
+                            obj.width = dr["width"];
+                            obj.height = dr["height"];
+                            obj.tax_status = dr["tax_status"];
+                            if (dr["product_type"].ToString().Equals("variable"))
+                            {
+                                double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                                obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                                obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                            }
+                            else if (dr["product_type"].ToString().Equals("grouped"))
+                            {
+                                double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
+                                obj.price = string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max());
+                                obj.price_range = new { min = parsed.Min(), max = parsed.Max() };
+                            }
+                            else { obj.price = dr["price"]; }
+                            obj.wholesale_details = "";
+                            Dictionary<String, Object> img = new Dictionary<String, Object>();
+                            string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
+                            JObject keyValues = JObject.Parse(meta);
+                            if (keyValues.Count == 0)
+                            {
+                                obj.image = new { name = "", height = 0, width = 0, filesize = 0 };
+                            }
+                            else
+                            {
+                                obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
+                            }
+
+                            obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                            obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                        }
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    }
+                    else
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
                 }
             }
             catch (Exception ex)

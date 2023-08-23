@@ -1169,7 +1169,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@flag", flag)
                 };
 
-                dt = SQLHelper.ExecuteDataTable("bulk_editor_menus", parameters);
+                dt = SQLHelper.ExecuteDataTable("cms_common_search", parameters);
 
             }
             catch { throw; }
@@ -1190,7 +1190,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@flag", flag)
                 };
 
-                ds = SQLHelper.ExecuteDataSet("bulk_editor_menus", parameters);
+                ds = SQLHelper.ExecuteDataSet("cms_common_search", parameters);
 
             }
             catch { throw; }

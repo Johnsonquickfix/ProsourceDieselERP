@@ -408,7 +408,8 @@
                         {
                             obj.store_id = balResult.Rows[i]["entity"].ToString();
                             obj.store_name = balResult.Rows[i]["CompanyName"].ToString();
-                            obj.image = new {
+                            obj.image = new
+                            {
                                 name = balResult.Rows[i]["logo_url"].ToString(),
                                 width = balResult.Rows[i]["img_width"].ToString(),
                                 height = balResult.Rows[i]["img_height"].ToString(),
@@ -951,15 +952,6 @@
                         else { row.Add("price", dr["price"]); }
                         row.Add("wholesale_details", "");
 
-                        //string meta = dr["meta"] != DBNull.Value ? dr["meta"].ToString() : "{}";
-                        //JObject keyValues = JObject.Parse(meta);
-                        //original_o.Merge(keyValues, new JsonMergeSettings
-                        //{
-                        //    // union array values together to avoid duplicates
-                        //    MergeArrayHandling = MergeArrayHandling.Union
-                        //});
-                        //foreach (var item in original_o) row.Add(Regex.Replace(item.Key, @"^_", ""), item.Value);
-
                         Dictionary<String, Object> img = new Dictionary<String, Object>();
                         string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
                         JObject keyValues = JObject.Parse(meta);
@@ -1023,6 +1015,7 @@
                 }
                 else
                 {
+                    LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
                     dynamic obj = new ExpandoObject();
                     //term_main
                     DataSet ds = CMSRepository.GetPageItems("products-detail", entity_id, string.Empty, slug, 0, 0);
@@ -1081,8 +1074,61 @@
                                 obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
                             }
 
+                            obj.galData = new List<dynamic>();
                             obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
+                            if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
+                            {
+                                List<dynamic> _attributes = new List<dynamic>();
+                                System.Collections.Hashtable _att = serializer.Deserialize(dr["attributes"].ToString()) as System.Collections.Hashtable;
+                                foreach (System.Collections.DictionaryEntry att in _att)
+                                {
+                                    System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
+                                    DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                                    if (_att_value["is_taxonomy"].ToString().Equals("1"))
+                                    {
+                                        if (rows.Length > 0) _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                        else _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                    }
+                                    else
+                                    {
+                                        if (rows.Length > 0) _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                        else _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                    }
+                                }
+                                obj.attributes = _attributes;
+                            }
+                        }
+                        if (obj.product_type == "variable")
+                        {
+                            obj.variations = new List<dynamic>();
+                            foreach (DataRow dr in ds.Tables[1].Rows)
+                            {
+                                var vr = new
+                                {
+                                    ID = dr["ID"],
+                                    post_name = dr["post_name"],
+                                    post_title = dr["post_title"],
+                                    product_type = dr["product_type"],
+                                    //Postmeta
+                                    sku = dr["sku"],
+                                    price = dr["price"],
+                                    regular_price = dr["regular_price"],
+                                    sale_price = dr["sale_price"],
+                                    manage_stock = dr["manage_stock"],
+                                    backorders = dr["backorders"],
+                                    stock = dr["stock"],
+                                    stock_status = dr["stock_status"],
+                                    core_price = dr["core_price"],
+                                    weight = dr["weight"],
+                                    length = dr["length"],
+                                    width = dr["width"],
+                                    height = dr["height"],
+                                    tax_status = dr["tax_status"],
+                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 }
+                                };
+                                obj.variations.Add(vr);
+                            }
                         }
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                     }

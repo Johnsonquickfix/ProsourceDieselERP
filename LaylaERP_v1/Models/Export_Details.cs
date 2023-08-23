@@ -341,14 +341,14 @@ namespace LaylaERP.Models
         {
             public string width { get; set; }
             public string height { get; set; }
-            public string file { get; set; }
+            public string name { get; set; }
           
         }
         public class OtherImageModel
         {
             public string width { get; set; }
             public string height { get; set; }
-            public string file { get; set; }
+            public string name { get; set; }
 
         }
         public class Category

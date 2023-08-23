@@ -50,36 +50,64 @@
                         int total = balResult.Rows.Count;
                         if (total > 0)
                         {
-                            List<BannerModel> ReviewList = new List<BannerModel>();
-                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            //List<BannerModel> ReviewList = new List<BannerModel>();
+                            List<Dictionary<String, Object>> ReviewList = new List<Dictionary<string, object>>();
+                            Dictionary<String, Object> row;
+                            //for (int i = 0; i < balResult.Rows.Count; i++)
+                            foreach (DataRow dr in balResult.Rows)
                             {
-                                BannerModel Review = new BannerModel();
-                                Review.id = balResult.Rows[i]["ID"].ToString();
-                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
-                                Review.post_title = balResult.Rows[i]["post_title"].ToString();
-                                Review.post_author = balResult.Rows[i]["post_author"].ToString();
-                                Review.user_login = balResult.Rows[i]["user_login"].ToString();
-                                Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
-                                Review.post_date = balResult.Rows[i]["post_date"].ToString();
-                                Review.total = balResult.Rows[i]["total"].ToString();
-                                Review._edit_last = balResult.Rows[i]["_edit_last"].ToString();
-                                Review._edit_lock = balResult.Rows[i]["_edit_lock"].ToString();
-                                Review._for_mobile = balResult.Rows[i]["_for_mobile"].ToString();
-                                Review._thumbnail_id = balResult.Rows[i]["_thumbnail_id"].ToString();
-                                Review.for_mobile = balResult.Rows[i]["for_mobile"].ToString();
-                                Review.InnerExcludeGlobalBanner = balResult.Rows[i]["InnerExcludeGlobalBanner"].ToString();
-                                Review.BannerImage = balResult.Rows[i]["InnerPageBannerImage"].ToString();
-                                Review.Bannerimage_width = balResult.Rows[i]["Bannerimagewidth"].ToString();
-                                Review.Bannerimage_height = balResult.Rows[i]["Bannerimageheight"].ToString();
-                                Review.Banner_order = balResult.Rows[i]["menu_order"].ToString();
-                                Review.InnerPageBannerLink = balResult.Rows[i]["InnerPageBannerLink"].ToString();
-                                Review.InnerPageBannerSelection = balResult.Rows[i]["InnerPageBannerSelection"].ToString();
-                                Review.InnerPageBannerTitle = balResult.Rows[i]["InnerPageBannerTitle"].ToString();
-                                Review.InnerPageBannerType = balResult.Rows[i]["InnerPageBannerType"].ToString();
-                                Review.remove_schema_page_specific = balResult.Rows[i]["remove_schema_page_specific"].ToString();
-                                Review.slide_template = balResult.Rows[i]["slide_template"].ToString();
-                                //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
-                                ReviewList.Add(Review);
+                                row = new Dictionary<string, object>();
+                                row.Add("ID", dr["ID"]);
+                                row.Add("post_content", dr["post_content"]);
+                                row.Add("post_title", dr["post_title"]);
+                                row.Add("post_author", dr["post_author"]);
+                                row.Add("user_login", dr["user_login"]);
+                                row.Add("entity_id", dr["entity_id"]);
+                                row.Add("post_date", dr["post_date"]);
+                                row.Add("total", dr["total"]);
+                                row.Add("_edit_last", dr["_edit_last"]);
+                                row.Add("_edit_lock", dr["_edit_lock"]);
+                                row.Add("_for_mobile", dr["_for_mobile"]);
+                                row.Add("_thumbnail_id", dr["_thumbnail_id"]);
+                                row.Add("for_mobile", dr["for_mobile"]);
+                                row.Add("InnerExcludeGlobalBanner", dr["InnerExcludeGlobalBanner"]);
+                                row.Add("image", new { name = dr["InnerPageBannerImage"], width = dr["Bannerimagewidth"], height = dr["Bannerimageheight"] });
+                                row.Add("menu_order", dr["menu_order"]);
+                                row.Add("InnerPageBannerLink", dr["InnerPageBannerLink"]);
+                                row.Add("InnerPageBannerSelection", dr["InnerPageBannerSelection"]);
+                                row.Add("InnerPageBannerTitle", dr["InnerPageBannerTitle"]);
+                                row.Add("InnerPageBannerType", dr["InnerPageBannerType"]);
+                                row.Add("remove_schema_page_specific", dr["remove_schema_page_specific"]);
+                                row.Add("slide_template", dr["slide_template"]);
+                                ReviewList.Add(row);
+
+                                //BannerModel Review = new BannerModel();
+                                //Review.id = balResult.Rows[i]["ID"].ToString();
+                                //Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                //Review.post_title = balResult.Rows[i]["post_title"].ToString();
+                                //Review.post_author = balResult.Rows[i]["post_author"].ToString();
+                                //Review.user_login = balResult.Rows[i]["user_login"].ToString();
+                                //Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
+                                //Review.post_date = balResult.Rows[i]["post_date"].ToString();
+                                //Review.total = balResult.Rows[i]["total"].ToString();
+                                //Review._edit_last = balResult.Rows[i]["_edit_last"].ToString();
+                                //Review._edit_lock = balResult.Rows[i]["_edit_lock"].ToString();
+                                //Review._for_mobile = balResult.Rows[i]["_for_mobile"].ToString();
+                                //Review._thumbnail_id = balResult.Rows[i]["_thumbnail_id"].ToString();
+                                //Review.for_mobile = balResult.Rows[i]["for_mobile"].ToString();
+                                //Review.InnerExcludeGlobalBanner = balResult.Rows[i]["InnerExcludeGlobalBanner"].ToString();
+                                //Review.BannerImage = balResult.Rows[i]["InnerPageBannerImage"].ToString();
+                                //Review.Bannerimage_width = balResult.Rows[i]["Bannerimagewidth"].ToString();
+                                //Review.Bannerimage_height = balResult.Rows[i]["Bannerimageheight"].ToString();
+                                //Review.Banner_order = balResult.Rows[i]["menu_order"].ToString();
+                                //Review.InnerPageBannerLink = balResult.Rows[i]["InnerPageBannerLink"].ToString();
+                                //Review.InnerPageBannerSelection = balResult.Rows[i]["InnerPageBannerSelection"].ToString();
+                                //Review.InnerPageBannerTitle = balResult.Rows[i]["InnerPageBannerTitle"].ToString();
+                                //Review.InnerPageBannerType = balResult.Rows[i]["InnerPageBannerType"].ToString();
+                                //Review.remove_schema_page_specific = balResult.Rows[i]["remove_schema_page_specific"].ToString();
+                                //Review.slide_template = balResult.Rows[i]["slide_template"].ToString();
+                                ////Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                //ReviewList.Add(Review);
                             }
 
                             //return Json(ReviewList);
@@ -155,14 +183,14 @@
                                 {
                                     width = balResult.Rows[i]["bwidth"].ToString(),
                                     height = balResult.Rows[i]["bheight"].ToString(),
-                                    file = balResult.Rows[i]["upload_ad_image"].ToString(),
+                                    name = balResult.Rows[i]["upload_ad_image"].ToString(),
 
                                 };
                                 OtherImageModel OtherImageModel = new OtherImageModel
                                 {
                                     width = balResult.Rows[i]["fwidth"].ToString(),
                                     height = balResult.Rows[i]["fheight"].ToString(),
-                                    file = balResult.Rows[i]["featured_image_url"].ToString(),
+                                    name = balResult.Rows[i]["featured_image_url"].ToString(),
 
                                 };
                                 Review.upload_ad_image = image;
@@ -255,21 +283,19 @@
                                 {
                                     width = balResult.Rows[i]["bwidth"].ToString(),
                                     height = balResult.Rows[i]["bheight"].ToString(),
-                                    file = balResult.Rows[i]["single_image_url"].ToString(),
+                                    name = balResult.Rows[i]["single_image_url"].ToString(),
 
                                 };
                                 OtherImageModel OtherImageModel = new OtherImageModel
                                 {
                                     width = balResult.Rows[i]["fwidth"].ToString(),
                                     height = balResult.Rows[i]["fheight"].ToString(),
-                                    file = balResult.Rows[i]["featured_image_url"].ToString(),
+                                    name = balResult.Rows[i]["featured_image_url"].ToString(),
 
                                 };
 
                                 Review.single_image_url = image;
                                 Review.featured_image_url = OtherImageModel;
-
-
 
                                 //   Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
                                 // Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
@@ -376,30 +402,39 @@
                     int total = balResult.Rows.Count;
                     if (total > 0)
                     {
-                        List<StoreModel> ReviewList = new List<StoreModel>();
+                        dynamic obj = new ExpandoObject();
+                        //List<StoreModel> ReviewList = new List<StoreModel>();
                         for (int i = 0; i < balResult.Rows.Count; i++)
                         {
-                            StoreModel Review = new StoreModel();
-                            Review.store_id = balResult.Rows[i]["entity"].ToString();
-                            Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
-                            Review.logo_url = balResult.Rows[i]["logo_url"].ToString();
-                            Review.img_width = balResult.Rows[i]["img_width"].ToString();
-                            Review.img_height = balResult.Rows[i]["img_height"].ToString();
-                            Review.mobile = balResult.Rows[i]["user_mobile"].ToString();
-                            Review.email = balResult.Rows[i]["email"].ToString();
-                            Review.address = balResult.Rows[i]["address"].ToString();
-                            Review.total = balResult.Rows[i]["total"].ToString();
-                            ReviewList.Add(Review);
+                            obj.store_id = balResult.Rows[i]["entity"].ToString();
+                            obj.store_name = balResult.Rows[i]["CompanyName"].ToString();
+                            obj.image = new {
+                                name = balResult.Rows[i]["logo_url"].ToString(),
+                                width = balResult.Rows[i]["img_width"].ToString(),
+                                height = balResult.Rows[i]["img_height"].ToString(),
+                                filesize = 0
+                            };
+                            obj.mobile = balResult.Rows[i]["user_mobile"].ToString();
+                            obj.email = balResult.Rows[i]["email"].ToString();
+                            obj.address = balResult.Rows[i]["address"].ToString();
+                            obj.total = balResult.Rows[i]["total"].ToString();
+
+                            //StoreModel Review = new StoreModel();
+                            //Review.store_id = balResult.Rows[i]["entity"].ToString();
+                            //Review.store_name = balResult.Rows[i]["CompanyName"].ToString();
+                            //Review.logo_url = balResult.Rows[i]["logo_url"].ToString();
+                            //Review.img_width = balResult.Rows[i]["img_width"].ToString();
+                            //Review.img_height = balResult.Rows[i]["img_height"].ToString();
+                            //Review.mobile = balResult.Rows[i]["user_mobile"].ToString();
+                            //Review.email = balResult.Rows[i]["email"].ToString();
+                            //Review.address = balResult.Rows[i]["address"].ToString();
+                            //Review.total = balResult.Rows[i]["total"].ToString();
+                            //ReviewList.Add(Review);
                         }
+                        return Ok(obj);
                         //return Json(ReviewList, JsonRequestBehavior.AllowGet); 
-                        if (ReviewList.Count == 1)
-                        {
-                            return Ok(ReviewList[0]);
-                        }
-                        else
-                        {
-                            return Ok(ReviewList);
-                        }
+                        //if (ReviewList.Count == 1) return Ok(ReviewList[0]);
+                        //else return Ok(ReviewList);
                     }
                     else
                     {
@@ -465,17 +500,14 @@
                                 {
                                     width = balResult.Rows[i]["bwidth"].ToString(),
                                     height = balResult.Rows[i]["bheight"].ToString(),
-                                    file = balResult.Rows[i]["upload_ad_image"].ToString(),
-
+                                    name = balResult.Rows[i]["upload_ad_image"].ToString(),
                                 };
                                 OtherImageModel OtherImageModel = new OtherImageModel
                                 {
                                     width = balResult.Rows[i]["fwidth"].ToString(),
                                     height = balResult.Rows[i]["fheight"].ToString(),
-                                    file = balResult.Rows[i]["featured_image_url"].ToString(),
-
+                                    name = balResult.Rows[i]["featured_image_url"].ToString(),
                                 };
-
                                 Review.image = image;
                                 Review.other_image = OtherImageModel;
                                 ReviewList.Add(Review);

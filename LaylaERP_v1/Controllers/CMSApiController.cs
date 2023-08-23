@@ -1047,6 +1047,8 @@
                             obj.length = dr["length"];
                             obj.width = dr["width"];
                             obj.height = dr["height"];
+                            obj.weight_unit = dr["weight_unit"];
+                            obj.dimension_unit = dr["dimension_unit"];
                             obj.tax_status = dr["tax_status"];
                             if (dr["product_type"].ToString().Equals("variable"))
                             {

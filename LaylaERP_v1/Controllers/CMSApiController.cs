@@ -1196,6 +1196,47 @@
                 return InternalServerError(ex);
             }
         }
-
+        [HttpGet, Route("topsell/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductDetails(string app_key, long entity_id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else
+                {
+                    dynamic obj = new List<dynamic>();
+                    DataSet ds = CMSRepository.GetPageItems("topsell-products", entity_id, string.Empty, string.Empty, 0, 0);
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            obj.Add(new
+                            {
+                                term_id = dr["term_id"],
+                                name = dr["name"],
+                                slug = dr["slug"],
+                                products = dr["products"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["products"].ToString()) : new List<dynamic>()
+                            });
+                        }
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    }
+                    else
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }

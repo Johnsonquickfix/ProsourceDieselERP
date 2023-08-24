@@ -995,6 +995,58 @@
                 return InternalServerError(ex);
             }
         }
+        [HttpGet, Route("products/filter-tag/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductsFilterTags(string app_key, long entity_id, string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (string.IsNullOrEmpty(slug))
+                {
+                    return Ok(new { message = "Required query param 'slug'", status = 500, code = "Internal Server Error", data = new List<string>() });
+                }
+                else
+                {
+                    LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                    dynamic obj = new List<dynamic>();
+                    //term_main
+                    DataSet ds = CMSRepository.GetPageItems("filter-schema", entity_id, string.Empty, slug, 0, 0);
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            obj.Add(new
+                            {
+                                name = dr["name"],
+                                title = dr["title"],
+                                type = dr["type"],
+                                items = dr["items"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["items"].ToString()) : new List<dynamic>()
+                            });
+                            //obj.name = dr["name"];
+                            //obj.title = dr["title"];
+                            //obj.type = dr["type"];
+                            //obj.items = dr["items"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["items"].ToString()) : new List<dynamic>();
+                        }
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    }
+                    else
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
         [HttpGet, Route("product/{app_key}/{entity_id}")]
         public IHttpActionResult ProductDetails(string app_key, long entity_id, string slug = "")
         {
@@ -1077,14 +1129,7 @@
                                 obj.image = new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] };
                             }
 
-                            obj.galData = new List<dynamic>();
-                            meta = dr["galData"] != DBNull.Value ? dr["galData"].ToString() : "[]";
-                            //JArray jArray = JArray.Parse(meta);
-                            //foreach (JToken jToken in jArray)
-                            //{
-                            //    obj.galData.Add(new { name = jToken["_file_name"], height = jToken["_file_height"], width = jToken["_file_width"], filesize = jToken["_file_size"] , thumbnail_name = jToken["_thumb_file_name"] , medium_name = jToken["_medium_file_name"] , large_name = jToken["_large_file_name"] });
-                            //}
-
+                            obj.galData = dr["galData"] != DBNull.Value ? JsonConvert.DeserializeObject<List<dynamic>>(dr["galData"].ToString()) : new List<dynamic>();
                             obj.categories = !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             obj.tags = !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
                             if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
@@ -1151,5 +1196,6 @@
                 return InternalServerError(ex);
             }
         }
+
     }
 }

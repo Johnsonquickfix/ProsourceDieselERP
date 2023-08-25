@@ -904,7 +904,7 @@
                         {
                             width = !string.IsNullOrEmpty(item["file_width"].ToString()) ? Convert.ToInt64(item["file_width"].ToString()) : 0,
                             height = !string.IsNullOrEmpty(item["file_height"].ToString()) ? Convert.ToInt64(item["file_height"].ToString()) : 0,
-                            file = item["file_name"].ToString(),
+                            name = item["file_name"].ToString(),
                             filesize = !string.IsNullOrEmpty(item["file_size"].ToString()) ? Convert.ToDouble(item["file_size"].ToString()) : 0,
                         };
                         obj.child_categories = !string.IsNullOrEmpty(item["child_categories"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(item["child_categories"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]");
@@ -958,19 +958,12 @@
                         JObject keyValues = JObject.Parse(meta);
                         if (keyValues.Count == 0)
                         {
-                            img.Add("name", ""); img.Add("height", 0); img.Add("width", 0); img.Add("filesize", 0);
+                            row.Add("image", new { name = "", height = 0, width = 0, filesize = 0 });
                         }
                         else
                         {
-                            foreach (var item in keyValues)
-                            {
-                                if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                                else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                                else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                                else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
-                            }
+                            row.Add("image", new { name = keyValues["_file_name"], height = keyValues["_file_height"], width = keyValues["_file_width"], filesize = keyValues["_file_size"] });
                         }
-                        row.Add("image", img);
                         //row.Add("categories", !string.IsNullOrEmpty(dr["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
                         //row.Add("tags", !string.IsNullOrEmpty(dr["tags"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["tags"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}"));
                         //if (!string.IsNullOrEmpty(dr["attributes"].ToString()))

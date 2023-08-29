@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace LaylaERP.Controllers
             DataTable dt = new DataTable();
             // dt = BAL.ProductRepository.GetProductcategoriesList();
             string id = "";
-            dt = BAL.ProductRepository.GetParentCategory(id);
+            //dt = BAL.ProductRepository.GetParentCategory(id);
             List<SelectListItem> usertype = new List<SelectListItem>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -354,11 +355,11 @@ namespace LaylaERP.Controllers
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
-           // DataTable dt = ProductRepository.GetproductPurchase_Items(model);
+            // DataTable dt = ProductRepository.GetproductPurchase_Items(model);
 
             if (model.ID > 0)
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "Update buying price", "/Product/AddNewProduct/"+ model.ID + "" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "Update buying price", "/Product/AddNewProduct/" + model.ID + "" + ", " + Net.BrowserInfo);
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             }
             else
@@ -369,18 +370,18 @@ namespace LaylaERP.Controllers
                 //}
                 //else
                 //{
-                    UserActivityLog.WriteDbLog(LogType.Submit, "Add buying price", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
-                    DataTable dtware = ProductRepository.Getwarehouse(model);
-                    if (dtware.Rows.Count > 0)
-                    {
-                        resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
-                    }
-                    else
-                    {
-                        resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
-                        ProductRepository.AddBuyingtProductwarehouse(model, dateinc);
-                    }
-               // }
+                UserActivityLog.WriteDbLog(LogType.Submit, "Add buying price", "/Product/AddNewProduct/" + ", " + Net.BrowserInfo);
+                DataTable dtware = ProductRepository.Getwarehouse(model);
+                if (dtware.Rows.Count > 0)
+                {
+                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                }
+                else
+                {
+                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                    ProductRepository.AddBuyingtProductwarehouse(model, dateinc);
+                }
+                // }
             }
             if (resultOne > 0)
             {
@@ -663,9 +664,9 @@ namespace LaylaERP.Controllers
             if (model.ID > 0 || model.updatedID > 0)
             {
                 long PID = model.ID > 0 ? model.ID : model.updatedID;
-                UserActivityLog.WriteDbLog(LogType.Submit, "product id ("+PID+ ") updated in list product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                UserActivityLog.WriteDbLog(LogType.Submit, "product id (" + PID + ") updated in list product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
                 model.post_type = "product";
-              //  model.post_status = "publish";
+                //  model.post_status = "publish";
                 if (model.ID == 0)
                     model.ID = model.updatedID;
                 if (!string.IsNullOrEmpty(model.post_content))
@@ -682,8 +683,8 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                UserActivityLog.WriteDbLog(LogType.Submit, "New product ("+ model.post_title + ") created in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
-               // model.post_status = "publish";
+                UserActivityLog.WriteDbLog(LogType.Submit, "New product (" + model.post_title + ") created in add new product", "/Product/AddNewProduct" + ", " + Net.BrowserInfo);
+                // model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";
                 if (!string.IsNullOrEmpty(model.post_content))
@@ -709,7 +710,7 @@ namespace LaylaERP.Controllers
         {
             string[] varQueryArr1 = new string[30];
             string[] varFieldsName = new string[30] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_product_attributes", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image", "_product_type_id" };
-            string[] varFieldsValue = new string[30] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.product_attributes, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image,model._product_type_id };
+            string[] varFieldsValue = new string[30] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.product_attributes, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image, model._product_type_id };
             for (int n = 0; n < 30; n++)
             {
                 ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
@@ -825,8 +826,8 @@ namespace LaylaERP.Controllers
         private void UpdateVariation_MetaData(ProductModel model, long id)
         {
             string[] varQueryArr1 = new string[29];
-            string[] varFieldsName = new string[29] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_low_stock_amount", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image", "_product_type_id" , "_price" };
-            string[] varFieldsValue = new string[29] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.low_stock_amount, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image,model._product_type_id, model.sale_price };
+            string[] varFieldsName = new string[29] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_low_stock_amount", "_gift_card", "_gift_card_expiration_days", "_gift_card_template_default_use_image", "_product_type_id", "_price" };
+            string[] varFieldsValue = new string[29] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.low_stock_amount, model._gift_card, model._gift_card_expiration_days, model._gift_card_template_default_use_image, model._product_type_id, model.sale_price };
             for (int n = 0; n < 29; n++)
             {
                 ProductRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
@@ -846,11 +847,72 @@ namespace LaylaERP.Controllers
         public JsonResult GetDataByID(OrderPostStatusModel model)
         {
             string JSONresult = string.Empty;
+            dynamic obj = new ExpandoObject();
             try
             {
-
-                DataTable dt = ProductRepository.GetDataByID(model);
-                JSONresult = JsonConvert.SerializeObject(dt);
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                DataSet ds = ProductRepository.GetDataByID(model);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    obj.ID = dr["ID"];
+                    obj.post_name = dr["post_name"];
+                    obj.post_title = dr["post_title"];
+                    obj.post_content = dr["post_content"];
+                    obj.post_excerpt = dr["post_excerpt"];
+                    obj.guid = dr["guid"];
+                    obj.post_status = dr["post_status"];
+                    obj.publish_date = dr["publish_date"];
+                    //
+                    obj.product_type = dr["product_type"];
+                    //Postmeta
+                    obj.sku = dr["sku"];
+                    obj.price = dr["price"];
+                    obj.regular_price = dr["regular_price"];
+                    obj.sale_price = dr["sale_price"];
+                    obj.manage_stock = dr["manage_stock"];
+                    obj.backorders = dr["backorders"];
+                    obj.stock = dr["stock"];
+                    obj.stock_status = dr["stock_status"];
+                    obj.sold_individually = dr["sold_individually"];
+                    obj.low_stock_amount = dr["low_stock_amount"];
+                    obj.children = dr["children"];
+                    obj.core_price = dr["core_price"];
+                    obj.weight = dr["weight"];
+                    obj.length = dr["length"];
+                    obj.width = dr["width"];
+                    obj.height = dr["height"];
+                    obj.weight_unit = dr["weight_unit"];
+                    obj.dimension_unit = dr["dimension_unit"];
+                    obj.tax_status = dr["tax_status"];
+                    obj.tax_class = dr["tax_class"];
+                    obj.product_type_id = dr["product_type_id"];
+                    obj.image = dr["image"];
+                    obj.categories = dr["categories"];
+                    obj.variations = dr["variations"];
+                    if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
+                    {
+                        List<dynamic> _attributes = new List<dynamic>();
+                        System.Collections.Hashtable _att = serializer.Deserialize(dr["attributes"].ToString()) as System.Collections.Hashtable;
+                        foreach (System.Collections.DictionaryEntry att in _att)
+                        {
+                            System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
+                            DataRow[] rows = ds.Tables[1].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                            if (_att_value["is_taxonomy"].ToString().Equals("1"))
+                            {
+                                if (rows.Length > 0) _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                else _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                            }
+                            else
+                            {
+                                _attributes.Add(new { is_taxonomy = 0, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
+                                //if (rows.Length > 0) _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                //else _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                            }
+                        }
+                        obj.attributes = _attributes;
+                    }
+                }
+                JSONresult = JsonConvert.SerializeObject(obj);
             }
             catch { }
             return Json(JSONresult, 0);
@@ -932,9 +994,9 @@ namespace LaylaERP.Controllers
                     FileName = Regex.Replace(FileName, @"\s+", "");
                     //To Get File Extension  
                     long filesize = ImageFileproductlink.ContentLength / 1024;
-                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);                    
-                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG"  || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" ||  FileExtension == ".bmp" || FileExtension == ".BMP")
-                        {
+                    string FileExtension = Path.GetExtension(ImageFileproductlink.FileName);
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".XLS" || FileExtension == ".pdf" || FileExtension == ".PDF" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".jpg" || FileExtension == ".JPG" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                    {
                         //Add Current Date To Attached File Name  
                         //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 
@@ -1131,7 +1193,7 @@ namespace LaylaERP.Controllers
                 ModelState.Clear();
                 for (int y = 0; y < attributeheader.Length; y++)
                 {
-                    varFieldsName = "attribute_" +  attributeheader[y].Trim().ToLower();
+                    varFieldsName = "attribute_" + attributeheader[y].Trim().ToLower();
                     ProductRepository.AddProductsMetaVariation(Convert.ToInt64(ID), varFieldsName, "");
                 }
                 return Json(new { status = true, message = "Product attributes saved successfully!!", ID = ID }, 0);
@@ -1700,22 +1762,22 @@ namespace LaylaERP.Controllers
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
-               // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
-               if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
-                    {
+                // if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                if (FileExtension == ".png" || FileExtension == ".PNG" || FileExtension == ".JPG" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".JPEG" || FileExtension == ".bmp" || FileExtension == ".BMP")
+                {
                     FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
-                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;                   
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
 
                     string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
                     UploadPath = UploadPath + "\\";
                     model.ImagePath = UploadPath + FileName;
-                    model.ImagePathOut = UploadPath + FileNamethumb ; 
+                    model.ImagePathOut = UploadPath + FileNamethumb;
                     if (FileName == "")
                     {
                         FileName = "default.png";
                     }
                     ImagePath = "~/Content/Product/" + FileName;
-                    ImagePaththum = "~/Content/Product/" + FileNamethumb ;
+                    ImagePaththum = "~/Content/Product/" + FileNamethumb;
                     ImageFile.SaveAs(model.ImagePath);
 
                     Image image = Image.FromFile(model.ImagePath);
@@ -1731,10 +1793,10 @@ namespace LaylaERP.Controllers
                     if (Convert.ToInt32(ID) > 0)
                     {
                         DataTable dt = ProductRepository.GetImage_Details(Convert.ToInt32(ID));
-                        if(dt.Rows.Count > 0)
-                            ProductRepository.UpdateBothImage(FileNamethumb , FileName, Convert.ToInt32(ID));
+                        if (dt.Rows.Count > 0)
+                            ProductRepository.UpdateBothImage(FileNamethumb, FileName, Convert.ToInt32(ID));
                         else
-                             ProductRepository.PopupBothImage(FileNamethumb ,FileName, Convert.ToInt32(ID));
+                            ProductRepository.PopupBothImage(FileNamethumb, FileName, Convert.ToInt32(ID));
                         return Json(new { status = true, message = "Product image uploaded successfully!!", url = "", id = model.term_id }, 0);
                     }
                     else
@@ -1775,7 +1837,7 @@ namespace LaylaERP.Controllers
             }
 
             // Return thumbnail size.
-           // return new Size((int)(originalWidth * factor), (int)(originalHeight));
+            // return new Size((int)(originalWidth * factor), (int)(originalHeight));
             return new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
         }
 
@@ -1965,7 +2027,7 @@ namespace LaylaERP.Controllers
                     int ID = new ProductRepository().AddProductCategory(model, name, slug);
                     if (ID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "Add new product category ("+name+")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
+                        UserActivityLog.WriteDbLog(LogType.Submit, "Add new product category (" + name + ")", "/Product/ProductCategories" + ", " + Net.BrowserInfo);
                         int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                         ProductRepository.postmeta(thumbnailID, ImagePath);
                         new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
@@ -2062,7 +2124,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { data = JSONresult }, 0);
         }
-         
+
         [HttpGet]
         public JsonResult GetProductOpeningStock(JqDataTableModel model)
         {
@@ -2071,7 +2133,7 @@ namespace LaylaERP.Controllers
             try
             {
 
-                DataTable dt = ProductRepository.GetProductOpeningStock(model.strValue1, model.strValue2,  model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = ProductRepository.GetProductOpeningStock(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
 
             }
@@ -2079,8 +2141,6 @@ namespace LaylaERP.Controllers
             //return Json(result, 0); ProductOpendingStock
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
-
-        
 
         public JsonResult AddOpeningStock(ProductOpendingStock model)
         {
@@ -2092,18 +2152,18 @@ namespace LaylaERP.Controllers
             //}
             //else
             //{
-                int ID = ProductRepository.AddProductOpeningStock(model);
-                if (ID > 0)
-                {
-                    if(ID == 111111111)
+            int ID = ProductRepository.AddProductOpeningStock(model);
+            if (ID > 0)
+            {
+                if (ID == 111111111)
                     return Json(new { status = true, message = "Product Opening Stock saved successfully!!", url = "Manage" }, 0);
-                    else
+                else
                     return Json(new { status = true, message = "Product Opening Stock saved successfully!!", url = "" }, 0);
             }
-                else
-                {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
             //}
         }
 
@@ -2213,7 +2273,7 @@ namespace LaylaERP.Controllers
 
         [HttpGet]
         public JsonResult GetProductList(JqDataTableModel model)
-        { 
+        {
             string result = string.Empty;
             int TotalRecord = 0;
             try
@@ -2225,6 +2285,66 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
+        [HttpGet]
+        public JsonResult ProductCategories(long id = 0)
+        {
+            List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
+            Dictionary<String, Object> row;
+            try
+            {
+                DataTable DT = BAL.ProductRepository.GetProductCategory("productcategory", 1, id);
+                DataRow[] rows = DT.Select("[parent] = 0", "term_order");
+                foreach (DataRow dr in rows)
+                {
+                    row = new Dictionary<String, Object>();
+                    row.Add("term_id", dr["term_id"]);
+                    row.Add("id", dr["term_taxonomy_id"]);
+                    row.Add("text", dr["name"]);
+                    if (dr["parent"] != DBNull.Value) row.Add("parent", dr["parent"]);
+                    if (dr["object_id"] != DBNull.Value) row.Add("checked", true);
+                    row.Add("term_order", dr["term_order"]);
+                    List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["term_id"]));
+                    row.Add("children", list2);
+                    tableRows.Add(row);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(tableRows, 0);
+        }
+
+        public static List<Dictionary<string, object>> Getdata(DataTable DT, int ParentID)
+        {
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            Dictionary<String, Object> row;
+            DataRow[] rows = DT.Select("[parent] = " + ParentID.ToString(), "term_order");
+            foreach (DataRow dr in rows)
+            {
+                row = new Dictionary<String, Object>();
+                row.Add("term_id", dr["term_id"]);
+                row.Add("id", dr["term_taxonomy_id"]);
+                row.Add("text", dr["name"]);
+                if (dr["parent"] != DBNull.Value) row.Add("parent", dr["parent"]);
+                if (dr["object_id"] != DBNull.Value) row.Add("checked", true);
+                row.Add("term_order", dr["term_order"]);
+                List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["term_id"]));
+                row.Add("children", list2);
+                list.Add(row);
+            }
+            return list;
+        }
+
+        [HttpGet]
+        public JsonResult GetTaxonomyTerms(string taxonomy = "-", string query = "-")
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.ProductRepository.GetTaxonomyTerms(taxonomy, query);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 
 }

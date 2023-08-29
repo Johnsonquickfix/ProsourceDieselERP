@@ -2,14 +2,13 @@
     $("#loader").hide();
     //console.log(location);
     //location.href = 'ListProduct';
-    var url = window.location.pathname;
-    var id = url.substring(url.lastIndexOf('/') + 1);
+    let url = window.location.pathname;
+    let id = url.substring(url.lastIndexOf('/') + 1);
 
-     var urlperm = "/Product/ListProduct";
-        CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
-        CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
-        CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);  
-
+    let urlperm = "/Product/ListProduct";
+    CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
+    CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
+    CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);
 
     $('li:contains(Variations)').hide();
 
@@ -17,9 +16,9 @@
     $('#divimage').hide();
     $('#divPurchase').hide();
     $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    let today = new Date(); divimage
+    let today = new Date();
     $('#txtPublishDate').val(today.toLocaleDateString("en-US"));
-    
+
     $.get('/Product/GetShipping/' + 1, { async: false }, function (data) {
         var items = "";
         // $('#ddlShipping').empty();
@@ -30,11 +29,11 @@
     });
 
     $('#chkgiftcard').change();
-    Getsimpalproducttype();
+    Getsimpalproducttype(), bindCategory(id);
     $("#ddlproducttypesimpal").val(1);
     if (id != "" && id != "AddNewProduct") {
-        $("#target :input").prop("disabled", true);       
-        $('#lbltitle').text("Update Product");        
+        $("#target :input").prop("disabled", true);
+        $('#lbltitle').text("Update Product");
         $("#btnedit").show();
         $('#divPurchase').show();
         $('#divimage').show();
@@ -42,15 +41,12 @@
         // $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         $("#btnbacklist").prop("href", "../ListProduct")
         $("#ddlProductType").prop("disabled", true);
-        GetDataByID(id);
+        GetDataByID(id), GetProdctByID($("#hfprodcid").val());
+
         //  console.log($("#hfprodcid").val());
 
-        GetProdctByID($("#hfprodcid").val());
-
         ////GetExProdctByID($("#hfcategid").val());
-        ////if ($("#hfvproductattributes").val() != null || $("#hfvproductattributes").val() != '') {
-        ////    GetAttributesID($("#hfvproductattributes").val());
-        ////}
+        ////
         ////GetProductvariationID(id);
 
         //setTimeout(function () { GetDataByID(id); }, 3000);
@@ -68,13 +64,13 @@
         $("#btnedit").show();
         $("#btncancel").hide();
         $("#btnedit").prop("disabled", false);
-       // $("#btncancel").prop("disabled", false); btnSaveupdate
+        // $("#btncancel").prop("disabled", false); btnSaveupdate
         $("#btnSaveupdate").hide();
         $('#btnSaveupdate').text("Update");
         $("#btnSave").hide();
         $('#btnSave').text("Update");
         $('#txtPublishDate').attr('readonly', true);
-       // $('#txtsku').attr('readonly', true);
+        // $('#txtsku').attr('readonly', true);
         //$("#txtPublishDate").datepicker("disable"); txtsku
         $("#txtPublishDate").datepicker("destroy");
 
@@ -83,9 +79,9 @@
         //var urlpath = window.location.pathname;
         //var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
         //$("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
-         $('#btnbackcategory').attr("disabled", "disabled");
-   
-        
+        $('#btnbackcategory').attr("disabled", "disabled");
+
+
     }
     else {
         $("#target :input").prop("disabled", false);
@@ -100,10 +96,10 @@
         $("#btnSave").show();
         $("#btnSaveupdate").show();
         $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + 1000000001)
-       // $("#btnbackcategory").prop("disabled", false);
-      //  $('#btnbackcategory').attr("disabled", "disabled");
-      //  $("#btnbackcategory").off('click');
-       
+        // $("#btnbackcategory").prop("disabled", false);
+        //  $('#btnbackcategory').attr("disabled", "disabled");
+        //  $("#btnbackcategory").off('click');
+
         isEdit(true);
     }
     $("#txtregularprice").keyup(function () {
@@ -154,9 +150,6 @@
         $this.val($this.val().substring(0, 10));
     });
 
-
-
-    $('#dvsock').hide();
     $('#enableStock').change(function () {
         if ($(this).prop("checked")) {
             $('#dvsock').show();
@@ -164,13 +157,13 @@
             $('#dvsock').hide();
         }
     });
-   // $('#divdayexpire').hide();
+    // $('#divdayexpire').hide();
     //$('#divRecipientemail').hide();
-   
+
 
     $('#ddlProductType').change(function () {
 
-        if ($("#ddlProductType").val() == "4") {
+        if ($("#ddlProductType").val() == "variable") {
             $('#divregular').hide();
             $('#divsale').hide();
             $('li:contains(Variations)').show();
@@ -183,9 +176,6 @@
             $('#divproducttypesimpal').show();
         }
     });
-
-
-   
 
     $('#ddlUpsells').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -314,8 +304,8 @@
                         /*varHTML += '<div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
                         varHTML += '<div class="col-md-6"><label class="control-label">Shipping Class</label></div>';
                         varHTML += '<select class="txtshipvariation form-control select2"><option value="-1">Select shipping class</option>';
-                        for (var j = 0; j < _shipping_class.length; j++) {                           
-                                varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
+                        for (var j = 0; j < _shipping_class.length; j++) {
+                            varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
                         };
                         varHTML += '</select ></div > ';
                         varHTML += '<div class="col-md-6"><label class="control-label">Product Type</label></div>';
@@ -368,33 +358,6 @@
         $("#row" + button_id + '').remove();
     });
 
-
-    function Getproducttype() {
-        let _producttype = [];
-        $.ajax({
-            type: "get", url: '/Product/Getproducttype', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
-            success: function (data) {
-                data = JSON.parse(data); _producttype = data;
-                //console.log(data, _shipping_class);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
-        });
-        return _producttype;
-    }
-    function Getsimpalproducttype() {
-        $.ajax({
-            url: "/Product/Getproducttype",
-            type: "get",
-            success: function (data) {
-                //  console.log(data);
-                data = JSON.parse(data);
-                $('#ddlproducttypesimpal').append('<option value="0">Please Select Product Type</option>');
-                for (var i = 0; i < data.length; i++) {
-                    $('#ddlproducttypesimpal').append('<option value="' + data[i].rowid + '">' + data[i].name + '</option>');
-                }
-            }, async: false
-        });
-    }
     $(document).on('click', "#btnedit", function () {
         $("#target :input").prop("disabled", false);
         $("#tbhold").find("input,button,textarea,select").attr("disabled", false);
@@ -429,7 +392,6 @@
         isEdit(false);
     });
 
-
     $(document).on('click', "#btnproductuploade", function () {
         AddProductImages();
     })
@@ -444,8 +406,6 @@
     $(document).on('click', "#btnSaveupdate", function () {
         AddProduct();
     })
-
-   
 
     $("#btnSavevariations").click(function (e) {
         debugger
@@ -626,11 +586,11 @@
         //    }
         //}
         //else {
-            var obj = {
-                ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
-            }
+        var obj = {
+            ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
+        }
         //}
-       // console.log(obj);
+        // console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
             let less = calculateFinal();
@@ -713,42 +673,42 @@
         if (values != '') {
             var checkstr = confirm('are you sure want to save/update Attributes?');
             if (checkstr == true) {
-            //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
-            $.ajax({
-                type: 'POST',
-                url: '/Product/saveAttributes',
-                data: "{'fields':'" + JSON.stringify(_list) + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
-                dataType: 'json',
-                headers: { "Content-Type": "application/json" },
-                beforeSend: function () {
-                    $("#loader").show();
-                },
-                success: function (data) {
-                    if (data.status == true) {
-                        if (data.url == "Manage") {
-                            //alert('d');
-                            GetProductvariationID(id);
-                            swal('Success!', data.message, 'success');
-                            ActivityLog('save attribute for product id(' + id + ')', '/Product/AddNewProduct/' + id + '');
+                //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+                $.ajax({
+                    type: 'POST',
+                    url: '/Product/saveAttributes',
+                    data: "{'fields':'" + JSON.stringify(_list) + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
+                    dataType: 'json',
+                    headers: { "Content-Type": "application/json" },
+                    beforeSend: function () {
+                        $("#loader").show();
+                    },
+                    success: function (data) {
+                        if (data.status == true) {
+                            if (data.url == "Manage") {
+                                //alert('d');
+                                GetProductvariationID(id);
+                                swal('Success!', data.message, 'success');
+                                ActivityLog('save attribute for product id(' + id + ')', '/Product/AddNewProduct/' + id + '');
+                            }
+                            else {
+                                $("#hfUpdatedID").val(data.ID);
+                                swal('Success!', data.message, 'success');
+                            }
                         }
-                        else {
-                            $("#hfUpdatedID").val(data.ID);
-                            swal('Success!', data.message, 'success');
-                        }
-                    }
-                    // EMPTY THE ARRAY.
-                    // alert(response.d);
-                },
-                complete: function () {
-                    $("#loader").hide();
-                    //location.href = '/Users/Users/';
-                    //window.location.href = '/Users/Users/';
+                        // EMPTY THE ARRAY.
+                        // alert(response.d);
+                    },
+                    complete: function () {
+                        $("#loader").hide();
+                        //location.href = '/Users/Users/';
+                        //window.location.href = '/Users/Users/';
 
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    // alert(errorThrown);
-                }
-            });
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        // alert(errorThrown);
+                    }
+                });
             } else {
                 return false;
             }
@@ -792,7 +752,37 @@
 
     $("#product_variations").find(".rowCalulate").change(function () { calculateFinal(); });
 
+    $('select[name^="attribute_values"]').select2({
+        allowClear: true, minimumInputLength: 0, multiple: true,
+        ajax: {
+            url: '/Product/GetTaxonomyTerms', type: "get", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) {
+                var obj = { taxonomy: $(this).data('taxonomy') || '-', query: params.term || '' }; return obj;
+            },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.name, name: item.name, id: item.term_taxonomy_id } }) }; },
+            error: function (xhr, status, err) { }, cache: true
+        }
+    });
 });
+
+function Getproducttype() {
+    let _producttype = [];
+    $.ajaxSetup({ async: false, beforeSend: function (xhr) { } });
+    $.get('/Product/Getproducttype', {}, function (data) {
+        data = data ? JSON.parse(data) : {}; _producttype = data;
+    }).fail(function (jqXHR, textStatus, errorThrown) { }).always(function () { });
+    return _producttype;
+}
+function Getsimpalproducttype() {
+    $.ajaxSetup({ async: false, beforeSend: function (xhr) { } });
+    $.get('/Product/Getproducttype', {}, function (data) {
+        data = data ? JSON.parse(data) : {};
+        $('#ddlproducttypesimpal').append('<option value="0">Please Select Product Type</option>');
+        for (var i = 0; i < data.length; i++) {
+            $('#ddlproducttypesimpal').append('<option value="' + data[i].rowid + '">' + data[i].name + '</option>');
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) { }).always(function () { });
+}
 
 //$("#product_variations").find(".rowCalulate").change(function () { calculateFinal(); });
 
@@ -813,7 +803,7 @@ function calculateFinal() {
                 $(row).find("[name=txtregularvar]").focus();
                 $(row).find("[name=txtSalepricevariation]").focus();
                 //parseFloat($(row).find("[name=txtregularvar]").val(0.00));
-               // parseFloat($(row).find("[name=txtSalepricevariation]").val(0.00));
+                // parseFloat($(row).find("[name=txtSalepricevariation]").val(0.00));
             }
         }
     });
@@ -824,11 +814,11 @@ function calculateFinal() {
 
 $('#chkgiftcard').change(function () {
     if ($(this).prop("checked")) {
-       // console.log('s');
+        // console.log('s');
         $('#divdayexpire').show();
         $('#divRecipientemail').show();
     } else {
-       // console.log('N');
+        // console.log('N');
         $('#divdayexpire').hide();
         $('#divRecipientemail').hide();
     }
@@ -858,15 +848,15 @@ function readURLpopup(input) {
 
     }
 }
-function readURLvarition(input,Id) {
+function readURLvarition(input, Id) {
     //console.log(input.files);
-   // console.log(Id);
+    // console.log(Id);
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
-           // console.log(e.target.result);
-            $('#show_pictureVar_' + Id +'').attr('src', e.target.result);
-           // $("#show_pictureVar" + data[i].id).val(v_data['_backorders']).trigger('change');
+            // console.log(e.target.result);
+            $('#show_pictureVar_' + Id + '').attr('src', e.target.result);
+            // $("#show_pictureVar" + data[i].id).val(v_data['_backorders']).trigger('change');
         };
         reader.readAsDataURL(input.files[0]);
 
@@ -890,7 +880,7 @@ function readURLvaritionpopum(input, Id) {
 
 function UpdateImagevarition(input, Id) {
     ID = Id;
-    var file = document.getElementById("ImageFileVariation_"+Id+"").files[0];
+    var file = document.getElementById("ImageFileVariation_" + Id + "").files[0];
     var obj = new FormData();
     obj.append("ImageFile", file);
     obj.append("ID", ID);
@@ -953,7 +943,7 @@ function AddProductImages() {
         contentType: false,
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            if (data.status == true) {               
+            if (data.status == true) {
                 swal('Success!', data.message, 'success');
             }
             else { swal('Alert!', data.message, 'error') }
@@ -988,10 +978,6 @@ function AddProductpopupImages() {
     })
 }
 
-
-
-
-
 function AddProduct() {
     debugger
     ID = $("#hfid").val();
@@ -1012,9 +998,9 @@ function AddProduct() {
     //console.log(categorydata);
     let date_publish = $("#txtPublishDate").val().split('/');
     //if ($("#enableStock").prop('checked') == true)
-        enableStock = "yes";
+    enableStock = "yes";
     //else
-        //enableStock = "no";
+    //enableStock = "no";
 
     if ($("#chkgiftcard").prop('checked') == true)
         giftcard = "yes";
@@ -1037,7 +1023,7 @@ function AddProduct() {
     classtax = $("#ddlclasstax").val();
     pdstatus = $("#ddlstatus").val();
     ddlsimpalprodcttype = $("#ddlproducttypesimpal").val();
-    sku = $("#txtsku").val();    
+    sku = $("#txtsku").val();
     enableStockval = enableStock;
     Stockquantity = $("#txtStockquantity").val();
 
@@ -1058,15 +1044,15 @@ function AddProduct() {
 
     if (date_publish.length > 0)
         date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
-     //console.log(date_publish);
+    //console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
     }
-    else if (regularprice == "" && ProductTypeval != "4") {
+    else if (regularprice == "" && ProductTypeval != "variable") {
         swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtregularprice').focus(); });
     }
-    else if (categorydataval == "" ) {
+    else if (categorydataval == "") {
         swal('Alert', 'Please Select Category', 'error').then(function () { swal.close(); $('#chkproducttype').focus(); });
     }
     else if (sku == "") {
@@ -1076,7 +1062,7 @@ function AddProduct() {
         swal('Alert', 'Please Enter Publish date', 'error').then(function () { swal.close(); $('#txtPublishDate').focus(); });
     }
     else {
-        
+
         var obj = {
             ID: ID,
             updatedID: UpdatedIDval,
@@ -1109,45 +1095,45 @@ function AddProduct() {
             _gift_card_expiration_days: dayexpire,
             _gift_card_template_default_use_image: Recipientemail,
             post_status: pdstatus,
-           _product_type_id: ddlsimpalprodcttype
+            _product_type_id: ddlsimpalprodcttype
         }
         var checkstr = confirm('Want to save/update product?');
         if (checkstr == true) {
-        $.ajax({
-            url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    if (data.url == "Manage") {
-                        swal('Success!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
+            $.ajax({
+                url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        if (data.url == "Manage") {
+                            swal('Success!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
+                        }
+                        else {
+                            $('#fetch_results > input:text').val('');
+                            swal('Success!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
+                        }
+                        //$('#ddlProduct').val(null).trigger('change');
+                        //clear_fetch();
+
                     }
                     else {
-                        $('#fetch_results > input:text').val('');
-                        swal('Success!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
+                        swal('Alert!', data.message, 'error')
                     }
-                    //$('#ddlProduct').val(null).trigger('change');
-                    //clear_fetch();
-
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-                //location.href = '/Users/Users/';
-                //window.location.href = '/Users/Users/';
-                isEdit(false);
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+                },
+                complete: function () {
+                    $("#loader").hide();
+                    //location.href = '/Users/Users/';
+                    //window.location.href = '/Users/Users/';
+                    isEdit(false);
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
         } else {
             return false;
         }
@@ -1156,7 +1142,6 @@ function AddProduct() {
 
 
 }
-
 
 function addZeroes(num) {
     // Cast as number
@@ -1195,57 +1180,56 @@ function GetDataByID(order_id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            var i = JSON.parse(data);
-            // console.log(i); 
-            $("#txtProductName").val(i[0].post_title);
-            $("#hftitle").val(i[0].post_title);
-            $("#formatcustom").val(i[0].post_content);
-            $('#ddlProductType').val(i[0].ProductsID).trigger('change');
-            $("#txtregularprice").val(i[0].regularamount);
-            $("#txtsaleprice").val(i[0].saleprice);
-            if (i[0].axstatus == "" || i[0].taxclass == null)
-                $('#ddltaxstatus').val("taxable").trigger('change');
-            else
-                $('#ddltaxstatus').val(i[0].axstatus).trigger('change');
-
-            if (i[0].taxclass == "" || i[0].taxclass == null)
-                $('#ddlclasstax').val("standard").trigger('change');
-            else
-                $('#ddlclasstax').val(i[0].taxclass).trigger('change'); 
-            
-            $('#ddlstatus').val(i[0].post_status).trigger('change');
-
-
-            if (i[0].ptypeid == "" || i[0].ptypeid == null)
-                $('#ddlproducttypesimpal').val("1").trigger('change');
-            else
-                $('#ddlproducttypesimpal').val(i[0].ptypeid).trigger('change');
-
-            $("#txtsku").val(i[0].sku);
-          //  console.log(i[0].Publish_Date);
-            if (i[0].Publish_Date != null)
-                $('#txtPublishDate').val(i[0].Publish_Date);
-        
-            if (i[0].managestock == "yes") {
-                $("#enableStock").prop("checked", true);
-                $('#dvsock').show();
+            data = JSON.parse(data);
+            $("#txtProductName").val(data.post_title);
+            $("#hftitle").val(data.post_title);
+            $("#formatcustom").val(data.post_content);
+            if (data.product_type == null) $('#ddlProductType').val('simple').trigger('change');
+            else $('#ddlProductType').val(data.product_type).trigger('change');
+            if ($("#ddlProductType").val() == "variable") {
+                $('#divregular,#divsale,#divproducttypesimpal').hide();
+                $('dvstock_status').hide();
+                $('li:contains(Variations)').show();
             }
             else {
-                $('#dvsock').hide();
+                $('#divregular,#divsale,#divproducttypesimpal').show();
+                $('dvstock_status').show();
+                $('li:contains(Variations)').hide();
             }
+            //General
+            $("#txtregularprice").val(data.regular_price);
+            $("#txtsaleprice").val(data.sale_price);
+            if (data.axstatus == "" || data.taxclass == null) $('#ddltaxstatus').val("taxable").trigger('change');
+            else $('#ddltaxstatus').val(data.tax_status).trigger('change');
 
-            if (i[0].giftcard == "yes") {
-  
-                $("#chkgiftcard").prop("checked", true);        
+            if (data.taxclass == "" || data.taxclass == null) $('#ddlclasstax').val("standard").trigger('change');
+            else $('#ddlclasstax').val(data.tax_class).trigger('change');
+            if (data.Publish_Date != null) $('#txtPublishDate').val(data.Publish_Date);
+            $('#ddlstatus').val(data.post_status).trigger('change');
+            if ((parseInt(data.product_type_id) || 0) == 0) $('#ddlproducttypesimpal').val("1").trigger('change');
+            else $('#ddlproducttypesimpal').val(data.product_type_id).trigger('change');
+            //Inventory or SKU
+            $("#txtsku").val(data.sku);
+            if (data.manage_stock == "yes") { $("#enableStock").prop("checked", true); $('#dvsock').show(); }
+            else { $('#dvsock').hide(); }
+            $("#txtStockquantity").val(data.stock);
+            $('#txtallowbackorders').val(data.backorders).trigger('change');
+            $("#txtLowstockthreshold").val(data.low_stock_amount);
+            $('#ddlstockstatus').val(data.stock_status.trim()).trigger('change');
+            if (data.sold_individually == "yes") $("#solidIndividually").prop("checked", true);
+            //Shipping
+            $("#weight_unit").html(`Weight (${data.weight_unit})`), $("#dimension_unit").val(`Dimensions (${data.dimension_unit})`);
+            $("#txtweigh").val(data.weight);
+            $("#txtLength").val(data.length);
+            $("#txtWidth").val(data.width);
+            $("#txtHeight").val(data.height);
 
+            if (data.giftcard == "yes") {
+                $("#chkgiftcard").prop("checked", true);
                 $('#divdayexpire').show();
-    
-               // $('#divRecipientemail').show();
-          
+                // $('#divRecipientemail').show();
                 $("#txtdaysexpire").val(i[0].expirationdayes);
-
                 $('#ddlRecipientemail').val(i[0].gifttemplate.trim()).trigger('change');
- 
             }
             else {
                 $('#divdayexpire').hide();
@@ -1253,63 +1237,37 @@ function GetDataByID(order_id) {
             }
             $('#chkgiftcard').change();
 
-            $("#txtStockquantity").val(i[0].stock);
-            $('#txtallowbackorders').val(i[0].backorders).trigger('change');
-            $("#txtLowstockthreshold").val(i[0].lowstockamount);
-            $('#ddlstockstatus').val(i[0].stockstatus.trim()).trigger('change');
-            if (i[0].soldindividually == "yes")
-                $("#solidIndividually").prop("checked", true);
-            $("#txtweigh").val(i[0].weight);
-            $("#txtLength").val(i[0].length);
-            $("#txtWidth").val(i[0].width);
-            $("#txtHeight").val(i[0].height);
-           // console.log(i[0].shippingclassID);
-           
-            $("#hfprodcid").val(i[0].upsellids);
-
-            $("#hfvproductattributes").val(i[0].productattributes);
-
-            $("#hfproductvariationID").val(i[0].VariantID);
-
-            $("#hfcategid").val(i[0].crosssellids);
-
-            $("#hfprodectcategoryid").val(i[0].CategoryID);
-            var category = i[0].CategoryID;
-            if (category != null) {
-                var temp = new Array();
-                var temp = category.split(",");
-                $('#tblprodctype').find('input[type="checkbox"]').each(function (i, item) {
-                    if (temp.includes($(item).val()))
-                        $(item).prop('checked', true);
-                });
-            }
-
-            if ($("#ddlProductType").val() == "4") {
-                $('#divregular').hide();
-                $('#divsale').hide();
-                $('li:contains(Variations)').show();
-                $('#divproducttypesimpal').hide();
-                
-
-            } else {
-                $('#divregular').show();
-                $('#divsale').show();
-                $('li:contains(Variations)').hide();
-                $('#divproducttypesimpal').show();
-            }
-
-            var path = i[0].image;
+            $("#hfvproductattributes").val(data.attributes);
+            $("#hfproductvariationID").val(data.variations);
+            $("#hfprodectcategoryid").val(data.categories);
+            $("#hfcategid").val(data.crosssellids);
+            $("#hfprodcid").val(data.upsellids);
+            GetAttributesID(data.attributes);
+            //var category = i[0].CategoryID;
+            //if (category != null) {
+            //    var temp = new Array();
+            //    var temp = category.split(",");
+            //    $('#tblprodctype').find('input[type="checkbox"]').each(function (i, item) {
+            //        if (temp.includes($(item).val()))
+            //            $(item).prop('checked', true);
+            //    });
+            //}
+            var path = data.image;
+            url = "../../Content/Product/" + path + "";
+            if (path != null) { $('#show_picture').attr('src', url); }
+            else if (path == null || path == "") { $('#show_picture').attr('src', "../../Content/ProductCategory/default.png"); }
+            else { $('#show_picture').attr('src', "../../Content/ProductCategory/default.png"); }
             //console.log(i[0].guid);
             //console.log(path);      
-            url = "../../Content/Product/" + path + "";
-           //// var result = checkFileExist(url);
-           ////// console.log(result);
 
-           //// if (path.indexOf('laylasleep.com') != -1) {
-           ////   //  console.log('sddd');
-           ////     $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
-           //// }
-           //// else {
+            //// var result = checkFileExist(url);
+            ////// console.log(result);
+
+            //// if (path.indexOf('laylasleep.com') != -1) {
+            ////   //  console.log('sddd');
+            ////     $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
+            //// }
+            //// else {
             ////if (path.indexOf('product') == -1)
             ////    var result = checkFileExist(url);
             ////if (path.indexOf('product') != -1) {
@@ -1317,42 +1275,32 @@ function GetDataByID(order_id) {
             ////}
             ////else {
 
-           // var result = checkFileExist(url);
-            if (path != null) {
-                  $('#show_picture').attr('src', url);
-
-                } 
-                else if (path == null || path == "") {
-                    $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
-
-                }
-                else {
-                    $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
-            }
+            // var result = checkFileExist(url);
 
 
-           // var pathimg = i[0].image;
-           // urlimg = "../../Content/Product/" + pathimg + "";
 
-           //// var resultimg = checkFileExist(urlimg);
-           // if (pathimg != null) {
+            // var pathimg = i[0].image;
+            // urlimg = "../../Content/Product/" + pathimg + "";
 
-           //     $('#show_picturepopup').attr('src', urlimg);
+            //// var resultimg = checkFileExist(urlimg);
+            // if (pathimg != null) {
 
-           // }
-           // else if (pathimg == null || pathimg == "") {
-           //     $('#show_picturepopup').attr('src', "../../Content/ProductCategory/default.png");
+            //     $('#show_picturepopup').attr('src', urlimg);
 
-           // }
-           // else {
-           //     $('#show_picturepopup').attr('src', "../../Content/ProductCategory/default.png");
-           // }
+            // }
+            // else if (pathimg == null || pathimg == "") {
+            //     $('#show_picturepopup').attr('src', "../../Content/ProductCategory/default.png");
+
+            // }
+            // else {
+            //     $('#show_picturepopup').attr('src', "../../Content/ProductCategory/default.png");
+            // }
 
             //}
-           setTimeout(function () { getfillshiping(i[0].shippingclassID); }, 11000);
+            setTimeout(function () { getfillshiping(data.shippingclassID); }, 11000);
             //$('#ddlShipping').val(47).trigger('change');
 
-           // $('#ddlShipping').val(i[0].shippingclassID).trigger('change');
+            // $('#ddlShipping').val(i[0].shippingclassID).trigger('change');
         },
         error: function (msg) { alert(msg); },
         async: false
@@ -1376,29 +1324,13 @@ function checkFileExist(urlToFile) {
 }
 
 function GetProdctByID(ProdctID) {
-
-    var ID = ProdctID;
-    var obj = { strVal: ProdctID }
-    console.log(ProdctID);
-    $.ajax({
-
-        url: '/Product/GetProdctByID/' + ID,
-
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var datalog = JSON.parse(data);
-            for (var i = 0; i < datalog.length; i++) {
-                $("#ddlUpsells").append('<option value="' + datalog[i].id + '" selected>' + datalog[i].Name + '</option>');
-            }
-
-        },
-        error: function (msg) { alert(msg); },
-        async: false
-    });
-
+    $.ajaxSetup({ async: false, beforeSend: function (xhr) { } });
+    $.post('/Product/GetProdctByID', { strVal: ProdctID }, function (data) {
+        data = data ? JSON.parse(data) : {};
+        for (var i = 0; i < data.length; i++) {
+            $("#ddlUpsells").append('<option value="' + data[i].id + '" selected>' + data[i].Name + '</option>');
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) { console.log(jqXHR, textStatus, errorThrown); }).always(function () { });
 }
 
 function GetExProdctByID(ProdctID) {
@@ -1427,23 +1359,63 @@ function GetExProdctByID(ProdctID) {
 }
 
 function GetAttributesID(Attributes) {
-   // console.log(Attributes);
-    if (Attributes != '') {
-        var itxtCnt = 0;
-        var ID = Attributes;
-        //i++;
-        var i = 1;
-        itxtCnt = itxtCnt + 1;
-        //  var trainindIdArray = Attributes.split(',{'); 
-        $.each(JSON.parse(Attributes), function (index1, value) {
-            var datalog = JSON.parse(Attributes);
-            // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-            //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-            $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + ' >' + datalog[index1].value + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-        });
-        // $('.inputchk').prop("checked", true);
-        $('.inputchkvar').prop("checked", true);
-    }
+    $.each(Attributes, function (i, v) {
+        let _tr = `<div id="row_${i}" class="box box-primary" data-taxonomy="${v.taxonomy_name}">`;
+        _tr += `    <div class="box-header with-border"><h3 class="panel-title" id="heading_${i}" ><a data-toggle="collapse" data-parent="#accordion" href="#collapse_${i}" aria-expanded="false" class="collapsed">${v.display_name}</a></h2><div class="box-tools pull-right"><button type="button" class="btn btn-default btn-sm btn_remove"><i class="fa fa-trash text-red"></i></button></div></div>`;
+        _tr += `    <div id="collapse_${i}" class="panel-collapse collapse in" aria-labelledby="heading_${i}" data-bs-parent="#tbhold">`;
+        _tr += '        <div class="box-body">';
+        _tr += '            <div class="row">';
+        if (v.is_taxonomy = 1) {
+            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">${v.display_name}</strong><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></div>`;
+            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[${i}]" class="form-control" data-taxonomy="${v.taxonomy_name}" style="width:100%;" multiple>`;
+            $.each(v.option, function (j, option) { _tr += `<option value="${option.term_taxonomy_id}" selected="selected">${option.name}</option>`; });
+            _tr += `            </select></div></div>`;
+        }
+        else {
+            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" name="attribute_names[0]" value="${v.display_name}"><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></div>`;
+            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[${i}]" >${v.value}</textarea></div></div>`;
+        }
+        _tr += '            </div>';
+        _tr += '        </div>';
+        _tr += '    </div>';
+        _tr += '</div>';
+
+        //let _tr = `<tr id="row_${i}" class="row" data-taxonomy="${v.taxonomy_name}">`;
+        //if (v.is_taxonomy = 1) {
+        //    _tr += `<td class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">${v.display_name}</strong><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></td>`;
+        //    _tr += `<td class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[${i}]" class="form-control" data-taxonomy="${v.taxonomy_name}" style="width:100%;" multiple>`;
+        //    $.each(v.option, function (j, option) { _tr += `<option value="${option.term_taxonomy_id}" selected="selected">${option.name}</option>`; });
+        //    _tr += `</select></div></td>`;
+        //}
+        //else {
+        //    _tr += `<td class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" name="attribute_names[0]" value="${v.display_name}"><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></td>`;
+        //    _tr += `<td class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[${i}]" >${v.value}</textarea></div></td>`;
+        //}
+        //_tr += '</tr>';
+
+        $("#product_attributes").append(_tr);
+        //var datalog = JSON.parse(Attributes);
+        //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        //$("#tbhold").append(`<tr id="row_${i}"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id="tb_${i}" value="${v.name}" /><span><input type="checkbox" class="inputchkvar" id="tb_${i}" value=""/><label for="tb_${i}">Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb >${v.value}</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="${i}" name="remove">X</button></td></tr>`);
+    });
+
+    //if (Attributes != null) {
+    //    var itxtCnt = 0;
+    //    var ID = Attributes;
+    //    //i++;
+    //    var i = 1;
+    //    itxtCnt = itxtCnt + 1;
+    //    //  var trainindIdArray = Attributes.split(',{'); 
+    //    $.each(JSON.parse(Attributes), function (index1, value) {
+    //        var datalog = JSON.parse(Attributes);
+    //        // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+    //        //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+    //        $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + ' >' + datalog[index1].value + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+    //    });
+    //    // $('.inputchk').prop("checked", true);
+    //    $('.inputchkvar').prop("checked", true);
+    //}
 }
 
 function GetShippingClass() {
@@ -1618,7 +1590,7 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '</div>';
                 //varHTML += '</div>';
 
-               
+
 
 
                 varHTML += '<div class="form-group d-flex mt-25">';
@@ -1734,10 +1706,10 @@ function GetProductvariationID(ProductID) {
                 //}
 
             }
-                //url = "../../Content/Product/" + data[i].guid + "";
-               // $('#show_pictureVar_' + data[i].id + '').attr('src', url);
-                
-            
+            //url = "../../Content/Product/" + data[i].guid + "";
+            // $('#show_pictureVar_' + data[i].id + '').attr('src', url);
+
+
 
         },
         error: function (msg) { alert(msg); },
@@ -1760,9 +1732,6 @@ function GetProductvariationID(ProductID) {
     //});
 }
 
-
-
-
 function chunkArray(arr, n) {
     var chunkLength = Math.max(arr.length / n, 1);
     var chunks = [];
@@ -1770,4 +1739,11 @@ function chunkArray(arr, n) {
         if (chunkLength * (i + 1) <= arr.length) chunks.push(arr.slice(chunkLength * i, chunkLength * (i + 1)));
     }
     return chunks;
+}
+
+function bindCategory(product_id) {
+    $.ajaxSetup({ async: true, beforeSend: function (xhr) { } });
+    $.get('/Product/ProductCategories', { id: parseInt(product_id) || 0 }, function (data) {
+        console.log(data); $('#ul_category').tree({ data: data, idField: 'id', treeField: 'text', height: '100%', cascadeCheck: false });
+    }).fail(function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }).always(function () { });
 }

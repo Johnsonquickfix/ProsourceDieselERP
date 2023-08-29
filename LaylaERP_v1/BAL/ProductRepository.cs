@@ -75,25 +75,22 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        public static DataTable GetDataByID(OrderPostStatusModel model)
+        public static DataSet GetDataByID(OrderPostStatusModel model)
         {
-            DataTable dt = new DataTable();
-
+            DataSet ds = new DataSet();
             try
             {
                 string strWhr = string.Empty;
                 SqlParameter[] para = { new SqlParameter("@strVal", model.strVal), };
                 string strSql = "erp_getproductdetailsbyid";
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
-                dt = ds.Tables[0];
-
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            return dt;
+            return ds;
         }
 
         public static DataTable GetDataBuyingByID(OrderPostStatusModel model)
@@ -3225,5 +3222,46 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetProductCategory(string flag, int entity_id,long product_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+
+                    new SqlParameter("@entity_id", entity_id),
+                    new SqlParameter("@id", product_id),
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("bulk_editor_master_search", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetTaxonomyTerms(string taxonomy, string query)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@taxonomy", taxonomy),
+                    new SqlParameter("@query", query),
+                };
+
+                dt = SQLHelper.ExecuteDataTable("SELECT top 50 tt1.term_taxonomy_id,tt1.term_id,tt2.name,tt2.slug FROM wp_term_taxonomy tt1 INNER JOIN wp_terms tt2 on tt2.term_id = tt1.term_id WHERE tt1.taxonomy = @taxonomy and tt2.name like '%@query%' order by name", parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

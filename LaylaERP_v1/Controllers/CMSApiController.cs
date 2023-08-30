@@ -1173,8 +1173,9 @@
                                     width = dr["width"],
                                     height = dr["height"],
                                     tax_status = dr["tax_status"],
-                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 }
-                                };
+                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
+                                    attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
+                            };
                                 obj.variations.Add(vr);
                             }
                         }

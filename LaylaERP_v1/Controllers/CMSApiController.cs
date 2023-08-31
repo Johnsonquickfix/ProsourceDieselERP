@@ -1175,7 +1175,7 @@
                                     tax_status = dr["tax_status"],
                                     image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
                                     attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
-                            };
+                                };
                                 obj.variations.Add(vr);
                             }
                         }
@@ -1223,6 +1223,60 @@
                             });
                         }
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
+                    }
+                    else
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        [HttpGet, Route("brand/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductBrand(string app_key, long entity_id, long parent_id = 0)
+        {
+            try
+            {
+                if (parent_id == 0) parent_id = 70263;
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else
+                {
+                    dynamic obj = new List<dynamic>();
+                    IDictionary<string, List<dynamic>> pairs = new Dictionary<string, List<dynamic>>();
+                    DataTable dt = CMSRepository.GetMenuItems("brand", entity_id, 0, parent_id);
+                    if (dt.Rows.Count > 0)
+                    {
+                        for (char letter = 'A'; letter <= 'Z'; letter++)
+                        {
+                            pairs.Add(letter.ToString(), new List<dynamic>());
+                        }
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            string _key = dr["name"].ToString().ToUpper().Substring(0, 1);
+                            if (pairs.ContainsKey(_key))
+                            {
+                                pairs[_key].Add(new
+                                {
+                                    term_id = dr["term_id"],
+                                    parent = dr["parent"],
+                                    count = dr["count"],
+                                    name = dr["name"],
+                                    slug = dr["slug"],
+                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 }
+                                });
+                            }
+                        }
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = pairs });
                     }
                     else
                         return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });

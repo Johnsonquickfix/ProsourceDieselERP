@@ -3263,5 +3263,82 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        /// <summary>
+        /// AttributesList
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userstatus"></param>
+        /// <param name="searchid"></param>
+        /// <param name="pageno"></param>
+        /// <param name="pagesize"></param>
+        /// <param name="totalrows"></param>
+        /// <param name="SortCol"></param>
+        /// <param name="SortDir"></param>
+        /// <returns></returns>
+        public static DataTable AttributesList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strSQl = "bulk_editor_master_search";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "attributes-tab")
+                };
+                dt = SQLHelper.ExecuteDataTable(strSQl, para);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetAttributesByID(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "erp_productattributes";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag", "show"),
+                    new SqlParameter("@attribute_id", id)
+                    };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GeteditAttributesByID(string flag, string taxonomy, long term_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "bulk_editor_attribute";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@taxonomy", taxonomy),
+                    new SqlParameter("@term_id", term_id),
+                    };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

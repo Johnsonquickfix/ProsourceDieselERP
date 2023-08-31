@@ -888,28 +888,55 @@ namespace LaylaERP.Controllers
                     obj.product_type_id = dr["product_type_id"];
                     obj.image = dr["image"];
                     obj.categories = dr["categories"];
-                    obj.variations = dr["variations"];
+                    //obj.variations = dr["variations"];
+                    obj.variations = new List<dynamic>();
+                    foreach (DataRow dr_v in ds.Tables[1].Rows)
+                    {
+                        var vr = new
+                        {
+                            ID = dr_v["ID"],
+                            post_name = dr_v["post_name"],
+                            post_title = dr_v["post_title"],
+                            product_type = dr_v["product_type"],
+                            //Postmeta
+                            sku = dr_v["sku"],
+                            price = dr_v["price"],
+                            regular_price = dr_v["regular_price"],
+                            sale_price = dr_v["sale_price"],
+                            manage_stock = dr_v["manage_stock"],
+                            backorders = dr_v["backorders"],
+                            stock = dr_v["stock"],
+                            stock_status = dr_v["stock_status"],
+                            core_price = dr_v["core_price"],
+                            weight = dr_v["weight"],
+                            length = dr_v["length"],
+                            width = dr_v["width"],
+                            height = dr_v["height"],
+                            tax_status = dr_v["tax_status"],
+                            image = new { name = dr_v["img"], height = 0, width = 0, filesize = 0 },
+                            attributes = !string.IsNullOrEmpty(dr_v["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr_v["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
+                        };
+                        obj.variations.Add(vr);
+                    }
+
                     if (!string.IsNullOrEmpty(dr["attributes"].ToString()))
                     {
-                        List<dynamic> _attributes = new List<dynamic>();
+                        obj.attributes = new List<dynamic>();
                         System.Collections.Hashtable _att = serializer.Deserialize(dr["attributes"].ToString()) as System.Collections.Hashtable;
                         foreach (System.Collections.DictionaryEntry att in _att)
                         {
                             System.Collections.Hashtable _att_value = (System.Collections.Hashtable)att.Value;
-                            DataRow[] rows = ds.Tables[1].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
-                            if (_att_value["is_taxonomy"].ToString().Equals("1"))
+                            DataRow[] rows = ds.Tables[2].Select("attribute_name = '" + att.Key.ToString().Replace("pa_", "") + "'", "");
+                            if (_att_value["is_taxonomy"].ToString().Equals("0"))
                             {
-                                if (rows.Length > 0) _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
-                                else _attributes.Add(new { is_taxonomy = _att_value["is_taxonomy"], is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                obj.attributes.Add(new { is_taxonomy = false, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
                             }
                             else
                             {
-                                _attributes.Add(new { is_taxonomy = 0, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "text", option = _att_value["value"] });
-                                //if (rows.Length > 0) _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
-                                //else _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                if (rows.Length > 0) obj.attributes.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = rows[0]["attribute_label"], attribute_type = rows[0]["attribute_type"], option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
+                                else obj.attributes.Add(new { is_taxonomy = true, is_visible = _att_value["is_visible"], is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
                             }
                         }
-                        obj.attributes = _attributes;
                     }
                 }
                 JSONresult = JsonConvert.SerializeObject(obj);

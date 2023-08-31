@@ -1180,7 +1180,7 @@ function GetDataByID(order_id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            data = JSON.parse(data);
+            data = JSON.parse(data); console.log(data)
             $("#txtProductName").val(data.post_title);
             $("#hftitle").val(data.post_title);
             $("#formatcustom").val(data.post_content);
@@ -1365,7 +1365,7 @@ function GetAttributesID(Attributes) {
         _tr += `    <div id="collapse_${i}" class="panel-collapse collapse in" aria-labelledby="heading_${i}" data-bs-parent="#tbhold">`;
         _tr += '        <div class="box-body">';
         _tr += '            <div class="row">';
-        if (v.is_taxonomy = 1) {
+        if (v.is_taxonomy) {
             _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><strong class="attribute_name">${v.display_name}</strong><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></div>`;
             _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><select name="attribute_values[${i}]" class="form-control" data-taxonomy="${v.taxonomy_name}" style="width:100%;" multiple>`;
             $.each(v.option, function (j, option) { _tr += `<option value="${option.term_taxonomy_id}" selected="selected">${option.name}</option>`; });
@@ -1373,7 +1373,7 @@ function GetAttributesID(Attributes) {
         }
         else {
             _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" name="attribute_names[0]" value="${v.display_name}"><div class="form-check"><input type="checkbox" class="form-check-input" id="attribute_visibility[${i}]" checked="${v.is_visible}"><label for="attribute_visibility[${i}]">Visible on the product page</label></div><div class="form-check"><input type="checkbox" class="checkbox" id="attribute_variation[${i}]" value="${v.is_variation}"><label for="attribute_variation[${i}]">Used for variations</label></div></div></div>`;
-            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[${i}]" >${v.value}</textarea></div></div>`;
+            _tr += `            <div class="col-md-6"><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" name="attribute_values[${i}]" >${v.option}</textarea></div></div>`;
         }
         _tr += '            </div>';
         _tr += '        </div>';

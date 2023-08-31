@@ -1,4 +1,5 @@
 ﻿using LaylaERP.BAL;
+using LaylaERP.DAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
@@ -9,6 +10,7 @@ using System.Drawing;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -2372,6 +2374,337 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult AttributesList(ProductCategoryModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.term_id;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ProductRepository.AttributesList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetAttributesByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = ProductRepository.GetAttributesByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult AddProductAttributes(string term_id, string name, string slug, string _type, string _orderby, string _publish, string old_slug)
+        {
+            string sql = string.Empty;
+            if (Convert.ToInt32(term_id) > 0)
+            {
+                int _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(attribute_id) c FROM wp_woocommerce_attribute_taxonomies WHERE LOWER(attribute_label) = RTRIM(LOWER('{0}')) AND attribute_id != {1}", name, term_id)).ToString());
+                if (_c <= 0)
+                {
+                    _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(attribute_id) c FROM wp_woocommerce_attribute_taxonomies WHERE LOWER(attribute_name) = RTRIM(LOWER('{0}')) AND attribute_id != {1}", slug, term_id)).ToString());
+                    if (_c <= 0)
+                    {
+                        sql = $"UPDATE wp_term_taxonomy SET taxonomy='pa_{slug}' WHERE taxonomy in (SELECT CONCAT('pa_',attribute_name) FROM wp_woocommerce_attribute_taxonomies WHERE attribute_id = {term_id}); update wp_woocommerce_attribute_taxonomies set attribute_name = '{slug}',attribute_label = '{name}',attribute_type = '{_type}',attribute_orderby = '{_orderby}',attribute_public = {_publish} WHERE attribute_id = {term_id};";
+                        sql += UpdateAttributeName($"pa_{old_slug}", $"pa_{slug}");
+                        if (SQLHelper.ExecuteNonQueryWithTrans(sql.ToString()) > 0)
+                        {
+                            //Update_wp_options();
+                            return Json(new { status = true, message = "Product Attributes updated successfully!!", url = "", id = term_id }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = String.Format("Slug \"{0}\" is already in use. Change it, please.", slug), url = "", id = 0 }, 0);
+
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = String.Format("Slug \"{0}\" is already in use. Change it, please.", slug), url = "", id = 0 }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = String.Format("Name \"{0}\" is already in use. Change it, please.", name), url = "", id = 0 }, 0);
+
+                }
+            }
+            else
+            {
+                int _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(attribute_id) c FROM wp_woocommerce_attribute_taxonomies WHERE LOWER(attribute_label) = RTRIM(LOWER('{0}')) AND attribute_id != {1}", name, term_id)).ToString());
+                if (_c <= 0)
+                {
+                    _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(attribute_id) c FROM wp_woocommerce_attribute_taxonomies WHERE LOWER(attribute_name) = RTRIM(LOWER('{0}')) AND attribute_id != {1}", slug, term_id)).ToString());
+                    if (_c <= 0)
+                    {
+                        sql = $"insert into wp_woocommerce_attribute_taxonomies(attribute_name,attribute_label,attribute_type,attribute_orderby,attribute_public) values('{slug}','{name}','{_type}','{_orderby}',{_publish});";
+                        if (SQLHelper.ExecuteNonQuery(sql.ToString()) > 0)
+                        {
+                            // Update_wp_options();
+                            return Json(new { status = true, message = "Product Attributes saved successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = String.Format("Slug \"{0}\" is already in use. Change it, please.", slug), url = "", id = 0 }, 0);
+                        }
+                    }
+                    else
+                    {
+
+                        return Json(new { status = false, message = String.Format("Slug \"{0}\" is already in use. Change it, please.", slug), url = "", id = 0 }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = String.Format("Name \"{0}\" is already in use. Change it, please.", name), url = "", id = 0 }, 0);
+                }
+            }
+        }
+
+        public static int Update_wp_options()
+        {
+            int i = 0;
+            try
+            {
+                //string sql = "INSERT INTO wp_options (option_name,option_value,autoload) SELECT * FROM "
+                //            + " (SELECT '_transient_wc_attribute_taxonomies' AS New_Option_Name, CONCAT('a:', COUNT(*), ':{', GROUP_CONCAT(option_value SEPARATOR ''), '}') AS New_Option_Value, 'yes' AS New_Autoload"
+                //            + " FROM"
+                //            + " (SELECT CONCAT("
+                //            + " 'i:', (ROW_NUMBER() OVER(ORDER BY attribute_name)) - 1, ';O:8:', '\"', 'stdclass', '\"', ':6:'"
+                //            + " , '{S:12:', '\"', 'attribute_id', '\"', ';s:', LENGTH(attribute_id), ':', '\"', attribute_id, '\"', ';'"
+                //            + " , 'S:14:', '\"', 'attribute_name', '\"', ';s:', LENGTH(attribute_name), ':', '\"', attribute_name, '\"', ';'"
+                //            + " , 'S:15:', '\"', 'attribute_label', '\"', ';s:', LENGTH(attribute_label), ':', '\"', attribute_label, '\"', ';'"
+                //            + " , 'S:14:', '\"', 'attribute_type', '\"', ';s:', LENGTH(attribute_type), ':', '\"', attribute_type, '\"', ';'"
+                //            + " , 'S:17:', '\"', 'attribute_orderby', '\"', ';s:', LENGTH(attribute_orderby), ':', '\"', attribute_orderby, '\"', ';'"
+                //            + " , 'S:16:', '\"', 'attribute_public', '\"', ';s:', LENGTH(attribute_public), ':', '\"', attribute_public, '\"', ';}'"
+                //            + " ) AS option_value FROM wp_woocommerce_attribute_taxonomies ORDER BY attribute_name) Calculated_values"
+                //            + " ) Formatted_Values"
+                //            + " ON DUPLICATE KEY UPDATE option_value = Formatted_Values.New_Option_Value; ";
+
+
+                i = SQLHelper.ExecuteNonQueryWithTrans("bulk_editor_attribute_options");
+            }
+            catch { }
+            return i;
+        }
+        public static string UpdateAttributeName(string _old_taxonomy, string _taxonomy)
+        {
+            StringBuilder builder = new StringBuilder();
+            try
+            {
+                string sql = $"SELECT object_id,pm.meta_value FROM wp_term_taxonomy tt INNER JOIN wp_term_relationships tr ON tr.term_taxonomy_id = tt.term_taxonomy_id INNER JOIN wp_postmeta pm ON pm.post_id = tr.object_id AND pm.meta_key = '_product_attributes' WHERE tt.taxonomy = '{_old_taxonomy}'";
+                DataTable dt = SQLHelper.ExecuteDataTable(sql);
+                foreach (DataRow item in dt.Rows)
+                {
+                    if (!string.IsNullOrEmpty(item["meta_value"].ToString()))
+                    {
+                        string s = get_product_attributes(item["meta_value"].ToString(), _old_taxonomy, _taxonomy, false);
+                        builder.Append(String.Format("update wp_postmeta set meta_value = '{0}' where post_id = {1} and meta_key = '_product_attributes';", s, item["object_id"].ToString()));
+                    }
+                }
+            }
+            catch { }
+            return builder.ToString();
+        }
+        private static string get_product_attributes(string _product_attributes, string old_attributes, string new_attributes, bool is_remove)
+        {
+            string _new_product_attributes = string.Empty;
+            try
+            {
+                System.Collections.Hashtable _obj = new Serializer().Deserialize(_product_attributes) as System.Collections.Hashtable;
+                System.Collections.Hashtable _att_value = (System.Collections.Hashtable)_obj[old_attributes];
+                _att_value["name"] = new_attributes;
+                _obj.Remove(old_attributes);
+                _obj.Add(new_attributes, _att_value);
+
+                _new_product_attributes = new Serializer().Serialize(_obj);
+            }
+            catch { }
+            return _new_product_attributes;
+        }
+
+        public JsonResult DeleteAttributes(ProductCategoryModel model)
+        {
+            string termID = model.strVal;
+            string sql = string.Empty;
+            if (termID != "")
+            {
+
+
+                sql = string.Format("delete from wp_term_relationships WHERE term_taxonomy_id IN (SELECT term_taxonomy_id FROM wp_term_taxonomy WHERE taxonomy = (SELECT CONCAT('pa_',attribute_name) FROM wp_woocommerce_attribute_taxonomies WHERE attribute_id = {0}));", termID);
+                sql += string.Format("delete from wp_terms WHERE term_id IN (SELECT term_id FROM wp_term_taxonomy WHERE taxonomy = (SELECT CONCAT('pa_',attribute_name) FROM wp_woocommerce_attribute_taxonomies WHERE attribute_id = {0}));", termID);
+                sql += string.Format("delete from wp_term_taxonomy WHERE taxonomy = (SELECT CONCAT('pa_',attribute_name) FROM wp_woocommerce_attribute_taxonomies WHERE attribute_id = {0});", termID);
+                sql += string.Format("delete from wp_woocommerce_attribute_taxonomies WHERE attribute_id = {0};", termID);
+                if (SQLHelper.ExecuteNonQuery(sql.ToString()) > 0)
+                {
+                    return Json(new { status = true, message = "Attributes deleted successfully!!", url = "", id = termID }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Attributes not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult EditAttributesList(ProductCategoryModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string _taxonomy = "";
+                long id = model.term_id;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                _taxonomy = $"pa_{ model.Search}";
+                //DataTable dt = ProductRepository.AttributesList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+
+                //string sql = "SELECT tt.taxonomy,tt.term_taxonomy_id,tt.term_id,tt.description,tt.parent,tt.count,t.name,t.slug,t.term_group,t.term_order FROM wp_term_taxonomy tt "
+                //                + " INNER JOIN wp_terms t ON t.term_id = tt.term_id"
+                //                + string.Format(" WHERE tt.term_id > 0 AND tt.taxonomy = '{0}' ORDER BY tt.taxonomy,t.name;", _taxonomy);
+
+                //SqlParameter[] parameters = {  new SqlParameter("@Flag", "show"),
+                //    new SqlParameter("@attribute_id", id)
+                //    };
+
+                DataTable dt = ProductRepository.GeteditAttributesByID("show", _taxonomy, 0);
+
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GeteditAttributesByID(string strValue1, string strValue2)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                string _taxonomy = "";
+                long id = Convert.ToInt64(strValue1);
+                _taxonomy = strValue2;
+                //string sql = "SELECT tt.taxonomy,tt.term_taxonomy_id,tt.term_id,tt.description,tt.parent,tt.count,t.name,t.slug,t.term_group,t.term_order FROM wp_term_taxonomy tt "
+                //               + " INNER JOIN wp_terms t ON t.term_id = tt.term_id"
+                //               + string.Format(" WHERE tt.term_id > 0 AND tt.taxonomy = '{0}' ORDER BY tt.taxonomy,t.name;", _taxonomy);
+
+                //SqlParameter[] parameters = { };
+                //DataTable dt = DAL.SQLHelper.ExecuteDataTable(sql, parameters);
+                DataTable dt = ProductRepository.GeteditAttributesByID("edit", _taxonomy, id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+
+        public JsonResult AddProducteditAttributes(string id, string _taxonomy, string _name, string _slug, string _desc)
+        {
+            _taxonomy = $"pa_{_taxonomy}";
+            string sql = string.Empty;
+            if (Convert.ToInt32(id) > 0)
+            {
+                int _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(tt.term_id) c FROM wp_term_taxonomy tt INNER JOIN wp_terms t ON t.term_id = tt.term_id WHERE tt.taxonomy = '{0}' AND LOWER(t.name) = RTRIM(LOWER('{1}')) AND tt.term_id != {2}", _taxonomy, _name, id)).ToString());
+                if (_c <= 0)
+                {
+                    _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(tt.term_id) c FROM wp_term_taxonomy tt INNER JOIN wp_terms t ON t.term_id = tt.term_id WHERE tt.taxonomy = '{0}' AND LOWER(t.slug) = RTRIM(LOWER('{1}')) AND tt.term_id != {2}", _taxonomy, _slug, id)).ToString());
+                    if (_c <= 0)
+                    {
+                        sql = string.Format("UPDATE wp_terms SET NAME = '{0}',slug = '{1}' WHERE term_id = {2};UPDATE wp_term_taxonomy SET description = '{3}' WHERE term_id = {2};", _name, _slug, id, _desc);
+                        if (SQLHelper.ExecuteNonQueryWithTrans(sql.ToString()) > 0)
+                        {
+                            //Update_wp_options();
+                            return Json(new { status = true, message = "Product Attributes updated successfully!!", url = "", id = id }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = String.Format("Tag slug '\"{0}\" already exists.", _slug), url = "", id = 0 }, 0);
+
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = String.Format("Tag slug \"{0}\" is already in use. Change it, please.", _slug), url = "", id = 0 }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = String.Format("Tag Name \"{0}\" is already in use. Change it, please.", _name), url = "", id = 0 }, 0);
+
+                }
+            }
+            else
+            {
+                int _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(tt.term_id) c FROM wp_term_taxonomy tt INNER JOIN wp_terms t ON t.term_id = tt.term_id WHERE tt.taxonomy = '{0}' AND LOWER(t.name) = RTRIM(LOWER('{1}'));", _taxonomy, _name)).ToString());
+                if (_c <= 0)
+                {
+                    _c = Convert.ToInt32(SQLHelper.ExecuteScalar(string.Format("SELECT COUNT(tt.term_id) c FROM wp_term_taxonomy tt INNER JOIN wp_terms t ON t.term_id = tt.term_id WHERE tt.taxonomy = '{0}' AND LOWER(t.slug) = RTRIM(LOWER('{0}'));", _taxonomy, _slug)).ToString());
+                    if (_c <= 0)
+                    {
+                        sql = "";
+                        sql = string.Format("insert into wp_terms(name,slug,term_group,term_order) values('{0}','{1}',0,0);DECLARE @LastInsertedID INT;SET @LastInsertedID = SCOPE_IDENTITY();insert into wp_term_taxonomy(term_id,taxonomy,description,parent,count) SELECT @LastInsertedID,'{2}','{3}',0,0;", _name, _slug, _taxonomy, _desc);
+                        if (SQLHelper.ExecuteNonQuery(sql.ToString()) > 0)
+                        {
+                            // Update_wp_options();
+                            return Json(new { status = true, message = "Attributes saved successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = String.Format("Tag Slug \"{0}\" is already in use. Change it, please.", _slug), url = "", id = 0 }, 0);
+                        }
+                    }
+                    else
+                    {
+
+                        return Json(new { status = false, message = String.Format("Tag Slug \"{0}\" is already in use. Change it, please.", _slug), url = "", id = 0 }, 0);
+
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = String.Format("Tag Name \"{0}\" is already in use. Change it, please.", _name), url = "", id = 0 }, 0);
+                }
+            }
+        }
+
+
+        public JsonResult DeleteeditAttributes(string strVal1, string strVal2)
+        {
+            string termID = strVal1;
+            string sql = string.Empty;
+            if (termID != "")
+            {
+                sql = string.Format("DELETE FROM wp_term_relationships WHERE term_taxonomy_id IN (SELECT term_taxonomy_id FROM wp_term_taxonomy WHERE term_id = {0});DELETE FROM wp_term_taxonomy WHERE term_id = {0};DELETE FROM wp_terms WHERE term_id = {0};", Convert.ToInt64(termID));
+                if (SQLHelper.ExecuteNonQuery(sql.ToString()) > 0)
+                {
+                    return Json(new { status = true, message = "Attributes deleted successfully!!", url = "", id = termID }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Invalid details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Attributes not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+
     }
 
 }

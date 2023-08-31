@@ -251,7 +251,7 @@ function DeleteAttributes(id) {
     var obj = { strVal: id }
     $.confirm({
         title: 'Confirm!',
-        content: 'Do you want to delete Attributes with related product?',
+        content: 'Do you want to delete Attributes?',
         buttons: {
             confirm: {
                 text: 'Yes',
@@ -547,7 +547,7 @@ function DeleteeditAttributes(taxonomy,id) {
     var obj = { strVal1: id, strVal2: taxonomy}
     $.confirm({
         title: 'Confirm!',
-        content: 'Do you want to delete Attributes with related product?',
+        content: 'Do you want to delete Attributes?',
         buttons: {
             confirm: {
                 text: 'Yes',

@@ -1179,6 +1179,7 @@
                                 obj.variations.Add(vr);
                             }
                         }
+                        //Request.Headers.Add("Content-Type", "application/json; charset=utf-8");
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = obj });
                     }
                     else
@@ -1191,7 +1192,7 @@
             }
         }
         [HttpGet, Route("topsell/{app_key}/{entity_id}")]
-        public IHttpActionResult ProductDetails(string app_key, long entity_id)
+        public IHttpActionResult ProductTopSell(string app_key, long entity_id)
         {
             try
             {

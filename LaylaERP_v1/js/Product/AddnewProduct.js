@@ -1743,7 +1743,7 @@ function chunkArray(arr, n) {
 
 function bindCategory(product_id) {
     $.ajaxSetup({ async: true, beforeSend: function (xhr) { } });
-    $.get('/Product/ProductCategories', { id: parseInt(product_id) || 0 }, function (data) {
+    $.get('/Product/Categories', { id: parseInt(product_id) || 0 }, function (data) {
         console.log(data); $('#ul_category').tree({ data: data, idField: 'id', treeField: 'text', height: '100%', cascadeCheck: false });
     }).fail(function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }).always(function () { });
 }

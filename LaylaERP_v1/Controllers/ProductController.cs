@@ -2286,7 +2286,7 @@ namespace LaylaERP.Controllers
         }
 
         [HttpGet]
-        public JsonResult ProductCategories(long id = 0)
+        public JsonResult Categories(long id = 0)
         {
             List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
             Dictionary<String, Object> row;

@@ -57,6 +57,8 @@ namespace LaylaERP_v1.Controllers
                             orderObj.ID = dr["order_id"];
                             orderObj.order_date = dr["date_created"];
                             orderObj.status = dr["status_desc"];
+                            orderObj.payment_method = dr["payment_method"];
+                            orderObj.order_total = dr["order_total"];
                             orderObj.order_details = !string.IsNullOrEmpty(dr["order_details"].ToString())
                                 ? JsonConvert.DeserializeObject<dynamic>(dr["order_details"].ToString())
                                 : JsonConvert.DeserializeObject<dynamic>("{}");
@@ -82,13 +84,14 @@ namespace LaylaERP_v1.Controllers
                             itemList.Add(item);
                         }
                         // Add the list of items to itemObj
-                        itemObj.items = itemList;
+                        //itemObj.items = itemList;
 
-                        // Create a single object that combines orderObj and itemObj
-                        dynamic combinedObj = new ExpandoObject();
-                        combinedObj.order = orderObj;
-                        combinedObj.items = itemObj.items;
-                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = combinedObj });
+                        //// Create a single object that combines orderObj and itemObj
+                        //dynamic combinedObj = new ExpandoObject();
+                        //combinedObj.order = orderObj;
+                        //combinedObj.items = itemObj.items;
+                        orderObj.items = itemList;
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderObj });
                     }
                     else
                         return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });

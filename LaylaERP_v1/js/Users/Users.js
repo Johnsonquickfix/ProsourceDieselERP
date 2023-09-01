@@ -24,7 +24,7 @@ function GetUsersCount() {
                 //items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > </li >').appendTo("#role-ul"); //(<span class="count">0</span>)
                 alltotal = alltotal + parseInt(value.cnt);
             })
-           /* items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");*/
+            /* items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");*/
             items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole"></a></li>').appendTo("#role-ul");
             $('#all').find(".count").text(number_format(alltotal - 1));
             let id = $("#hfStatusType").val();
@@ -143,14 +143,14 @@ function Datagrid(role_type, type) {
     var id;
     if (searchText == '') {
         $('#dtdata').DataTable({
-          //  oSearch: { "sSearch": role_type.trim() },
+            //  oSearch: { "sSearch": role_type.trim() },
             destroy: true,
             bAutoWidth: false,
             "ajax": {
                 "url": '/Users/GetData',
                 "type": 'GET',
                 "dataType": 'json',
-                 data: { rolepass: role_type.trim() },
+                data: { rolepass: role_type.trim() },
                 contentType: "application/json; charset=utf-8",
             },
             lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -161,7 +161,7 @@ function Datagrid(role_type, type) {
                         return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
                 },
-                { 'data': 'ID', 'sWidth': "8%", "bSearchable": true},
+                { 'data': 'ID', 'sWidth': "8%", "bSearchable": true },
                 { 'data': 'user_login', 'sWidth': "12%", "bSearchable": true },
                 { 'data': 'user_email', 'sWidth': "25%", "bSearchable": true },
                 { 'data': 'user_status', 'sWidth': "10%", "bSearchable": true },
@@ -169,7 +169,7 @@ function Datagrid(role_type, type) {
                 { 'data': 'address', 'sWidth': "30%", "bSearchable": true },
                 {
                     data: 'my', title: 'Role', sWidth: "22%", "bSearchable": true, render: function (data, type, row) {
-                        let str = getAllUserType(data);
+                        let str = getAllUserType(data); console.log(data);
                         return str;
                     }
                 },
@@ -181,7 +181,7 @@ function Datagrid(role_type, type) {
                         }
                         else { return "No Permission"; }
                     }
-                    
+
                 }
             ],
             columnDefs: columnDefs,
@@ -307,10 +307,8 @@ function getAllUserType(sValue) {
     if (sValue != null) {
         var user_type = '';
         $('.subsubsub li').each(function (index) {
-            let val = $(this).data('uservalue'), txt = $(this).data('usertext');
-           // console.log(txt);
-           // console.log(sValue);
-              let i = sValue.toLowerCase().trim().indexOf(val);
+            let val = $(this).data('uservalue'), txt = $(this).data('usertext');            
+            let i = sValue.toLowerCase().trim().indexOf(val.toLowerCase().trim());
             //let i = sValue.trim().indexOf(val);
             if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
         });
@@ -385,7 +383,7 @@ function DatagridLoade() {
 };
 
 function EditUser(id) {
-    ActivityLog('edit user id ' + id +' in user management.', '/Users/Users/' + id+'');
+    ActivityLog('edit user id ' + id + ' in user management.', '/Users/Users/' + id + '');
     window.location.href = 'UserDetails?id=' + id;
 }
 
@@ -489,7 +487,7 @@ function changeRole(ID) {
                     //}, 50);
                     location.reload();
                 }); //GetUsersCount();
-                
+
                 //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
             }
             else {
@@ -542,7 +540,7 @@ function Revokerole(ID) {
         success: function (data) {
             if (data.status == true) {
                 //swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
-               // swal('Success!', data.message, 'success').then((result) => { setTimeout(function () { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }, 50); });
+                // swal('Success!', data.message, 'success').then((result) => { setTimeout(function () { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }, 50); });
                 location.reload();
             }
             else {

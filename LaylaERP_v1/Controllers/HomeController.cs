@@ -31,8 +31,12 @@
         [HttpGet]
         public ActionResult ForgotPassword()
         {
-
-            return View();
+            CommanUtilities.Provider.RemoveCurrent();
+            dynamic myModel = new ExpandoObject();
+            myModel.user_login = null;
+            DataTable dt = BAL.SettingRepository.GetDetailscompany(3);
+            myModel.User_Image = dt.Rows[0]["image"];
+            return View(myModel);
         }
         [HttpPost]
         public ActionResult ForgotPassword(LoginModel model)

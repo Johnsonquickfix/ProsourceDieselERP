@@ -245,6 +245,7 @@
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
+    <Compile Include="BAL\RMARepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\SetupRepostiory.cs" />
     <Compile Include="BAL\ShipRepository.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\RMAApiController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
@@ -1634,6 +1636,8 @@
     <Folder Include="Files\" />
     <Folder Include="Views\CMSApi\" />
     <Folder Include="Views\CMSRepository\" />
+    <Folder Include="Views\RMAApi\" />
+    <Folder Include="Views\RMARepository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

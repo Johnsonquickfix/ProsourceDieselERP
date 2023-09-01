@@ -1,0 +1,66 @@
+﻿@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    //if (user.user_id <= 0) { Response.Redirect("~/user/sign_in"); }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layla ERP - @ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="" name="description">
+    <meta content="Themesbrand" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/Content/images/favicon.ico">
+    <!-- Font Awesome -->
+    <link href="~/Content/AdminLTE-3.1.0/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- select2 css -->
+    <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
+    <!-- Bootstrap Css -->
+    <link href="~/Content/qfk/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
+    <!-- Icons Css -->
+    <!--<link href="~/Content/assets/css/icons.min.css" rel="stylesheet" type="text/css">-->
+    <!-- sweetalert Css-->
+    <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
+    <!-- App Css-->
+    <link href="~/Content/qfk/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
+    <link href="~/Content/qfk/css/custom.css" rel="stylesheet" type="text/css" />
+    <!-- JAVASCRIPT -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script src="~/Content/qfk/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
+    <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
+    <style>
+        #loader {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            z-index: 999999;
+            overflow: visible;
+            background: #fff url(../Content/images/loader.gif) no-repeat center center;
+        }
+    </style>
+</head>
+<body data-sidebar="dark" data-layout-mode="light" class="" style="" data-layout="horizontal">
+    <div id="loader" style="opacity: 0.9; display: none;"></div>
+    <!-- Begin page -->
+    <div id="wrapper">
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid1">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END layout-wrapper -->
+    <!-- JAVASCRIPT -->
+    <!-- App js -->
+    <!--<script src="~/Content/qfk/js/app.js"></script>-->
+</body>
+</html>

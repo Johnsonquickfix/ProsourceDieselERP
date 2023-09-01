@@ -443,7 +443,7 @@ function AttributesEditList(id) {
             },
             { data: 'name', title: 'Name', sWidth: "15%" },
             { data: 'slug', title: 'Slug', sWidth: "15%" },
-            { data: 'description', title: 'Description', sWidth: "10%" },
+            { data: 'description', title: 'Description', sWidth: "40%" },
             { data: 'count', title: 'Count', sWidth: "10%" },
             {
                 'data': 'term_id', sWidth: "10%",

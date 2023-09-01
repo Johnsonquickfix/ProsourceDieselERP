@@ -1,0 +1,48 @@
+﻿<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
+                        <li class="breadcrumb-item active">Create</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row justify-content-center">
+        <div class="col-xl-8 text-center">
+            <h5 class="mb-3">Do you want to create a list or a segment?</h5>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="row">
+                <div class="col-sm-6">
+                    <a class="btn p-0" data-add="true" data-url='@Url.Action("createlist","lists", new {  } )' href="javascript:void(0);">
+                        <div class="card-radio text-center">
+                            <i class="fas fa-list-ul font-size-24 text-warning align-middle mb-2"></i>
+                            <h5 class="font-size-14 mb-0">List</h5>
+                            <p class="text-muted my-3 text-wrap">Paste from a spreadsheet, upload a file, or choose from people already in profiles</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a class="btn p-0" data-add="true" data-url='@Url.Action("createsegment","lists", new {  } )' href="javascript:void(0);">
+                        <div class="card-radio text-center">
+                            <i class="fa fa-bolt font-size-24 text-warning align-middle mb-2"></i>
+                            <h5 class="font-size-14 mb-0">Segment</h5>
+                            <p class="text-muted my-3 text-wrap">A dynamic segment of people based on their behavior or properties</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

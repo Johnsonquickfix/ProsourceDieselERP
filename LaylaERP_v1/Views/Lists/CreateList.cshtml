@@ -1,0 +1,59 @@
+﻿<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
+                        <li class="breadcrumb-item active">Create List</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Give your list a name and then we'll add people to it:</h4>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div>
+                                <label class="form-label">
+                                    Name
+                                </label>
+                                <input id="txtlist-name" class="form-control" type="text" placeholder="List Name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex">
+                    <div class="ms-auto">
+                        <a data-add="false" href="~/lists/index" class="btn btn-primary waves-effect waves-light">Cancel</a>
+                        <button id="create-list" class="btn btn-primary waves-effect waves-light">Create List</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#create-list', function (evt) {
+            evt.preventDefault(), evt.stopPropagation();
+            let name = $('#txtlist-name').val();
+            $.post('/api/lists?api_key=@ViewBag.api_key', { list_name: name }, function (result, status, xhr) {
+                if (parseInt(result.list_id) > 0) {
+                    window.location = window.location.origin + `/list/${result.list_id}/members`
+                    //var $detailDiv = $('#root'), url = `/lists/listmembers/${result.list_id}`;
+                    //$.get(url, function (data) { $detailDiv.replaceWith(data); });
+                }
+                else { swal('Error!', result.message, 'error'); }
+            }).fail(function (xhr, status, error) { swal('Error!', xhr.responseJSON.message, 'error'); }).always(function () { });
+        });
+    });
+</script>

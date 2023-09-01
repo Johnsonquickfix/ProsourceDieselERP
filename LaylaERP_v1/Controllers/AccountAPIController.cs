@@ -57,7 +57,8 @@
                             op.SSL = false;
                         op.UserName = model.UserName;
                         op.UserPassword = model.PassWord; 
-                        op.GetUrl = "home/MobileVerification";  
+                        op.GetUrl = "home/MobileVerification";
+                        op.public_api_key = "1970a998d9bd";// Add for Klaviyo clone API
                         CommanUtilities.Provider.AddCurrent(op); 
                        // string loginDesc = op.UserName + " Login on " + DateTime.UtcNow.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
                         //UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);

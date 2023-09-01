@@ -1,0 +1,297 @@
+﻿@using System.Collections.Generic;
+@model Newtonsoft.Json.Linq.JObject
+@{
+    ViewBag.Title = "EditSegment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    quickfix_klvanalysis.Utilities.OperatorModel om = quickfix_klvanalysis.Utilities.CommanUtilities.Provider.GetCurrent();
+    if (om.user_id <= 0) { Response.Redirect("~/user/sign_in"); }
+
+    Dictionary<string, string> _type = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaType();
+    Dictionary<string, string> _operator = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaOperator();
+    Dictionary<string, string> _timeframe = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaTimeframe();
+    Dictionary<string, string> _unit = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaUnit();
+    System.Data.DataTable gl = quickfix_klvanalysis.Repository.ProfilesRepository.GroupList(om.company_id, 1);
+    System.Data.DataTable cl = quickfix_klvanalysis.Repository.ProfilesRepository.GetCountries();
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- DataTables -->
+<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
+                        <li class="breadcrumb-item">
+                            @Model.GetValue("list_name")
+                            <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt me-2"></i>Segment</span>
+                        </li>
+                        <li class="breadcrumb-item">@ViewBag.mode Definition</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <form class="row needs-validation" novalidate>
+        <div class="col-xl-12">
+            <p>Segments allow you to track and analyze people who meet certain conditions</p>
+            <div class="row mb-4">
+                <div class="col-lg-8">
+                    <div>
+                        <label class="form-label">
+                            Name
+                        </label>
+                        <input id="txtlist-name" class="form-control" type="text" placeholder="Segment Name" value="@Model.GetValue("list_name")">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h5>Definition</h5>
+                <div id="definition">
+
+                    @foreach (Newtonsoft.Json.Linq.JObject item in @Model.GetValue("definition"))
+                    {
+                        <div class="definition__container mb-2">
+                            <div class="card card-body mb-2">
+                                @{
+                                    int i = 0, l = item["criteria"].Count();
+                                }
+                                @foreach (Newtonsoft.Json.Linq.JObject subitem in item.GetValue("criteria"))
+                                {
+                                    i = i + 1;
+                                    <div class="definition-row d-flex">
+                                        <div class="definition-col flex-grow-1">
+                                            <div class="CriterionTypeSelectm cw-400 mb-2">
+                                                <select name="type" class="select2" style="width:100%">
+                                                    <option value="" selected>Select a condition…</option>
+                                                    @foreach (var t in _type)
+                                                    {
+                                                        <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("type").ToString()) ? " selected " : "")>@t.Value</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            @if (@subitem.GetValue("type").ToString() == "customer-group-membership")
+                                            {
+                                                <div class="FilterRowContainer d-flex mb-2">
+                                                    <div class="fix-label"><h6>Person</h6></div>
+                                                    <div class="cw-175">
+                                                        <select name="operator" class="select2" style="width:100%">
+                                                            @foreach (var t in _operator)
+                                                            {
+                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="fix-label"><h6>in</h6></div>
+                                                    <div class="cw-300">
+                                                        <select name="group" class="select2-search" style="width:100%">
+                                                            <option value="0"></option>
+                                                            @foreach (System.Data.DataRow r in gl.Rows)
+                                                            {
+                                                                <option value="@r["group_id"]" @(r["group_id"].ToString().Equals(subitem.GetValue("group").ToString()) ? " selected " : "")>@r["name"]</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                if (@subitem["timeframe"] != null)
+                                                {
+                                                    <div data-filterid="filter-row" class="FilterRowContainer d-flex mb-2" style="margin-left: 52px;">
+                                                        <div class="fix-label"><h6>and was added</h6></div>
+                                                        <div class="cw-175">
+                                                            <select name="timeframe" class="select2" style="width:100%">
+                                                                @foreach (var t in _timeframe)
+                                                                {
+                                                                    <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("timeframe").ToString()) ? " selected " : "")>@t.Value</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        @if (subitem.GetValue("timeframe").ToString().Equals("in-the-last"))
+                                                        {
+                                                            <div class="InputContainer cw-75">
+                                                                <input name="quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["quantity"]">
+                                                            </div>
+                                                            <div class="InputContainer cw-80">
+                                                                <select name="units" class="select2" style="width:100%">
+                                                                    @foreach (var t in _unit)
+                                                                    {
+                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        }
+                                                        else if (subitem.GetValue("timeframe").ToString().Equals("more-than") || subitem.GetValue("timeframe").ToString().Equals("at-least"))
+                                                        {
+                                                            <div class="InputContainer cw-75">
+                                                                <input name="quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["quantity"]">
+                                                            </div>
+                                                            <div class="InputContainer cw-80">
+                                                                <select name="units" class="select2" style="width:100%">
+                                                                    @foreach (var t in _unit)
+                                                                    {
+                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <div class="fix-label"><h6>ago</h6></div>
+                                                        }
+                                                        else if (subitem.GetValue("timeframe").ToString().Equals("between"))
+                                                        {
+                                                            <div class="InputContainer cw-75">
+                                                                <input name="start_quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["start"]">
+                                                            </div>
+                                                            <div class="fix-label"><h6>and</h6></div>
+                                                            <div class="InputContainer cw-75">
+                                                                <input name="end_quantity" class="form-control" type="number" value="@subitem["timeframeOptions"]["end"]">
+                                                            </div>
+                                                            <div class="InputContainer cw-80">
+                                                                <select name="units" class="select2" style="width:100%">
+                                                                    @foreach (var t in _unit)
+                                                                    {
+                                                                        <option value="@t.Key" @(t.Key.Equals(subitem["timeframeOptions"]["units"].ToString()) ? " selected " : "")>@t.Value</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <div class="fix-label"><h6>ago</h6></div>
+                                                        }
+                                                        else if (subitem.GetValue("timeframe").ToString().Equals("before") || subitem.GetValue("timeframe").ToString().Equals("after"))
+                                                        {
+                                                            <div class="fix-label">
+                                                                <input name="date" class="form-control" type="text" value="@subitem["timeframeOptions"]["value"]" placeholder="mm/dd/yyyy">
+                                                            </div>
+                                                        }
+                                                        else if (subitem.GetValue("timeframe").ToString().Equals("between-static"))
+                                                        {
+                                                            <div class="fix-label">
+                                                                <input name="start_date" class="form-control" type="text" value="@subitem["timeframeOptions"]["start"]" placeholder="mm/dd/yyyy">
+                                                            </div>
+                                                            <div class="fix-label"><h6>and</h6></div>
+                                                            <div class="fix-label">
+                                                                <input name="end_date" class="form-control" type="text" value="@subitem["timeframeOptions"]["end"]" placeholder="mm/dd/yyyy">
+                                                            </div>
+                                                        }
+                                                        <div class="InputContainer cw-75">
+                                                            <button name="close-filter-row" class="btn btn-outline-primary" type="button">X</button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="FilterRowContainer d-flex mb-2">
+                                                        <button name="add-filter-row" class="btn btn-outline-primary" style="margin-left: 52px; grid-column: span 1 / auto;"><i class="fas fa-filter"></i> By Date Added</button>
+                                                    </div>
+                                                }
+                                            }
+                                            else if (@subitem.GetValue("type").ToString() == "customer-exclusion")
+                                            {
+                                                <div class="FilterRowContainer d-flex mb-2">
+                                                    <div class="fix-label"><h6>Person</h6></div>
+                                                    <div class="cw-175">
+                                                        <select name="operator" class="select2" style="width:100%">
+                                                            @foreach (var t in _operator)
+                                                            {
+                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="fix-label"><h6>suppressed</h6></div>
+                                                </div>
+                                            }
+                                            else if (@subitem.GetValue("type").ToString() == "customer-location")
+                                            {
+                                                <div class="FilterRowContainer d-flex mb-2">
+                                                    <div class="fix-label"><h6>Person</h6></div>
+                                                    <div class="cw-175">
+                                                        <select name="operator" class="select2" style="width:100%">
+                                                            @foreach (var t in _operator)
+                                                            {
+                                                                <option value="@t.Key" @(t.Key.Equals(subitem.GetValue("operator").ToString()) ? " selected " : "")>@t.Value</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="fix-label"><h6>within</h6></div>
+                                                    <div class="cw-300">
+                                                        <select name="country" class="select2-search" style="width:100%">
+                                                            <option value="0"></option>
+                                                            @foreach (System.Data.DataRow r in cl.Rows)
+                                                            {
+                                                                <option value="@r["code"]" @(r["code"].ToString().Equals(subitem.GetValue("country_id").ToString()) ? " selected " : "")>@r["name"]</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="definition-col-action">
+                                            <button name="remove-definition" type="button" class="btn btn-outline-primary waves-effect waves-light"><i class="fa fa-trash"></i></button>
+                                            @if (l == i)
+                                            {
+                                                <button name="or-definition" class="btn btn-outline-primary">OR</button>
+                                            }
+                                        </div>
+                                    </div>
+                                    if (l != i)
+                                    {
+                                        <div class="CriterionDivider">
+                                            <div class="BoxedPlaceholder__Container me-3">
+                                                <div>OR</div>
+                                            </div>
+                                            <div class="CriterionDivider__LineContainer flex-grow-1">
+                                                <div></div><div></div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <button name="add-definition" class="btn btn-outline-primary waves-effect waves-light"><i class="fas fa-plus"></i> AND</button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 text-end">
+                    <a data-add="true" href="~/lists/index" class="btn btn-primary">Cancel</a>
+                    @if (ViewBag.mode == "Edit")
+                    {
+                        <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="@Model.GetValue("list_id")">Create Segment</button>
+                    }
+                    else if (ViewBag.mode == "Clone")
+                    {
+                        <button id="create-Segments" class="btn btn-primary" data-company-key="@om.public_api_key" data-id="0">Clone Segment</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
+<!-- Required datatable js -->
+<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="~/appjs/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+

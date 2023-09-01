@@ -243,6 +243,7 @@
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\ProposalsRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
+    <Compile Include="BAL\qfk\ProfilesRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="Controllers\AccountingController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AmazonordersController.cs" />
+    <Compile Include="Controllers\API\ProfilesController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -298,6 +300,8 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
+    <Compile Include="Controllers\qfk\AudienceController.cs" />
+    <Compile Include="Controllers\qfk\ListsController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
@@ -351,6 +355,15 @@
     <Compile Include="Models\Product\ProductFilterRequest.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
+    <Compile Include="Models\qfk\BaseModel.cs" />
+    <Compile Include="Models\qfk\Common\ProfileResponse.cs" />
+    <Compile Include="Models\qfk\JqDataTableModel.cs" />
+    <Compile Include="Models\qfk\SearchModel.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\FormDataRequest.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\Identify.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\Lists.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\Profile.cs" />
+    <Compile Include="Models\qfk\TrackAndIdentify\TrackProfileActivity.cs" />
     <Compile Include="Models\Reports.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
@@ -470,6 +483,7 @@
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.css" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome4.7.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\icons.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.svg" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.svg" />
@@ -794,6 +808,12 @@
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\PurchaseFiles\default.png" />
+    <Content Include="Content\qfk\css\app.min.css" />
+    <Content Include="Content\qfk\css\bootstrap.min.css" />
+    <Content Include="Content\qfk\css\custom.css" />
+    <Content Include="Content\qfk\css\icons.min.css" />
+    <Content Include="Content\qfk\js\app.js" />
+    <Content Include="Content\qfk\js\bootstrap.bundle.min.js" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />
@@ -1003,6 +1023,11 @@
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\PurchaseOrder\PurchasePrint.js" />
     <Content Include="js\Proposals\SupplierProposalsList.js" />
+    <Content Include="js\qfk\Audience\Profiles.js" />
+    <Content Include="js\qfk\Audience\ProfileView.js" />
+    <Content Include="js\qfk\common.js" />
+    <Content Include="js\qfk\Lists\groups.js" />
+    <Content Include="js\qfk\Lists\segment.js" />
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\POInventorySheet.js" />
     <Content Include="js\Reception\POInventoryValuation.js" />
@@ -1251,6 +1276,10 @@
     <Content Include="js\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="js\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="js\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\materialdesignicons-webfont.eot" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\materialdesignicons-webfont.ttf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\materialdesignicons-webfont.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\materialdesignicons-webfont.woff2" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -1624,6 +1653,16 @@
     <Content Include="Views\CMS\AddMedia.cshtml" />
     <Content Include="Views\CMS\Blog.cshtml" />
     <Content Include="Views\CMS\AddBlog.cshtml" />
+    <Content Include="Views\Lists\CreateList.cshtml" />
+    <Content Include="Views\Lists\CreateSegment.cshtml" />
+    <Content Include="Views\Lists\EditSegment.cshtml" />
+    <Content Include="Views\Lists\GroupCreate.cshtml" />
+    <Content Include="Views\Lists\ImportMembers.cshtml" />
+    <Content Include="Views\Lists\Index.cshtml" />
+    <Content Include="Views\Lists\ListMembers.cshtml" />
+    <Content Include="Views\Shared\_qfk_Layout.cshtml" />
+    <Content Include="Views\Audience\Profiles.cshtml" />
+    <Content Include="Views\Audience\ProfileView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

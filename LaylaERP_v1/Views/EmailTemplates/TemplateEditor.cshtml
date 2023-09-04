@@ -1,0 +1,136 @@
+﻿@model LaylaERP.Models.qfk.Content.Template
+@{
+    ViewBag.Title = "TemplateEditor";
+    Layout = "~/Views/Shared/_EditorLayout.cshtml";
+    //Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<style>
+    .editorMain {
+        display: flex;
+    }
+
+        .editorMain #editor-container {
+            width: 100%;
+        }
+
+            .editorMain #editor-container iframe {
+                min-height: calc(100vh - 100px) !important;
+            }
+</style>
+<div id="root" class="editorMain">
+    <div id="editor-container"></div>
+</div>
+
+<div id="modalMail" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Template Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label">Test recipients</label>
+                <textarea id="recipients" class="form-control" rows="3" placeholder="email@example.com"></textarea>
+                <p>Separate multiple email addresses with commas.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Cancel</button>
+                <button id="send" type="button" class="btn btn-primary waves-effect waves-light">Send</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@*<script src="//editor.unlayer.com/embed.js"></script>*@
+<script src="~/js/qfk/HtmlEditor/embed.js"></script>
+
+<script>
+    var baseURL = window.location.origin, products = GetProduct();
+    unlayer.init({
+        id: "editor-container", locale: 'en-US', displayMode: "email", projectId: 167,//projectId: 158371,
+        appearance: { panels: { tools: { dock: 'left' } } },
+        tools: {
+            'custom#product_tool': {
+                data: { products, },
+                properties: { productLibrary: { editor: { data: { products, }, }, }, },
+            },
+        },
+        customCSS: [baseURL + "/js/qfk/HtmlEditor/product-library-tool/productTool.css"],
+        customJS: [baseURL + "/js/qfk/HtmlEditor/product-library-tool/productTool.js"],
+        mergeTags: {
+            organization: { name: 'organization.name', value: '{{ organization.name }}' },
+            organization_address: { name: 'organization.full_address', value: '{{ organization.full_address }}', },
+            organization_url: { name: 'organization.url', value: '{{ organization.url }}' },
+            unsubscribe: { name: 'unsubscribe', value: '{% unsubscribe %}' },
+            person_first_name: { name: 'first_name', value: '{{ first_name }}' },
+            person_last_name: { name: 'last_name', value: '{{ last_name }}' },
+            person_phone_number: { name: 'person.phone_number', value: '{{ person.phone_number }}' },
+            person_organization: { name: 'person.organization', value: '{{ person.organization }}' },
+            person_title: { name: 'person.title', value: '{{ person.title }}' },
+        },
+        editor: { confirmOnDelete: true }
+    });
+    unlayer.addEventListener('design:updated', function (updates) {
+            // Design is updated by the user
+            unlayer.exportHtml(function (data) {
+                //var json = data.design,html = data.html;
+                let j = { templates_data: { data_json: JSON.stringify(data.design), data_html: data.html } };
+                $.post(`/api/email-templates/update/${@Model.template_id}`, j).done(function (data) {
+                }).fail(function (jqxhr, settings, ex) { });
+            })
+        });
+
+    $(document).ready(function () {
+
+        //if (_d != '') unlayer.loadDesign(JSON.parse(_d));
+        GetTemplate(@Model.template_id)
+
+        $(document).on('click', '#btnSave', function (evt) {
+            evt.preventDefault(), evt.stopPropagation();
+            unlayer.exportHtml(function (data) {
+                let j = { templates_data: { data_json: JSON.stringify(data.design), data_html: data.html } };
+                $.post(`/api/email-templates/update/${@Model.template_id}`, j).done(function (data) {
+                    if (data.id > 0) { window.location = window.location.origin + '/emailtemplates/list';}
+                }).fail(function (jqxhr, settings, ex) { });
+            })
+        });
+        $(document).on('click', '#btnSend', function (evt) {
+            evt.preventDefault(), evt.stopPropagation(), $('#recipients').val(''), $('#modalMail').modal('show');
+        });
+        $(document).on('click', '#send', function (evt) {
+            evt.preventDefault(), evt.stopPropagation();
+            unlayer.exportHtml(function (data) {
+                let j = {
+                    name: $('button[data-action="edit"]').data('title'),
+                    thumbnail_url: $('#recipients').val(),
+                    templates_data: { data_html: data.html }
+                };
+                if (j.thumbnail_url === '') { swal('Error!', 'Please enter email.', 'error').then(function () { swal.close(); $('#recipients').focus(); }); }
+                else {
+                    $.post(`/api/email-templates/send/${@Model.template_id}`, j).done(function (data) {
+                        if (data.status) { $('#modalMail').modal('hide');swal('Success!', 'Test message sent successfully', 'success'); }
+                    }).fail(function (jqxhr, settings, ex) { });
+                }
+            })
+        });
+    });
+
+    function GetTemplate(id) {
+        $.get(`/api/email-templates/template/${id}`).done(function (data) {
+
+            $.each(data, function (index, value) {
+                console.log(JSON.parse(value.data_json))
+                unlayer.loadDesign(JSON.parse(value.data_json));
+            });
+        }).fail(function (jqxhr, settings, ex) { });
+    }
+    function GetProduct() {
+        let _ = [];
+        $.ajaxSetup({ async:false });
+        $.get(`/api/catalog/products`).done(function (data) {
+            _ = data;
+        }).fail(function (jqxhr, settings, ex) { });
+        return _;
+    }
+</script>
+
+

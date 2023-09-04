@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Templates";
+    Layout = "~/Views/Shared/_EditorLayout.cshtml";
+}
+<style>
+    .editorMain {
+        display: flex;
+    }
+
+        .editorMain #editor-container {
+            width: 100%;
+        }
+
+            .editorMain #editor-container iframe {
+                min-height: calc(100vh - 100px) !important;
+            }
+</style>
+<div id="root" class="editorMain">
+    <div id="editor-container"></div>
+</div>
+@*<script src="//editor.unlayer.com/embed.js"></script>
+    <script src="~/appjs/HtmlEditor/editor.js"></script>*@
+<script src="~/appjs/HtmlEditor/embed.js"></script>
+
+<script>
+    unlayer.init({
+        id: "editor-container",
+        displayMode: "email",
+        projectId: 167,
+        appearance: { panels: { tools: { dock: 'left' } } },
+        customJS: [window.location.protocol + "//" + window.location.host + "/appjs/HtmlEditor/editorsetup.js"]
+    });
+
+    //unlayer.init({
+    //    //customCSS: '//cdn.muicss.com/mui-0.9.28/css/mui.min.css',
+    //    id: 'editor-container',
+    //    projectId: 0,
+    //    displayMode: 'email',
+    //    appearance: {
+    //        panels: { tools: { dock: 'left' } }
+    //    },
+    //    customJS: [
+    //        `${window.origin}/appjs/HtmlEditor/editorsetup.js`
+    //    ]
+    //});
+
+        //const editor = unlayer.createEditor({
+        //    id: 'editor-container',
+        //    projectId: 1234,
+        //    displayMode: 'email'
+        //})
+
+        //editor.loadDesign({})
+        //editor.exportHtml(function (data) { })
+</script>

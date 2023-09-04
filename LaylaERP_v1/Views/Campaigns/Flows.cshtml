@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewBag.Title = "Campaigns";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- DataTables -->
+<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<div id="root">
+    <!-- start page title -->
+
+    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+        <div class="page_title">
+            Campaigns
+        </div>
+        <div class="page-title-right d-sm-flex align-items-center">
+            <select class="select-control">
+                <option>Options</option>
+                <option>Export analytics</option>
+                <option>View email trends</option>
+                <option>View Smart Send Time report</option>
+                <option>View archived campaigns</option>
+            </select>
+            <a href="~/campaigns/create" id="define-source" class="black_btn ms-2">Create campaign</a>
+        </div>
+    </div><!--title top bar-->
+    <div class="tabs_wrapper">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="campaigns_box p-0">
+                    <table id="datatable" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+
+
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <h2>Date style</h2>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
+<!-- Required datatable js -->
+<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="~/appjs/common.js"></script>
+<script>
+    $('#datatable').DataTable({
+        lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[3, "desc"]],
+        destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        sAjaxSource: "/api/campaigns/list",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                url: sSource, data: aoData,// dataType: 'json', type: "get",
+                success: function (result) {
+                    //let _recordsTotal = data.length > 0 ? data[0].totalcount : 0;
+                    return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: result.total, recordsFiltered: result.total, aaData: result.data });
+                }
+            });
+        },
+        columns: [
+            {
+                data: 'campaign_name', title: 'Campaign', sWidth: "30%", render: function (data, type, row, meta) {
+                    let h = '', g = JSON.parse(row.audiences);
+                    $.each(g, function (i, r) { h += `<p class="text-muted mb-0"><a href="/list/${i}/members" class="text-dark">${r}</a></p>`; });
+                    return `<h5 class="text-truncate font-size-14 mb-1"><a href="/campaigns/create/${row.campaign_id}">${data}</a></h5> ${h}`;
+                }
+            },
+            { data: 'campaign_type', title: 'Type', sWidth: "10%", render: function (data, type, row, meta) { return `<span class="badge badge-soft-dark p-1 font-size-12"><i class="fa fa-envelope me-1"></i> ${data}</span>`; } },
+            { data: 'campaign_status', title: 'Status', sWidth: "10%", render: function (data, type, row, meta) { return `<span class="badge badge-soft-${data === 'Sent' ? 'success' : 'dark'} p-1 font-size-12"><i class="${data === 'Sent' ? 'mdi mdi-check-bold' : 'fas fa-pen-square'}  me-1"></i> ${data}</span>` } },
+            { data: 'updated', title: 'Last updated', sWidth: "10%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+            { data: 'open_rate', title: 'Open rate', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+            { data: 'click_rate', title: 'Click rate', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+            { data: 'active_on_Site', title: 'Active on Site', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') }
+            //{ data: 'template_id', title: 'Action', sWidth: "10%", orderable: false, render: function (data, type, row, meta) { return action(row); } }
+        ]
+    });
+</script>

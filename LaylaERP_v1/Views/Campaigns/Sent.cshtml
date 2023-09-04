@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Sent";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+}
+
+<div id="root">
+    <div class="row border-bottom">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <ol class="breadcrumb m-0 font-size-18">
+                    <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                    <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                </ol>
+            </div>
+            <div class="page-title-right">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Your campaign is waiting to go.</h4>
+                    <p><strong>@o.campaign_name</strong> is queued up and ready to be sent on <strong>@o.campaign_send_time.Value.ToString("MMM d, yyyy h:m tt")</strong> in recipient's local timezone.</p>
+                    <a class="btn btn-primary" href="~/campaigns/list"><i class="fas fa-arrow-left me-2"></i>Return to Campaigns</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

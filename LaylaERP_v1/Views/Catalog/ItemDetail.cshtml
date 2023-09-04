@@ -1,0 +1,126 @@
+﻿@model quickfix_klvanalysis.Models.Content.Product
+@{
+    ViewBag.Title = "ItemDetail";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <a href="~/catalog/items"><i class="fa fa-arrow-left me-2"></i>Catalog</a>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item">@Model.title</ li >
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                    <a target="_blank" href="@Model.link">
+                        View item
+                        <i class="fas fa-external-link-alt ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="product-detai-imgs">
+                                <img src="@Model.image_link" alt="@Model.title" class="img-fluid mx-auto d-block">
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6">
+                            <div class="mt-4 mt-xl-3">
+                                <h4 class="mt-1 mb-3">@Model.title</h4>
+                                <div class="mb-2">
+                                    <h5 class="mt-1 mb-1">Item ID</h5>
+                                    @Model.id
+                                </div>
+                                <div class="mb-2">
+                                    <h5 class="mt-1 mb-1">Item Price</h5>
+                                    @string.Format("{0:0.00}", @Model.price)
+                                </div>
+                                <div class="mb-2">
+                                    <h5 class="mt-1 mb-1">Status</h5>
+                                    @Model.status
+                                </div>
+                                <div class="mb-2">
+                                    <h5 class="mt-1 mb-1">Added On</h5>
+                                    @string.Format("{0:MMM dd, yyyy HH:mm tt}", @Model.created)
+                                </div>
+                                <div class="mb-2">
+                                    <h5 class="mt-1 mb-1">Last Updated</h5>
+                                    @string.Format("{0:MMM dd, yyyy HH:mm tt}", @Model.updated)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h5 class="mt-1 mb-1">Description</h5>
+                            @Model.description
+                        </div>
+                    </div>
+                    <!-- end row -->
+
+                    <div class="mt-5">
+                        <h5 class="mb-3">Additional Details :</h5>
+
+                        <div class="table-responsive">
+                            <table class="table mb-0 table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" style="width: 400px;">price</th>
+                                        <td>@Model.price</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">inventory_policy</th>
+                                        <td>@Model.inventory_policy</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">inventory_quantity</th>
+                                        <td>@Model.inventory_quantity</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end Specifications -->
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-flex flex-wrap align-items-start">
+                        <div class="me-2">
+                            <h5 class="card-title mt-1 mb-0">Categories</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var r in Model.categories)
+                        {
+                            <li class="list-group-item py-3">
+                                <div class="d-flex">
+                                    <div class="align-self-center overflow-hidden me-auto">
+                                        <div>
+                                            <h5 class="font-size-14 text-truncate"><a href="javascript: void(0);" class="text-dark">@r</a></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

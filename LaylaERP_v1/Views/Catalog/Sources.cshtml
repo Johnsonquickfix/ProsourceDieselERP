@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Custom Sources";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- DataTables -->
+<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/catalog/items">Catalog</a></li>
+                        <li class="breadcrumb-item">Custom Sources</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                    <a href="~/catalog/sources/create" id="define-source" class="btn btn-primary">Add New Source</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table id="datatable" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
+<!-- Required datatable js -->
+<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="~/appjs/common.js"></script>
+<script async src="@Url.Content("~/appjs/catalog/sources.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

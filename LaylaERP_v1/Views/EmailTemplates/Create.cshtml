@@ -1,0 +1,118 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    DataTable dt = LaylaERP.BAL.qfk.EmailTemplatesRepository.TemplatesList(0, string.Empty, 0, 100, "name", "asc", "lists");
+
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item">
+                            <a href="/emailtemplates/list">
+                                Email Templates
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">Create</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header bg-transparent border-bottom">
+            <div class="d-flex flex-wrap align-items-start">
+                <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#template-Themed" role="tab" aria-selected="true">
+                            Themed
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#template-Import" role="tab" aria-selected="false" tabindex="-1">
+                            Import
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="template-Themed" role="tabpanel">
+                    <div class="mb-3 text-end">
+                        <a href="~/emailtemplates/template-editor" class="btn btn-primary">Blank Template</a>
+                    </div>
+                    <ul class="facets-list d-flex align-content-end flex-wrap">
+                        @foreach (DataRow dr in dt.Rows)
+                        {
+                            <li class="col-xl-3 col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="product-img text-center">
+                                            @if (dr["thumbnail_url"] != DBNull.Value)
+                                            {
+                                                <img src="@dr["thumbnail_url"].ToString()" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                            else
+                                            {
+                                                <img src="/content/images/logo.png" alt="@dr["name"].ToString()" class="img-fluid mx-auto" style="max-height: 200px;">
+                                            }
+                                        </div>
+                                        <div class="mt-4 text-center">
+                                            <h5 class="mb-3 text-truncate"><a href="javascript: void(0);" class="text-dark">@dr["name"].ToString()</a></h5>
+                                            <a href="~/emailtemplates/template-use/@dr["template_id"].ToString()" class="btn btn-primary">Use template</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="tab-pane" id="template-Import" role="tabpanel">
+                    <div class="mb-3">
+                        <label for="formrow-firstname-input" class="form-label">
+                            Template Name
+                        </label>
+                        <input type="text" class="form-control" name="name" placeholder="Template Name" maxlength="500">
+                    </div>
+                    <div class="mb-3">
+                        <label for="formrow-firstname-input" class="form-label">Template HTML</label>
+                        <textarea class="form-control" name='templates_data.data_html' placeholder="Template HTML" rows="8"></textarea>
+                    </div>
+                    <div class="mb-3 text-end">
+                        <button id="import-template" class="btn btn-primary">Import Template</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#import-template', function (evt) {
+            evt.preventDefault(), evt.stopPropagation(), HtmlUpload();
+        });
+    });
+
+    function HtmlUpload() {
+        let j = {
+            name: $('[name="name"]').val(), templates_data: { data_html: $('[name="templates_data.data_html"]').val() }, is_uploaded: true
+        };
+        if (j.name === '') { swal('Error!', 'Please enter template name.', 'error').then(function () { swal.close(); $('[name="name"]').focus(); }); return false; }
+        else if (j.templates_data === '') { swal('Error!', 'Please enter template HTML.', 'error').then(function () { swal.close(); $('[name="templates_data.data_html"]').focus(); }); return false; }
+        else {
+            $.post(`/api/email-templates/create`, j).done(function (data) {
+                if (data.id > 0) { window.location = window.location.origin + '/emailtemplates/list'; }
+            }).fail(function (xhr, status, error) { swal('Error!', xhr.responseTest, 'error'); });
+        }
+    }
+</script>
+
+

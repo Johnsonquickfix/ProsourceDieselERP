@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Templates";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item">Templates</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                    <a href="~/emailtemplates/create" id="define-source" class="btn btn-primary">Create Template</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-body">
+            <table id="datatable" class="table dt-responsive w-100 align-middle">
+            </table>
+        </div>
+    </div>
+</div>
+<div id="modalEdit" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Template Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label">Template Name</label>
+                <input id="txtname" class="form-control" type="text" placeholder="Template Name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                <button id="update-name" type="button" class="btn btn-primary waves-effect waves-light">Update Template</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div id="modalExport" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Export Template HTML</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label">Copy the HTML for your email template below.</label>
+                <textarea class="form-control" type="text" placeholder="" disabled rows="9"></textarea>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/js/qfk/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/EmailTemplates/templates.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+

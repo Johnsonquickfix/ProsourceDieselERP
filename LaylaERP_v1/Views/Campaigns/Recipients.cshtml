@@ -1,0 +1,150 @@
+﻿@model LaylaERP.Models.qfk.Campaigns.CampaignRequest
+@{
+    ViewBag.Title = "Recipients";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- DataTables -->
+<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between pb-2">
+                <div>
+                    <a href="/campaigns/list"><i class="fa fa-arrow-left me-1"></i>Campaigns</a>
+                    <h2>@Model.campaign_name</h2>
+                    @if (Model.campaign_type.Equals("1"))
+                    {
+                        <span>Email</span>
+                    }
+                </div>
+                <div class="page-title-right">
+                    <a href="~/campaigns/@ViewBag.id/web-view" target="_blank" id="define-source" class="btn btn-primary">View campaign</a>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="~/campaigns/@ViewBag.id/reports">
+                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                    <span class="d-none d-sm-block">Overview</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" href="~/campaigns/@ViewBag.id/reports/recipients">
+                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                    <span class="d-none d-sm-block">Recipient activity</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#links" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                    <span class="d-none d-sm-block">Link activity</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#deliverability" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                    <span class="d-none d-sm-block">Deliverability</span>
+                </a>
+            </li>
+            <!--<li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#deliverability" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                    <span class="d-none d-sm-block">Watch live</span>
+                </a>
+            </li>-->
+        </ul>
+    </div>
+    <!-- end page title -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio4" autocomplete="off" checked="" value="sent">
+                <label class="btn btn-outline-secondary" for="btnradio4">Sent</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio5" autocomplete="off" value="opened">
+                <label class="btn btn-outline-secondary" for="btnradio5">Opened</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio6" autocomplete="off" value="clicked">
+                <label class="btn btn-outline-secondary" for="btnradio6">Clicked</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio7" autocomplete="off" value="skipped">
+                <label class="btn btn-outline-secondary" for="btnradio7">Skipped</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio8" autocomplete="off" value="unsubscribed">
+                <label class="btn btn-outline-secondary" for="btnradio8">Unsubscribed</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio9" autocomplete="off" value="spam">
+                <label class="btn btn-outline-secondary" for="btnradio9">Marked as Spam</label>
+
+                <input type="radio" class="btn-check" name="btnmailtype" id="btnradio10" autocomplete="off" value="bounced">
+                <label class="btn btn-outline-secondary" for="btnradio10">Bounced</label>
+            </div>
+        </div>
+    </div>
+    <div class="card mini-stats-wid border border-opacity-25">
+        <div class="card-body">
+            <table id="datatable" class="table dt-responsive w-100 align-middle">
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
+<!-- Required datatable js -->
+<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="~/js/qfk/common.js"></script>
+<script>
+    $(document).ready(function () {
+        getdata();
+        $(document).on('click', 'input[name="btnmailtype"]', function (t) {
+            getdata();
+        });
+    });
+    function getdata() {
+        const _t = $('input[name="btnmailtype"]:checked').val();
+        $('#datatable').DataTable({
+            lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[3, "desc"]],
+            destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+            language: {
+                lengthMenu: "_MENU_ per page", zeroRecords: "No Data Available", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+                infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+            },
+            sAjaxSource: "/api/campaigns/@ViewBag.id/campaigns-recipients/" + $('input[name="btnmailtype"]:checked').val(),
+            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+                oSettings.jqXHR = $.ajax({
+                    url: sSource, data: aoData,// dataType: 'json', type: "get",
+                    success: function (result) {
+                        return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: result.total, recordsFiltered: result.total, aaData: result.data });
+                    }
+                });
+            },
+            columns: [
+                { data: 'email', title: 'Email', sWidth: "10%", render: function (data, type, row, meta) { return `<a href="/audience/profile/${row.profiles_id}">${data}</a>`; } },
+                { data: 'name', title: 'Name', sWidth: "10%" },
+                { data: 'opens', title: 'Opens', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+                { data: 'clicks', title: 'Clicks', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+            ]
+        });
+    }
+</script>

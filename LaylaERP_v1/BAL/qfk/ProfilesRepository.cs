@@ -164,7 +164,7 @@
                     new SqlParameter("@sortcol", sortcol),
                     new SqlParameter("@sortdir", sortdir)
                 };
-                dt = SQLHelper.ExecuteDataTable("qfs_profiles_search", parameters);
+                dt = SQLHelper.ExecuteDataTable("qfk_profiles_search", parameters);
             }
             catch { throw; }
             return dt;
@@ -180,7 +180,7 @@
                     new SqlParameter("@company_id", company_id),
                     new SqlParameter("@id", id),
                 };
-                json_data = SQLHelper.ExecuteReaderReturnJSON("qfs_profiles_search", parameters).ToString();
+                json_data = SQLHelper.ExecuteReaderReturnJSON("qfk_profiles_search", parameters).ToString();
             }
             catch { throw; }
             return json_data;
@@ -200,7 +200,7 @@
                     new SqlParameter("@pageno", pageno),
                     new SqlParameter("@pagesize", pagesize)
                 };
-                json_data = SQLHelper.ExecuteReaderReturnJSON("qfs_profiles_search", parameters).ToString();
+                json_data = SQLHelper.ExecuteReaderReturnJSON("qfk_profiles_search", parameters).ToString();
             }
             catch { throw; }
             return json_data;

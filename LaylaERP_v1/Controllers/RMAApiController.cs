@@ -109,7 +109,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpGet, Route("get-order/{app_key}/{entity_id}")]
-        public IHttpActionResult Getorder(string app_key, string entity_id, int per_page = 10, int page = 0, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
+        public IHttpActionResult Getorder(string app_key, string entity_id, int per_page = 10, int page = 1, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
         {
             try
             {
@@ -126,38 +126,26 @@ namespace LaylaERP_v1.Controllers
                 else
                     {
                         string msg = string.Empty;
-                        var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");
-                        List<Category> categoryList = new List<Category>();
-
-                        // First pass: Create a dictionary to hold category ID and index mapping
-                        Dictionary<int, int> categoryIndexMap = new Dictionary<int, int>();
+                        var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");                        
                         dynamic orderObj = new ExpandoObject();
                         List<dynamic> orderist = new List<dynamic>();
                         int total = balResult.Rows.Count;
-                        if (total > 0)
+                    if (total > 0)
+                    {
+                        List<PostModel> ReviewList = new List<PostModel>();
+                        for (int i = 0; i < balResult.Rows.Count; i++)
                         {
-                            List<PostModel> ReviewList = new List<PostModel>();
-                            for (int i = 0; i < balResult.Rows.Count; i++)
-                            {
-                                orderObj.id = balResult.Rows[i]["ID"].ToString();
-                                orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
-                                orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
-                               // orderObj.post_author = balResult.Rows[i]["post_author"].ToString();                                
-                                orderist.Add(orderObj);
-                            } 
-                            if (orderist.Count == 1)
-                            {
-                            //return Ok(orderist[0]);
-                            return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderist[0] });
+                            orderObj.id = balResult.Rows[i]["ID"].ToString();
+                            orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
+                            orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
+                            orderObj.total = balResult.Rows[i]["total"].ToString();                                
+                            orderist.Add(orderObj);
                         }
-                            else
-                            {
-                            return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderist });
-                            //return Ok(orderist);
-                            }
-                        }
-                        else
-                        {
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderist });
+
+                    }
+                    else
+                    {
                         return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
                     }
                     }

@@ -319,6 +319,8 @@
     <Compile Include="Controllers\qfk\CampaignController.cs" />
     <Compile Include="Controllers\qfk\CatalogController.cs" />
     <Compile Include="Controllers\qfk\EmailTemplatesController.cs" />
+    <Compile Include="Controllers\qfk\FlowsController.cs" />
+    <Compile Include="Controllers\qfk\FormsController.cs" />
     <Compile Include="Controllers\qfk\ListsController.cs" />
     <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -1877,6 +1879,8 @@
     <Content Include="Views\Campaigns\Schedule.cshtml" />
     <Content Include="Views\Campaigns\Sent.cshtml" />
     <Content Include="Views\Campaigns\WebView.cshtml" />
+    <Content Include="Views\Flows\Index.cshtml" />
+    <Content Include="Views\Forms\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

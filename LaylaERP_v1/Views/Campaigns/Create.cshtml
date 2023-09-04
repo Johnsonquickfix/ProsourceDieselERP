@@ -1,0 +1,110 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    LaylaERP.UTILITIES.OperatorModel om = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+
+    //System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(om.company_id, 0, "all-group");
+    System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(1, 0, "all-group");
+}
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.js"></script>
+<!--<script src="~/Content/assets/libs/pagination/pagination.min.js"></script>-->
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                        <li class="breadcrumb-item">Create New Campaign</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Campaign Information</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="campaign_name" class="form-label">Campaign name<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="campaign_name" placeholder="Campaign name" data-id="@ViewBag.id">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="campaign_date" class="form-label">Date<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="campaign_date" placeholder="Date" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Recipients</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Send to<span class="text-danger">*</span></label>
+                                <select id="send_to" class="select2" style="width:100%" multiple>
+                                    @foreach (DataRow row in gl.Rows)
+                                    {
+                                        <option value="@row["group_id"].ToString()">@row["name"].ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <div class="float-end">
+                                    <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
+                                        <input class="form-check-input" type="checkbox" id="is_smart_sending" checked="">
+                                    </div>
+                                </div>
+                                <label class="form-label">Skip recently emailed profiles<span class="text-danger">*</span></label>
+                                <p>This campaign will skip profiles who received an email in the past 16 hours. </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Tracking</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <div class="float-end">
+                                    <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
+                                        <input class="form-check-input" type="checkbox" id="is_add_utm" checked="">
+                                    </div>
+                                </div>
+                                <label class="form-label">Include tracking parameters</label>
+                                <p>Links in this campaign will include additional tracking information, called UTM parameters. This allows source tracking within third-party reporting tools such as Google Analytics. </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="utm_para" class="row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer text-end" style="position: fixed; padding: 12px calc(24px * .75); ">
+</footer>
+<script src="~/js/qfk/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/campaigns/create.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

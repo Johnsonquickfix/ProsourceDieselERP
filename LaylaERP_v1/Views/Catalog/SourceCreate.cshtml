@@ -1,0 +1,106 @@
+﻿@model LaylaERP.Models.qfk.Content.ProductSources
+@{
+    ViewBag.Title = "Add Catalog Sources";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/catalog/items">Catalog</a></li>
+                        <li class="breadcrumb-item">
+                            <a href="/catalog/sources">Custom Sources</a>
+                        </li>
+                        <li class="breadcrumb-item"> @(Model.sources_id > 0 ? Model.source_name: "Create")</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">Define Feed Source</h4>
+            <p class="card-title-desc">
+                Name your feed and specify a URL to fetch items from. Your feed source must be an JSON feed.
+            </p>
+            <div class="row">
+                <div class="col-xl-6">
+                    <label class="form-label">
+                        Source Name
+                    </label>
+                    <input id="source_name" class="form-control" type="text" placeholder="Source Name" value="@Model.source_name">
+                </div>
+                <div class="col-xl-6">
+                    <label class="form-label">
+                        Source URL
+                    </label>
+                    <input id="source_url" class="form-control" type="text" placeholder="Source URL" value="@Model.source_url">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6 mt-4">
+                    <label class="form-label">
+                        Username (Optional)
+                    </label>
+                    <input id="txtusername" class="form-control" type="text" placeholder="Username" value="@Model.username">
+                </div>
+                <div class="col-xl-6  mt-4">
+                    <label class="form-label">
+                        Password (Optional)
+                    </label>
+                    <input id="txtpsw" class="form-control" type="password" placeholder="Password" value="@Model.password">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-4">
+                    @if (Model.sources_id > 0)
+                    {
+                        <button id="define-source" class="btn btn-primary">Revalidate Source</button>
+                    }
+                    else
+                    {
+                        <button id="define-source" class="btn btn-primary">Define Source</button>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    !(function () {
+        $(document).ready(function () {
+            $(document).on('click', '#define-source', function (evt) {
+                evt.preventDefault(), evt.stopPropagation(), addSource();
+            });
+        });
+
+        function addSource() {
+            let j = { sources_id:@Model.sources_id, source_name: $('#source_name').val(), source_url: $('#source_url').val(), username: $('#txtusername').val(), password: $('#txtpsw').val() };
+            if (j.source_name === '') { swal('Error!', 'Name is required.', 'error').then(function () { swal.close(); $('#source_name').focus(); }); return false; }
+            else if (j.source_url === '') { swal('Error!', 'URL is required.', 'error').then(function () { swal.close(); $('#source_url').focus(); }); return false; }
+            else {
+                $('#define-source').prop('disabled', true);
+                $.ajax({
+                    dataType: 'json', type: 'post', url: '/api/catalog/create', data: j,
+                    success: function (result) {
+                        if (parseInt(result.id) > 0) {
+                            window.location = window.location.origin + '/catalog/sources'; $('#define-source').prop('disabled', false);
+                        }
+                        else { swal('Error!', result.message, 'error'); $('#define-source').prop('disabled', false);  }
+                    },
+                    error: function (xhr, textStatus, error) { swal('Error!', xhr.responseJSON.message, 'error'); },
+                    always: function () { $('#define-source').prop('disabled', false); }
+                });
+            }
+        }
+    })();
+</script>
+
+

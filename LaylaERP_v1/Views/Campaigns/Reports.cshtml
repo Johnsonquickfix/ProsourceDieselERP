@@ -1,0 +1,261 @@
+﻿@using System.Collections.Generic;
+@model Newtonsoft.Json.Linq.JObject
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between pb-2">
+                <div>
+                    <a href="/campaigns/list"><i class="fa fa-arrow-left me-1"></i>Campaigns</a>
+                    <h2>@Model.GetValue("campaign_name")</h2>
+                    @if (Model.Value<string>("campaign_type").Equals("1"))
+                    {
+                    <span>Email</span>
+                    }
+                </div>
+                <div class="page-title-right">
+                    <a href="~/campaigns/@ViewBag.id/web-view" target="_blank" id="define-source" class="btn btn-primary">View campaign</a>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" href="~/campaigns/@ViewBag.id/reports">
+                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                    <span class="d-none d-sm-block">Overview</span>
+                </a>
+            </li>
+            <li >
+                <a class="nav-link" href="~/campaigns/@ViewBag.id/reports/recipients">
+                    <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                    <span class="d-none d-sm-block">Recipient activity</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#links" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                    <span class="d-none d-sm-block">Link activity</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#deliverability" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                    <span class="d-none d-sm-block">Deliverability</span>
+                </a>
+            </li>
+            <!--<li class="nav-item" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#deliverability" role="tab" aria-selected="false" tabindex="-1">
+                    <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                    <span class="d-none d-sm-block">Watch live</span>
+                </a>
+            </li>-->
+        </ul>
+    </div>
+    <!-- end page title -->
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-11">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid border border-opacity-25">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h4 class="revanue_h2">@((Model.Value<float>("open_rate") /Model.Value<float>("total_recipients"))*100)%</h4>
+                                    <div class="revanue_div">
+                                        <h3>Open rate</h3>
+                                        @if (Model.Value<int>("open_rate") <= 0)
+                                        {
+                                        <p class="mb-0">No recipients</p>
+                                        }
+                                        else if (Model.Value<int>("open_rate") == 1)
+                                        {
+                                        <a href="#">1 recipient</a>
+                                        }
+                                        else
+                                        {
+                                        <a href="#">@Model["open_rate"] recipients</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid border border-opacity-25">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h4 class="revanue_h2">@((Model.Value<float>("click_rate") /Model.Value<float>("total_recipients"))*100)%</h4>
+                                    <div class="revanue_div">
+                                        <h3>Click rate</h3>
+                                        @if (Model.Value<int>("click_rate") <= 0)
+                                        {
+                                        <p class="mb-0">No recipients</p>
+                                        }
+                                        else if (Model.Value<int>("click_rate") == 1)
+                                        {
+                                        <a href="#">1 recipient</a>
+                                        }
+                                        else
+                                        {
+                                        <a href="#">@Model["click_rate"] recipients</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid border border-opacity-25">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h4 class="revanue_h2">0%</h4>
+                                    <div class="revanue_div">
+                                        <h3>Active on site rate</h3>
+                                        <p class="mb-0">No recipients</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid border border-opacity-25">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <h4 class="revanue_h2">0%</h4>
+                                    <div class="revanue_div">
+                                        <h3>Active on site value</h3>
+                                        <p class="mb-0">No recipients</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mini-stats-wid border border-opacity-25">
+                <div class="card-body">
+                    <h2 class="h2-title mb-4">Deliverability</h2>
+                    <table class="table dt-responsive w-100 align-middle dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th class="text-end">Total recipients</th>
+                                <th class="text-end">Delivery rate</th>
+                                <th class="text-end">Bounce rate</th>
+                                <th class="text-end">Spam complaint rate</th>
+                                <th class="text-end">Unsubscribe rate</th>
+                            </tr>
+                        </thead>
+                        <tbody class="Data__TableBody-sc-t95owt-0 hgOddU">
+                            <tr>
+                                <td>Email</td>
+                                <td class="text-end">@Model["total_recipients"]</td>
+                                <td class="text-end">
+                                    @((Model.Value<float>("delivered") /Model.Value<float>("total_recipients"))*100)%
+                                    @if (Model.Value<int>("delivered") <= 0)
+                                    {
+                                    <p>No recipients</p>
+                                    }
+                                    else if (Model.Value<int>("delivered") == 1)
+                                    {
+                                    <p>1 recipient</p>
+                                    }
+                                    else
+                                    {
+                                    <p>@Model["delivered"] recipients</p>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @((Model.Value<float>("bounced") /Model.Value<float>("total_recipients"))*100)%
+                                    @if (Model.Value<int>("bounced") <= 0)
+                                    {
+                                    <p>No recipients</p>
+                                    }
+                                    else if (Model.Value<int>("bounced") == 1)
+                                    {
+                                    <p>1 recipient</p>
+                                    }
+                                    else
+                                    {
+                                    <p>@Model["bounced"] recipients</p>
+                                    }
+                                </td>
+                                <td class="text-end">0%<p>No recipients</p></td>
+                                <td class="text-end">0%<p>No recipients</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mini-stats-wid border border-opacity-25">
+                <div class="card-body">
+                    <h2 class="h2-title mb-4">Content</h2>
+                    <div class="row">
+                        <div id="template_type" class="col-md-6">
+                            <iframe id="preview" class="border border-opacity-25" srcdoc="@Model["contentdata"]["data_html"]" frameborder="0" style="width: 100%; height: max(400px, 500px);" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                        </div>
+                        <div class="col-md-6 revanue_div">
+                            <div class="mb-3">
+                                <h3>Subject line</h3>
+                                <p class="revenue_badge">@Model["content"]["subject"]</p>
+                            </div>
+                            <div class="mb-3">
+                                <h3>Preview Text</h3>
+                                @if (!string.IsNullOrEmpty(Model.Value<string>("content.preview_text")))
+                                {
+                                <p class="revenue_badge">@Model["content"]["preview_text"]</p>
+                                }
+                                else
+                                {
+                                <p class="revenue_badge text-muted">No preview text</p>
+                                }
+
+                            </div>
+                            <div class="mb-3">
+                                <h3>From/reply-to</h3>
+                                <p class="revenue_badge">@Model["content"]["from_label"] @Model["content"]["from_email"]</p>
+                            </div>
+                            <div class="mb-3">
+                                <h3>Included lists and segments</h3>
+                                @foreach (var i in @Model["groups"])
+                                {
+                                <p class="revenue_badge">@i["name"]</p>
+                                }
+                            </div>
+                            <div class="mb-3">
+                                <h3>Recipients</h3>
+                                <p class="revenue_badge mb-1">@Model["total_recipients"] scheduled</p>
+                                <p class="revenue_badge mb-1">@Model["skipped"] skipped (@((Model.Value<float>("skipped")/Model.Value<float>("total_recipients"))*100)%)</p>
+                                <p class="revenue_badge mb-1">@Model["sent"] sent (@((Model.Value<float>("sent") /Model.Value<float>("total_recipients"))*100)%)</p>
+                                <p class="revenue_badge mb-1">@Model["bounced"] bounced (@((Model.Value<float>("bounced") /Model.Value<float>("total_recipients"))*100)%)</p>
+                                <p class="revenue_badge mb-1">@Model["delivered"] delivered (@((Model.Value<float>("delivered") /Model.Value<float>("total_recipients"))*100)%)</p>
+                            </div>
+                            <div class="mb-3">
+                                <h3>Sent</h3>
+                                @if (!string.IsNullOrEmpty(Model.Value<string>("campaign_send_time")))
+                                {
+                                <p class="revenue_badge">@Convert.ToDateTime(Model["campaign_send_time"]).ToString("MMM dd yyyy") at @Convert.ToDateTime(Model["campaign_send_time"]).ToString("hh:mm tt")</p>
+                                }
+                                else
+                                { <p></p>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

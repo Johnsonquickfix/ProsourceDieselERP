@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "Content";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    //LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.user_id, user.company_id, ViewBag.id, string.Empty));
+    LaylaERP.Models.qfk.Campaigns.CampaignRequest o = Newtonsoft.Json.JsonConvert.DeserializeObject<LaylaERP.Models.qfk.Campaigns.CampaignRequest>(LaylaERP.BAL.qfk.CampaignRepository.CampaignsAdd("get", user.UserID, 1, ViewBag.id, string.Empty));
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                        <li class="breadcrumb-item">Edit @o.campaign_name</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 justify-content-md-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-flex flex-wrap align-items-start">
+                        <h4 class="card-title me-2">Campaign Content</h4>
+                        <div id="btn-action" class="ms-auto d-flex flex-wrap gap-1">
+                            @if (!string.IsNullOrEmpty(o.content.content_type))
+                            {
+                                if (o.content.content_type.Equals("text"))
+                                {
+                                    <a class="btn btn-outline-dark" href="@Url.Action("rich-text-editor", "campaigns", new { id = ViewBag.id })">Edit Email</a>
+                                }
+                                else if (o.content.content_type.Equals("html"))
+                                {
+                                    <a class="btn btn-outline-dark" href="@Url.Action("html-editor", "campaigns", new { id = ViewBag.id })">Edit Email</a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-outline-dark" href="#">Edit Email</a>
+                                }
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-caret-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" style="">
+                                        <a id="preview-email" class="dropdown-item" href="#">Preview Email</a>
+                                        <a id="change-template" class="dropdown-item" href="#">Change Template</a>
+                                        <!--<a id="save-as-template" class="dropdown-item" href="#">Save as Template</a>-->
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Subject line<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="subject" placeholder="Subject line" data-id="@ViewBag.id" data-content-type="@o.content.content_type" value="@o.content.subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Preview Text</label>
+                                <input type="text" class="form-control" id="preview_text" placeholder="Preview Text" value="@o.content.preview_text">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sender name<span class="text-danger">*</span></label>
+                                @if (!string.IsNullOrEmpty(o.content.from_label))
+                                {
+                                    <input type="text" class="form-control" id="from_label" placeholder="Sender name" value="@o.content.from_label">
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" id="from_label" placeholder="Sender name" value="@user.sender_name">
+                                }
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sender email address<span class="text-danger">*</span></label>
+                                @if (!string.IsNullOrEmpty(o.content.from_email))
+                                {
+                                    <input type="text" class="form-control" id="from_email" placeholder="Sender email address" value="@o.content.from_email">
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" id="from_email" placeholder="Sender email address" value="@user.sender_email">
+                                }
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Reply-to email address</label>
+                                <input type="text" class="form-control" id="reply_to_email" placeholder="Reply-to email address" value="@o.content.reply_to_email">
+                            </div>
+                        </div>
+                        <div id="template_type" class="col-md-8">
+                            @if (!string.IsNullOrEmpty(o.content.content_type))
+                            {
+                                if (!string.IsNullOrEmpty(o.contentdata.data_html))
+                                {
+                                    <iframe id="preview" class="border border-opacity-25" srcdoc="@o.contentdata.data_html" frameborder="0" style="width: 100%; height: max(400px, 500px);" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                                }
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-sm-12 d-grid gap-2 mb-2">
+                                        <a id="email-editor" class="btn p-0" href="javascript:void(0);">
+                                            <div class="card-radio text-center">
+                                                <i class="fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2"></i>
+                                                <h5 class="font-size-14 mb-0">Drag and Drop</h5>
+                                                <p class="text-muted my-3 text-wrap">Create an email using our drag-and-drop editor.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a id="text-editor" class="btn p-0" href="javascript:void(0);">
+                                            <div class="card-radio text-center">
+                                                <i class="fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2"></i>
+                                                <h5 class="font-size-14 mb-0">Text Only</h5>
+                                                <p class="text-muted my-3 text-wrap">Send a plain text email for a more personal feel.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <a id="html-editor" class="btn p-0" href="javascript:void(0);">
+                                            <div class="card-radio text-center">
+                                                <i class="fas fa-laptop-code font-size-24 text-warning align-middle mt-4 mb-2"></i>
+                                                <h5 class="font-size-14 mb-0">HTML</h5>
+                                                <p class="text-muted my-3 text-wrap">Custom-code your email for complete control.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            <!--<ul class="template-list d-flex align-content-end flex-wrap">
+                            </ul>
+                            <div class="col-12">
+                                <div id="page">
+                                    <ul class="pagination"></ul>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer" style="position: fixed; padding: 12px calc(24px * .75); ">
+    @if (o.campaign_id > 0)
+    {
+        <a class="btn btn-outline-dark" href="~/campaigns/create/@o.campaign_id">Back</a>
+        <button id="save-content" class="btn btn-primary float-end">Continue to Review</button>
+    }
+    else
+    {
+        <a class="btn btn-outline-dark" href="~/campaigns/create">Back</a>
+    }
+</footer>
+<script src="~/js/qfk/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/campaigns/content.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

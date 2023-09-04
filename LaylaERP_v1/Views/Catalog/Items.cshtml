@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item">Products</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                    <a href="~/catalog/product-feeds" id="define-source" class="btn btn-primary">Manage Product Feeds</a>
+                    <a href="~/catalog/sources" id="define-source" class="btn btn-primary">Manage Custom Catalog Sources</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header bg-transparent border-bottom">
+            <div class="d-flex flex-wrap align-items-start">
+                <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#catalog-items" role="tab" aria-selected="true">
+                            Items
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#catalog-categories" role="tab" aria-selected="false" tabindex="-1">
+                            Categories
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="catalog-items" role="tabpanel">
+                    <table id="datatable" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+                <div class="tab-pane" id="catalog-categories" role="tabpanel">
+                    <table id="datatable-categories" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/qfk/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/catalog/items.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+

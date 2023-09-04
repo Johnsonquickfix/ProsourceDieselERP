@@ -1,0 +1,224 @@
+﻿@model LaylaERP.Models.qfk.Campaigns.CampaignRequest
+@{
+    ViewBag.Title = "Schedule";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<link href="~/Content/assets/libs/daterangepicker/daterangepicker.css" rel="stylesheet" />
+<script src="~/Content/assets/libs/daterangepicker/daterangepicker.js"></script>
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/campaigns/list">Campaigns</a></li>
+                        <li class="breadcrumb-item">Review and Send <b>@Model.campaign_name</b></li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row mt-3 justify-content-center">
+        <div class="col-8">
+            <div class="text-center">
+                <h4>Ready to Send?</h4>
+                <p>Review your campaign and the suggestions below before sending.</p>
+            </div>
+            <div class="card">
+                <div class="card-body">
+
+                    <div>
+                        <div id="recipients" class="d-flex py-3" values="@string.Join(",",Model.audiences.group_ids)" campaign="@Model.campaign_id">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-light text-primary">
+                                        <i class="mdi mdi-check-bold"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">Recipients <a class="btn btn-primary float-end" href="/campaigns/create/@ViewBag.id">Edit</a></h5>
+                                <p class="text-muted"></p><p class="text-muted"></p>
+                            </div>
+                        </div>
+                        @if (Model.is_smart_sending)
+                        {
+                            <div class="d-flex py-3 border-top">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar-xs">
+                                        <div class="avatar-title rounded-circle bg-light text-primary">
+                                            <i class="mdi mdi-check-bold"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="font-size-14 mb-1">Smart Sending <a class="btn btn-primary float-end" href="/campaigns/create/@ViewBag.id">Edit</a></h5>
+                                    <p class="text-muted">Smart Sending is enabled for this campaign.</p>
+                                    <p class="text-muted">It will not be sent to people who received a message in the last 16 hours.</p>
+                                </div>
+                            </div>
+                        }
+                        <div class="d-flex py-3 border-top">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-light text-primary">
+                                        <i class="mdi mdi-check-bold"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">Subject Line <a class="btn btn-primary float-end" href="/campaigns/@ViewBag.id/content">Edit</a></h5>
+                                <p class="text-muted">"@Model.content.subject"</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex py-3 border-top">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-light text-primary">
+                                        <i class="mdi mdi-check-bold"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">From & Replies <a class="btn btn-primary float-end" href="/campaigns/@ViewBag.id/content">Edit</a></h5>
+                                <p class="text-muted mb-1">Your campaign will come from <strong>@Model.content.from_label</strong> @("<"+Model.content.from_email+">").</p>
+                                <p class="text-muted">All replies will be sent to <strong>@Model.content.reply_to_email</strong>.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex py-3 border-top">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-light text-primary">
+                                        <i class="mdi mdi-check-bold"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">Content <a class="btn btn-primary float-end" href="/campaigns/@ViewBag.id/content">Edit</a></h5>
+                                <p class="text-muted">You created this variation with the drag and drop editor.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex py-3 border-top">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    @if (Model.is_add_unsubscribe)
+                                    {
+                                        <div class="avatar-title rounded-circle bg-light text-warning">
+                                            <i class="mdi mdi-alert-outline"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="avatar-title rounded-circle bg-light text-primary">
+                                            <i class="mdi mdi-check-bold"></i>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">Unsubscribe Link </h5>
+                                @if (Model.is_add_unsubscribe)
+                                {
+                                    <p class="text-muted">We couldn't find an unsubscribe link in your email. System will automatically add an unsubscribe link when sending the email if you don't add one.</p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">There is an unsubscribe link in your email.</p>
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="d-flex py-3 border-top">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-light text-primary">
+                                        <i class="mdi mdi-check-bold"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1">Tracking <a class="btn btn-primary float-end" href="/campaigns/create/@ViewBag.id">Edit</a></h5>
+                                <p class="text-muted mb-1">Klaviyo will automatically track opens, clicks and conversions for this campaign.</p>
+                                <p class="text-muted">You have also enabled adding Google Analytics tracking to all links.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<footer class="footer" style="position: fixed; padding: 12px calc(24px * .75); ">
+    <a class="btn btn-primary" href="/campaigns/@ViewBag.id/content">Back</a>
+    <button id="schedule-send" class="btn btn-primary float-end">Schedule or Send</button>
+</footer>
+
+<div id="raw_data_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ready to Send?</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <h4 class="font-size-14 mb-0">Sending Strategy</h4>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="toolbar d-flex flex-wrap gap-2 justify-content-center">
+                            <input type="radio" class="btn-check" name="btnsendday" value="scheduled" id="scheduled" autocomplete="off" checked="">
+                            <label class="btn btn-outline-primary flex-fill" for="scheduled">
+                                <i class="far fa-clock font-size-24 text-warning align-middle my-2"></i>
+                                <h5 class="font-size-14 mb-0">Schedule</h5>
+                                <p class="my-3 text-wrap">Choose a future date and time to send</p>
+                            </label>
+                            <input type="radio" class="btn-check" name="btnsendday" value="sent" id="send-now" autocomplete="off">
+                            <label class="btn btn-outline-primary flex-fill" for="send-now">
+                                <i class="far fa-paper-plane font-size-24 text-warning align-middle my-2"></i>
+                                <h5 class="font-size-14 mb-0">Send Now</h5>
+                                <p class="my-3 text-wrap">Start sending your campaign immediately</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="div_schedule_date" class="my-3">
+                    <label for="formrow-firstname-input" class="form-label">Choose send time</label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="mdi mdi-calendar"></i></div>
+                                <input type="text" class="form-control" id="schedule_date" placeholder="Date">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="schedule_time" class="select2" style="width:100%">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="notification">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                <button id="send" class="btn btn-primary float-end">Schedule</button>-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/qfk/common.js"></script>
+<script async src="@Url.Content("~/js/qfk/campaigns/schedule.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

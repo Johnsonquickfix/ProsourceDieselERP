@@ -1,0 +1,86 @@
+﻿@model LaylaERP.Models.qfk.Content.Template
+@{
+    ViewBag.Title = "Email Editor";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row border-bottom">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/emailtemplates/list">Email Templates</a></li>
+                        <li class="breadcrumb-item">@Model.name</li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                    <!--<a href="#" id="define-source" class="btn btn-secondary">Preview Email</a>-->
+                    <a href="#" id="btnSave" class="btn btn-primary">Save</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header bg-transparent border-bottom">
+            <div class="d-flex flex-wrap align-items-start">
+                <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab-editor" role="tab" aria-selected="true">
+                            Editor
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab-preview" role="tab" aria-selected="false" tabindex="-1">
+                            Preview
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-editor" role="tabpanel">
+                    <pre id="json-display-format" class="json-display" style=" height: 350px;"></pre>
+                </div>
+                <div class="tab-pane" id="tab-preview" role="tabpanel">
+                    <iframe id="preview" srcdoc="" frameborder="0" style="width: 100%; min-height:350px" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/appjs/ace-editor/ace.js"></script>
+<script>
+    !(function () {
+        var _e = ace.edit("json-display-format", {
+            mode: "ace/mode/html", theme: "ace/theme/monokai", selectionStyle: "text", autoScrollEditorIntoView: true, copyWithEmptySelection: true, readOnly: false,
+        }),
+            get = function () {
+                $.get(`/api/email-templates/template/${@Model.template_id}`).done(function (data) {
+                    $.each(data, function (index, value) {
+                        _e.getSession().setValue(value.data_html);
+                    });
+                }).fail(function (jqxhr, settings, ex) { });
+            };
+        $(document).ready(function () {
+            _e, get();
+            $("[role=tablist] a").on("click", function (evt) {
+                evt.preventDefault(), evt.stopPropagation();
+                const iframe = document.getElementById("preview");
+                iframe.srcdoc = _e.getValue();
+            });
+            $(document).on('click', '#btnSave', function (evt) {
+                evt.preventDefault(), evt.stopPropagation();
+                let j = { templates_data: { data_html: _e.getValue() } };
+                $.post(`/api/email-templates/update/${@Model.template_id}`, j).done(function (data) {
+                    if (data.id > 0) { window.location = window.location.origin + '/emailtemplates/list';}
+                }).fail(function (jqxhr, settings, ex) { });
+            });
+        });
+    })();
+</script>
+

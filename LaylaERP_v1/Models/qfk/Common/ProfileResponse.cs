@@ -1,6 +1,5 @@
 ﻿namespace LaylaERP.Models.qfk.Common
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 

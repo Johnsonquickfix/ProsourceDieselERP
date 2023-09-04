@@ -1,0 +1,129 @@
+﻿@model LaylaERP.Models.qfk.Content.Template
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    if (user.UserID <= 0) { Response.Redirect("~/user/sign_in"); }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <meta content="" name="description">
+    <meta content="Themesbrand" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/Content/images/favicon.ico">
+
+    <!-- Font Awesome -->
+    <link href="~/Content/AdminLTE-3.1.0/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- select2 css -->
+    <link href="~/Content/AdminLTE-3.1.0/select2/select2.min.css" rel="stylesheet" />
+    <!-- Bootstrap Css -->
+    <link href="~/Content/qfk/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
+    <!-- Icons Css -->
+    <!--<link href="~/Content/assets/css/icons.min.css" rel="stylesheet" type="text/css">-->
+    <!-- sweetalert Css-->
+    <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
+    <!-- App Css-->
+    <link href="~/Content/qfk/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
+    <link href="~/Content/qfk/css/custom.css" rel="stylesheet" type="text/css" />
+    <!-- JAVASCRIPT -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script src="~/Content/qfk/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
+    <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
+    <style>
+        .page-content {
+            padding: calc(70px + 0px) calc(0px * .75) 0px calc(0px * .75) !important;
+        }
+    </style>
+</head>
+<body data-sidebar="dark" data-layout-mode="light" class="" style="">
+    <div id="loader" style="opacity: 0.9; display: none;"></div>
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        
+        
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <div class="page-content">
+                <div class="row border-bottom">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <div>
+                                <button type="button" class="btn header-item waves-effect" data-action="edit" data-title="@Model.name">
+                                    <span key="t-megamenu">@Model.name</span>
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </div>
+                            <div class="page-title-right">
+                                <button id="btnSend" type="button" class="btn btn-primary">
+                                    Send Test
+                                </button>
+                                <button id="btnSave" type="button" class="btn btn-primary">
+                                    Save and Return to Templates
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid px-0">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalEdit" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Edit Template Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Template Name</label>
+                    <input id="txtname" class="form-control" type="text" placeholder="Template Name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                    <button id="update-name" type="button" class="btn btn-primary waves-effect waves-light">Update Template</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- END layout-wrapper -->
+    <script>
+        !(function () {
+            $(document).ready(function () {
+                $(document).on('click', 'button[data-action="edit"]', function (evt) {
+                    evt.preventDefault(), evt.stopPropagation(), $('#txtname').val($(this).data('title')), $('#modalEdit').modal('show');
+                });
+                $(document).on('click', '#update-name', function (evt) {
+                    evt.preventDefault(), evt.stopPropagation();
+                    let n = $('#txtname').val();
+                    if (n !== '') {
+                    $.ajax({
+                        dataType: 'json', type: 'put', url: `/api/email-templates/@Model.template_id/rename`, data: { name: n },
+                        success: function (result) {
+                            if (parseInt(result.id) > 0) {
+                                $(`#modalEdit`).modal('hide');
+                                $(`button[data-action="edit"]`).data('title', n);
+                                $(`button[data-action="edit"]`).find('span').html(n);
+                            }
+                            else { swal('Error!', result.message, 'error'); }
+                        },
+                        error: function (xhr, textStatus, error) { swal('Error!', xhr.responseJSON.message, 'error'); },
+                        always: function () { }
+                    });
+                }
+                else { swal('Error!', 'Please enter template name.', 'error'); }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

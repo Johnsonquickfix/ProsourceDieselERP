@@ -84,7 +84,7 @@
         public static CommanUtilities Provider
         {
             get { return new CommanUtilities(); }
-        }        
+        }
         private string LoginUserKey = "LaylaERP_2021";
         private string LoginProvider = "Cookie";
         //private string LoginProvider = "Session";
@@ -110,7 +110,7 @@
         {
             if (LoginProvider == "Cookie")
             {
-                WebHelper.WriteCookie(LoginUserKey, Encrypt(operatorModel.ToJson()), 480);               
+                WebHelper.WriteCookie(LoginUserKey, Encrypt(operatorModel.ToJson()), 480);
             }
             else
             {
@@ -142,7 +142,7 @@
         {
             string OTPValue = string.Empty;
             if (!string.IsNullOrEmpty(WebHelper.GetCookie("laylaERP_user_validate").ToString()))
-                OTPValue= Decrypt(WebHelper.GetCookie("laylaERP_user_validate").ToString());
+                OTPValue = Decrypt(WebHelper.GetCookie("laylaERP_user_validate").ToString());
             return OTPValue;
         }
 

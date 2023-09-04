@@ -1,0 +1,127 @@
+﻿@model System.Data.DataTable
+@{
+    ViewBag.Title = "Activity";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Activity feed</h4>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row bg-transparent border-bottom mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="formrow-email-input" class="form-label">Metric Type</label>
+                            <select id="metrics" class="select2" style="width:100%" data-profileid="@ViewBag.id">
+                                <option value="">All metrics</option>
+                                @foreach (System.Data.DataRow dr in @Model.Rows)
+                                {
+                                    if (dr["metric_id"].ToString().Equals(ViewBag.id))
+                                    {
+                                        <option value="@dr["metric_id"]" selected="selected">@dr["metric_name"]</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@dr["metric_id"]">@dr["metric_name"]</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <table id="datatable" class="table dt-responsive w-100 align-middle">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="raw_data_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Activity Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    This activity was timestamped <span class="raw_data_time fw-bold"></span> and was recorded on <span class="raw_data_time fw-bold"></span>.
+                    Here is the activity data:
+                </div>
+                <div class="raw_data_json">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    !(function () {
+        $(document).ready(function () {
+            $("#loader").hide(), $('.select2').select2(), loaddata();
+            $("#metrics").change(function (e) { loaddata(); });
+            $(document).on('click', 'a.raw-data', function (t) {
+                let j = JSON.parse(decodeURIComponent($(this).data('value')));
+                $('.raw_data_time').html($(this).data('time') + 'Z');
+                $('.raw_data_json').html(JSON.stringify(j, null, 2));
+                $('#raw_data_modal').modal('show');
+            });
+        });
+
+        var m = $("#metrics"),
+            loaddata = function () {
+                $('#datatable').DataTable({
+                    lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[1, 'desc']],
+                    destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+                    language: {
+                        lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+                        infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+                    },
+                    sAjaxSource: "/api/analytics/metrics-feeds",
+                    fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                        aoData.push({ name: "metric_id", value: parseInt(m.val()) || 0 });
+                        if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+                        oSettings.jqXHR = $.ajax({
+                            url: sSource, data: aoData,// dataType: 'json', type: "get",
+                            success: function (data) {
+                                console.log(data);
+                                let _recordsTotal = data.length > 0 ? data[0].totalcount : 0;
+                                return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: _recordsTotal, recordsFiltered: _recordsTotal, aaData: data });
+                            }
+                        });
+                    },
+                    columns: [
+                        {
+                            data: 'profile', title: 'Profile', sWidth: "70%", render: function (data, type, row, meta) {
+                                return `<div class="d-flex"><div class="me-3"><div class="avatar-xs d-none d-xl-inline-block"><div id="application_avatar" class="avatar-title bg-primary text-primary bg-soft rounded">${data.charAt(0).toUpperCase()}</div></div></div><div class="align-self-center overflow-hidden me-auto"><h5 class="font-size-13 text-truncate mb-1"><a href="javascript: void(0);" class="text-dark">${row.profile}</a></h5><p class="text-muted mb-0">${row.metric_name}</p></div></div>`;
+                            }
+                        },
+                        { data: 'created', title: 'Time', sWidth: "20%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                        { data: 'created', title: '', orderable: false, sWidth: "10%", class: 'text-center', render: function (data, type, row, meta) { return `<a title="View Raw Data" href="javascript:void(0);" class="mb-0 text-muted raw-data" data-time="${row.created}" data-value='${encodeURIComponent(JSON.stringify(row.properties))}'>Activity details</a>`; } }
+                    ]
+                });
+            };
+    })();
+</script>

@@ -73,6 +73,10 @@
         public string po_email { get; set; }
         public int login_company_id { get; set; }
         public string user_companyid { get; set; }
+        /// <summary>
+        /// Public Klaviyo Clone API Key
+        /// </summary>
+        public string public_api_key { get; set; }
     }
     [Serializable]
     public class CommanUtilities

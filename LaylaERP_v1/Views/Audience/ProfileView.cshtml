@@ -1,0 +1,252 @@
+﻿@model LaylaERP.Models.qfk.Common.ProfileResponse
+@{
+    ViewBag.Title = "ProfileView";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            @if (string.IsNullOrEmpty(Model.FirstName))
+            {
+                <h4 class="mb-sm-0 font-size-18">@Model.Email</h4>
+            }
+            else
+            {
+                <h4 class="mb-sm-0 font-size-18">@Model.FirstName @Model.LastName</h4>
+            }
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="/audience/profiles">Audience</a></li>
+                    <li class="breadcrumb-item active">Profiles</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-7">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-2 flex-grow-1 border-bottom">
+                    <div class="mb-3 row">
+                        <label for="example-text-input" class="col-md-2 col-form-label">Show</label>
+                        <div class="col-md-6">
+                            <select id="metrics" class="select2" style="width:100%" data-profileid="@ViewBag.id">
+                                <option value="0" data-icon="api">All Metrics</option>
+                                @foreach (var o in @Model.metrics)
+                                {
+                                    <option value="@o.metric_id">@o.metric_name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-4 flex-grow-1">
+                    <ul id="activity-feed" class="verti-timeline list-unstyled">
+                        <li class="text-center"><h4>Loging activities....</h4></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-1">METRICS</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-end">30</th>
+                            <th class="text-end">All-Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in @Model.metrics)
+                        {
+                            <tr>
+                                <td class="metric-label">
+                                    @o.metric_name
+                                </td>
+                                <td class="text-end">
+                                    <div class="loading-metric"><span>@o.last_30d</span></div>
+                                </td>
+                                <td class="text-end" style="color: rgb(0, 0, 0);">@o.all_time</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body border-bottom">
+                <h5 class="card-title mb-0">CONTACT</h5>
+            </div>
+            <div class="card-body border-bottom">
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Organization</h5>
+                    <p class="text-muted mb-0">
+                        @{
+                            if (!string.IsNullOrEmpty(Model.title))
+                            {
+                                <span class="me-1">@Model.title</span><span>at</span>
+                                if (!string.IsNullOrEmpty(Model.Organization))
+                                {
+                                    @Model.Organization
+                                }
+                                else
+                                {
+                                    <span>Unknown Organization</span>
+                                }
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        }
+                    </p>
+                </div>
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Phone Number</h5>
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <p class="text-muted mb-0"><i class="fa fa-phone me-2"></i>@Model.PhoneNumber</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0"><i class="fa fa-phone me-2"></i> (blank)</p>
+                    }
+                </div>
+                <div class="mb-2 flex-grow-1">
+                    <h5 class="mb-0 card-title">Location</h5>
+                    <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>@Model.City, @Model.Region, @Model.Country @Model.Zip</p>
+                </div>
+                <div class="d-flex border-top pt-2">
+                    <div class="align-self-center overflow-hidden me-auto">
+                        <h5 class="mb-0 card-title">Email</h5>
+                        <p class="text-muted mb-0"><i class="bx bx-envelope me-2"></i> @Model.Email</p>
+                    </div>
+                    <div class="ms-2 mt-2">
+                        @if (Model.is_suppressed)
+                        {
+                            <span class="badge bg-danger font-size-12"><i class="fas fa-ban"></i></span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success font-size-12"><i class="fas fa-check"></i></span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body border-bottom">
+                <h5 class="card-title mb-0">INFORMATION</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2 pb-2 flex-grow-1 border-bottom flex-grow-1 border-bottom">
+                    <p class="mb-1">
+                        <strong>First Active</strong>
+                        @if (Model.first_active_on.HasValue)
+                        {
+                            @Model.first_active_on.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                    <p class="mb-1">
+                        <strong>Last Active</strong>
+                        @if (Model.last_active_on.HasValue)
+                        {
+                            @Model.last_active_on.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                </div>
+                <!--<div class="mb-2 pb-2 flex-grow-1 border-bottom flex-grow-1 border-bottom">
+                    <h5>Custom Properties </h5>
+                    <div class="pull-right"><a href="#" class="show_add_custom_property">Add</a></div>
+                </div>
+                <div class="mb-2 pb-2 flex-grow-1 border-bottom">
+                    <h5>How They Found You</h5>
+                    <p class="mb-1"><strong>Source</strong> (direct)</p>
+                    <p class="mb-1"><strong>Campaign</strong> (direct)</p>
+                    <p class="mb-1"><strong>Medium</strong> —</p>
+                    <p class="mb-1"><strong>Content</strong> —</p>
+                    <p class="mb-1"><strong>Term</strong> —</p>
+                    <p class="mb-1">
+                        <strong>Referrer</strong>
+                        <span title="" class="ellipsis">—</span>
+                    </p>
+                    <p class="mb-1"></p>
+                    <p class="mb-1">
+                        <strong>First Page</strong>
+                        <span title="https://localhost:44373/Home/search" class="ellipsis">https://localhost:44373/Home/search</span>
+                    </p>
+                    <p class="mb-1"></p>
+                </div>
+                <div class="mb-2 pb-2 flex-grow-1 border-bottom">
+                    <h4>How They Found You Most Recently</h4>
+                    <p class="mb-1"><strong>Source</strong> (direct)</p>
+                    <p class="mb-1"><strong>Campaign</strong> (direct)</p>
+                    <p class="mb-1"><strong>Medium</strong> —</p>
+                    <p class="mb-1"><strong>Content</strong> —</p>
+                    <p class="mb-1"><strong>Term</strong> —</p>
+                    <p class="mb-1">
+                        <strong>Referrer</strong>
+                        <span title="" class="ellipsis">—</span>
+                    </p>
+                    <p class="mb-1"></p>
+                    <p class="mb-1">
+                        <strong>First Page</strong>
+                        <span title="https://localhost:44373/Home/search" class="ellipsis">https://localhost:44373/Home/search</span>
+                    </p>
+                    <p class="mb-1"></p>
+                </div>-->
+                <div class="mb-2 flex-grow-1">
+                    <p class="mb-1">
+                        <strong>Profile Created</strong>
+                        @if (Model.created.HasValue)
+                        {
+                            @Model.created.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                    <p class="mb-1">
+                        <strong>Profile Updated</strong>
+                        @if (Model.updated.HasValue)
+                        {
+                            @Model.updated.Value.ToString("MMMM dd, yyyy h:mm tt")
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="raw_data_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Activity Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    This activity was timestamped <span class="raw_data_time fw-bold"></span> and was recorded on <span class="raw_data_time fw-bold"></span>.
+                    Here is the activity data:
+                </div>
+                <div class="raw_data_json">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script async src="@Url.Content("~/js/qfk/audience/profileview.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>

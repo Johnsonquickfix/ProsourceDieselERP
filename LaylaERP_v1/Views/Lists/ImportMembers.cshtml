@@ -1,0 +1,78 @@
+﻿@model quickfix_klvanalysis.Models.TrackAndIdentify.ListResponse
+<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
+                        <li class="breadcrumb-item">
+                            @Model.list_name
+                            @if (Model.group_type_id == 1)
+                            {
+                                <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-list-ul"></i> @Model.group_type_name</span>
+                            }
+                            else
+                            {
+                                <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt"></i> @Model.group_type_name</span>
+                            }
+                        </li>
+                    </ol>
+                </div>
+                <div class="page-title-right">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="input-group">
+                    <input type="file" class="form-control" id="csvFile" aria-describedby="uploadCSV" aria-label="Upload" accept=".csv" >
+                    <button class="btn btn-primary" type="button" id="uploadCSV">Upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>How should my file be formatted?</h5>
+                    <p><span class="TextStyleTemplate-sc-1jbnw9u-0 iGIlQp">The first row of your file should contain headers for each column with at least one labeled&nbsp;<code>Email</code>, or&nbsp;<code>Phone Number</code> if you’ve set up SMS messaging. You can also include other columns for&nbsp;<code>First Name</code>,&nbsp;<code>Last Name</code>, etc. if you'd like.</span></p>
+                    <p><span class="TextStyleTemplate-sc-1jbnw9u-0 iGIlQp"><code>Phone Number</code> should follow a supported format. Please include the country code (e.g., +17823746561) or a column with their address including country information for correct country code recognition.</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#uploadCSV").click(function () {
+            var fileUpload = document.getElementById("csvFile");
+            if (fileUpload.value != null) {
+                var uploadFile = new FormData();
+                var files = $("#csvFile").get(0).files;
+                // Add the uploaded file content to the form data collection
+                if (files.length > 0) {
+                    uploadFile.append("CsvDoc", files[0]);
+                    uploadFile.append("list_id", @Model.list_id);
+                    $.ajax({
+                        url: "/lists/UploadCsvFile",
+                        contentType: false,
+                        processData: false,
+                        data: uploadFile,
+                        type: 'POST',
+                        success: function (data) {
+                            if (data.message === 'success') {
+                                swal('Success', 'File uploaded successfully.', 'success').then((result) => {
+                                    $('#root').load('/lists/listmembers/@Model.list_id');
+                                });
+                            }
+                        },
+                        error: function (xhr, textStatus, error) { console.log(xhr, textStatus, error) },
+                        always: function () { }
+                    });
+                }
+            }
+        });
+    </script>
+</div>

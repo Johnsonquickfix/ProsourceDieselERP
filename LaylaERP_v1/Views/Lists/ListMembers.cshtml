@@ -1,0 +1,224 @@
+﻿@model quickfix_klvanalysis.Models.TrackAndIdentify.ListResponse
+@{
+    ViewBag.Title = "Members";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- DataTables -->
+<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<div id="root">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div>
+                    <ol class="breadcrumb m-0 font-size-18">
+                        <li class="breadcrumb-item"><a href="/lists/index">Lists & Segments</a></li>
+                        <li class="breadcrumb-item">
+                            @Model.list_name
+                            @if (Model.group_type_id == 1)
+                            {
+                                <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-list-ul"></i> @Model.group_type_name</span>
+                            }
+                            else
+                            {
+                                <span class="bg-primary bg-soft text-primary badge font-size-12 me-2"><i class="fas fa-bolt"></i> @Model.group_type_name</span>
+                            }
+                        </li>
+                    </ol>
+                    <p class="text-muted mb-0">
+                        Members : <span class="profile-counts">@Model.member_count</span>
+                    </p>
+                </div>
+                <div class="page-title-right">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary dropdown-toggle show" data-bs-toggle="dropdown" aria-expanded="true">Manage @Model.group_type_name</button>
+                        <div class="dropdown-menu dropdown-menu-end" style="">
+                            @if (Model.group_type_id == 1)
+                            {
+                                <a class="dropdown-item" href="#" data-add="true" data-url="/lists/ImportMembers/@Model.list_id">Import contacts</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="~/Lists/ExportMembersToCSV/@Model.list_id" data-action="delete">Export @Model.group_type_name to CSV</a>
+                                <!--<div class="dropdown-divider"></div>
+                                <a class="dropdown-item convert_to_list" href="javascript:void(0);">List suppressions</a>
+                                <a class="dropdown-item convert_to_list" href="javascript:void(0);">Remove suppressed profiles</a>-->
+                            }
+                            else
+                            {
+                                if (Model.member_count > 0)
+                                {
+                                    <a class="dropdown-item export_to_csv" href="~/Lists/ExportMembersToCSV/@Model.list_id">Export @Model.group_type_name to CSV</a>
+                                    <a class="dropdown-item convert_to_list" href="javascript:void(0);" onclick="convert_to_list(@Model.list_id)">Convert to list</a>
+                                    <div class="dropdown-divider"></div>
+                                }
+                                <a class="dropdown-item convert_to_list" href="~/list/@Model.list_id/clone/@Model.list_slug">Clone segment</a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+    @if ((Model.member_count > 0 && Model.group_type_id == 1) || Model.group_type_id == 2)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="dt-members" class="table dt-responsive w-100 align-middle">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div class="row justify-content-center mb-3">
+            <div class="col-xl-8 text-center">
+                <h5 class="mb-1">There isn't anyone in this list</h5>
+                <p class="mb-3">How would you like to add people?</p>
+            </div>
+            <div class="col-xl-8">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <a data-add="true" data-url='@Url.Action("createlist","lists", new {  } )' href="javascript:void(0);">
+                            <div class="card-radio text-center">
+                                <i class="fas fa-check-double font-size-24 text-warning align-middle mb-2"></i>
+                                <p class="text-muted my-3 text-wrap">Create a signup form</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a data-add="true" data-url='@Url.Action("createsegment","lists", new {  } )' href="javascript:void(0);">
+                            <div class="card-radio text-center">
+                                <i class="fas fa-list-alt font-size-24 text-warning align-middle mb-2"></i>
+                                <p class="text-muted my-3 text-wrap">Configure subscribe page</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a data-add="true" data-url='@Url.Action("ImportMembers","lists", new { id= Model.list_id} )' href="javascript:void(0);">
+                            <div class="card-radio text-center">
+                                <i class="fas fa-upload font-size-24 text-warning align-middle mb-2"></i>
+                                <p class="text-muted my-3 text-wrap">Upload contacts</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script src="~/Content/assets/libs/moment/moment.min.js"></script>
+<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
+<!-- Required datatable js -->
+<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+<script src="~/appjs/common.js"></script>
+<script>
+    var _c = [
+        {
+            data: 'profile', title: 'Profile', sWidth: "20%", orderable: false, render: function (data, type, full, meta) {
+                return `<a href="/audience/profile/${full.id}"><span class="DataTable-Cell-text"><div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div></span></a>`;
+            }
+        },
+        { data: 'email', title: 'Email', sWidth: "20%", orderable: false },
+        { data: 'phone_number', title: 'Phone', sWidth: "20%", orderable: false },
+        { data: 'location', title: 'Location', sWidth: "20%", orderable: false },
+        { data: 'created', title: 'Created', sWidth: "15%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+        {
+            data: 'id', title: '', sWidth: "5%", orderable: false, render: function (data, type, row, meta) {
+                 return @Model.group_type_id!==1 ? '': `<a href="javascript:void(0);" onclick="removeProfile(\'${row.id}\', \'${row.profile}\');" class="btn btn-sm btn-soft-danger"><i class="mdi mdi-delete font-size-18"></i></a>`;
+            }
+        }
+    ];
+    $(document).ready(function () {
+        $(document).on('click', 'a[data-add="true"]', function (evt) {
+            evt.preventDefault(), evt.stopPropagation();
+            var $detailDiv = $('#root'), url = $(this).data('url');
+            $detailDiv.load(url);
+        });
+    });
+    $('#dt-members').DataTable({
+        lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[4, "desc"]], searching: false, lengthChange: false,
+        destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+        sAjaxSource: '/api/lists/@Model.list_id/members',
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                url: sSource, data: aoData,
+                success: function (data) {
+                    let t = data.length > 0 ? data[0].totalcount : 0;
+                    return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: t, recordsFiltered: t, aaData: data });
+                }
+            });
+        },
+        columns: _c
+    });
+    function removeProfile(_pid, _title) {
+        swal({
+            title: `Remove profile`, text: `You’re about to remove ${_title} from this list.`,
+            type: 'question', allowOutsideClick: false, showCancelButton: true, showConfirmButton: true, confirmButtonText: 'Yes, do it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    dataType: 'json', type: 'get', url: '/api/lists/@Model.list_id/member/delete', data: { profile_id: _pid },
+                    success: function (result) {
+                        if (result.list_id !=='') {
+                            $('#dt-members').DataTable().ajax.reload(null, false)
+                        }
+                        else { swal('Error!', result.message, 'error'); }
+                    },
+                    error: function (xhr, textStatus, error) { swal('Error!', xhr.responseJSON.message, 'error'); },
+                    always: function () { }
+                });
+            }
+        });
+
+
+
+    }
+    function convert_to_list(_id) {
+        swal({
+            title: `Convert to List`, text: `Converting a segment to a list is useful when you'd like to make a segment subscription based to allow people to sign up for this list directly. Once converted, people will only be added if they subscribe.`,
+            type: 'question', allowOutsideClick: false, showCancelButton: true, showConfirmButton: true, confirmButtonText: 'Create List'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    dataType: 'json', type: 'post', url: `/api/lists/${_id}/convert-to-list`, data: { },
+                    success: function (result) {
+                        if (result > 0 && parseInt(_id) > 0) {
+                            var $detailDiv = $('#root'), url = `/lists/listmembers/${_id}`;
+                            $.get(url, function (data) { $detailDiv.replaceWith(data); });
+                        }
+                        else { swal('Error!', 'Something went wrong please try again.', 'error'); }
+                    },
+                    error: function (xhr, textStatus, error) { swal('Error!', xhr.responseJSON.message, 'error'); },
+                    always: function () { }
+                });
+            }
+        });
+
+
+
+    }
+</script>

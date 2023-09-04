@@ -5,6 +5,9 @@
     using System.Linq;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     [Serializable]
     public static class SQLHelper
@@ -268,7 +271,89 @@
 
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
+        public static StringBuilder ExecuteReaderReturnJSON(string query, params SqlParameter[] parameters)
+        {
+            var jsonResult = new StringBuilder();
+            SqlConnection cnn = new SqlConnection(_conString);
+            SqlCommand cmd = new SqlCommand(query, cnn);
+            try
+            {
+                if (!query.ToUpper().Contains("DELETE") && !query.ToUpper().Contains("UPDATE"))
+                {
+                    if (query.ToUpper().StartsWith("SELECT"))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                    }
+                    else
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                    }
+                    if (parameters?.Length > 0) cmd.Parameters.AddRange(parameters);
+                    cnn.Open();
+                    DateTime first = DateTime.UtcNow;
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        int i = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
 
+                        List<string> list = (from IDataRecord r in reader select (string)r[0]).ToList();
+
+                        int i1 = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
+                        jsonResult.Append(string.Join("", list));
+
+                        int i2 = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
+                        reader.Close();
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            return jsonResult;
+        }
+        public static async Task<string> ExecuteJsonReaderAsync(string query, SqlParameter[] parameters, CancellationToken token = default(CancellationToken))
+        {
+            var jsonResult = new StringBuilder();
+            using (var cnn = new SqlConnection(_conString))
+            {
+                SqlCommand cmd = new SqlCommand(query, cnn);
+                if (query.ToUpper().StartsWith("SELECT"))
+                {
+                    cmd.CommandType = CommandType.Text;
+                }
+                else
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                }
+
+                DateTime first = DateTime.UtcNow;
+                await cnn.OpenAsync(token);
+                if (parameters?.Length > 0) cmd.Parameters.AddRange(parameters);
+
+                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, token))
+                {
+                    int i = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
+                    if (!reader.HasRows)
+                    {
+                        jsonResult.Append("[]");
+                    }
+                    else
+                    {
+                        while (reader.Read())
+                        {
+                            jsonResult.Append(reader[0].ToString());
+                        }
+                    }
+                    //List<string> list = (from IDataRecord r in reader select (string)r[0]).ToList();
+                    int i1 = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
+
+                    //jsonResult.Append(string.Join("", list));
+                    //int i2 = (int)((TimeSpan)(DateTime.UtcNow - first)).TotalMilliseconds;
+                }
+            }
+            return jsonResult.ToString();
+        }
         #endregion
 
         #region Dataset

@@ -57,5 +57,45 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static int getotp(string qflag, string contact, string con_type)
+        {
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),                     
+                    new SqlParameter("@con_type",con_type),
+                    new SqlParameter("@contact",contact)
+                     
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_rmaotp_iud", para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable getotpverify(string qflag, long ID, string OTP)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] para = {
+                    new SqlParameter("@qflag",qflag),
+                    new SqlParameter("@id_otp",ID),
+                    new SqlParameter("@OTP",OTP)
+
+                };
+                dt = SQLHelper.ExecuteDataTable("cms_rmaotp_get", para);
+
+                return dt;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
     }
 }

@@ -33,6 +33,29 @@ namespace LaylaERP.BAL
             catch { throw; }
             return ds;
         }
+        public static DataTable Getorders(string entity_id, string contact,  string per_page, string page, string sort, string direction, string flag)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+              {
+
+                    
+                   new SqlParameter("@type", contact), 
+                    new SqlParameter("@pageno", page),
+                    new SqlParameter("@pagesize", per_page),
+                    new SqlParameter("@sortcol", sort),
+                    new SqlParameter("@sortdir", direction),
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("cms_rmaapi_order_api", parameters);
+
+            }
+            catch { throw; }
+            return dt;
+        }
 
     }
 }

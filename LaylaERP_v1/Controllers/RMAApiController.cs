@@ -158,6 +158,69 @@ namespace LaylaERP_v1.Controllers
             }
         }
 
+        [HttpGet, Route("send-otp/{app_key}/{entity_id}")]
+        public IHttpActionResult Getotp(string app_key, string entity_id, string email = "christison.quickfix@gmail.com", string phone = "2674295634", string option = "email",string type = "OTP",long ID= 0, string OTP="123654")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == "0")
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else
+                {
+                    if (type == "OTP")
+                    {
+                        string contact = "";
+                        if (option == "email")
+                            contact = email;
+                        else
+                            contact = phone;
+                        string msg = string.Empty;
+                        var balResult = RMARepository.getotp("I", contact, option); 
+                        int total = balResult;
+                        if (total > 0)
+                        {
+                            return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = total });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                        }
+                    }
+                    else if(type == "verify")
+                    {
+                        string msg = string.Empty;
+                        var balResult = RMARepository.getotpverify("SRH", ID, OTP);
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                            return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = OTP });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                        }
+                    }
+                    else
+                        return Ok(new { message = "Please select valid type", status = 404, code = "Not Found", data = new { } });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
+
 
         [HttpPost, Route("orderimage/{app_key}/{entity_id}")]
         public IHttpActionResult UploadedFile(string app_key, long entity_id, string ticket_id, List<CustomerServiceFilesModel> files)

@@ -1,4 +1,4 @@
-﻿@model quickfix_klvanalysis.Models.Content.Product
+﻿@model LaylaERP.Models.qfk.Content.Product
 @{
     ViewBag.Title = "ItemDetail";
     Layout = "~/Views/Shared/_qfk_Layout.cshtml";
@@ -64,7 +64,7 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <h5 class="mt-1 mb-1">Description</h5>
-                            @Model.description
+                            @Html.Raw(Model.description)
                         </div>
                     </div>
                     <!-- end row -->

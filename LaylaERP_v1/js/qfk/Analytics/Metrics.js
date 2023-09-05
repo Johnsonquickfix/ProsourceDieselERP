@@ -27,10 +27,14 @@
                 });
             },
             columns: [
-                //{ data: 'profile', title: 'Profile', sWidth: "20%", orderable: false, render: function (data, type, full, meta) { return `<a href="/audience/profile/${full.id}"><span class="DataTable-Cell-text"><div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div></span></a>`; }},
-                { data: 'metric_name', title: 'Metric Name', class: "d-flex", sWidth: "60%", render: function (data, type, full, meta) { return `<i class="fa fa-envelope me-2 mt-1"></i><a href="/analytics/metric/${full.metric_id}"><span class="DataTable-Cell-text"><div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div></span></a>`; } },
-                { data: 'created', title: 'Metric created', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
-                { data: 'updated', title: 'Metric updated', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                {
+                    data: 'metric_name', title: 'Metric Name', class: "", sWidth: "60%", render: function (data, type, full, meta) {
+                        return  `<i class="fa fas fa-cogs me-2 mt-1"></i><a href="/analytics/metric/${full.metric_id}"> ${data}</a>`;
+                    }
+                },
+                { data: 'integration', title: 'Integration', sWidth: "20%" },
+                //{ data: 'created', title: 'Metric created', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+                //{ data: 'updated', title: 'Metric updated', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
                 //{ data: 'location', title: 'Location', sWidth: "20%", orderable: false },
             ]
         });

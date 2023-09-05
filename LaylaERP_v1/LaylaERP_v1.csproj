@@ -1883,6 +1883,8 @@
     <Content Include="Views\Flows\Index.cshtml" />
     <Content Include="Views\Forms\Index.cshtml" />
     <Content Include="Views\EmailProfile\Inboxprofile.cshtml" />
+    <Content Include="Views\EmailProfile\SentProfile.cshtml" />
+    <Content Include="Views\EmailProfile\DraftProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

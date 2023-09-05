@@ -290,6 +290,7 @@
     <Compile Include="Controllers\DataImportController.cs" />
     <Compile Include="Controllers\DonationHaulController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
+    <Compile Include="Controllers\EmailProfileController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -1883,6 +1884,9 @@
     <Content Include="Views\Campaigns\WebView.cshtml" />
     <Content Include="Views\Flows\Index.cshtml" />
     <Content Include="Views\Forms\Index.cshtml" />
+    <Content Include="Views\EmailProfile\Inboxprofile.cshtml" />
+    <Content Include="Views\EmailProfile\Sentprofile.cshtml" />
+    <Content Include="Views\EmailProfile\Draftprofile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

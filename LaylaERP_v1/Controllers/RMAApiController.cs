@@ -159,7 +159,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpGet, Route("send-otp/{app_key}/{entity_id}")]
-        public IHttpActionResult Getotp(string app_key, string entity_id, string email = "christison.quickfix@gmail.com", string phone = "2674295634", string option = "email",string type = "OTP",long ID= 0, string OTP="123654")
+        public IHttpActionResult Getotp(string app_key, string entity_id, string value = "christison.quickfix@gmail.com", string option = "email",string type = "OTP",long ID= 0, string OTP="123654")
         {
             try
             {
@@ -177,13 +177,13 @@ namespace LaylaERP_v1.Controllers
                 {
                     if (type == "OTP")
                     {
-                        string contact = "";
-                        if (option == "email")
-                            contact = email;
-                        else
-                            contact = phone;
+                        //string contact = "";
+                        //if (option == "email")
+                        //    contact = email;
+                        //else
+                        //    contact = phone;
                         string msg = string.Empty;
-                        var balResult = RMARepository.getotp("I", contact, option); 
+                        var balResult = RMARepository.getotp("I", value, option); 
                         int total = balResult;
                         if (total > 0)
                         {

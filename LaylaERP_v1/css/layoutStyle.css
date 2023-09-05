@@ -5546,3 +5546,24 @@ display:flex; align-items:center;gap:1rem;}
 }
 #imagePreviewContainer:empty {
 display:none;}
+/*********email template*/
+.email_box {
+display:flex; justify-content:stretch;}
+.box_sidebar {
+    background: #f6f8fc;
+    width: 250px;
+}
+.email_box .box-primary {
+max-width:calc(100% - 250px);}
+.email_compose a {
+    background: #c2e7ff;
+    border-radius: 16px;
+    color: #001d35;
+    height: 56px;
+    padding: 0 24px 0px 20px;
+    min-width: 150px; display:inline-flex; align-items:center; font-size:16px;
+}
+    .email_compose a i {
+    margin-right:10px;font-size:20px;}
+.email_compose {
+margin-bottom:15px;}

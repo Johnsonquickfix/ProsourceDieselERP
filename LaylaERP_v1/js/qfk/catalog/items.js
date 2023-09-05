@@ -30,7 +30,7 @@
                 columns: [
                     {
                         data: 'title', title: 'Item', sWidth: "40%", render: function (data, type, row, meta) {
-                            return `<div class="d-flex"><img src="${row.image_link}" alt="" height="40" class="rounded"><div class="ms-3 align-self-center overflow-hidden me-auto"><a href="/catalog/item/${row.product_id}">${data}</a></div>`;
+                            return `<div class="d-flex"><img src="${row.image_link}" alt="" height="40" class="rounded" decoding="async" loading="lazy" ><div class="ms-3 align-self-center overflow-hidden me-auto"><a href="/catalog/item/${row.product_id}">${data}</a></div>`;
                         }
                     },
                     { data: 'status', title: 'Status', sWidth: "15%" },

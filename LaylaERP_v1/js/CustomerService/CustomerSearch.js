@@ -155,7 +155,7 @@ function CustomerInfo(cus_id, ord_id, cus_email, phone_no) {
     if (cus_id == 0 && ord_id == 0 && cus_email == null && phone_no == null) return false;
     $.ajaxSetup({ async: true });
     $.get('/customer-service/customer-info', { strValue1: cus_id, strValue2: ord_id, strValue3: isNullUndefAndSpace(cus_email) ? cus_email : '', strValue4: isNullUndefAndSpace(phone_no) ? phone_no : '' }).then(response => {
-        response = JSON.parse(response); //console.log(response);
+        response = JSON.parse(response); console.log(response);
         if (response.length == 0) { $(".profile-username").text('Guest'); $(".profile-useremail,.billing-address,.shipping-address").text('-'); }
         $.each(response, function (i, row) {
             $(".profile-username").text(row.user_login); $(".profile-useremail").text(row.user_email);
@@ -396,11 +396,13 @@ function OrderInfo(ord_id) {
                 $("#order_items").append(_html);
                 zQty += _qty; zGAmt += _sub_total;
                 zTotalTax += (parseFloat(row.tax) || 0.00);
-                zTDiscount += _dis;
+                zTDiscount += _dis;                
             }
+
             else if (row.order_item_type == 'fee' && row.order_item_name == 'State Recycling Fee') { zSRFAmt += _total; }
             else if (row.order_item_type == 'fee' && row.order_item_name != 'State Recycling Fee') { zFeeAmt += _total; }
-            else if (row.order_item_type == 'shipping') { zShippingAmt += _total; }
+            //else if (row.order_item_type == 'shipping') { zShippingAmt += _total; }
+            else if (row.order_item_type == 'shipping') { zShippingAmt += (parseFloat(row.shipping_amount) || 0.00); }
             else if (row.order_item_type == 'gift_card') { zGiftCardAmt += _total; }
             else if (row.order_item_type == 'tax') { _tax.push({ order_item_id: row.order_item_id, name: row.order_item_name, label: row.label, rate: row.tax, amount: _total }); }
             else if (row.order_item_type == 'coupon') {
@@ -449,10 +451,11 @@ function OrderInfo(ord_id) {
                 }
             }
         });
+
+
         $(".order-coupon").empty().append(_coupon); $('#order_items_refund').append(_refundHtml);
 
-        let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;
-
+        let netpay = (zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt;         
         _html = '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Subtotal:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zGAmt) + '</div></div>';
         if (zTDiscount > 0) _html += '<div class="d-flex flex-stack mb-3"><div class="fw-bold pe-10 text-gray-600 fs-6">Discount:</div><div class="text-end fw-bolder fs-6 text-gray-800">' + formatCurrency(zTDiscount) + '</div></div>';
         _html += '<div class="separator separator-dashed my-2"></div>';
@@ -759,7 +762,7 @@ function ClaimWarrantyModal(ele) {
     let _qty = (parseInt($(ele).data('qty')) || 0) + (parseInt($(ele).data('returnqty')) || 0);
     let modalHtml = '<div class="modal-dialog modal-fullscreen p-12">';
     modalHtml += '<div class="modal-content modal-rounded">';
-    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Please select a reason for your refunds/returns/warranty claim. Order #' + order_id + '</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
+    modalHtml += '<div class="modal-header py-3 justify-content-start"><h4 class="modal-title flex-grow-1">Choose one of the following reasons for your return. Order #' + order_id + '</h4><button type="button" class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>';
     modalHtml += '<div class="modal-body py-1"></div>';
     modalHtml += '<div class="modal-footer py-2 d-flex"><button type="button" class="btn btn-sm btn-primary claimwarranty_previous hide" onclick="ClaimWarranty_previous();">Back</button><button type="button" class="btn btn-sm btn-primary claimwarranty_next" onclick="ClaimWarranty_next();">Next</button><button type="button" id="btnGenerateTicket" class="btn btn-sm btn-primary hide" data-id="' + $(ele).data('id') + '" data-name="' + $(ele).data('name') + '" data-qty="' + _qty + '">Generate Ticket No</button></div>';
     modalHtml += '</div>';
@@ -772,7 +775,8 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '  <div class="d-flex align-items-center me-5">';
     modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
     modalHtml += '      <span class="me-5">';
-    modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+    modalHtml += '          <span class="fw-bolder fs-5 mb-0">Have you received the product within the last 30 days?*</span> </br>';   
+    modalHtml += '          <span>The date the product was delivered is determined by the carrier tracking number.</span>';
     modalHtml += '          <div class="form-check-solid fv-row fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">';
     modalHtml += '              <input name="box_is_opened" class="form-check-input" type="radio" value="1" checked id="box_is_opened"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_opened">Yes</label>';
     modalHtml += '              <input name="box_is_opened" class="form-check-input ms-4" type="radio" value="0" id="box_is_opened_no"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_opened_no">No</label>';

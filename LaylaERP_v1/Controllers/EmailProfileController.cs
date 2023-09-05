@@ -9,7 +9,7 @@ namespace LaylaERP_v1.Controllers
     public class EmailProfileController : Controller
     {
         // GET: EmailProfile
-        public ActionResult Index()
+        public ActionResult Inboxprofile()
         {
             return View();
         }

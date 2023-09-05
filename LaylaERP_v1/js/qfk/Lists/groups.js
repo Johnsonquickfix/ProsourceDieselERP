@@ -176,7 +176,7 @@
                         <a class="dropdown-item" href="#">View Campaigns</a><a class="dropdown-item" href="#">View Excluded People</a><a class="dropdown-item" href="#">View Signup Forms</a>`;
                 return `<div class="dropdown">
                             <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="mdi mdi-dots-horizontal"></i>
+                                <i class="fas fa-ellipsis-v"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" style="">
                                 ${h}

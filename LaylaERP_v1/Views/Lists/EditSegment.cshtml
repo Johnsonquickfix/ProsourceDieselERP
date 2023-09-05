@@ -2,23 +2,24 @@
 @model Newtonsoft.Json.Linq.JObject
 @{
     ViewBag.Title = "EditSegment";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    quickfix_klvanalysis.Utilities.OperatorModel om = quickfix_klvanalysis.Utilities.CommanUtilities.Provider.GetCurrent();
-    if (om.user_id <= 0) { Response.Redirect("~/user/sign_in"); }
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+    LaylaERP.UTILITIES.OperatorModel om = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    if (om.UserID <= 0) { Response.Redirect("~/user/sign_in"); }
 
-    Dictionary<string, string> _type = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaType();
-    Dictionary<string, string> _operator = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaOperator();
-    Dictionary<string, string> _timeframe = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaTimeframe();
-    Dictionary<string, string> _unit = quickfix_klvanalysis.Models.Enums.Criteria.CriteriaUnit();
-    System.Data.DataTable gl = quickfix_klvanalysis.Repository.ProfilesRepository.GroupList(om.company_id, 1);
-    System.Data.DataTable cl = quickfix_klvanalysis.Repository.ProfilesRepository.GetCountries();
+    Dictionary<string, string> _type = LaylaERP.Models.qfk.Enums.Criteria.CriteriaType();
+    Dictionary<string, string> _operator = LaylaERP.Models.qfk.Enums.Criteria.CriteriaOperator();
+    Dictionary<string, string> _timeframe = LaylaERP.Models.qfk.Enums.Criteria.CriteriaTimeframe();
+    Dictionary<string, string> _unit = LaylaERP.Models.qfk.Enums.Criteria.CriteriaUnit();
+    //System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(om.company_id, 1);
+    System.Data.DataTable gl = LaylaERP.BAL.qfk.ProfilesRepository.GroupList(1, 1);
+    System.Data.DataTable cl = LaylaERP.BAL.qfk.ProfilesRepository.GetCountries();
 }
-<link href="~/Content/Site.css" rel="stylesheet" />
 <!-- DataTables -->
-<link href="~/Content/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
-<link href="~/Content/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css">
-<!-- Responsive datatable examples -->
-<link href="~/Content/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 
 <div id="root">
     <!-- start page title -->
@@ -276,22 +277,7 @@
     </form>
 
 </div>
-<script src="~/Content/assets/libs/moment/moment.min.js"></script>
-<script src="~/Content/assets/js/masking-input.js" data-autoinit="true"></script>
-<!-- Required datatable js -->
-<script src="~/Content/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-<!-- Buttons examples -->
-<script src="~/Content/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-<script src="~/Content/assets/libs/jszip/jszip.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
 
-<!-- Responsive examples -->
-<script src="~/Content/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="~/Content/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-<script src="~/appjs/common.js"></script>
+<script src="~/js/qfk/common.js"></script>
 <script async src="@Url.Content("~/js/qfk/lists/segment.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 

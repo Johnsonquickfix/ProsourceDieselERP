@@ -602,7 +602,7 @@ function GenerateStolenPackageTicket(order_id) {
         showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep || Reported Stolen (Not Delivered But Shown as Delivered) ', body: _body };
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Prosource Diesel || Reported Stolen (Not Delivered But Shown as Delivered) ', body: _body };
                 $.ajax(
                     { url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }
                 ).done(function (result) {
@@ -619,8 +619,8 @@ function GenerateStolenPackageTicket(order_id) {
     return false;
 }
 function StolenPackageTicketMailBody(name, chat_history) {
-    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your reported loss of the package.<br/><br/>';
-    _body += 'We will work diligently to resolve this for you as soon as possible, and a Layla specialist will get back to you regarding your stolen report within 3-5 business days.<br/><br/>';
+    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your reported loss of the package.<br/><br/>';
+    _body += 'We will work diligently to resolve this for you as soon as possible, and a Prosource Diesel specialist will get back to you regarding your stolen report within 3-5 business days.<br/><br/>';
     _body += '<b>Here is what happens next:</b><br/><br/>';
     _body += 'Review: We will review your claim details and any other evidence submitted pertaining to your claim.<br/><br/>';
     _body += 'Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or an explanation of your stolen package issue.<br/><br/>';
@@ -932,7 +932,7 @@ function GenerateTicketNo() {
         title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.", showLoaderOnConfirm: true, showCancelButton: true,
         preConfirm: function () {
             return new Promise(function (resolve) {
-                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Layla Sleep Warranty Information', body: _body, files: _file };
+                let _obj = { json_data: JSON.stringify(option), receipient_email: option.email, subject: 'Prosource Diesel Warranty Information', body: _body, files: _file };
                 $.ajax({ url: "/customer-service/generate-ticket", method: "POST", timeout: 0, headers: { "Content-Type": "application/json" }, data: JSON.stringify(_obj) }).done(function (result) {
                     result = JSON.parse(result);
                     if (result[0].response == 'success') {
@@ -948,8 +948,8 @@ function GenerateTicketNo() {
     return false;
 }
 function TicketMailDetails(name, chat_history) {
-    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
-    _body += 'We will work diligently to get this resolved for you as soon as possible, and a Layla warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
+    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
+    _body += 'We will work diligently to get this resolved for you as soon as possible, and a Prosource Diesel warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
     _body += '<b>Here is what happens next:</b><br/><br/>';
     _body += 'Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>';
     _body += 'Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>';
@@ -1606,7 +1606,7 @@ function PaypalPayment(order_id) {
                     { post_id: oid, meta_key: '_transaction_id', meta_value: id[id.length - 1].replace(/\#/g, '') }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }
                 ];
                 let mail_body = 'Hi ' + $('#myModal #txtshipfirstname').data('name') + ', {BR}Please use this secure link to make your payment. Thank you! ' + _data.href;
-                let opt = { b_email: $('#myModal #txtshipfirstname').data('email'), payment_method: 'PayPal Payment request from Layla Sleep Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
+                let opt = { b_email: $('#myModal #txtshipfirstname').data('email'), payment_method: 'PayPal Payment request from Prosource Diesel Inc.', payment_method_title: mail_body, OrderPostMeta: _postMeta };
                 $.post('/OrdersMySQL/UpdatePaymentInvoiceID', opt).then(result => {
                     swal('Success!', result.message, 'success');
                     if (response.status == true) { $("#myModal").modal('hide'); OrderInfo(parent_order); }
@@ -1627,14 +1627,14 @@ function createPaypalXML(oid, pp_no) {
     });
     let paupal_xml = {
         id: '', status: "DRAFT",
-        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: 'Layla Invoice.', payment_term: { term_type: "NET_10" } },
+        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: 'Prosource Diesel Invoice.', payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
             email_address: paypal_seller_email,
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
-            website: "www.laylasleep.com",
-            logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",
+            website: "www.prosourcediesel.com",
+            logo_url: "",
             additional_notes: ""
         },
         primary_recipients: [

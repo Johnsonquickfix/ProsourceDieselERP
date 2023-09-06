@@ -926,7 +926,7 @@ function GenerateTicketNo() {
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
         box_is_opened: $("input[name='box_is_opened']:checked").val(), comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
     };
-    let _body = TicketMailDetails(_user, _chat);
+    let _body = TicketMailDetails(_user, _chat, $("#kt_warranty_claim_note").val());
     //console.log(option, _questions, _file, file); return false;
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Generate ticket number.", showLoaderOnConfirm: true, showCancelButton: true,
@@ -947,7 +947,7 @@ function GenerateTicketNo() {
     }]);
     return false;
 }
-function TicketMailDetails(name, chat_history) {
+function TicketMailDetails(name, chat_history, comment) {
     let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
     _body += 'We will work diligently to get this resolved for you as soon as possible, and a Prosource Diesel warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
     _body += '<b>Here is what happens next:</b><br/><br/>';
@@ -958,6 +958,7 @@ function TicketMailDetails(name, chat_history) {
     _body += 'Again, we\'re sorry you\'re having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>';
     _body += '<b>Chat History</b><br/><br/>';
     $.each(chat_history, function (i, row) { _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>'; });
+    _body += '<br/><b>Comment:</b>' + comment + '<br/>'; 
     _body += '<br/><b>Help Desk <br/>';
     return _body;
 }

@@ -130,7 +130,7 @@
             try
             {
                 SqlParameter[] parameters = { };
-                dt = SQLHelper.ExecuteDataTable("select code,name from tb_countries order by name", parameters);
+                dt = SQLHelper.ExecuteDataTable("select code,name from qfk_countries order by name", parameters);
             }
             catch { throw; }
             return dt;

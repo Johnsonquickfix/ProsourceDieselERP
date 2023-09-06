@@ -13,12 +13,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
-
         public ActionResult Sentprofile()
         {
             return View();
         }
-
         public ActionResult Draftprofile()
         {
             return View();

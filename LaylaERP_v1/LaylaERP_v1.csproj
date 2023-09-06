@@ -271,6 +271,7 @@
     <Compile Include="Controllers\API\EditorController.cs" />
     <Compile Include="Controllers\API\EmailTemplatesController.cs" />
     <Compile Include="Controllers\API\IdentifyController.cs" />
+    <Compile Include="Controllers\API\ListsController.cs" />
     <Compile Include="Controllers\API\ProfilesController.cs" />
     <Compile Include="Controllers\API\TrackController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
@@ -385,6 +386,7 @@
     <Compile Include="Models\qfk\Content\ProductSources.cs" />
     <Compile Include="Models\qfk\Content\Template.cs" />
     <Compile Include="Models\qfk\Editor\CommonModel.cs" />
+    <Compile Include="Models\qfk\Enums\Criteria.cs" />
     <Compile Include="Models\qfk\JqDataTableModel.cs" />
     <Compile Include="Models\qfk\MailTracking\TrackingRequest.cs" />
     <Compile Include="Models\qfk\SearchModel.cs" />
@@ -1883,8 +1885,8 @@
     <Content Include="Views\Flows\Index.cshtml" />
     <Content Include="Views\Forms\Index.cshtml" />
     <Content Include="Views\EmailProfile\Inboxprofile.cshtml" />
-    <Content Include="Views\EmailProfile\SentProfile.cshtml" />
-    <Content Include="Views\EmailProfile\DraftProfile.cshtml" />
+    <Content Include="Views\EmailProfile\Sentprofile.cshtml" />
+    <Content Include="Views\EmailProfile\Draftprofile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

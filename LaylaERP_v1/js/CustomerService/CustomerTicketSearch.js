@@ -216,7 +216,9 @@ function ClaimWarrantyModal(id, _action) {
         modalHtml += '  <div class="d-flex align-items-center me-5">';
         modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
         modalHtml += '      <span class="me-5">';
-        modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+       // modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+        modalHtml += '          <span class="fw-bolder fs-5 mb-0">Have you received the product within the last 30 days?*</span> </br>';
+        modalHtml += '          <span>The date the product was delivered is determined by the carrier tracking number.</span>';
         if (response[0].box_is_opened) modalHtml += '          <span class="badge badge-success fs-base">Yes</span>';
         else modalHtml += '          <span class="badge badge-danger fs-base text-uppercase">No</span>';
         modalHtml += '      </span>';

@@ -112,7 +112,15 @@
             $.each(j, function (i, row) {
                 let _ = r.createElement('li', { class: '' });
                 $.each(row.criteria, function (si, s) {
-                    if (s.type === 'customer-group-membership') {
+                    console.log('customer-attribute ', s)
+                    if (s.type === 'customer-statistic-value') {
+                        (g === null ? getGroup().done(function (data) { g = data }) : void (0));
+                        let _n = g.find(el => el.group_id === s.group); _n = _n ? _n.name : '';
+                        _.append(r.createElement('span', { class: '' },
+                            (si > 0 ? 'OR ' : '') + (s.operator === 'eq' ? 'Is' : 'Is not') + ' in <b>' + _n + '</b> and was added ' + info(s)
+                        ));
+                    }
+                    else if (s.type === 'customer-attribute') {
                         (g === null ? getGroup().done(function (data) { g = data }) : void (0));
                         let _n = g.find(el => el.group_id === s.group); _n = _n ? _n.name : '';
                         _.append(r.createElement('span', { class: '' },
@@ -131,6 +139,7 @@
                             'Location <b>' + (s.operator === 'eq' ? 'Is' : 'Is not') + '</b> within <b>' + _n + '</b>'
                         ));
                     }
+                    
                     _.append(r.createElement('br'));
                 });
                 d.append(_);
@@ -176,7 +185,7 @@
                         <a class="dropdown-item" href="#">View Campaigns</a><a class="dropdown-item" href="#">View Excluded People</a><a class="dropdown-item" href="#">View Signup Forms</a>`;
                 return `<div class="dropdown">
                             <a class="text-muted font-size-16" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="mdi mdi-dots-horizontal"></i>
+                                <i class="fas fa-ellipsis-v"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" style="">
                                 ${h}

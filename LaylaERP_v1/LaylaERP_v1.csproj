@@ -1887,6 +1887,7 @@
     <Content Include="Views\EmailProfile\Inboxprofile.cshtml" />
     <Content Include="Views\EmailProfile\Sentprofile.cshtml" />
     <Content Include="Views\EmailProfile\Draftprofile.cshtml" />
+    <Content Include="Views\Analytics\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -1,0 +1,304 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_qfk_Layout.cshtml";
+}
+<!-- DataTables -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="main_content_box">
+    <div class="home_top">
+        <h4 class="h4_title">Conversion metric</h4>
+        <div class="home_top_form">
+            <div class="select_home_top">
+                <select id="metrics" class="select2" style="width:100%;">
+                    <option value="0">Active on Site</option>
+                    <option value="1">Added to Cart</option>
+                    <option value="2">Cancelled Order</option>
+                    <option value="3">Cart</option>
+                    <option value="4">Clicked Banner</option>
+                    <option value="5">Fulfilled Order</option>
+                    <option value="6">Order Placed</option>
+                    <option value="7">Ordered Product</option>
+                    <option value="8">Placed Order</option>
+                    <option value="9">Referred Friend</option>
+                    <option value="10">Refunded Order</option>
+                    <option value="11">Searched Site</option>
+                    <option value="12">Shared Article</option>
+                    <option value="13">Started Checkout</option>
+                    <option value="14">Viewed Category</option>
+                    <option value="15">Viewed Product</option>
+                    <option value="16">Viewed Product 1</option>
+                </select>
+            </div>
+            <div class="time_period">
+                <div class="btn-group">
+                    <button type="button" title="Time period" id="time_period" class="time_period_btn">
+                        <span class="Button-icon-container">
+                            <span class="svg_span" aria-hidden="true" focusable="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M9 10H6v3h3v-3Z"></path>
+                                    <path fill="currentColor"
+                                          fill-rule="evenodd"
+                                          d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h1V3a1 1 0 0 1 1-1Zm9 4v1a1 1 0 1 0 2 0V6h1a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V6h8Z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                        </span>
+                        <span class="Button-text">Time period</span>
+                    </button>
+                    <div class="dropdown-menu time_drop">
+                        <div class="drops">
+                            <h4 class="h4_title">Conversion metric</h4>
+                            <div class="drop_select">
+                                <select id="c_metric" class="select2" style="width:100%;">
+                                    <option>Today</option>
+                                    <option>Week-to-date</option>
+                                    <option>Month-to-date</option>
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="drops">
+                            <h4 class="h4_title">Comparison period</h4>
+                            <div class="drop_select">
+                                <select id="p_metric" class="select2" style="width:100%;">
+                                    <option>Previous period</option>
+                                    <option>Previous year</option>
+                                    <option>Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="drop_btns">
+                            <div class="d-flex">
+                                <button class="me-2 btn btn-lg bg-dark light-color semi-b">Apply</button>
+                                <button class="btn btn-lg bg-light dark-color semi-b">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="header_top_para">
+                    Jul 12, 2023 - Aug 11, 2023 <br />
+                    compared to previous period
+                </p>
+            </div>
+        </div>
+    </div><!--header top-->
+    <div class="boxed_style">
+        <div class="d-flex align-center justify-content-between business_performance">
+            <h2 class="h2-title">Business performance summary <span>Jul 12, 2023 - Aug 11, 2023</span></h2>
+            <button type="button" title="Time period" class="time_period_btn">
+                <span class="Button-text">View dashboard</span>
+            </button>
+        </div>
+        <div class="revanue_box">
+            <div class="d-flex flex-wrap">
+                <div class="col-6">
+                    <h2 class="revanue_h2">$0.00</h2>
+                    <div class="revanue_div">
+                        <h3>Total revenue</h3>
+                        <div class="revenue_badge">
+                            <span class="badge bg-secondary">
+                                <i role="img" class="ADS-20-Outline ADS-20-Outline-dash-20-outline" aria-hidden="true"></i> 0%
+                            </span> vs. previous period
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h2 class="revanue_h2">$0.00</h2>
+                    <div class="revanue_div">
+                        <h3>Attributed revenue (0.0% of total)</h3>
+                        <div class="revenue_badge">
+                            <span class="badge bg-secondary">
+                                <i role="img" class="ADS-20-Outline ADS-20-Outline-dash-20-outline" aria-hidden="true"></i> 0%
+                            </span> vs. previous period
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="revenue-attr">
+            <h4 class="h4_title">Attributed revenue</h4>
+            <div class="d-flex flex-wrap justify-content-between mt-3">
+                <div class="col">
+                    <div class="attr_rev">
+                        <h6><i role="img" class="ADS-20-Outline ADS-20-Outline-people-20-outline" aria-hidden="true"></i> Per recipient</h6>
+                        <p>$0.00</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="attr_rev">
+                        <h6><i role="img" class="ADS-20-Outline ADS-20-Outline-paper-airplane-20-outline" aria-hidden="true"></i> Campaigns</h6>
+                        <p>$0.00</p>
+                        <p>0.0%</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="attr_rev">
+                        <h6><i role="img" class="ADS-20-Outline ADS-20-Outline-network-20-outline" aria-hidden="true"></i> Flows</h6>
+                        <p>$0.00</p>
+                        <p>0.0%</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="attr_rev">
+                        <h6><i role="img" class="ADS-20-Outline ADS-20-Outline-mail-20-outline" aria-hidden="true"></i> Email</h6>
+                        <p>$0.00</p>
+                        <p>0.0%</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="attr_rev">
+                        <h6><i role="img" class="ADS-20-Outline ADS-20-Outline-message-20-outline" aria-hidden="true"></i> SMS</h6>
+                        <p>$0.00</p>
+                        <p>0.0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="boxed_style">
+        <div class="d-flex align-center justify-content-between business_performance">
+            <h2 class="h2-title">Top performing flows <span>Jul 13, 2023 - Aug 12, 2023</span></h2>
+            <button type="button" title="Time period" class="time_period_btn">
+                <span class="Button-text">View all flows</span>
+            </button>
+        </div>
+        <div class="revanue_box">
+            <div class="data_table_box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Flow
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Deliveries
+                            </th>
+                            <th>
+                                Active on Site
+                            </th>
+                            <th>
+                                Percent change
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty_box">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTQiIGhlaWdodD0iODYiIHZpZXdCb3g9IjAgMCA5NCA4NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iNCIgd2lkdGg9Ijg2IiBoZWlnaHQ9Ijg2IiByeD0iOCIgZmlsbD0iI0YyRjRGNSIvPgo8cmVjdCB5PSI1NiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiByeD0iNCIgZmlsbD0iI0RGRTNFNiIvPgo8cmVjdCB5PSIxNSIgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiByeD0iNCIgZmlsbD0iI0RGRTNFNiIvPgo8cmVjdCB4PSIxNyIgeT0iMzUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjQiIGZpbGw9IiNERkUzRTYiLz4KPHJlY3QgeD0iMTgiIHk9IjU2IiB3aWR0aD0iNTkiIGhlaWdodD0iMTQiIHJ4PSI0IiBmaWxsPSIjREZFM0U2Ii8+CjxyZWN0IHg9IjE4IiB5PSIxNSIgd2lkdGg9IjU5IiBoZWlnaHQ9IjE0IiByeD0iNCIgZmlsbD0iI0RGRTNFNiIvPgo8cmVjdCB4PSIzNSIgeT0iMzUiIHdpZHRoPSI1OSIgaGVpZ2h0PSIxNCIgcng9IjQiIGZpbGw9IiNERkUzRTYiLz4KPHBhdGggZD0iTTYuMDkwMjYgMjMuMjY0OEw3LjE0NzI3IDIyLjkzNjRDNi45ODEgMjIuODI2OSA2Ljg4NTk5IDIyLjYxOSA2Ljg4NTk5IDIyLjQ0MzlDNi44ODU5OSAyMS40Njk3IDkgMjEuMzM4NCA5IDE5LjcxODRDOSAxOC43MzMzIDguMDg1NTEgMTggNi41ODkwNyAxOEM1LjUyMDE5IDE4IDQuNjA1NyAxOC4zOTQgNCAxOS4wODM2TDQuODA3NiAxOS45MDQ1QzUuMTk5NTIgMTkuNDMzOSA1LjcyMjA5IDE5LjEzODMgNi40NTg0MyAxOS4xMzgzQzcuMjE4NTMgMTkuMTM4MyA3LjU4NjcgMTkuNDk5NSA3LjU4NjcgMTkuOTI2NEM3LjU4NjcgMjAuODU2OCA1LjY3NDU4IDIwLjk4ODEgNS42NzQ1OCAyMi4zMjM1QzUuNjc0NTggMjIuNjg0NyA1LjgwNTIzIDIzLjAxMyA2LjA5MDI2IDIzLjI2NDhaTTYuNTE3ODEgMjUuNTMwNUM2Ljk2OTEyIDI1LjUzMDUgNy4zNDkxNyAyNS4xNjkzIDcuMzQ5MTcgMjQuNzUzM0M3LjM0OTE3IDI0LjM0ODQgNi45NjkxMiAyMy45OTgxIDYuNTE3ODEgMjMuOTk4MUM2LjA2NjUxIDIzLjk5ODEgNS42ODY0NiAyNC4zNDg0IDUuNjg2NDYgMjQuNzUzM0M1LjY4NjQ2IDI1LjE2OTMgNi4wNjY1MSAyNS41MzA1IDYuNTE3ODEgMjUuNTMwNVoiIGZpbGw9IiNGMkY0RjUiLz4KPHBhdGggZD0iTTIzLjA5MDMgNDMuMjY0OEwyNC4xNDczIDQyLjkzNjRDMjMuOTgxIDQyLjgyNjkgMjMuODg2IDQyLjYxOSAyMy44ODYgNDIuNDQzOUMyMy44ODYgNDEuNDY5NyAyNiA0MS4zMzg0IDI2IDM5LjcxODRDMjYgMzguNzMzMyAyNS4wODU1IDM4IDIzLjU4OTEgMzhDMjIuNTIwMiAzOCAyMS42MDU3IDM4LjM5NCAyMSAzOS4wODM2TDIxLjgwNzYgMzkuOTA0NUMyMi4xOTk1IDM5LjQzMzkgMjIuNzIyMSAzOS4xMzgzIDIzLjQ1ODQgMzkuMTM4M0MyNC4yMTg1IDM5LjEzODMgMjQuNTg2NyAzOS40OTk1IDI0LjU4NjcgMzkuOTI2NEMyNC41ODY3IDQwLjg1NjggMjIuNjc0NiA0MC45ODgxIDIyLjY3NDYgNDIuMzIzNUMyMi42NzQ2IDQyLjY4NDcgMjIuODA1MiA0My4wMTMgMjMuMDkwMyA0My4yNjQ4Wk0yMy41MTc4IDQ1LjUzMDVDMjMuOTY5MSA0NS41MzA1IDI0LjM0OTIgNDUuMTY5MyAyNC4zNDkyIDQ0Ljc1MzNDMjQuMzQ5MiA0NC4zNDg0IDIzLjk2OTEgNDMuOTk4MSAyMy41MTc4IDQzLjk5ODFDMjMuMDY2NSA0My45OTgxIDIyLjY4NjUgNDQuMzQ4NCAyMi42ODY1IDQ0Ljc1MzNDMjIuNjg2NSA0NS4xNjkzIDIzLjA2NjUgNDUuNTMwNSAyMy41MTc4IDQ1LjUzMDVaIiBmaWxsPSIjRjJGNEY1Ii8+CjxwYXRoIGQ9Ik02LjA5MDI2IDY0LjI2NDhMNy4xNDcyNyA2My45MzY0QzYuOTgxIDYzLjgyNjkgNi44ODU5OSA2My42MTkgNi44ODU5OSA2My40NDM5QzYuODg1OTkgNjIuNDY5NyA5IDYyLjMzODQgOSA2MC43MTg0QzkgNTkuNzMzMyA4LjA4NTUxIDU5IDYuNTg5MDcgNTlDNS41MjAxOSA1OSA0LjYwNTcgNTkuMzk0IDQgNjAuMDgzNkw0LjgwNzYgNjAuOTA0NUM1LjE5OTUyIDYwLjQzMzkgNS43MjIwOSA2MC4xMzgzIDYuNDU4NDMgNjAuMTM4M0M3LjIxODUzIDYwLjEzODMgNy41ODY3IDYwLjQ5OTUgNy41ODY3IDYwLjkyNjRDNy41ODY3IDYxLjg1NjggNS42NzQ1OCA2MS45ODgxIDUuNjc0NTggNjMuMzIzNUM1LjY3NDU4IDYzLjY4NDcgNS44MDUyMyA2NC4wMTMgNi4wOTAyNiA2NC4yNjQ4Wk02LjUxNzgxIDY2LjUzMDVDNi45NjkxMiA2Ni41MzA1IDcuMzQ5MTcgNjYuMTY5MyA3LjM0OTE3IDY1Ljc1MzNDNy4zNDkxNyA2NS4zNDg0IDYuOTY5MTIgNjQuOTk4MSA2LjUxNzgxIDY0Ljk5ODFDNi4wNjY1MSA2NC45OTgxIDUuNjg2NDYgNjUuMzQ4NCA1LjY4NjQ2IDY1Ljc1MzNDNS42ODY0NiA2Ni4xNjkzIDYuMDY2NTEgNjYuNTMwNSA2LjUxNzgxIDY2LjUzMDVaIiBmaWxsPSIjRjJGNEY1Ii8+Cjwvc3ZnPgo="
+                                         alt="" />
+
+                                    <h4 class="empty-heading">No Data Available</h4>
+
+                                    <p class="empty-message">You have no flows currently active.</p>
+
+                                    <div class="empty-actions">
+                                        <button type="button" title="Activate a flow" class="empty_btn">Activate a flow</button>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="boxed_style">
+        <div class="d-flex align-center justify-content-between business_performance">
+            <h2 class="h2-title">Recent campaigns <span>Jul 13, 2023 - Aug 12, 2023</span></h2>
+            <button type="button" title="Time period" class="time_period_btn">
+                <span class="Button-text">View all campaigns</span>
+            </button>
+        </div>
+        <div class="campaigns_box ">
+            <table id="datatable" class="table dt-responsive w-100 align-middle">
+            </table>
+        </div>
+
+    </div>
+    <div class="feedback_box text-center">
+        <button type="button" title="Leave feedback" class="light_btn"><span class="Button-text">Leave feedback</span></button>
+    </div>
+</div>
+<script src="~/js/qfk/common.js"></script>
+<script>
+    $('#datatable').DataTable({
+        lengthMenu: [[25, 50, 100], [25, 50, 100]], order: [[3, "desc"]],
+        destroy: true, bProcessing: true, responsive: false, bServerSide: true, bAutoWidth: true, scrollX: false,
+        language: {
+            lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> of _TOTAL_",
+            infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        sAjaxSource: "/api/campaigns/list",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
+            oSettings.jqXHR = $.ajax({
+                url: sSource, data: aoData,// dataType: 'json', type: "get",
+                success: function (result) {
+                    //let _recordsTotal = data.length > 0 ? data[0].totalcount : 0;
+                    return fnCallback({ sEcho: aoData.find(el => el.name === "sEcho").value, recordsTotal: result.total, recordsFiltered: result.total, aaData: result.data });
+                }
+            });
+        },
+        columns: [
+            {
+                data: 'campaign_name', title: 'Campaign', sWidth: "30%", render: function (data, type, row, meta) {
+                    let h = '', g = JSON.parse(row.audiences);
+                    $.each(g, function (i, r) { h += `<p class="text-muted mb-0"><a href="/list/${i}/members" class="text-dark">${r}</a></p>`; });
+                    return `<h5 class="text-truncate font-size-14 mb-1"><a href="/campaigns/create/${row.campaign_id}">${data}</a></h5> ${h}`;
+                }
+            },
+            { data: 'campaign_type', title: 'Type', sWidth: "10%", render: function (data, type, row, meta) { return `<span class="badge badge-soft-dark p-1 font-size-12"><i class="fa fa-envelope me-1"></i> ${data}</span>`; } },
+            { data: 'campaign_status', title: 'Status', sWidth: "10%", render: function (data, type, row, meta) { return `<span class="badge badge-soft-${data === 'Sent' ? 'success' : 'dark'} p-1 font-size-12"><i class="${data === 'Sent' ? 'mdi mdi-check-bold' : 'fas fa-pen-square'}  me-1"></i> ${data}</span>` } },
+            { data: 'updated', title: 'Last updated', sWidth: "10%", render: function (data, type, row, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
+            { data: 'open_rate', title: 'Open rate', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+            { data: 'click_rate', title: 'Click rate', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') },
+            { data: 'active_on_Site', title: 'Active on Site', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 0, '') }
+            //{ data: 'template_id', title: 'Action', sWidth: "10%", orderable: false, render: function (data, type, row, meta) { return action(row); } }
+        ]
+    });
+</script>
+
+
+
+<script>
+
+
+    jQuery(function ($) {
+        $select = $("#metrics").select2({});
+        $select.data('select2').$container.addClass('select_2box');
+        $select.data('select2').$dropdown.addClass('new_style');
+
+        $c_metric = $("#c_metric").select2({});
+        $c_metric.data('select2').$container.addClass('select_2box rem_select_2box');
+        $c_metric.data('select2').$dropdown.addClass('new_style rem_new_style');
+
+        $p_metric = $("#p_metric").select2({});
+        $p_metric.data('select2').$container.addClass('select_2box rem_select_2box ');
+        $p_metric.data('select2').$dropdown.addClass('new_style rem_new_style');
+
+        $('#time_period').click(function (e) {
+            $('.time_drop').slideToggle('fast');
+        });
+
+
+
+
+
+    });
+</script>

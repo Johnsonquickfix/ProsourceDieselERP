@@ -114,10 +114,11 @@
                 $.each(row.criteria, function (si, s) {
                     console.log('customer-attribute ', s)
                     if (s.type === 'customer-statistic-value') {
-                        (g === null ? getGroup().done(function (data) { g = data }) : void (0));
-                        let _n = g.find(el => el.group_id === s.group); _n = _n ? _n.name : '';
-                        _.append(r.createElement('span', { class: '' },
-                            (si > 0 ? 'OR ' : '') + (s.operator === 'eq' ? 'Is' : 'Is not') + ' in <b>' + _n + '</b> and was added ' + info(s)
+                        //(g === null ? getGroup().done(function (data) { g = data }) : void (0));
+                        //let _n = g.find(el => el.group_id === s.group); _n = _n ? _n.name : '';
+                        let _w = s.statistic_filters ? ` where <b>${s.statistic_filters.dimension}</b> ${s.statistic_filters.operator} <b>${s.statistic_filters.value.join(', ')}</b>` : '';
+                        _.append(r.createElement('span', { class: '' }, `${s.statistic} ${s.operator} ${s.timeframe} ${_w}`
+                            //(si > 0 ? 'OR ' : '') + (s.operator === 'eq' ? 'Is' : 'Is not') + ' in <b>' + _n + '</b> and was added ' + info(s)
                         ));
                     }
                     else if (s.type === 'customer-attribute') {

@@ -131,7 +131,7 @@
         { data: 'created', title: 'Created', sWidth: "15%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
         {
             data: 'id', title: '', sWidth: "5%", orderable: false, render: function (data, type, row, meta) {
-                 return @Model.group_type_id!==1 ? '': `<a href="javascript:void(0);" onclick="removeProfile(\'${row.id}\', \'${row.profile}\');" class="btn btn-sm btn-soft-danger"><i class="mdi mdi-delete font-size-18"></i></a>`;
+                return @Model.group_type_id!== 1 ? '' : `<a href="javascript:void(0);" onclick="removeProfile(\'${row.id}\', \'${row.profile}\');" class="btn btn-sm btn-soft-danger"><i class="fas fa-trash font-size-18 font-size-18"></i></a>`;
             }
         }
     ];

@@ -46,5 +46,9 @@
 
             return View(table);
         }
+        public ActionResult Index()
+        {
+            return View();
+        }
     }
 }

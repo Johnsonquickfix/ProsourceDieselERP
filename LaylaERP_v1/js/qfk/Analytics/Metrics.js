@@ -28,10 +28,11 @@
             },
             columns: [
                 {
-                    data: 'metric_name', title: 'Metric Name', class: "", sWidth: "60%", render: function (data, type, full, meta) {
+                    data: 'metric_name', title: 'Metric Name', class: "", sWidth: "30%", render: function (data, type, full, meta) {
                         return  `<i class="fa fas fa-cogs me-2 mt-1"></i><a href="/analytics/metric/${full.metric_id}"> ${data}</a>`;
                     }
                 },
+                { data: 'metric_key', title: 'Metric Key', sWidth: "30%" },
                 { data: 'integration', title: 'Integration', sWidth: "20%" },
                 //{ data: 'created', title: 'Metric created', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },
                 //{ data: 'updated', title: 'Metric updated', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },

@@ -5548,13 +5548,18 @@ display:flex; align-items:center;gap:1rem;}
 display:none;}
 /*********email template*/
 .email_box {
-display:flex; justify-content:stretch;}
+    display: flex;
+    justify-content: stretch;
+    margin-top: 25px;
+}
 .box_sidebar {
     background: #f6f8fc;
     width: 250px;
 }
-.email_box .box-primary {
-max-width:calc(100% - 250px);}
+.email_content {
+    width: 100%;
+    max-width: calc(100% - 250px);
+}
 .email_compose a {
     background: #c2e7ff;
     border-radius: 16px;
@@ -5567,3 +5572,65 @@ max-width:calc(100% - 250px);}
     margin-right:10px;font-size:20px;}
 .email_compose {
 margin-bottom:15px;}
+.mail_ul {
+    list-style: none;
+    padding: 0px 15px 0px 0px;
+    margin: 0px 0px 0px -15px;
+}
+    .mail_ul li {
+        list-style: none;
+    }
+        .mail_ul li a {
+            font-size: 14px;
+            letter-spacing: normal;
+            color: #001d35;
+            text-shadow: none;
+            border-radius: 0px 20px 20px 0px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            font-weight: 400; padding-right:15px;
+        }
+        .mail_ul li.active a {
+            background-color: #d3e3fd;
+            font-weight:600;
+        }
+            .mail_ul li a:hover {
+                background: rgba(32,33,36,0.059);
+            }
+        .mail_ul li a i {
+            width: 50px;
+            color: #001d35;
+            text-align: center;
+        }
+        .mail_ul li a span {
+            margin-left: auto;
+            font-weight: 700;
+        }
+.email_top_group {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+.checkbox_email_top {
+    display: flex;
+    align-items: stretch;
+    border-radius: 4px; margin:0px;
+}
+.email_top_group [type="checkbox"] {
+    margin: 0px;
+    width: 15px;
+   /* height: 15px;*/
+    margin:0px 8px;
+    background: transparent;
+    border-radius: 4px;
+}
+    .email_top_group [type="button"] {
+        padding: 10px 6px;
+        background: transparent;
+        border-radius: 4px; margin-left:2px;
+    }
+.checkbox_email_top:hover, .email_top_group [type="button"]:hover {
+    background: #F2F2F2;
+}

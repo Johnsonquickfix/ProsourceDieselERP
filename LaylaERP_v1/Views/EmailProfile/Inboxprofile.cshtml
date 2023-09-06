@@ -3,5 +3,192 @@
     ViewBag.Title = "Inboxprofile";
 }
 
-<h2>Inboxprofile</h2>
+<div class="page-title">
+    <h2 class="page-heading">Inbox Profile Email</h2>
+</div>
+<section class="content section-content table-design customer-section">
+    <div class="email_box">
+        <div class="box_sidebar">
+            <nav class="email_nav">
+               
+                <ul class="mail_ul">
+                    <li class="active"><a href="#"><i class="fa fa-envelope"></i> Inbox <span>100</span></a></li>
+                    <li><a href="#"><i class="fa fa-paper-plane"></i> Sent</a></li>
+                    <li><a href="#"><i class="fa fa-file"></i> Draft <span>10</span></a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="email_content">
+            <div class="email_top_settings">
+
+                <div class="email_top_group">
+                    <label class="checkbox_email_top">
+                        <input type="checkbox" aria-label="Checkbox for following text input">
+                    </label>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">All</a></li>
+                        <li><a class="dropdown-item" href="#">None</a></li>
+                        <li><a class="dropdown-item" href="#">Read</a></li>
+                        <li><a class="dropdown-item" href="#">Unread</a></li>
+                        <li><a class="dropdown-item" href="#">Starred</a></li>
+                        <li><a class="dropdown-item" href="#">Unstarred</a></li>
+                    </ul>
+                </div>
+                <div class="email_btn email_refresh">
+                    <button><i class="fas fa-redo"></i></button>
+                </div>
+                <div class="email_btn email_more">
+                    <button><i class="fa fa-ellipsis-v"></i></button>
+                </div>
+                <div class="email_pagination">
+                    <div class="email_page_drop">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            1-50 of 100
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Newest</a></li>
+                            <li><a class="dropdown-item" href="#">Oldest</a></li>
+                        </ul>
+                    </div>
+                    <div class="email_arrow">
+                        <button><i class="fa fa-chevron-left"></i></button>
+                        <button><i class="fa fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="email_compose">
+                    <a href="#"><i class="fa fa-pencil-alt"></i> Compose</a>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div id="gridContainer" class="">
+                        <div class="row">
+                            <div class="col-sm-12 email_template_table">
+                                <table id="dtdata" class="table table-striped dataTable" style="width: 100%;" role="grid" aria-describedby="dtdata_info">
+                                    <tbody>
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="25001" /></td>
+                                            <td class="sorting_1">25001</td>
+                                            <td>shakakimotho@gmail.com</td>
+                                            <td>shakakimotho@gmail.com</td>
+                                            <td>Active</td>
+                                            <td>Unapproved, Unmoderated</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(25001);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="even">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="23079" /></td>
+                                            <td class="sorting_1">23079</td>
+                                            <td>jobediesel</td>
+                                            <td>brandie@jobediesel.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(23079);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="22041" /></td>
+                                            <td class="sorting_1">22041</td>
+                                            <td>JPECK.PHF@GMAIL.COM</td>
+                                            <td>JPECK.PHF@GMAIL.COM</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops, Unmoderated</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(22041);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="even">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21992" /></td>
+                                            <td class="sorting_1">21992</td>
+                                            <td>denis@ttsspokane.com</td>
+                                            <td>denis@ttsspokane.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21992);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21596" /></td>
+                                            <td class="sorting_1">21596</td>
+                                            <td>westcoastdiesels@yahoo.com</td>
+                                            <td>westcoastdiesels@yahoo.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21596);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="even">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21529" /></td>
+                                            <td class="sorting_1">21529</td>
+                                            <td>STACKEDPERFORMANCE</td>
+                                            <td>SALES@STACKEDPERFORMANCELLC.COM</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21529);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21405" /></td>
+                                            <td class="sorting_1">21405</td>
+                                            <td>lorenequipment1@gmail.com</td>
+                                            <td>lorenequipment1@gmail.com</td>
+                                            <td>Active</td>
+                                            <td>Unapproved, Unmoderated</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21405);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="even">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21397" /></td>
+                                            <td class="sorting_1">21397</td>
+                                            <td>armando1439@gmail.com</td>
+                                            <td>armando1439@gmail.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21397);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21373" /></td>
+                                            <td class="sorting_1">21373</td>
+                                            <td>atxturborebuilders@gmail.com</td>
+                                            <td>atxturborebuilders@gmail.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21373);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr role="row" class="even">
+                                            <td><input type="checkbox" name="CheckSingle" id="CheckSingle" onclick="Singlecheck();" value="21230" /></td>
+                                            <td class="sorting_1">21230</td>
+                                            <td>yaneztrucking13@yahoo.com</td>
+                                            <td>yaneztrucking13@yahoo.com</td>
+                                            <td>Active</td>
+                                            <td>Repair Shops</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="editbutton" onclick="EditUser(21230);" data-toggle="tooltip" title="View/Edit user"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 

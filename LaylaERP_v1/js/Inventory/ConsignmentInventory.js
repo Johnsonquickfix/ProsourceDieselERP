@@ -112,7 +112,8 @@ function ProductStockGrid() {
             {
                 data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
-                    if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);
+                    /*if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);*/
+                     return (row.op_stock + row.stock).toFixed(0);
                 }
             },
             {

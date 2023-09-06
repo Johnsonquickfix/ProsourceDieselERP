@@ -158,7 +158,9 @@ function ClaimWarrantyModal(id, _action) {
         modalHtml += '<div class="row">';
         modalHtml += '<div class="col-lg-4 m-0 me-xl-10 me-lg-5 d-print-none border border-dashed border-gray-300 card-rounded h-lg-100 min-w-md-350px p-5 bg-lighten order-info">';
         $.each(response, function (i, row) {
+           
             let _json = JSON.parse(row.order_details); //console.log(_json);
+            $(".order-id").data('email', _json._billing_email); $(".order-id").data('name', _json._billing_first_name + ' ' + _json._billing_last_name);
             modalHtml += '      <div class="mb-2 float-right">';
             modalHtml += '          <span class="badge badge-light-success me-2 order-status">' + row.status_desc + '</span>';
             modalHtml += '      </div>';
@@ -359,10 +361,14 @@ function OrderInfo(ord_id) {
 }
 
 function UpdateTicketAction(element) {
+    let _user = $(".order-id").data('name');
+    let email = $(".order-id").data('email');
     let _chk = $("input[name='ticke_action']:checked").val();
     if (_chk == 'wp_declined' && $("#kt_warranty_claim_note").val() == '') { swal('Info!', 'Please enter comment.', "info").then((result) => { $('#kt_warranty_claim_note').focus(); return false; }); return false; }
     let option = { id: parseInt($(element).data('id')) || 0, ticket_action: _chk, comment: $("#kt_warranty_claim_note").val(), comment_by: 'retention_specialist' };
     //console.log(option); return false;
+    let _body = TicketMailDetails(_user, option.ticket_action, option.comment);
+    //console.log(_body);
     swal.queue([{
         title: '', confirmButtonText: 'Yes, do it!', text: "Update ticket feedback.",
         showLoaderOnConfirm: true, showCancelButton: true,
@@ -371,7 +377,7 @@ function UpdateTicketAction(element) {
                 $.ajax(
                     {
                         method: "POST", timeout: 0, headers: { "Content-Type": "application/json" },
-                        url: "/customer-service/ticket-action", data: JSON.stringify({ strValue1: JSON.stringify(option) })
+                        url: "/customer-service/ticket-action", data: JSON.stringify({ strValue1: JSON.stringify(option), strValue2: email, strValue3: 'Prosource Diesel Warranty Information', strValue4: _body })
                     }
                 ).done(function (result) {
                     result = JSON.parse(result);
@@ -387,19 +393,17 @@ function UpdateTicketAction(element) {
     return false;
 }
 
-function TicketMailDetails(name, chat_history) {
-    let _body = 'Hi there ' + name + ', we\'re sorry that you are having an issue with your Layla product, and thank you for bringing it to our attention with your warranty request.<br/><br/>';
-    _body += 'We will work diligently to get this resolved for you as soon as possible, and a Layla warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>';
-    _body += '<b>Here is what happens next:</b><br/><br/>';
-    _body += 'Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>';
-    _body += 'Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>';
-    _body += 'Decision Rendered: We will inform you of the decision made on your warranty claim and advise you of next steps<br/><br/>';
-    _body += 'Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>';
-    _body += 'Again, we\'re sorry you\'re having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>';
-    _body += '<b>Chat History</b><br/><br/>';
-    $.each(chat_history, function (i, row) {
-        _body += '<b>' + row.from + ':</b> ' + row.content + '<br/>';
-    });
+function TicketMailDetails(name, ticket_action, comment) {
+    let Decision = '';
+    if (ticket_action == 'wp_return') { Decision = 'Return' }
+    else if (ticket_action == 'wp_return_to_vender') { Decision = 'Return to vendor' }
+    else if (ticket_action == 'wp_replacement') { Decision = 'Replacement' }
+    else if (ticket_action == 'wp_createorder') { Decision = 'Create new order' }
+    else if (ticket_action == 'wp_declined') { Decision = 'Declined' }
+    let _body = 'Hi ' + name + ',<br/><br/>';
+   
+    _body += '<br/><b>Retention Specialist Decision:</b>' + Decision + '<br/>';
+    _body += '<br/><b>Comment:</b>' + comment + '<br/>';
     _body += '<br/><b>Help Desk <br/>';
     return _body;
 }

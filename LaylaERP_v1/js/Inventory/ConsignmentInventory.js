@@ -118,7 +118,8 @@ function ProductStockGrid() {
             },
             {
                 data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
+                    //if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
+                    return row.UnitsinPO.toFixed(0);
                 }
             },
             {

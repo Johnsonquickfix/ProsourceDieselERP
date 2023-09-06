@@ -394,32 +394,32 @@
         });
 
         
-        $('#txtUserNickName').change(function () {
+        //$('#txtUserNickName').change(function () {
 
-            UserName = $("#txtUserNickName").val();
-            var obj = {
-                user_nicename: UserName
-            }
-            $.ajax({
-                url: '/Users/GetUserName/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == false) {
+        //    UserName = $("#txtUserNickName").val();
+        //    var obj = {
+        //        user_nicename: UserName
+        //    }
+        //    $.ajax({
+        //        url: '/Users/GetUserName/', dataType: 'json', type: 'Post',
+        //        contentType: "application/json; charset=utf-8",
+        //        data: JSON.stringify(obj),
+        //        dataType: "json",
+        //        success: function (data) {
+        //            if (data.status == false) {
 
-                    }
-                    else {
-                        $("#txtUserNickName").val('');
-                        swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
-                    }
-                },
+        //            }
+        //            else {
+        //                $("#txtUserNickName").val('');
+        //                swal('Alert', 'User name is already exists ', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+        //            }
+        //        },
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        });
+        //        error: function (error) {
+        //            swal('Error!', 'something went wrong', 'error');
+        //        },
+        //    })
+        //});
 
         $('#txtUserEmail').change(function () {
 

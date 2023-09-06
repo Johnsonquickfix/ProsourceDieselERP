@@ -527,5 +527,18 @@
             return ds;
         }
 
+        public static DataTable Getuserclassification(string UserValue)
+        {
+            DataTable DT = new DataTable();
+            try
+            {               
+                string strquery = "select top 1 User_Type from wp_user_classification where User_Value = '" + UserValue + "'";
+                 DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
     }
 }

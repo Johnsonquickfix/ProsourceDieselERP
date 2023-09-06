@@ -29,7 +29,8 @@
                                     <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
                                     <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                                 </span>
-                                @if (Model.User_Image.Length > 0 && Model.User_Image != null)
+
+                                @if (Model.User_Image != System.DBNull.Value && (Model.User_Image.Length > 0 || Model.User_Image != null))
                                 {
                                     <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
                                 }

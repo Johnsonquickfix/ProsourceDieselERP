@@ -453,9 +453,21 @@ namespace LaylaERP.Controllers
             //else if (role == "supplychainmanager")
             //    role = "Supply Chain Manager";
             //else
-            string role = dt.Rows[0]["roletype"].ToString();
+            string role = "";
 
-
+            LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+            //var _att = serializer.Deserialize(dt.Rows[0]["user_role"].ToString());
+            System.Collections.Hashtable _att = serializer.Deserialize(dt.Rows[0]["user_role"].ToString()) as System.Collections.Hashtable;
+            
+            foreach (System.Collections.DictionaryEntry att in _att)
+            {
+                DataTable userdt = BAL.Users.Getuserclassification(att.Key.ToString()); 
+                role += userdt.Rows[0]["User_Type"].ToString() + ","; 
+            }
+            if (!string.IsNullOrEmpty(role) && role.EndsWith(","))
+            {
+                role = role.Substring(0, role.Length - 1);
+            }
             // role = role.Replace("_", " ");    StateFullName       
             myModel.user_role = role;
             myModel.phone = dt.Rows[0]["phone"];
@@ -487,19 +499,29 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-
-                    int ID = UsersRepositry.AddNewCustomer(model);
-                    if (ID > 0)
+                    int uidID = UsersRepositry.GetUserName(model);
+                    if (uidID > 0)
                     {
-                        UserActivityLog.WriteDbLog(LogType.Submit, "New " + model.user_role + " created in user management.", "/Users/CreateUser" + ", " + Net.BrowserInfo);
-                        Adduser_MetaData(model, ID);
-                        Adduser_MetaData_More(model, ID);
-                        ModelState.Clear();
-                        return Json(new { status = true, message = "User record  saved successfully!!", url = "" }, 0);
+
+                        return Json(new { status = false, message = "User name is already exists!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                        //model.user_role = serializer.Serialize(model.user_role);
+                        int ID = UsersRepositry.AddNewCustomer(model);
+                        if (ID > 0)
+                        {
+                            UserActivityLog.WriteDbLog(LogType.Submit, "New " + model.user_role + " created in user management.", "/Users/CreateUser" + ", " + Net.BrowserInfo);
+                            Adduser_MetaData(model, ID);
+                            Adduser_MetaData_More(model, ID);
+                            ModelState.Clear();
+                            return Json(new { status = true, message = "User record  saved successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
                     }
                 }
             }

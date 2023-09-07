@@ -139,7 +139,7 @@ namespace LaylaERP_v1.Controllers
                             orderObj.id = balResult.Rows[i]["ID"].ToString();
                             orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
                             orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
-                            orderObj.total = balResult.Rows[i]["total"].ToString();                                
+                            //orderObj.total = balResult.Rows[i]["total"].ToString();                                
                             orderist.Add(orderObj);
                         }
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderist });

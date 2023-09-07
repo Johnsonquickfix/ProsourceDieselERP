@@ -14,6 +14,7 @@ using LaylaERP.Models;
 using System.IO;
 using System.Drawing;
 using System.Web.Hosting;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP_v1.Controllers
 {
@@ -293,6 +294,75 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 return Ok("[]");
+            }
+        }
+
+        [HttpPost, Route("generate-ticket/{app_key}/{entity_id}")]
+        public IHttpActionResult GenerateOrderTicket(string app_key, long entity_id, CustomerServiceModel model)
+        {
+            try
+            {               
+
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (model == null)
+                {
+                    return Ok(new { message = "Required  param 'phone'", status = 500, code = "Unauthorized", data = new List<string>() });
+                }
+                else if (string.IsNullOrEmpty(model.json_data))
+                {
+                    return Ok(new { message = "Required param 'json_data'", status = 500, code = "Unauthorized", data = new List<string>() });
+                }
+                else
+                { 
+                    model.user_id = 2;
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.json_data, model.user_id, "GENRMATICKET");
+                    //JSONresult = JsonConvert.SerializeObject(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (dt.Rows[0]["response"].ToString() == "success")
+                        {
+
+                            dynamic datam = JsonConvert.DeserializeObject(model.json_data);
+                            // Access the chat_history array
+                            JArray chatHistorys = datam.chat_history;                            
+                            string firstFrom = datam.chat_history[0].from;
+                            string _body = $"Hi there {firstFrom}, we're sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your warranty request.<br/><br/>";
+                            _body += "We will work diligently to get this resolved for you as soon as possible, and a Prosource Diesel warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>";
+                            _body += "<b>Here is what happens next:</b><br/><br/>";
+                            _body += "Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>";
+                            _body += "Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>";
+                            _body += "Decision Rendered: We will inform you of the decision made on your warranty claim and advise you of next steps<br/><br/>";
+                            _body += "Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>";
+                            _body += "Again, we're sorry you're having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>";
+                            _body += "<b>Chat History</b><br/><br/>";
+                            foreach (JObject item in chatHistorys)
+                            {
+                                string from = item.Value<string>("from");
+                                string content = item.Value<string>("content");
+                                _body += $"<b>{from}:</b> {content}<br/>";
+                            }
+                            _body += $"<br/><b>Comment:</b> {datam.comment}<br/>";
+                            _body += "<br/><b>Help Desk<br/>";
+                            SendEmail.SendEmails_outer("david.quickfix1@gmail.com", "Prosource Diesel Warranty Information" + " (#" + dt.Rows[0]["id"].ToString() + ").", _body, string.Empty);
+                        }
+                    }
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
 

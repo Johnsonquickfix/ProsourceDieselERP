@@ -795,7 +795,7 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '  </div>';
     modalHtml += '  <div class="row">';
     modalHtml += '      <div class="col-md-12">';
-    modalHtml += '          <label class="form-label text-gray-800 fw-bolder">Comment</label>';
+    modalHtml += '          <label class="form-label text-gray-800 fw-bolder">Please provide a brief description of the issue</label>';
     modalHtml += '          <textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
     modalHtml += '      </div>';
     modalHtml += '  </div>';

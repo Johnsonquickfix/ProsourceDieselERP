@@ -312,7 +312,7 @@ function ClaimWarrantyModal(id, _action) {
 
         modalHtml += '<div class="row notice bg-light-warning rounded border-warning border border-dashed p-6 mt-4">';
         modalHtml += '<div class="col-lg-12">';
-        modalHtml += '<label class="form-label text-gray-800 fw-bolder">Comment</label>';
+        modalHtml += '<label class="form-label text-gray-800 fw-bolder">Retention Specialist Comment</label>';
         modalHtml += '<textarea id="kt_warranty_claim_note" class="form-control mb-2" placeholder="Type your comment." rows="3" maxlength="500"></textarea>';
         modalHtml += '</div>';
         modalHtml += '</div>';

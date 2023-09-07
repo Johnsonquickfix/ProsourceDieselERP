@@ -128,7 +128,7 @@ namespace LaylaERP_v1.Controllers
                     {
                         string msg = string.Empty;
                         var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");                        
-                        dynamic orderObj = new ExpandoObject();
+                        
                         List<dynamic> orderist = new List<dynamic>();
                         int total = balResult.Rows.Count;
                     if (total > 0)
@@ -136,6 +136,7 @@ namespace LaylaERP_v1.Controllers
                         List<PostModel> ReviewList = new List<PostModel>();
                         for (int i = 0; i < balResult.Rows.Count; i++)
                         {
+                            dynamic orderObj = new ExpandoObject();
                             orderObj.id = balResult.Rows[i]["ID"].ToString();
                             orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
                             orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
@@ -151,6 +152,75 @@ namespace LaylaERP_v1.Controllers
                     }
                     }
                 
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
+
+        public IHttpActionResult Getorder_Old(string app_key, string entity_id, int per_page = 10, int page = 1, string contact = "christison.quickfix@gmail.com", string sort = "id", string direction = "desc")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == "0")
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else
+                {
+                    string msg = string.Empty;
+                    var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");
+                    dynamic orderObj = new ExpandoObject();
+                    List<dynamic> orderist = new List<dynamic>();
+                    int total = balResult.Rows.Count;
+                    if (total > 0)
+                    {
+                        List<Order> orders = new List<Order>(); // Create a list to store orders
+
+                        for (int i = 0; i < balResult.Rows.Count; i++)
+                        {
+                            orderObj = new ExpandoObject(); // Create a new dynamic object for each order
+                            orderObj.id = balResult.Rows[i]["ID"].ToString();
+                            orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
+                            orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
+                            orderObj.total = balResult.Rows[i]["total"].ToString();
+                            orderist.Add(orderObj);
+
+                            // Create an Order object and populate it
+                            Order order = new Order
+                            {
+                                Id = orderObj.id,
+                                DateCreated = orderObj.date_created,
+                                PaymentMethod = orderObj.payment_method
+                                //Total = orderObj.total
+                            };
+
+                            orders.Add(order);
+                        }
+
+                        var responseData = new
+                        {
+                            orders = orders, // Wrapping the list of orders in an "orders" property
+                            count = total // Adding the count property
+                        };
+
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = responseData });
+                    }
+
+                    else
+                    {
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                    }
+                }
+
             }
             catch (Exception ex)
             {

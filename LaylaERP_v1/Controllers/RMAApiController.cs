@@ -110,10 +110,12 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpGet, Route("get-order/{app_key}/{entity_id}")]
-        public IHttpActionResult Getorder(string app_key, string entity_id, int per_page = 10, int page = 1, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
+        public IHttpActionResult Getorder(string app_key, string entity_id, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
         {
             try
             {
+                int per_page = 0;
+                int page = 0;
                 if (string.IsNullOrEmpty(app_key) || entity_id == "0")
                 {
                     return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });

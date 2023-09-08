@@ -227,6 +227,19 @@ function ClaimWarrantyModal(id, _action) {
         modalHtml += '  </div>';
         modalHtml += '</div>';
 
+        modalHtml += '<div class="row notice bg-light-primary rounded border-primary border border-dashed p-6 mb-2">';
+        modalHtml += '  <div class="d-flex align-items-center me-5">';
+        modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
+        modalHtml += '      <span class="me-5">';
+        // modalHtml += '          <span class="fw-bolder fs-5 mb-0">Is the box or package open or not?</span>';
+        modalHtml += '          <span class="fw-bolder fs-5 mb-0">Was this product installed and/or attempted to be installed?*</span> </br>';
+        modalHtml += '          <span>In order to expedite the processing of your request please upload an image.</span>';
+        if (response[0].box_is_installed) modalHtml += '          <span class="badge badge-success fs-base">Yes</span>';
+        else modalHtml += '          <span class="badge badge-danger fs-base text-uppercase">No</span>';
+        modalHtml += '      </span>';
+        modalHtml += '  </div>';
+        modalHtml += '</div>';
+
         //Show Image
         try {
             let _gdrive_link = isNullUndefAndSpace(response[0].gdrive_link) ? JSON.parse(response[0].gdrive_link) : [];

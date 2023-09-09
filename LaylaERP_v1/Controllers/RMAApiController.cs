@@ -370,7 +370,7 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpPost, Route("generate-ticket/{app_key}/{entity_id}")]
-        public IHttpActionResult GenerateOrderTicket(string app_key, long entity_id, CustomerServiceModel model)
+        public IHttpActionResult GenerateOrderTicket(string app_key, long entity_id, dynamic model)
         {
             try
             {               
@@ -388,23 +388,25 @@ namespace LaylaERP_v1.Controllers
                 }
                 else if (model == null)
                 {
-                    return Ok(new { message = "Required  param 'phone'", status = 500, code = "Unauthorized", data = new List<string>() });
+                    return Ok(new { message = "Required  param 'data'", status = 500, code = "Unauthorized", data = new List<string>() });
                 }
-                else if (string.IsNullOrEmpty(model.json_data))
-                {
-                    return Ok(new { message = "Required param 'json_data'", status = 500, code = "Unauthorized", data = new List<string>() });
-                }
+                //else if (string.IsNullOrEmpty(model))
+                //{
+                //    return Ok(new { message = "Required param 'json_data'", status = 500, code = "Unauthorized", data = new List<string>() });
+                //}
                 else
-                { 
-                    model.user_id = 2;
-                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(model.json_data, model.user_id, "GENRMATICKET");
+                {
+                    //model.user_id = 2;
+                    string json_data = JsonConvert.SerializeObject(model, Formatting.Indented);
+
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(json_data, 2, "GENRMATICKET");
                     //JSONresult = JsonConvert.SerializeObject(dt);
                     if (dt.Rows.Count > 0)
                     {
                         if (dt.Rows[0]["response"].ToString() == "success")
                         {
 
-                            dynamic datam = JsonConvert.DeserializeObject(model.json_data);
+                            dynamic datam = JsonConvert.DeserializeObject(json_data);
                             // Access the chat_history array
                             JArray chatHistorys = datam.chat_history;                            
                             string firstFrom = datam.chat_history[0].from;

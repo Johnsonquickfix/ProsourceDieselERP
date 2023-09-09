@@ -246,9 +246,17 @@ function ClaimWarrantyModal(id, _action) {
             if (_gdrive_link.length > 0) {
                 modalHtml += '<div class="d-flex flex-wrap align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">';
                 $.each(_gdrive_link, function (i, row) {
-                    modalHtml += '  <div class="overlay me-10">';
-                    modalHtml += '      <div class="overlay-wrapper"><a class="example-image-link" href="../' + row.files + '" data-lightbox="example-set" data-title=""><img class="example-image rounded w-150px" src="../' + row.files + '" alt="-"></a></div>';
-                    modalHtml += '  </div>';
+                    console.log(row.files);
+                    if (row.files.includes('https://drive.google.com')) {
+                        modalHtml += '  <div class="overlay me-10">';
+                        modalHtml += '      <div class="overlay-wrapper"><a class="example-image-link" href="' + row.files + '" data-lightbox="example-set" data-title=""><img class="example-image rounded w-150px" src="' + row.files + '" alt="-"></a></div>';
+                        modalHtml += '  </div>';
+                    }
+                    else {
+                        modalHtml += '  <div class="overlay me-10">';
+                        modalHtml += '      <div class="overlay-wrapper"><a class="example-image-link" href="../' + row.files + '" data-lightbox="example-set" data-title=""><img class="example-image rounded w-150px" src="../' + row.files + '" alt="-"></a></div>';
+                        modalHtml += '  </div>';
+                    }
                 });
                 modalHtml += '</div>';
             }

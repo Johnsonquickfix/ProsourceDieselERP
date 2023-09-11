@@ -74,10 +74,14 @@ namespace LaylaERP.Controllers
             //urid = details.user_status;
             //string result = Models.UsersRepositry.userslist.ToString();
             //UsersRepositry.userslist.Clear();
-            // string role="";
+            // string role=""; 
+                // Create a serialized array containing the extracted string
+            //string serializedArray = $"a:1:{{s:{rolepass.Length}:\"{rolepass}\";b:1;}}"; 
+             
             UsersRepositry.ShowUsersDetails(rolepass);
             return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
+          
 
         public JsonResult ShowDataUsersDetails(string rolepass)
         {
@@ -508,7 +512,8 @@ namespace LaylaERP.Controllers
                     else
                     {
                         LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
-                        //model.user_role = serializer.Serialize(model.user_role);
+                        //model.user_role = serializer.Serialize(model.user_role); dsfss
+                        model.user_role = $"a:1:{{s:{model.user_role.Length}:\"{model.user_role}\";b:1;}}";
                         int ID = UsersRepositry.AddNewCustomer(model);
                         if (ID > 0)
                         {

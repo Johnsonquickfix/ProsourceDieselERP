@@ -29,18 +29,20 @@
                                     <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
                                     <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                                 </span>
-
-                                @if (Model.User_Image != System.DBNull.Value && (Model.User_Image.Length > 0 || Model.User_Image != null))
-                                {
-                                    <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
-                                }
-                                else
-                                {
-                                    <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Images/userprofile2.png" alt="User profile picture">
-                                }
-                                <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
-                                <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
-                            </div>
+                                
+                                    @if (!DBNull.Value.Equals(Model.User_Image) && (Model.User_Image.Length > 0 || Model.User_Image != null))
+                                    {
+                                        // @if (Model.User_Image != System.DBNull.Value && (Model.User_Image.Length > 0 || Model.User_Image != null))
+                                        //{
+                                        <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
+                                    }
+                                    else
+                                    {
+                                        <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Images/userprofile2.png" alt="User profile picture">
+                                    }
+                                    <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
+                                    <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
+                                </div>
                         </div>
 
                     </div>

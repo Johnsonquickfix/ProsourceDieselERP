@@ -786,6 +786,22 @@ function ClaimWarrantyModal(ele) {
     modalHtml += '  </div>';
     modalHtml += '</div>';
 
+
+    modalHtml += '<div class="claimwarranty-step2 bg-light-primary rounded border-primary border border-dashed p-6 mb-2 hide">';
+    modalHtml += '  <div class="d-flex align-items-center me-5">';
+    modalHtml += '      <div class="symbol symbol-50px me-6"><span class="symbol-label bg-light-success"><i class="fa fa-box-open text-primary"></i></span></div>';
+    modalHtml += '      <span class="me-5">';
+    modalHtml += '          <span class="fw-bolder fs-5 mb-0">Was this product installed and/or attempted to be installed?</span> </br>';
+    modalHtml += '          <span>In order to expedite the processing of your request please upload an image.</span>';
+    modalHtml += '          <div class="form-check-solid fv-row fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">';
+    modalHtml += '              <input name="box_is_installed" class="form-check-input" type="radio" value="1" checked id="box_is_installed"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_installed">Yes</label>';
+    modalHtml += '              <input name="box_is_installed" class="form-check-input ms-4" type="radio" value="0" id="box_is_installed_no"><label class="form-check-label fw-bold ps-2 fs-6 mt-2" for="box_is_installed_no">No</label>';
+    modalHtml += '          </div>';
+    modalHtml += '      </span>';
+    modalHtml += '  </div>';
+    modalHtml += '</div>';
+
+
     modalHtml += '<div class="claimwarranty-step2 bg-light-warning rounded border-warning border border-dashed p-6 hide">';
     modalHtml += '  <div class="row">';
     modalHtml += '      <div class="col-md-6">';
@@ -924,7 +940,7 @@ function GenerateTicketNo() {
     let option = {
         id: 0, email: $(".order-id").data('email'), verification_code: '', order_item_name: $("#btnGenerateTicket").data('name'), order_item_size: '', order_item_color: '', order_item_qty: parseInt($("#kt_warranty_claim_qty").val()) || 0, order_item_sku: '',
         chat_public: '', chat_internal: '', chat_history: JSON.stringify(_chat), reason_code: _reason_code, reason: _reason, order_id: parseInt($(".order-id").data('order_id')) || 0, order_item_id: parseInt($("#btnGenerateTicket").data('id')) || 0,
-        box_is_opened: $("input[name='box_is_opened']:checked").val(), comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
+        box_is_opened: $("input[name='box_is_opened']:checked").val(), box_is_installed: $("input[name='box_is_installed']:checked").val(), comment: $("#kt_warranty_claim_note").val(), gdrive_link: JSON.stringify(_gdrive_link)
     };
     let _body = TicketMailDetails(_user, _chat, $("#kt_warranty_claim_note").val());
     //console.log(option, _questions, _file, file); return false;

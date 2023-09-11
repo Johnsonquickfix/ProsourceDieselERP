@@ -859,7 +859,7 @@
             }
             return list;
         }
-        [HttpPost, Route("products/filter/{app_key}/{entity_id}")]
+        [HttpGet, Route("products/filter/{app_key}/{entity_id}")]
         public IHttpActionResult ProductsFilter(string app_key, long entity_id, ProductFilterRequest flter)
         {
             try

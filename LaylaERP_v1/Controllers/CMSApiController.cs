@@ -897,13 +897,13 @@
                         Dictionary<String, String> _meta = new Dictionary<String, String>();
                         if (flter.taxonomy.product_cat != null) _meta.Add("product_cat", string.Join(",", flter.taxonomy.product_cat));
                         if (flter.taxonomy.product_tag != null) _meta.Add("product_tag", string.Join(",", flter.taxonomy.product_tag));
-                        if (flter.taxonomy.product_type != null) _meta.Add("product_type", string.Join(",", flter.taxonomy.product_type));
+                        if (flter.taxonomy.product_type != null) _meta.Add("product_type", string.Format("'{0}'", string.Join("','", flter.taxonomy.product_type)));
                         obj_filter.taxonomy = _meta;
                     }
                     if (flter.postmeta != null)
                     {
                         Dictionary<String, object> _meta = new Dictionary<String, object>();
-                        if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Join(",", flter.postmeta.stock_status));
+                        if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Format("'{0}'", string.Join("','", flter.postmeta.stock_status)));
                         if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
                         obj_filter.postmeta = _meta;
                     }

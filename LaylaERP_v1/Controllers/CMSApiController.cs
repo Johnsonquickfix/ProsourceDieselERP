@@ -665,7 +665,7 @@
                 }
                 else if (slug.ToString().ToLower().Equals("shop"))
                 {
-                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "", page_type = "product_filter" } });
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "shop", page_type = "product_filter" } });
                 }
                 else
                 {

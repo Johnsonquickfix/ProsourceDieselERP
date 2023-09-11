@@ -401,7 +401,9 @@
                                             </span>
                                             @try
                                             {
-                                                if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                                //if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                                //{
+                                                if (!DBNull.Value.Equals(ViewBag.User_Image) && (ViewBag.User_Image.Length > 0 || ViewBag.User_Image     != null))
                                                 {
                                             <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@ViewBag.User_Image" alt="User profile picture">
                                                 }
@@ -702,7 +704,7 @@
     <script>
     $(document).ready(function () {
             $("#loader").hide();
-            $(document).on('click', "#btnSave", function () {
+        $(document).on('click', "#btnSave", function () {            
                 UpdateProfile();
             })
             $("#btnPhotoLibrary").click(function () {

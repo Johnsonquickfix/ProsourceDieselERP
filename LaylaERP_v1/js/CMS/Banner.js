@@ -15,6 +15,7 @@
             $("#dvlink").hide();
             $("#hfid").val(0);
             $("#btnSave").text("Add");
+            $("#lbltitle").text("Add New Banner");
         }
         else {
             $("#lblpermalink").show();
@@ -22,6 +23,7 @@
             GetDataByID(id);
             $("#hfid").val(id);
             $("#btnSave").text("Update");
+            $("#lbltitle").text("Update Banner");
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);

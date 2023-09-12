@@ -77,7 +77,7 @@ function dataGridLoad(order_type) {
     let _items = [];
     let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj);
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
@@ -99,7 +99,7 @@ function dataGridLoad(order_type) {
             aoData.push({ name: "strValue3", value: null });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 3 ? "user_login" : "ID";
+                var col = oSettings.aaSorting[0][0] == 0 ? "post_date" : oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 3 ? "user_login" : "ID";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);

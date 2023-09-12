@@ -912,6 +912,7 @@
     <Content Include="Images\passwordbox_close.png" />
     <Content Include="Images\passwordbox_open.png" />
     <Content Include="Images\paypal.png" />
+    <Content Include="Images\prosourcediesel-logo.png" />
     <Content Include="Images\searchbox_button.png" />
     <Content Include="Images\slider_handle.png" />
     <Content Include="Images\spinner_arrows.png" />

@@ -15,6 +15,7 @@
             $("#btnSave").text("Add");
            // $('#txttitle').prop('readonly', false);
             $('#txtslug').prop('readonly', false);
+            $("#lbltitle").text("Add New Post");
         }
         else {
             $("#lblpermalink").show();
@@ -23,6 +24,7 @@
             $("#btnSave").text("Update");
             //$('#txttitle').prop('readonly', true);
             $('#txtslug').prop('readonly', true);
+            $("#lbltitle").text("Update Post");
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);

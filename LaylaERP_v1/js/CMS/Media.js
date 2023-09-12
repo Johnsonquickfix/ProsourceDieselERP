@@ -159,13 +159,23 @@ function GetDataByID(ID) {
         success: function (data) {
             var i = JSON.parse(data);
             $("#uploadon").text(i[0].post_date);
-            $("#filename").text("https://erp.prosourcediesel.com/Content/Media/" + i[0].file_name);
+            if (i[0].guid == '') {
+                $("#filename").text("https://erp.prosourcediesel.com/Content/Media/" + i[0].file_name);
+            }
+            else {
+                $("#filename").text("https://prosourcediesel.com/wp-content/uploads/" + i[0].file_name);
+            }
             $("#filetype").text(i[0].file_type);
             $("#filesize").text(Math.round(i[0].file_size) + ' KB');
             $("#dimendion").text(i[0].file_width + ' by ' + i[0].file_height + ' pixels');
             // $"{width} by {height} pixels";  Math.round(i[0].file_size);
             var path = i[0].file_name;
-            url = "../../Content/Media/" + path + "";
+            if (i[0].guid == '') {
+                url = "../../Content/Media/" + path + "";
+            }
+            else {
+                url = "https://prosourcediesel.com/wp-content/uploads/" + path + "";
+            }
             $('<img>').on('load', function () {
                 // Image exists
                 $('#show_picture').attr('src', url);

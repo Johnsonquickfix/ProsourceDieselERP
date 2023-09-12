@@ -77,7 +77,7 @@ function dataGridLoad(order_type) {
     let _items = [];
     let obj = { strValue1: company, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus }; //console.log(obj);
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
@@ -99,7 +99,7 @@ function dataGridLoad(order_type) {
             aoData.push({ name: "strValue3", value: null });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 3 ? "user_login" : "ID";
+                var col = oSettings.aaSorting[0][0] == 0 ? "post_date" : oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 3 ? "user_login" : "ID";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -130,9 +130,19 @@ function dataGridLoad(order_type) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}
                 "render": function (id, type, row) {
-                    var url = "../../Content/Media/" + row.file_name;
-                    var defaultImageUrl = "../../Content/ProductCategory/default.png";
-                    return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+                    if (row.guid == "") {
+                        var url = "../../Content/Media/" + row.file_name;
+                        var defaultImageUrl = "../../Content/ProductCategory/default.png";
+                        return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+                       
+                    }
+                    else {
+                        var url = "https://prosourcediesel.com/wp-content/uploads/" + row.file_name;
+                        var defaultImageUrl = "../../Content/ProductCategory/default.png";
+                        return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+
+                       
+                    }
                 }
             },
             { data: 'post_date', title: 'Uploaded On', sWidth: "8%" },
@@ -182,8 +192,14 @@ function viewModal(id, _action) {
         // modalHtml += '<div class="box-header">';
 
         $.each(response, function (i, row) {
+           
             modalHtml += '      <div class="box-header">';
-            modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name + '>';
+            if (row.guid == '') {
+                modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name + '>';
+            }
+            else {
+                modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=https://prosourcediesel.com/wp-content/uploads/' + row.file_name + '>';
+            }
             modalHtml += '      </div>';
             modalHtml += '      <div class="col-md-6 box-sidebar_box Media_sidebar">';
             modalHtml += '        <div class="box">';
@@ -191,7 +207,14 @@ function viewModal(id, _action) {
             modalHtml += '          <div class="details">';
             modalHtml += '      <h3 class="screen-reader-text">Details</h3>';
             modalHtml += '      <div class="uploaded"><strong>Uploaded on:</strong><span id="uploadon">' + row.post_date + '</span></div>';
-            modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</span></div>';
+            if (row.guid == '') {
+                
+                modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</span></div>';
+            }
+            else {
+             
+                modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://prosourcediesel.com/wp-content/uploads/' + row.file_name + '</span></div>';
+             }
             modalHtml += '      <div class="uploaded"><strong>File type:</strong><span>' + row.file_type + '</span></div>';
             modalHtml += '      <div class="uploaded"><strong>File size:</strong><span>' + Math.round(row.file_size) + ' KB' + '</span></div>';
             modalHtml += '      <div class="uploaded"><strong>Dimensions:</strong><span>' + row.file_width + ' by ' + row.file_height + ' pixels' + '</span></div>';

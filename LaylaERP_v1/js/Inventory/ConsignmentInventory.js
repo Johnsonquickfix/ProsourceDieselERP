@@ -101,44 +101,46 @@ function ProductStockGrid() {
         columns: [
             { data: 'p_id', title: 'Parent ID', sWidth: "8%" },
             {
-                data: 'id', title: 'ID', sWidth: "8%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "6%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show warehouse On-Hand Inventory."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            { data: 'category', title: 'Category', sWidth: "8%" },
+            { data: 'category', title: 'Category', sWidth: "18%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "28%" },
+            { data: 'post_title', title: 'Product Name', sWidth: "18%" },
             {
-                data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    //if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
-                    /*if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);*/
-                     return (row.op_stock + row.stock).toFixed(0);
+                data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                    ///if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                    //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);
+                    return (row.op_stock + row.stock).toFixed(0);
+              
                 }
             },
             {
-                data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                     //if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
                     return row.UnitsinPO.toFixed(0);
+                     
                 }
             },
             {
-                data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                     //if (row.total_variation > 0) return ''; else return row.SaleUnits.toFixed(0);
                     return row.SaleUnits.toFixed(0);
                 }
             },
             {
-                data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    /*if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);*/
-                     return row.Damage.toFixed(0);
+                data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                    //if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);
+                    return row.Damage.toFixed(0);
                 }
             },
             {
-                data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'available', title: 'Available Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
-                    /*if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);*/
-                    return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
+                    //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
+                    return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0);  
                 }
             },
         ],

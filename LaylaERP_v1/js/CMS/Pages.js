@@ -16,6 +16,7 @@
                 $("#btnSave").text("Add");
                // $('#txttitle').prop('readonly', false);
                 $('#txtslug').prop('readonly', false);
+                $("#lbltitle").text("Add New Page");
             }
             else { 
                 $("#lblpermalink").show();
@@ -24,7 +25,7 @@
                 $("#btnSave").text("Update");
                // $('#txttitle').prop('readonly', true);
                 $('#txtslug').prop('readonly', true);
-                 
+                $("#lbltitle").text("Update Page");
             }
         }
         else {

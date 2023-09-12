@@ -150,12 +150,12 @@ function dataGridLoad(order_type) {
             { data: 'post_title', title: 'Title', sWidth: "12%" },
             { data: 'CompanyName', title: 'Store', sWidth: "12%" },
             {
-                "data": "mobileimage", sWidth: "7%   ",
+                "data": "bannerimage", sWidth: "7%   ",
                 //'render': function (data, type, full, meta) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}
                 "render": function (data) {
-                    var url = "../../Content/Banner/MobileBanner/" + data;
+                    var url = "../../Content/Banner/Featured/" + data;
                     var defaultImageUrl = "../../Content/ProductCategory/default.png"; 
                     return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
                 }

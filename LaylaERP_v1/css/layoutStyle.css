@@ -5693,6 +5693,29 @@ border-radius:100%;}
     padding-bottom: 18px;
     font-size: 14px; vertical-align:middle;
 }
+.on-hand.inventory td {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+@media(min-width:992px) {
+    .wrapper_invent_top {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+       
+    }
+    .scrollLeft {
+        height: 20px;
+        min-width: 1300px;
+    }
+    .wrapper-invents {
+        width: 100%;
+        overflow: auto;
+    }
+    .wrapper-invents table.table-blue.table.check-table {
+        min-width: 1300px !important;
+    }
+}
 @media(max-width:767px) {
     .box_sidebar {
     width:100%;}

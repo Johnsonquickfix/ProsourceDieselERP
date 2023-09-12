@@ -106,9 +106,9 @@ function ProductStockGrid() {
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show warehouse On-Hand Inventory."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            { data: 'category', title: 'Category', sWidth: "8%" },
+            { data: 'category', title: 'Category', sWidth: "18%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "28%" },
+            { data: 'post_title', title: 'Product Name', sWidth: "18%" },
             {
                 data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
@@ -300,3 +300,13 @@ function download_csv(csv, filename) {
     // Lanzamos
     downloadLink.click();
 }
+
+$(window).on('load', function () {
+    $('<div class="wrapper_invent_top"><div class="scrollLeft"/></div>').insertBefore('.wrapper-invents');
+    $(".wrapper_invent_top").scroll(function () {
+        $(".wrapper-invents").scrollLeft($(".wrapper_invent_top").scrollLeft());
+    });
+    $(".wrapper-invents").scroll(function () {
+        $(".wrapper_invent_top").scrollLeft($(".wrapper-invents").scrollLeft());
+    });
+});

@@ -103,11 +103,13 @@
 
 
 </section>
+
 <div class="modal in printable " id="billModal" role="dialog" aria-hidden="true"></div>
 <script src="@Url.Content("~/js/Inventory/ConsignmentInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
 <script type="text/javascript">
-    jQuery(function ($) {
+    $(window).on('load', function () {
         $('.inventory-table').wrap('<div class="wrapper-invents" \>');
+       
     });
 </script>
+

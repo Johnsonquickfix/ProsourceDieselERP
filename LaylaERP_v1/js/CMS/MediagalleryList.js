@@ -130,9 +130,19 @@ function dataGridLoad(order_type) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}
                 "render": function (id, type, row) {
-                    var url = "../../Content/Media/" + row.file_name;
-                    var defaultImageUrl = "../../Content/ProductCategory/default.png";
-                    return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+                    if (row.guid == "") {
+                        var url = "../../Content/Media/" + row.file_name;
+                        var defaultImageUrl = "../../Content/ProductCategory/default.png";
+                        return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+                       
+                    }
+                    else {
+                        var url = "https://prosourcediesel.com/wp-content/uploads/" + row.file_name;
+                        var defaultImageUrl = "../../Content/ProductCategory/default.png";
+                        return '<img src="' + url + '" onerror="this.onerror=null; this.src=\'' + defaultImageUrl + '\'" width="65" height="50">';
+
+                       
+                    }
                 }
             },
             { data: 'post_date', title: 'Uploaded On', sWidth: "8%" },
@@ -182,8 +192,14 @@ function viewModal(id, _action) {
         // modalHtml += '<div class="box-header">';
 
         $.each(response, function (i, row) {
+           
             modalHtml += '      <div class="box-header">';
-            modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name + '>';
+            if (row.guid == '') {
+                modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=../../Content/Media/' + row.file_name + '>';
+            }
+            else {
+                modalHtml += '  <img runat="server" id="show_picture" class="featured_side_image" src=https://prosourcediesel.com/wp-content/uploads/' + row.file_name + '>';
+            }
             modalHtml += '      </div>';
             modalHtml += '      <div class="col-md-6 box-sidebar_box Media_sidebar">';
             modalHtml += '        <div class="box">';
@@ -191,7 +207,14 @@ function viewModal(id, _action) {
             modalHtml += '          <div class="details">';
             modalHtml += '      <h3 class="screen-reader-text">Details</h3>';
             modalHtml += '      <div class="uploaded"><strong>Uploaded on:</strong><span id="uploadon">' + row.post_date + '</span></div>';
-            modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</span></div>';
+            if (row.guid == '') {
+                
+                modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://erp.prosourcediesel.com/Content/Media/' + row.file_name + '</span></div>';
+            }
+            else {
+             
+                modalHtml += '      <div class="uploaded"><strong>File name:</strong><span>https://prosourcediesel.com/wp-content/uploads/' + row.file_name + '</span></div>';
+             }
             modalHtml += '      <div class="uploaded"><strong>File type:</strong><span>' + row.file_type + '</span></div>';
             modalHtml += '      <div class="uploaded"><strong>File size:</strong><span>' + Math.round(row.file_size) + ' KB' + '</span></div>';
             modalHtml += '      <div class="uploaded"><strong>Dimensions:</strong><span>' + row.file_width + ' by ' + row.file_height + ' pixels' + '</span></div>';

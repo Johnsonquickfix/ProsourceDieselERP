@@ -8,7 +8,7 @@ namespace QuickfixSearch.Models.Product
         [JsonProperty("taxonomy")]
         public ProductTaxonomyRequest taxonomy { get; set; }
         [JsonProperty("postmeta")]
-        public IDictionary<string, object> postmeta { get; set; }
+        public ProductPostmetaRequest postmeta { get; set; }
         [JsonProperty("sort_by")]
         public string sort_by { get; set; } = string.Empty;
         public int limit { get; set; } = 12;
@@ -24,5 +24,16 @@ namespace QuickfixSearch.Models.Product
         public List<string> product_tag { get; set; }
         [JsonProperty("product_type")]
         public List<string> product_type { get; set; }
+    }
+    public class ProductPostmetaRequest
+    {
+        [JsonProperty("_stock_status")]
+        public List<string> stock_status { get; set; }
+        [JsonProperty("_price")]
+        public List<int> price { get; set; }
+        //[JsonProperty("product_tag")]
+        //public List<string> product_tag { get; set; }
+        //[JsonProperty("product_type")]
+        //public List<string> product_type { get; set; }
     }
 }

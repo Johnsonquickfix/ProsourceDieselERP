@@ -317,7 +317,13 @@ namespace LaylaERP.Models
             public string address { get; set; } = string.Empty;
             public string total { get; set; } = string.Empty;
         }
-
+        public class Order
+        {
+            public string Id { get; set; }
+            public string DateCreated { get; set; }
+            public string PaymentMethod { get; set; }
+            public string Total { get; set; }
+        }
 
         public class BlogModel
         {

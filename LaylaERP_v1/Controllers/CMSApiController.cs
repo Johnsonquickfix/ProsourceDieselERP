@@ -663,6 +663,10 @@
                 {
                     return Ok(new { message = "Required query param 'slug'", status = 500, code = "SUCCESS", data = new List<string>() });
                 }
+                else if (slug.ToString().ToLower().Equals("shop"))
+                {
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "shop", page_type = "product_filter" } });
+                }
                 else
                 {
                     dynamic obj = new ExpandoObject();
@@ -887,8 +891,25 @@
                 {
                     JObject original_o = JObject.FromObject(new { _sku = "", _price = "", _regular_price = "", _sale_price = "", _core_price = "", _manage_stock = "", _stock_status = "", _stock = "", _backorders = "", _weight = "", _height = "", _width = "", _length = "", _tax_status = "" });
                     dynamic obj = new ExpandoObject(); int overall_count = 0;
+                    dynamic obj_filter = new ExpandoObject();
+                    if (flter.taxonomy != null)
+                    {
+                        Dictionary<String, String> _meta = new Dictionary<String, String>();
+                        if (flter.taxonomy.product_cat != null) _meta.Add("product_cat", string.Join(",", flter.taxonomy.product_cat));
+                        if (flter.taxonomy.product_tag != null) _meta.Add("product_tag", string.Join(",", flter.taxonomy.product_tag));
+                        if (flter.taxonomy.product_type != null) _meta.Add("product_type", string.Format("'{0}'", string.Join("','", flter.taxonomy.product_type)));
+                        obj_filter.taxonomy = _meta;
+                    }
+                    if (flter.postmeta != null)
+                    {
+                        Dictionary<String, object> _meta = new Dictionary<String, object>();
+                        if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Format("'{0}'", string.Join("','", flter.postmeta.stock_status)));
+                        if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
+                        obj_filter.postmeta = _meta;
+                    }
+                    if (flter.sort_by != null) obj_filter.sort_by = flter.sort_by;
                     //term_main
-                    DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, flter.limit, flter.page);
+                    DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page);
                     foreach (DataRow item in ds.Tables[0].Rows)
                     {
                         obj.term_id = item["term_id"] != DBNull.Value ? Convert.ToInt64(item["term_id"].ToString()) : 0;

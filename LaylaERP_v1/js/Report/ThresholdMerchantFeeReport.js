@@ -374,7 +374,7 @@ function send_mail(id, result) {
     let myHtml = '<table id="threshold-fee" cellpadding="0" cellspacing="0" border="0" style="width:100%;">';
     myHtml += '<tr>';
     myHtml += '                                        <td  style="padding:0px 2.5px">';
-    myHtml += '                                        <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                        <img src="https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_titleNew + '</h2>';
     myHtml += '                                        </td>';
     myHtml += ' </tr>';

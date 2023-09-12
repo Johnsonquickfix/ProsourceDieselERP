@@ -27,7 +27,8 @@ namespace LaylaERP.Controllers
                 var content = new StringContent("{}", Encoding.UTF8, "application/json");
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
+                    //client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
+                    client.BaseAddress = new Uri("https://prosourcediesel.com/proexportdataorders.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -72,43 +73,37 @@ namespace LaylaERP.Controllers
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["posts"].ToString());
                         childRow.Add("posts", obj);
                     }
-                    else
-                        childRow.Add("posts", "{}");
+                    else childRow.Add("posts", "{}");
                     if (row["post_meta"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["post_meta"].ToString());
                         childRow.Add("post_meta", obj);
                     }
-                    else
-                        childRow.Add("post_meta", "{}");
+                    else childRow.Add("post_meta", "{}");
                     if (row["comments"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["comments"].ToString());
                         childRow.Add("comments", obj);
                     }
-                    else
-                        childRow.Add("comments", "{}");
+                    else childRow.Add("comments", "{}");
                     if (row["woocommerce_order_items"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["woocommerce_order_items"].ToString());
                         childRow.Add("woocommerce_order_items", obj);
                     }
-                    else
-                        childRow.Add("woocommerce_order_items", "{}");
+                    else childRow.Add("woocommerce_order_items", "{}");
                     if (row["wc_order_stats"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_stats"].ToString());
                         childRow.Add("wc_order_stats", obj);
                     }
-                    else
-                        childRow.Add("wc_order_stats", "{}");
+                    else childRow.Add("wc_order_stats", "{}");
                     if (row["wc_order_product_lookup"] != DBNull.Value)
                     {
                         dynamic obj = JsonConvert.DeserializeObject<dynamic>(row["wc_order_product_lookup"].ToString());
                         childRow.Add("wc_order_product_lookup", obj);
                     }
-                    else
-                        childRow.Add("wc_order_product_lookup", "{}");
+                    else childRow.Add("wc_order_product_lookup", "{}");
                     parentRow.Add(row["id"].ToString(), childRow);
                 }
                 result = JsonConvert.SerializeObject(parentRow, Formatting.Indented);
@@ -116,19 +111,17 @@ namespace LaylaERP.Controllers
                 var content = new StringContent(result, Encoding.UTF8, "application/json");
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://quickfixtest2.com/erpdataimport.php");
+                    //client.BaseAddress = new Uri("https://quickfixtest2.com/erpdataimport.php");
+                    client.BaseAddress = new Uri("https://prosourcediesel.com/erpdataimport.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-                    var response = client.PostAsync("", content).Result;
-
-                    if (response != null && response.IsSuccessStatusCode)
-                    {
-                        result = response.Content.ReadAsStringAsync().Result;
-                    }
+                    //var response = client.PostAsync("", content).Result;
+                    //if (response != null && response.IsSuccessStatusCode)
+                    //{
+                    //    result = response.Content.ReadAsStringAsync().Result;
+                    //}
                 }
-
-
             }
             catch { }
             return Content(result, ContentType.Json, Encoding.UTF8);

@@ -67,7 +67,7 @@
                     {
                         mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
                         mailMessage.Subject = "Reset Password";
-                        mailMessage.Body = @"<img src=https://laylaerp.com/Images/layla1-logo.png /><br>" + "<p>We got a reset password request.</p> <p>Please login with a new password and change your password from your profile after logging in with a new password.</p>" + "<p>User name: " + UserName + "</p> <p>New password: " + model1.pwd +"</p>";
+                        mailMessage.Body = @"<img src=https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png /><br>" + "<p>We got a reset password request.</p> <p>Please login with a new password and change your password from your profile after logging in with a new password.</p>" + "<p>User name: " + UserName + "</p> <p>New password: " + model1.pwd +"</p>";
                         mailMessage.IsBodyHtml = true;
 
                         /*string SenderEmailID = "david.quickfix1@gmail.com";
@@ -805,7 +805,7 @@
                 ViewBag.user_phone = DT.Rows[0]["phone"].ToString();
                 ViewBag.user_address = DT.Rows[0]["address"].ToString();
                 ViewBag.User_Image = DT.Rows[0]["User_Image"];
-                string role = DT.Rows[0]["roletype"].ToString();
+                string role = "";
                 //if (role == "accounting")
                 //    role = "Accounting";
                 //else if (role == "administrator")
@@ -832,6 +832,24 @@
                 //    role = "Supply Chain Manager";
                 //else
                 //    role = role;
+             
+
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                //var _att = serializer.Deserialize(dt.Rows[0]["user_role"].ToString());
+                System.Collections.Hashtable _att = serializer.Deserialize(DT.Rows[0]["user_role"].ToString()) as System.Collections.Hashtable;
+
+                foreach (System.Collections.DictionaryEntry att in _att)
+                {
+                    DataTable userdt = BAL.Users.Getuserclassification(att.Key.ToString());
+                    role += userdt.Rows[0]["User_Type"].ToString() + ",";
+                }
+                if (!string.IsNullOrEmpty(role) && role.EndsWith(","))
+                {
+                    role = role.Substring(0, role.Length - 1);
+                }
+
+
+
                 ViewBag.user_role = role;
                 ViewBag.user_status = DT.Rows[0]["user_status"];
                 ViewBag.id = id;

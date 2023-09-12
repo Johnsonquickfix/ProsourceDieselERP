@@ -208,20 +208,25 @@
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,pm_gc.meta_value gift_card,"
-                                + " '[' + STRING_AGG(concat('{','\"vr_id\":', coalesce(ps.id,0), ',\"vr_title\":\"', coalesce(ps.post_title,'No Variations'),'\",\"_regular_price\":\"',pm_rp.meta_value,'\",\"_price\":\"',pm_sp.meta_value,'\",\"_gift_card\":\"',pm_gc.meta_value,'\"}'), ',') + ']' variation_details"
-                                + "        from wp_posts p"
-                                + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
-                                + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
-                                + " inner join wp_terms wp_t on wp_t.term_id = wp_ttn.term_id"
-                                + " left outer join wp_termmeta wp_tm on wp_tm.term_id = wp_t.term_id and wp_tm.meta_key = 'is_active'"
-                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation' and ps.post_status = 'publish'"
-                                + " left outer join wp_postmeta pm_rp on pm_rp.post_id = coalesce(ps.id,p.id) and pm_rp.meta_key = '_regular_price'"
-                                + " left outer join wp_postmeta pm_sp on pm_sp.post_id = coalesce(ps.id,p.id) and pm_sp.meta_key = '_price'"
-                                + " left outer join wp_postmeta pm_gc on pm_gc.post_id = p.id and pm_gc.meta_key = '_gift_card'"
-                                + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
-                                + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title,pm_gc.meta_value order by wp_t.term_order,wp_t.term_id;";
-                DT = SQLHelper.ExecuteDataTable(strSQl);
+                //string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,pm_gc.meta_value gift_card,"
+                //                + " '[' + STRING_AGG(concat('{','\"vr_id\":', coalesce(ps.id,0), ',\"vr_title\":\"', coalesce(ps.post_title,'No Variations'),'\",\"_regular_price\":\"',pm_rp.meta_value,'\",\"_price\":\"',pm_sp.meta_value,'\",\"_gift_card\":\"',pm_gc.meta_value,'\"}'), ',') + ']' variation_details"
+                //                + "        from wp_posts p"
+                //                + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
+                //                + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
+                //                + " inner join wp_terms wp_t on wp_t.term_id = wp_ttn.term_id"
+                //                + " left outer join wp_termmeta wp_tm on wp_tm.term_id = wp_t.term_id and wp_tm.meta_key = 'is_active'"
+                //                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation' and ps.post_status = 'publish'"
+                //                + " left outer join wp_postmeta pm_rp on pm_rp.post_id = coalesce(ps.id,p.id) and pm_rp.meta_key = '_regular_price'"
+                //                + " left outer join wp_postmeta pm_sp on pm_sp.post_id = coalesce(ps.id,p.id) and pm_sp.meta_key = '_price'"
+                //                + " left outer join wp_postmeta pm_gc on pm_gc.post_id = p.id and pm_gc.meta_key = '_gift_card'"
+                //                + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
+                //                + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title,pm_gc.meta_value order by wp_t.term_order,wp_t.term_id;";
+                //DT = SQLHelper.ExecuteDataTable(strSQl);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "cat-wise-product")
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("wp_posts_order_product_search", parameters);
             }
             catch (Exception ex)
             { throw ex; }

@@ -14,6 +14,7 @@ using LaylaERP.Models;
 using System.IO;
 using System.Drawing;
 using System.Web.Hosting;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP_v1.Controllers
 {
@@ -109,10 +110,12 @@ namespace LaylaERP_v1.Controllers
         }
 
         [HttpGet, Route("get-order/{app_key}/{entity_id}")]
-        public IHttpActionResult Getorder(string app_key, string entity_id, int per_page = 10, int page = 1, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
+        public IHttpActionResult Getorder(string app_key, string entity_id, string contact = "christison.quickfix@gmail.com",  string sort = "id", string direction = "desc")
         {
             try
             {
+                int per_page = 0;
+                int page = 0;
                 if (string.IsNullOrEmpty(app_key) || entity_id == "0")
                 {
                     return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
@@ -127,7 +130,7 @@ namespace LaylaERP_v1.Controllers
                     {
                         string msg = string.Empty;
                         var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");                        
-                        dynamic orderObj = new ExpandoObject();
+                        
                         List<dynamic> orderist = new List<dynamic>();
                         int total = balResult.Rows.Count;
                     if (total > 0)
@@ -135,10 +138,11 @@ namespace LaylaERP_v1.Controllers
                         List<PostModel> ReviewList = new List<PostModel>();
                         for (int i = 0; i < balResult.Rows.Count; i++)
                         {
+                            dynamic orderObj = new ExpandoObject();
                             orderObj.id = balResult.Rows[i]["ID"].ToString();
                             orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
                             orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
-                            orderObj.total = balResult.Rows[i]["total"].ToString();                                
+                            //orderObj.total = balResult.Rows[i]["total"].ToString();                                
                             orderist.Add(orderObj);
                         }
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = orderist });
@@ -150,6 +154,75 @@ namespace LaylaERP_v1.Controllers
                     }
                     }
                 
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
+
+        public IHttpActionResult Getorder_Old(string app_key, string entity_id, int per_page = 10, int page = 1, string contact = "christison.quickfix@gmail.com", string sort = "id", string direction = "desc")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == "0")
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else
+                {
+                    string msg = string.Empty;
+                    var balResult = RMARepository.Getorders(entity_id, contact, per_page.ToString(), page.ToString(), sort, direction, "LIST");
+                    dynamic orderObj = new ExpandoObject();
+                    List<dynamic> orderist = new List<dynamic>();
+                    int total = balResult.Rows.Count;
+                    if (total > 0)
+                    {
+                        List<Order> orders = new List<Order>(); // Create a list to store orders
+
+                        for (int i = 0; i < balResult.Rows.Count; i++)
+                        {
+                            orderObj = new ExpandoObject(); // Create a new dynamic object for each order
+                            orderObj.id = balResult.Rows[i]["ID"].ToString();
+                            orderObj.date_created = balResult.Rows[i]["post_date"].ToString();
+                            orderObj.payment_method = balResult.Rows[i]["payment_method"].ToString();
+                            orderObj.total = balResult.Rows[i]["total"].ToString();
+                            orderist.Add(orderObj);
+
+                            // Create an Order object and populate it
+                            Order order = new Order
+                            {
+                                Id = orderObj.id,
+                                DateCreated = orderObj.date_created,
+                                PaymentMethod = orderObj.payment_method
+                                //Total = orderObj.total
+                            };
+
+                            orders.Add(order);
+                        }
+
+                        var responseData = new
+                        {
+                            orders = orders, // Wrapping the list of orders in an "orders" property
+                            count = total // Adding the count property
+                        };
+
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = responseData });
+                    }
+
+                    else
+                    {
+                        return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -293,6 +366,77 @@ namespace LaylaERP_v1.Controllers
             catch (Exception ex)
             {
                 return Ok("[]");
+            }
+        }
+
+        [HttpPost, Route("generate-ticket/{app_key}/{entity_id}")]
+        public IHttpActionResult GenerateOrderTicket(string app_key, long entity_id, dynamic model)
+        {
+            try
+            {               
+
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (model == null)
+                {
+                    return Ok(new { message = "Required  param 'data'", status = 500, code = "Unauthorized", data = new List<string>() });
+                }
+                //else if (string.IsNullOrEmpty(model))
+                //{
+                //    return Ok(new { message = "Required param 'json_data'", status = 500, code = "Unauthorized", data = new List<string>() });
+                //}
+                else
+                {
+                    //model.user_id = 2;
+                    string json_data = JsonConvert.SerializeObject(model, Formatting.Indented);
+
+                    DataTable dt = CustomerServiceRepository.GenerateOrderTicket(json_data, 2, "GENRMATICKET");
+                    //JSONresult = JsonConvert.SerializeObject(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (dt.Rows[0]["response"].ToString() == "success")
+                        {
+
+                            dynamic datam = JsonConvert.DeserializeObject(json_data);
+                            // Access the chat_history array
+                            JArray chatHistorys = datam.chat_history;                            
+                            string firstFrom = datam.chat_history[0].from;
+                            string _body = $"Hi there {firstFrom}, we're sorry that you are having an issue with your Prosource Diesel product, and thank you for bringing it to our attention with your warranty request.<br/><br/>";
+                            _body += "We will work diligently to get this resolved for you as soon as possible, and a Prosource Diesel warranty specialist will get back to you regarding your claim within 3 business days.<br/><br/>";
+                            _body += "<b>Here is what happens next:</b><br/><br/>";
+                            _body += "Warranty Claim Review: We will review your claim details, photos, and any other evidence submitted pertaining to your claim<br/><br/>";
+                            _body += "Request for Additional Information (possible): If deemed necessary, we may reach out to you for further evidence and/or explanation of your warranty issue<br/><br/>";
+                            _body += "Decision Rendered: We will inform you of the decision made on your warranty claim and advise you of next steps<br/><br/>";
+                            _body += "Corrective Action: Contingent upon the approval of your claim, we will set a course of corrective action which may include replacing the product entirely, repairing the product, or replacing a component, or components, of the product<br/><br/>";
+                            _body += "Again, we're sorry you're having a product issue and we are committed to resolving this as quickly and thoroughly as possible.<br/><br/><br/>";
+                            _body += "<b>Chat History</b><br/><br/>";
+                            foreach (JObject item in chatHistorys)
+                            {
+                                string from = item.Value<string>("from");
+                                string content = item.Value<string>("content");
+                                _body += $"<b>{from}:</b> {content}<br/>";
+                            }
+                            _body += $"<br/><b>Comment:</b> {datam.comment}<br/>";
+                            _body += "<br/><b>Help Desk<br/>";
+                            SendEmail.SendEmails_outer("david.quickfix1@gmail.com", "Prosource Diesel Warranty Information" + " (#" + dt.Rows[0]["id"].ToString() + ").", _body, string.Empty);
+                        }
+                    }
+                    return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
 

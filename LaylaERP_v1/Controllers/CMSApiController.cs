@@ -958,6 +958,7 @@
                         row.Add("width", dr["width"]);
                         row.Add("height", dr["height"]);
                         row.Add("tax_status", dr["tax_status"]);
+                        row.Add("brand", dr["brand"]);
 
                         if (dr["product_type"].ToString().Equals("variable"))
                         {

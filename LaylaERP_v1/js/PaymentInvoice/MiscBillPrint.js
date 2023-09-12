@@ -106,7 +106,7 @@ function print_Uniqueinvoicedetails(id, result, is_inv) {
 
     myHtml += '                            <td style="padding:0; vertical-align: top;width:50.9%">';
    /* myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Sold to:</h3>';*/
-    myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + _com_add + '</p>';
     myHtml += '                            </td>'; 
     myHtml += '                            <td style="padding:0; vertical-align: top; width:50.1%" align="right">';
@@ -334,7 +334,7 @@ function print_miscbilldetails(id, result, is_inv) {
 
     myHtml += '                            <td style="padding:0; vertical-align: top;width:50.9%">';
     /* myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Sold to:</h3>';*/
-    myHtml += '                                <img src="https://laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">' + _com_add + '</p>';
     myHtml += '                            </td>';
 

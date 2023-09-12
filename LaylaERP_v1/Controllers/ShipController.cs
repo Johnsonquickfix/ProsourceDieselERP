@@ -316,7 +316,7 @@ namespace LaylaERP.Controllers
                     + "                    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"table-layout:fixed;width:100%;border-bottom: 1px solid #ddd;\">"
                     + "                        <tr>"
                     + "                            <td style=\"padding:0; vertical-align: top;width:66.9%\">"
-                    + "                                <img src=\"https://laylaerp.com/Images/layla1-logo.png\" alt=\"\" width=\"95\" height=\"41\"/>"
+                    + "                                <img src=\"https://erp.prosourcediesel.com/Images/prosourcediesel-logo.png\" alt=\"\" width=\"95\" height=\"41\"/>"
                     + "                                <p style=\"margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;\">"
                     + dr["company_address"].ToString() + ".<br> Phone: " + Regex.Replace(dr["company_phone"].ToString(), @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3") + "<br>" + dr["company_email"].ToString() + "<br>" + dr["company_website"].ToString()
                     + "                                </p>"

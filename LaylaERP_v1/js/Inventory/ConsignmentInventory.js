@@ -124,18 +124,21 @@ function ProductStockGrid() {
             },
             {
                 data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.total_variation > 0) return ''; else return row.SaleUnits.toFixed(0);
+                    //if (row.total_variation > 0) return ''; else return row.SaleUnits.toFixed(0);
+                    return row.SaleUnits.toFixed(0);
                 }
             },
             {
                 data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);
+                    /*if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);*/
+                     return row.Damage.toFixed(0);
                 }
             },
             {
                 data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
-                    if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
+                    /*if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);*/
+                    return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
                 }
             },
         ],

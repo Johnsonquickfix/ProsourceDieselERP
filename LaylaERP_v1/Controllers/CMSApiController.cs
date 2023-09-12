@@ -907,6 +907,7 @@
                         if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
                         obj_filter.postmeta = _meta;
                     }
+                    if (flter.sort_by != null) obj_filter.sort_by = flter.sort_by;
                     //term_main
                     DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page);
                     foreach (DataRow item in ds.Tables[0].Rows)

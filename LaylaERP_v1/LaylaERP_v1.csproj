@@ -234,6 +234,7 @@
     <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\BankRepository.cs" />
     <Compile Include="BAL\BudgetRepository.cs" />
+    <Compile Include="BAL\CartRepository.cs" />
     <Compile Include="BAL\CMSRepository.cs" />
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Controllers\AvalaraTaxOrderController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
+    <Compile Include="Controllers\CartApiController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
     <Compile Include="Controllers\CMSApiController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
@@ -395,6 +397,7 @@
     <Compile Include="Models\PaymentInvoice.cs" />
     <Compile Include="Models\PoemailModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
+    <Compile Include="Models\Product\CartProductRequest.cs" />
     <Compile Include="Models\Product\ProductFilterRequest.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\PurchaseReceiceOrderModel.cs" />

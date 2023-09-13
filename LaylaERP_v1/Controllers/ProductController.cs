@@ -2704,6 +2704,29 @@ namespace LaylaERP.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult GetCategoryList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = ProductRepository.GetCategoryList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetParentCategorylist(string id)
+        {
+            DataTable ds = BAL.ProductRepository.GetParentCategorylist(id);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
+        }
+
+         
+
 
     }
 

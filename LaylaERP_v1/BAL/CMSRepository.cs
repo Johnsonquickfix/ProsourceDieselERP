@@ -240,7 +240,7 @@ namespace LaylaERP.BAL
             DataTable DS = new DataTable();
             try
             {
-                string strSQl = "SELECT t.term_id ID, name label FROM wp_term_taxonomy tx left join wp_terms t on t.term_id = tx.term_id WHERE taxonomy='product_cat' and name like '%" + optType + "%';";
+                string strSQl = "SELECT t.term_id ID, name label FROM wp_term_taxonomy tx Inner join wp_terms t on t.term_id = tx.term_id WHERE taxonomy='product_cat' AND LOWER(t.Name) != LOWER('uncategorized') and name like '%" + optType + "%';";
                 DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

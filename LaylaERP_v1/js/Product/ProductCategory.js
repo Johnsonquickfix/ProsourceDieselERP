@@ -2,9 +2,9 @@
 $(document).ready(function () {
     $("#loader").hide();
 
-    var urlpath = window.location.pathname;
+     var urlpath = window.location.pathname;
     CheckPermissions("#btnAddCategory, #btnReset,#btnApply", "#hfEdit", "", urlpath);
-    var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+     var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
    // alert(pathid);
     $("#btnbackproduct").hide();
     if (pathid != "" && pathid != "ProductCategories") {
@@ -56,23 +56,34 @@ function space(noOfSpaces) {
 }
 function getParentCategory(id) {
     var obj = { strValue1: id };
-    $.ajax({
-        url: "/Product/GetParentCategory/" + id,
-        type: "Get",
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            data = JSON.parse(data);
-            var opt = '<option value="0">Please select parent category</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
-            }
-            $('#ddlParentCategory').html(opt);
-           // isEdit(true);
-            $("#ProdCatAdd *").children().prop('disabled', true);
+    //$.ajax({
+    //    url: "/Product/GetParentCategorylist/" + id,
+    //    type: "Get",
+    //    contentType: "application/json; charset=utf-8",
+    //    dataType: 'JSON',
+    //    data: JSON.stringify(obj),
+    //    success: function (data) {
+    //        data = JSON.parse(data);
+    //        var opt = '<option value="0">Please select parent category</option>';
+    //        for (var i = 0; i < data.length; i++) {
+    //            opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
+    //        }
+    //        $('#ddlParentCategory').html(opt);
+    //       // isEdit(true);
+    //        $("#ProdCatAdd *").children().prop('disabled', true);
+    //    }
+    //});
+
+    $("#ddlParentCategory").select2({
+        allowClear: true, minimumInputLength: 2, placeholder: "Search Category",
+        ajax: {
+            url: '/CMS/GetcategoryData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { var obj = { strValue1: params.term, strValue2: '' }; return JSON.stringify(obj); },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.label, name: item.label, val: item.ID, id: item.ID } }) }; },
+            error: function (xhr, status, err) { }, cache: true
         }
     });
+
 }
 $('#btnAddNewCategory').click(function () {
     ID = $("#hfid").val();
@@ -99,6 +110,7 @@ $('#btnAddNewCategory').click(function () {
         obj.append("description", Description);
         obj.append("display_type", DisplayType);
         obj.append("Meta_id", Meta_id);
+         
         $.ajax({
             url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -152,30 +164,130 @@ function CategoryList() {
     ID = $("#hfid").val();
     var sid = $("#txtSearchCategory").val().trim();
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    console.log('hh');
+    //$('#ProductCategory').DataTable({
+    //    columnDefs: [{ "orderable": false, "targets": 0 }],
+    //    order: [[1, "desc"]],
+    //    destroy: true,
+    //    bProcessing: true,
+    //    bServerSide: false,
+    //    searching: true,
+    //    ordering: false,
+    //    lengthChange: true,
+    //    bAutoWidth: false,
+    //    scrollX: false,
+    //    lengthMenu: [[-1], ["All"]],
+    //    sAjaxSource: "/Product/ProductCategoryList",
+    //    fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+    //        var col = 'id';
+    //        //if (oSettings.aaSorting.length >= 0) {
+    //        //    var col = oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : oSettings.aaSorting[0][0] == 4 ? "Count" : "id";
+    //        //    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+    //        //}
+    //       /* obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;*/
+    //        $.ajax({
+    //            type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+    //            success: function (data) {
+    //                var dtOption = { aaData: JSON.parse(data.aaData) };
+
+    //                return fnCallback(dtOption);
+
+    //            },
+    //            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+    //            async: false
+    //        });
+    //    },
+    //    aoColumns: [
+    //        {
+    //            'data': 'ID', sWidth: "10%",
+    //            'render': function (data, type, full, meta) {
+    //                if (data == 80) {
+    //                    return '<input type="checkbox" data-placement="left" title="Uncategories category can not edit and delete. it is a default category" data-toggle="tooltip" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
+    //                }
+    //                else {
+    //                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" ><label></label>';
+    //                }
+    //            }
+    //        },
+    //        {
+    //            "data": "ImagePath", sWidth: "10%",
+    //            "render": function (data) {
+    //                url = "../../Content/ProductCategory/" + data + "";
+    //                //var result = checkFileExist(url);
+    //                //if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+    //                //else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+    //                //else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+    //                if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
+    //                else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+    //                else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+    //            }
+    //        },
+    //        {
+    //            data: 'name', title: 'Name', sWidth: "15%",
+    //            'render': function (id, type, full, meta) {
+    //                /*  return  id;*/
+    //                if (full.parent == 0)
+    //                    return '<b>' + id + '</b>';
+    //                else
+    //                    return ' ' + space(full.level) + id + '';
+    //            }
+    //        },
+    //        { data: 'description', title: 'Description', sWidth: "15%" },
+    //        { data: 'slug', title: 'Slug', sWidth: "15%" },
+    //        { data: 'count', title: 'Count', sWidth: "10%" },
+    //        {
+    //            'data': 'ID', sWidth: "10%",
+    //            'render': function (id, type, full, meta) {
+    //                if ($("#hfEdit").val() == "1") {
+    //                    if (id == 80) {
+    //                        return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
+    //                    }
+    //                    else {
+    //                        return '<a href="#" onclick="GetCategoryByID(' + id + ');ActivityLog(\'Edit category\',\'/Product/ProductCategories/' + id +'\');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
+    //                    }
+    //                }
+    //                else { return "No Permission"; }
+    //            }
+    //        }
+    //    ]
+    //});
+
+
     $('#ProductCategory').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: false,
-        sPaginationType: "full_numbers", searching: true, ordering: false, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false,
+
+        destroy: true, bProcessing: true, bServerSide: true,
+        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+        order: [[1, "desc"]],
+        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
+        responsive: true,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
-        sAjaxSource: "/Product/ProductCategoryList",
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        sAjaxSource: "/Product/GetCategoryList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            //aoData.push({ name: "strValue1", value: monthYear });
+            aoData.push({ name: "strValue1", value: '' });
+            aoData.push({ name: "strValue2", value: '' });
+            aoData.push({ name: "strValue3", value: '' });
+            aoData.push({ name: "strValue4", value: '' });
             var col = 'id';
-            //if (oSettings.aaSorting.length >= 0) {
-            //    var col = oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : oSettings.aaSorting[0][0] == 4 ? "Count" : "id";
-            //    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
-            //}
-           /* obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;*/
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { aaData: JSON.parse(data.aaData) };
-
+            if (oSettings.aaSorting.length > 0) {
+                var col = oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : "id";
+                aoData.push({ name: "sSortColName", value: col });
+            }
+            //console.log(aoData);
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
@@ -224,13 +336,14 @@ function CategoryList() {
                             return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
                         }
                         else {
-                            return '<a href="#" onclick="GetCategoryByID(' + id + ');ActivityLog(\'Edit category\',\'/Product/ProductCategories/' + id +'\');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="#" onclick="GetCategoryByID(' + id + ');ActivityLog(\'Edit category\',\'/Product/ProductCategories/' + id + '\');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
                         }
                     }
                     else { return "No Permission"; }
                 }
             }
-        ]
+        ],
+        columnDefs: [{ "orderable": false, "targets": 0 }],
     });
 }
 //$('#checkAll').click(function () {
@@ -354,7 +467,16 @@ function GetCategoryByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-                    $("#ddlParentCategory").val(d[0].parent).trigger("change");
+                     //getParentCategory();
+                    $('#ddlParentCategory').select2();
+                    console.log(d[0].parent);
+                    if (d[0].parent > 0) {
+                        $("#ddlParentCategory").empty().append('<option value="' + d[0].parent + '" selected>' + d[0].parentname + '</option>');
+                    }
+                  else
+                    {
+                        $("#ddlParentCategory").empty();
+                    }
                     $("#btnAddNewCategory").text('Update category');
                     $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', '');
                     $("#btnAddNewCategory").css('cursor', 'pointer').attr('title', 'Update category');
@@ -373,7 +495,7 @@ function GetCategoryByID(id) {
                 }
                 $("#ProdCatAdd *").children().prop('disabled', false);
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); getParentCategory();},
             error: function (msg) {
 
             }
@@ -392,7 +514,7 @@ $('#btnReset').click(function () {
     });
     $("#ProdCat option[value='0']").attr('selected', true)
     $("#ddlDisplayType").val("products");
-    $("#ddlParentCategory").val("0").trigger("change");
+    $("#ddlParentCategory").empty();
 })
 
 function checkFileExist(urlToFile) {

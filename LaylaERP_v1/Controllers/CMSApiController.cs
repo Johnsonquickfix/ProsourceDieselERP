@@ -1172,6 +1172,7 @@
                                 }
                                 obj.attributes = _attributes;
                             }
+                            obj.brand = dr["brand"];
                         }
                         if (obj.product_type == "variable")
                         {

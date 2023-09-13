@@ -25,7 +25,7 @@ namespace LaylaERP_v1.BAL
                     new SqlParameter("@entity_id", entity_id),
                     user_id > 0 ? new SqlParameter("@user_id", user_id) :  new SqlParameter("@user_id", DBNull.Value),
                     !string.IsNullOrEmpty(cart_session_id) ? new SqlParameter("@cart_session_id", cart_session_id) : new SqlParameter("@cart_session_id", DBNull.Value),
-                    new SqlParameter("@json_data", json_data)
+                    !string.IsNullOrEmpty(json_data) ? new SqlParameter("@json_data", json_data) :new SqlParameter("@json_data",  DBNull.Value)
                 };
                 result = SQLHelper.ExecuteReaderReturnJSON("wp_cart_search", parameters).ToString();
             }

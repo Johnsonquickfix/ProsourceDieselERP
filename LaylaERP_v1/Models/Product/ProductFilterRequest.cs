@@ -24,6 +24,14 @@ namespace QuickfixSearch.Models.Product
         public List<string> product_tag { get; set; }
         [JsonProperty("product_type")]
         public List<string> product_type { get; set; }
+        [JsonProperty("pa_engine")]
+        public List<string> pa_engine { get; set; }
+        [JsonProperty("pa_make")]
+        public List<string> pa_make { get; set; }
+        [JsonProperty("pa_brand")]
+        public List<string> pa_brand { get; set; }
+        [JsonProperty("pa_model")]
+        public List<string> pa_model { get; set; }
     }
     public class ProductPostmetaRequest
     {

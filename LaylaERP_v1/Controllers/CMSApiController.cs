@@ -898,6 +898,10 @@
                         if (flter.taxonomy.product_cat != null) _meta.Add("product_cat", string.Join(",", flter.taxonomy.product_cat));
                         if (flter.taxonomy.product_tag != null) _meta.Add("product_tag", string.Join(",", flter.taxonomy.product_tag));
                         if (flter.taxonomy.product_type != null) _meta.Add("product_type", string.Format("'{0}'", string.Join("','", flter.taxonomy.product_type)));
+                        if (flter.taxonomy.pa_brand != null) _meta.Add("pa_brand", string.Format("'{0}'", string.Join("','", flter.taxonomy.pa_brand)));
+                        if (flter.taxonomy.pa_engine != null) _meta.Add("pa_engine", string.Format("'{0}'", string.Join("','", flter.taxonomy.pa_engine)));
+                        if (flter.taxonomy.pa_make != null) _meta.Add("pa_make", string.Format("'{0}'", string.Join("','", flter.taxonomy.pa_make)));
+                        if (flter.taxonomy.pa_model != null) _meta.Add("pa_model", string.Format("'{0}'", string.Join("','", flter.taxonomy.pa_model)));
                         obj_filter.taxonomy = _meta;
                     }
                     if (flter.postmeta != null)
@@ -1168,6 +1172,7 @@
                                 }
                                 obj.attributes = _attributes;
                             }
+                            obj.brand = dr["brand"];
                         }
                         if (obj.product_type == "variable")
                         {

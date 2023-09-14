@@ -1166,8 +1166,10 @@
                                     }
                                     else
                                     {
-                                        if (rows.Length > 0) _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = (!string.IsNullOrEmpty(rows[0]["term"].ToString()) ? JsonConvert.DeserializeObject<List<dynamic>>(rows[0]["term"].ToString()) : JsonConvert.DeserializeObject<List<dynamic>>("[]")) });
-                                        else _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = new List<dynamic>() });
+                                        var _option = new List<dynamic>();
+                                        var _o = _att_value["value"].ToString().Split('|');
+                                        foreach (var s in _o) { _option.Add(new { term_id = 0, name = s.Trim(), slug = s.Trim() }); };
+                                        _attributes.Add(new { is_taxonomy = 0, is_variation = _att_value["is_variation"], taxonomy_name = att.Key, display_name = _att_value["name"], attribute_type = "select", option = _option });
                                     }
                                 }
                                 obj.attributes = _attributes;

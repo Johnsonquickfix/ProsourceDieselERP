@@ -37,6 +37,8 @@ namespace QuickfixSearch.Models.Product
     {
         [JsonProperty("_stock_status")]
         public List<string> stock_status { get; set; }
+        [JsonProperty("_ratenreview_average_score")]
+        public List<string> ratenreview_average_score { get; set; }
         [JsonProperty("_price")]
         public List<int> price { get; set; }
         //[JsonProperty("product_tag")]

@@ -687,6 +687,7 @@
                 return InternalServerError(ex);
             }
         }
+
         [HttpGet, Route("page-items/{app_key}/{entity_id}")]
         public IHttpActionResult PageItems(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
         {
@@ -908,11 +909,12 @@
                     {
                         Dictionary<String, object> _meta = new Dictionary<String, object>();
                         if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Format("'{0}'", string.Join("','", flter.postmeta.stock_status)));
+                        if (flter.postmeta.ratenreview_average_score != null) _meta.Add("_ratenreview_average_score", string.Format("'{0}'", string.Join("','", flter.postmeta.ratenreview_average_score)));
                         if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
                         obj_filter.postmeta = _meta;
                     }
                     if (flter.sort_by != null) obj_filter.sort_by = flter.sort_by;
-                    //term_main
+                    obj.page_type = "product_filter";
                     DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page);
                     foreach (DataRow item in ds.Tables[0].Rows)
                     {
@@ -962,6 +964,8 @@
                         row.Add("width", dr["width"]);
                         row.Add("height", dr["height"]);
                         row.Add("tax_status", dr["tax_status"]);
+                        row.Add("total_review", dr["total_review"]);
+                        row.Add("average_score", dr["average_score"]);
                         row.Add("brand", dr["brand"]);
 
                         if (dr["product_type"].ToString().Equals("variable"))
@@ -1102,7 +1106,7 @@
                             obj.post_content = dr["post_content"];
                             obj.post_excerpt = dr["post_excerpt"];
                             //
-                            obj.product_type = dr["product_type"];
+                            obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";
                             //Postmeta
                             obj.yoast_title = dr["yoast_title"];
                             obj.yoast_description = dr["yoast_description"];
@@ -1122,6 +1126,8 @@
                             obj.weight_unit = dr["weight_unit"];
                             obj.dimension_unit = dr["dimension_unit"];
                             obj.tax_status = dr["tax_status"];
+                            obj.total_review = dr["total_review"];
+                            obj.average_score = dr["average_score"];
                             if (dr["product_type"].ToString().Equals("variable"))
                             {
                                 double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
@@ -1176,36 +1182,39 @@
                             }
                             obj.brand = dr["brand"];
                         }
-                        if (obj.product_type == "variable")
+                        if (obj.product_type != null)
                         {
-                            obj.variations = new List<dynamic>();
-                            foreach (DataRow dr in ds.Tables[1].Rows)
+                            if (obj.product_type == "variable")
                             {
-                                var vr = new
+                                obj.variations = new List<dynamic>();
+                                foreach (DataRow dr in ds.Tables[1].Rows)
                                 {
-                                    ID = dr["ID"],
-                                    post_name = dr["post_name"],
-                                    post_title = dr["post_title"],
-                                    product_type = dr["product_type"],
-                                    //Postmeta
-                                    sku = dr["sku"],
-                                    price = dr["price"],
-                                    regular_price = dr["regular_price"],
-                                    sale_price = dr["sale_price"],
-                                    manage_stock = dr["manage_stock"],
-                                    backorders = dr["backorders"],
-                                    stock = dr["stock"],
-                                    stock_status = dr["stock_status"],
-                                    core_price = dr["core_price"],
-                                    weight = dr["weight"],
-                                    length = dr["length"],
-                                    width = dr["width"],
-                                    height = dr["height"],
-                                    tax_status = dr["tax_status"],
-                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
-                                    attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
-                                };
-                                obj.variations.Add(vr);
+                                    var vr = new
+                                    {
+                                        ID = dr["ID"],
+                                        post_name = dr["post_name"],
+                                        post_title = dr["post_title"],
+                                        product_type = dr["product_type"],
+                                        //Postmeta
+                                        sku = dr["sku"],
+                                        price = dr["price"],
+                                        regular_price = dr["regular_price"],
+                                        sale_price = dr["sale_price"],
+                                        manage_stock = dr["manage_stock"],
+                                        backorders = dr["backorders"],
+                                        stock = dr["stock"],
+                                        stock_status = dr["stock_status"],
+                                        core_price = dr["core_price"],
+                                        weight = dr["weight"],
+                                        length = dr["length"],
+                                        width = dr["width"],
+                                        height = dr["height"],
+                                        tax_status = dr["tax_status"],
+                                        image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
+                                        attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
+                                    };
+                                    obj.variations.Add(vr);
+                                }
                             }
                         }
                         //Request.Headers.Add("Content-Type", "application/json; charset=utf-8");
@@ -1315,6 +1324,118 @@
             {
                 return InternalServerError(ex);
             }
+        }
+
+        /// <summary>
+        /// get category page (product_cat) or filter page (product_filter)
+        /// </summary>
+        /// <param name="app_key"></param>
+        /// <param name="entity_id"></param>
+        /// <param name="parent_cat"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        [HttpPost, Route("v1/category/{app_key}/{entity_id}")]
+        public IHttpActionResult CategoryPageData(string app_key, ProductFilterRequest filter, long entity_id = 0, string parent_cat = "", string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (string.IsNullOrEmpty(slug)) return Ok(new { message = "Required query param 'slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                //else if (slug.ToString().ToLower().Equals("shop")) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "shop", page_type = "product_filter" } });
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    string page_type = string.Empty;
+                    if (slug.ToString().ToLower().Equals("shop")) page_type = "product_filter";
+                    else
+                    {
+                        DataSet ds = CMSRepository.GetPageItems("slug-type", entity_id, parent_cat, slug);
+                        foreach (DataRow item in ds.Tables[0].Rows) page_type = item["page_type"].ToString().Trim();
+                    }
+                    if (page_type == "product_cat") { return PageItems(app_key, entity_id, parent_cat, slug); }
+                    else if (page_type == "product_filter")
+                    {
+                        if (filter == null) filter = new ProductFilterRequest();
+                        //ProductFilterRequest filter = new ProductFilterRequest() { taxonomy = { cat_slug = slug }, sort_by = "title-asc", limit = 24, page = 1 };
+                        //ProductFilterRequest filter = new ProductFilterRequest();
+                        if (filter.taxonomy == null)
+                        {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
+                        else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug))
+                        {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
+                        return ProductsFilter(app_key, entity_id, filter);
+                    }
+                    else return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("v1/menus/{app_key}/{entity_id}")]
+        public IHttpActionResult GetMenu(string app_key, long entity_id = 0, long menu_term_id = 0)
+        {
+            try
+            {
+                if (entity_id == 1) menu_term_id = 61873;
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (menu_term_id == 0) return Ok(new { message = "Menu term id required", status = 500, code = "SUCCESS", data = new List<string>() });
+                else
+                {
+                    string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("manus_{0}", entity_id));
+                    JArray records = JArray.Parse(json);
+                    return Ok(new { message = "Menu items retrived successfully", status = 200, code = "SUCCESS", data = records });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("v1/topsell/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductTopSell_v1(string app_key, long entity_id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else
+                {
+                    string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("topsell_{0}", entity_id));
+                    JArray records = JArray.Parse(json);
+                    if (records.Count > 0) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = records });
+                    else return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        public static string ReadJsonFile(string filePath, string fileName)
+        {
+            if (filePath is null) throw new ArgumentNullException(nameof(filePath));
+            if (fileName is null) throw new ArgumentNullException(nameof(fileName));
+
+            string appPath = string.Format(@"{0}json\{1}.json", filePath, fileName);
+            return System.IO.File.ReadAllText(appPath, System.Text.Encoding.UTF8);
         }
     }
 }

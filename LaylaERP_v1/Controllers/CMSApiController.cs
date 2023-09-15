@@ -687,6 +687,7 @@
                 return InternalServerError(ex);
             }
         }
+
         [HttpGet, Route("page-items/{app_key}/{entity_id}")]
         public IHttpActionResult PageItems(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
         {
@@ -912,7 +913,7 @@
                         obj_filter.postmeta = _meta;
                     }
                     if (flter.sort_by != null) obj_filter.sort_by = flter.sort_by;
-                    //term_main
+                    obj.page_type = "product_filter";
                     DataSet ds = CMSRepository.GetPageItems("products-filter", entity_id, string.Empty, flter.taxonomy.cat_slug, JsonConvert.SerializeObject(obj_filter), flter.limit, flter.page);
                     foreach (DataRow item in ds.Tables[0].Rows)
                     {
@@ -1315,6 +1316,82 @@
             {
                 return InternalServerError(ex);
             }
+        }
+
+        /// <summary>
+        /// get category page (product_cat) or filter page (product_filter)
+        /// </summary>
+        /// <param name="app_key"></param>
+        /// <param name="entity_id"></param>
+        /// <param name="parent_cat"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        [HttpGet, Route("v1/category/{app_key}/{entity_id}")]
+        public IHttpActionResult CategoryPageData(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (string.IsNullOrEmpty(slug)) return Ok(new { message = "Required query param 'slug'", status = 500, code = "SUCCESS", data = new List<string>() });
+                //else if (slug.ToString().ToLower().Equals("shop")) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { term_id = 0, taxonomy = "shop", page_type = "product_filter" } });
+                else
+                {
+                    dynamic obj = new ExpandoObject();
+                    string page_type = string.Empty;
+                    if (slug.ToString().ToLower().Equals("shop")) page_type = "product_filter";
+                    else
+                    {
+                        DataSet ds = CMSRepository.GetPageItems("slug-type", entity_id, parent_cat, slug);
+                        foreach (DataRow item in ds.Tables[0].Rows) page_type = item["page_type"].ToString().Trim();
+                    }
+                    if (page_type == "product_cat") { return PageItems(app_key, entity_id, parent_cat, slug); }
+                    else if (page_type == "product_filter")
+                    {
+                        //ProductFilterRequest filter = new ProductFilterRequest() { taxonomy = { cat_slug = slug }, sort_by = "title-asc", limit = 24, page = 1 };
+                        ProductFilterRequest filter = new ProductFilterRequest();
+                        filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                        filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        return ProductsFilter(app_key, entity_id, filter);
+                    }
+                    else return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("v1/menus/{app_key}/{entity_id}")]
+        public IHttpActionResult GetMenu(string app_key, long entity_id = 0, long menu_term_id = 0)
+        {
+            try
+            {
+                if (entity_id == 1) menu_term_id = 61873;
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (menu_term_id == 0) return Ok(new { message = "Menu term id required", status = 500, code = "SUCCESS", data = new List<string>() });
+                else
+                {
+                    string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("manus_{0}", entity_id));
+                    JArray records = JArray.Parse(json);
+                    return Ok(new { message = "Menu items retrived successfully", status = 200, code = "SUCCESS", data = records });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        public static string ReadJsonFile(string filePath, string fileName)
+        {
+            if (filePath is null) throw new ArgumentNullException(nameof(filePath));
+            if (fileName is null) throw new ArgumentNullException(nameof(fileName));
+
+            string appPath = string.Format(@"{0}json\{1}.json", filePath, fileName);
+            return System.IO.File.ReadAllText(appPath, System.Text.Encoding.UTF8);
         }
     }
 }

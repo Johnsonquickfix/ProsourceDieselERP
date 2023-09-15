@@ -1,0 +1,734 @@
+[
+  {
+    "post_name": "237170",
+    "post_title": "",
+    "term_id": 237170,
+    "name": "Powerstroke",
+    "slug": "powerstroke",
+    "type": "megamenu",
+    "subcat": [
+      {
+        "term_id": 237168,
+        "name": "F-SERIES SUPER DUTY",
+        "slug": "f-series-super-duty",
+        "subcat": [
+          {
+            "term_id": 237182,
+            "name": "2017-2022 6.7L F-SERIES POWERSTROKE PARTS",
+            "slug": "2017-2022-ford-super-duty-6.7l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237183,
+            "name": "2011-2016 6.7L F-SERIES POWERSTROKE PARTS",
+            "slug": "2011-2016-ford-super-duty-6.7l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237184,
+            "name": "2008-2010 6.4L F-SERIES POWERSTROKE PARTS",
+            "slug": "2008-2010-ford-super-duty-6.4l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237185,
+            "name": "2003-2007 6.0L F-SERIES POWERSTROKE PARTS",
+            "slug": "2003-2007-ford-super-duty-6.0l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237186,
+            "name": "1999.5-2003 7.3L F-SERIES POWERSTROKE PARTS",
+            "slug": "1999.5-2003-ford-super-duty-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237187,
+            "name": "EARLY 1999 7.3L F-SERIES POWERSTROKE PARTS",
+            "slug": "early-1999-ford-super-duty-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237188,
+            "name": "1994-1997 7.3L F-SERIES POWERSTROKE PARTS",
+            "slug": "1994-1997-ford-super-duty-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237189,
+            "name": "1983-1994 6.9L 7.3L F-SERIES IDI PARTS",
+            "slug": "1983-1994-ford-6.9l-7.3l-idi-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237173,
+        "name": "EXCURSION",
+        "slug": "excursion",
+        "subcat": [
+          {
+            "term_id": 237191,
+            "name": "2003-2005 6.0L EXCURSION POWERSTROKE PARTS",
+            "slug": "2003-2005-ford-excursion-6.0l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237190,
+            "name": "2000-2003 7.3L EXCURSION POWERSTROKE PARTS",
+            "slug": "2000-2003-ford-excursion-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237174,
+        "name": "E-SERIES/ECONOLINE",
+        "slug": "e-series-econoline",
+        "subcat": [
+          {
+            "term_id": 237192,
+            "name": "2004-2010 6.0L ECONOLINE POWERSTROKE PARTS",
+            "slug": "2004-2010-ford-econoline-6.0l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237193,
+            "name": "1999.5-2003 7.3L ECONOLINE POWERSTROKE PARTS",
+            "slug": "1999.5-2003-ford-econoline-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237194,
+            "name": "1998-EARLY 1999 7.3L ECONOLINE POWERSTROKE PARTS",
+            "slug": "1998-early-1999-ford-econoline-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237195,
+            "name": "1994-1997 7.3L ECONOLINE POWERSTROKE PARTS",
+            "slug": "1994-1997-ford-econoline-7.3l-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237175,
+        "name": "OTHER MODELS",
+        "slug": "other-models",
+        "subcat": [
+          {
+            "term_id": 237196,
+            "name": "2018-2021 F150 3.0L POWERSTROKE PARTS",
+            "slug": "2018-2021-ford-f150-3.0L-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237197,
+            "name": "2015-2020 TRANSIT 3.2L POWERSTROKE PARTS",
+            "slug": "2015-2020-ford-transit-3.2L-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237198,
+            "name": "2006-2009 FORD LCF 4.5L POWERSTROKE PARTS",
+            "slug": "2006-2009-ford-lcf-4.5L-powerstroke-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      }
+    ],
+    "image": {
+      "width": 0,
+      "height": 0,
+      "file": "",
+      "filesize": 0.0
+    }
+  },
+  {
+    "post_name": "237172",
+    "post_title": "",
+    "term_id": 237172,
+    "name": "Duramax",
+    "slug": "duramax",
+    "type": "megamenu",
+    "subcat": [
+      {
+        "term_id": 237180,
+        "name": "CHEVROLET EXPRESS/ GMC SAVANA",
+        "slug": "chevrolet-express-gmc-savana",
+        "subcat": [
+          {
+            "term_id": 237215,
+            "name": "2020-2022 6.6L L5P DURAMAX TRUCK PARTS",
+            "slug": "2020-2022-gm-sierra-silverado-6.6l-l5p-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237216,
+            "name": "2017-2019 6.6L L5P DURAMAX TRUCK PARTS",
+            "slug": "2017-2019-gm-sierra-silverado-6.6l-l5p-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237217,
+            "name": "2011-2016 6.6L LML DURAMAX TRUCK PARTS",
+            "slug": "2011-2016-gm-sierra-silverado-6.6l-lml-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237218,
+            "name": "2007.5-2010 6.6L LMM DURAMAX TRUCK PARTS",
+            "slug": "2007.5-2010-gm-sierra-silverado-6.6l-lmm-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237219,
+            "name": "2006-2007 LLY/LBZ DURAMAX TRUCK PARTS",
+            "slug": "2006-2007-gm-sierra-silverado-6.6l-lbz-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237220,
+            "name": "2004.5-2005 6.6L LLY DURAMAX TRUCK PARTS",
+            "slug": "2004.5-2005-gm-sierra-silverado-6.6l-lly-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237221,
+            "name": "2001-2004 6.6L LB7 DURAMAX TRUCK PARTS",
+            "slug": "2001-2004-gm-sierra-silverado-6.6l-lb7-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237222,
+            "name": "1982-2000 6.2L &amp; 6.5L NON DURAMAX PARTS",
+            "slug": "1982-2000-6.2l-6.5l-non-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237179,
+        "name": "CHEVROLET/GMC 2500-4500",
+        "slug": "chevrolet-gmc-2500-4500",
+        "subcat": [
+          {
+            "term_id": 237223,
+            "name": "2010-2016 6.6L LGH DURAMAX VAN PARTS",
+            "slug": "2010-2016-gm-savana-express-6.6l-lgh-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237224,
+            "name": "2007.5-2010 6.6L LMM DURAMAX VAN PARTS",
+            "slug": "2007.5-2010-gm-savana-express-6.6l-lmm-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237225,
+            "name": "2006-2007 6.6L LLY DURAMAX VAN PARTS",
+            "slug": "2006-2007-gm-savana-express-6.6l-lly-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237178,
+        "name": "OTHER MODELS",
+        "slug": "other-models-duramax",
+        "subcat": [
+          {
+            "term_id": 237226,
+            "name": "2020-2023 1500 3.0L LM2 LZ0 DURAMAX PARTS",
+            "slug": "2020-2023-1500-3-0l-lm2-lz0-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237227,
+            "name": "2016-2022 COLORADO/CANYON 2.8L DURAMAX PARTS",
+            "slug": "2016-2022-colorado-canyon-2.8l-duramax-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237228,
+            "name": "2017-2019 CHEVROLET CRUZE 1.6L DIESEL PARTS",
+            "slug": "2017-2019-chevrolet-cruze-1.6l-diesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237229,
+            "name": "2014-2015 CHEVROLET CRUZE 2.0L DIESEL PARTS",
+            "slug": "2014-2015-chevrolet-cruze-2.0l-diesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      }
+    ],
+    "image": {
+      "width": 0,
+      "height": 0,
+      "file": "",
+      "filesize": 0.0
+    }
+  },
+  {
+    "post_name": "237171",
+    "post_title": "",
+    "term_id": 237171,
+    "name": "Cummins",
+    "slug": "cummins",
+    "type": "megamenu",
+    "subcat": [
+      {
+        "term_id": 237176,
+        "name": "RAM 2500-5500",
+        "slug": "ram-2500-5500",
+        "subcat": [
+          {
+            "term_id": 237199,
+            "name": "2019-2022 6.7L DODGE CUMMINS PARTS",
+            "slug": "2019-2022-dodge-ram-6.7l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237206,
+            "name": "2007.5-2018 6.7L DODGE CUMMINS PARTS",
+            "slug": "2007.5-2018-dodge-ram-6.7l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237201,
+            "name": "2004.5-2007 5.9L DODGE CUMMINS PARTS",
+            "slug": "2004.5-2007-dodge-ram-5.9l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237202,
+            "name": "2003-EARLY 2004 5.9L DODGE CUMMINS PARTS",
+            "slug": "2003-2004-dodge-ram-5.9l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237203,
+            "name": "1998.5-2002 5.9L DODGE CUMMINS PARTS",
+            "slug": "1998.5-2002-dodge-ram-5.9l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237204,
+            "name": "1994-1998 5.9L DODGE CUMMINS PARTS",
+            "slug": "1994-1998-dodge-ram-5.9l-cummins-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 237177,
+        "name": "OTHER MODELS",
+        "slug": "other-models-cummins",
+        "subcat": [
+          {
+            "term_id": 237214,
+            "name": "2021-2022 JEEP GLADIATOR ECODIESEL PARTS",
+            "slug": "2021-2022-jeep-gladiator-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237207,
+            "name": "2020-2021 RAM 1500 3.0L ECODIESEL PARTS",
+            "slug": "2020-2021-ram-1500-3.0l-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237208,
+            "name": "2020-2022 JEEP WRANGLER ECODIESEL PARTS",
+            "slug": "2020-2022-jeep-wrangler-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237209,
+            "name": "2014-2018 RAM 1500 3.0L ECODIESEL PARTS",
+            "slug": "2014-2018-ram-1500-3.0l-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237210,
+            "name": "2014-2018 JEEP GRAND CHEROKEE 3.0L PARTS",
+            "slug": "2014-2018-jeep-grand-cherokee-3.0l-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237211,
+            "name": "2007-2008 GRAND CHEROKEE CRD PARTS",
+            "slug": "2007-2008-grand-cherokee-crd-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237212,
+            "name": "2005-2006 LIBERTY 2.8L CRD PARTS",
+            "slug": "2005-2006-liberty-2.8l-crd-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 237213,
+            "name": "3.9L 4BT PARTS",
+            "slug": "3.9l-4bt-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      }
+    ],
+    "image": {
+      "width": 0,
+      "height": 0,
+      "file": "",
+      "filesize": 0.0
+    }
+  },
+  {
+    "post_name": "brands",
+    "post_title": "Brands",
+    "term_id": 237181,
+    "name": "Brands",
+    "slug": "brands",
+    "type": "custom",
+    "subcat": [],
+    "image": {
+      "width": 0,
+      "height": 0,
+      "file": "",
+      "filesize": 0.0
+    }
+  }
+]

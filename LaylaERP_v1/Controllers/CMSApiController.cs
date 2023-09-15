@@ -1358,11 +1358,11 @@
                         if (filter.taxonomy == null)
                         {
                             filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
-                            filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
                         }
                         else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug)) {
                             filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
-                            filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
                         }
                         return ProductsFilter(app_key, entity_id, filter);
                     }

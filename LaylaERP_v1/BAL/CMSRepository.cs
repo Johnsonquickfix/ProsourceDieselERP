@@ -1218,5 +1218,44 @@ namespace LaylaERP.BAL
             catch { throw; }
             return ds;
         }
+
+        public static DataTable reviewupdate(string client_id)
+        {
+            DataTable ds;
+            try
+            {
+                string strWhr = string.Empty;
+                SqlParameter[] para = {
+                     new SqlParameter("@flag", "FETCH"),
+                    new SqlParameter("@client_id", client_id)
+                };
+                ds = SQLHelper.ExecuteDataTable("cms_product_review_update", para);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static int reviewupdate(string qflag, string client_id)
+        {
+            try
+            {
+                DataTable dt;
+                SqlParameter[] para = {
+                    new SqlParameter("@flag",qflag),
+                    new SqlParameter("@client_id", client_id)                     
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_product_review_update", para));
+                //dt = SQLHelper.ExecuteDataTable("cms_product_review_update", para);
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }

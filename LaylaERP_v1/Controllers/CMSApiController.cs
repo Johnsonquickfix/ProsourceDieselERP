@@ -909,6 +909,7 @@
                     {
                         Dictionary<String, object> _meta = new Dictionary<String, object>();
                         if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Format("'{0}'", string.Join("','", flter.postmeta.stock_status)));
+                        if (flter.postmeta.ratenreview_average_score != null) _meta.Add("_ratenreview_average_score", string.Format("'{0}'", string.Join("','", flter.postmeta.ratenreview_average_score)));
                         if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
                         obj_filter.postmeta = _meta;
                     }
@@ -1360,7 +1361,8 @@
                             filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
                             //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
                         }
-                        else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug)) {
+                        else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug))
+                        {
                             filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
                             //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
                         }
@@ -1389,6 +1391,33 @@
                     string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("manus_{0}", entity_id));
                     JArray records = JArray.Parse(json);
                     return Ok(new { message = "Menu items retrived successfully", status = 200, code = "SUCCESS", data = records });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("v1/topsell/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductTopSell_v1(string app_key, long entity_id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else
+                {
+                    string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("topsell_{0}", entity_id));
+                    JArray records = JArray.Parse(json);
+                    if (records.Count > 0) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = records });
+                    else return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
                 }
             }
             catch (Exception ex)

@@ -963,6 +963,8 @@
                         row.Add("width", dr["width"]);
                         row.Add("height", dr["height"]);
                         row.Add("tax_status", dr["tax_status"]);
+                        row.Add("total_review", dr["total_review"]);
+                        row.Add("average_score", dr["average_score"]);
                         row.Add("brand", dr["brand"]);
 
                         if (dr["product_type"].ToString().Equals("variable"))
@@ -1123,6 +1125,8 @@
                             obj.weight_unit = dr["weight_unit"];
                             obj.dimension_unit = dr["dimension_unit"];
                             obj.tax_status = dr["tax_status"];
+                            obj.total_review = dr["total_review"];
+                            obj.average_score = dr["average_score"];
                             if (dr["product_type"].ToString().Equals("variable"))
                             {
                                 double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);

@@ -1,9 +1,11 @@
-﻿using LaylaERP.BAL;
+﻿using ClosedXML.Excel;
+using LaylaERP.BAL;
 using LaylaERP.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -121,6 +123,26 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        [HttpGet]
+        public JsonResult GetOnhandInventoryList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    fromdate = Convert.ToDateTime(model.strValue5);
+                if (!string.IsNullOrEmpty(model.strValue6))
+                    todate = Convert.ToDateTime(model.strValue6);
+                DataTable dt = InventoryRepository.GetOnhandInventoryList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
         [HttpPost]
         public JsonResult GetStockByWarehouse(SearchModel model)
         {
@@ -337,6 +359,69 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(result, 0);
+        }
+
+        [HttpPost, Route("inventory/on-hand-inventory-export")]
+        public ActionResult ExportonhandinventoryList(JqDataTableModel model)
+        {
+            int TotalRecord = 0;
+            string fileName = String.Format("On_Hand_Inventory_{0}.xlsx", DateTime.Now.ToString("dd_MMMM_yyyy_hh_mm_tt"));
+            DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+            if (!string.IsNullOrEmpty(model.strValue5))
+                fromdate = Convert.ToDateTime(model.strValue5);
+            if (!string.IsNullOrEmpty(model.strValue6))
+                todate = Convert.ToDateTime(model.strValue6);
+            try
+            {
+                DataTable dt = InventoryRepository.GetOnhandInventoryExportList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, fromdate, todate, model.sSearch, 0, 100000, out TotalRecord, "id", "desc");
+                //DataTable dt = CustomSearchRepository.GetJournalsList(model);
+                dt.TableName = "Inventory";
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    //dt.Columns.Remove("post_parent");
+                    //dt.Columns.Remove("total_variation");
+                    //dt.Columns.Remove("op_stock");
+                    //Add DataTable in worksheet  
+                    //wb.Worksheets.Add(dt);
+                    //var ws = wb.Worksheets.Add("Orders");
+
+                    //var existingWs = wb.Worksheets.FirstOrDefault(wss => wss.Name == "Inventory");
+
+                    //if (existingWs != null)
+                    //{
+                    //    // If it exists, remove it
+                    //    wb.Worksheets.Delete(existingWs);
+                    //}
+
+                    var ws = wb.Worksheets.Add(dt);
+
+
+                 
+
+                    //ws.Cell(1, 1).Value = "ID"; // Replace with your own header names
+                    //ws.Cell(1, 2).Value = "Type";
+                    //ws.Cell(1, 3).Value = "ProductName";
+                    //ws.Cell(1, 4).Value = "SKU";
+                    //ws.Cell(1, 5).Value = "UnitsinStock";
+                    //ws.Cell(1, 6).Value = "UnitsinPOs";
+                    //ws.Cell(1, 7).Value = "SaleUnits";
+                    //ws.Cell(1, 8).Value = "Damage";
+                    //ws.Cell(1, 9).Value = "Category";
+                     
+
+
+                    ws.Columns().AdjustToContents();  // Adjust column width
+                    ws.Rows().AdjustToContents();     // Adjust row heights
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/ms-excel", fileName);
+                    }
+                }
+                //result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch (Exception ex) { throw ex; }
+            //return Json(robj, JsonRequestBehavior.AllowGet);
         }
     }
 }

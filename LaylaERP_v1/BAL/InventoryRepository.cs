@@ -113,6 +113,42 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetOnhandInventoryList(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "ID", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+
+                    new SqlParameter("@sku", strSKU),
+                   new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@categoryid", categoryid),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "PROST")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_onhandinventory", parameters);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static DataSet exportProductStock(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate)
         {
             DataSet ds = new DataSet();
@@ -421,5 +457,41 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetOnhandInventoryExportList(string strSKU, string categoryid, string productid, string supplierid, DateTime fromdate, DateTime todate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "ID", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                SqlParameter[] parameters =
+               {
+
+                    new SqlParameter("@sku", strSKU),
+                   new SqlParameter("@searchcriteria", searchid),
+                    new SqlParameter("@categoryid", categoryid),
+                    new SqlParameter("@productid", productid),
+                    new SqlParameter("@supplierid", supplierid),
+                    new SqlParameter("@fromdate", fromdate),
+                    new SqlParameter("@todate", todate),
+                    new SqlParameter("@pageno", pageno),
+                    new SqlParameter("@pagesize", pagesize),
+                    new SqlParameter("@sortcol", SortCol),
+                    new SqlParameter("@sortdir", SortDir),
+                    new SqlParameter("@flag", "EXPT")
+                };
+
+                DataSet ds = SQLHelper.ExecuteDataSet("erp_onhandinventory", parameters);
+                dt = ds.Tables[0];
+                //if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

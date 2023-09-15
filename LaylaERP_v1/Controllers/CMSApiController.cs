@@ -1106,7 +1106,7 @@
                             obj.post_content = dr["post_content"];
                             obj.post_excerpt = dr["post_excerpt"];
                             //
-                            obj.product_type = dr["product_type"];
+                            obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";
                             //Postmeta
                             obj.yoast_title = dr["yoast_title"];
                             obj.yoast_description = dr["yoast_description"];
@@ -1182,36 +1182,39 @@
                             }
                             obj.brand = dr["brand"];
                         }
-                        if (obj.product_type == "variable")
+                        if (obj.product_type != null)
                         {
-                            obj.variations = new List<dynamic>();
-                            foreach (DataRow dr in ds.Tables[1].Rows)
+                            if (obj.product_type == "variable")
                             {
-                                var vr = new
+                                obj.variations = new List<dynamic>();
+                                foreach (DataRow dr in ds.Tables[1].Rows)
                                 {
-                                    ID = dr["ID"],
-                                    post_name = dr["post_name"],
-                                    post_title = dr["post_title"],
-                                    product_type = dr["product_type"],
-                                    //Postmeta
-                                    sku = dr["sku"],
-                                    price = dr["price"],
-                                    regular_price = dr["regular_price"],
-                                    sale_price = dr["sale_price"],
-                                    manage_stock = dr["manage_stock"],
-                                    backorders = dr["backorders"],
-                                    stock = dr["stock"],
-                                    stock_status = dr["stock_status"],
-                                    core_price = dr["core_price"],
-                                    weight = dr["weight"],
-                                    length = dr["length"],
-                                    width = dr["width"],
-                                    height = dr["height"],
-                                    tax_status = dr["tax_status"],
-                                    image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
-                                    attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
-                                };
-                                obj.variations.Add(vr);
+                                    var vr = new
+                                    {
+                                        ID = dr["ID"],
+                                        post_name = dr["post_name"],
+                                        post_title = dr["post_title"],
+                                        product_type = dr["product_type"],
+                                        //Postmeta
+                                        sku = dr["sku"],
+                                        price = dr["price"],
+                                        regular_price = dr["regular_price"],
+                                        sale_price = dr["sale_price"],
+                                        manage_stock = dr["manage_stock"],
+                                        backorders = dr["backorders"],
+                                        stock = dr["stock"],
+                                        stock_status = dr["stock_status"],
+                                        core_price = dr["core_price"],
+                                        weight = dr["weight"],
+                                        length = dr["length"],
+                                        width = dr["width"],
+                                        height = dr["height"],
+                                        tax_status = dr["tax_status"],
+                                        image = new { name = dr["img"], height = 0, width = 0, filesize = 0 },
+                                        attributes = !string.IsNullOrEmpty(dr["attributes"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(dr["attributes"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}")
+                                    };
+                                    obj.variations.Add(vr);
+                                }
                             }
                         }
                         //Request.Headers.Add("Content-Type", "application/json; charset=utf-8");

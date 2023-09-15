@@ -28,7 +28,8 @@ namespace LaylaERP.Controllers
                 using (var client = new HttpClient())
                 {
                     //client.BaseAddress = new Uri("https://quickfixtest2.com/exportdata.php");
-                    client.BaseAddress = new Uri("https://prosourcediesel.com/proexportdataorders.php");
+                    //client.BaseAddress = new Uri("https://prosourcediesel.com/proexportdataorders.php");
+                    client.BaseAddress = new Uri("https://new.prosourcediesel.com/proexportdataorders.php");
                     client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
 
                     ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;

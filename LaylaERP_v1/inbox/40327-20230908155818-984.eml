@@ -1,0 +1,142 @@
+Delivered-To: david.quickfix1@gmail.com
+Received: by 2002:a2e:91cc:0:b0:2bb:813f:51a7 with SMTP id u12csp196505ljg;
+        Fri, 8 Sep 2023 00:53:22 -0700 (PDT)
+X-Received: by 2002:a05:6102:10c3:b0:44d:426f:ab3b with SMTP id t3-20020a05610210c300b0044d426fab3bmr2686865vsr.15.1694159601984;
+        Fri, 08 Sep 2023 00:53:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694159601; cv=none;
+        d=google.com; s=arc-20160816;
+        b=k3PEUty0bTKNXogWbRQbbSxP8sUWSpV8TlbqZ7GmhGQ44+hJBZbl8j2OzIEoQAXJo4
+         jnODaEltCWfXMiNkzi0jNuDX/8gRIfCLOLqHeq/JGJYOP7iv5EusPCcxPI3jJYNv0ld6
+         WbQ3uRo40XxwxcSuexCvUVv9V6j0gl0aqosmFIDi7NMYsCyQtNhY02V5P8eR31AcV1ij
+         B0tAorvne5qRm5N8j8wb11dyHWV+WOJzQ8waRvO8nuBAxAMPwNc0qscmtqLap8LFTTwg
+         nF3C1FGNq/49TqZYdEU5U+FqkG8IlNGdm/QzOVT6FSxbOS0GdubVDK0N+24z3HucQlxi
+         xp9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=pET88WV54jtgSk8nSsxcispHBXFwdLftNVvR+0jj8To=;
+        fh=/luQllbBGiLDiPl1xdkyIQPXq6PTQxKpOSRu/daG4xg=;
+        b=VrRxnBJ0lqmGLIXs23dy102caHtq9MjKyfvcR4AXBitBMuY+sS2PMLZ5giehL63q7/
+         2e3s41D+a1wgHOxeX0dhEMQZ8vFK24wQN/ZtdCrxiMLodNKodt2cf3nfmscI3+L9jg+h
+         uBDUDTlG78R9jfLqkT3N7SJ9tnKbYr2QBj7xNQKiCYnUnX3wuPEFxukWW/1VpEzWYILZ
+         VJhVjaCfiwhM0lQaT7XXpT0gb13/4j+XcTtGrwW3WPTEIRiw9XtBYP3NXA28Tk/QM90E
+         BhvtB5sEFQR2RFqF5U810q3ZaI7+D1PbbXJpIOitfnG8Y8j1bMM0loeDWTn7ggB3b5dL
+         ep1w==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=Rp616sAS;
+       spf=pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=christison.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Return-Path: <christison.quickfix@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id m1-20020ab05a41000000b0078f24e2deaesor561156uad.0.2023.09.08.00.53.21
+        for <david.quickfix1@gmail.com>
+        (Google Transport Security);
+        Fri, 08 Sep 2023 00:53:21 -0700 (PDT)
+Received-SPF: pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=Rp616sAS;
+       spf=pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=christison.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694159601; x=1694764401; dara=google.com;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pET88WV54jtgSk8nSsxcispHBXFwdLftNVvR+0jj8To=;
+        b=Rp616sASvijeX7toFnTWmYaKwQlgGz7Uwc3dmKnp9wNmomdo9Q85ARoO6Ixbh/qDMs
+         SLpmIn9RdliO7f9S+OmJyUglYC5UrHNahP9189lgDMDYPSuH8zTno1zgPJWALUj/0SHk
+         HuSc89cEqW1/T+Ee8Gi9VxUCXBnxRzvvabQI3RRhrtbxJTiR8JNcbcTheKF8hH/wmNEX
+         C8FhfxkImUF8R0Y0tjsqUSddZ/HR68LguAJR5OXK0UtOmHK/HNA/gKnTPOKOaehxhAJb
+         GDhWX+sZl8rJl7cio4Z5f7ANmgy1zIWmgwQrPfFBppaya4oZKA179T/YNqMp+tXF43Ns
+         5eIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694159601; x=1694764401;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pET88WV54jtgSk8nSsxcispHBXFwdLftNVvR+0jj8To=;
+        b=WPFvI+miLSV2b9oZjoA8x3VpXUBLMYu1Tl3lLiI6WSBpWeK2rPzqvunDH7LJXGHM5B
+         hIot7uvI86XPuZWbNziLmTwACumUIzkO7qEg0gVLpXzzLyID35wgEtHKY2hTbkKXZlUq
+         uuK4z6N5BgQujXsZZIGuehZ9OnvBJiMHG1lrB2+8Wuhy7YK2w1cQ7QwqmFlK6fmCIyZ2
+         7XWhcIAsENh0Cp0Za2MGvIKRutBtwcdKS6N9sKqKTGht4XMBXeZPMibLy7f3WQNitG3D
+         9LRPBswZG6xoS+Mq+F3u3fzsc/e/D2w+AkFjMwK3YcnUaINU5h8pMaUdnpyPE2VJgDEw
+         yiOQ==
+X-Gm-Message-State: AOJu0YzMsCrq14ZCneO3Fz93AzltXiheGgLLq1ypOxP7W6JtoQQpeT9W
+	IsXXBSlN5raQZmeXjtkcT3gddQ18SRh7AILMBoDy8zKG
+X-Google-Smtp-Source: AGHT+IHx2k9WnhS6RStoknr1PHnSFDxiIeBN29N1j1XhVE7pSM/dwGrOzr41wmX0ubBsw32//bNagITAjK75DjXKt0w=
+X-Received: by 2002:a05:6102:2f3:b0:44d:acfd:6f0a with SMTP id
+ j19-20020a05610202f300b0044dacfd6f0amr855992vsj.16.1694159601269; Fri, 08 Sep
+ 2023 00:53:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <2K6Z2MKL0R9@zendesk.com> <2K6Z2MKL0R9_64f161d4bc1c2_4646a0271325_sprut@zendesk.com>
+ <2K6Z2MKL0R9_64fa84063ce4a_4e46a033025c_sprut@zendesk.com>
+In-Reply-To: <2K6Z2MKL0R9_64fa84063ce4a_4e46a033025c_sprut@zendesk.com>
+From: Calvin Christison <christison.quickfix@gmail.com>
+Date: Fri, 8 Sep 2023 13:23:09 +0530
+Message-ID: <CABApj48BGmqSYFVJGDHbAK6MxHVYnnUS+9it4efoRehjFXJLPQ@mail.gmail.com>
+Subject: Fwd: A2P 10 DLC Registration Problem
+To: David Glimour <david.quickfix1@gmail.com>
+Content-Type: multipart/alternative; boundary="00000000000039ffe40604d4450f"
+
+--00000000000039ffe40604d4450f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Twilio Support <support@twilio.zendesk.com>
+Date: Fri, Sep 8, 2023 at 7:46=E2=80=AFAM
+Subject: Re: A2P 10 DLC Registration Problem
+To: Calvin Christisan <christison.quickfix@gmail.com>
+
+
+## In replies all text above this line is added to the ticket ##
+
+Hello Calvin,
+
+Maryn Eisenhart here again - just following up from my prior messages
+regarding ticket 13269613. Please reply within 12 business hours to let me
+know if you have any questions or if you need more time to respond.
+
+Sincerely,
+Maryn Eisenhart
+Twilio Technical Support
+This email is a service from Twilio. Delivered by Zendesk
+<http://www.zendesk.com>.
+[2K6Z2M-KL0R9]
+
+--00000000000039ffe40604d4450f
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">---------- Forwarded message ---------<br>From: <strong cla=
+ss=3D"gmail_sendername" dir=3D"auto">Twilio Support</strong> <span dir=3D"a=
+uto">&lt;<a href=3D"mailto:support@twilio.zendesk.com">support@twilio.zende=
+sk.com</a>&gt;</span><br>Date: Fri, Sep 8, 2023 at 7:46=E2=80=AFAM<br>Subje=
+ct: Re: A2P 10 DLC Registration Problem<br>To: Calvin Christisan &lt;<a hre=
+f=3D"mailto:christison.quickfix@gmail.com">christison.quickfix@gmail.com</a=
+>&gt;<br></div><br><br><div class=3D"msg-6815169467198844428"><u></u>
+ =20
+ =20
+
+         =20
+       =20
+<div style=3D"width:100%!important;margin:0;padding:0">
+  <div style=3D"padding:10px;line-height:18px;font-family:&#39;Lucida Grand=
+e&#39;,Verdana,Arial,sans-serif;font-size:12px;color:#444444">
+    <div style=3D"color:#b5b5b5">## In replies all text above this line is =
+added to the ticket ##</div>
+    <p dir=3D"ltr">Hello Calvin,</p><p dir=3D"ltr">Maryn Eisenhart here aga=
+in - just following up from my prior messages regarding ticket 13269613. Pl=
+ease reply within 12 business hours to let me know if you have any question=
+s or if you need more time to respond.</p><p dir=3D"ltr"> </p><p dir=3D"ltr=
+">Sincerely,<br>Maryn Eisenhart<br>Twilio Technical Support</p>
+    <div style=3D"color:#9e9e9e;margin:10px 0 14px 0;padding-top:10px;borde=
+r-top:1px solid #eeeeee">
+     This email is a service from Twilio.  Delivered by <a href=3D"http://w=
+ww.zendesk.com" style=3D"color:black" target=3D"_blank">Zendesk</a>.
+    </div>
+  </div>
+<span style=3D"color:#ffffff" aria-hidden=3D"true">[2K6Z2M-KL0R9]</span>
+
+</div></div></div></div>
+
+--00000000000039ffe40604d4450f--

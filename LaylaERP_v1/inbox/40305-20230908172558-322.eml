@@ -1,0 +1,85 @@
+Delivered-To: david.quickfix1@gmail.com
+Received: by 2002:a2e:a107:0:b0:2bb:813f:51a7 with SMTP id s7csp1240726ljl;
+        Thu, 7 Sep 2023 04:45:42 -0700 (PDT)
+X-Received: by 2002:adf:f291:0:b0:31c:79c4:9bf3 with SMTP id k17-20020adff291000000b0031c79c49bf3mr4418684wro.49.1694087142802;
+        Thu, 07 Sep 2023 04:45:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694087142; cv=none;
+        d=google.com; s=arc-20160816;
+        b=IS2IdiQkgvkibmonpKbQFwRSMjFTRbyVbFP2FEzDfzNnQIlPxWMzXPbHtLrqLLWwxX
+         S5xqsF1WypPxwnNK2eSmu0dgfPY25ZzOusgnQr/TgcEdGoVTGYdyAPcuMpGCOoMyfbyD
+         ny25FEXAoGYnQ9Bn3UG2c/4XEEFeVmu6LWRy/SNvCDTwZvE2bKn+daQB+ENP51Hmowj/
+         +fxMIj6uc7jPguuItaQ+ob6qQJp+nBLsCif/EQAmjrEgi41JLVZ5u8CEbShyhvy+2YTW
+         py+b2K9pTrOwzeYgVnm47Mu7Xpm2ppXbCkG70ApbSEWk6HhCeDapLkDbv2ZPJuC7vscI
+         SoiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=7oYVTskthEGEZaOuA4q5FGgmTe39M8QM2miKXpI5/CM=;
+        fh=+WZfZnAWTMUW2Bncu/rO9AdCphzPw+fCmwypci3Iz4I=;
+        b=N37qLreh7yblOlr+laKbNo0Yr8iwkuD1sk2hCA3KSwBcpV+1jw2sE/RL3ADxIflaCC
+         fX3kCpGA/ss0YC4BBuFL+evmufM0B0A/EJJw60/ARvwP1ZpQd0MGEkx/P9iCvX7TNjIR
+         Ri76rFg5X9TjLaARXXujE7GV7QHuB9O6clbAqEazEod3OcKHAHzmGawDsShCcF8a7QtG
+         pM0ZWTIrbLIFvMeRcKGvHfCV3VBwZyOzldIMojolw1K1KYlbAoLhck2SMrzjgKGwnaRS
+         RhNPYcp4oB6eUN7yeWVhiK3uYneAfHLDBJtcJTpRfKhOGT797a9+tRdyaDe4Q0Atf3kY
+         loJQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=K4cCnlzW;
+       spf=pass (google.com: domain of johnson.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=johnson.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Return-Path: <johnson.quickfix@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id g20-20020adfa494000000b0031dd1935ab9sor6047521wrb.2.2023.09.07.04.45.42
+        (Google Transport Security);
+        Thu, 07 Sep 2023 04:45:42 -0700 (PDT)
+Received-SPF: pass (google.com: domain of johnson.quickfix@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=K4cCnlzW;
+       spf=pass (google.com: domain of johnson.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=johnson.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694087142; x=1694691942; dara=google.com;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7oYVTskthEGEZaOuA4q5FGgmTe39M8QM2miKXpI5/CM=;
+        b=K4cCnlzWOOsrtVC/l4e4p1vBCZpLSDTHfY3ZhC+35mfzTVc02Qt7VRxKG5kP7d+gGg
+         2XTuDx5H5QbmkRx0OJkYECpFbDv1o/IqljK6brlAX0D7jWlfDS87rAVt3aqA1v8AYS3L
+         YIgZO3stTWCMQoHdkUAHQY9w/Rh3qVsfs52m7syZP9TyNaKI9DPPUekmZ1ZG4xY5ru0K
+         446iDyQofYg8FTmYEPXo5bmHXb+tWYQK9I6G+sHFD76aRuWFRI7r4274hAYx6bjfY4cr
+         cvHxmmxrNZY+A13uFcUfgVbZLuXmUCx0xm36cUR2fKizE3I+3qquPKrUxMYknz///0lO
+         rcdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694087142; x=1694691942;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7oYVTskthEGEZaOuA4q5FGgmTe39M8QM2miKXpI5/CM=;
+        b=SUWMmQR3KBzVtJGoVuRlfYd0V6iFRpi1SlWdCsZhEHaNeo0vNOp0apQaurEk52+Mpm
+         CuH41D6tXUVb+lEYwf/H/uveE0vRPOjY+C0SBTyjem8wh+vEz7qyDDfP812/tTD5Q9KF
+         miyvYDyNrYfoZmxXi1rILJsRZIk52cFWlmUUC9OngHbJ5k64nsSbDVm3NzeSo4NyO7R3
+         IGCl5XsIIW74SPgFzmFUs9jEA/wRrAgJBK56fGnqLqiSSPMKK/N37J1UvjfOmbp2wgwr
+         wM/8esqEp1Q2aZ5QMGfIFlNLdYzQVZXF4hY5s13HIRL2uBJZYBRY+j2wgO64JtBJVHTU
+         Qg/A==
+X-Gm-Message-State: AOJu0YyEdbKSa6VtDGjPbPm+IwBoljqaV7hactQ87k8IKmZs8O2p+JhL
+	Ec+ocvB2QbNecX7zwOqWXCVi6mo1u9FPO4irP6vtYL6l
+X-Google-Smtp-Source: AGHT+IEis62YsnOUnZmClkPS4LJVjAHj/dUo0VRu8dj7551enZzhtgqy5o6fDms/wKLCmSgHQHjdbwu1hTgEz/H90ck=
+X-Received: by 2002:adf:e58c:0:b0:319:7b66:7800 with SMTP id
+ l12-20020adfe58c000000b003197b667800mr4174812wrm.55.1694087141924; Thu, 07
+ Sep 2023 04:45:41 -0700 (PDT)
+MIME-Version: 1.0
+From: Vincy Johnson <johnson.quickfix@gmail.com>
+Date: Thu, 7 Sep 2023 17:15:30 +0530
+Message-ID: <CAD_nz44wWz+Fvg7m7=kzVSyRBH0HRFMLnPb_51-rVj_z8gxCfQ@mail.gmail.com>
+Subject: Test Mail 1
+To: David Glimour <david.quickfix1@gmail.com>, 
+	Calvin Christison <christison.quickfix@gmail.com>
+Content-Type: multipart/alternative; boundary="0000000000005026240604c3668c"
+
+--0000000000005026240604c3668c
+Content-Type: text/plain; charset="UTF-8"
+
+Second Mail
+
+--0000000000005026240604c3668c
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">Second Mail</div>
+
+--0000000000005026240604c3668c--

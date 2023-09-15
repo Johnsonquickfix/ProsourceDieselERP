@@ -1326,8 +1326,8 @@
         /// <param name="parent_cat"></param>
         /// <param name="slug"></param>
         /// <returns></returns>
-        [HttpGet, Route("v1/category/{app_key}/{entity_id}")]
-        public IHttpActionResult CategoryPageData(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
+        [HttpPost, Route("v1/category/{app_key}/{entity_id}")]
+        public IHttpActionResult CategoryPageData(string app_key, ProductFilterRequest filter, long entity_id = 0, string parent_cat = "", string slug = "")
         {
             try
             {
@@ -1348,10 +1348,18 @@
                     if (page_type == "product_cat") { return PageItems(app_key, entity_id, parent_cat, slug); }
                     else if (page_type == "product_filter")
                     {
+                        if (filter == null) filter = new ProductFilterRequest();
                         //ProductFilterRequest filter = new ProductFilterRequest() { taxonomy = { cat_slug = slug }, sort_by = "title-asc", limit = 24, page = 1 };
-                        ProductFilterRequest filter = new ProductFilterRequest();
-                        filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
-                        filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        //ProductFilterRequest filter = new ProductFilterRequest();
+                        if (filter.taxonomy == null)
+                        {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
+                        else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug)) {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
                         return ProductsFilter(app_key, entity_id, filter);
                     }
                     else return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });

@@ -46,7 +46,8 @@
         public static TaxJarModel GetTaxes(TaxJarModel taxJarModel)
         {
             //var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
-            var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
+            //var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
+            var client = new TaxjarApi("afee20fe27f4d908fe71858c8ea67319");
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var Taxes = client.TaxForOrder(new
             {

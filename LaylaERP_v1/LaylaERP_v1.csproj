@@ -1498,6 +1498,7 @@
     <Content Include="js\qfk\HtmlEditor\1.5.5\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="js\qfk\HtmlEditor\1.5.5\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="json\manus_1.json" />
+    <Content Include="json\topsell_1.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

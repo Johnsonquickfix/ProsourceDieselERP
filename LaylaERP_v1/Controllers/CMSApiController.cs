@@ -909,6 +909,7 @@
                     {
                         Dictionary<String, object> _meta = new Dictionary<String, object>();
                         if (flter.postmeta.stock_status != null) _meta.Add("_stock_status", string.Format("'{0}'", string.Join("','", flter.postmeta.stock_status)));
+                        if (flter.postmeta.ratenreview_average_score != null) _meta.Add("_ratenreview_average_score", string.Format("'{0}'", string.Join("','", flter.postmeta.ratenreview_average_score)));
                         if (flter.postmeta.price != null) _meta.Add("_price", new { min = flter.postmeta.price.Min(), max = flter.postmeta.price.Max() });
                         obj_filter.postmeta = _meta;
                     }
@@ -963,6 +964,8 @@
                         row.Add("width", dr["width"]);
                         row.Add("height", dr["height"]);
                         row.Add("tax_status", dr["tax_status"]);
+                        row.Add("total_review", dr["total_review"]);
+                        row.Add("average_score", dr["average_score"]);
                         row.Add("brand", dr["brand"]);
 
                         if (dr["product_type"].ToString().Equals("variable"))
@@ -1123,6 +1126,8 @@
                             obj.weight_unit = dr["weight_unit"];
                             obj.dimension_unit = dr["dimension_unit"];
                             obj.tax_status = dr["tax_status"];
+                            obj.total_review = dr["total_review"];
+                            obj.average_score = dr["average_score"];
                             if (dr["product_type"].ToString().Equals("variable"))
                             {
                                 double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
@@ -1326,8 +1331,8 @@
         /// <param name="parent_cat"></param>
         /// <param name="slug"></param>
         /// <returns></returns>
-        [HttpGet, Route("v1/category/{app_key}/{entity_id}")]
-        public IHttpActionResult CategoryPageData(string app_key, long entity_id = 0, string parent_cat = "", string slug = "")
+        [HttpPost, Route("v1/category/{app_key}/{entity_id}")]
+        public IHttpActionResult CategoryPageData(string app_key, ProductFilterRequest filter, long entity_id = 0, string parent_cat = "", string slug = "")
         {
             try
             {
@@ -1348,10 +1353,19 @@
                     if (page_type == "product_cat") { return PageItems(app_key, entity_id, parent_cat, slug); }
                     else if (page_type == "product_filter")
                     {
+                        if (filter == null) filter = new ProductFilterRequest();
                         //ProductFilterRequest filter = new ProductFilterRequest() { taxonomy = { cat_slug = slug }, sort_by = "title-asc", limit = 24, page = 1 };
-                        ProductFilterRequest filter = new ProductFilterRequest();
-                        filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
-                        filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        //ProductFilterRequest filter = new ProductFilterRequest();
+                        if (filter.taxonomy == null)
+                        {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
+                        else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug))
+                        {
+                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
+                        }
                         return ProductsFilter(app_key, entity_id, filter);
                     }
                     else return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });
@@ -1377,6 +1391,33 @@
                     string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("manus_{0}", entity_id));
                     JArray records = JArray.Parse(json);
                     return Ok(new { message = "Menu items retrived successfully", status = 200, code = "SUCCESS", data = records });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet, Route("v1/topsell/{app_key}/{entity_id}")]
+        public IHttpActionResult ProductTopSell_v1(string app_key, long entity_id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                }
+                else
+                {
+                    string json = ReadJsonFile(AppContext.BaseDirectory, string.Format("topsell_{0}", entity_id));
+                    JArray records = JArray.Parse(json);
+                    if (records.Count > 0) return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = records });
+                    else return Ok(new { message = "Not Found", status = 404, code = "Not Found", data = new { } });
                 }
             }
             catch (Exception ex)

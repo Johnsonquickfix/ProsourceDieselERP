@@ -1,0 +1,142 @@
+Delivered-To: david.quickfix1@gmail.com
+Received: by 2002:a2e:91cc:0:b0:2bb:813f:51a7 with SMTP id u12csp196567ljg;
+        Fri, 8 Sep 2023 00:53:39 -0700 (PDT)
+X-Received: by 2002:a67:eb19:0:b0:44d:453c:a838 with SMTP id a25-20020a67eb19000000b0044d453ca838mr2064839vso.5.1694159618957;
+        Fri, 08 Sep 2023 00:53:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694159618; cv=none;
+        d=google.com; s=arc-20160816;
+        b=H7gf2VHNzl4eYGCFiZ4JHoNEWNyVah6ttWQXtI6hjYHXHJAxeonYDwyhY2T/fJWSns
+         4nLeKqk6OhxLXws/lJ0+o2dqKRSIoJjQUY9ax1OngrchTJX8Xk/suUugH076196EcDQD
+         V7errq0SXQtpgJJdZjLyje+fO4AeZAQ4eWwjQOoWAAV/Ehajz1gcfnNz1jMmuy98VeD3
+         N3erNIoIwl/o5ZOUDGrVvHfx9afuKhvAtnZbR3j7jU35gjka4p9wS4LMSP3/s3/DFA3K
+         BrBr4BOi98XWnwBfpBv6aqGpPN+B8lJnkbiG3VNCWdOJETMDXIqkZvR5AmW0Qwx4mSrP
+         cJsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=2xzToH+yh1flNbxtzGNpQH6Zg7CDHKPitVE9oJzDF1Y=;
+        fh=/luQllbBGiLDiPl1xdkyIQPXq6PTQxKpOSRu/daG4xg=;
+        b=OTQxelDilj30h8bpUD55pPhtDag/0sxtdyKz28nvN0FTpOeSLewn6zguNbOsf0uNV0
+         hY5b8EtuOyB+t9yOAKVNEzPfpIvdbAo2kJOrV+yu4VYWKMqUIXussnd+RDdmVEHX3bTx
+         s1fCtY1vhcJAy1uIpmxys8Lf82UgFkoXLn8smuaiQSfDOgaXubtRQcjS+Kc54kLK0Eat
+         agvBYK1BCPo9q21KOoOJ2dPNQ/ycUYyfMSKi1L/N50lSjUeHVcNbW9uEU7bBXmhqq9Mh
+         ww5isH3b+BoA+lXY6ZofHzLgZfj6fwjop/+bUdSIWfVgNAaPzxL825b1G4vUh0FrymTA
+         Re0A==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=aSy3keeh;
+       spf=pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=christison.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Return-Path: <christison.quickfix@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id v9-20020a67c009000000b00447631d0e45sor383034vsi.6.2023.09.08.00.53.38
+        for <david.quickfix1@gmail.com>
+        (Google Transport Security);
+        Fri, 08 Sep 2023 00:53:38 -0700 (PDT)
+Received-SPF: pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20221208 header.b=aSy3keeh;
+       spf=pass (google.com: domain of christison.quickfix@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=christison.quickfix@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694159618; x=1694764418; dara=google.com;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2xzToH+yh1flNbxtzGNpQH6Zg7CDHKPitVE9oJzDF1Y=;
+        b=aSy3keeh8l7QP8uMm4lF2QhVnW3cK4rFPeIVyjmqLH482VnPhH0uV8CAb7H9nVJo31
+         mR4LS8/OIR5tGpMyHegba6x+hSYl077DTEhMSEv4EscvYYqsyokFNgA2AhdWIcQU8WuX
+         93Q71e+1rm31Nft5zjt6es5mwP3lAUSx6lSTOoMLiJVNV7SGr9scdFbeTMhEGgU32JMU
+         /a0r/LhjyNBynHzt0UXzyPA6X/fQO6yToEg6W4kuFc32PZHLaRoJMbTCfKhfyQpIQ1VW
+         0nZMzKs4V1Sp12DWxSQ0YRlYVASTVAtzJsK+FnSW5S9l9L5cLfTMnGUhZX+/cSDuoiQW
+         JBug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694159618; x=1694764418;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2xzToH+yh1flNbxtzGNpQH6Zg7CDHKPitVE9oJzDF1Y=;
+        b=WkWYC7p01QOWjsHmry/fCMPrPVnynHY88gzL6O7WTAPtF+a/xzvCLhcJmAbDJMwj5f
+         KxNTCrlClzPCwfOEfvqA215kiGovcVah2MOG8Nctur3ruwPIb8sNb2ubUHG3IbddOaqh
+         JW+t5x/kqfHCDjRW3hDvpVXzq1HVdU2yit6XVTod7dSSI/EWrg/F8rOoFGTlVkvbzsFU
+         9Lj8hGRflAHHutSyt+3wQiQi2OW8eAXmWgZrijUr9wrSup7pHZzrw3pwIfcScjm7Msen
+         643Wu3IOBVqWLMzrfhZrJClFHHiNaEe2axUp6CCU7WNqztgXOZFbqqx6nm1xN9OTh5ud
+         85uQ==
+X-Gm-Message-State: AOJu0YyIBVcPT0CrZbkdHd8mWURzxfPP1SpVdQLgmox6t+zX2ro7MSrW
+	cibM4atBJeWA9CmkwZOPx/ipGOrdOjWlZpI8F/Nu6zn6
+X-Google-Smtp-Source: AGHT+IFSR7MKioW1G5f8NgAEjhnSiZC5t6RhOgp0bq/sOrFGw3curCPOTeqe/MlBB4+hdP98tLCQu7j575DkrKKQQFA=
+X-Received: by 2002:a67:be19:0:b0:44e:e977:4401 with SMTP id
+ x25-20020a67be19000000b0044ee9774401mr2021873vsq.13.1694159618210; Fri, 08
+ Sep 2023 00:53:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <2K99J1JD01V@zendesk.com> <2K99J1JD01V_64f0bd2814a2d_3e46a0113406d_sprut@zendesk.com>
+ <2K99J1JD01V_64fa1047208f1_5446a0154638a_sprut@zendesk.com>
+In-Reply-To: <2K99J1JD01V_64fa1047208f1_5446a0154638a_sprut@zendesk.com>
+From: Calvin Christison <christison.quickfix@gmail.com>
+Date: Fri, 8 Sep 2023 13:23:26 +0530
+Message-ID: <CABApj49Y6mf2zts8rae3TkN7NW0yOnW3_aKxJvMQ_2mcHqmo8Q@mail.gmail.com>
+Subject: Fwd: Re-again unable to register
+To: David Glimour <david.quickfix1@gmail.com>
+Content-Type: multipart/alternative; boundary="0000000000003c827b0604d44650"
+
+--0000000000003c827b0604d44650
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Twilio Support <support@twilio.zendesk.com>
+Date: Thu, Sep 7, 2023 at 11:32=E2=80=AFPM
+Subject: Re: Re-again unable to register
+To: Calvin Christisan <christison.quickfix@gmail.com>
+
+
+## In replies all text above this line is added to the ticket ##
+
+Hello Calvin,
+
+Anthony here again - just following up from my prior messages regarding
+ticket 13215026. Please reply within 12 business hours to let me know if
+you have any questions or if you need more time to respond.
+
+Sincerely,
+Anthony
+Twilio Technical Support
+This email is a service from Twilio. Delivered by Zendesk
+<http://www.zendesk.com>.
+[2K99J1-JD01V]
+
+--0000000000003c827b0604d44650
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">---------- Forwarded message ---------<br>From: <strong cla=
+ss=3D"gmail_sendername" dir=3D"auto">Twilio Support</strong> <span dir=3D"a=
+uto">&lt;<a href=3D"mailto:support@twilio.zendesk.com">support@twilio.zende=
+sk.com</a>&gt;</span><br>Date: Thu, Sep 7, 2023 at 11:32=E2=80=AFPM<br>Subj=
+ect: Re: Re-again unable to register<br>To: Calvin Christisan &lt;<a href=
+=3D"mailto:christison.quickfix@gmail.com">christison.quickfix@gmail.com</a>=
+&gt;<br></div><br><br><div class=3D"msg-35132221399022644"><u></u>
+ =20
+ =20
+
+         =20
+       =20
+<div style=3D"width:100%!important;margin:0;padding:0">
+  <div style=3D"padding:10px;line-height:18px;font-family:&#39;Lucida Grand=
+e&#39;,Verdana,Arial,sans-serif;font-size:12px;color:#444444">
+    <div style=3D"color:#b5b5b5">## In replies all text above this line is =
+added to the ticket ##</div>
+    <p dir=3D"ltr">Hello Calvin,</p><p dir=3D"ltr">Anthony here again - jus=
+t following up from my prior messages regarding ticket 13215026. Please rep=
+ly within 12 business hours to let me know if you have any questions or if =
+you need more time to respond.</p><p dir=3D"ltr"> </p><p dir=3D"ltr">Sincer=
+ely,<br>Anthony<br>Twilio Technical Support</p>
+    <div style=3D"color:#9e9e9e;margin:10px 0 14px 0;padding-top:10px;borde=
+r-top:1px solid #eeeeee">
+     This email is a service from Twilio.  Delivered by <a href=3D"http://w=
+ww.zendesk.com" style=3D"color:black" target=3D"_blank">Zendesk</a>.
+    </div>
+  </div>
+<span style=3D"color:#ffffff" aria-hidden=3D"true">[2K99J1-JD01V]</span>
+
+</div></div></div></div>
+
+--0000000000003c827b0604d44650--

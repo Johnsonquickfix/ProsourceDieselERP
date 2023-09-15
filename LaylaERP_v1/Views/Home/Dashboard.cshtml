@@ -649,52 +649,83 @@
         if ($('#DateRange2').val != '') {
             sd = $('#DateRange2').data('daterangepicker').startDate.format('MM-DD-YYYY');
             ed = $('#DateRange2').data('daterangepicker').endDate.format('MM-DD-YYYY');
-        }
-        let obj = { strValue1: '', strValue2: '', strValue3: '', strValue4: '', strValue5: sd, strValue6: ed };
+        } 
+
         $('#tbohi').DataTable({
-            destroy: true, searching: true, lengthChange: true, bProcessing: true, bAutoWidth: false, bSort: false, lengthMenu: [[10, 20, 50], [10, 20, 50]],
-            //language: {
-            //    lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
-            //    infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-            //    //oPaginate: { sNext: '<i class="fa fa-chevron-right"></i>', sPrevious: '<i class="fa fa-chevron-left"></i>' }
-            //},
-            ajax: {
-                url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-                dataSrc: function (data) { return JSON.parse(data); }
+
+            destroy: true, bProcessing: true, bServerSide: true,
+            //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+            order: [[0, "desc"]],
+            bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
+            responsive: true, 
+            lengthMenu: [[10, 20, 50], [10, 20, 50]],
+            language: {
+                lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+                infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
             },
-            columns: [
-                { data: 'sku', title: 'SKU', sWidth: "10%", className: "text-left", render: function (data, type, full) { if (type === "sort" || type === 'type') { return full.p_id; } else return full.sku; } },
-                { data: 'post_title', title: 'Product Name', sWidth: "40%", className: "text-left" },
+            sAjaxSource: "/Inventory/GetOnhandInventoryList",
+            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                //aoData.push({ name: "strValue1", value: monthYear });
+                aoData.push({ name: "strValue1", value: '' });
+                aoData.push({ name: "strValue2", value: '' });
+                aoData.push({ name: "strValue3", value: '' });
+                aoData.push({ name: "strValue4", value: '' });
+                aoData.push({ name: "strValue5", value: sd });
+                aoData.push({ name: "strValue6", value: ed });
+                var col = 'id';
+                if (oSettings.aaSorting.length > 0) {
+                    var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "category" : oSettings.aaSorting[0][0] == 2 ? "post_title" : "id";
+                    aoData.push({ name: "sSortColName", value: col });
+                }
+                //console.log(aoData);
+                oSettings.jqXHR = $.ajax({
+                    dataType: 'json', type: "GET", url: sSource, data: aoData,
+                    "success": function (data) {
+                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                        return fnCallback(dtOption);
+                    }
+                });
+            },
+            aoColumns: [                
+                { data: 'sku', title: 'SKU', sWidth: "8%" },
+                { data: 'post_title', title: 'Product Name', sWidth: "18%" },
                 {
-                    data: 'stock', title: 'Units in Stock', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                        if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                    data: 'stock', title: 'Units in Stock', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                        ///if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
+                        //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);
+                        return (row.op_stock + row.stock).toFixed(0);
+
                     }
                 },
                 {
-                    data: 'UnitsinPO', title: 'Units in POs', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                        if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
+                    data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                        //if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
+                        return row.UnitsinPO.toFixed(0);
+
                     }
                 },
                 {
-                    data: 'SaleUnits', title: 'Sale Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                        if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
+                    data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                        //if (row.total_variation > 0) return ''; else return row.SaleUnits.toFixed(0);
+                        return row.SaleUnits.toFixed(0);
                     }
                 },
                 {
-                    data: 'Damage', title: 'Damage Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                        if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
+                    data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
+                        //if (row.total_variation > 0) return ''; else return row.Damage.toFixed(0);
+                        return row.Damage.toFixed(0);
                     }
                 },
                 {
-                    data: 'available', title: 'Available Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                    data: 'available', title: 'Available Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                         //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
-                        if (row.post_parent > 0) return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0); else return '';
+                        //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
+                        return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0);
                     }
                 },
-            ],
+            ]
             //columnDefs: [{ targets: [0], visible: false, searchable: false }]
         });
-
 
 
         //$.post("/Home/GetOrderList", $("#saveForm").serialize(), function (response) {

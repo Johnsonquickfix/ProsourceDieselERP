@@ -41,6 +41,7 @@
             tr.addClass('shown');
         }
     });
+    $(document).on("click", "#btnExportList", function (t) { t.preventDefault(); ExportList(); });
 })
 function isNullAndUndef(variable) { return (variable !== null && variable !== undefined); }
 function getProducts() {
@@ -78,35 +79,58 @@ function ProductStockGrid() {
     let sd = $('#txtDate').data('daterangepicker').startDate.format('YYYY-MM-DD'), ed = $('#txtDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0, vnid = parseInt($("#ddlVendor").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed };// console.log(obj);
+     
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": '' }, bProcessing: true, bAutoWidth: false,
-        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
-        {
-            extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
-            exportOptions: { columns: ':visible' },
-            action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.csv'); }
-        }
+
+        destroy: true, bProcessing: true, bServerSide: true,
+        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+        order: [[0, "desc"]],
+        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
+        responsive: true,
+        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { ExportList(); } }
+        //    ,{
+        //    extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
+        //    exportOptions: { columns: ':visible' },
+        //    action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.csv'); }
+        //}
         ],
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
             infoFiltered: "", infoEmpty: "No records found", processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        destroy: true, ajax: {
-            url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
-            dataSrc: function (data) { return JSON.parse(data); }, beforeSend: function () { $("#loader").show(); },
-            complete: function () { $("#loader").hide(); },
-            error: function (xhr, status, err) { $("#loader").hide(); }
+        sAjaxSource: "/Inventory/GetOnhandInventoryList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            //aoData.push({ name: "strValue1", value: monthYear });
+            aoData.push({ name: "strValue1", value: $("#txtsku").val().trim() });
+            aoData.push({ name: "strValue2", value: (ctid > 0 ? ctid : '') });
+            aoData.push({ name: "strValue3", value: (pid > 0 ? pid : '') });
+            aoData.push({ name: "strValue4", value: (vnid > 0 ? vnid : '') });
+            aoData.push({ name: "strValue5", value: sd });
+            aoData.push({ name: "strValue6", value: ed });
+            var col = 'id';
+            if (oSettings.aaSorting.length > 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "category" : oSettings.aaSorting[0][0] == 2 ? "post_title" : "id";
+                aoData.push({ name: "sSortColName", value: col });
+            }
+            //console.log(aoData);
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
         },
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
-        columns: [
+        aoColumns: [
             { data: 'p_id', title: 'Parent ID', sWidth: "8%" },
             {
-                data: 'id', title: 'ID', sWidth: "6%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show warehouse On-Hand Inventory."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            { data: 'category', title: 'Category', sWidth: "18%" },
+            { data: 'category', title: 'Category', sWidth: "15%"},
             { data: 'sku', title: 'SKU', sWidth: "8%" },
             { data: 'post_title', title: 'Product Name', sWidth: "18%" },
             {
@@ -114,14 +138,14 @@ function ProductStockGrid() {
                     ///if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
                     //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock).toFixed(0);
                     return (row.op_stock + row.stock).toFixed(0);
-              
+
                 }
             },
             {
                 data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                     //if (row.total_variation > 0) return ''; else return row.UnitsinPO.toFixed(0);
                     return row.UnitsinPO.toFixed(0);
-                     
+
                 }
             },
             {
@@ -140,7 +164,7 @@ function ProductStockGrid() {
                 data: 'available', title: 'Available Units', sWidth: "8%", className: "text-center", render: function (data, type, row) {
                     //if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
                     //if (row.total_variation > 0) return ''; else return (row.op_stock + row.stock - row.SaleUnits - row.Damage).toFixed(0);
-                    return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0);  
+                    return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0);
                 }
             },
         ],
@@ -304,4 +328,113 @@ function download_csv(csv, filename) {
     document.body.appendChild(downloadLink);
     // Lanzamos
     downloadLink.click();
+}
+
+
+function ExportList() {
+    //let _columns = [];
+    //let _order_status = $("#ddlStatus").val().map(d => `'${d}'`).join(','), _order_payment = $("#ddlAccount").val();
+    //let _display_field = [], _where_field = [];
+    //$("#ddlDisplayField :selected").each(function (e, r) {
+    //    _display_field.push({ strType: $(r).data('tb_type'), strKey: $(r).text(), strValue: $(r).val() });
+    //    //_columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%", render: function (id, type, full, meta) { return (moment(id)._isValid) ? moment(id).format('MM/DD/YYYY') : id; } });
+    //    _columns.push({ data: $(r).text(), title: $(r).text(), sWidth: "10%" });
+    //});
+    //if (_order_payment != '') { _where_field.push({ strType: 'erp_accounting_bookkeeping', strKey: 'inv_complete', strOperator: 'in', strValue: _order_payment }); }
+    ////if ($("#txtSearchValue").val() != '') { _where_field.push({ strType: $('#ddlSearchField :selected').data('tb_type'), strKey: $('#ddlSearchField').val(), strOperator: $('#ddlSearchBy').val(), strValue: $("#txtSearchValue").val() }); }
+    //$("#dynamic-filter .row").each(function (e, r) {
+    //    if ($(r).find("#txtSearchValue").val() != '') {
+    //        _where_field.push({ strType: $(r).find('.SearchField :selected').data('tb_type'), strKey: $(r).find('.SearchField').val(), strOperator: $(r).find('.SearchBy').val(), strValue: $(r).find("#txtSearchValue").val() });
+    //    }
+    //});
+    //let sd = null, ed = null;
+    //if ($('#txtDate').val() != '') {
+    //    sd = $('#txtDate').data('daterangepicker').startDate.format('MM-DD-YYYY'), ed = $('#txtDate').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    //}
+    //let table = $('#dtordersearch').DataTable().order();
+
+
+    let sd = $('#txtDate').data('daterangepicker').startDate.format('YYYY-MM-DD'), ed = $('#txtDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0, vnid = parseInt($("#ddlVendor").val()) || 0;
+    //let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed };
+
+    var table = $('#dtdata').DataTable();
+    var currentSearchValue = table.search();
+
+    //console.log(currentSearchValue);
+
+    let option = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: (vnid > 0 ? vnid : ''), strValue5: sd, strValue6: ed, sSearch: currentSearchValue};
+    //option.iDisplayStart = 0; option.iDisplayLength = 1000000; option.sSortDir_0 = table[0][1]; option.sSortColName = "[" + _columns[table[0][0]].data + "]";
+    //console.log(option); return;
+    $("#loader").show();
+    setTimeout(function () { $("#loader").hide(); }, 2000);
+
+    postForm(option, '/inventory/on-hand-inventory-export');
+}
+
+function postForm(parameters, url) { 
+    // generally we post the form with a blank action attribute
+    if ('undefined' === typeof url) { url = ''; } 
+    var getForm = function (url, values) {
+        values = removeNulls(values);
+        var form = $('<form>').attr("method", 'POST').attr("action", url);
+        iterateValues(values, [], form, null);
+        return form;
+    }; 
+    var removeNulls = function (values) {
+        var propNames = Object.getOwnPropertyNames(values);
+        for (var i = 0; i < propNames.length; i++) {
+            var propName = propNames[i];
+            if (values[propName] === null || values[propName] === undefined) {
+                delete values[propName];
+            } else if (typeof values[propName] === 'object') {
+                values[propName] = removeNulls(values[propName]);
+            } else if (values[propName].length < 1) {
+                delete values[propName];
+            }
+        }
+        return values;
+    };
+
+    var iterateValues = function (values, parent, form, isArray) {
+        var i, iterateParent = [];
+        Object.keys(values).forEach(function (i) {
+            if (typeof values[i] === "object") {
+                iterateParent = parent.slice();
+                iterateParent.push(i);
+                iterateValues(values[i], iterateParent, form, Array.isArray(values[i]));
+            } else {
+                form.append(getInput(i, values[i], parent, isArray));
+            }
+        });
+    };
+
+    var getInput = function (name, value, parent, array) {
+        var parentString;
+        if (parent.length > 0) {
+            parentString = parent[0];
+            var i;
+            for (i = 1; i < parent.length; i += 1) {
+                parentString += "[" + parent[i] + "]";
+            }
+
+            if (array) {
+                name = parentString + "[" + name + "]";
+            } else {
+                name = parentString + "[" + name + "]";
+            }
+        }
+
+        return $("<input>").attr("type", "hidden").attr("name", name).attr("value", value);
+    };
+
+
+    //----------------------------------------
+    // NOW THE SYNOPSIS
+    //----------------------------------------
+    var generatedForm = getForm(url, parameters);
+
+    $('body').append(generatedForm);
+    generatedForm.submit();
+    generatedForm.remove();
 }

@@ -755,10 +755,10 @@
                             {
                                 foreach (var item in keyValues)
                                 {
-                                    if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                                    else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                                    else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                                    if (item.Key.Equals("_file_name")) img.Add("name", item.Value);
+                                    else if (item.Key.Equals("_file_height")) img.Add("height", item.Value);
+                                    else if (item.Key.Equals("_file_width")) img.Add("width", item.Value);
+                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", item.Value);
                                 }
                             }
                             row.Add("image", img);
@@ -797,10 +797,10 @@
                             {
                                 foreach (var item in keyValues)
                                 {
-                                    if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                                    else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                                    else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                                    if (item.Key.Equals("_file_name")) img.Add("name", item.Value);
+                                    else if (item.Key.Equals("_file_height")) img.Add("height", item.Value);
+                                    else if (item.Key.Equals("_file_width")) img.Add("width", item.Value);
+                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", item.Value);
                                 }
                             }
                             row.Add("image", img);
@@ -845,10 +845,10 @@
                 {
                     foreach (var item in keyValues)
                     {
-                        if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                        else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                        else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                        else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                        if (item.Key.Equals("_file_name")) img.Add("name", item.Value);
+                        else if (item.Key.Equals("_file_height")) img.Add("height", item.Value);
+                        else if (item.Key.Equals("_file_width")) img.Add("width", item.Value);
+                        else if (item.Key.Equals("_file_size")) img.Add("filesize", item.Value);
                     }
                 }
                 row.Add("image", img);
@@ -971,14 +971,24 @@
                         if (dr["product_type"].ToString().Equals("variable"))
                         {
                             double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
-                            row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
-                            row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                            if (parsed.Length > 0)
+                            {
+                                row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
+                                row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                            }
+                            else
+                            { row.Add("price_range", new { min = 0, max = 0 }); row.Add("price", string.Format("${0:0.00} - ${1:0.00}", 0, 0)); }
                         }
                         else if (dr["product_type"].ToString().Equals("grouped"))
                         {
                             double[] parsed = Array.ConvertAll(dr["price"].ToString().Split(new[] { ',', }, StringSplitOptions.RemoveEmptyEntries), Double.Parse);
-                            row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
-                            row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                            if (parsed.Length > 0)
+                            {
+                                row.Add("price_range", new { min = parsed.Min(), max = parsed.Max() });
+                                row.Add("price", string.Format("${0:0.00} - ${1:0.00}", parsed.Min(), parsed.Max()));
+                            }
+                            else
+                            { row.Add("price_range", new { min = 0, max = 0 }); row.Add("price", string.Format("${0:0.00} - ${1:0.00}", 0, 0)); }
                         }
                         else { row.Add("price", dr["price"]); }
                         row.Add("wholesale_details", "");
@@ -1366,7 +1376,8 @@
                         }
                         else if (string.IsNullOrEmpty(filter.taxonomy.cat_slug))
                         {
-                            filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
+                            filter.taxonomy.cat_slug = slug;
+                            //filter.taxonomy = new ProductTaxonomyRequest() { cat_slug = slug };
                             //filter.sort_by = "title-asc"; filter.limit = 24; filter.page = 1;
                         }
                         return ProductsFilter(app_key, entity_id, filter);

@@ -5771,8 +5771,11 @@ body .fc-day-number {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
 .on-hand.inventory th {
-white-space:nowrap;}
+    white-space: nowrap;
+}
+
 @media(min-width:992px) {
     .wrapper_invent_top {
         width: 100%;
@@ -5827,4 +5830,111 @@ white-space:nowrap;}
     .email_top_settings > div {
         flex: 0 1 auto;
     }
+}
+
+.on-hand.inventory #on-hand-inventory .dataTables_scrollHead .dataTables_scrollHeadInner {
+    width: 100% !important;
+}
+
+    .on-hand.inventory #on-hand-inventory .dataTables_scrollHead .dataTables_scrollHeadInner table {
+        table-layout: fixed !important;
+    }
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(1),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(1) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(2),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(2) {
+    width: 12% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(3),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(3) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(4),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(4) {
+    width: 12% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(5),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(5) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(6),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(6) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(7),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(7) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(8),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(8) {
+    width: 8% !important;
+}
+
+.on-hand.inventory #on-hand-inventory table thead th:nth-child(9),
+.on-hand.inventory #on-hand-inventory table tbody td:nth-child(9) {
+    width: 8% !important;
+}
+
+#tbohi_wrapper .dataTables_scrollBody table, #tbohi_wrapper .dataTables_scrollHead table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+#tbohi_wrapper .dataTables_scrollHead {
+    overflow: visible !important;
+}
+
+#tbohi_wrapper .dataTables_scrollBody thead {
+    display: none;
+}
+
+#tbohi_wrapper .dataTables_scrollHead div {
+    width: auto !important;
+}
+
+#tbohi_wrapper .dataTables_scroll {
+    overflow: auto;
+}
+
+#tbohi_wrapper .dataTables_scrollBody {
+    overflow: visible !important;
+}
+
+#tbohi_wrapper th:nth-child(1), #tbohi_wrapper td:nth-child(1) {
+    width: 10% !important;
+    text-align: left !important
+}
+
+#tbohi_wrapper th:nth-child(2), #tbohi_wrapper td:nth-child(2) {
+    width: 25% !important;
+}
+
+#tbohi_wrapper th:nth-child(3), #tbohi_wrapper td:nth-child(3) {
+    width: 12% !important;
+}
+
+#tbohi_wrapper th:nth-child(4), #tbohi_wrapper td:nth-child(4) {
+    width: 12% !important;
+}
+
+#tbohi_wrapper th:nth-child(5), #tbohi_wrapper td:nth-child(5) {
+    width: 12% !important;
+}
+
+#tbohi_wrapper th:nth-child(6), #tbohi_wrapper td:nth-child(6) {
+    width: 12% !important;
+}
+
+#tbohi_wrapper th:nth-child(7), #tbohi_wrapper td:nth-child(7) {
+    width: 12% !important;
 }

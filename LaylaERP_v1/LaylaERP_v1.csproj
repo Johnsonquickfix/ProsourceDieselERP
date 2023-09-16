@@ -336,6 +336,7 @@
     <Compile Include="Controllers\PoemailController.cs" />
     <Compile Include="Controllers\ProductBulkEditController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductReviewImportController.cs" />
     <Compile Include="Controllers\PromotionalEmailController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\qfk\AnalyticsController.cs" />
@@ -1924,6 +1925,7 @@
     <Folder Include="Files\" />
     <Folder Include="Views\CMSApi\" />
     <Folder Include="Views\CMSRepository\" />
+    <Folder Include="Views\ProductReviewImport\" />
     <Folder Include="Views\RMAApi\" />
     <Folder Include="Views\RMARepository\" />
   </ItemGroup>

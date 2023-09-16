@@ -755,10 +755,10 @@
                             {
                                 foreach (var item in keyValues)
                                 {
-                                    if (item.Key.Equals("_file_name")) img.Add("name", dr["_file_name"]);
-                                    else if (item.Key.Equals("_file_height")) img.Add("height", dr["_file_height"]);
-                                    else if (item.Key.Equals("_file_width")) img.Add("width", dr["_file_width"]);
-                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", dr["_file_size"]);
+                                    if (item.Key.Equals("_file_name")) img.Add("name", item.Value);
+                                    else if (item.Key.Equals("_file_height")) img.Add("height", item.Value);
+                                    else if (item.Key.Equals("_file_width")) img.Add("width", item.Value);
+                                    else if (item.Key.Equals("_file_size")) img.Add("filesize", item.Value);
                                 }
                             }
                             row.Add("image", img);

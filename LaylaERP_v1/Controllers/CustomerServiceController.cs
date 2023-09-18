@@ -162,6 +162,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+  
+        public ActionResult CustomerTicketSearchbyid(long id = 0)
+        {
+            CustomerModel model = new CustomerModel();
+            ViewBag.id = id;
+            return View(model);
+        }
+
         [HttpGet]
         [Route("customer-service/ticket-list")]
         public JsonResult GetTicketList(JqDataTableModel model)

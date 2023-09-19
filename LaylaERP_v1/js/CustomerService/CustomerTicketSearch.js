@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     $("#loader").hide(); $(".select2").select2();
     $(document).on("change", "#ddlSearchBy", function (t) {
         t.preventDefault(); let id = parseInt($("#ddlSearchBy").val()) || 0; SearchByControl(id)
@@ -70,9 +71,13 @@ function SearchByControl(id) {
 }
 
 function dataGridLoad() {
+    
+    var search = $('#lblemail').text();
+    console.log(search);
     let cus_id = (parseInt($('#ddlUser').val()) || 0), order_id = (parseInt($('#txtOrderNo').val()) || 0), ticket_id = (parseInt($('#txtTicketNo').val()) || 0);
     let table_oh = $('#dtTickets').DataTable({
-        oSearch: { "sSearch": '' }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
+         
+        oSearch: { "sSearch": search }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[0, "desc"]], lengthMenu: [[10, 20, 50], [10, 20, 50]],
         destroy: true, bProcessing: true, responsive: true, bServerSide: true, bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
             lengthMenu: "_MENU_ per page", zeroRecords: "Sorry no records found", info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
@@ -85,7 +90,7 @@ function dataGridLoad() {
                 if (code == 13) { table_oh.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "ticket-list",
+        sAjaxSource: "/customer-service/ticket-list/",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: ticket_id }, { name: "strValue2", value: cus_id }, { name: "strValue3", value: order_id }, { name: "strValue4", value: $('#ddlEmail').val() }, { name: "strValue5", value: $('#txtOrderPhone').val() });
             if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }

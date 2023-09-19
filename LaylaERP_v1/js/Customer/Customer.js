@@ -369,6 +369,16 @@ function dataGridLoad() {
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
+                    if ($("#hfEdit").val() == "1") { 
+                        return '<a href="../customer-service/search-ticket-id/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit customer service" onclick="ActivityLog(\' show helfdesk id ' + id + ' in manage customer service\',\'/customer-service/service/' + id + '\');"><i class="fas fa-eye"></i></a>';
+                   
+                    }
+                    else { return "No Permission"; }
+                }
+            },
+            {
+                'data': 'id', sWidth: "8%",
+                'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") {
                         return '<a href="../Customer/NewUser/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit customer" onclick="ActivityLog(\' edit customer id ' + id + ' in manage customer\',\'/Customer/NewUser/' + id + '\');"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }

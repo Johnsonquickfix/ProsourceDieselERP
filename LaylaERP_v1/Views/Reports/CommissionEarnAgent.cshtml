@@ -262,10 +262,15 @@
                     page: 'current'
                 }).data(); pageTotalCommitEarned = data.length ? data.reduce(function (a, b) { return intVal(a) + intVal(b); }) : 0;
 
-                $(api.column(1).footer()).html('$' + pageTotalCoomiAm.toFixed(2));
+                //$(api.column(1).footer()).html('$' + pageTotalCoomiAm.toFixed(2));
+                //$(api.column(2).footer()).html(pageTotalCount);
+                //$(api.column(3).footer()).html('$' + pageTotalAOV.toFixed(2));
+                //$(api.column(4).footer()).html('$' + pageTotalCommitEarned.toFixed(2));
+
+                $(api.column(1).footer()).html('$' + pageTotalCoomiAm);
                 $(api.column(2).footer()).html(pageTotalCount);
-                $(api.column(3).footer()).html('$' + pageTotalAOV.toFixed(2));
-                $(api.column(4).footer()).html('$' + pageTotalCommitEarned.toFixed(2));
+                $(api.column(3).footer()).html('$' + pageTotalAOV);
+                $(api.column(4).footer()).html('$' + pageTotalCommitEarned);
                 
             },
              

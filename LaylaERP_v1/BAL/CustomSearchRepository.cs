@@ -485,5 +485,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
+
+        public static DataTable Getemailbyid(long ID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+              string strquery = "select user_email from wp_users where id = "+ ID + "";
+                DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
     }
 }

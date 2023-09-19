@@ -317,9 +317,9 @@ function dataGridLoad() {
     localStorage.setItem('_search', '')
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = ""//$('#txtSearch').val() ;
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
+    var obj = { user_status: urid, Search: sid,  PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     table_oh =  $('#dtdata').DataTable({
-        oSearch: { "sSearch": _searchText }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        oSearch: { "sSearch": '' }, columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -331,18 +331,32 @@ function dataGridLoad() {
             $('.dataTables_filter input').unbind();
             $('.dataTables_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table_oh.search(this.value).draw(); }
+                if (code == 13) {
+                    table_oh.search(this.value).draw();                 
+                    sid = this.value;
+                    obj.Search = sid;
+                    //console.log(obj.Search);
+                }
             });
         },
         sAjaxSource: "/Customer/GetCustomerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            obj.Search = aoData[45].value;
+            //obj.searchid = aoData[45].value;
+            var searchValue = "";
+            for (var i = 0; i < aoData.length; i++) {
+                if (aoData[i].name === "sSearch") {
+                    searchValue = aoData[i].value;
+                    break;
+                }
+            } 
+             obj.Search = searchValue;
             var col = 'id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "user_nicename" : oSettings.aaSorting[0][0] == 3 ? "user_email" : oSettings.aaSorting[0][0] == 4 ? "status" : oSettings.aaSorting[0][0] == 5 ? "meta_value" : oSettings.aaSorting[0][0] == 6 ? "user_registered" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            //console.log(oSettings);
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
                 success: function (data) {

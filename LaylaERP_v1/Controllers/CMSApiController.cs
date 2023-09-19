@@ -1190,8 +1190,22 @@
                                 }
                                 obj.attributes = _attributes;
                             }
+                            //Fitment
+                            //if (!string.IsNullOrEmpty(dr["ebay_item_compatibility_names"].ToString()))
+                            //{
+                            //    System.Collections.ArrayList _hr = serializer.Deserialize(dr["ebay_item_compatibility_names"].ToString()) as System.Collections.ArrayList;
+                            //    DataTable _fitment = new DataTable(); //creating datatable  
+                            //    //DataRow _row = _fitment.NewRow(); //Creating Row  
+                            //    foreach (var h in _hr) _fitment.Columns.Add(h.ToString(), typeof(string));
+                            //    if (!string.IsNullOrEmpty(dr["_ebay_item_compatibility_list"].ToString()))
+                            //    {
+                            //        _hr = serializer.Deserialize(dr["_ebay_item_compatibility_list"].ToString()) as System.Collections.ArrayList;
+                            //    }
+                            //    obj.vehicle_fitment = _fitment;
+                            //}
                             obj.brand = dr["brand"];
                         }
+                        obj.vehicle_fitment = ds.Tables[3];
                         if (obj.product_type != null)
                         {
                             if (obj.product_type == "variable")

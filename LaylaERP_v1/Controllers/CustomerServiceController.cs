@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -163,12 +164,15 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-  
-        public ActionResult CustomerTicketSearchbyid(long id = 0)
+        [Route("customer-service/search-ticket-id/{ids}")]
+        public ActionResult CustomerTicketSearchbyid(int ids = 0)
         {
-            CustomerModel model = new CustomerModel();
-            ViewBag.id = id;
-            return View(model);
+            DataTable dt = BAL.CustomSearchRepository.Getemailbyid(ids);
+        
+            dynamic myModel = new ExpandoObject();
+            myModel.user_email = dt.Rows[0]["user_email"];
+            myModel.ID = ids;
+            return View(myModel);
         }
 
         [HttpGet]

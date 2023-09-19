@@ -1,4 +1,5 @@
-﻿@{
+﻿@model dynamic
+@{
     ViewBag.Title = "Customer Tickets";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
@@ -37,8 +38,11 @@
 </div>
 <!--begin::Page title-->
 <div class="page-title">
-    <h2 class="page-heading">Customer Tickets Search</h2>
+    <h2 class="page-heading">Customer Tickets Search </h2>
+    <a class="btn btn-danger" href="../../Customer/Customer"><span title="Click here to back to customer's list" data-placement="bottom" data-toggle="tooltip">Back to List</span></a>
     <div class="active text-right" style="margin-left:auto;min-width:280px;">
+        <label id="lblemail" style="display:none" for="file">@Model.user_email</label>
+
     </div>
 </div>
 <!--end::Page title-->

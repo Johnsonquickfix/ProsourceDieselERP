@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
 using System.Text.RegularExpressions;
+using System.Dynamic;
 
 namespace LaylaERP.BAL
 {
@@ -1245,7 +1246,7 @@ namespace LaylaERP.BAL
                 DataTable dt;
                 SqlParameter[] para = {
                     new SqlParameter("@flag",qflag),
-                    new SqlParameter("@client_id", client_id)                     
+                    new SqlParameter("@client_id", client_id)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_product_review_update", para));
                 //dt = SQLHelper.ExecuteDataTable("cms_product_review_update", para);
@@ -1257,5 +1258,56 @@ namespace LaylaERP.BAL
             }
         }
 
+        #region [User Profile]
+        public static dynamic UserVerify(string UserName, string UserPassword)
+        {
+            dynamic obj = new ExpandoObject();
+            try
+            {
+                //UserPassword = EncryptedPwd(UserPassword);
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", "AUTH"),
+                    new SqlParameter("@user_login", UserName),
+                    new SqlParameter("@user_pass", UserPassword)
+                };
+                SqlDataReader sdr = SQLHelper.ExecuteReader("api_user_auth", parameters);
+                while (sdr.Read())
+                {
+                    obj.success = (sdr["success"] != Convert.DBNull) ? Convert.ToBoolean(sdr["success"]) : false;
+                    obj.message = (sdr["error_msg"] != Convert.DBNull) ? sdr["error_msg"].ToString() : string.Empty;
+                    obj.status = obj.success ? 200 : 404; obj.code = obj.success == true ? "SUCCESS" : "Not Found";
+                    obj.data = (sdr["user_data"] != Convert.DBNull) ? Convert.ToInt64(sdr["user_data"]) : 0;
+                    if (obj.success)
+                    {
+                        string hash = (sdr["user_pass"] != Convert.DBNull) ? sdr["user_pass"].ToString() : string.Empty;
+                        //if (!CheckPassword(UserPassword, user_pass))
+                        if (!CryptSharp.PhpassCrypter.CheckPassword(UserPassword, hash))
+                        {
+                            obj.success = false; obj.data = 0; obj.status = 401; obj.code = "Unauthorized";
+                            obj.message = "The password you entered for the username's is incorrect.";
+                        }
+
+                        SqlParameter[] parameters1 = {
+                                    new SqlParameter("@flag", "create-utoken"),
+                                    new SqlParameter("@id", obj.data)
+                                };
+                        SqlDataReader sdr1 = SQLHelper.ExecuteReader("api_user_auth", parameters1);
+                        while (sdr1.Read())
+                        {
+                            obj.utoken = (sdr["user_data"] != Convert.DBNull) ? sdr1["user_data"] : "";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                obj.success = false; obj.status = 500; obj.code = "internal_server_error";
+                obj.message = ex.Message;
+                obj.data = 0;
+            }
+            return obj;
+        }
+        #endregion
     }
 }

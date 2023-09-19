@@ -1102,6 +1102,7 @@
     <Content Include="js\qfk\Analytics\MetricDetail.js" />
     <Content Include="js\qfk\Analytics\Metrics.js" />
     <Content Include="js\qfk\Audience\Profiles.js" />
+    <Content Include="js\qfk\Audience\profilesbyid.js" />
     <Content Include="js\qfk\Audience\ProfileView.js" />
     <Content Include="js\qfk\campaigns\content.js" />
     <Content Include="js\qfk\campaigns\create.js" />
@@ -1920,6 +1921,8 @@
     <Content Include="Views\EmailProfile\Draftprofile.cshtml" />
     <Content Include="Views\Analytics\Index.cshtml" />
     <Content Include="Views\CustomerService\CustomerTicketSearchbyid.cshtml" />
+    <Content Include="Views\Audience\Profilesearchbyid.cshtml" />
+    <Content Include="Views\Audience\ProfilebyidView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

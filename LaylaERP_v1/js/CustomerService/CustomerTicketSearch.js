@@ -11,8 +11,8 @@
     $(document).on("change", "#ddlEmail", function (t) {
         t.preventDefault(); dataGridLoad();
     });
-    $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); dataGridLoad(); });
-    $(document).on("keypress", "#txtOrderNo,#txtOrderPhone,#txtTicketNo", function (t) { if (t.keyCode == 13) { dataGridLoad(); } });
+    $(document).on("click", "#btnSearch", function (t) { t.preventDefault(); $('#lblemail').text('');dataGridLoad(); });
+    $(document).on("keypress", "#txtOrderNo,#txtOrderPhone,#txtTicketNo", function (t) { if (t.keyCode == 13) { $('#lblemail').text(''); dataGridLoad(); } });
 
     $.when(dataGridLoad()).done(function () { });
     $(document).on("click", "[name='ticke_action']", function (t) {

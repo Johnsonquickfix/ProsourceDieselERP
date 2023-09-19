@@ -1,5 +1,5 @@
 ﻿!(function () {
-    $(document).ready(function () {        
+    $(document).ready(function () {
         $("#loader").hide();
         loaddata();
     });
@@ -29,7 +29,7 @@
                     });
                 },
                 columns: [
-                    { data: 'profile', title: 'Profile', sWidth: "20%", orderable: false, render: function (data, type, full, meta) { return `<a href="/audience/profile/${full.id}"><span class="DataTable-Cell-text"><div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div></span></a>`; }},
+                    { data: 'profile', title: 'Profile', sWidth: "20%", orderable: false, render: function (data, type, full, meta) { return `<a href="/audience/profilebyid/${full.id}"><span class="DataTable-Cell-text"><div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div></span></a>`; } },
                     { data: 'email', title: 'Email', sWidth: "20%", orderable: false },
                     { data: 'phone_number', title: 'Phone', sWidth: "20%", orderable: false },
                     { data: 'created', title: 'Profile created', sWidth: "20%", render: function (data, type, full, meta) { return moment(data).format('MMMM Do YYYY, h:mm A'); } },

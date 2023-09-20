@@ -281,8 +281,10 @@
     "subcat": [
       {
         "term_id": 237180,
-        "name": "CHEVROLET EXPRESS/ GMC SAVANA",
-        "slug": "chevrolet-express-gmc-savana",
+        //"name": "CHEVROLET EXPRESS/ GMC SAVANA",
+        //"slug": "chevrolet-express-gmc-savana",
+        "name": "CHEVROLET/GMC 2500-4500",
+        "slug": "chevrolet-gmc-2500-4500",
         "subcat": [
           {
             "term_id": 237215,
@@ -390,8 +392,10 @@
       },
       {
         "term_id": 237179,
-        "name": "CHEVROLET/GMC 2500-4500",
-        "slug": "chevrolet-gmc-2500-4500",
+        //"name": "CHEVROLET/GMC 2500-4500",
+        //"slug": "chevrolet-gmc-2500-4500",
+        "name": "CHEVROLET EXPRESS/ GMC SAVANA",
+        "slug": "chevrolet-express-gmc-savana",
         "subcat": [
           {
             "term_id": 237223,

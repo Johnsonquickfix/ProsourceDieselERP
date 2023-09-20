@@ -13,6 +13,8 @@
     using Newtonsoft.Json.Linq;
     using QuickfixSearch.Models.Product;
     using System.Text.RegularExpressions;
+    using System.Web;
+    using System.Text;
 
     [RoutePrefix("cmsapi")]
     public class CMSApiController : ApiController
@@ -720,8 +722,9 @@
                         obj.term_main.parent = item["parent"] != DBNull.Value ? Convert.ToInt64(item["parent"].ToString()) : 0;
                         obj.term_main.name = item["name"].ToString();
                         obj.term_main.slug = item["slug"].ToString();
-                        obj.term_main.description = item["description"].ToString();
-                        obj.term_main.short_description = !string.IsNullOrEmpty(item["description"].ToString()) ? item["description"].ToString().Substring(0, 150) : "";
+                        //obj.term_main.description = !string.IsNullOrEmpty(item["description"].ToString()) ? HttpUtility.HtmlEncode(item["description"].ToString()) : "";
+                        obj.term_main.description = !string.IsNullOrEmpty(item["description"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(item["description"].ToString())) : "";
+                        obj.term_main.short_description = !string.IsNullOrEmpty(item["description"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(item["description"].ToString())).Substring(0, 150) : "";
                         obj.term_main.categories = !string.IsNullOrEmpty(item["categories"].ToString()) ? JsonConvert.DeserializeObject<dynamic>(item["categories"].ToString()) : JsonConvert.DeserializeObject<dynamic>("{}");
                         obj.term_main.image = new
                         {
@@ -743,7 +746,8 @@
                             row.Add("parent", dr["parent"]);
                             row.Add("name", dr["name"]);
                             row.Add("slug", dr["slug"]);
-                            row.Add("description", "description");
+                            if (!string.IsNullOrEmpty(dr["description"].ToString())) row.Add("description", Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["description"].ToString())));
+                            else row.Add("description", "");
                             Dictionary<String, Object> img = new Dictionary<String, Object>();
                             string meta = dr["image"] != DBNull.Value ? dr["image"].ToString() : "{}";
                             JObject keyValues = JObject.Parse(meta);
@@ -1113,7 +1117,8 @@
                             obj.ID = dr["ID"];
                             obj.post_name = dr["post_name"];
                             obj.post_title = dr["post_title"];
-                            obj.post_content = dr["post_content"];
+                            obj.post_content = !string.IsNullOrEmpty(dr["post_content"].ToString()) ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(dr["post_content"].ToString())) : "";
+                            //obj.post_content = dr["post_content"];
                             obj.post_excerpt = dr["post_excerpt"];
                             //
                             obj.product_type = dr["product_type"] != DBNull.Value ? dr["product_type"] : "simple";

@@ -170,18 +170,18 @@
               "filesize": 0.0
             }
           },
-          {
-            "term_id": 237193,
-            "name": "1999.5-2003 7.3L ECONOLINE POWERSTROKE PARTS",
-            "slug": "1999.5-2003-ford-econoline-7.3l-powerstroke-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237193,
+          //  "name": "1999.5-2003 7.3L ECONOLINE POWERSTROKE PARTS",
+          //  "slug": "1999.5-2003-ford-econoline-7.3l-powerstroke-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           {
             "term_id": 237194,
             "name": "1998-EARLY 1999 7.3L ECONOLINE POWERSTROKE PARTS",
@@ -231,18 +231,18 @@
               "filesize": 0.0
             }
           },
-          {
-            "term_id": 237197,
-            "name": "2015-2020 TRANSIT 3.2L POWERSTROKE PARTS",
-            "slug": "2015-2020-ford-transit-3.2L-powerstroke-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237197,
+          //  "name": "2015-2020 TRANSIT 3.2L POWERSTROKE PARTS",
+          //  "slug": "2015-2020-ford-transit-3.2L-powerstroke-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           {
             "term_id": 237198,
             "name": "2006-2009 FORD LCF 4.5L POWERSTROKE PARTS",
@@ -465,31 +465,31 @@
               "file": "",
               "filesize": 0.0
             }
-          },
-          {
-            "term_id": 237228,
-            "name": "2017-2019 CHEVROLET CRUZE 1.6L DIESEL PARTS",
-            "slug": "2017-2019-chevrolet-cruze-1.6l-diesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
-          {
-            "term_id": 237229,
-            "name": "2014-2015 CHEVROLET CRUZE 2.0L DIESEL PARTS",
-            "slug": "2014-2015-chevrolet-cruze-2.0l-diesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
           }
+          //{
+          //  "term_id": 237228,
+          //  "name": "2017-2019 CHEVROLET CRUZE 1.6L DIESEL PARTS",
+          //  "slug": "2017-2019-chevrolet-cruze-1.6l-diesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
+          //{
+          //  "term_id": 237229,
+          //  "name": "2014-2015 CHEVROLET CRUZE 2.0L DIESEL PARTS",
+          //  "slug": "2014-2015-chevrolet-cruze-2.0l-diesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //}
         ],
         "image": {
           "width": 0,
@@ -604,30 +604,30 @@
         "name": "OTHER MODELS",
         "slug": "other-models-cummins",
         "subcat": [
-          {
-            "term_id": 237214,
-            "name": "2021-2022 JEEP GLADIATOR ECODIESEL PARTS",
-            "slug": "2021-2022-jeep-gladiator-ecodiesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
-          {
-            "term_id": 237207,
-            "name": "2020-2021 RAM 1500 3.0L ECODIESEL PARTS",
-            "slug": "2020-2021-ram-1500-3.0l-ecodiesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237214,
+          //  "name": "2021-2022 JEEP GLADIATOR ECODIESEL PARTS",
+          //  "slug": "2021-2022-jeep-gladiator-ecodiesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
+          //{
+          //  "term_id": 237207,
+          //  "name": "2020-2021 RAM 1500 3.0L ECODIESEL PARTS",
+          //  "slug": "2020-2021-ram-1500-3.0l-ecodiesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           {
             "term_id": 237208,
             "name": "2020-2022 JEEP WRANGLER ECODIESEL PARTS",
@@ -640,18 +640,18 @@
               "filesize": 0.0
             }
           },
-          {
-            "term_id": 237209,
-            "name": "2014-2018 RAM 1500 3.0L ECODIESEL PARTS",
-            "slug": "2014-2018-ram-1500-3.0l-ecodiesel-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237209,
+          //  "name": "2014-2018 RAM 1500 3.0L ECODIESEL PARTS",
+          //  "slug": "2014-2018-ram-1500-3.0l-ecodiesel-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           {
             "term_id": 237210,
             "name": "2014-2018 JEEP GRAND CHEROKEE 3.0L PARTS",
@@ -664,30 +664,30 @@
               "filesize": 0.0
             }
           },
-          {
-            "term_id": 237211,
-            "name": "2007-2008 GRAND CHEROKEE CRD PARTS",
-            "slug": "2007-2008-grand-cherokee-crd-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
-          {
-            "term_id": 237212,
-            "name": "2005-2006 LIBERTY 2.8L CRD PARTS",
-            "slug": "2005-2006-liberty-2.8l-crd-parts",
-            "subcat": [],
-            "image": {
-              "width": 0,
-              "height": 0,
-              "file": "",
-              "filesize": 0.0
-            }
-          },
+          //{
+          //  "term_id": 237211,
+          //  "name": "2007-2008 GRAND CHEROKEE CRD PARTS",
+          //  "slug": "2007-2008-grand-cherokee-crd-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
+          //{
+          //  "term_id": 237212,
+          //  "name": "2005-2006 LIBERTY 2.8L CRD PARTS",
+          //  "slug": "2005-2006-liberty-2.8l-crd-parts",
+          //  "subcat": [],
+          //  "image": {
+          //    "width": 0,
+          //    "height": 0,
+          //    "file": "",
+          //    "filesize": 0.0
+          //  }
+          //},
           {
             "term_id": 237213,
             "name": "3.9L 4BT PARTS",

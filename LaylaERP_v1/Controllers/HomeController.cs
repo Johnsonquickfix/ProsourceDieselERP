@@ -20,6 +20,8 @@
     {
         public ActionResult Login()
         {
+            //string cryptedPassword = CryptSharp.Crypter.Phpass.Crypt("Presto55555!");
+            //CryptSharp.PhpassCrypter.CheckPassword("Peter@007", "$P$BZC5kG0c9tsOSgVJsXfWt1LzCUvniM1")
             Session.RemoveAll();
             CommanUtilities.Provider.RemoveCurrent(); 
             dynamic myModel = new ExpandoObject();

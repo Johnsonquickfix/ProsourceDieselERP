@@ -61,6 +61,9 @@
     <Reference Include="ClosedXML, Version=0.95.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.95.4\lib\net40\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="CryptSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CryptSharpOfficial.2.1.0.0\lib\CryptSharp.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -301,6 +304,7 @@
     <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CartApiController.cs" />
     <Compile Include="Controllers\CheckDepositController.cs" />
+    <Compile Include="Controllers\CMSAccountController.cs" />
     <Compile Include="Controllers\CMSApiController.cs" />
     <Compile Include="Controllers\CMSController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />

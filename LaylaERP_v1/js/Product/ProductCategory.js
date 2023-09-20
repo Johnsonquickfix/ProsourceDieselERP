@@ -92,7 +92,13 @@ $('#btnAddNewCategory').click(function () {
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
     var data = $('#ddlParentCategory').select2('data');
-    ParentText = data[0].text;
+    var ParentText;
+    if (data !== null && data.length > 0) {
+        ParentText = data[0].text;
+    } else {
+        ParentText = '';
+    }
+    //ParentText = data[0].text;
     Description = $("#txtDescription").val();
     DisplayType = $("#ddlDisplayType").val();
     var file = document.getElementById("ImageFile").files[0];

@@ -2735,8 +2735,19 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "Select post_title from wp_posts WHERE ID =" + PostID + "; ";
-                result = SQLHelper.ExecuteScalar(strSQl).ToString();
+                string strSQl = "SELECT post_title FROM wp_posts WHERE ID = " + PostID + ";";
+                object resultObj = SQLHelper.ExecuteScalar(strSQl);
+
+                if (resultObj != null)
+                {
+                    result = resultObj.ToString();
+                }
+                else
+                {
+                    result = "";
+                    // Handle the case where the SQL query did not return a result
+                    // You can assign a default value or take some other action here.
+                }
                 //return result;
             }
             catch (Exception ex)

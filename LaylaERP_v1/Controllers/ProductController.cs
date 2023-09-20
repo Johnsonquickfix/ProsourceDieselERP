@@ -1993,10 +1993,10 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }
-            else if (model.term_id > 0 && checknameonEdit.ToLower() == name.ToLower())
-            {
-                return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
-            }
+            //else if (model.term_id > 0 && checknameonEdit.ToLower() == name.ToLower())
+            //{
+            //    return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
+            //}
             else
             {
                 if (ImageFile != null)

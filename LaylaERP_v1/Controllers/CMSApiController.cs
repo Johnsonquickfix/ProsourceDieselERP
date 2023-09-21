@@ -161,6 +161,7 @@
                         return BadRequest("invalid app key");
                     else
                     {
+                        //dynamic obj = new List<dynamic>();
                         string msg = string.Empty;
                         var balResult = CMSRepository.Getpageapi(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "PLS", post_name);
                         int total = balResult.Rows.Count;
@@ -170,6 +171,40 @@
                             for (int i = 0; i < balResult.Rows.Count; i++)
                             {
                                 PagesModel Review = new PagesModel();
+                                var jsonArray = JArray.Parse(balResult.Rows[i]["bannerimg"].ToString());
+                               
+                                if (jsonArray.Count == 1)
+                                {
+                                    var jsonObject = jsonArray[0] as JObject;
+                                    if (jsonObject != null && jsonObject["json_data"] is JArray jsonData)
+                                    {
+                                        var bannerImages = jsonData
+                                            .Select(item =>
+                                            {
+                                                var name = item.Value<string>("name");
+                                                var height = item.Value<string>("height");
+                                                var width = item.Value<string>("width");
+                                                return new
+                                                {
+                                                    name,
+                                                    height,
+                                                    width
+                                                };
+                                            }).ToList();
+                                        if (bannerImages.Count > 0)
+                                            Review._bannerimage = bannerImages;
+                                        else
+                                            Review._bannerimage = "[]";
+                                        // Now, bannerImages should contain your data
+                                    }
+                                    else
+                                    {
+                                        Review._bannerimage = "[]";
+                                    }
+                                }
+                                else
+                                    Review._bannerimage = "[]";
+
                                 Review.id = balResult.Rows[i]["ID"].ToString();
                                 Review.post_content = balResult.Rows[i]["post_content"].ToString();
                                 Review.post_title = balResult.Rows[i]["post_title"].ToString();

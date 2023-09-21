@@ -271,9 +271,9 @@ namespace LaylaERP.Models
             //public string _wp_page_template { get; set; } = string.Empty; 
             public string _gmk { get; set; } = string.Empty;
             public string _comment { get; set; } = string.Empty;
-            
-            
-        
+            public dynamic _bannerimage { get; set; } = string.Empty;
+
+
         }
 
         public class PostModel

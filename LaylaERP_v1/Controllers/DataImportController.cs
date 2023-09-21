@@ -336,5 +336,40 @@ namespace LaylaERP.Controllers
             //Redirect to relate post
             return RedirectToAction("minesofmoria", "ordersmysql", new { id = redirectPost.Id });
         }
+        /// <summary>
+        /// Product Import
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ProductImport()
+        {
+            try
+            {
+                var result = string.Empty;
+                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using (var client = new HttpClient())
+                {                     
+                    client.BaseAddress = new Uri("https://new.prosourcediesel.com/proexportproducts.php");
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    var response = client.PostAsync("", content).Result;
+
+                    if (response != null && response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    if (result.Length > 4)
+                    {
+                        ProductRepository.ImportProduct(result);
+                    }
+                }
+            }
+            catch { }
+            return View();
+        }
     }
 }

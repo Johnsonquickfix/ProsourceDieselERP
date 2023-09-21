@@ -1923,6 +1923,7 @@
     <Content Include="Views\CustomerService\CustomerTicketSearchbyid.cshtml" />
     <Content Include="Views\Audience\Profilesearchbyid.cshtml" />
     <Content Include="Views\Audience\ProfilebyidView.cshtml" />
+    <Content Include="Views\DataImport\ProductImport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

@@ -33,8 +33,12 @@
                 {
                     session_id = headers.GetValues("X-Cart-Session-Id").First();
                 }
-                if (cart != null) return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, JsonConvert.SerializeObject(cart))));
-                else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
+                //if (cart != null) return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, JsonConvert.SerializeObject(cart))));
+                //else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
+
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
+                if (obj.status == 200) return Ok(CalculateTotals(obj));
+                return Ok(obj);
 
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });
             }

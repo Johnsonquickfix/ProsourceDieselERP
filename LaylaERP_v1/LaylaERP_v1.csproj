@@ -967,6 +967,7 @@
     <Content Include="js\CMS\Banner.js" />
     <Content Include="js\CMS\BannerList.js" />
     <Content Include="js\CMS\Blog.js" />
+    <Content Include="js\CMS\ContactUs.js" />
     <Content Include="js\CMS\List.js" />
     <Content Include="js\CMS\Media.js" />
     <Content Include="js\CMS\MediagalleryList.js" />
@@ -1924,6 +1925,7 @@
     <Content Include="Views\Audience\Profilesearchbyid.cshtml" />
     <Content Include="Views\Audience\ProfilebyidView.cshtml" />
     <Content Include="Views\DataImport\ProductImport.cshtml" />
+    <Content Include="Views\CMS\ContactUs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AppLog\" />

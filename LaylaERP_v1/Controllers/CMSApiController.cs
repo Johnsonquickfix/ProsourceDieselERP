@@ -194,12 +194,12 @@
                                         if (bannerImages.Count > 0)
                                             Review._bannerimage = bannerImages;
                                         else
-                                            Review._bannerimage = "[]";
+                                            Review._bannerimage = new object[0];  
                                         // Now, bannerImages should contain your data
                                     }
                                     else
                                     {
-                                        Review._bannerimage = "[]";
+                                        Review._bannerimage = new object[0];  
                                     }
                                 }
                                 else
@@ -447,6 +447,7 @@
                             row = new Dictionary<string, object>();
                             row.Add("store_id", balResult.Rows[i]["entity"]);
                             row.Add("store_name", balResult.Rows[i]["CompanyName"]);
+                            row.Add("slug", balResult.Rows[i]["slug"]);
                             row.Add("image", new
                             {
                                 name = balResult.Rows[i]["logo_url"].ToString(),
@@ -1501,6 +1502,42 @@
 
             string appPath = string.Format(@"{0}json\{1}.json", filePath, fileName);
             return System.IO.File.ReadAllText(appPath, System.Text.Encoding.UTF8);
+        }
+
+        [HttpPost, Route("contact-us/{app_key}/{entity_id}")]
+        public IHttpActionResult cmscontactus(string app_key, long entity_id, dynamic model)
+        {
+            try
+            {
+                LaylaERP.UTILITIES.Serializer serializer = new LaylaERP.UTILITIES.Serializer();
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0)
+                {
+                    return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "You are not authorized to access this page.");
+                }
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                {
+                    return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                    //return Content(HttpStatusCode.Unauthorized, "invalid app key.");
+                }
+                else if (model == null)
+                {
+                    return Ok(new { message = "Required param 'name'", status = 500, code = "SUCCESS", data = new List<string>() });
+                }              
+                else
+                {
+                    DataTable dt = CMSRepository.cmscontactus(model.name, model.email, model.subject, entity_id);
+
+                    if (dt.Rows.Count > 0)
+                        return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });
+                    else
+                        return Ok(new { message = "Invalid data.", status = 500, code = "FAIL", data = new { } });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

@@ -1309,5 +1309,25 @@ namespace LaylaERP.BAL
             return obj;
         }
         #endregion
+
+        public static DataTable cmscontactus(string name, string email, string subject, long entity_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@name", name),
+                    new SqlParameter("@email", email),
+                    new SqlParameter("@subject", subject),
+                    new SqlParameter("@entity_id", entity_id),
+                    new SqlParameter("@flag", "I")
+                };
+                dt = SQLHelper.ExecuteDataTable("cms_contactus_iud", parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

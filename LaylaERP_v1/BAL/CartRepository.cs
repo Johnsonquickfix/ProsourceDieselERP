@@ -32,5 +32,23 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
+        public static string ApplyCoupon(string flag, long entity_id, long user_id, string cart_session_id, string coupon_code)
+        {
+            string result;
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@flag", flag),
+                    new SqlParameter("@entity_id", entity_id),
+                    user_id > 0 ? new SqlParameter("@user_id", user_id) :  new SqlParameter("@user_id", DBNull.Value),
+                    !string.IsNullOrEmpty(cart_session_id) ? new SqlParameter("@cart_session_id", cart_session_id) : new SqlParameter("@cart_session_id", DBNull.Value),
+                    !string.IsNullOrEmpty(coupon_code) ? new SqlParameter("@coupon_code", coupon_code) :new SqlParameter("@coupon_code",  DBNull.Value)
+                };
+                result = SQLHelper.ExecuteReaderReturnJSON("wp_cart_search", parameters).ToString();
+            }
+            catch { throw; }
+            return result;
+        }
     }
 }

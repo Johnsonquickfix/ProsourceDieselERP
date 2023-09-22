@@ -733,6 +733,96 @@
     }
   },
   {
+    "post_name": "400166",
+    "post_title": "Eco Diesel",
+    "term_id": 400166,
+    "name": "EcoDiesel",
+    "slug": "ecodiesel",
+    "type": "",
+    "subcat": [
+      {
+        "term_id": 400164,
+        "name": "RAM EcoDiesel",
+        "slug": "ram-ecodiesel",
+        "subcat": [
+          {
+            "term_id": 400169,
+            "name": "2020-2023 Dodge Ram 1500 3.0L EcoDiesel Parts",
+            "slug": "2020-2023-dodge-ram-1500-3.0L-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 400170,
+            "name": "2014-2018 Dodge Ram 1500 3.0L EcoDiesel Parts",
+            "slug": "2014-2018-dodge-ram-1500-3.0L-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      },
+      {
+        "term_id": 400165,
+        "name": "Jeep EcoDiesel",
+        "slug": "jeep-ecodiesel",
+        "subcat": [
+          {
+            "term_id": 400168,
+            "name": "2021-2023 JEEP GLADIATOR ECODIESEL PARTS",
+            "slug": "2021-2023-jeep-gladiator-JT-3.0L-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          },
+          {
+            "term_id": 400167,
+            "name": "2020-2023 JEEP Wrangler JL ECODIESEL PARTS",
+            "slug": "2021-2023-jeep-wrangler-JL-3.0L-ecodiesel-parts",
+            "subcat": [],
+            "image": {
+              "width": 0,
+              "height": 0,
+              "file": "",
+              "filesize": 0.0
+            }
+          }
+        ],
+        "image": {
+          "width": 0,
+          "height": 0,
+          "file": "",
+          "filesize": 0.0
+        }
+      }
+    ],
+    "image": {
+      "width": 0,
+      "height": 0,
+      "file": "",
+      "filesize": 0.0
+    }
+  },
+  {
     "post_name": "brands",
     "post_title": "Brands",
     "term_id": 237181,

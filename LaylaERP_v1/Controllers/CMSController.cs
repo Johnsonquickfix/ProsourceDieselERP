@@ -48,6 +48,10 @@ namespace LaylaERP_v1.Controllers
         {
             return View();
         }
+        public ActionResult ContactUs()
+        {
+            return View();
+        }
         public ActionResult Page(int id)
         {
             SqlParameter[] parameters =
@@ -1840,6 +1844,20 @@ namespace LaylaERP_v1.Controllers
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
+        }
+
+        [HttpGet]
+        public JsonResult GetcontactList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = CMSRepository.GetcontactList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
     }
 }

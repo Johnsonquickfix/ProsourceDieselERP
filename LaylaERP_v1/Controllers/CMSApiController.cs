@@ -1540,7 +1540,7 @@
                     string name = dynamicData.name;
                     string email = dynamicData.email;
                     string subject = dynamicData.subject;
-                    string suggestions = dynamicData.subject; 
+                    string suggestions = dynamicData.suggestions; 
                     DataTable dt = CMSRepository.cmscontactus(name, email, subject, suggestions, entity_id);
 
                     if (dt.Rows.Count > 0)

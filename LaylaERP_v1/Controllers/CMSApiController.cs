@@ -1503,7 +1503,13 @@
             string appPath = string.Format(@"{0}json\{1}.json", filePath, fileName);
             return System.IO.File.ReadAllText(appPath, System.Text.Encoding.UTF8);
         }
-
+        /// <summary>
+        /// contact-us insert
+        /// </summary>
+        /// <param name="app_key"></param>
+        /// <param name="entity_id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost, Route("contact-us/{app_key}/{entity_id}")]
         public IHttpActionResult cmscontactus(string app_key, long entity_id, dynamic model)
         {
@@ -1526,7 +1532,16 @@
                 }              
                 else
                 {
-                    DataTable dt = CMSRepository.cmscontactus(model.name, model.email, model.subject, entity_id);
+                    string json = JsonConvert.SerializeObject(model);
+
+                    // Deserialize the JSON string into a dynamic object
+                    dynamic dynamicData = JsonConvert.DeserializeObject(json);
+                    // Now you can access the properties of dynamicData
+                    string name = dynamicData.name;
+                    string email = dynamicData.email;
+                    string subject = dynamicData.subject;
+                    string suggestions = dynamicData.subject; 
+                    DataTable dt = CMSRepository.cmscontactus(name, email, subject, suggestions, entity_id);
 
                     if (dt.Rows.Count > 0)
                         return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = dt.Rows[0]["id"].ToString() });

@@ -1310,7 +1310,7 @@ namespace LaylaERP.BAL
         }
         #endregion
 
-        public static DataTable cmscontactus(string name, string email, string subject, long entity_id)
+        public static DataTable cmscontactus(string name, string email, string subject,string suggestions, long entity_id)
         {
             DataTable dt = new DataTable();
             try
@@ -1320,6 +1320,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@name", name),
                     new SqlParameter("@email", email),
                     new SqlParameter("@subject", subject),
+                    new SqlParameter("@suggestions", suggestions),
                     new SqlParameter("@entity_id", entity_id),
                     new SqlParameter("@flag", "I")
                 };

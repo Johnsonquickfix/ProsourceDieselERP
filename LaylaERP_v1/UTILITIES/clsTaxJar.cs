@@ -13,6 +13,13 @@
 
     public class clsTaxJar
     {
+        // Layla ship from
+        //static string _from_country = "US", _from_zip = "46706", _from_state = "IN", _from_city = "Auburn", _from_street = "2211 Wayne Street";
+        //static string _taxjarapi = "afee20fe27f4d908fe71858c8ea67319";
+
+        // prosourcediesel ship from
+        static string _from_country = "US", _from_zip = "94534", _from_state = "CA", _from_city = "Fairfield", _from_street = "4747 Central Way";
+        static string _taxjarapi = "e17a3e14098183513a2d8204d7e4c368";
         public static decimal GetTaxCombinedRate(string varpostcode, string varcity, string varcountry)
         {
             //var client = new TaxjarApi("7e8b90a535209d00f4a6f78b43f4119f");
@@ -45,17 +52,16 @@
         }
         public static TaxJarModel GetTaxes(TaxJarModel taxJarModel)
         {
-            //var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
             //var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
-            var client = new TaxjarApi("afee20fe27f4d908fe71858c8ea67319");
+            var client = new TaxjarApi(_taxjarapi);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var Taxes = client.TaxForOrder(new
             {
-                from_country = "US",
-                from_zip = "46706",
-                from_state = "IN",
-                from_city = "Auburn",
-                from_street = "2211 Wayne Street",
+                from_country = _from_country,
+                from_zip = _from_zip,
+                from_state = _from_state,
+                from_city = _from_city,
+                from_street = _from_street,
                 to_country = taxJarModel.to_country,
                 to_zip = taxJarModel.to_zip,
                 to_state = taxJarModel.to_state,
@@ -69,7 +75,7 @@
             taxJarModel.amount_to_collect = Taxes.AmountToCollect;
             taxJarModel.rate = Taxes.Rate;
             taxJarModel.freight_taxable = Taxes.FreightTaxable;
-            taxJarModel.tax_meta = "[{\"rate\": "+ Taxes.Rate.ToString() + ", \"name\": '"+ taxJarModel.to_country + "-" + taxJarModel.to_state + "-" + taxJarModel.to_state + " TAX-1', \"type\": '" + taxJarModel.to_state + " Tax'}]";
+            taxJarModel.tax_meta = "[{\"rate\": " + Taxes.Rate.ToString() + ", \"name\": '" + taxJarModel.to_country + "-" + taxJarModel.to_state + "-" + taxJarModel.to_state + " TAX-1', \"type\": '" + taxJarModel.to_state + " Tax'}]";
             return taxJarModel;
         }
     }

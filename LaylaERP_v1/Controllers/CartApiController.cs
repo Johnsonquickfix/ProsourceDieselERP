@@ -11,10 +11,40 @@
     using Newtonsoft.Json.Linq;
     using LaylaERP_v1.Models.Product;
     using System.Dynamic;
+    using LaylaERP.UTILITIES;
+    using System.Data;
 
     [RoutePrefix("cartapi")]
     public class CartApiController : ApiController
     {
+        [HttpPost, Route("updateshipping/{app_key}/{entity_id}")]
+        public IHttpActionResult UpdateShippingAddress(string app_key, long entity_id, CartShippingAddressRequest address)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || entity_id == 0) return Ok(new { message = "You are not authorized to access this page.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65") return Ok(new { message = "invalid app key.", status = 401, code = "Unauthorized", data = new List<string>() });
+                else if (string.IsNullOrEmpty(address.address_1)) return Ok(new { message = "address_1 fields are required.", status = 404, code = "not_found", data = new List<string>() });
+                else if (string.IsNullOrEmpty(address.city)) return Ok(new { message = "city fields are required.", status = 404, code = "not_found", data = new List<string>() });
+                else if (string.IsNullOrEmpty(address.state)) return Ok(new { message = "state fields are required.", status = 404, code = "not_found", data = new List<string>() });
+                else if (string.IsNullOrEmpty(address.postcode)) return Ok(new { message = "postcode fields are required.", status = 404, code = "not_found", data = new List<string>() });
+                else if (string.IsNullOrEmpty(address.country)) return Ok(new { message = "country fields are required.", status = 404, code = "not_found", data = new List<string>() });
+
+                System.Net.Http.Headers.HttpRequestHeaders headers = this.Request.Headers;
+                long user_id = 0; string session_id = string.Empty;
+                if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
+                if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
+
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(CartRepository.UpdateShippingAddress(entity_id, user_id, session_id, JsonConvert.SerializeObject(address)));
+                if (obj.status == 200) return Ok(CalculateTotals(obj));
+                return Ok(obj);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         [HttpPost, Route("items/{app_key}/{entity_id}")]
         public IHttpActionResult CartItems(string app_key, long entity_id, CartProductRequest cart)
         {
@@ -118,6 +148,17 @@
         {
             try
             {
+                TaxJarModel _tax = new TaxJarModel();
+                if (obj.data.shipping_address != null)
+                {
+                    _tax.to_street = obj.data.shipping_address.address_1;
+                    _tax.to_city = obj.data.shipping_address.city;
+                    _tax.to_state = obj.data.shipping_address.state;
+                    _tax.to_zip = obj.data.shipping_address.postcode;
+                    _tax.to_country = obj.data.shipping_address.country;
+                    _tax = GetTaxAmounts(_tax);
+                }
+
                 int item_count = obj.data.item_count;
                 decimal shipping_total = 0, shipping_tax = 0;
                 decimal fee_total = 0, fee_tax = 0;
@@ -172,9 +213,11 @@
                     else line_total = line_subtotal;
 
                     item.line_total = line_total;
+                    item.line_subtotal_tax = (line_subtotal * _tax.rate / 100);
+                    item.line_total_tax = (line_total * _tax.rate / 100);
                     f_subtotal = f_subtotal + line_subtotal;
                     f_subtotal_tax = f_subtotal_tax + (item.line_subtotal_tax.ToObject<decimal>() ?? 0);
-                    f_line_total = f_line_total + (item.line_total.ToObject<decimal>() ?? 0);
+                    f_line_total = f_line_total + line_total;
                     f_line_tax = f_line_tax + (item.line_total_tax.ToObject<decimal>() ?? 0);
 
                     discount_total = discount_total + (line_subtotal - line_total);
@@ -198,6 +241,42 @@
                 obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total);
                 obj.data.cart_totals.total_tax = (f_line_tax + shipping_tax + fee_tax);
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return obj;
+        }
+        public static TaxJarModel GetTaxAmounts(TaxJarModel model)
+        {
+            try
+            {
+                DataTable dt = CartRepository.GetTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip);
+                if (dt.Rows.Count > 0)
+                {
+                    model.order_total_amount = 0;
+                    model.taxable_amount = 0;
+                    model.amount_to_collect = 0;
+                    model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                    model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false;
+                    model.tax_meta = (dt.Rows[0]["data"] != Convert.DBNull) ? dt.Rows[0]["data"].ToString() : "[]";
+
+                    //model.rate = (dt.Rows[0]["rate"] != Convert.DBNull) ? Convert.ToDecimal(dt.Rows[0]["rate"]) : 0;
+                    //model.freight_taxable = (dt.Rows[0]["freight_taxable"] != Convert.DBNull) ? Convert.ToBoolean(dt.Rows[0]["freight_taxable"]) : false; ;
+                }
+                else
+                {
+                    model = clsTaxJar.GetTaxes(model);
+                    CartRepository.SaveTaxRate(model.to_country, model.to_state, model.to_city, model.to_street, model.to_zip, model.rate, model.freight_taxable, model.tax_meta);
+                }
+            }
+            catch { }
+            return model;
+        }
+        public static dynamic Calculatetaxes(dynamic obj)
+        {
+            try
+            { }
             catch (Exception ex)
             {
                 throw ex;

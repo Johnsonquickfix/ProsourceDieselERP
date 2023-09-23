@@ -46,7 +46,7 @@
         }
 
         [HttpPost, Route("items/{app_key}/{entity_id}")]
-        public IHttpActionResult CartItems(string app_key, long entity_id, bool checkout = false, CartProductRequest cart)
+        public IHttpActionResult CartItems(string app_key, long entity_id, CartProductRequest cart, bool checkout = false)
         {
             try
             {

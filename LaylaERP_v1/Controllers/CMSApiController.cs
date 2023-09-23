@@ -1807,6 +1807,54 @@
             }
         }
 
+        [HttpGet, Route("get-post-category/{app_key}/{entity_id}")]
+        public IHttpActionResult Getpostcategory(string app_key, string entity_id, int per_page = 10, int page = 0, string post_name = "", string post_status = "publish", string sort = "id", string direction = "desc")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
+                {
+                    //return new HttpStatusCodeResult(400, "Bad Request"); 
+                    return BadRequest("Bad Request");
+                }
+                else
+                {
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        // return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
+                    else
+                    {
+                        string msg = string.Empty;
+                        var balResult = CMSRepository.Getpostcategory(entity_id, app_key, post_status, per_page.ToString(), page.ToString(), sort, direction, "PST", post_name);
+                        
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                             List<dynamic> ReviewList = new List<dynamic>();
+                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            {
+                                dynamic Review = new ExpandoObject();
+                                //PostModel Review = new PostModel();
+                                Review.id = balResult.Rows[i]["ID"].ToString();
+                                Review.name = balResult.Rows[i]["name"].ToString();
+                                Review.slug = balResult.Rows[i]["slug"].ToString();
+                                ReviewList.Add(Review); 
+                            } 
+                            return Ok(ReviewList); 
+                        }
+                        else
+                        {
+                            return Ok(new object[0]);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
 
     }
 }

@@ -160,6 +160,9 @@
                                     line_discount = line_discount + (((coupon.coupon_amount.ToObject<decimal>() ?? 0) / item_count) * (item.quantity.ToObject<decimal>() ?? 0));
                                 }
                             }
+                            if (coupon.discount_amount == null) coupon.discount_amount = 0;
+                            coupon.discount_amount = (coupon.discount_amount.ToObject<decimal>() ?? 0) + line_discount;
+                            coupon.coupon_amount = (coupon.coupon_amount.ToObject<decimal>() ?? 0);
                         }
 
                         if (line_subtotal > line_discount) line_total = line_subtotal - line_discount;

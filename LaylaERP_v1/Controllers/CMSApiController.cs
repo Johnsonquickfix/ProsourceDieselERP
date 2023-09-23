@@ -248,22 +248,22 @@
                             }
 
                             //return Json(ReviewList);                            
-                            if (ReviewList.Count == 1)
-                            {
-                                // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
-                                return Ok(ReviewList[0]);
-                            }
-                            else
-                            {
+                            //if (ReviewList.Count == 1)
+                            //{
+                            //    // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                            //    return Ok(ReviewList[0]);
+                            //}
+                            //else
+                            //{
                                 // return Json(ReviewList, JsonRequestBehavior.AllowGet);
                                 return Ok(ReviewList);
-                            }
+                            //}
 
                         }
                         else
                         {
                             //return Json("[]", JsonRequestBehavior.AllowGet);
-                            return Ok("[]");
+                            return Ok(new object[0]);
                         }
                     }
                 }
@@ -1675,6 +1675,138 @@
                 return BadRequest("Bad Request");
             }
         }
+
+        [HttpGet, Route("get-pages-slug/{app_key}/{entity_id}")]
+        public IHttpActionResult Getpagesslug(string app_key, string entity_id,  string post_name = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
+                {
+                    //return new HttpStatusCodeResult(400, "Bad Request");
+                    return BadRequest("Bad Request");
+                }
+                else
+                {
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        //return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
+                    else
+                    {
+                        //dynamic obj = new List<dynamic>();
+                        string msg = string.Empty;
+                        var balResult = CMSRepository.Getpageapi(entity_id, app_key, "PLS", post_name);
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                            List<PagesModel> ReviewList = new List<PagesModel>();
+                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            {
+                                PagesModel Review = new PagesModel();
+                                var jsonArray = JArray.Parse(balResult.Rows[i]["bannerimg"].ToString());
+
+                                if (jsonArray.Count == 1)
+                                {
+                                    var jsonObject = jsonArray[0] as JObject;
+                                    if (jsonObject != null && jsonObject["json_data"] is JArray jsonData)
+                                    {
+                                        var bannerImages = jsonData
+                                            .Select(item =>
+                                            {
+                                                var name = item.Value<string>("name");
+                                                var height = item.Value<string>("height");
+                                                var width = item.Value<string>("width");
+                                                return new
+                                                {
+                                                    name,
+                                                    height,
+                                                    width
+                                                };
+                                            }).ToList();
+                                        if (bannerImages.Count > 0)
+                                            Review._bannerimage = bannerImages;
+                                        else
+                                            Review._bannerimage = new object[0];
+                                        // Now, bannerImages should contain your data
+                                    }
+                                    else
+                                    {
+                                        Review._bannerimage = new object[0];
+                                    }
+                                }
+                                else
+                                    Review._bannerimage = "[]";
+
+                                Review.id = balResult.Rows[i]["ID"].ToString();
+                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_title = balResult.Rows[i]["post_title"].ToString();
+                                Review.post_author = balResult.Rows[i]["post_author"].ToString();
+                                Review.user_login = balResult.Rows[i]["user_login"].ToString();
+                                Review.post_name = balResult.Rows[i]["post_name"].ToString();
+                                Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
+                                Review.entity = balResult.Rows[i]["CompanyName"].ToString();
+                                Review.post_date = balResult.Rows[i]["post_date"].ToString();
+                                Review.post_parent = balResult.Rows[i]["post_parent"].ToString();
+                                Review.order = balResult.Rows[i]["menu_order"].ToString();
+                                ImageModel image = new ImageModel
+                                {
+                                    width = balResult.Rows[i]["bwidth"].ToString(),
+                                    height = balResult.Rows[i]["bheight"].ToString(),
+                                    name = balResult.Rows[i]["upload_ad_image"].ToString(),
+
+                                };
+                                OtherImageModel OtherImageModel = new OtherImageModel
+                                {
+                                    width = balResult.Rows[i]["fwidth"].ToString(),
+                                    height = balResult.Rows[i]["fheight"].ToString(),
+                                    name = balResult.Rows[i]["featured_image_url"].ToString(),
+
+                                };
+                                Review.upload_ad_image = image;
+                                Review.featured_image_url = OtherImageModel;
+                                Review.short_description = balResult.Rows[i]["short_description"].ToString();
+
+                                Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
+                                Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
+                                Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
+                                Review._yoast_wpseo_keywordsynonyms = balResult.Rows[i]["_yoast_wpseo_keywordsynonyms"].ToString();
+                                Review._yoast_wpseo_focuskeywords = balResult.Rows[i]["_yoast_wpseo_focuskeywords"].ToString();
+                                //Review._wp_page_template = balResult.Rows[i]["_wp_page_template"].ToString();
+                                Review._gmk = balResult.Rows[i]["_gmk"].ToString();
+                                Review._comment = balResult.Rows[i]["_comment"].ToString();
+                                Review.total = balResult.Rows[i]["total"].ToString();
+                                //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                ReviewList.Add(Review);
+                            }
+
+                            //return Json(ReviewList);                            
+                            if (ReviewList.Count == 1)
+                            {
+                                // return Json(ReviewList[0], JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList[0]);
+                            }
+                            else
+                            {
+                                // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                                return Ok(ReviewList);
+                            }
+
+                        }
+                        else
+                        {
+                            //return Json("[]", JsonRequestBehavior.AllowGet);
+                            return Ok(new object[0]);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
+
 
     }
 }

@@ -46,7 +46,7 @@
         }
 
         [HttpPost, Route("items/{app_key}/{entity_id}")]
-        public IHttpActionResult CartItems(string app_key, long entity_id, CartProductRequest cart)
+        public IHttpActionResult CartItems(string app_key, long entity_id, CartProductRequest cart, bool checkout = false)
         {
             try
             {
@@ -67,7 +67,8 @@
                 //else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
 
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
-                if (obj.status == 200) return Ok(CalculateTotals(obj));
+                if (obj.status == 200 && checkout) return Ok(CalculateTotals(obj));
+                else if (obj.status == 200 && !checkout) return Ok(obj);
                 return Ok(obj);
 
                 //return Ok(new { message = "Success", status = 200, code = "SUCCESS", data = new { } });

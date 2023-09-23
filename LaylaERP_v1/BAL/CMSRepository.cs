@@ -1360,5 +1360,27 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable Getpageslugapi(string entity_id, string client_secret, string flag, string slug)
+        {
+            DataTable dt;
+            try
+            {
+                SqlParameter[] parameters =
+              {
+                     
+                    new SqlParameter("@strValue1", entity_id),
+                    new SqlParameter("@searchid", slug), 
+                    new SqlParameter("@flag", flag)
+                };
+
+                dt = SQLHelper.ExecuteDataTable("cms_pageslug_api", parameters);
+
+            }
+            catch { throw; }
+            return dt;
+        }
+
+
     }
 }

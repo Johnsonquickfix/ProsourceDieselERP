@@ -372,19 +372,19 @@
 
                             //return Json(ReviewList);
                             // return Json(ReviewList, JsonRequestBehavior.AllowGet);
-                            if (ReviewList.Count == 1)
-                            {
-                                return Ok(ReviewList[0]);
-                            }
-                            else
-                            {
+                            //if (ReviewList.Count == 1)
+                            //{
+                            //    return Ok(ReviewList[0]);
+                            //}
+                            //else
+                            //{
                                 return Ok(ReviewList);
-                            }
+                            //}
 
                         }
                         else
                         {
-                            return Ok("[]");
+                            return Ok(new object[0]);
                         }
                     }
                 }
@@ -1554,5 +1554,127 @@
                 return InternalServerError(ex);
             }
         }
+
+        [HttpGet, Route("get-post-slug/{app_key}/{entity_id}")]
+        public IHttpActionResult Getpostslug(string app_key, string entity_id,  string post_name = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(app_key) || string.IsNullOrEmpty(entity_id))
+                {
+                    //return new HttpStatusCodeResult(400, "Bad Request"); 
+                    return BadRequest("Bad Request");
+                }
+                else
+                {
+                    if (app_key != "88B4A278-4A14-4A8E-A8C6-6A6463C46C65")
+                        // return Json("invalid app key", JsonRequestBehavior.AllowGet);
+                        return BadRequest("invalid app key");
+                    else
+                    {
+                        string msg = string.Empty;
+                        var balResult = CMSRepository.Getpageslugapi(entity_id, app_key,  "PST", post_name);
+                        List<Category> categoryList = new List<Category>();
+
+                        // First pass: Create a dictionary to hold category ID and index mapping
+                        Dictionary<int, int> categoryIndexMap = new Dictionary<int, int>();
+
+                        int total = balResult.Rows.Count;
+                        if (total > 0)
+                        {
+                            List<PostModel> ReviewList = new List<PostModel>();
+                            for (int i = 0; i < balResult.Rows.Count; i++)
+                            {
+                                PostModel Review = new PostModel();
+                                Review.id = balResult.Rows[i]["ID"].ToString();
+                                Review.post_content = balResult.Rows[i]["post_content"].ToString();
+                                Review.post_title = balResult.Rows[i]["post_title"].ToString();
+                                Review.post_author = balResult.Rows[i]["post_author"].ToString();
+                                Review.user_login = balResult.Rows[i]["user_login"].ToString();
+                                Review.entity_id = balResult.Rows[i]["entity_id"].ToString();
+                                Review.entity = balResult.Rows[i]["CompanyName"].ToString();
+                                Review.post_date = balResult.Rows[i]["post_date"].ToString();
+                                Review.post_name = balResult.Rows[i]["post_name"].ToString();
+
+                                ImageModel image = new ImageModel
+                                {
+                                    width = balResult.Rows[i]["bwidth"].ToString(),
+                                    height = balResult.Rows[i]["bheight"].ToString(),
+                                    name = balResult.Rows[i]["single_image_url"].ToString(),
+
+                                };
+                                OtherImageModel OtherImageModel = new OtherImageModel
+                                {
+                                    width = balResult.Rows[i]["fwidth"].ToString(),
+                                    height = balResult.Rows[i]["fheight"].ToString(),
+                                    name = balResult.Rows[i]["featured_image_url"].ToString(),
+
+                                };
+
+                                Review.single_image_url = image;
+                                Review.featured_image_url = OtherImageModel;
+
+                                //   Review.single_image_url = balResult.Rows[i]["single_image_url"].ToString();
+                                // Review.featured_image_url = balResult.Rows[i]["featured_image_url"].ToString();
+                                Review._yoast_wpseo_focuskw = balResult.Rows[i]["_yoast_wpseo_focuskw"].ToString();
+                                Review._yoast_wpseo_metadesc = balResult.Rows[i]["_yoast_wpseo_metadesc"].ToString();
+                                Review._yoast_wpseo_title = balResult.Rows[i]["_yoast_wpseo_title"].ToString();
+                                Review._yoast_wpseo_keywordsynonyms = balResult.Rows[i]["_yoast_wpseo_keywordsynonyms"].ToString();
+                                Review._yoast_wpseo_focuskeywords = balResult.Rows[i]["_yoast_wpseo_focuskeywords"].ToString();
+                                //Review._wp_page_template = balResult.Rows[i]["_wp_page_template"].ToString();
+                                //Review._gmk = balResult.Rows[i]["_gmk"].ToString();
+                                //Review._comment = balResult.Rows[i]["_comment"].ToString();
+                                Review.total = balResult.Rows[i]["total"].ToString();
+                                //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                var balcategory = CMSRepository.Getcategory(balResult.Rows[i]["ID"].ToString());
+                                List<Category> categoryHierarchy = BuildCategoryHierarchy(0, balcategory, // Assuming this DataTable contains category data
+                                    categoryIndexMap);
+
+                                // Review.categories = categoryHierarchy;
+                                if (categoryHierarchy.Count == 1)
+                                {
+                                    //Review.categories = categoryHierarchy;
+                                    //List<Category> wrappedCategories = new List<Category> { Review.categories[0] };
+                                    //Review.categories = wrappedCategories;
+                                    //ReviewList.Add(Review);
+                                    // Clear any existing categories
+                                    Review.categories = new List<Category> { categoryHierarchy[0] };
+                                    // Review.categories = Review.categories[0];
+                                }
+                                else
+                                {
+                                    Review.categories = categoryHierarchy;
+                                }
+
+                                ReviewList.Add(Review);
+
+                            }
+
+                            //return Json(ReviewList);
+                            // return Json(ReviewList, JsonRequestBehavior.AllowGet);
+                            if (ReviewList.Count == 1)
+                            {
+                                return Ok(ReviewList[0]);
+                            }
+                            else
+                            {
+                                return Ok(ReviewList);
+                            }
+
+                        }
+                        else
+                        {
+                            return Ok(new object[0]);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest(new { error = "application_error", error_description = ex.Message });
+                return BadRequest("Bad Request");
+            }
+        }
+
     }
 }

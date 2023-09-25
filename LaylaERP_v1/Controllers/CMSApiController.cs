@@ -347,7 +347,8 @@
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
                                 var balcategory = CMSRepository.Getcategory(balResult.Rows[i]["ID"].ToString());
-                                List<Category> categoryHierarchy = BuildCategoryHierarchy(0, balcategory, // Assuming this DataTable contains category data
+                                long p_catecogy = Convert.ToInt64(balResult.Rows[i]["primary_category"].ToString());
+                                List<Category> categoryHierarchy = BuildCategoryHierarchy(p_catecogy, balcategory, // Assuming this DataTable contains category data
                                     categoryIndexMap);
 
                                 // Review.categories = categoryHierarchy;
@@ -396,7 +397,7 @@
             }
         }
 
-        public List<Category> BuildCategoryHierarchy(int categoryId, DataTable categoryData, Dictionary<int, int> categoryIndexMap)
+        public List<Category> BuildCategoryHierarchy(long categoryId, DataTable categoryData, Dictionary<int, int> categoryIndexMap)
         {
             List<Category> categories = new List<Category>();
 
@@ -409,12 +410,18 @@
                 //int count = Convert.ToInt32(row["count"]);
                 //if (parent_id == categoryId)
                 //{
+                bool primary = false;
+                if (category_id == categoryId)
+                    primary = true;
+                //else
+                // primary = false;
                 Category category = new Category
                 {
                     category_id = category_id,
                     //parent_id = parent_id,
                     name = name,
                     slug = slug,
+                    primary = primary
                     // count = count,
                     //subcategories = BuildCategoryHierarchy(category_id, categoryData, categoryIndexMap)
                 };
@@ -1626,8 +1633,9 @@
                                 //Review._comment = balResult.Rows[i]["_comment"].ToString();
                                 Review.total = balResult.Rows[i]["total"].ToString();
                                 //Review.star_distribution = JsonConvert.DeserializeObject(balResult.Rows[i]["star_distribution"].ToString());
+                                long p_catecogy = Convert.ToInt64(balResult.Rows[i]["primary_category"].ToString());
                                 var balcategory = CMSRepository.Getcategory(balResult.Rows[i]["ID"].ToString());
-                                List<Category> categoryHierarchy = BuildCategoryHierarchy(0, balcategory, // Assuming this DataTable contains category data
+                                List<Category> categoryHierarchy = BuildCategoryHierarchy(p_catecogy, balcategory, // Assuming this DataTable contains category data
                                     categoryIndexMap);
 
                                 // Review.categories = categoryHierarchy;

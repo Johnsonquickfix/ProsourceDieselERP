@@ -73,7 +73,7 @@
             taxJarModel.order_total_amount = Taxes.OrderTotalAmount;
             taxJarModel.taxable_amount = Taxes.TaxableAmount;
             taxJarModel.amount_to_collect = Taxes.AmountToCollect;
-            taxJarModel.rate = Taxes.Rate;
+            taxJarModel.rate = Taxes.Rate * 100;
             taxJarModel.freight_taxable = Taxes.FreightTaxable;
             taxJarModel.tax_meta = "[{\"rate\": " + Taxes.Rate.ToString() + ", \"name\": '" + taxJarModel.to_country + "-" + taxJarModel.to_state + "-" + taxJarModel.to_state + " TAX-1', \"type\": '" + taxJarModel.to_state + " Tax'}]";
             return taxJarModel;

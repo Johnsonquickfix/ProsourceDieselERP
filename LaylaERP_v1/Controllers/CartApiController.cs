@@ -157,6 +157,7 @@
                     _tax.to_state = obj.data.shipping_address.state;
                     _tax.to_zip = obj.data.shipping_address.postcode;
                     _tax.to_country = obj.data.shipping_address.country;
+                    _tax.amount = 100;
                     _tax = GetTaxAmounts(_tax);
                 }
 

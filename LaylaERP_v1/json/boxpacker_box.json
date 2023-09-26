@@ -1,0 +1,335 @@
+[
+  {
+    "name": "Brown 14x12x10",
+    "length": 14,
+    "width": 12,
+    "height": 10,
+    "box_weight": 0.8125,
+    "max_weight": 100,
+    "enabled": true
+  },
+  {
+    "name": "Brown 8x8x8",
+    "length": 8,
+    "width": 8,
+    "height": 8,
+    "box_weight": 0.45,
+    "max_weight": 100,
+    "enabled": true
+  },
+   {
+    "name": "Brown 24x14x14",
+    "length": 24,
+    "width": 14,
+    "height": 14,
+    "box_weight": 1.86,
+    "max_weight": 100,
+    "enabled": true
+  },
+  {
+    "name": "Brown 14x12x6",
+    "length": 14,
+    "width": 12,
+    "height": 6,
+    "box_weight": 0.814,
+    "max_weight": 100,
+    "enabled": true
+  },
+   {
+    "name": "Brown Double 16x16x12",
+    "length": 16,
+    "width": 16,
+    "height": 12,
+    "box_weight": 2.485,
+    "max_weight": 150,
+    "enabled": true
+  },
+   {
+    "name": "Brown 24x9x6",
+    "length": 24,
+    "width": 9,
+    "height": 6,
+    "box_weight": 0.88,
+    "max_weight": 100,
+    "enabled": true
+  },
+  {
+    "name": "Brown 24x12x12",
+    "length": 24,
+    "width": 12,
+    "height": 12,
+    "box_weight": 1.518,
+    "max_weight": 100,
+    "enabled": true
+  },
+   {
+    "name": "White 6x4x2",
+    "length": 6,
+    "width": 4,
+    "height": 2,
+    "box_weight": 0.143,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "White 6x4x4",
+    "length": 6,
+    "width": 4,
+    "height": 4,
+    "box_weight": 0.21,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "White 10x4x3",
+    "length": 10,
+    "width": 4,
+    "height": 3,
+    "box_weight": 0.2446,
+    "max_weight": 50,
+    "enabled": true
+  },
+   {
+    "name": "White 18x4x4",
+    "length": 18,
+    "width": 4,
+    "height": 4,
+    "box_weight": 0.437,
+    "max_weight": 50,
+    "enabled": true
+  },
+   {
+    "name": "White 8x8x4",
+    "length": 8,
+    "width": 8,
+    "height": 4,
+    "box_weight": 0.42,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "White 25x10x5",
+    "length": 25,
+    "width": 10,
+    "height": 5,
+    "box_weight": 0.963,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "White 12x9x2",
+    "length": 12,
+    "width": 9,
+    "height": 2,
+    "box_weight": 0.441,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "White 21x6x2",
+    "length": 21,
+    "width": 6,
+    "height": 2,
+    "box_weight": 0.461,
+    "max_weight": 50,
+    "enabled": true
+  },
+   {
+    "name": "White 9x8x4",
+    "length": 9,
+    "width": 8,
+    "height": 4,
+    "box_weight": 0.3612,
+    "max_weight": 50,
+    "enabled": true
+  },
+   {
+    "name": "White 9x8x6",
+    "length": 9,
+    "width": 8,
+    "height": 6,
+    "box_weight": 0.539,
+    "max_weight": 50,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Small Box",
+    "id": "FEDEX_SMALL_BOX",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.28125,
+    "length": 12.375,
+    "width": 10.875,
+    "height": 1.5,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Small Box",
+    "id": "FEDEX_SMALL_BOX:2",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.28125,
+    "length": 11.25,
+    "width": 8.75,
+    "height": 2.625,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Medium Box",
+    "id": "FEDEX_MEDIUM_BOX",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.40625,
+    "length": 13.25,
+    "width": 11.5,
+    "height": 2.375,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Medium Box",
+    "id": "FEDEX_MEDIUM_BOX:2",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.40625,
+    "length": 11.25,
+    "width": 8.75,
+    "height": 4.375,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Large Box",
+    "id": "FEDEX_LARGE_BOX",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.90625,
+    "length": 17.5,
+    "width": 12.365,
+    "height": 3,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Large Box",
+    "id": "FEDEX_LARGE_BOX:2",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 0.5875,
+    "length": 11.25,
+    "width": 8.75,
+    "height": 7.75,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Extra Large Box",
+    "id": "FEDEX_EXTRA_LARGE_BOX",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 1.25,
+    "length": 11.875,
+    "width": 11,
+    "height": 10.75,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Extra Large Box",
+    "id": "FEDEX_EXTRA_LARGE_BOX:2",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 1.875,
+    "length": 15.75,
+    "width": 14.125,
+    "height": 6,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Pak",
+    "id": "FEDEX_PAK",
+    "one_rate_max_weight": 50,
+    "max_weight": 5.5,
+    "box_weight": 0.0625,
+    "length": 15.5,
+    "width": 12,
+    "height": 1.5,
+    "type": "packet",
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Small Pak",
+    "id": "FEDEX_PAK:2",
+    "one_rate_max_weight": 50,
+    "max_weight": 5.5,
+    "box_weight": 0.0625,
+    "length": 12.75,
+    "width": 10.25,
+    "height": 1.5,
+    "type": "packet",
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Padded Pak",
+    "id": "FEDEX_PAK:3",
+    "one_rate_max_weight": 50,
+    "max_weight": 5.5,
+    "box_weight": 0.0625,
+    "length": 14.75,
+    "width": 11.75,
+    "height": 1.5,
+    "type": "packet",
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Reusable Sturdy Pak",
+    "id": "FEDEX_PAK:4",
+    "one_rate_max_weight": 50,
+    "max_weight": 5.5,
+    "box_weight": 0.0625,
+    "length": 14.5,
+    "width": 10,
+    "height": 1.5,
+    "type": "packet",
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Envelope",
+    "id": "FEDEX_ENVELOPE",
+    "one_rate_max_weight": 10,
+    "max_weight": 0.5,
+    "box_weight": 0,
+    "length": 12.5,
+    "width": 9.5,
+    "height": 0.25,
+    "type": "envelope",
+    "enabled": true
+  },
+  {
+    "name": "FedEx® 10kg Box",
+    "id": "FEDEX_10KG_BOX",
+    "max_weight": 22,
+    "box_weight": 1.9375,
+    "length": 15.81,
+    "width": 12.94,
+    "height": 10.19,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® 25kg Box",
+    "id": "FEDEX_25KG_BOX",
+    "max_weight": 55,
+    "box_weight": 3.5625,
+    "length": 21.56,
+    "width": 16.56,
+    "height": 13.19,
+    "enabled": true
+  },
+  {
+    "name": "FedEx® Tube",
+    "id": "FEDEX_TUBE",
+    "one_rate_max_weight": 50,
+    "max_weight": 20,
+    "box_weight": 1,
+    "length": 38,
+    "width": 6,
+    "height": 6,
+    "type": "tube",
+    "enabled": true
+  }
+]

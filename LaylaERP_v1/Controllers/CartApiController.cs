@@ -13,6 +13,10 @@
     using System.Dynamic;
     using LaylaERP.UTILITIES;
     using System.Data;
+    using LaylaERP_v1.UTILITIES.Packer;
+    using LaylaERP_v1.UTILITIES.Packer.Model;
+    using LaylaERP_v1.UTILITIES.Packer.Helpers;
+    using LaylaERP.UTILITIES.BoxPacker;
 
     [RoutePrefix("cartapi")]
     public class CartApiController : ApiController
@@ -149,6 +153,9 @@
         {
             try
             {
+                double _mm = 25.4;
+                //Packer packer = new Packer(true, false);
+                WC_Boxpack packer = new WC_Boxpack();
                 TaxJarModel _tax = new TaxJarModel();
                 if (obj.data.shipping_address != null)
                 {
@@ -223,6 +230,16 @@
                     f_line_tax = f_line_tax + (item.line_total_tax.ToObject<decimal>() ?? 0);
 
                     discount_total = discount_total + (line_subtotal - line_total);
+                    // Add Item in Box
+                    if (item.dimensions != null)
+                    {
+                        //foreach(var dim in (item.quantity.ToObject<double>() ?? 0))
+                        for (int qty = 0; qty < (item.quantity.ToObject<int>() ?? 0); qty++)
+                        {
+                            packer.AddItem((item.dimensions.length.ToObject<double>() ?? 0), (item.dimensions.width.ToObject<double>() ?? 0), (item.dimensions.height.ToObject<double>() ?? 0), (item.weight.ToObject<double>() ?? 0), (item.price.ToObject<double>() ?? 0));
+                        }
+                        //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
+                    }
                 }
                 cart_contents_total = f_line_total; cart_contents_tax = f_line_tax;
 
@@ -242,6 +259,13 @@
                 //obj.data.cart_totals.fee_taxes = new List<dynamic>();
                 obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total);
                 obj.data.cart_totals.total_tax = (f_line_tax + shipping_tax + fee_tax);
+
+                //
+                //packer.AddItem(9, 8, 4, 1, 67.95);
+                get_boxes(packer);
+                packer.Pack();
+                var packages = packer.GetPackages();
+                //var packedBoxes = packer.Pack();
             }
             catch (Exception ex)
             {
@@ -275,15 +299,63 @@
             catch { }
             return model;
         }
-        public static dynamic Calculatetaxes(dynamic obj)
+        public static void get_boxes(WC_Boxpack packer)//(Packer packer)
         {
-            try
-            { }
-            catch (Exception ex)
+            double _mm = 25.4;
+            string filePath = AppContext.BaseDirectory, fileName = "boxpacker_box";
+            string appPath = string.Format(@"{0}json\{1}.json", filePath, fileName);
+            JArray records = JArray.Parse(System.IO.File.ReadAllText(appPath, System.Text.Encoding.UTF8));
+            foreach (JObject item in records)
             {
-                throw ex;
+                WC_Boxpack_Box box = packer.AddBox((((float?)item["length"]) ?? 0), (((float?)item["width"]) ?? 0), (((float?)item["height"]) ?? 0), (((float?)item["box_weight"]) ?? 0));//FEDEX_MEDIUM_BOX
+                box.SetInnerDimensions((((float?)item["length"]) ?? 0), (((float?)item["width"]) ?? 0), (((float?)item["height"]) ?? 0));
+                box.SetId(item["name"].ToString());
+                box.SetMaxWeight((((float?)item["max_weight"]) ?? 0));
+                box.SetVolume((((float?)item["length"]) ?? 0) * (((float?)item["width"]) ?? 0) * (((float?)item["height"]) ?? 0));
             }
-            return obj;
+
+
+            // Add Standard UPS boxes
+            //WC_Boxpack_Box box = packer.AddBox(13.25, 11.5, 2.375, 0.40625);//FEDEX_MEDIUM_BOX
+            //box.SetInnerDimensions(13.25, 11.5, 2.375); box.SetId("FEDEX_MEDIUM_BOX"); box.SetMaxWeight(20);            //box.SetBoxType();
+
+            //box = packer.AddBox(11.25, 8.75, 4.375, 0.40625);//FEDEX_MEDIUM_BOX:2
+            //box.SetInnerDimensions(11.25, 8.75, 4.375); box.SetId("FEDEX_MEDIUM_BOX:2"); box.SetMaxWeight(20);
+
+            //box = packer.AddBox(12.375, 10.875, 1.5, 0.28125);//FEDEX_SMALL_BOX
+            //box.SetInnerDimensions(12.375, 10.875, 1.5); box.SetId("FEDEX_SMALL_BOX"); box.SetMaxWeight(20);
+
+            //box = packer.AddBox(11.25, 8.75, 2.625, 0.28125);//FEDEX_SMALL_BOX:2
+            //box.SetInnerDimensions(11.25, 8.75, 2.625); box.SetId("FEDEX_SMALL_BOX:2"); box.SetMaxWeight(20);
+
+
+            // Define boxes
+
+
+            //WC_Boxpack_Box box = packer.AddBox(13.25, 11.5, 2.375, 20, 20);//FEDEX_MEDIUM_BOX
+            //packer.AddBox(11.25, 8.75, 4.375, 20, 20);//FEDEX_MEDIUM_BOX:2
+            //packer.AddBox(12.375, 10.875, 1.5, 20, 20);//FEDEX_SMALL_BOX
+            //packer.AddBox(11.25, 8.75, 2.625, 20, 20);//FEDEX_SMALL_BOX:2
+
+            //BoxList boxes = new BoxList();
+            //boxes.Insert(new Box { BoxId = "FEDEX_MEDIUM_BOX", Description = "FedEx&#174; Medium Box", OuterDepth = 2.375 * _mm, OuterLength = 13.25 * _mm, OuterWidth = 11.5 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 2.375 * _mm, InnerLength = 13.25 * _mm, InnerWidth = 11.5 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Insert(new Box { BoxId = "FEDEX_MEDIUM_BOX:2", Description = "FedEx&#174; Medium Box", OuterDepth = 4.375 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 4.375 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Insert(new Box { BoxId = "FEDEX_SMALL_BOX", Description = "FedEx&#174; Small Box", OuterDepth = 1.5 * _mm, OuterLength = 12.375 * _mm, OuterWidth = 10.875 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 1.5 * _mm, InnerLength = 12.375 * _mm, InnerWidth = 10.875 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Insert(new Box { BoxId = "FEDEX_SMALL_BOX:2", Description = "FedEx&#174; Small Box", OuterDepth = 2.625 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 11.25 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
+            //packer.AddBoxes(boxes);
+
+            //List<Box> boxes = new List<Box>();
+            //boxes.Add(new Box { BoxId = "FEDEX_MEDIUM_BOX", Description = "FedEx&#174; Medium Box", OuterDepth = 2.375 * _mm, OuterLength = 13.25 * _mm, OuterWidth = 11.5 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 2.375 * _mm, InnerLength = 13.25 * _mm, InnerWidth = 11.5 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Add(new Box { BoxId = "FEDEX_MEDIUM_BOX:2", Description = "FedEx&#174; Medium Box", OuterDepth = 4.375 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 4.375 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Add(new Box { BoxId = "FEDEX_SMALL_BOX", Description = "FedEx&#174; Small Box", OuterDepth = 1.5 * _mm, OuterLength = 12.375 * _mm, OuterWidth = 10.875 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 1.5 * _mm, InnerLength = 12.375 * _mm, InnerWidth = 10.875 * _mm, MaxWeight = 20 * _mm });
+            //boxes.Add(new Box { BoxId = "FEDEX_SMALL_BOX:2", Description = "FedEx&#174; Small Box", OuterDepth = 2.625 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 11.25 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
+            ////packer.AddBoxes(boxes.OrderBy(l => l.InnerVolumeInInches));
+            ////boxes.OrderBy(l => l.InnerVolumeInInches).s
+            //List<Box> _boxes = boxes.OrderBy(b => Box.Compare(b, b)).ToList();
+            //foreach (var b in _boxes)
+            //{
+            //    packer.AddBox(b);
+            //}
         }
     }
 }

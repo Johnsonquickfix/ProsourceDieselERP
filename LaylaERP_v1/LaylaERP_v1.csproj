@@ -427,6 +427,10 @@
     <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
+    <Compile Include="UTILITIES\BoxPacker\WC_BoxPack.cs" />
+    <Compile Include="UTILITIES\BoxPacker\WC_BoxPack_Box.cs" />
+    <Compile Include="UTILITIES\BoxPacker\WC_BoxPack_Item.cs" />
+    <Compile Include="UTILITIES\BoxPacker\WC_Boxpack_Package.cs" />
     <Compile Include="UTILITIES\clsAffirm.cs" />
     <Compile Include="UTILITIES\clsAmazonMws.cs" />
     <Compile Include="UTILITIES\clsAmazonPay.cs" />
@@ -1500,6 +1504,7 @@
     <Content Include="js\qfk\HtmlEditor\1.5.5\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="json\manus_1.json" />
     <Content Include="json\topsell_1.json" />
+    <Content Include="json\boxpacker_box.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

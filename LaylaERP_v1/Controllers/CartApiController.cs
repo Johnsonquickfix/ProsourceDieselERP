@@ -1,22 +1,16 @@
 ﻿namespace LaylaERP_v1.Controllers
 {
+    using LaylaERP.UTILITIES;
+    using LaylaERP.UTILITIES.BoxPacker;
     using LaylaERP_v1.BAL;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Web.Http;
+    using LaylaERP_v1.Models.Product;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using LaylaERP_v1.Models.Product;
-    using System.Dynamic;
-    using LaylaERP.UTILITIES;
+    using System;
+    using System.Collections.Generic;
     using System.Data;
-    using LaylaERP_v1.UTILITIES.Packer;
-    using LaylaERP_v1.UTILITIES.Packer.Model;
-    using LaylaERP_v1.UTILITIES.Packer.Helpers;
-    using LaylaERP.UTILITIES.BoxPacker;
+    using System.Linq;
+    using System.Web.Http;
 
     [RoutePrefix("cartapi")]
     public class CartApiController : ApiController
@@ -313,8 +307,6 @@
                 box.SetMaxWeight((((float?)item["max_weight"]) ?? 0));
                 box.SetVolume((((float?)item["length"]) ?? 0) * (((float?)item["width"]) ?? 0) * (((float?)item["height"]) ?? 0));
             }
-
-
             // Add Standard UPS boxes
             //WC_Boxpack_Box box = packer.AddBox(13.25, 11.5, 2.375, 0.40625);//FEDEX_MEDIUM_BOX
             //box.SetInnerDimensions(13.25, 11.5, 2.375); box.SetId("FEDEX_MEDIUM_BOX"); box.SetMaxWeight(20);            //box.SetBoxType();
@@ -327,35 +319,6 @@
 
             //box = packer.AddBox(11.25, 8.75, 2.625, 0.28125);//FEDEX_SMALL_BOX:2
             //box.SetInnerDimensions(11.25, 8.75, 2.625); box.SetId("FEDEX_SMALL_BOX:2"); box.SetMaxWeight(20);
-
-
-            // Define boxes
-
-
-            //WC_Boxpack_Box box = packer.AddBox(13.25, 11.5, 2.375, 20, 20);//FEDEX_MEDIUM_BOX
-            //packer.AddBox(11.25, 8.75, 4.375, 20, 20);//FEDEX_MEDIUM_BOX:2
-            //packer.AddBox(12.375, 10.875, 1.5, 20, 20);//FEDEX_SMALL_BOX
-            //packer.AddBox(11.25, 8.75, 2.625, 20, 20);//FEDEX_SMALL_BOX:2
-
-            //BoxList boxes = new BoxList();
-            //boxes.Insert(new Box { BoxId = "FEDEX_MEDIUM_BOX", Description = "FedEx&#174; Medium Box", OuterDepth = 2.375 * _mm, OuterLength = 13.25 * _mm, OuterWidth = 11.5 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 2.375 * _mm, InnerLength = 13.25 * _mm, InnerWidth = 11.5 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Insert(new Box { BoxId = "FEDEX_MEDIUM_BOX:2", Description = "FedEx&#174; Medium Box", OuterDepth = 4.375 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 4.375 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Insert(new Box { BoxId = "FEDEX_SMALL_BOX", Description = "FedEx&#174; Small Box", OuterDepth = 1.5 * _mm, OuterLength = 12.375 * _mm, OuterWidth = 10.875 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 1.5 * _mm, InnerLength = 12.375 * _mm, InnerWidth = 10.875 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Insert(new Box { BoxId = "FEDEX_SMALL_BOX:2", Description = "FedEx&#174; Small Box", OuterDepth = 2.625 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 11.25 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
-            //packer.AddBoxes(boxes);
-
-            //List<Box> boxes = new List<Box>();
-            //boxes.Add(new Box { BoxId = "FEDEX_MEDIUM_BOX", Description = "FedEx&#174; Medium Box", OuterDepth = 2.375 * _mm, OuterLength = 13.25 * _mm, OuterWidth = 11.5 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 2.375 * _mm, InnerLength = 13.25 * _mm, InnerWidth = 11.5 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Add(new Box { BoxId = "FEDEX_MEDIUM_BOX:2", Description = "FedEx&#174; Medium Box", OuterDepth = 4.375 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.40625 * _mm, InnerDepth = 4.375 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Add(new Box { BoxId = "FEDEX_SMALL_BOX", Description = "FedEx&#174; Small Box", OuterDepth = 1.5 * _mm, OuterLength = 12.375 * _mm, OuterWidth = 10.875 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 1.5 * _mm, InnerLength = 12.375 * _mm, InnerWidth = 10.875 * _mm, MaxWeight = 20 * _mm });
-            //boxes.Add(new Box { BoxId = "FEDEX_SMALL_BOX:2", Description = "FedEx&#174; Small Box", OuterDepth = 2.625 * _mm, OuterLength = 11.25 * _mm, OuterWidth = 8.75 * _mm, EmptyWeight = 0.28125 * _mm, InnerDepth = 11.25 * _mm, InnerLength = 11.25 * _mm, InnerWidth = 8.75 * _mm, MaxWeight = 20 * _mm });
-            ////packer.AddBoxes(boxes.OrderBy(l => l.InnerVolumeInInches));
-            ////boxes.OrderBy(l => l.InnerVolumeInInches).s
-            //List<Box> _boxes = boxes.OrderBy(b => Box.Compare(b, b)).ToList();
-            //foreach (var b in _boxes)
-            //{
-            //    packer.AddBox(b);
-            //}
         }
     }
 }

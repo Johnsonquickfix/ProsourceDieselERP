@@ -251,7 +251,8 @@
                 obj.data.cart_totals.fee_total = fee_total;
                 obj.data.cart_totals.fee_tax = fee_tax;
                 //obj.data.cart_totals.fee_taxes = new List<dynamic>();
-                obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total);
+                //obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total);
+                obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total + f_line_tax + shipping_tax + fee_tax);
                 obj.data.cart_totals.total_tax = (f_line_tax + shipping_tax + fee_tax);
 
                 //

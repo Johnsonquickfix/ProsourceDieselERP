@@ -328,7 +328,7 @@ function Status(term_id) {
 
 function Add() {
     let paimarykey = parseInt($('#lblpcid').data('id')) || 0;
-    console.log(paimarykey);
+    //console.log(paimarykey);
     title = $("#txttitle").val();
     entity = $("#ddlcompany").val();
     content = $("#txtcontent").val();

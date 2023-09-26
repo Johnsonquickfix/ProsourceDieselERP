@@ -57,12 +57,14 @@
                             <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>                                        
+                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Subject</th>
                                         <th>Suggestions</th>
-                                        <th>Date</th> 
+                                        <th>Answer</th>
+                                        <th>Date</th>
+                                        <th>Reply</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -80,7 +82,7 @@
         </div>
     </div>
 </section>
- 
+<div class="modal in printable media_popup" id="myModal" role="dialog" aria-hidden="true"></div>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/CMS/ContactUs.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
  

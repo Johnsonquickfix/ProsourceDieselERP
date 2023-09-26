@@ -381,7 +381,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@bs_type",model.bs_type ?? (object)DBNull.Value),
                     new SqlParameter("@fk_accounting_category",model.fk_accounting_category),
                     new SqlParameter("@Sub_Account",model.Sub_Account),
-                    new SqlParameter("@transaction_class",model.transaction_class),
+                    new SqlParameter("@transaction_class",model.transaction_class ?? (object)DBNull.Value ),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

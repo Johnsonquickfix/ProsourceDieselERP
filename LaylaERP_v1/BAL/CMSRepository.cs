@@ -1478,6 +1478,37 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable replyanswer(string answer, long entity_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {               
+                    new SqlParameter("@suggestions", answer),
+                    new SqlParameter("@entity_id", entity_id),
+                    new SqlParameter("@flag", "U")
+                };
+                dt = SQLHelper.ExecuteDataTable("cms_contactus_iud", parameters);
+                if (dt.Rows.Count > 0)
+                {
+                    string name = dt.Rows[0]["name"].ToString();
+                    string Question = dt.Rows[0]["suggestions"].ToString();
+                    string subject = dt.Rows[0]["subject"].ToString();
+                    string email = dt.Rows[0]["email"].ToString();
+
+                    string _body = $"Hi there {name}, <br/><br/>";
+                    _body += $"<br/><b>Your Question:</b> {Question}<br/>";
+                    _body += $"<br/><b>Answer:</b> {answer}<br/>";
+
+                    SendEmail.SendEmails_outer("david.quickfix1@gmail.com", subject, _body, string.Empty);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+
 
 
 

@@ -1876,5 +1876,23 @@ namespace LaylaERP_v1.Controllers
             }
 
         }
+
+
+        [HttpPost]
+        public JsonResult replyanswer(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "" && !string.IsNullOrEmpty(model.status))
+            {
+                DataTable dt = CMSRepository.replyanswer(model.status,Convert.ToInt64(strID));
+                //or.replyanswer(model, strID);
+                return Json(new { status = true, message = "Send successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
     }
 }

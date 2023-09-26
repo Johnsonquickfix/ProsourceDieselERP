@@ -24,7 +24,7 @@ namespace LaylaERP.Models
         public string ac_type { get; set; }
         public string bs_type { get; set; }
         public int Sub_Account { get; set; }
-        public int transaction_class { get; set; }
+        public int ? transaction_class { get; set; }
     }
     public class ProductAccountingModel : PaggingModel
     {

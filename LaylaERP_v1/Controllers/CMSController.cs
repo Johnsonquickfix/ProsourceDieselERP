@@ -803,7 +803,7 @@ namespace LaylaERP_v1.Controllers
             ProductRepository.Edit_term(0, Convert.ToInt32(ID));           
         }
 
-        public JsonResult CreatePost(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string category, HttpPostedFileBase FeaturedFile, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist)
+        public JsonResult CreatePost(HttpPostedFileBase ImageFile, string ID, string post_title, string post_content, string entity_id, string category, HttpPostedFileBase FeaturedFile, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string paimarykey)
         {
             var ImagePath = "";
             //var ImagePaththum = "";
@@ -892,7 +892,7 @@ namespace LaylaERP_v1.Controllers
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        entity = CMSRepository.CreatePost("U", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist,synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        entity = CMSRepository.CreatePost("U", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist,synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString(), paimarykey);
                         update_term(category, Convert.ToInt32(ID));
                         if (entity > 0)
                         {
@@ -905,7 +905,7 @@ namespace LaylaERP_v1.Controllers
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString(), paimarykey);
                         Add_term(category, Convert.ToInt32(entity));
                         if (entity > 0)
                         {
@@ -955,7 +955,7 @@ namespace LaylaERP_v1.Controllers
                         featuerimg = "";
                     }
 
-                    entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                    entity = CMSRepository.CreatePost("I", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString(), paimarykey);
                     Add_term(category, Convert.ToInt32(entity));
                     if (entity > 0)
                     {
@@ -989,12 +989,12 @@ namespace LaylaERP_v1.Controllers
                             featuerimg = "default.png";
                         }
                         FeaturedFile.SaveAs(futherpathimage);
-                        entity = CMSRepository.CreatePost("UF", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        entity = CMSRepository.CreatePost("UF", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString(), paimarykey);
                         update_term(category, Convert.ToInt32(ID));
                     }
                     else
                     {
-                        entity = CMSRepository.CreatePost("UP", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString());
+                        entity = CMSRepository.CreatePost("UP", ID, post_title, post_content, FileName, entity_id, category, featuerimg, fcsskey, seotitle, metades, slug, keylist, synlist, bheight.ToString(), bwidth.ToString(), fheight.ToString(), fwidth.ToString(), paimarykey);
                         update_term(category, Convert.ToInt32(ID));
                     }
                     return Json(new { status = true, message = "Update successfully", url = "Pages" }, 0);
@@ -1858,6 +1858,23 @@ namespace LaylaERP_v1.Controllers
             }
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Changeprimarycategory(OrderProductsMetaModel model)
+        {
+            
+            if (model.id != 0 && model.item_id != 0)
+            {
+                CMSRepository or = new CMSRepository();
+                or.Changeprimarycategory(model);
+                return Json(new { status = true, message = "status update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
     }
 }

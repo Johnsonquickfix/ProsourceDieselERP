@@ -24,7 +24,7 @@
             $("#btnSave").text("Update");
             //$('#txttitle').prop('readonly', true);
             $('#txtslug').prop('readonly', true);
-            $("#lbltitle").text("Update Post");
+            $("#lbltitle").text("Update Post"); 
         }
         //GetFeeNTaxByID(id);
         //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
@@ -32,6 +32,34 @@
     else {
         $("#hfid").val(0);
     }
+    const checklist = document.querySelector('.categorychecklist');
+    const primaryButton = document.getElementById('primaryButton'); // Change 'primaryButton' to your button's ID
+
+    // Add a click event listener to the <ul> for event delegation
+    checklist.addEventListener('click', (event) => {
+        if (event.target.type === 'checkbox') {
+            // If the clicked element is a checkbox
+            const checkbox = event.target;
+            const listItem = checkbox.closest('li'); // Find the closest <li> parent
+
+            // Get the button associated with the checkbox
+            const button = listItem.querySelector('.hide-button');
+
+            // Hide all buttons except the one associated with the clicked checkbox
+            //document.querySelectorAll('.hide-button').forEach((btn) => {
+            //    if (btn !== button) {
+            //        btn.style.display = 'none';
+            //    }
+            //});
+
+            // Show the button when the checkbox is checked
+            if (checkbox.checked) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
+        }
+    });
 
     // $("#btnbacklist").prop("href", "List")
 
@@ -208,10 +236,99 @@
 
     });
 
+
+  
+   
+    const buttons = document.querySelectorAll('.hide-button');
+
+    // Add a click event listener to each button
+    buttons.forEach((button) => {
+        button.addEventListener('click', function () {
+            // Change the caption of the clicked button to 'Primary'
+            this.textContent = 'Primary';
+
+            // Change the caption of all other buttons to 'Make Primary'
+            buttons.forEach((otherButton) => {
+                if (otherButton !== this) {
+                    otherButton.textContent = 'Make Primary';
+                }
+            });
+
+            // Add your logic here for handling the click event
+            // For example, you can call the 'Status' function or perform other actions
+            var buttonId = this.id;
+            Status(buttonId);
+        });
+    });
+  
+
 })
+
+function Status(term_id) {
+    var term_ids = term_id.match(/\d+/)[0];
+    IDs = $("#hfid").val();
+    console.log(term_ids, IDs);
+    
+    $('#lblpcid').data('id', term_ids);
+
+    //document.querySelectorAll('.hide-button').forEach((button) => {
+    //    button.addEventListener('click', function () {
+    //        // Get the button's ID to identify which button was clicked
+    //        var buttonId = this.id;
+
+    //        // You can call a client-side method or perform other actions here
+    //        // Example: Call a JavaScript function
+    //        handleButtonClick(buttonId);
+    //    });
+    //});
+
+    //// JavaScript function to handle button click action
+    //function handleButtonClick(buttonId) {
+    //    // You can perform actions here when a button is clicked
+    //    console.log('Button clicked with ID:', buttonId);
+    //    var button = document.getElementById(buttonId);
+    //    // Change the button text
+    //    button.textContent = 'Primary'; 
+
+    //    // You can also make an AJAX request or interact with the DOM as needed
+    //    // Example: Make an AJAX request to the server
+    //    // $.ajax({
+    //    //     type: "POST",
+    //    //     url: "/YourController/YourAction",
+    //    //     data: { buttonId: buttonId },
+    //    //     success: function (response) {
+    //    //         // Handle the response from the server
+    //    //     }
+    //    // });
+    //}
+
+    //var obj = { item_id: term_ids, id: IDs }
+    //$.ajax({
+    //    url: '/CMS/Changeprimarycategory', dataType: 'JSON', type: 'POST',
+    //    contentType: "application/json; charset=utf-8",
+    //    data: JSON.stringify(obj),
+    //    beforeSend: function () { $("#loader").show(); },
+    //    success: function (data) {
+    //        if (data.status == true) {
+    //            //swal('Alert', data.message, 'success').then((result) => { GetDetails(); $('#ddlbulkaction').val(0); var order_type = $('#hfType').val(); dataGridLoad(order_type); });
+    //        }
+    //        else {
+    //            //swal('Alert', 'something went wrong!', 'success');
+    //        }
+    //    },
+    //    complete: function () { $("#loader").hide(); },
+    //    error: function (error) {
+    //        swal('Error!', 'something went wrong', 'error');
+    //    },
+
+    //})
+
+}
 
 
 function Add() {
+    let paimarykey = parseInt($('#lblpcid').data('id')) || 0;
+    //console.log(paimarykey);
     title = $("#txttitle").val();
     entity = $("#ddlcompany").val();
     content = $("#txtcontent").val();
@@ -291,7 +408,7 @@ function Add() {
         obj.append("slug", slug);
         obj.append("keylist", JSON.stringify(_keylist));
         obj.append("synlist", JSON.stringify(_synlist));
-        //obj.append("Content", content);
+        obj.append("paimarykey", paimarykey);
         //console.log(post_contentval);
         $.ajax({
             url: '/CMS/CreatePost/', dataType: 'json', type: 'Post',
@@ -372,6 +489,20 @@ function GetDataByID(ID) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
+
+            let primary = "btnvatidID" + i[0].primarycategory+"";
+            console.log(primary);
+            const buttons = document.querySelectorAll('.hide-button');
+
+            // Set the button text conditionally
+            buttons.forEach((button) => {
+                if (button.id === primary) {
+                    button.textContent = 'Primary';
+                } else {
+                    button.textContent = 'Make Primary';
+                }
+            });
+
               //console.log(i);
             $("#txttitle").val(i[0].post_title);
             SetContent(i[0].post_content);
@@ -379,14 +510,24 @@ function GetDataByID(ID) {
             $("#txtcontent").val(i[0].page_content);
             $("#txtseo").val(i[0].page_seo);
             //$("#txtcompanyname").val(i[0].CompanyName);  
+            
 
             var category = i[0].CategoryID;
             if (category != null) {
                 var temp = new Array();
                 var temp = category.split(",");
                 $('#tblprodctype').find('input[type="checkbox"]').each(function (i, item) {
-                    if (temp.includes($(item).val()))
+                    if (temp.includes($(item).val())) {
                         $(item).prop('checked', true);
+                        const listItem = $(item).closest('li');
+                        const button = listItem.find('.hide-button');
+                        button.show();
+                    }
+                    else {
+                        const listItem = $(item).closest('li');
+                        const button = listItem.find('.hide-button');
+                        button.hide();
+                    }
                 });
             }
 

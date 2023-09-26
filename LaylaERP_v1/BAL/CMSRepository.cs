@@ -369,7 +369,7 @@ namespace LaylaERP.BAL
         }
 
 
-        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category, string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string bheight, string bwidth, string fheight, string fwidth)
+        public static int CreatePost(string qflag, string ID, string post_title, string post_content, string InnerPageBannerLink, string entity_id, string Category, string featured_image_url, string fcsskey, string seotitle, string metades, string slug, string keylist, string synlist, string bheight, string bwidth, string fheight, string fwidth, string primary_category)
         {
             try
             {
@@ -391,7 +391,8 @@ namespace LaylaERP.BAL
                     new SqlParameter("@bwidth",bwidth),
                     new SqlParameter("@fheight",fheight),
                     new SqlParameter("@fwidth",fwidth),
-                    new SqlParameter("@post_name",slug)
+                    new SqlParameter("@post_name",slug),
+                    new SqlParameter("@yoast_wpseo_primary_category",primary_category)
                 };
 
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar("cms_post_iud", para));
@@ -1452,6 +1453,29 @@ namespace LaylaERP.BAL
             }
             catch { throw; }
             return dt;
+        }
+
+        public int Changeprimarycategory(OrderProductsMetaModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "cms_primary_category_updateh";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "Add"),
+                    new SqlParameter("@term_id", model.item_id ),
+                    new SqlParameter("@post_ID",model.id), 
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                UserActivityLog.ExpectionErrorLog(Ex, "CMS/Changeprimarycategory/" + "0" + "", "primary category Updated");
+                throw Ex;
+            }
         }
 
 

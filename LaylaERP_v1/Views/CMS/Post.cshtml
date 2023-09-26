@@ -114,10 +114,11 @@
             <div class="col-md-12">
                 <div class="page-title">
                     <h2 class="page-heading" id="lbltitle">Add New Post</h2>
+                    <label class="control-label"   id="lblpcid" data-id=""></label>
                     <span title="Click here to back to list" data-placement="right" data-toggle="tooltip">@Html.ActionLink("Back to List", "PostList", null, new { @class = "btn btn-danger" })</span>
                     @*<input type="hidden" id="hfid" />
-                        <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
-                        <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>*@
+        <select class="form-control select1" data-placement="right" id="ddlcompany" style="width:30%;"></select>
+        <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Update</button>*@
 
 
                     <div class="compBox">
@@ -253,10 +254,12 @@
                             <ul class="categorychecklist">
                                 @foreach (var item in @ViewBag.product)
                                 {
-                                    <li class="w3-check">
-                                        <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
-                                        <label for="chkproductID@(i++)">@item.Text</label>
-                                    </li>
+                                <li class="w3-check">
+                                    <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
+                                    <label for="chkproductID@(i++)">@item.Text</label>
+                                    @*<div  class="hide-lable" id="lblprimarycheck@(++i)">Primary</div>*@
+                                    <button class="hide-button"   id="btnvatidID@(item.Value)" style="display: none;">Make Primary</button>
+                                </li>
                                 }
                             </ul>
                         </div>

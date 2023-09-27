@@ -173,11 +173,13 @@
                 decimal discount_total = 0, discount_tax = 0;
                 foreach (var item in obj.data.items)
                 {
-                    decimal line_subtotal = item.line_subtotal ?? 0, line_discount = 0, line_total = 0;
+                    decimal line_subtotal = (item.quantity ?? 0) * (item.price ?? 0), line_discount = 0, line_total = 0;
+                    item.line_subtotal = line_subtotal;
                     if (obj.data.coupons != null)
                     {
                         foreach (var coupon in obj.data.coupons)
                         {
+                            decimal discount = 0;
                             if (coupon.categories != null)
                             {
                                 long[] _p_c = item.categories;
@@ -187,11 +189,13 @@
                                 {
                                     if (coupon.discount_type == "percent")
                                     {
-                                        line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
+                                        discount = ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
+                                        //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
                                     }
                                     else
                                     {
-                                        line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
+                                        discount = (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
+                                        //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
                                     }
                                 }
                                 else line_discount = 0;
@@ -200,15 +204,18 @@
                             {
                                 if (coupon.discount_type == "percent")
                                 {
-                                    line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
+                                    discount = ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
+                                    //line_discount = line_discount + ((line_subtotal * (coupon.coupon_amount ?? 0)) / 100.0);
                                 }
                                 else
                                 {
-                                    line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
+                                    discount = (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
+                                    //line_discount = line_discount + (((coupon.coupon_amount ?? 0) / item_count) * (item.quantity ?? 0));
                                 }
                             }
+                            line_discount = line_discount + discount;
                             if (coupon.discount_amount == null) coupon.discount_amount = 0;
-                            coupon.discount_amount = (coupon.discount_amount ?? 0) + line_discount;
+                            coupon.discount_amount = (coupon.discount_amount ?? 0) + discount;
                             coupon.coupon_amount = (coupon.coupon_amount ?? 0);
                         }
 

@@ -33,7 +33,8 @@
                 long user_id = 0; string session_id = string.Empty;
                 if (headers.Contains("X-User-Id")) user_id = !string.IsNullOrEmpty(headers.GetValues("X-User-Id").First()) ? Convert.ToInt64(headers.GetValues("X-User-Id").First()) : 0;
                 if (headers.Contains("X-Cart-Session-Id")) session_id = headers.GetValues("X-Cart-Session-Id").First();
-
+                // check coupon amount
+                //CartRepository.ApplyCoupon("check-coupon", entity_id, user_id, session_id, string.Empty);
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.UpdateShippingAddress(entity_id, user_id, session_id, JsonConvert.SerializeObject(address)));
                 if (obj.status == 200) return Ok(CalculateTotals(obj));
                 return Ok(obj);
@@ -64,7 +65,8 @@
                 }
                 //if (cart != null) return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, JsonConvert.SerializeObject(cart))));
                 //else return Ok(JsonConvert.DeserializeObject(CartRepository.AddItem(entity_id, user_id, session_id, "")));
-
+                // check coupon amount
+                //CartRepository.ApplyCoupon("check-coupon", entity_id, user_id, session_id, string.Empty);
                 CartResponse obj = JsonConvert.DeserializeObject<CartResponse>(CartRepository.AddItem(entity_id, user_id, session_id, (cart != null ? JsonConvert.SerializeObject(cart) : "")));
                 if (obj.status == 200 && checkout) return Ok(CalculateTotals(obj));
                 else if (obj.status == 200 && !checkout) return Ok(obj);
@@ -344,6 +346,13 @@
             dynamic _frdex = new ExpandoObject();
             try
             {
+                List<string> _shipping_services = new List<string>() { "PRIORITY_OVERNIGHT", "STANDARD_OVERNIGHT", "FEDEX_2_DAY", "GROUND_HOME_DELIVERY", "FEDEX_GROUND", "INTERNATIONAL_ECONOMY", "INTERNATIONAL_PRIORITY", "INTERNATIONAL_GROUND" , "FEDEX_INTERNATIONAL_CONNECT_PLUS", "INTERNATIONAL_DISTRIBUTION_FREIGHT", "INTERNATIONAL_ECONOMY_DISTRIBUTION", "INTERNATIONAL_PRIORITY_DISTRIBUTION", "FEDEX_INTERNATIONAL_PRIORITY_EXPRESS" , "FEDEX_INTERNATIONAL_PRIORITY", "FEDEX_REGIONAL_ECONOMY" , "FEDEX_REGIONAL_ECONOMY_FREIGHT" };
+                if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
+                if ((order.data.cart_totals.subtotal - order.data.cart_totals.discount_total) >= 90)
+                {
+                    order.data.shipping_methods.Add(new CartDataResponse.ShippingMethods() { metod_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
+                }
+
                 string accountNumber = "740561073", client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be";
 
                 if (order.data.shipping_address != null)
@@ -414,28 +423,31 @@
                 if (result != null)
                 {
                     List<dynamic> list = new List<dynamic>();
-                    order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
+                    if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                     CartDataResponse.ShippingMethods methods;
                     foreach (var rat in result.output.rateReplyDetails)
                     {
-                        if (rat["ratedShipmentDetails"] != null)
+                        if (_shipping_services.Contains(rat["serviceType"]))
                         {
-                            foreach (var sh_rat in rat.ratedShipmentDetails)
+                            if (rat["ratedShipmentDetails"] != null)
+                            {
+                                foreach (var sh_rat in rat.ratedShipmentDetails)
+                                {
+                                    methods = new CartDataResponse.ShippingMethods();
+                                    methods.metod_id = rat["serviceType"];
+                                    methods.method_title = methods.metod_id.Replace("_", " ");
+                                    methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
+                                    order.data.shipping_methods.Add(methods);
+                                }
+                            }
+                            else
                             {
                                 methods = new CartDataResponse.ShippingMethods();
                                 methods.metod_id = rat["serviceType"];
-                                methods.method_title = methods.metod_id.Replace(" ", "_");
-                                methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
+                                methods.method_title = methods.metod_id.Replace("_", " ");
+                                methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
                                 order.data.shipping_methods.Add(methods);
                             }
-                        }
-                        else
-                        {
-                            methods = new CartDataResponse.ShippingMethods();
-                            methods.metod_id = rat["serviceType"];
-                            methods.method_title = methods.metod_id.Replace(" ", "_");
-                            methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
-                            order.data.shipping_methods.Add(methods);
                         }
                     }
                 }

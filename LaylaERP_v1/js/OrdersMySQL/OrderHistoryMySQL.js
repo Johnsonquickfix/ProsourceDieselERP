@@ -2,6 +2,9 @@
 $(document).ready(function () {
     $("#loader").hide();
     $(".subsubsub li a").click(function (e) { $('.subsubsub li a').removeClass('current'); $(this).addClass('current'); });
+    let searchText = localStorage.getItem('_search');    
+    if (searchText == '') { $('#atncustlist').hide() } else { $('#atncustlist').show() }
+    
     $('#txtOrderDate').daterangepicker({
         ranges: {
             'Today': [moment(), moment()],
@@ -149,7 +152,7 @@ function GetOrderDetails() {
 function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function dataGridLoad(order_type) {
     //var urlParams = new URLSearchParams(window.location.search);
-    //let searchText = urlParams.get('name') ? urlParams.get('name') : '';
+    //let searchText = urlParams.get('name') ? urlParams.get('name') : ''; 
     let searchText = localStorage.getItem('_search');
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();

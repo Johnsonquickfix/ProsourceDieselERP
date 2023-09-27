@@ -1886,7 +1886,7 @@ namespace LaylaERP_v1.Controllers
             {
                 DataTable dt = CMSRepository.replyanswer(model.status,Convert.ToInt64(strID));
                 //or.replyanswer(model, strID);
-                return Json(new { status = true, message = "Send successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "Sent successfully!", url = "" }, 0);
             }
             else
             {

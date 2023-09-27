@@ -383,6 +383,17 @@ function dataGridLoad() {
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
+                    if ($("#hfEdit").val() == "1") {
+                        return '<a href="../OrdersMySQL/OrdersHistory" data-toggle="tooltip" data-placement="left" title="View/Edit customer order" onclick="handleLinkClick(\'' + id + '\', \'' + full.user_email + '\');"><i class="fas fa-eye"></i></a>';
+
+                    }
+                    else { return "No Permission"; }
+                }
+            },
+
+            {
+                'data': 'id', sWidth: "8%",
+                'render': function (id, type, full, meta) {
                     if ($("#hfEdit").val() == "1") { 
                         return '<a href="../customer-service/search-ticket-id/' + id + '" data-toggle="tooltip" data-placement="left" title="View/Edit customer service" onclick="ActivityLog(\' show helfdesk id ' + id + ' in manage customer service\',\'/customer-service/service/' + id + '\');"><i class="fas fa-eye"></i></a>';
                    
@@ -411,6 +422,9 @@ function dataGridLoad() {
             }
         ]
     });
+}
+function handleLinkClick(id, user_email) {
+    localStorage.setItem('_search', user_email);
 }
 
 function GetCustomerByID(id) {

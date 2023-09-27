@@ -160,7 +160,9 @@
                     _tax.to_zip = obj.data.shipping_address.postcode;
                     _tax.to_country = obj.data.shipping_address.country;
                     _tax.amount = 100;
-                    _tax = GetTaxAmounts(_tax);
+                    if (!string.IsNullOrEmpty(obj.data.shipping_address.address_1) && !string.IsNullOrEmpty(obj.data.shipping_address.city) && !string.IsNullOrEmpty(obj.data.shipping_address.state) && !string.IsNullOrEmpty(obj.data.shipping_address.postcode) && !string.IsNullOrEmpty(obj.data.shipping_address.country))
+                        _tax = GetTaxAmounts(_tax);
+                    else _tax = new TaxJarModel { order_total_amount = 0, taxable_amount = 0, amount_to_collect = 0, rate = 0, freight_taxable = false };
                 }
 
                 long item_count = obj.data.item_count;
@@ -256,12 +258,18 @@
                 obj.data.cart_totals.total = (f_line_total + shipping_total + fee_total + f_line_tax + shipping_tax + fee_tax);
                 obj.data.cart_totals.total_tax = (f_line_tax + shipping_tax + fee_tax);
 
-                //
-                //packer.AddItem(9, 8, 4, 1, 67.95);
-                get_boxes(packer);
-                packer.Pack();
-                var packages = packer.GetPackages();
-                if (packages.Count > 0) get_fedex_shipping_methods(obj, packages);
+                if (obj.data.shipping_address != null)
+                {
+                    //packer.AddItem(9, 8, 4, 1, 67.95);
+                    if (!string.IsNullOrEmpty(obj.data.shipping_address.postcode) && !string.IsNullOrEmpty(obj.data.shipping_address.country))
+                    {
+                        get_boxes(packer);
+                        packer.Pack();
+                        var packages = packer.GetPackages();
+                        if (packages.Count > 0) get_fedex_shipping_methods(obj, packages);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -409,8 +417,8 @@
                             {
                                 methods = new CartDataResponse.ShippingMethods();
                                 methods.metod_id = rat["serviceType"];
-                                methods.method_title= methods.metod_id.Replace(" ","_");
-                                methods.amount  = sh_rat["totalNetCharge"]!=null ?Convert.ToDecimal(sh_rat["totalNetCharge"]) :0;
+                                methods.method_title = methods.metod_id.Replace(" ", "_");
+                                methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
                                 order.data.shipping_methods.Add(methods);
                             }
                         }

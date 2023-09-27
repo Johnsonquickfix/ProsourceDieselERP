@@ -32,14 +32,14 @@ namespace LaylaERP_v1.BAL
             catch { throw; }
             return result;
         }
-        public static string UpdateShippingAddress(long entity_id, long user_id, string cart_session_id, string json_data)
+        public static string UpdateShippingAddress(string flag, long entity_id, long user_id, string cart_session_id, string json_data)
         {
             string result;
             try
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@flag", "update-shipping"),
+                    new SqlParameter("@flag", flag),
                     new SqlParameter("@entity_id", entity_id),
                     user_id > 0 ? new SqlParameter("@user_id", user_id) :  new SqlParameter("@user_id", DBNull.Value),
                     !string.IsNullOrEmpty(cart_session_id) ? new SqlParameter("@cart_session_id", cart_session_id) : new SqlParameter("@cart_session_id", DBNull.Value),

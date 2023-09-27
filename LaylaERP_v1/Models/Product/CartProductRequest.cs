@@ -26,6 +26,7 @@ namespace LaylaERP_v1.Models.Product
         public List<Item> items { get; set; }
         public List<Coupon> coupons { get; set; }
         public List<ShippingMethods> shipping_methods { get; set; }
+        public ShippingMethods shipping_rate { get; set; }
         public class Item
         {
             public long id { get; set; }
@@ -95,6 +96,7 @@ namespace LaylaERP_v1.Models.Product
             public string method_id { get; set; }
             public string method_title { get; set; }
             public decimal amount { get; set; }
+            public bool isactive { get; set; }
         }
     }
 

@@ -233,7 +233,7 @@
                     f_line_total = f_line_total + line_total;
                     f_line_tax = f_line_tax + (item.line_total_tax ?? 0);
 
-                    discount_total = discount_total + (line_subtotal - line_total);
+                    discount_total = discount_total + line_discount;//(line_subtotal - line_total);
                     // Add Item in Box
                     if (item.dimensions != null)
                     {

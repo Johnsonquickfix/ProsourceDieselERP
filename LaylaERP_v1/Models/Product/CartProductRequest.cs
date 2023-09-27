@@ -92,7 +92,7 @@ namespace LaylaERP_v1.Models.Product
         }
         public class ShippingMethods
         {
-            public string metod_id { get; set; }
+            public string method_id { get; set; }
             public string method_title { get; set; }
             public decimal amount { get; set; }
         }

@@ -350,7 +350,7 @@
                 if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                 if ((order.data.cart_totals.subtotal - order.data.cart_totals.discount_total) >= 90)
                 {
-                    order.data.shipping_methods.Add(new CartDataResponse.ShippingMethods() { metod_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
+                    order.data.shipping_methods.Add(new CartDataResponse.ShippingMethods() { method_id = "FREE_SHIPPING", method_title = "Free shipping (3-5 Business Days)", amount = 0 });
                 }
 
                 string accountNumber = "740561073", client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be";
@@ -425,17 +425,17 @@
                     List<dynamic> list = new List<dynamic>();
                     if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                     CartDataResponse.ShippingMethods methods;
-                    foreach (var rat in result.output.rateReplyDetails)
+                    foreach (JToken rat in result.output.rateReplyDetails)
                     {
-                        if (_shipping_services.Contains(rat["serviceType"]))
+                        if (_shipping_services.Contains(rat.SelectToken("serviceType").Value<string>()))
                         {
                             if (rat["ratedShipmentDetails"] != null)
                             {
-                                foreach (var sh_rat in rat.ratedShipmentDetails)
+                                foreach (JToken sh_rat in rat["ratedShipmentDetails"])
                                 {
                                     methods = new CartDataResponse.ShippingMethods();
-                                    methods.metod_id = rat["serviceType"];
-                                    methods.method_title = methods.metod_id.Replace("_", " ");
+                                    methods.method_id = rat.SelectToken("serviceType").Value<string>();
+                                    methods.method_title = methods.method_id.Replace("_", " ");
                                     methods.amount = sh_rat["totalNetCharge"] != null ? Convert.ToDecimal(sh_rat["totalNetCharge"]) : 0;
                                     order.data.shipping_methods.Add(methods);
                                 }
@@ -443,8 +443,8 @@
                             else
                             {
                                 methods = new CartDataResponse.ShippingMethods();
-                                methods.metod_id = rat["serviceType"];
-                                methods.method_title = methods.metod_id.Replace("_", " ");
+                                methods.method_id = rat.SelectToken("serviceType").Value<string>();
+                                methods.method_title = methods.method_id.Replace("_", " ");
                                 methods.amount = rat["totalNetCharge"] != null ? Convert.ToDecimal(rat["totalNetCharge"]) : 0;
                                 order.data.shipping_methods.Add(methods);
                             }

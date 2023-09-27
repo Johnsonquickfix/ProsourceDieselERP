@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Dynamic;
     using System.Linq;
     using System.Web.Http;
 
@@ -260,7 +261,7 @@
                 get_boxes(packer);
                 packer.Pack();
                 var packages = packer.GetPackages();
-                //var packedBoxes = packer.Pack();
+                if (packages.Count > 0) GetShippingRate(obj, packages);
             }
             catch (Exception ex)
             {
@@ -294,7 +295,7 @@
             catch { }
             return model;
         }
-        public static void get_boxes(WC_Boxpack packer)//(Packer packer)
+        public static void get_boxes(WC_Boxpack packer)
         {
             double _mm = 25.4;
             string filePath = AppContext.BaseDirectory, fileName = "boxpacker_box";
@@ -320,6 +321,164 @@
 
             //box = packer.AddBox(11.25, 8.75, 2.625, 0.28125);//FEDEX_SMALL_BOX:2
             //box.SetInnerDimensions(11.25, 8.75, 2.625); box.SetId("FEDEX_SMALL_BOX:2"); box.SetMaxWeight(20);
+        }
+        public static void GetShippingRate(dynamic order, List<WC_Boxpack_Package> packages)
+        {
+            dynamic _frdex = new ExpandoObject();
+            try
+            {
+                string accountNumber = "740561073", client_id = "l7e40e1dfda4e04c958f688ad2b071535f", client_secret = "b1d2efec8b344ac3a205ef2b2f1301be";
+
+                if (order.data.shipping_address != null)
+                {
+                    _frdex.accountNumber = new { value = accountNumber };
+                    _frdex.requestedShipment = new
+                    {
+                        preferredCurrency = "USD",
+                        dropoffType = "REGULAR_PICKUP",
+                        //ShipTimestamp" => date('c', strtotime('+1 Weekday')), //date('c'), //'2021-11-01T00:00:00+00:00',
+                        packagingType = "YOUR_PACKAGING",
+                        shippingChargesPayment = new
+                        {
+                            PaymentType = "SENDER",
+                            Payor = new { ResponsibleParty = new { AccountNumber = accountNumber, CountryCode = "US" } }
+                        },
+                        shipper = new
+                        {
+                            address = new
+                            {
+                                //streetLines = new List<string>() { "2211 Wayne Street" },
+                                //city = "Fairfield",
+                                //stateOrProvinceCode = "IN",
+                                postalCode = "94534",
+                                countryCode = "US",
+                                //residential = true
+                            }
+                        },
+                        recipient = new
+                        {
+                            address = new
+                            {
+                                //streetLines = new List<string>() { order.data.shipping_address.address_1 } ,
+                                //city = order.data.shipping_address.city,
+                                //stateOrProvinceCode = order.data.shipping_address.state,
+                                postalCode = order.data.shipping_address.postcode,
+                                countryCode = order.data.shipping_address.country,
+                                residential = true
+                            }
+                        },
+                        pickupType = "DROPOFF_AT_FEDEX_LOCATION",
+                        //serviceType = "GROUND_HOME_DELIVERY",
+                        //shipmentSpecialServices = new { specialServiceTypes = new List<string>() { "HOME_DELIVERY_PREMIUM" } },
+                        //rateRequestType = new List<string>() { "ACCOUNT" },
+                        rateRequestType = new List<string>() { "LIST" },
+                        requestedPackageLineItems = new List<dynamic>(),
+                        totalPackageCount = packages.Count,
+                        //serviceType = "SMART_POST",
+                        //smartPostInfoDetail = new { indicia = "PARCEL_SELECT", hubId = "5531" }
+                    };
+                    int i = 0;
+                    foreach (WC_Boxpack_Package item in packages)
+                    {
+                        i++;
+                        var _it = new
+                        {
+                            sequenceNumber = i,
+                            groupNumber = i,
+                            groupPackageCount = i,
+                            weight = new
+                            {
+                                units = "LB",
+                                value = item.weight
+                            },
+                            dimensions = new
+                            {
+                                length = item.length,
+                                width = item.width,
+                                height = item.height,
+                                units = "IN"
+                            },
+                            //declaredValue = new
+                            //{
+                            //    amount = 100,
+                            //    currency = "USD"
+                            //}
+                        };
+                        _frdex.requestedShipment.requestedPackageLineItems.Add(_it);
+                    }
+                }
+                var access_token = clsFedex.GetToken(client_id, client_secret);
+                string str_meta = string.Empty;
+                var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, JsonConvert.SerializeObject(_frdex)));
+                if (result != null)
+                {
+                    order.data.shipping_rates = new ExpandoObject();
+                    foreach (var rat in result.output.rateReplyDetails)
+                    {
+                        if (rat["ratedShipmentDetails"] != null)
+                        {
+                            foreach (var sh_rat in rat.ratedShipmentDetails)
+                            {
+                                var metod_id = sh_rat["serviceType"];
+                                var method_title = metod_id.ToString();
+                                var amount = sh_rat["totalNetCharge"];
+                                order.data.shipping_rates.Add(new { metod_id = metod_id, method_title = method_title, amount = amount });
+                                //$shipping_rates[$amount] = [
+                                //  'metod_id' => $metod_id,
+                                //  'method_title' => $method_title,
+                                //  'amount' => $amount
+                                //];
+                            }
+                        }
+                        else
+                        {
+                            var metod_id = rat["serviceType"];
+                            var method_title = metod_id.ToString();
+                            var amount = rat["totalNetCharge"];
+                            order.shipping_rates.Add(new { metod_id = metod_id, method_title = method_title, amount = amount });
+                        }
+                    }
+                }
+                //    str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+
+                //long id = 0;
+                //if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                //string orders_json = string.Empty;
+                //DataTable dt = ProposalsRepository.GetFedexJSONforRate(id, out orders_json);
+
+                //string client_id = string.Empty, client_secret = string.Empty;
+                //foreach (DataRow dr in dt.Rows)
+                //{
+                //    client_id = dr["client_id"].ToString().Trim();
+                //    client_secret = dr["client_secret"].ToString().Trim();
+                //}
+                //var access_token = clsFedex.GetToken(client_id, client_secret);
+                //string str_meta = string.Empty;
+                //if (!string.IsNullOrEmpty(orders_json))
+                //{
+                //    var dyn = JsonConvert.DeserializeObject<dynamic>(orders_json);
+                //    foreach (var inputAttribute in dyn.orders)
+                //    {
+                //        string transaction_id = inputAttribute.transaction_id.Value.ToString();
+                //        var result = JsonConvert.DeserializeObject<dynamic>(clsFedex.ShipRates(access_token, inputAttribute.ToString()));
+                //        if (result != null)
+                //            str_meta += (str_meta.Length > 0 ? ", " : "") + "{ \"id\": " + transaction_id + ", \"fedex_charges\": " + result.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge.ToString() + " }";
+                //    }
+                //}
+                //if (!string.IsNullOrEmpty(str_meta))
+                //{
+                //    ProposalsRepository.UpdateFedexRate("[" + str_meta + "]");
+                //    _status = true;
+                //    JSONresult = "Record updated successfully.";
+                //}
+                //else
+                //{
+                //    _status = false;
+                //    JSONresult = "Any record not found.";
+                //}
+            }
+            catch (Exception ex) { }
+            //return Json(new { status = _status, message = JSONresult }, 0);
         }
     }
 }

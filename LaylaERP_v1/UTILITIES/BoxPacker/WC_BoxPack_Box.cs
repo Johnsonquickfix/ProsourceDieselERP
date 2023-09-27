@@ -191,7 +191,7 @@ namespace LaylaERP.UTILITIES.BoxPacker
             package.weight = packed_weight;
             package.volume = packed_volume;
             package.length = outer_length;
-            package.weight = outer_width;
+            package.width = outer_width;
             package.height = outer_height;
             package.value = packed_value;
 

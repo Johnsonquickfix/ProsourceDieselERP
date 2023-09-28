@@ -435,7 +435,7 @@
                         {
                             address = new
                             {
-                                streetLines = new List<string>() { order.data.shipping_address.address_1, order.data.shipping_address.address_2 } ,
+                                streetLines = new List<string>() { order.data.shipping_address.address_1, order.data.shipping_address.address_2 },
                                 city = order.data.shipping_address.city,
                                 stateOrProvinceCode = order.data.shipping_address.state,
                                 postalCode = order.data.shipping_address.postcode,
@@ -503,9 +503,10 @@
                         }
                     }
                 }
-
             }
             catch (Exception ex) { }
+            _shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
+            if(_shipping_methods.Count>0 && order.data.shipping_rate == null) _shipping_methods[0].isactive = true; 
             order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
         }
         #endregion

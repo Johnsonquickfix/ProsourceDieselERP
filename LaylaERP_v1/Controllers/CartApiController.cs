@@ -171,7 +171,8 @@
         {
             try
             {
-                double _mm = 25.4;
+                //double _dimension = 2.54, _weight = 0.453592;
+                double _dimension = 1, _weight = 1;
                 //Packer packer = new Packer(true, false);
                 WC_Boxpack packer = new WC_Boxpack();
                 TaxJarModel _tax = new TaxJarModel();
@@ -263,7 +264,7 @@
                         //foreach(var dim in (item.quantity.ToObject<double>() ?? 0))
                         for (int qty = 0; qty < item.quantity; qty++)
                         {
-                            packer.AddItem(item.dimensions.length, item.dimensions.width, item.dimensions.height, item.weight.Value);
+                            packer.AddItem(item.dimensions.length * _dimension, item.dimensions.width * _dimension, item.dimensions.height * _dimension, (item.weight.HasValue ? (item.weight.Value * _weight) : 0));
                         }
                         //packer.AddItem(new Item { Id = "", Description = "", Depth = (item.dimensions.height.ToObject<double>() ?? 0) * _mm, Length = (item.dimensions.length.ToObject<double>() ?? 0) * _mm, Width = (item.dimensions.width.ToObject<double>() ?? 0) * _mm, Weight = (item.weight.ToObject<double>() ?? 0) * _mm }, (item.quantity.ToObject<int>() ?? 0));
                     }
@@ -395,7 +396,7 @@
             dynamic _frdex = new ExpandoObject();
             List<CartDataResponse.ShippingMethods> _shipping_methods = new List<CartDataResponse.ShippingMethods>();
             try
-            {                
+            {
                 List<string> _shipping_services = new List<string>() { "PRIORITY_OVERNIGHT", "STANDARD_OVERNIGHT", "FEDEX_2_DAY", "GROUND_HOME_DELIVERY", "FEDEX_GROUND", "INTERNATIONAL_ECONOMY", "INTERNATIONAL_PRIORITY", "INTERNATIONAL_GROUND", "FEDEX_INTERNATIONAL_CONNECT_PLUS", "INTERNATIONAL_DISTRIBUTION_FREIGHT", "INTERNATIONAL_ECONOMY_DISTRIBUTION", "INTERNATIONAL_PRIORITY_DISTRIBUTION", "FEDEX_INTERNATIONAL_PRIORITY_EXPRESS", "FEDEX_INTERNATIONAL_PRIORITY", "FEDEX_REGIONAL_ECONOMY", "FEDEX_REGIONAL_ECONOMY_FREIGHT" };
                 if (order.data.shipping_methods == null) order.data.shipping_methods = new List<CartDataResponse.ShippingMethods>();
                 if ((order.data.cart_totals.subtotal - order.data.cart_totals.discount_total) >= 90)
@@ -434,12 +435,12 @@
                         {
                             address = new
                             {
-                                //streetLines = new List<string>() { order.data.shipping_address.address_1 } ,
-                                //city = order.data.shipping_address.city,
-                                //stateOrProvinceCode = order.data.shipping_address.state,
+                                streetLines = new List<string>() { order.data.shipping_address.address_1, order.data.shipping_address.address_2 } ,
+                                city = order.data.shipping_address.city,
+                                stateOrProvinceCode = order.data.shipping_address.state,
                                 postalCode = order.data.shipping_address.postcode,
                                 countryCode = order.data.shipping_address.country,
-                                residential = true
+                                //residential = true
                             }
                         },
                         pickupType = "DROPOFF_AT_FEDEX_LOCATION",
@@ -460,8 +461,8 @@
                             sequenceNumber = i,
                             groupNumber = i,
                             groupPackageCount = i,
-                            weight = new { units = "LB", value = item.weight },
-                            dimensions = new { length = item.length, width = item.width, height = item.height, units = "IN" },
+                            weight = new { units = "LB", value = Math.Max(0.5, Math.Round(item.weight, 2)) },
+                            dimensions = new { length = Math.Max(1, Math.Round(item.length, 2)), width = Math.Max(1, Math.Round(item.width, 2)), height = Math.Max(1, Math.Round(item.height, 2)), units = "IN" },
                             //declaredValue = new { amount = 0, currency = "USD" }
                         };
                         _frdex.requestedShipment.requestedPackageLineItems.Add(_it);
@@ -500,9 +501,9 @@
                                 _shipping_methods.Add(methods);
                             }
                         }
-                    }                    
+                    }
                 }
-                
+
             }
             catch (Exception ex) { }
             order.data.shipping_methods = _shipping_methods.OrderBy(s => s.amount).ToList();
